@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
@@ -57,7 +58,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm.php') != false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm')) != false) {
         $proceed = true;
     }
 }
@@ -305,7 +306,7 @@ if ($proceed == false) {
                 if ($gibbonFamily == 'FALSE') { // Only if there is no family
                     $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1'];
                     $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent1', $AI, $params, $personalDocumentFail);
-    
+
                     if (empty($_POST['secondParent'])) {
                         $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2'];
                         $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent2', $AI, $params, $personalDocumentFail);
@@ -471,7 +472,7 @@ if ($proceed == false) {
     else {
         $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
         $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
-        
+
         $paymentToken = $_GET['token'] ?? '';
         $paymentPayerID = $_GET['PayerID'] ?? '';
 

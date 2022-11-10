@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
@@ -29,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/thirdPartySettings.php';
 $URLPayment = $session->get('absoluteURL').'/modules/System Admin/thirdPartySettings_paymentProcess.php?test=true';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'thirdPartySettings')) == false) {
     // Access denied
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -71,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
             $mail->Send();
         }
-        
+
         $URL .= '&return='.$return;
         header("Location: " . $URL);
         exit;
@@ -85,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             exit;
         }
     }
-    
+
     $URL .= '&return=error1';
     header("Location: " . $URL);
 }

@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'schoolYearSpecialDay_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 //Get the special days
-                
+
                     $dataSpecial = array('firstDay' => $row['firstDay'], 'lastDay' => $row['lastDay']);
                     $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date BETWEEN :firstDay AND :lastDay ORDER BY date';
                     $resultSpecial = $connection2->prepare($sqlSpecial);
@@ -79,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 $days['Fri'] = 'Y';
                 $days['Sat'] = 'Y';
                 $days['Sun'] = 'Y';
-                
+
                     $dataDays = array();
                     $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
                     $resultDays = $connection2->prepare($sqlDays);
@@ -165,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i.'&gibbonSchoolYearTermID='.$row['gibbonSchoolYearTermID']."&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a> ";
                             echo '</td>';
                         }
-                        
+
                     }
 
                     if (date('D', $i) == 'Sun') {

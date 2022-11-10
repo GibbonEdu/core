@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
@@ -25,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['html' => 'HTML'])
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/resources_manage_add.php&search='.$_GET['search'];
 $time = time();
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'resources_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

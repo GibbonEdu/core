@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'district_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -27,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     $page->breadcrumbs
         ->add(__('Manage Districts'), 'district_manage.php')
         ->add(__('Add District'));
-    
+
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/district_manage_edit.php&gibbonDistrictID='.$_GET['editID'];

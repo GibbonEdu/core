@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Auth\Access\AccessManager;
 
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {
@@ -96,7 +97,7 @@ if ($gibbon->isInstalled()) {
             include __DIR__.'/error.php';
             exit;
         }
-        
+
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');

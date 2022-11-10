@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Forms\FormSubmissionGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'forms_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     $page->breadcrumbs->add(__('Manage Other Forms'));
 
     $page->addMessage('This <b>BETA</b> feature is part of the new flexible application form and admissions system. While we have worked to ensure that this functionality is ready to use, this is part of a very large set of changes that are likely to continue evolving over the next version, so we\'ve marked it as beta for v24. You are welcome to use these features and please do let us know in the support forums if you encounter any issues.');
-    
+
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $gibbonAdmissionsAccountID = $_GET['gibbonAdmissionsAccountID'] ?? '';
     $search = $_GET['search'] ?? '';
@@ -71,18 +72,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     $table->addColumn('formName', __('Form Name'));
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
-    if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.php')) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder'))) {
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')
             ->displayLabel();
     }
-    
+
     $table->modifyRows(function ($values, $row) {
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
         return $row;
     });
-    
+
     $table->addActionColumn()
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))

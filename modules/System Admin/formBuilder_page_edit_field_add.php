@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
@@ -27,7 +28,7 @@ use League\Container\Exception\NotFoundException;
 
 // require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     if ($fieldGroup != 'AllFields' && $fieldGroup != 'CustomFields') {
         $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
-        
+
         if (empty($fieldGroupClass)) {
             echo Format::alert(__('The specified record cannot be found.'));
             return;
@@ -61,8 +62,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $form->addHiddenValue('fieldGroup', $fieldGroup);
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('gibbonFormPageID', $gibbonFormPageID);
-    
-    
+
+
     if (!empty($fieldGroupClass) && $description = $fieldGroupClass->getDescription()) {
         $form->addRow()->addHeading(__($fieldGroupClass->getName()))->append($fieldGroupClass->getDescription());
     }
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row = $form->addRow();
         $row->addLabel('typeLabel', __('Role Category'));
         $row->addSelect('fields[PersonalDocuments][0]')->fromArray($fieldGroupClass->getFieldOptions());
-    
+
     } elseif ($fieldGroup == 'RequiredDocuments') {
         $row = $form->addRow();
         $row->addLabel('label', __('Label'));
@@ -115,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
         $form->addHiddenValue('fields[RequiredDocuments][0]', 'generic');
         $form->addHiddenValue('type', 'files');
-    
+
     } elseif ($fieldGroup == 'GenericFields') {
         $form->addHiddenValue('fields[GenericFields][0]', 'generic');
 

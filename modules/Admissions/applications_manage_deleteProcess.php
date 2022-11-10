@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 require_once '../../gibbon.php';
@@ -27,7 +28,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Admissions/applications_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonAdmissionsApplicationID)) {

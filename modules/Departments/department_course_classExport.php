@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -26,7 +28,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
 $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
-if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false || empty($highestAction)) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Departments', 'department_course_class')) == false || empty($highestAction)) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

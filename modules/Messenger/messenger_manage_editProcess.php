@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageTargets;
@@ -121,7 +122,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     if ($sendTestEmail == 'Y') {
         $process = $container->get(MessageProcess::class);
         $testEmail = $process->runSendDraft($data);
-        
+
         $URL .= "&testEmail={$testEmail}";
         $URLSend .= "&testEmail={$testEmail}";
     }
@@ -154,6 +155,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $URL .= $partialFail
         ? "&return=error4"
         : "&return=success0";
-    
+
     header("Location: {$URL}");
 }

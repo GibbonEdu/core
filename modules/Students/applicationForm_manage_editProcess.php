@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
@@ -36,7 +37,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -356,7 +357,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if ($gibbonFamily == 'FALSE') { // Only if there is no family
                     $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1'];
                     $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent1', $gibbonApplicationFormID, $params, $personalDocumentFail);
-    
+
                     if (empty($_POST['secondParent'])) {
                         $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2'];
                         $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent2', $gibbonApplicationFormID, $params, $personalDocumentFail);

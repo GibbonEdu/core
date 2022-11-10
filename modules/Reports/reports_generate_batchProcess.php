@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\GenerateReportProcess;
@@ -36,7 +37,7 @@ $action = $_POST['action'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate_batch')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -62,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
         $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $gibbon->session->get('gibbonPersonID'));
         $partialFail &= !$success;
-        
+
         sleep(1.0);
     } else if ($action == 'Delete') {
         $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
@@ -84,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
                 if (!empty($archive) && file_exists($path)) {
                     unlink($path);
                 }
-                
+
                 // Then remove the archive entry
                 $deleted = $reportArchiveEntryGateway->delete($entry['gibbonReportArchiveEntryID']);
                 $partialFail &= !$deleted;

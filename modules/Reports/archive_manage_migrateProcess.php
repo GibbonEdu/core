@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_migrate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'archive_manage_migrate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_mig
     }
 
     $data = ['gibbonReportArchiveID' => $gibbonReportArchiveID];
-    $sql = "INSERT INTO gibbonReportArchiveEntry (`gibbonReportArchiveID`, `gibbonReportID`, `gibbonSchoolYearID`, `gibbonYearGroupID`, `gibbonFormGroupID`, `gibbonPersonID`, `type`, `status`, `reportIdentifier`, `filePath`, `timestampCreated`, `timestampModified`) 
+    $sql = "INSERT INTO gibbonReportArchiveEntry (`gibbonReportArchiveID`, `gibbonReportID`, `gibbonSchoolYearID`, `gibbonYearGroupID`, `gibbonFormGroupID`, `gibbonPersonID`, `type`, `status`, `reportIdentifier`, `filePath`, `timestampCreated`, `timestampModified`)
             SELECT :gibbonReportArchiveID, NULL, arrReport.schoolYearID, arrArchive.yearGroupID, (SELECT gibbonFormGroupID FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonSchoolYearID=arrReport.schoolYearID AND gibbonStudentEnrolment.gibbonPersonID=arrArchive.studentID LIMIT 1), arrArchive.studentID, 'Single', 'Final', arrReport.reportName, arrArchive.reportName, arrArchive.created, arrArchive.created
             FROM arrArchive
             JOIN arrReport ON (arrReport.reportID=arrArchive.reportID)

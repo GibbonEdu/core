@@ -21,11 +21,12 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Auth\Access\Resource;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_enrolment_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

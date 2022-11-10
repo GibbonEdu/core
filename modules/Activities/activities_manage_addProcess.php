@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
@@ -30,7 +31,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => '
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage_add.php&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -53,9 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? [];
     $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
-    
+
     $maxParticipants = $_POST['maxParticipants'] ?? '';
-    
+
     $settingGateway = $container->get(SettingGateway::class);
     $paymentMethod = $settingGateway->getSettingByScope('Activities', 'payment');
     if ($paymentMethod == 'None' || $paymentMethod == 'Single') {
@@ -77,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
         //Write to database
         $activityGateway = $container->get(ActivityGateway::class);
-        
+
         $type = $_POST['type'] ?? '';
 
         $data = [

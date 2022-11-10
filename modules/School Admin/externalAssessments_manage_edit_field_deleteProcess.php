@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
+
 include '../../gibbon.php';
 
 $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
@@ -27,7 +29,7 @@ if ($gibbonExternalAssessmentID == '') { echo 'Fatal error loading this page!';
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessments_manage_edit_field_delete.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonExternalAssessmentFieldID=$gibbonExternalAssessmentFieldID";
     $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonExternalAssessmentFieldID=$gibbonExternalAssessmentFieldID";
 
-    if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit_field_delete.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'externalAssessments_manage_edit_field_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

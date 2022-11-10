@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -28,7 +29,7 @@ use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_medical')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -208,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$form->addHiddenValue('existing', $values['gibbonPersonMedicalUpdateID'] ?? 'N');
 
                         $form->addRow()->addHeading('General Information', __('General Information'));
-                        
+
 						$row = $form->addRow();
 							$row->addLabel('longTermMedication', __('Long-Term Medication?'));
 							$row->addYesNo('longTermMedication')->placeholder();
@@ -226,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         // CUSTOM FIELDS
                         $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', ['dataUpdater' => 1], $values['fields'] ?? '');
 
-                        
+
 
 						// EXISTING CONDITIONS
 						$count = 0;

@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -32,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID);
             $sql = "SELECT role, gibbonCourseClassPerson.dateEnrolled, gibbonCourseClassPerson.dateUnenrolled, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonCourseClassPerson.reportable FROM gibbonPerson, gibbonCourseClass, gibbonCourseClassPerson,gibbonCourse, gibbonSchoolYear WHERE gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonCourseClassPersonID=:gibbonCourseClassPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
             $result = $connection2->prepare($sql);
@@ -52,14 +53,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->add(__('Edit Participant'));
 
 			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_class_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
-                
+
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonCourseClassPersonID', $gibbonCourseClassPersonID);
 
 			$row = $form->addRow();
 				$row->addLabel('yearName', __('School Year'));
 				$row->addTextField('yearName')->readonly()->setValue($values['yearName']);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('courseName', __('Course'));
 				$row->addTextField('courseName')->readonly()->setValue($values['courseName']);
@@ -85,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
 				$row->addSelect('role')->fromArray($roles)->required()->selected($values['role']);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('reportable', __('Reportable'))->description(__("Students set to non-reportable won't display in reports. Teachers set to non-reportable won't display in lists of class teachers."));
 				$row->addYesNo('reportable')->required()->selected($values['reportable']);
@@ -95,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     $row->addLabel('dateEnrolled', __('Date Enrolled'));
                     $row->addTextField('dateEnrolled')->readonly()->setValue(Format::date($values['dateEnrolled']));
             }
-                
+
             if (!empty($values['dateUnenrolled']) && stripos($values['role'], 'Left') !== false) {
                 $row = $form->addRow();
                     $row->addLabel('dateUnenrolled', __('Date Unenrolled'));

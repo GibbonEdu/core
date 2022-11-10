@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -37,7 +38,7 @@ $params = [
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&".http_build_query($params);
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_view_full')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

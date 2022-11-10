@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
@@ -38,7 +39,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm.php') != false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm')) != false) {
         $proceed = true;
     }
 }
@@ -223,7 +224,7 @@ if ($proceed == false) {
         // CUSTOM FIELDS FOR USER: STAFF
         $params = ['staff' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
         $customFieldHandler->addCustomFieldsToForm($form, 'User', $params);
-        
+
         // REQURIED DOCUMENTS
         $staffApplicationFormRequiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
 

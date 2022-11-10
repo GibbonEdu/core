@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
+
 include '../../gibbon.php';
 
 include './moduleFunctions.php';
@@ -31,7 +33,7 @@ $gibbonRubricID = $_POST['gibbonRubricID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_delete.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics.php&search=$search&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Rubrics', 'rubrics_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

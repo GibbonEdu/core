@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\UI\Chart\Chart;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -27,7 +28,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\DataSet;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_weekly.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_absences_weekly')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     // SETUP DAYS OF WEEK
     $sql = "SELECT name, nameShort FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
     $result = $pdo->select($sql)->fetchAll();
-    
+
     $currentWeekday = $date->format('l');
     $weekdays = array_map(function ($weekday) use ($date, $currentWeekday) {
         $weekday['date'] = $currentWeekday == 'Sunday'
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
             ],
         ],
     ];
-    
+
     // QUERY
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->sortBy('date')
@@ -157,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         $table->setDescription(Format::dateReadable($date->format('Y-m-d')));
 
         $canView = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any');
-        
+
         // COLUMNS
         $table->addColumn('fullName', __('Name'))
             ->width('30%')
@@ -173,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
                 return $output;
             });
 
-        if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php')) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_subs_availability'))) {
             $table->addColumn('coverage', __('Coverage'))
                 ->width('30%')
                 ->format([AbsenceFormats::class, 'coverage']);

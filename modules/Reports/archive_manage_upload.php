@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upload.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'archive_manage_upload')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Step 1 - Select ZIP File'));
     $form->setDescription(__('This page allows you to bulk import reports, in the form of a ZIP file containing PDFs named with individual usernames.'));
-    
+
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
     $form->addRow()->addHeading('File Import', __('File Import'));
@@ -79,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         $row->addLabel('reportDate', __('Report Date'));
         $row->addDate('reportDate')->required();
 
-    
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'house_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
     if ($gibbonHouseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonHouseID' => $gibbonHouseID);
             $sql = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
             $result = $connection2->prepare($sql);

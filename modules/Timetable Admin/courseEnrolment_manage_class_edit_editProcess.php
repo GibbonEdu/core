@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -31,7 +32,7 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID =
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_class_edit_edit.php&gibbonCourseID=$gibbonCourseID&gibbonCourseClassPersonID=$gibbonCourseClassPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseClassID=$gibbonCourseClassID";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

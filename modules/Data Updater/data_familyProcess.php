@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
 
@@ -28,7 +29,7 @@ $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_family')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

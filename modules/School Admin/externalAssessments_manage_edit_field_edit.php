@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit_field_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'externalAssessments_manage_edit_field_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     if ($gibbonExternalAssessmentFieldID == '' or $gibbonExternalAssessmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID);
             $sql = 'SELECT gibbonExternalAssessmentField.*, gibbonExternalAssessment.name AS assessmentName FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
             $result = $connection2->prepare($sql);

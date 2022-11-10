@@ -18,11 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_print.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'invoices_manage_print')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

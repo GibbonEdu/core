@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
@@ -26,7 +27,7 @@ use Gibbon\Domain\Departments\DepartmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'department_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -80,11 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->sortable(false)
         ->format(function($row) use ($departmentGateway) {
             $staff = $departmentGateway->selectStaffByDepartment($row['gibbonDepartmentID'])->fetchAll();
-            return (!empty($staff)) 
+            return (!empty($staff))
                 ? Format::nameList($staff, 'Staff', true, true)
                 : '<i>'.__('None').'</i>';
         });
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonDepartmentID')

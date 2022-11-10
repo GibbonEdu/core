@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Faker\Factory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\ReportBuilder;
@@ -24,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Renderer\HtmlRenderer;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_preview.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_assets_components_preview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

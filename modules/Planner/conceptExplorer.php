@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -25,7 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Concept Explorer'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'conceptExplorer')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     //Allow tag selection
     $form = Form::create('conceptExplorer', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->setTitle(__('Choose Concept'));
     $form->setClass('noIntBorder fullWidth');
 

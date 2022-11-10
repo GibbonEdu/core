@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'family_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
     if ($gibbonFamilyID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFamilyID' => $gibbonFamilyID);
             $sql = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
             $result = $connection2->prepare($sql);

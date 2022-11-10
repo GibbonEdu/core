@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'schoolYearSpecialDay_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,10 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     if (empty($gibbonSchoolYearSpecialDayID) && empty($gibbonSchoolYearID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
-    
+
     //Let's go!
     $values = $specialDayGateway->getByID($gibbonSchoolYearSpecialDayID);
     $values['gibbonYearGroupIDList'] = !empty($values['gibbonYearGroupIDList']) ? explode(',', $values['gibbonYearGroupIDList']) : '';
@@ -104,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     $row = $form->addRow()->addClass('offTimetableFormGroup');
         $row->addLabel('gibbonFormGroupIDList', __('Form Groups'));
         $row->addSelectFormGroup('gibbonFormGroupIDList', $session->get('gibbonSchoolYearID'))->selectMultiple();
-        
+
     $form->toggleVisibilityByClass('timingChange')->onSelect('type')->when('Timing Change');
 
     $hoursArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 23));
@@ -157,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     $row = $form->addRow()->addClass('cancelActivities');
         $row->addLabel('cancelActivities', __('Cancel Activities?'))->description(__('Should activities scheduled for this day no longer appear on the timetable?'));
         $row->addYesNo('cancelActivities')->required();
-        
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
@@ -165,6 +166,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
-    
-    
+
+
 }

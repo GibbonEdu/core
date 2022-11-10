@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -24,7 +25,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Outcomes By Course'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_outcomesByCourse.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'curriculumMapping_outcomesByCourse')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -69,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
         echo '</h2>';
 
         //Check course exists
-        
+
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseID' => $gibbonCourseID);
             $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID ORDER BY department, nameShort";
             $result = $connection2->prepare($sql);
@@ -82,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
         } else {
             $row = $result->fetch();
             //Get classes in this course
-            
+
                 $dataClasses = array('gibbonCourseID' => $gibbonCourseID);
                 $sqlClasses = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name';
                 $resultClasses = $connection2->prepare($sqlClasses);
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 $classes = $resultClasses->fetchAll();
 
                 //GET ALL OUTCOMES MET IN THIS COURSE, AND STORE IN AN ARRAY FOR DB-EFFICIENT USE IN TABLE
-                
+
                     $dataOutcomes = array('gibbonCourseID1' => $gibbonCourseID, 'gibbonCourseID2' => $gibbonCourseID);
                     $sqlOutcomes = "(SELECT 'Unit' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonUnit ON (gibbonUnitOutcome.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID1 AND gibbonOutcome.active='Y' AND running='Y')
 					UNION ALL

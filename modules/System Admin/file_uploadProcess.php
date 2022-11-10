@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\UserGateway;
@@ -29,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_upload.php&step=3';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'import_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -75,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     $userGateway = $container->get(UserGateway::class);
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
-    
+
     $fileUploader = $container->get(FileUploader::class);
     $files = $fileUploader->uploadFromZIP($absolutePath.'/'.$zipFile);
 
@@ -141,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
 
             $file['absolutePath'] = $fileUploader->resizeImage($file['absolutePath'], $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
             $file['relativePath'] = str_replace($file['filename'], $renameFilename, $file['relativePath']);
-            
+
             $updated = $userGateway->update($userData['gibbonPersonID'], [
                 'image_240' => $file['relativePath'],
             ]);

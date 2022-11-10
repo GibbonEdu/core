@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_family_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
             echo '</div>';
         } else {
             //Let's go!
-            
+
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_family_manage_deleteProcess.php?gibbonFamilyUpdateID=".$gibbonFamilyUpdateID);
             echo $form->getOutput();
         }

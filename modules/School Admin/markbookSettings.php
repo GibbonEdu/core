@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'markbookSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         $row = $form->addRow()->addClass('columnWeighting');
             $row->addAlert(__('Calculation of cumulative marks and weightings is currently only available when using Percentage as the Default Assessment Scale. This value can be changed in System Settings.'));
     }
-    
+
     $setting = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks', true);
     $row = $form->addRow()->addClass('columnWeighting');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -66,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
-    
+
     $setting = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

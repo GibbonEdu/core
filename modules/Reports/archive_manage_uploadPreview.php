@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
@@ -28,7 +29,7 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_uploadPreview.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'archive_manage_uploadPreview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -73,10 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $reports = [];
     for ($i = 0; $i < $zip->numFiles; ++$i) {
         if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') continue;
-        
+
         $filename = $zip->getNameIndex($i);
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
-        
+
         if ($extension != 'pdf') continue;
 
         // Optionally split the filenames by a separator character
@@ -114,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_uploadProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Step 2 - Data Check & Confirm'));
-    
+
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportArchiveID', $gibbonReportArchiveID);
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

@@ -17,18 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Messenger\CannedResponseGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 $page->breadcrumbs->add(__('Manage Canned Responses'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'cannedResponse_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-       
+
     // QUERY
     $cannedResponseGateway = $container->get(CannedResponseGateway::class);
     $criteria = $cannedResponseGateway->newQueryCriteria(true)

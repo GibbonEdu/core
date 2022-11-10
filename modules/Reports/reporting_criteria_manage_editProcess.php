@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -36,7 +37,7 @@ $urlParams = [
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage.php&'.http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_criteria_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         'category'                      => $_POST['category'] ?? '',
         'target'                        => $_POST['target'] ?? '',
     ];
-    
+
     // Allow users to detach a record from it's group
     if ($detach) {
         $data['groupID'] = null;

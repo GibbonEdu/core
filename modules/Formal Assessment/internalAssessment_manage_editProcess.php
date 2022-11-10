@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -28,7 +29,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_edit.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Formal Assessment', 'internalAssessment_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

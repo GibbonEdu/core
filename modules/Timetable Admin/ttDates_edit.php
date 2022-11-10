@@ -16,12 +16,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'ttDates_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
         $data = array('date' => date('Y-m-d', $dateStamp));
         $sql = 'SELECT gibbonTTDay.gibbonTTDayID, gibbonTTDay.name AS dayName, gibbonTT.name AS ttName FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE date=:date';
         $result = $connection2->prepare($sql);
@@ -65,5 +66,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
 
         echo $table->render($result->toDataSet());
     }
-    
+
 }

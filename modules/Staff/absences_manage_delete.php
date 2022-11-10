@@ -17,17 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
-    
+
     if (empty($gibbonStaffAbsenceID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

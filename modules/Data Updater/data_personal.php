@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -30,7 +31,7 @@ use Gibbon\Domain\User\RoleGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_personal')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

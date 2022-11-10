@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'ttDates_edit_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             echo __('School is not open on the specified day.');
             echo '</div>';
         } else {
-            
+
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);

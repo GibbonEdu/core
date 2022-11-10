@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
                       .'<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
                       .'<span class="tag ml-2 message">'.__('Running').'</span></div>';
             }
-            
+
             return !empty($report['timestampGenerated'])? Format::dateTimeReadable($report['timestampGenerated']) : '';
         });
 

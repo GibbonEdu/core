@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -28,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_add.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_scopes_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

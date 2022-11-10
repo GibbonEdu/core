@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\DataRetentionGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'dataRetention')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     $page->return->addReturns(['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $_GET['count'] ?? 0])]);
 
     $form = Form::create('dataRetention', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataRetentionProcess.php');
-    
+
     $form->setDescription(__('Comply with privacy regulations by flushing older, non-academic, data from the system.')." ".__('This action will scrub selected data for all users in the specified category whose status is Left, and whose end date preceeds the specified data. This process clears certain fields, rather than removing any database rows.'));
     $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
 

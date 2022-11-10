@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageProcess;
@@ -67,7 +68,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $recipientList = $_POST['gibbonMessengerReceiptID'] ?? [];
     $recipients = $messengerReceiptGateway->selectMessageRecipientList($gibbonMessengerID)->fetchAll();
     $unselected = array_diff(array_column($recipients, 'gibbonMessengerReceiptID'), $recipientList);
-    
+
     // Check if all users have been unselected
     if (count($unselected) == count($recipients)) {
         $URL .= "&return=error6";
@@ -94,6 +95,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $notification = $values['email'] == 'Y' || $values['sms'] == 'Y' ? 'Y' : 'N';
 
     $URL.= "&return=success1&notification={$notification}";
-    
+
     header("Location: {$URL}") ;
 }

@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'student_view_details_notes_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     if ($highestAction == "View Student Profile_fullEditAllNotes") {
         $note = $noteGateway->getByID($gibbonStudentNoteID);
     }
-    
+
     if (empty($note)) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;

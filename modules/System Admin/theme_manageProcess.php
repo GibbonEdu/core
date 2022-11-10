@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\ThemeGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -31,7 +32,7 @@ include './moduleFunctions.php';
 $gibbonThemeID = $_POST['gibbonThemeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'theme_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -48,10 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         if (empty($theme)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
-        } else {    
+        } else {
             // Deactivate theme current
             $themeGateway->updateWhere(['active' => 'Y'], ['active' => 'N']);
-            
+
             // Activate selected theme
             $themeGateway->update($gibbonThemeID, ['active' => 'Y']);
 
@@ -59,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
             removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates', true);
             $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $gibbon->session->get('cacheString'));
-           
+
             // Update the theme name in the session
             $gibbon->session->set('gibbonThemeName', $theme['name']);
 

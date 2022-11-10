@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Students\StudentGateway;
@@ -62,7 +63,7 @@ class FormGroupTable extends DataTable
             $canViewConfidential = false;
         }
 
-        if ($canPrint && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byFormGroup.php') == false) {
+        if ($canPrint && isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'report_students_byFormGroup')) == false) {
             $canPrint = false;
         }
 

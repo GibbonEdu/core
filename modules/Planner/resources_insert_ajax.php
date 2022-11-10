@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -40,7 +41,7 @@ $purpose = isset($_POST['purpose'.$id])? $_POST['purpose'.$id] : (isset($_GET['p
 $gibbonYearGroupID = isset($_POST['gibbonYearGroupID'.$id])? $_POST['gibbonYearGroupID'.$id] : (isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '');
 $tags = isset($_POST['tags'.$id])? $_POST['tags'.$id] : (isset($_GET['tags'])? $_GET['tags'] : null);
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'resources_view')) == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __('Your request failed because you do not have access to this action.');
@@ -73,11 +74,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= "<div class='text-right pt-2'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'>".__('Close')."<img style='margin-left: 5px' title='".__('Close')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/></a></div>";
     $output .= "<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>";
     $output .= '<p>'.sprintf(__('The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
-    
+
     $form = Form::create($id.'ajaxFormSearch', '');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
-            
+
     $row = $form->addRow();
 
     $settingGateway = $container->get(SettingGateway::class);
@@ -107,9 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             ->setParameter('hintText', __('Type a tag...'))
             ->addClass('floatNone w-4/5')
             ->selected($tags);
-    
+
     $col->addSubmit(__('Go'));
-    
+
     $output .= $form->getOutput();
     $output .= '<br/>';
 
@@ -218,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             $output .= substr($tagoutput, 0, -2);
             $output .= '</td>';
             $output .= '<td>';
-            
+
                 $dataYears = array();
                 $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
                 $resultYears = $connection2->prepare($sqlYears);

@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -26,7 +27,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'weighting_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

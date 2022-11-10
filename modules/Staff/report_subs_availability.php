@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -24,7 +25,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_subs_availability')) == false) {
     // Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $allStaff = $_GET['allStaff'] ?? false;
 
     $subGateway = $container->get(SubstituteGateway::class);
-    
+
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
@@ -74,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
         $row->addSelect('allDay')->fromArray($allDayOptions)->selected($allDay);
-    
+
     $form->toggleVisibilityByClass('timeOptions')->onSelect('allDay')->when('N');
 
     $row = $form->addRow()->addClass('timeOptions');
@@ -90,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeEnd);
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'substitutes_manage'))) {
         $row = $form->addRow();
             $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
             $row->addCheckbox('allStaff')->checked($allStaff);
@@ -113,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $subs->transform(function (&$sub) use (&$availability) {
         $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
     });
-    
+
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
     $table->setTitle(__('Substitute Availability'));
@@ -138,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->notSortable()
         ->format(Format::using('userPhoto', 'image_240'));
 
-    $canManageCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
+    $canManageCoverage = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage'));
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->description(__('Priority'))
@@ -184,9 +185,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
                 $output .= '<br/>';
                 $output .= CoverageMiniCalendar::renderTimeRange($person['dates'] ?? [], $dateObject);
             }
-            
-            
-            
+
+
+
             return $output;
         });
 

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -27,7 +28,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Form Groups Not Registered'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGroupsNotRegistered_byDate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'report_formGroupsNotRegistered_byDate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

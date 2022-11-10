@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Database\Updater;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -33,14 +34,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
 $partialFail = false;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'update')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     // Proceed!
     $updater = $container->get(Updater::class);
     $settingGateway = $container->get(SettingGateway::class);
-    
+
     if (!$updater->isComposerUpdateRequired()) {
         $URL .= '&return=error3';
         header("Location: {$URL}");

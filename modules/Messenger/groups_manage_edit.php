@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -27,7 +28,7 @@ $page->breadcrumbs
     ->add(__('Manage Groups'), 'groups_manage.php')
     ->add(__('Edit Group'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'groups_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $groupGateway = $container->get(GroupGateway::class);
-        
+
         $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($gibbonGroupID);
@@ -57,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
 			$form->addHiddenValue('address', $session->get('address'));
-			
+
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
                 $row->addTextField('name')->required()->maxLength(60);
@@ -68,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                     $col->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
                         ->required()
                         ->mergeGroupings();
-            	
+
 			$row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-                
+
             $form->loadAllValuesFrom($values);
-				
+
             echo $form->getOutput();
 
             echo '<h2>';

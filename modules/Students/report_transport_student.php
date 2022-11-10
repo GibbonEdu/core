@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\FamilyGateway;
@@ -27,7 +28,7 @@ use Gibbon\Domain\Students\StudentReportGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'report_transport_student')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
-    
+
     $view = new View($container->get('twig'));
 
     $table->addColumn('address1', __('Address'))

@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'attendanceSettings')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -176,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $setting = $settingGateway->getSettingByScope('Attendance', 'attendanceCLIAdditionalUsers', true);
     $inputs = array();
-    
+
         $data=array( 'action1' => '%report_formGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                 FROM gibbonPerson

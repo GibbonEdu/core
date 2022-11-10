@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Forms\FormGateway;
@@ -24,7 +25,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Services\Format;
 
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if (!empty($search)) {
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams($urlParams));
     }
-    
+
     $form = Form::create('addApplication', $session->get('absoluteURL').'/modules/Admissions/applications_manage_addSelectProcess.php');
     $form->setDescription(__('You can use this page to manually create an application form on behalf of another user. If the user already exists in the system, be sure to select them below so that their application will be connected to their admissions account. If the user does not exist, a new admissions account will be created.'));
     $form->addHiddenValue('address', $session->get('address'));
@@ -69,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $row->addSelect('applicationType')->fromArray($types)->required()->placeholder();
 
     $form->toggleVisibilityByClass('typeBlank')->onSelect('applicationType')->when('blank');
-        
+
     $row = $form->addRow()->addClass('typeBlank');
         $row->addLabel('email', __('Email Address'));
         $row->addEmail('email')->required();

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 use Gibbon\Data\Validator;
@@ -39,7 +40,7 @@ if (!empty($_POST['override'])) {
     $URL .= '&override='.$_POST['override'];
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofread.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_proofread')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 'timestampProofed' => $data['timestampProofed'],
             ]);
         }
-        
+
         $partialFail &= !$updated;
     }
 

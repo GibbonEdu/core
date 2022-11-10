@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'emailTemplates_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
 
             if ($values['type'] == 'Custom') {
                 $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/System Admin/emailTemplates_manage_delete.php'); 
+                        ->setURL('/modules/System Admin/emailTemplates_manage_delete.php');
             }
         });
 

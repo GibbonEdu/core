@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
@@ -26,7 +27,7 @@ use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Tables\DataTable;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'admissions_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,14 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
             $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')->withAbsoluteUrl();
 
             return !empty($family)
-                ? Format::link($url->withQueryParams(['gibbonFamilyID' => $family['gibbonFamilyID']]), $family['name']) 
+                ? Format::link($url->withQueryParams(['gibbonFamilyID' => $family['gibbonFamilyID']]), $family['name'])
                 : __('This account is not linked to a family.');
         });
 
     $table->addColumn('created', __('Created'))->format(Format::using('dateReadable', 'timestampCreated'));
 
     $table->addColumn('active', __('Last Active'))->format(Format::using('relativeTime', 'timestampActive'));
-    
+
     $table->addColumn('ipAddress', __('IP Address'));
 
     echo $table->render([$values]);
@@ -82,10 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     // FORM
     $form = Form::create('admissionsManage', $session->get('absoluteURL').'/modules/Admissions/admissions_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonAdmissionsAccountID', $gibbonAdmissionsAccountID);
-    
+
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
         $row->addEmail('email')

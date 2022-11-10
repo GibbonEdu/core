@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 
 require_once '../../gibbon.php';
@@ -25,7 +26,7 @@ $gibbonReportingAccessID = $_GET['gibbonReportingAccessID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_access_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -27,7 +28,7 @@ use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\DataSet;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -157,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
             $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Reports/templates_manage_section_delete.php');
         });
-    
+
     // BODY
     $bodySections = $templateSectionGateway->querySectionsByType($criteria, $gibbonReportTemplateID, 'Body');
     $bodyTable = clone $table;
@@ -195,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     // $row = $form->addRow();
     //     $row->addLabel('size', __('Size'));
     //     $row->addNumber('size');
-        
+
     // $row = $form->addRow();
     //     $row->addLabel('color', __('Color'));
     //     $row->addTextField('color');

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
@@ -33,7 +34,7 @@ $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_duplicate.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage_duplicate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_cycles_manage_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -57,14 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     $data['dateStart'] = Format::dateConvert($data['dateStart']);
     $data['dateEnd'] = Format::dateConvert($data['dateEnd']);
-    
+
     // Validate the required values are present
     if (empty($gibbonReportingCycleID) || empty($data['gibbonSchoolYearID']) || empty($data['name']) || empty($data['nameShort'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
-    
+
     // Validate the database relationships exist
     $values = $reportingCycleGateway->getByID($gibbonReportingCycleID);
     if (empty($values)) {
@@ -113,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
                     if (!empty($criteriaData['gibbonFormGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
                         $formGroupSource = $formGroupGateway->getByID($criteriaData['gibbonFormGroupID']);
                         $formGroupDestination = $formGroupGateway->selectBy([
-                            'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 
+                            'gibbonSchoolYearID' => $data['gibbonSchoolYearID'],
                             'nameShort' => $formGroupSource['nameShort'],
                         ])->fetch();
 
@@ -128,10 +129,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
                     if (!empty($criteriaData['gibbonCourseID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
                         $courseSource = $courseGateway->getByID($criteriaData['gibbonCourseID']);
                         $courseDestination = $courseGateway->selectBy([
-                            'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 
+                            'gibbonSchoolYearID' => $data['gibbonSchoolYearID'],
                             'nameShort' => $courseSource['nameShort'],
                         ])->fetch();
-                        
+
                         if (!empty($courseDestination['gibbonCourseID'])) {
                             $criteriaData['gibbonCourseID'] = $courseDestination['gibbonCourseID'];
                         } else {

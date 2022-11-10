@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -28,7 +29,7 @@ $page->breadcrumbs
     ->add(__('Manage Outcomes'), 'outcomes.php')
     ->add(__('Edit Outcome'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'outcomes_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -81,11 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                     echo '</div>';
                 } else {
                     //Let's go!
-					$values = $result->fetch(); 
-					
+					$values = $result->fetch();
+
 					$form = Form::create('outcomes', $session->get('absoluteURL').'/modules/'.$session->get('module').'/outcomes_editProcess.php?gibbonOutcomeID='.$gibbonOutcomeID.'&filter2='.$filter2);
 					$form->setFactory(DatabaseFormFactory::create($pdo));
-					
+
 					$form->addHiddenValue('address', $session->get('address'));
 
 					$row = $form->addRow();
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                             $row->addLabel('departmentName', __('Learning Area'));
                             $row->addTextField('departmentName')->required()->readOnly()->setValue($learningArea);
 					}
-					
+
 					$row = $form->addRow();
 						$row->addLabel('name', __('Name'));
 						$row->addTextField('name')->required()->maxLength(100);
@@ -122,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
 					$row = $form->addRow();
 						$row->addLabel('category', __('Category'));
 						$row->addTextField('category')->maxLength(100)->autocomplete($categories);
-						
+
 					$row = $form->addRow();
 						$row->addLabel('description', __('Description'));
 						$row->addTextArea('description')->setRows(5);

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // Gibbon system-wide includes
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
@@ -28,7 +29,7 @@ $gibbonLogID = $_POST['gibbonLogID'] ?? '';
 if (empty($gibbonLogID)) return;
 if (!$session->has('username')) return;
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php')) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'messenger_manage'))) {
     $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
     $data = unserialize($log['serialisedArray'] ?? '') ?? [];
 

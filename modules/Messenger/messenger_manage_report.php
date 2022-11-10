@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
@@ -65,7 +66,7 @@ else {
 		else {
 			$values = $result->fetch();
 
-			
+
 			?>
 
 			<script type='text/javascript'>

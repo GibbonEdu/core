@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
@@ -35,7 +36,7 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_add.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_add.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'medicalForm_manage_condition_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

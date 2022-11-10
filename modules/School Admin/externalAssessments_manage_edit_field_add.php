@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit_field_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'externalAssessments_manage_edit_field_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     if ($gibbonExternalAssessmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
             $sql = 'SELECT name as assessmentName FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
             $result = $connection2->prepare($sql);

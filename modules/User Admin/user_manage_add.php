@@ -18,14 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\PasswordPolicy;
-use Gibbon\Http\Url;
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\Auth\Access\Resource;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -32,7 +33,7 @@ $page->breadcrumbs
 	->add(__('Take Attendance by Person'), 'attendance_take_byPerson.php', $urlParams)
 	->add(__('Edit Attendance by Person'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_byPerson_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

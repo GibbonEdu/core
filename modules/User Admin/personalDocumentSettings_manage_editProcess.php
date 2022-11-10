@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Data\Validator;
 
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/personalDocumentSettings_manage_edit.php&gibbonPersonalDocumentTypeID='.$gibbonPersonalDocumentTypeID;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumentSettings_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

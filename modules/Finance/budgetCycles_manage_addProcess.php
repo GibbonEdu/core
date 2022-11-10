@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/budgetCycles_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'budgetCycles_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'studentEnrolment_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = "SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (role='Coordinator' OR role='Assistant Coordinator') AND gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassID=:gibbonCourseClassID";
             $result = $connection2->prepare($sql);
@@ -129,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             // DATA TABLE
             $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
-            
+
 
             $table->modifyRows(function ($person, $row) {
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 ->format(function ($person) {
                     $isStudent = stripos($person['role'], 'Student') !== false;
                     $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
-                    
+
                     return $isStudent
                         ? Format::link('./index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name).'<br/>'.Format::userStatusInfo($person)
                         : $name;
@@ -168,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 });
 
             echo $form->getOutput();
-            
+
 
             $enrolmentLeft = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, true, true);
 
@@ -179,13 +180,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
                 return $row;
             });
-            
+
             $table->addColumn('name', __('Name'))
                 ->sortable(['surname', 'preferredName'])
                 ->format(function ($person) {
                     $isStudent = stripos($person['role'], 'Student') !== false;
                     $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
-                    
+
                     return $isStudent
                         ? Format::link('./index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name).'<br/>'.Format::userStatusInfo($person)
                         : $name;

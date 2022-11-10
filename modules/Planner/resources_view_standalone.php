@@ -35,10 +35,11 @@ echo "<link rel='stylesheet' type='text/css' href='".$session->get('absoluteURL'
 	<div id="content-wrap">
 		<div id="content">
 			<?php
-            if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_full.php') == false) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_view_full')) == false) {
                 //Acess denied
                 echo "<div class='error'>";
-                echo __('Your request failed because you do not have access to this action.');
+                echo __('Your request failed because Gibbon\Services\Module\Action;
+use you do not have access to this action.');
                 echo '</div>';
             } else {
                 //Proceed!

@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
@@ -30,7 +31,7 @@ if ($gibbonStaffID == '' or $gibbonPersonID == '') { echo 'Fatal error loading t
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_facility_add.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_manage_edit_facility_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

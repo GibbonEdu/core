@@ -29,6 +29,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
+use Gibbon\Auth\Access\Resource;
 
 function getIPAddress() {
     $return = false;
@@ -361,7 +362,7 @@ function getPasswordPolicy($guid, $connection2)
 function getFastFinder($connection2, $guid)
 {
     global $session;
-    
+
     $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
@@ -384,9 +385,10 @@ function getFastFinder($connection2, $guid)
 
     $templateData = [
         'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
-        'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
-        'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
-        'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
+        'studentIsAccessible' => isActionAccessible($guid, $connection2, Resource::fromRoute('students', 'student_view')),
+        'staffIsAccessible'   => isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_view')),
+        'classIsAccessible'   => isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner')) && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
+
         'form'                => $form->getOutput(),
     ];
 
@@ -1187,7 +1189,43 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
     $session->set('i18n', $i18n);
 }
 
-function isActionAccessible($guid, $connection2, $address, $sub = '')
+/**
+ * Check if a module action is accessible to the session user.
+ *
+ * Deprecated. Use AccessManager::allow() instead.
+ *
+ * <code>
+ * use Gibbon\Services\Module\Action;
+ * use Gibbon\Services\Module\AccessManager;
+ *
+ * $accessManager = $container->get(AccessManager::class);
+ * // For "modules/Module Name/entryPoint.php"
+ * if ($accessManager->allow(Action::fromRoute('Module Name', 'entryPoint'))) {
+ *   // ...
+ * }
+ * </code>
+ *
+ * Or when routed from index.php, simply:
+ * <code>
+ * use Gibbon\Services\Module\Action;
+ *
+ * // For "modules/Module Name/entryPoint.php"
+ * if ($accessManager->allow(Action::fromRoute('Module Name', 'entryPoint'))) {
+ *   // ...
+ * }
+ * </code>
+ *
+ * @deprecated v25
+ * @version v25
+ * @since   v12
+ *
+ * @param string        $guid
+ * @param \PDO          $connection2
+ * @param string|Resource $action
+ * @param string        $sub
+ * @return boolean
+ */
+function isActionAccessible($guid, $connection2, $action, $sub = '')
 {
     global $session;
 
@@ -1196,12 +1234,19 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
     if ($session->has('username')) {
         //Check user has a current role set
         if ($session->get('gibbonRoleIDCurrent') != '') {
+            if (!($action instanceof Resource)) {
+                $action = Resource::fromLegacyPath($action);
+            }
+
             //Check module ready
-            $module = getModuleName($address);
-            if (!empty($module)) {
+            if (!empty($action->getModule())) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $module);
+                    $data = [
+                        'actionName' => '%'.$action->getLegacyRoutePath().'%',
+                        'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
+                        'moduleName' => $action->getModule(),
+                    ];
 
                     $sql = "SELECT gibbonAction.name FROM gibbonAction
                     JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
@@ -1213,6 +1258,9 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
 
                     if ($sub != '') {
                         $data['sub'] = $sub;
+                        $sql .= ' AND gibbonAction.name=:sub';
+                    } elseif (($actionName = $action->getActionName()) != '') {
+                        $data['sub'] = $actionName;
                         $sql .= ' AND gibbonAction.name=:sub';
                     }
 

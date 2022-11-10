@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Forms\FormGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_duplicate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_duplicate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
         ->add(__('Duplicate Form'));
 
     $gibbonFormID = $_GET['gibbonFormID'] ?? '';
-    
+
     if (empty($gibbonFormID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

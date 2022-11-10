@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Forms\FormPageGateway;
 
 require_once '../../gibbon.php';
@@ -31,7 +32,7 @@ if ($redirect == 'design') {
 }
 
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

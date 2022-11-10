@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\ImportType;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         ->format(function ($log) {
             return $log['data']['results']['filename'] ?? '';
         });
-        
+
     $table->addColumn('details', __('Details'))
         ->format(function ($log) {
             return !empty($log['data']['success']) ? Format::tag(__('Success'), 'success') : Format::tag(__('Failed'), 'error');

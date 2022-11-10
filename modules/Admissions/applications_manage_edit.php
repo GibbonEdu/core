@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
@@ -34,7 +35,7 @@ use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 use Gibbon\Module\Admissions\Tables\ApplicationFamilyTable;
 use Gibbon\Module\Admissions\Forms\ApplicationAccountForm;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
     $viewMode = $_GET['format'] ?? '';
-    
+
     $urlParams = compact('gibbonAdmissionsApplicationID', 'gibbonSchoolYearID', 'search');
 
     // Get the application form data
@@ -83,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->editForm($formBuilder, $formData, true);
     $editProcesses = $formProcessor->getViewableProcesses();
-    
+
     // Display any validation errors
     $errors = $formProcessor->verifyForm($formBuilder);
     $processes = $formProcessor->getViewableProcesses();
@@ -108,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if (!empty($search)) {
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams($urlParams));
     }
-    
+
     if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
         $page->navigator->addHeaderAction('accept', __('Accept'))
             ->setURL('/modules/Admissions/applications_manage_accept.php')
@@ -184,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Display the results
     if ($application['status'] != 'Incomplete') {
         $resultsForm = Form::create('formBuilder', '');
-                        
+
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);

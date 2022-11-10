@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -34,7 +35,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_return.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
     $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_return.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'library_lending_item_return')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

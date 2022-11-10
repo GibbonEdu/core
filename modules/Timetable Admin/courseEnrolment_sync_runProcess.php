@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -28,7 +29,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_run.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonYearGroupIDList='.$gibbonYearGroupIDList;
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_run.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'courseEnrolment_sync_run')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 // Update existing course enrolments
                 $sql = "UPDATE gibbonCourseClassPerson
                         JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
+                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
                             AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                         SET gibbonCourseClassPerson.role=:role, gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
                         WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID

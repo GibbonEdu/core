@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\ApplicationFormGateway;
@@ -33,7 +34,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonApplicationFormID) or empty($gibbonSchoolYearID)) {

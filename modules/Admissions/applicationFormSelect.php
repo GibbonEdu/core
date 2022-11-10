@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Services\Format;
@@ -36,7 +37,7 @@ if (!$session->has('username')) {
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
-} else if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationForm.php') != false) {
+} else if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applicationForm')) != false) {
     $proceed = true;
 }
 
@@ -56,7 +57,7 @@ if ($proceed == false) {
     ]);
 
     if (!$session->has('username')) {
-        echo Format::alert(__('If you already have an account for {organisation} {systemName}, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under {linkName} in the main menu.', ['organisation' => $session->get('organisationNameShort'), 'systemName' => $session->get('systemName'), 'linkName' => __('People').' > '.__('Admissions') 
+        echo Format::alert(__('If you already have an account for {organisation} {systemName}, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under {linkName} in the main menu.', ['organisation' => $session->get('organisationNameShort'), 'systemName' => $session->get('systemName'), 'linkName' => __('People').' > '.__('Admissions')
         ]).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')), 'message');
     }
 
@@ -76,16 +77,16 @@ if ($proceed == false) {
     if (count($forms) == 0) {
         echo Format::alert(__('There are no application forms available at this time.'), 'warning');
         return;
-    } 
-    
+    }
+
     // FORM
     $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
     $form->setClass('w-full blank');
     $form->setTitle(__($welcomeHeading, ['organisationNameShort' => $session->get('organisationNameShort')]));
     $form->setDescription(__($welcomeText));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
-    
+
     // Display all available public forms
     foreach ($forms as $index => $applicationForm) {
         $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');

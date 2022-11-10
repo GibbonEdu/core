@@ -17,19 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'customFields_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
         ->add(__('Custom Fields'), 'customFields.php')
-        ->add(__('Edit Custom Field'));  
+        ->add(__('Edit Custom Field'));
 
     $customFieldGateway = $container->get(CustomFieldGateway::class);
 
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     }
 
     $customFieldHandler = $container->get(CustomFieldHandler::class);
-        
+
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/customFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
 
     $form->addHiddenValue('address', $session->get('address'));
@@ -75,9 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
             ->fromArray(['Custom' => '['.__('Custom').']'])
             ->placeholder()
             ->selected($isHeadingCustom ? 'Custom' : $values['heading']);
-    
+
     $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when('Custom');
-    
+
     $row = $form->addRow()->addClass('headingCustom');
         $row->addLabel('headingCustom', __('Custom Heading'));
         $row->addTextField('headingCustom')->maxLength(90)->setValue($isHeadingCustom ? $values['heading'] : '');
@@ -166,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row = $form->addRow();
             $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
             $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
-            
+
         $row = $form->addRow();
             $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
             $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();

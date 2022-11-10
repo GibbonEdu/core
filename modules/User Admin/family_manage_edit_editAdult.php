@@ -17,20 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_editAdult.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'family_manage_edit_editAdult')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $urlParams = ['gibbonFamilyID' => $_GET['gibbonFamilyID']];
-    
+
     $page->breadcrumbs
         ->add(__('Manage Families'), 'family_manage.php')
         ->add(__('Edit Family'), 'family_manage_edit.php', $urlParams)
-        ->add(__('Edit Adult'));  
+        ->add(__('Edit Adult'));
 
     //Check if gibbonPersonID and gibbonFamilyID specified
     $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     if ($gibbonPersonID == '' or $gibbonFamilyID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $gibbonPersonID);
             $sql = "SELECT * FROM gibbonPerson, gibbonFamily, gibbonFamilyAdult WHERE gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID AND gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
             $result = $connection2->prepare($sql);
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_edit_editAdultProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFamilyID=$gibbonFamilyID&search=$search");
 
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,

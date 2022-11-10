@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
 
@@ -28,7 +29,7 @@ $logGateway = $container->get(LogGateway::class);
 $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) { 
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_enrolment_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

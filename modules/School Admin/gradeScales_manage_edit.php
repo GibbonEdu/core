@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Domain\School\GradeScaleGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'gradeScales_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     if (empty($gibbonScaleID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonScaleID' => $gibbonScaleID);
             $sql = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
             $result = $connection2->prepare($sql);
@@ -116,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $table->addColumn('descriptor', __('Descriptor'));
             $table->addColumn('sequenceNumber', __('Sequence Number'));
             $table->addColumn('isDefault', __('Is Default?'))->format(Format::using('yesNo', ['isDefault']));
-                
+
             // ACTIONS
             $table->addActionColumn()
                 ->addParam('gibbonScaleID')

@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Activities\ActivityTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings_type_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'activitySettings_type_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
     }
-        
+
     $form = Form::create('activityType', $session->get('absoluteURL').'/modules/School Admin/activitySettings_type_editProcess.php?gibbonActivityTypeID='.$gibbonActivityTypeID);
     $form->addHiddenValue('address', $session->get('address'));
 

@@ -18,13 +18,15 @@ along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Http\Url;
+use Gibbon\Auth\Access\AccessManager;
+use Gibbon\Auth\Access\Resource;
 
 /**
  * BOOTSTRAP
@@ -48,6 +50,7 @@ $session = $container->get('session');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 $settingGateway = $container->get(SettingGateway::class);
+$accessManager = $container->get(AccessManager::class);
 
 /**
  * USER ROLES
@@ -123,7 +126,7 @@ if ($session->has('passwordForceReset')) {
 $upgrade = false;
 $versionDB = $settingGateway->getSettingByScope('System', 'version');
 $versionCode = $version;
-if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, $connection2, '/modules/System Admin/update.php')) {
+if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'update'))) {
     if ($session->get('address') == '/modules/System Admin/update.php') {
         $upgrade = true;
     }
@@ -143,7 +146,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         // Are we a student?
         if ($roleCategory == 'Student') {
             // Can we self register?
-            if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_studentSelfRegister'))) {
                 // Check to see if student is on site
                 $studentSelfRegistrationIPAddresses = $settingGateway->getSettingByScope(
                     'Attendance',
@@ -188,7 +191,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         // Deal with Data Updater redirect (if required updates are enabled)
         $requiredUpdates = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates');
         if ($requiredUpdates == 'Y') {
-            if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { // Can we update data?
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_updates'))) { // Can we update data?
                 $redirectByRoleCategory = $settingGateway->getSettingByScope(
                     'Data Updater',
                     'redirectByRoleCategory'
@@ -624,7 +627,7 @@ if (!$session->has('address')) {
     } else {
         // Pinned Messages
         $pinnedMessagesOnHome = $settingGateway->getSettingByScope('Messenger', 'pinnedMessagesOnHome');
-        if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
+        if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'messageWall_view'))) {
             $pinnedMessages = array_reduce($session->get('messageWallArray', []), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
                     $group[$item['gibbonMessengerID']] = $item;
@@ -695,6 +698,7 @@ if (!$session->has('address')) {
             'container'   => $container,
             'page'        => $page,
             'session'     => $session,
+            'accessManager' => $accessManager,
         ];
 
         if (is_file('./'.$address)) {

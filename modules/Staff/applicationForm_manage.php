@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffApplicationFormGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -82,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     // COLUMNS
     $table->addColumn('gibbonStaffApplicationFormID', __('ID'))
-        
+
         ->format(Format::using('number', 'gibbonStaffApplicationFormID'));
 
     $table->addColumn('person', __('Applicant'))
@@ -98,9 +99,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         });
 
     $table->addColumn('jobTitle', __('Position'));
-    
+
     $table->addColumn('status', __('Status'))
-        
+
         ->description(__('Milestones'))
         ->format(function($row) {
             $output = '<strong>'.__($row['status']).'</strong>';

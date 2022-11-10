@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Formal Assessment', 'internalAssessment_manage')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     if (isset($_GET['gibbonCourseClassID'])) {
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     } else {
-        
+
             $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
             $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
             $result = $connection2->prepare($sql);
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     }
     //Check existence of and access to this class.
     else {
-        
+
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
             $result = $connection2->prepare($sql);
@@ -82,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             //Get teacher list
             $teaching = false;
-            
+
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                 $result = $connection2->prepare($sql);
@@ -117,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $page = 1;
             }
 
-            
+
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
                 $result = $connection2->prepare($sql);

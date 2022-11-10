@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvailableTeachers.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'report_viewAvailableTeachers')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -87,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             $days = [];
             $timeStart = '';
             $timeEnd = '';
-            
+
             $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
             $days = $pdo->select($sqlDays)->fetchAll();
             $daysInWeek = count($days);
@@ -118,12 +119,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             $ttAlpha = 1.0;
 
             //Max diff time for week based on timetables
-            
+
             $dataDiff = array('date1' => date('Y-m-d', ($startDayStamp + (86400 * 0))), 'date2' => date('Y-m-d', ($endDayStamp + (86400 * 1))), 'gibbonTTID' => $row['gibbonTTID']);
             $sqlDiff = 'SELECT DISTINCT gibbonTTColumn.gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE (date>=:date1 AND date<=:date2) AND gibbonTTID=:gibbonTTID';
             $resultDiff = $pdo->select($sqlDiff, $dataDiff);
             while ($rowDiff = $resultDiff->fetch()) {
-                
+
                 $dataDiffDay = array('gibbonTTColumnID' => $rowDiff['gibbonTTColumnID']);
                 $sqlDiffDay = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart';
                 $resultDiffDay = $pdo->select($sqlDiffDay, $dataDiffDay);
@@ -192,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
             //Check to see if week is at all in term time...if it is, then display the grid
             $isWeekInTerm = false;
-            
+
             $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
             $resultTerm = $pdo->select($sqlTerm, $dataTerm);
@@ -222,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
                     //Check to see if day is term time
                     $isDayInTerm = false;
-                    
+
                     $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                     $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
                     $resultTerm = $pdo->select($sqlTerm, $dataTerm);
@@ -261,7 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                             //Get day start and end!
                             $dayTimeStart = '';
                             $dayTimeEnd = '';
-                            
+
                             $dataDiff = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))), 'gibbonTTID' => $gibbonTTID);
                             $sqlDiff = 'SELECT timeStart, timeEnd FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                             $resultDiff = $pdo->select($sqlDiff, $dataDiff);
@@ -330,16 +331,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                         if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
                                             $bg = "bg-green-200";
                                         }
-                                       
+
                                         $availability = [];
                                         $vacancies = [];
                                         if ($rowPeriods['type'] == 'Lesson') {
-                                            
+
                                             $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
                                             $resultSelect = $pdo->select($sqlSelect);
 
                                             while ($rowSelect = $resultSelect->fetch()) {
-                                                
+
                                                 $dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonPersonID' => $rowSelect['gibbonPersonID']);
                                                 $sqlUnique = "SELECT * FROM gibbonTTDayRowClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonTTDayRowClassExceptionID IS NULL";
 

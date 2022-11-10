@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate_batch')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     }
 
     $form = Form::create('reportsGenerate', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_generate_batchProcess.php');
-    
+
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('contextData', $contextData);

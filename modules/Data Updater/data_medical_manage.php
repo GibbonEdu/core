@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_medical_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
     $form->addRow()->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
     echo $form->getOutput();
-    
+
     $dataUpdates = $gateway->queryDataUpdates($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE

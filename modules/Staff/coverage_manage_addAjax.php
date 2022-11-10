@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
@@ -35,7 +36,7 @@ $request = [
 
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage_add')) == false) {
     die(Format::alert(__('Your request failed because you do not have access to this action.')));
 } elseif (empty($request['dateStart']) || empty($request['dateEnd'])|| $gibbonPersonIDCoverage == 'Please select...') {
     die();
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $dateRange = new DatePeriod($start, new DateInterval('P1D'), $end);
     foreach ($dateRange as $date) {
         if (!isSchoolOpen($guid, $date->format('Y-m-d'), $connection2)) continue;
-        
+
         $dates[] = ['date' => $date->format('Y-m-d')];
     }
 
@@ -86,9 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
                 $times = $unavailable[$date['date']];
 
                 foreach ($times as $time) {
-                
+
                     // Handle full day and partial day unavailability
-                    if ($time['allDay'] == 'Y' 
+                    if ($time['allDay'] == 'Y'
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
                         && $time['timeStart'] < $request['timeEnd']

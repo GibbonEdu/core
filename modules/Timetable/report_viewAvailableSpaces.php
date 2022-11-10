@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Domain\Timetable\FacilityBookingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvailableSpaces.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'report_viewAvailableSpaces')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -73,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         echo '</h2>';
 
         echo '<p>'.__('Click the timetable to view availability details.').'</p>';
-        
+
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
         $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID';
         $result = $pdo->select($sql, $data);
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             $days = [];
             $timeStart = '';
             $timeEnd = '';
-            
+
             $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
             $days = $pdo->select($sqlDays)->fetchAll();
             $daysInWeek = count($days);
@@ -135,12 +136,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             $ttAlpha = 1.0;
 
             //Max diff time for week based on timetables
-            
+
             $dataDiff = array('date1' => date('Y-m-d', ($startDayStamp + (86400 * 0))), 'date2' => date('Y-m-d', ($endDayStamp + (86400 * 1))), 'gibbonTTID' => $row['gibbonTTID']);
             $sqlDiff = 'SELECT DISTINCT gibbonTTColumn.gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE (date>=:date1 AND date<=:date2) AND gibbonTTID=:gibbonTTID';
             $resultDiff = $pdo->select($sqlDiff, $dataDiff);
             while ($rowDiff = $resultDiff->fetch()) {
-                
+
                 $dataDiffDay = array('gibbonTTColumnID' => $rowDiff['gibbonTTColumnID']);
                 $sqlDiffDay = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart';
                 $resultDiffDay = $pdo->select($sqlDiffDay, $dataDiffDay);
@@ -272,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
                             //Make array of space changes
                             $spaceChanges = [];
-                            
+
                             $dataSpaceChange = array('date' => $date);
                             $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
                             $resultSpaceChange = $pdo->select($sqlSpaceChange, $dataSpaceChange);
@@ -284,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                             //Get day start and end!
                             $dayTimeStart = '';
                             $dayTimeEnd = '';
-                            
+
                             $dataDiff = array('date' => $date, 'gibbonTTID' => $gibbonTTID);
                             $sqlDiff = 'SELECT timeStart, timeEnd FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                             $resultDiff = $pdo->select($sqlDiff, $dataDiff);
@@ -354,21 +355,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                         $availability = [];
                                         $vacancies = '';
                                         if ($rowPeriods['type'] != 'Break') {
-                                            
+
                                             $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
                                             $resultSelect = $pdo->select($sqlSelect);
 
                                             $removers = [];
                                             $adders = [];
                                             while ($rowSelect = $resultSelect->fetch()) {
-                                                
+
                                                 $dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
                                                 $sqlUnique = 'SELECT gibbonTTDayRowClass.*, gibbonSpace.name AS roomName FROM gibbonTTDayRowClass JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID';
 
                                                 $rowUnique = $pdo->selectOne($sqlUnique, $dataUnique);
 
                                                 $matchingType = empty($spaceType) || (!empty($spaceType) && $spaceType == $rowSelect['type']);
-                                                
+
                                                 if (empty($rowUnique)) {
                                                     if ($matchingType) {
                                                         $vacancies .= $rowSelect['name'].', ';
@@ -388,7 +389,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
                                                 //Add any bookings to removers
                                                 if (!empty($bookings[$date][$rowSelect['gibbonSpaceID']]) && is_array($bookings[$date][$rowSelect['gibbonSpaceID']])) {
-                                                    
+
                                                     foreach ($bookings[$date][$rowSelect['gibbonSpaceID']] AS $bookingInner) {
                                                         if (($bookingInner['timeStart'] <= $effectiveEnd) && ($bookingInner['timeEnd'] >= $effectiveStart)) {
                                                             $removers[$rowSelect['name']] = $rowSelect['name'];

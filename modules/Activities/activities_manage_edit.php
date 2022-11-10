@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -28,7 +29,7 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'activities_manage.php')
         ->add(__('Edit Activity'));
-    
+
     $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
     //Check if gibbonActivityID specified
@@ -202,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $row = $slotBlock->addRow();
                     $row->addLabel('timeStart', __('Slot Start Time'));
                     $row->addTime('timeStart');
-                
+
                     $row->addLabel('timeEnd', __('Slot End Time'));
                     $row->addTime('timeEnd')
                         ->chainedTo('timeStart');
@@ -283,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $row = $form->addRow();
                 $row->addLabel('staff', __('Staff'));
                 $row->addSelectUsers('staff', $gibbon->session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
-            
+
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
                 $row->addSelect('role')

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -26,7 +27,7 @@ use Gibbon\Domain\Students\FirstAidGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'firstAidRecord_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     if ($gibbonFirstAidID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFirstAidID' => $gibbonFirstAidID);
             $sql = "SELECT gibbonFirstAid.*, patient.gibbonPersonID AS gibbonPersonIDPatient, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
                 FROM gibbonFirstAid

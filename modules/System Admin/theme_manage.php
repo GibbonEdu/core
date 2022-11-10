@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -25,7 +26,7 @@ use Gibbon\Domain\System\ThemeGateway;
 
 include './modules/System Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'theme_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -44,12 +45,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
     echo "<div class='message'>";
     echo sprintf(__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$session->get('absolutePath').'/themes/</u></b>');
-    echo '</div>';    
-    
+    echo '</div>';
+
     echo '<h2>';
     echo __('Installed');
-    echo '</h2>';        
-    
+    echo '</h2>';
+
     // Get list of themes in /themes directory
     $themeFolders = glob($session->get('absolutePath').'/themes/*', GLOB_ONLYDIR);
     $themeGateway = $container->get(ThemeGateway::class);
@@ -71,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             $orphans[] = $theme;
             return;
         }
-        
+
         $manifest = getThemeManifest($theme['name'], $guid);
         if ($manifest && $manifest['manifestOK']) {
             if (version_compare($manifest['version'], $theme['version'], '>')) {
@@ -79,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
                 $themeGateway->update($theme['gibbonThemeID'], $data);
                 $theme['version'] = $manifest['version'];
             }
-        }            
+        }
     });
 
     // Build a set of uninstalled themes by checking the $themes DataSet.
@@ -88,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         $themeName = substr($themePath, strlen($session->get('absolutePath').'/themes/'));
         if (!in_array($themeName, $themeNames)) {
             $theme = getThemeManifest($themeName, $guid);
-            
+
             if (!$theme || !$theme['manifestOK']) {
                 $theme['name'] = $themeName;
                 $theme['description'] = __('Theme error due to incorrect manifest file or folder name.');
@@ -97,18 +98,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         }
 
         return $group;
-    }, array());    
-       
+    }, array());
+
     // INSTALLED THEMES
     $form = Form::create('theme_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/theme_manageProcess.php');
-    
+
     $form->setClass('fullWidth');
     $form->addHiddenValue('address', $session->get('address'));
     $form->setClass('w-full blank');
 
     // DATA TABLE
     $table = $form->addRow()->addDataTable('themeManage', $criteria)->withData($themes);
-    
+
     $table->modifyRows(function ($theme, $row) {
         if (!empty($theme['orphaned'])) {
             return '';
@@ -121,13 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     $table->addColumn('description', __('Description'))->width('40%');
     $table->addColumn('author', __('Author'))
         ->format(Format::using('link', ['url', 'author']));
-            
+
     $table->addColumn('active', __('Active'))
         ->width('10%')
         ->notSortable()
         ->format(function($themes) use ($form) {
             $checked = ($themes['active'] == 'Y')? $themes['gibbonThemeID'] : '';
-                
+
             return $form->getFactory()
                 ->createRadio('gibbonThemeID')
                 ->addClass('inline right')
@@ -139,18 +140,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     $table->addActionColumn()
         ->addParam('gibbonThemeID')
         ->format(function ($themes, $actions) use ($guid) {
-            
+
             if (($themes['active'] != 'Y') and ($themes['name'] != 'Default')) {
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/System Admin/theme_manage_uninstall.php');
             }
-        });     
-            
+        });
+
     $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth standardForm');
     $table->addRow()->addSubmit();
-    
+
     echo $form->getOutput();
-    
+
     // UNINSTALLED THEMES
     if (!empty($uninstalledThemes)) {
         echo '<h2>';
@@ -158,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         echo '</h2>';
 
         $tableInstallThemes = DataTable::create('themeInstall');
-        
+
         $tableInstallThemes->modifyRows(function ($theme, $row) {
             $row->addClass($theme['manifestOK'] == false ? 'error' : 'warning');
             return $row;
@@ -169,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         $tableInstallThemes->addColumn('description', __('Description'))->width('40%');
         $tableInstallThemes->addColumn('author', __('Author'))
             ->format(Format::using('link', ['url', 'author']));
-        
+
         $tableInstallThemes->addActionColumn()
             ->addParam('name')
             ->format(function ($row, $actions) {
@@ -200,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         $tableOrphans->addActionColumn()
             ->addParam('gibbonThemeID')
             ->format(function ($row, $actions) {
-                
+
                 $actions->addAction('uninstall', __('Remove Record'))
                     ->setIcon('garbage')
                     ->addParam('orphaned', 'true')
@@ -208,5 +209,5 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             });
 
         echo $tableOrphans->render(new DataSet($orphans));
-    }     
+    }
 }

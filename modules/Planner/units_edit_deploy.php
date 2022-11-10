@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -42,7 +43,7 @@ $page->breadcrumbs
     ->add(__('Edit Unit'), 'units_edit.php', $urlParams)
     ->add(__('Deploy Working Copy'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'units_edit_deploy')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
     $values = $result->fetch();
 
     // Get the unit details
@@ -208,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $form->setFactory(PlannerFormFactory::create($pdo));
         $form->setTitle(__('Step 2 - Distribute Blocks'));
         $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
-        
+
         $form->addHiddenValue('address', $gibbon->session->get('address'));
 
         $deployIndex = 0;
@@ -225,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $form->addHiddenValue('date'.$index, $lesson['date']);
             $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
             $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-            
+
             $col->addColumn()
                 ->setClass('-mt-4')
                 ->addSelect('blockAdd')
@@ -315,5 +316,5 @@ $('.blockAdd').change(function () {
     $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
 });
-    
+
 </script>

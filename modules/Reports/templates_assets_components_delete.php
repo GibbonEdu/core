@@ -17,16 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_assets_components_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
-    
+
     if (empty($gibbonReportPrototypeSectionID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

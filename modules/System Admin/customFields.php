@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'customFields')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -31,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
 
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     $customFieldHandler = $container->get(CustomFieldHandler::class);
-    
+
     // Get a flattened array of the custom field types for listing in the table
     $customFieldTypes = [];
     $types = $container->get(CustomFieldHandler::class)->getTypes();
@@ -118,9 +119,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
                     ->setURL('/modules/System Admin/customFields_edit.php');
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/System Admin/customFields_delete.php');
-                
+
             });
-            
+
         echo $table->render($customFields);
     }
 }

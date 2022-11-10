@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
+use Gibbon\Auth\Access\Resource;
 
 //Gibbon system-wide includes
 include __DIR__ . '/../../gibbon.php';
@@ -46,7 +47,7 @@ $urlParams = [
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&".http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_future_byPerson')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -108,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             // Only add if school is open on this day
             if (!isSchoolOpen($guid, $date, $connection2)) {
-                $partialFailSchoolClosed = true; 
+                $partialFailSchoolClosed = true;
                 continue;
             }
 
@@ -171,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         }
                     }
                 }
-                
+
             }
         }
 

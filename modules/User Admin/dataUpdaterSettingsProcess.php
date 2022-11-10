@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -26,12 +27,12 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataUpdaterSettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'dataUpdaterSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-   
+
 
     //Write to database
     $fail = false;

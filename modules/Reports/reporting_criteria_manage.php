@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
@@ -25,7 +26,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_criteria_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -73,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $reportingScopes = $reportingScopeGateway->selectReportingScopesBySchoolYear($gibbonSchoolYearID)->fetchAll();
     $scopesChained = array_combine(array_column($reportingScopes, 'value'), array_column($reportingScopes, 'chained'));
     $scopesOptions = array_combine(array_column($reportingScopes, 'value'), array_column($reportingScopes, 'name'));
-    
+
     $row = $form->addRow();
         $row->addLabel('gibbonReportingScopeID', __('Scope'));
         $row->addSelect('gibbonReportingScopeID')
@@ -200,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
                         ->setURL('/modules/Reports/reporting_criteria_manage_delete.php');
             }
         });
-    
+
 
     echo $table->render($reportingCriteria);
 }

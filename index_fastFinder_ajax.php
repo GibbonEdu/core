@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\ActionGateway;
 
 include './gibbon.php';
@@ -38,14 +39,14 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     if (empty($searchTerm)) die('[]');
 
     // Check access levels
-    $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
+    $studentIsAccessible = isActionAccessible($guid, $connection2, Resource::fromRoute('students', 'student_view'));
     $highestActionStudent = getHighestGroupedAction($guid, '/modules/students/student_view.php', $connection2);
 
-    $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
+    $staffIsAccessible = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_view'));
     $classIsAccessible = false;
-    $alarmIsAccessible = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
+    $alarmIsAccessible = isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'alarm'));
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
-    if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner')) and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
         $classIsAccessible = true;
     }
 
@@ -60,7 +61,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     } else {
         $actions = $session->get('fastFinderActions');
     }
-    
+
     if (!empty($actions) && is_array($actions)) {
         foreach ($actions as $action) {
             // Add actions that match the search query to the result set
@@ -145,12 +146,12 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                         WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.studentID, ')')
                         WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonFormGroup.name, ')' )
                         ELSE concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ')') END) AS name,
-                    NULL as type 
+                    NULL as type
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup, gibbonFamilyChild, gibbonFamilyAdult
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
-                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID 
+                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID
                     AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
-                    AND gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                    AND gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID
                     AND gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID";
         }
         // Allow individuals to only search themselves
@@ -164,7 +165,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                     NULL as type
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
-                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID 
+                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID
                     AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         }
         // Allow searching of all students

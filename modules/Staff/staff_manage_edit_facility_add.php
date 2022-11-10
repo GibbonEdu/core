@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_facility_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_manage_edit_facility_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
     if ($gibbonStaffID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonStaffID' => $gibbonStaffID, 'gibbonPersonID' => $gibbonPersonID);
             $sql = 'SELECT gibbonStaff.*, preferredName, surname FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID AND gibbonPerson.gibbonPersonID=:gibbonPersonID';
             $result = $connection2->prepare($sql);
@@ -53,9 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
 
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_edit_facility_addProcess.php?gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            
+
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,

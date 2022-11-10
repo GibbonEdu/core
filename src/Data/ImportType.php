@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
 use Symfony\Component\Yaml\Yaml;

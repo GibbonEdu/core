@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\FileExtensionGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtensions_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'fileExtensions_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -47,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     $table->addColumn('extension', __('Extension'));
     $table->addColumn('name', __('Name'))->translatable();
     $table->addColumn('type', __('Type'))->translatable();
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonFileExtensionID')

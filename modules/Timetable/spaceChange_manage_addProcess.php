@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\FacilityChangeGateway;
 use Gibbon\Data\Validator;
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceChange_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'spaceChange_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
-    } 
+    }
 
     // Check unique inputs for uniquness
     $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonPersonID' => $session->get('gibbonPersonID')];
@@ -88,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         header("Location: {$URL}");
         exit;
     }
-    
+
     // Redirect back to View Timetable by Facility if we started there
     if (!empty($_POST['source'])) {
         $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$_POST['source'].'&ttDate='.Format::date($date);

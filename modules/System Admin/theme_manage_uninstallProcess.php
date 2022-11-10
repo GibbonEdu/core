@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\ThemeGateway;
 use Gibbon\Data\Validator;
 
@@ -30,7 +31,7 @@ $orphaned = $_GET['orphaned'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage_uninstall.php&gibbonThemeID='.$gibbonThemeID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_uninstall.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'theme_manage_uninstall')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

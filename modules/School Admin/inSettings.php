@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -24,7 +25,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'inSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

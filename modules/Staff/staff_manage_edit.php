@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +28,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffContractGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -172,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                 $table = DataTable::create('facilities');
-                
+
                 $table->setTitle(__('Facilities'));
 
                 $table->addHeaderAction('add', __('Add'))
@@ -207,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $contracts = $contractsGateway->queryContractsByStaff($criteria, $gibbonStaffID);
 
                     $table = DataTable::create('contracts');
-                    
+
                     $table->setTitle(__('Contracts'));
 
                     $table->addHeaderAction('add', __('Add'))

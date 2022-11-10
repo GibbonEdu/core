@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -24,7 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Domain\User\FamilyGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -128,13 +129,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }, $linkedApplications->fetchAll());
                 $output .= "<img title='" . __('Sibling Applications') .'<br/>' . implode('<br/>', $siblings). "' src='./themes/" . $session->get("gibbonThemeName") . "/img/attendance.png'/ style='float: right;   width:20px; height:20px;margin-left:4px;'>";
             }
-            
+
             $output .= '<strong>'.Format::name('', $application['preferredName'], $application['surname'], 'Student', true, true) . '</strong><br/>';
             $output .= '<small><i>'.Format::date($application['timestamp']).'</i></small>';
 
             return $output;
         });
-        
+
     $table->addColumn('dob', __('Birth Year'))
         ->description(__('Entry Year'))
         ->format(function($application) {
@@ -213,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Students/applicationForm_manage_edit.php');
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_delete.php')) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_delete'))) {
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Students/applicationForm_manage_delete.php');
             }

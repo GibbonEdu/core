@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
@@ -36,7 +37,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_personal.php&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_personal')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

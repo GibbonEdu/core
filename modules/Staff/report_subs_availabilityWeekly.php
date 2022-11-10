@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
@@ -25,7 +26,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_subs_availability')) == false) {
     // Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -41,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
 
     $subGateway = $container->get(SubstituteGateway::class);
-    
+
     // DATE SELECTOR
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->setClass('blank fullWidth');
@@ -107,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->notSortable()
         ->format(Format::using('userPhoto', ['image_240', '125', 'w-12 p-px']));
 
-    $canManageCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
+    $canManageCoverage = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage'));
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->description(__('Type'))

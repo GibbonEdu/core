@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\I18nGateway;
 use Gibbon\Data\Validator;
 
@@ -29,7 +30,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/i18n_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'i18n_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
         $partialFail &= !$installed || !$updated;
     }
-    
+
     $URL .= $partialFail
         ? '&return=warning1'
         : '&return=success0';

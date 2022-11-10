@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
@@ -30,7 +31,7 @@ require_once '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage.php&search='.$search;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonStaffAbsenceID)) {

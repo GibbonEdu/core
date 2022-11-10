@@ -177,4 +177,54 @@ class ModuleGateway extends QueryableGateway
             ->where('type="Additional"');
         return $this->runSelect($select)->fetchAll();
     }
+
+    /**
+     * Check the specified role has access rights to the specified action.
+     * Get the names of all actions available for the given role to the
+     * specified module and route path.
+     *
+     * @param int          $gibbonRoleID      The role ID.
+     * @param string       $moduleName        The module name.
+     * @param string       $routePath         Route path of the entry point in the module.
+     * @param string|null  $actionName        Specific action name string, or null if unspecified.
+     *                                        Default: null.
+     * @param bool         $activeModuleOnly  Only select the active modules or not.
+     *                                        Default: true.
+     *
+     * @return Result
+     */
+    public function selectRoleModuleActionNames(
+        $gibbonRoleID,
+        string $moduleName,
+        string $routePath,
+        ?string $actionName = null,
+        bool $activeModuleOnly = true
+    ): Result {
+        $data = [
+            'gibbonRoleID' => $gibbonRoleID,
+            'moduleName' => $moduleName,
+            'routePath' => '%'.$routePath.'.php%',
+        ];
+        $sql = 'SELECT gibbonAction.name as actionName
+        FROM gibbonAction
+        JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+        JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+        JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
+        WHERE
+            gibbonAction.URLList LIKE :routePath
+            AND gibbonPermission.gibbonRoleID=:gibbonRoleID
+            AND gibbonModule.name=:moduleName';
+
+        if (!empty($actionName)) {
+            $data['actionName'] = $actionName;
+            $sql .= ' AND gibbonAction.name=:actionName';
+        }
+
+        if ($activeModuleOnly) {
+            $data['moduleIsActive'] = 'Y';
+            $sql .= ' AND gibbonModule.active=:moduleIsActive';
+        }
+
+        return $this->db()->select($sql, $data);
+    }
 }

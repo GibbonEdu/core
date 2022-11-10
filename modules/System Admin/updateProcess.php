@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Database\Updater;
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Domain\System\SessionGateway;
@@ -33,7 +34,7 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POS
 $partialFail = false;
 $session->set('systemUpdateError', '');
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'update')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             header("Location: {$URL}");
             exit;
         }
-    
+
         if (!$updater->isUpdateRequired()) {
             $URL .= '&return=error3';
             header("Location: {$URL}");
@@ -96,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }
-        
+
     } elseif ($type == 'InnoDB') {
         // Do InnoDB migration work
         $success = $container->get(EngineUpdate::class)->migrate();

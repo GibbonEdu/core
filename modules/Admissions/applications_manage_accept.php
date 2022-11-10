@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
@@ -27,7 +28,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_accept.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_accept')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $page->return->addReturns([
         'error3'    => __('There was an error accepting the application form. The acceptance process was rolled back to a previous state. You can review the results below.'),
     ]);
-    
+
     // Get the application form data and admissions account
     $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
     $account = $container->get(AdmissionsAccountGateway::class)->getByID($application['foreignTableID'] ?? '');
@@ -80,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
                 $col->addContent(Format::alert($errorMessage));
             }
         }
-        
+
         // Display the process results
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
@@ -109,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         if (empty($viewClass)) continue;
 
         $view = $container->get($viewClass);
-        if (empty($view->getDescription())) continue; 
+        if (empty($view->getDescription())) continue;
 
         if ($process->isVerified()) {
             $processList[] = $view->getDescription();
@@ -130,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $entryYear = $container->get(SchoolYearGateway::class)->getByID($formData->get('gibbonSchoolYearIDEntry'), ['name', 'status']);
 
     $col = $form->addRow()->addColumn();
-    
+
     if (!empty($entryYear) && $entryYear['status'] == 'Upcoming') {
         $col->addContent(Format::alert(__('Students and parents accepted to an upcoming school year will have their status set to "Expected", unless you choose to send a welcome email to them, in which case their status will be "Full".'), 'message').'<br/>');
     }
@@ -191,6 +192,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $row->addSubmit(__('Accept'));
 
     echo $form->getOutput();
- 
-    
+
+
 }

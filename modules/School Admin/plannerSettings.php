@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'plannerSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
     $form->addRow()->addHeading('Interface', __('Interface'));
-    
+
     $setting = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

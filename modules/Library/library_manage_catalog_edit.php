@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -28,7 +29,7 @@ $page->breadcrumbs
     ->add(__('Manage Catalog'), 'library_manage_catalog.php')
     ->add(__('Edit Item'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'library_manage_catalog_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -104,11 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $row = $form->addRow();
                 $row->addLabel('invoiceNumber', __('Invoice Number'));
                 $row->addTextField('invoiceNumber')->maxLength(50);
-            
+
             $row = $form->addRow();
                 $row->addLabel('cost', __('Cost'));
                 $row->addCurrency('cost')->maxLength(9);
-            
+
             $row = $form->addRow();
                 $row->addLabel('imageType', __('Image Type'));
                 $row->addSelect('imageType')->fromArray(array('File' => __('File'), 'Link' => __('Link')))->placeholder();
@@ -234,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 <script type='text/javascript'>
     $(document).ready(function(){
         document.onkeypress = stopRKey;
-        
+
         $(".gbooks").loadGoogleBookData({
             "notFound": "'.__('The specified record cannot be found.').'",
             "dataRequired": "'.__('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.').'",

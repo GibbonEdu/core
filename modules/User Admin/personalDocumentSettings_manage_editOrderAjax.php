@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
 $_POST['address'] = '/modules/User Admin/personalDocumentSettings_manage_edit.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumentSettings_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
     exit;
 } else {
     // Proceed!

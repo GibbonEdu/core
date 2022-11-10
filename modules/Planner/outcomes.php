@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -24,7 +25,7 @@ use Gibbon\Domain\Planner\OutcomeGateway;
 
 $page->breadcrumbs->add(__('Manage Outcomes'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'outcomes')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

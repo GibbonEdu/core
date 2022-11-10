@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -25,7 +26,7 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 ]));
 
                 //Add multiple columns
-                if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
+                if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit'))) {
                     if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
                         //Check highest role in any department
                         $isCoordinator = isDepartmentCoordinator( $pdo, $gibbon->session->get('gibbonPersonID') );
@@ -152,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
 
                     if ($container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableColumnWeighting') == 'Y') {
-                        if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
+                        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'weighting_manage')) == true) {
                             echo " | <a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Manage Weightings')."<img title='".__('Manage Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a>";
                         }
                     }

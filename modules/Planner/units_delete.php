@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Timetable\CourseGateway;
 
@@ -28,7 +29,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'units_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    
+
                         $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                         $sql = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID AND gibbonCourseID=:gibbonCourseID';
                         $result = $connection2->prepare($sql);

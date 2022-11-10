@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -24,7 +25,7 @@ $page->breadcrumbs
     ->add(__('Manage Groups'), 'groups_manage.php')
     ->add(__('Add Group'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'groups_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/groups_manage_edit.php&gibbonGroupID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
-    
+
     $form = Form::create('groups', $session->get('absoluteURL').'/modules/'.$session->get('module')."/groups_manage_addProcess.php");
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -53,6 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
-        
+
     echo $form->getOutput();
 }

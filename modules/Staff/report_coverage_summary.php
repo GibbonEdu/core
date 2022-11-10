@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -27,7 +28,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summary.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_coverage_summary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
-    
+
     // COVERAGE DATA
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
@@ -69,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     } else {
         $dateStart = new DateTime($schoolYear['firstDay']);
     }
-    
+
     // Get all substitutes
     $criteria = $substituteGateway->newQueryCriteria()
         ->sortBy(['active', 'surname', 'preferredName'])
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $subsByID = array_map(function ($sub) {
             return $sub['gibbonPersonID'];
         }, $substitutes->toArray());
-        
+
         $row = $form->addRow()->addClass('substitutes');
             $row->addLabel('gibbonPersonID', __('Substitute'));
             $row->addSelectUsersFromList('gibbonPersonID', $subsByID)
@@ -107,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         echo $form->getOutput();
     }
-    
+
 
     if (!empty($gibbonPersonID)) {
         // COVERAGE SUMMARY BY SUBSTITUTE
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             ->width('20%')
             ->sortable(['absence.surname', 'absence.preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);

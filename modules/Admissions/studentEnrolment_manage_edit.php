@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -26,7 +27,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolment_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'studentEnrolment_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

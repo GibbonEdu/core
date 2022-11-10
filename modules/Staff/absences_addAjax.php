@@ -17,17 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_add')) == false) {
     die();
 } else {
     // Proceed!
     $dateStart = $_POST['dateStart'] ?? '';
     $dateEnd = $_POST['dateEnd'] ?? '';
-    
+
     $start = new DateTime(Format::dateConvert($dateStart).' 00:00:00');
     $end = new DateTime(Format::dateConvert($dateEnd).' 23:00:00');
 

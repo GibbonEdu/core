@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -34,7 +35,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-    
+
     $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
     $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
     $result = $connection2->prepare($sql);
@@ -384,11 +385,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
     $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
     $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
-    
+
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
     $personalDocumentHandler->addPersonalDocumentsToForm($form, 'gibbonApplicationForm', $gibbonApplicationFormID, $params);
-    
+
     // STUDENT CONTACT
     $form->addRow()->addSubheading(__('Student Contact'));
 
@@ -653,7 +654,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $header->addContent(__('Relationships'));
 
             // Get the family relationships
-            
+
                 $dataRelationships = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonApplicationFormRelationship.gibbonPersonID, relationship FROM gibbonApplicationFormRelationship JOIN gibbonPerson ON (gibbonApplicationFormRelationship.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonApplicationFormRelationship.gibbonApplicationFormID=:gibbonApplicationFormID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);

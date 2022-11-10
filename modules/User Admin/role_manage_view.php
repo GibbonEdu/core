@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_view.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'role_manage_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -98,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_vie
         ->format(Format::using('yesNo', 'canLogin'));
 
     // ACTIONS
-    if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage'))) {
         $table->addActionColumn()
             ->addParam('gibbonPersonID')
             ->format(function ($person, $actions) {

@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\GradeScaleGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'gradeScales_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     $table->addColumn('usage', __('Usage'))->translatable();
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', ['active']));
     $table->addColumn('numeric', __('Numeric'))->format(Format::using('yesNo', ['numeric']));
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonScaleID')

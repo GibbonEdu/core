@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
         $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
-    
+
     $stylesheets = $container->get(ReportPrototypeSectionGateway::class)->selectPrototypeStylesheets();
     $row = $form->addRow();
         $row->addLabel('stylesheet', __('Stylesheet'));
@@ -85,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
         $col->addNumber('marginX')->decimalPlaces(2)->required()->setValue('10');
         $col->addContent('<div class="flex-1 pr-1 pl-2">Y</div>');
         $col->addNumber('marginY')->decimalPlaces(2)->required()->setValue('10');
-        
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

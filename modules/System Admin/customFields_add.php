@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'customFields_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -74,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $group['Custom_'.$context] = $context;
         return $group;
     }, []);
-    
+
     $row = $form->addRow();
         $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
         $row->addSelect('heading')
@@ -83,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
             ->placeholder();
 
     $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when($contextCustom);
-    
+
     $row = $form->addRow()->addClass('headingCustom');
         $row->addLabel('headingCustom', __('Custom Heading'));
         $row->addTextField('headingCustom')->maxLength(90);
@@ -152,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $row = $form->addRow()->addClass('contextApplication');
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
         $row->addSelect('activeApplicationForm')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('0')->required();
-    
+
     $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $row = $form->addRow()->addClass('contextPerson');

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
@@ -24,7 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
     $StaffCoverageGateway = $container->get(StaffCoverageGateway::class);
-    
+
     // SEARCH FORM
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
@@ -64,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         $criteria->filterBy('date', 'upcoming')
                  ->sortBy('status', 'ASC');
     }
-    
+
     $criteria->sortBy('date', 'ASC')
              ->fromPOST();
 
@@ -129,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
                 ->addParam('gibbonStaffAbsenceID', $coverage['gibbonStaffAbsenceID'] ?? '')
                 ->isModal(800, 550)
                 ->setURL('/modules/Staff/coverage_view_details.php');
-                
+
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Staff/coverage_manage_edit.php');
 

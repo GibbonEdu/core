@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
@@ -48,7 +49,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
    //Check for access to multiple column add
     $multiAdd = false;
     //Add multiple columns
-    if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit'))) {
         if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
             //Check highest role in any department
             $isCoordinator = isDepartmentCoordinator( $pdo, $gibbon->session->get('gibbonPersonID') );
@@ -157,8 +158,8 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
-	
-	
+
+
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $container->get(SettingGateway::class));
@@ -185,10 +186,10 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit')) and $canEditThisClass) {
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
 			if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-	            if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
+	            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'weighting_manage')) == true) {
 	                echo " | <a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a>";
 	            }
 	        }
@@ -209,7 +210,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
         // Work out details for external assessment display
         // TODO: Test this more?
-        if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php')) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Formal Assessment', 'externalAssessment_details'))) {
             $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
         }
 
@@ -227,7 +228,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             } else {
                 echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
             }
-            
+
             if ($markbook->hasExternalAssessments() == true) {
                 echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
             }
@@ -235,7 +236,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
         // Display Pagination
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') ) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_view')) ) {
 
         	echo "<div style='padding-top: 16px; margin-right: 10px; text-align: left; width: 300px; float: left;'>";
 
@@ -264,7 +265,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         }
 
         // Display the Top Links
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit')) and $canEditThisClass) {
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a> | ";
 			echo '<script>
 					function resetOrder(){
@@ -286,7 +287,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 			echo "<a href='#' onclick='resetOrder()'>".__('Reset Order')."<img title='".__('Reset Order')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/reincarnate.png'/></a> | ";
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Targets')."<img title='".__('Set Personalised Attainment Targets')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/target.png'/></a> | ";
             if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
+                if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'weighting_manage')) == true) {
                     echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a> | ";
                 }
             }
@@ -456,7 +457,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
 
             echo '</span>';
-            if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit')) and $canEditThisClass) {
                 echo '<div class="columnActions">';
                 echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
 
@@ -502,7 +503,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     }
 
                     if (empty($scale)) {
-                        
+
                             $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDAttainment'));
                             $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultScale = $connection2->prepare($sqlScale);
@@ -522,7 +523,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 }
                 if ($column->displayEffort() ) {
                     echo "<th class='columnLabel medColumn'>";
-                    
+
                         $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDEffort'));
                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                         $resultScale = $connection2->prepare($sqlScale);
@@ -684,7 +685,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 // Display baseline
                 if ($markbook->hasExternalAssessments() == true) {
                     echo '<td class="dataColumn">';
-                    
+
                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
                         $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
 							FROM gibbonExternalAssessmentStudentEntry
@@ -719,7 +720,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 	echo '<table class="columnLabels blank" cellspacing=0><tr>';
 
 
-                    
+
                         $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
                         $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
                         $resultEntry = $connection2->prepare($sqlEntry);
@@ -859,13 +860,13 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         if ($column->displayUploadedResponse()) {
                             echo '<td class="smallColumn"></td>';
                         }
-                            
+
                     }
 
                     if ($column->displaySubmission()) {
 
                         echo "<td class='smallColumn'>";
-                        
+
                             $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                             $resultWork = $connection2->prepare($sqlWork);
@@ -1002,7 +1003,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             if ($markbook->hasExternalAssessments()) {
                 echo '<td class="dataColumn dataDividerTop"></td>';
             }
-            
+
             if ($markbook->hasPersonalizedTargets()) {
                 echo '<td class="dataColumn dataDividerTop"></td>';
             }
@@ -1021,7 +1022,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             }
 
             $count = isset($totals['count'])? min($totals['count'], $count) : $count;
-            
+
             // Type Averages
             if ($columnFilter == 'averages') {
                 if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {

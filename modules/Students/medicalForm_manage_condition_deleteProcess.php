@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
+
 include '../../gibbon.php';
 
 //Check if gibbonPersonMedicalID and gibbonPersonMedicalConditionID specified
@@ -28,7 +30,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search";
     $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_delete.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'medicalForm_manage_condition_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

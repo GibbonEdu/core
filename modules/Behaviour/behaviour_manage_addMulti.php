@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
@@ -31,7 +32,7 @@ $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
-if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Behaviour', 'behaviour_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

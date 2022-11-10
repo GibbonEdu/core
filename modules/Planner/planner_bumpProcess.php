@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -37,7 +38,7 @@ $URLBump = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($
 //Params to pass back (viewBy + date or classID)
 $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_bump')) == false) {
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {

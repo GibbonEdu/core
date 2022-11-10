@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\School\HouseGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byHouse.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'report_students_byHouse')) == false) {
 	//Acess denied
 	echo "<div class='error'>" ;
 		echo __('You do not have access to this action.');
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $yearGroupCounts = array_reduce($houseCounts->toArray(), function ($group, $item) use (&$houses) {
         $yearGroup = $item['gibbonYearGroupID'];
         $house = $item['gibbonHouseID'];
-        
+
         $group[$yearGroup]['yearGroupName'] = $item['yearGroupName'];
         $group[$yearGroup][$house] = [
             'totalFemale' => $item['totalFemale'],

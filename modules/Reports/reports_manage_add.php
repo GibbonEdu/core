@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\School\SchoolYearGateway;
@@ -24,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
 
     $form = Form::create('reportsManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
@@ -85,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
         $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFromCSV($values);
-    
+
     $form->addRow()->addHeading('Access', __('Access'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();

@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentHistory.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'report_myStudentHistory')) == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
         ->format(function($values) {
             $photo = Format::userPhoto($values['image_240'], 'md', '');
             $title = Format::name('', $values['preferredName'], $values['surname'], 'Student', false, true).'<br/>'.Format::date($values['dob']);
-            
+
             return '<div title="'.$title.'" class="mb-4">'.$photo.'</div>';
         });
 

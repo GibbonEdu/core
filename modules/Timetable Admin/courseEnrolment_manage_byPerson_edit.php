@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -28,7 +29,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 //Module includes for Timetable module
 include './modules/Timetable/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         try {
             if ($allUsers == 'on') {
                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, NULL AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, NULL AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
             } else {
                 if ($type == 'Student') {
@@ -80,11 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '<h2>';
             echo __('Add Classes');
             echo '</h2>';
-            
+
             $form = Form::create('manageEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
-                
+
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,
@@ -108,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->setIcon('planner')
                 ->displayLabel()
                 ->prepend((!empty($search)) ? ' | ' : '');
-            
+
             $classes = array();
             if ($type == 'Student') {
                 $enrolableClasses = $courseEnrolmentGateway->selectEnrolableClassesByYearGroup($gibbonSchoolYearID, $values['gibbonYearGroupID'])->fetchAll();
@@ -153,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo $form->getOutput();
 
-            
+
             //SHOW CURRENT ENROLMENT
             echo '<h2>';
             echo __('Current Enrolment');

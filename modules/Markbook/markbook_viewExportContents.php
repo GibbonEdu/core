@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Auth\Access\Resource;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -44,7 +45,7 @@ if ($enableEffort == 'Y')
 else
     $effortAdjust = 1 ;
 
-if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

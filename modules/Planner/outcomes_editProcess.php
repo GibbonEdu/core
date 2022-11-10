@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -29,7 +30,7 @@ $filter2 = $_GET['filter2'] ?? '';
 $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_edit.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'outcomes_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

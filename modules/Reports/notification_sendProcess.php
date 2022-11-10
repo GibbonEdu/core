@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\SendNotificationsProcess;
 use Gibbon\Data\Validator;
@@ -31,7 +32,7 @@ $notificationText = $_POST['notificationText'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php&type='.$type;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'notification_send')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
     } elseif ($type == 'reportsAvailable') {
         $success = $process->startSendReportsAvailable($gibbonReportingCycleIDList, $notificationText);
     }
-    
+
     $URL .= !$success
         ? "&return=error2"
         : "&return=success0";

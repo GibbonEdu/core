@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'jobOpenings_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -29,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
     if ($gibbonStaffJobOpeningID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID);
             $sql = 'SELECT * FROM gibbonStaffJobOpening WHERE gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID';
             $result = $connection2->prepare($sql);

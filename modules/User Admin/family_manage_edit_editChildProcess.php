@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -30,7 +31,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_edit_editChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_editChild.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'family_manage_edit_editChild')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

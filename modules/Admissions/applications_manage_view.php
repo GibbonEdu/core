@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
@@ -26,7 +27,7 @@ use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_view.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -75,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if ($application['status'] == 'Incomplete') {
         echo Format::alert(__('This application form was created by {email} and is still in progress. It has not been submitted yet.', ['email' => '<u>'.$account['email'].'</u>']), 'warning');
     }
-    
+
     // Display the submitted data
     $table = $formBuilder->display();
 

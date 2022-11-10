@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Students\StudentGateway;
@@ -36,7 +37,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Admissions/student_withdraw.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdraw.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'student_withdraw')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -90,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
         }
 
         if ($data['status'] != $person['status']) {
-            $statusReason = !empty($data['departureReason']) 
-                ? __('Student Withdrawn').': '.$data['departureReason'] 
+            $statusReason = !empty($data['departureReason'])
+                ? __('Student Withdrawn').': '.$data['departureReason']
                 : __('Student Withdrawn');
 
             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);

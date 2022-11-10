@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
+
 include '../../gibbon.php';
 
 $gibbonDistrictID = $_GET['gibbonDistrictID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage_delete.php&gibbonDistrictID='.$gibbonDistrictID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'district_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

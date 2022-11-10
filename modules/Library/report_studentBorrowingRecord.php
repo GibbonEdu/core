@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Library\LibraryReportGateway;
@@ -30,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Student Borrowing Record'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'report_studentBorrowingRecord')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

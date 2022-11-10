@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
@@ -25,7 +26,7 @@ $gibbonNotificationEventID = $_GET['gibbonNotificationEventID'] ?? null;
 $gibbonNotificationListenerID = $_GET['gibbonNotificationListenerID'] ?? null;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'notificationSettings_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

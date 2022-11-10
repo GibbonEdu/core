@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Data\Validator;
 
@@ -24,12 +25,12 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonModuleID = $_GET['gibbonModuleID'] ?? '';  
+$gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_update.php&gibbonModuleID='.$gibbonModuleID;
 $gibbon->session->set('moduleUpdateError', '');
 
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_update.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'module_manage_update')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

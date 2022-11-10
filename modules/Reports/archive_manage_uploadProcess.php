@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -29,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_upload.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upload.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'archive_manage_upload')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         header("Location: {$URL}");
         exit;
     }
-    
+
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
     $studentGateway = $container->get(StudentGateway::class);

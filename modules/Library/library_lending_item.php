@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -29,7 +30,7 @@ $page->breadcrumbs
     ->add(__('Lending & Activity Log'), 'library_lending.php')
     ->add(__('View Item'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'library_lending_item')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

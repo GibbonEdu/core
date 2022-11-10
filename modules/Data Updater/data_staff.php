@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -27,7 +28,7 @@ use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_staff')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     if ($highestAction == false) {
         Format::alert(__('The highest grouped action cannot be determined.'));
         return;
-    } 
+    }
     // Proceed!
     $page->breadcrumbs->add(__('Update Staff Data'));
 
@@ -92,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     } else {
         $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
     }
-    
+
     if (!empty($gibbonPersonID)) {
 
         $gibbonStaffID = $staffGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonStaffID'])->fetchColumn(0);
@@ -114,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $proceed = false;
 
         $staffUpdate = $staffUpdateGateway->selectBy(['gibbonStaffID' => $gibbonStaffID, 'gibbonPersonIDUpdater' => $gibbon->session->get('gibbonPersonID'), 'status' => 'Pending']);
-            
+
         if ($staffUpdate->rowCount() > 1) {
             echo Format::alert(__('Your request failed due to a database error.'), 'error');
             return;
@@ -122,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
             echo Format::alert(__('You have already submitted a form, which is awaiting processing by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been processed.'), 'warning');
             $values = $staffUpdate->fetch();
         }
-               
+
         // Let's go
         $required = ($highestAction != 'Update Staff Data_any');
 

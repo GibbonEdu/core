@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
@@ -34,7 +35,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_edit.php&gibbonStudentEnrolmentID=$gibbonStudentEnrolmentID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolment_manage_edit.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'studentEnrolment_manage_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;
@@ -116,7 +117,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
 
                         // Remove existing auto-enrolment: moving a student from one Form Group to another
                         $courseEnrolmentGateway->unenrolAutomaticCourseEnrolments($gibbonFormGroupIDOriginal, $gibbonStudentEnrolmentID);
-                        
+
                         $partialFail &= !$pdo->getQuerySuccess();
 
                         // Update existing course enrolments for new Form Group

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Domain\Students\ApplicationFormGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     // Access denied
     echo Format::alert(__('You do not have access to this action.'));
 } else {
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $col->addTextArea('applicationProcessFeeText')
             ->setValue($applicationProcessFeeText)
             ->required();
-   
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

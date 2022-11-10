@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Forms\FormPageGateway;
 
 $_POST['address'] = '/modules/System Admin/formBuilder_edit.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     exit;
 } else {
     // Proceed!

@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\AbsenceView;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_action.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_approval_action')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
         $page->addError(__('You do not have access to this action.'));
         return;
     }
-    
+
     // Staff Card
     $staffCard = $container->get(StaffCard::class);
     $staffCard->setPerson($absence['gibbonPersonID'])->compose($page);
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
     // Absence View Composer
     $absenceView = $container->get(AbsenceView::class);
     $absenceView->setAbsence($gibbonStaffAbsenceID, $session->get('gibbonPersonID'))->compose($page);
-    
+
     // Approval Form
     $form = Form::create('staffAbsenceApproval', $session->get('absoluteURL').'/modules/Staff/absences_approval_actionProcess.php');
 

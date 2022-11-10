@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Finance\FinanceGateway;
 use Gibbon\Tables\DataTable;
 
-if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'expenseApprovers_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -98,6 +99,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
                     ->setURL('/modules/Finance/expenseApprovers_manage_delete.php');
             }
         );
-        
+
     echo $table->render($feeApprovers);
 }

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -28,7 +29,7 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_accept.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm_manage_accept')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -73,12 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '</h3>';
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
-                
+
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID);
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
-                
+
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
@@ -112,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $form->addRow()->addSubmit(__('Accept'));
 
                 echo $form->getOutput();
-                
+
             } elseif ($step == 2) {
                 echo '<h3>';
                 echo __('Step')." $step";
@@ -216,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         }
                         if ($insertOK == true) {
                             $gibbonPersonID = $connection2->lastInsertID();
-                            
+
                             $failapplicant = false;
 
                             //Populate informApplicant array

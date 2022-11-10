@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'invoices_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
         if ($highestAction=="View Invoices_myChildren") {
             //Test data access field for permission
-            
+
                 $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
                 $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 $count = 0;
                 $options = array();
                 while ($row = $result->fetch()) {
-                    
+
                         $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);

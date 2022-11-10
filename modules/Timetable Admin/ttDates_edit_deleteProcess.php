@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -27,7 +29,7 @@ if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading t
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'ttDates_edit_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

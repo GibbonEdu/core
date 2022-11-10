@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_finance_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -60,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
             $newValues = $newResult->fetch();
 
             // Provide a link back to edit the associated record
-            if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'invoicees_manage_edit')) == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {
                 $params = [
-                    'gibbonFinanceInvoiceeID' => $oldValues['gibbonFinanceInvoiceeID'], 
-                    'search' => '', 
+                    'gibbonFinanceInvoiceeID' => $oldValues['gibbonFinanceInvoiceeID'],
+                    'search' => '',
                     'allUsers' => ''
                 ];
                 $page->navigator->addHeaderAction('edit', __('Edit Invoicee'))

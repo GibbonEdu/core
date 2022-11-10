@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 use Gibbon\Module\Admissions\ApplicationBuilder;
@@ -37,7 +38,7 @@ $tab = $_POST['tab'] ?? 0;
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search, 'tab' => $tab]);
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
@@ -92,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         // Run any edit-related processes
         $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
         $formProcessor->editForm($formBuilder, $formData);
-        
+
         $formData->save($application['identifier']);
         $partialFail &= !empty($formProcessor->getErrors());
 

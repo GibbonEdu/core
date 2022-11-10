@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\GroupGateway;
@@ -25,7 +26,7 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 
 $page->breadcrumbs->add(__('Manage Groups'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'groups_manage')) == false) {
     //Acess denied
     echo '<div class="error">';
     echo __('You do not have access to this action.');
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     } else {
         $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
     }
-    
+
     // FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/groups_manageProcessBulk.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

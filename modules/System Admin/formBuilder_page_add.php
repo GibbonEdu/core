@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Forms\FormGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -47,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('redirect', $redirect);
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $row = $form->addRow();
         $row->addLabel('formName', __('Form Name'));
         $row->addTextField('formName')->readonly()->required()->setValue($formValues['name']);
-        
+
     $row = $form->addRow();
         $row->addLabel('name', __('Page Name'))->description(__('Must be unique'));
         $row->addTextField('name')->maxLength(90)->required();

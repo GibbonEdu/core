@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaTypeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_criteria_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -84,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $row = $form->addRow();
         $row->addLabel('category', __('Category'))->description(__('Optionally used to group criteria together.'));
         $row->addTextField('category')->maxLength(255);
-        
+
     $criteriaTypes = $container->get(ReportingCriteriaTypeGateway::class)->selectActiveCriteriaTypes();
     $row = $form->addRow();
         $row->addLabel('gibbonReportingCriteriaTypeID', __('Type'));
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $row = $form->addRow();
         $row->addLabel('target', __('Target'));
         $row->addSelect('target')->fromArray($targets)->required()->placeholder();
- 
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

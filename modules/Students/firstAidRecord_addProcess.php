@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Data\Validator;
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/firstAidRecord_add.php&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'firstAidRecord_add')) == false) {
     $URL .= '&return=error0&step=1';
     header("Location: {$URL}");
 } else {

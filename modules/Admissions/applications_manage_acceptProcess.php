@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
@@ -32,7 +33,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_accept')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_accept.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_accept')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Setup the form data
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
-    
+
     // Link the application to this parent, if one exists (eg: created after the application)
     if (!$formData->has('gibbonPersonIDParent1') && !empty($account['gibbonPersonID'])) {
         $formData->set('gibbonPersonIDParent1', $account['gibbonPersonID']);
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formBuilder->addConfig(['foreignTableID' => $formData->identify($application['identifier'])]);
     $formData->setResults([]);
     $formData->setReadOnly(true);
-    
+
     // Run any accept-related processes
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->acceptForm($formBuilder, $formData);

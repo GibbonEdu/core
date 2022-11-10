@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'medicalForm_manage_condition_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonMedicalID', $gibbonPersonMedicalID);
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,

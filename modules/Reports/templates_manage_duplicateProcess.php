@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
@@ -30,7 +31,7 @@ $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_duplicate.php&gibbonReportTemplateID='.$gibbonReportTemplateID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_duplicate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_manage_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_d
         header("Location: {$URL}");
         exit;
     }
-    
+
     // Validate the database relationships exist
     $values = $reportTemplateGateway->getByID($gibbonReportTemplateID);
     if (empty($values)) {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
@@ -32,7 +33,7 @@ $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_cancel.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_my.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view_cancel')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

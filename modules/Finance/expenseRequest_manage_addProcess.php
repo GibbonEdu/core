@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
 
@@ -37,7 +38,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_manage_add.php') == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'expenseRequest_manage_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

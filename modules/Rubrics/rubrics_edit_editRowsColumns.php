@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -32,7 +33,7 @@ if (isset($_GET['filter2'])) {
     $filter2 = $_GET['filter2'];
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editRowsColumns.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Rubrics', 'rubrics_edit_editRowsColumns')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -50,14 +51,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
         } else {
             //Proceed!
             $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
-            
+
             $params = [
                 "gibbonRubricID" => $gibbonRubricID,
                 "search" => $search,
                 "filter2" => $filter2,
                 "sidebar" => false
-            ];     
-                
+            ];
+
             $page->breadcrumbs
                 ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
                 ->add(__('Edit Rubric'), 'rubrics_edit.php', $params)
@@ -75,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                 echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
-                
+
                 $data = array('gibbonRubricID' => $gibbonRubricID);
                 $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
                 $result = $connection2->prepare($sql);
@@ -87,12 +88,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                     echo '</div>';
                 } else {
                     //Let's go!
-					$values = $result->fetch(); 
-					
+					$values = $result->fetch();
+
 					$form = Form::create('addRubric', $session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
                     $form->addHiddenValue('address', $session->get('address'));
-                    
+
                     $form->addRow()->addHeading('Rubric Basics', __('Rubric Basics'));
 
                     $row = $form->addRow();
@@ -113,20 +114,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					$row = $form->addRow();
                         $row->addLabel('name', __('Name'));
 						$row->addTextField('name')->maxLength(50)->required()->readOnly();
-						
+
 					$form->addRow()->addHeading('Rows', __('Rows'));
 
 					// Get outcomes by year group
 					$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList']);
-					$sql = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.scope, gibbonOutcome.category, gibbonOutcome.name 
-							FROM gibbonOutcome 
+					$sql = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.scope, gibbonOutcome.category, gibbonOutcome.name
+							FROM gibbonOutcome
 							LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-							WHERE gibbonOutcome.active='Y' 
+							WHERE gibbonOutcome.active='Y'
 							AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
 							GROUP BY gibbonOutcome.gibbonOutcomeID
 							ORDER BY gibbonOutcome.category, gibbonOutcome.name";
 					$result = $pdo->executeQuery($data, $sql);
-					
+
 					// Build a set of outcomes grouped by scope
 					$outcomes = ($result->rowCount() > 0)? $result->fetchAll() : array();
 					$outcomes = array_reduce($outcomes, function($group, $item) {
@@ -136,11 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					}, array());
 
 					$typeOptions = array('Standalone' => __('Standalone'), 'Outcome Based' => __('Outcome Based'));
-					
+
 					$data = array('gibbonRubricID' => $gibbonRubricID);
 					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID, backgroundColor FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
-					
+
 					if ($result->rowCount() <= 0) {
 						$form->addRow()->addAlert(__('There are no records to display.'), 'error');
 					} else {
@@ -151,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							$row = $form->addRow();
 								$row->addLabel('rowName'.$count, sprintf(__('Row %1$s Title'), ($count + 1)) );
                                 $column = $row->addColumn()->addClass('flex-col');
-                                
+
                                 $column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
                                 $col = $column->addColumn()->addClass('flex');
 								$col->addTextField('rowTitle['.$count.']')
@@ -167,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 									->required()
 									->placeholder()
                                     ->selected($rubricRow['gibbonOutcomeID']);
-                                    
+
                                 $column->addColor('rowColor['.$count.']')
                                     ->setID('rowColor'.$count)
                                     ->setValue($rubricRow['backgroundColor'])
@@ -176,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
 							$form->toggleVisibilityByClass('gibbonOutcomeID'.$count)->onRadio('type'.$count)->when('Outcome Based');
 							$form->addHiddenValue('gibbonRubricRowID['.$count.']', $rubricRow['gibbonRubricRowID']);
-								
+
 							$count++;
 						}
 					}
@@ -189,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					$data = array('gibbonRubricID' => $gibbonRubricID);
 					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
-					
+
 					if ($result->rowCount() <= 0) {
 						$form->addRow()->addAlert(__('There are no records to display.'), 'error');
 					} else {
@@ -197,8 +198,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 						while ($rubricColumn = $result->fetch()) {
 							$row = $form->addRow();
                             $row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
-                            
-                            
+
+
                             $row->addCheckbox('columnVisualise['.$count.']')
                                 ->setValue('Y')
                                 ->alignCenter()
@@ -225,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                     ->setClass('flex-1 w-full')
 									->selected($rubricColumn['gibbonScaleGradeID']);
                             }
-                            
+
                             $col->addColor('columnColor['.$count.']')
                                 ->setID('columnColor'.$count)
                                 ->setValue($rubricColumn['backgroundColor'])
@@ -242,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                         $row->addSubmit();
 
                     $form->loadAllValuesFrom($values);
-                    
+
 					echo $form->getOutput();
                 }
             }

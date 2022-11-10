@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'department_manage_delete')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     if ($gibbonDepartmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
             $result = $connection2->prepare($sql);

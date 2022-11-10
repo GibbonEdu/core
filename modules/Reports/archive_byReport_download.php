@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -29,7 +30,7 @@ require_once '../../gibbon.php';
 
 $returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byReport.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_download.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'archive_byReport_download')) == false) {
     // Access denied
     header("location:$returnPath&return=error0");
 } else {

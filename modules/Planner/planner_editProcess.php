@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -44,7 +45,7 @@ if ($viewBy == 'date') {
     $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_edit')) == false) {
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             } else {
                                 $homeworkSubmissionDateOpen = date('Y-m-d');
                             }
-                            
+
                             $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
                             $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
                             $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
@@ -280,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 //Write to database
                                 $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
                                 $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
-                                
+
                                 $updated = $pdo->update($sql, $data);
                                 $partialFail &= !$updated;
 

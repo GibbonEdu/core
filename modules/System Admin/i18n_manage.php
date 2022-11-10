@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Domain\System\I18nGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'i18n_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -100,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $table->addActionColumn()
         ->addParam('gibboni18nID')
         ->format(function ($i18n, $actions) use ($version) {
-            
+
             if (version_compare($version, $i18n['version'], '>')) {
                 $actions->addAction('update', __('Update'))
                     ->setIcon('delivery2')

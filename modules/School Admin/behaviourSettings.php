@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -26,7 +27,7 @@ $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDesc
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 $enableNegativeBehaviourLetters = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters');
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'behaviourSettings')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -84,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
-    
+
     $row = $form->addRow()->addHeading('Behaviour Letters', __('Behaviour Letters'))->append(__('By using a {linkCLIScript}, {systemName} can be configured to automatically generate and email behaviour letters to parents and tutors, once certain behaviour threshold levels have been reached. Visit the {linkEmailTemplates} page to customise the templates for each behaviour letter email.', ['systemName' => $session->get('systemName'), 'linkCLIScript' => Format::link('https://gibbonedu.org/support/administrators/command-line-tools/', __('CLI script')),'linkEmailTemplates' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters', true);

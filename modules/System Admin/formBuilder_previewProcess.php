@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilder;
@@ -31,7 +32,7 @@ $pageNumber = $_REQUEST['page'] ?? 1;
 
 $URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber, 'identifier' => $identifier]);
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
-    
+
     // Setup the form data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier]);
     $formData = $container->get(FormSessionStorage::class);
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $formProcessor->submitForm($formBuilder, $formData);
 
         $formData->save($identifier);
-        
+
         // Cleanup data, probably remove file uploads here
         $session->set('formpreview', []);
 

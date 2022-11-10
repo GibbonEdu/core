@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -29,16 +30,16 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\CoverageCalendar;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_my')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('My Coverage'));
-    
+
     $gibbonPersonID = $session->get('gibbonPersonID');
     $displayCount = 0;
-    
+
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
@@ -93,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         ->fromPOST('staffCoverageSelf');
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $gibbonPersonID);
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') || $coverage->getResultCount() > 0) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_request')) || $coverage->getResultCount() > 0) {
         $table = DataTable::createPaginated('staffCoverageSelf', $criteria);
         $table->setTitle(__('My Coverage'));
 
@@ -147,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
-                    
+
                 if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] >= date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
@@ -221,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             ->width('30%')
             ->sortable(['surname', 'preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);

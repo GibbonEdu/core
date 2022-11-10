@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Domain\School\ExternalAssessmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'externalAssessments_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     if ($gibbonExternalAssessmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
             $sql = 'SELECT * FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
             $result = $connection2->prepare($sql);
@@ -108,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $table->addColumn('name', __('Name'));
             $table->addColumn('category', __('Category'));
             $table->addColumn('order', __('Order'));
-                
+
             // ACTIONS
             $table->addActionColumn()
                 ->addParam('gibbonExternalAssessmentID', $gibbonExternalAssessmentID)

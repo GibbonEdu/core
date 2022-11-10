@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
 
@@ -30,7 +31,7 @@ $classCount = $_POST['classCount'] ?? null;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'units_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

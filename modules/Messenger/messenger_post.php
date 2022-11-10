@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
@@ -62,7 +63,7 @@ else {
     }
 
     $page->addWarning(sprintf(__('Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $session->get('organisationNameShort')));
-    
+
     $form = $container->get(MessageForm::class)->createForm('messenger_postProcess.php');
     echo $form->getOutput();
 }

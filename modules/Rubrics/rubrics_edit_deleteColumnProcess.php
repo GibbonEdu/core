@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -32,7 +33,7 @@ $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $gibbonRubricColumnID = $_GET['gibbonRubricColumnID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Rubrics', 'rubrics_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

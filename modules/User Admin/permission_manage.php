@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'permission_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -86,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    
+
         $dataPermissions = array();
         $sqlPermissions = 'SELECT gibbonRoleID, gibbonActionID FROM gibbonPermission';
         $resultPermissions = $connection2->prepare($sqlPermissions);
@@ -112,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
             $form->addRow()->addHeading($rowModules['name'], __($rowModules['name']));
             $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
 
-            
+
                 $dataActions = array('gibbonModuleID' => $rowModules['gibbonModuleID']);
                 $sqlActions = 'SELECT * FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID ORDER BY name';
                 $resultActions = $connection2->prepare($sqlActions);

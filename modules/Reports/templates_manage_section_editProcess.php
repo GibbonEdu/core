@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
@@ -32,7 +33,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_section_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&gibbonReportTemplateSectionID='.$gibbonReportTemplateSectionID.'&search='.$search;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_section_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_manage_section_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -80,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         header("Location: {$URL}");
         exit;
     }
-   
+
     $result = $templateSectionGateway->selectBy([
         'gibbonReportTemplateID'        => $gibbonReportTemplateID,
         'gibbonReportTemplateSectionID' => $gibbonReportTemplateSectionID,

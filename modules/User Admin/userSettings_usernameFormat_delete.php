@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'userSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed! 
+    //Proceed!
     $gibbonUsernameFormatID = isset($_GET['gibbonUsernameFormatID'])? $_GET['gibbonUsernameFormatID'] : '';
 
     if ($gibbonUsernameFormatID == '') {

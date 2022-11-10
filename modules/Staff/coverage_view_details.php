@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 use Gibbon\Module\Staff\View\CoverageView;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_details.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_detail
 
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $coverage = $container->get(StaffCoverageGateway::class)->getByID($gibbonStaffCoverageID);
-    
+
     // Staff Card
     $staffCard = $container->get(StaffCard::class);
     $staffCard->setPerson($coverage['gibbonPersonID'])->compose($page);

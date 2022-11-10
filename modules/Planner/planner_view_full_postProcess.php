@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -31,7 +32,7 @@ include './moduleFunctions.php';
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_view_full')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -66,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 //INSERT
                 $replyTo = !empty($_POST['replyTo']) ? $_POST['replyTo'] : null;
                 $comment = $_POST['comment'] ?? '';
-                
+
                 try {
                     $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
                     $sqlInsert = 'INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo';

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -25,7 +26,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_personalDocumentSummary.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'report_student_personalDocumentSummary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -96,14 +97,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_pe
     $table->addMetaData('post', ['gibbonPersonID' => $choices, 'documents' => $documents]);
 
     $table->addColumn('formGroup', __('Form Group'));
-    
+
     $table->addColumn('student', __('Student'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {
             $output = Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Personal']);
             return $output;
         });
-    
+
     $table->addColumn('documentTypeName', __('Document'))
         ->description(__('Type'))
         ->format(function ($values) {

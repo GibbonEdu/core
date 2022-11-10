@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -24,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Contexts\ContextFactory;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.php') == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,12 +36,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
 
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    
+
     $report = $reportGateway->getByID($gibbonReportID);
-    
+
     if (empty($gibbonReportID) || empty($report)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -131,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->addParam('gibbonReportID', $gibbonReportID)
         ->format(function ($report, $actions) use (&$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
-            
+
             if (count($reportLogs) == 0) {
                 $actions->addAction('run', __('Run'))
                         ->setIcon('run')
