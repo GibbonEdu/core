@@ -22,6 +22,7 @@ namespace Gibbon\Module\Messenger;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\User\RoleGateway;
@@ -2233,6 +2234,10 @@ class MessageTargets
             $count = 0;
             $unique = true;
             $uniqueCount = 0;
+
+            // Use password policy to generate random string
+            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+
             foreach ($this->report as $reportEntry) {
                 if ($reportEntry[4] == $contactDetail && $unique) {
                     $unique = false;
@@ -2249,7 +2254,7 @@ class MessageTargets
                 $this->report[$count][3] = $contactType;
                 $this->report[$count][4] = $contactDetail;
                 if ($contactType == 'Email' and $emailReceipt == 'Y') {
-                    $this->report[$count][5] = randomPassword(40);
+                    $this->report[$count][5] = $randStrGenerator->generate();
                 }
                 else {
                     $this->report[$count][5] = null;

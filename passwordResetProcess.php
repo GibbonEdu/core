@@ -24,8 +24,12 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-//Create password
-$password = randomPassword(8);
+// Load site's password policy
+/** @var PasswordPolicy */
+$passwordPolicy = $container->get(PasswordPolicy::class);
+
+// Create password
+$password = $passwordPolicy->generate();
 
 // Sanitize the $_GET and $_POST arrays
 $validator = $container->get(Validator::class);
@@ -83,8 +87,11 @@ else {
         $username = $row['username'];
 
         if ($step == 1) { //This is the request phase
+            // Use password policy to generate random string
+            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+
             //Generate key
-            $key = randomPassword(40);
+            $key = $randStrGenerator->generate();
 
             //Try to delete other recors for this user
 

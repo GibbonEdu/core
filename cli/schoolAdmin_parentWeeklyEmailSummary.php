@@ -21,6 +21,7 @@ use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
@@ -178,8 +179,9 @@ foreach ($families as $gibbonFamilyID => $students) {
         }
 
         // Make and store unique code for confirmation.
+        $randStrGenerator = new PasswordPolicy(true, true, false, 40); // Use password policy to generate random string
         for ($count = 0; $count < 100; $count++) {
-            $key = randomPassword(40);
+            $key = $randStrGenerator->generate();
             $checkUnique = $emailSummaryGateway->getAnySummaryDetailsByKey($key);
 
             if (empty($checkUnique)) break;

@@ -163,4 +163,106 @@ class PasswordPolicyCest
         );
     }
 
+    public function testPolicyGenerateRandomPasswordWithMinimalRules(\UnitTester $I)
+    {
+        $I->wantToTest('generate password with minimal rules');
+        $policy = new PasswordPolicy(
+            false,
+            false,
+            false,
+            0
+        );
+        $password = $policy->generate();
+        $I->assertEquals(8, strlen($password), 'Generated password is 8 characters long: ' . var_export($password, true));
+        $I->assertMatchesRegularExpression('/^[a-z]+$/', $password, 'Password only contains lower case characters');
+        $I->assertEmpty($policy->evaluate($password), 'Password should pass the policy itself');
+    }
+
+    public function testPolicyGenerateRandomPasswordWithMixedAlphabet(\UnitTester $I)
+    {
+        $I->wantToTest('generate password with mixed alphabet');
+        $policy = new PasswordPolicy(
+            true,
+            false,
+            false,
+            0
+        );
+        $password = $policy->generate();
+        $I->assertEquals(8, strlen($password), 'Generated password is 8 characters long: ' . var_export($password, true));
+        $I->assertMatchesRegularExpression('/^[a-zA-Z]+$/', $password, 'Password only contain both upper and lower case characters');
+        $I->assertMatchesRegularExpression('/[a-z]+/', $password, 'Password contains lower cases characters');
+        $I->assertMatchesRegularExpression('/[A-Z]+/', $password, 'Password contains upper cases characters');
+        $I->assertEmpty($policy->evaluate($password), 'Password should pass the policy itself');
+    }
+
+    public function testPolicyGenerateRandomPasswordWithNumber(\UnitTester $I)
+    {
+        $I->wantToTest('generate password with numeric characters');
+        $policy = new PasswordPolicy(
+            false,
+            true,
+            false,
+            0
+        );
+        $password = $policy->generate();
+        $I->assertEquals(8, strlen($password), 'Generated password is 8 characters long: ' . var_export($password, true));
+        $I->assertMatchesRegularExpression('/^[a-z0-9]+$/', $password, 'Password only contain both lower case and numeric characters');
+        $I->assertMatchesRegularExpression('/[a-z]+/', $password, 'Password contains lower cases characters');
+        $I->assertMatchesRegularExpression('/[0-9]+/', $password, 'Password contains numeric characters');
+        $I->assertEmpty($policy->evaluate($password), 'Password should pass the policy itself');
+    }
+
+    public function testPolicyGenerateRandomPasswordWithPunctuation(\UnitTester $I)
+    {
+        $I->wantToTest('generate password with punctuation characters');
+        $policy = new PasswordPolicy(
+            false,
+            false,
+            true,
+            0
+        );
+        $password = $policy->generate();
+        $I->assertEquals(8, strlen($password), 'Generated password is 8 characters long: ' . var_export($password, true));
+        $I->assertMatchesRegularExpression('/^[a-z!@#$%^&*?_\+\-]+$/', $password, 'Password only contain both lower case and punctuation characters');
+        $I->assertMatchesRegularExpression('/[a-z]+/', $password, 'Password contains lower cases characters');
+        $I->assertMatchesRegularExpression('/[^a-zA-Z0-9]/', $password, 'Password contains non-alphanumeric characters');
+        $I->assertEmpty($policy->evaluate($password), 'Password should pass the policy itself');
+    }
+
+    public function testPolicyGenerateRandomPasswordWithMinLength(\UnitTester $I)
+    {
+        $I->wantToTest('generate password with minimal length set');
+        $length = rand(10, 255);
+        $policy = new PasswordPolicy(
+            false,
+            false,
+            false,
+            $length
+        );
+        $password = $policy->generate();
+        $I->assertEquals($length, strlen($password), sprintf('Generated password is %d characters long: ', $length) . var_export($password, true));
+        $I->assertMatchesRegularExpression('/^[a-z]+$/', $password, 'Password only contain only lower case characters');
+        $I->assertEmpty($policy->evaluate($password), 'Password should pass the policy itself');
+    }
+
+    public function testPolicyGenerateRandomPasswordWithEverythingEnforced(\UnitTester $I)
+    {
+        $I->wantToTest('generate password with everything enforced');
+        $length = rand(10, 255);
+        $policy = new PasswordPolicy(
+            true,
+            true,
+            true,
+            $length
+        );
+        $password = $policy->generate();
+        $I->assertEquals($length, strlen($password), sprintf('Generated password is %d characters long: ', $length) . var_export($password, true));
+        $I->assertMatchesRegularExpression('/^[a-zA-Z0-9!@#$%^&*?_\+\-]+$/', $password, 'Password only contain both lower case and punctuation characters');
+        $I->assertMatchesRegularExpression('/[a-z]+/', $password, 'Password contains lower cases characters');
+        $I->assertMatchesRegularExpression('/[A-Z]+/', $password, 'Password contains upper cases characters');
+        $I->assertMatchesRegularExpression('/[0-9]+/', $password, 'Password contains numeric characters');
+        $I->assertMatchesRegularExpression('/[^a-zA-Z0-9]/', $password, 'Password contains non-alphanumeric characters');
+        $I->assertEmpty($policy->evaluate($password), 'Password should pass the policy itself');
+    }
+
 }

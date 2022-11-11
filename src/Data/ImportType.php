@@ -80,13 +80,31 @@ class ImportType
     protected $useSerializedFields = false;
 
     /**
+     * Password policy to generate password with
+     *
+     * @var PasswordPolicy
+     */
+    protected $passwordPolicy;
+
+    /**
      * Constructor
      *
-     * @param   array   importType information
-     * @param   Object  PDO Connection
+     * @version v25
+     * @since   v17
+     *
+     * @param   array           ImportType information
+     * @param   PasswordPolicy  Password policy to generate password with
+     * @param   Connection      Database connection
      */
-    public function __construct($data, Connection $pdo = null, $validateStructure = true)
+    public function __construct(
+        array $data,
+        PasswordPolicy $passwordPolicy,
+        Connection $pdo = null,
+        $validateStructure = true
+    )
     {
+        $this->passwordPolicy = $passwordPolicy;
+
         if (isset($data['details'])) {
             $this->details = $data['details'];
         }
@@ -218,10 +236,21 @@ class ImportType
     /**
      * Loads all YAML files from a folder and creates an importType object for each
      *
-     * @param   Object  PDO Connection
+     * @version v25
+     * @since   v17
+     *
+     * @param   Connection       Database connection
+     * @param   SettingGateway   Database access
+     * @param   PasswordPolicy   Site's password policy to generate password with
+     *
      * @return  array   2D array of importType objects
      */
-    public static function loadImportTypeList(SettingGateway $settingGateway, Connection $pdo = null, $validateStructure = false)
+    public static function loadImportTypeList(
+        SettingGateway $settingGateway,
+        PasswordPolicy $passwordPolicy,
+        Connection $pdo = null,
+        $validateStructure = false
+    )
     {
         $yaml = new Yaml();
         $importTypes = [];
@@ -235,7 +264,7 @@ class ImportType
 
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = (isset($fileData['access']['module']))? $fileData['access']['module'] : 'General';
-                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $pdo, $validateStructure);
+                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $passwordPolicy, $pdo, $validateStructure);
             }
         }
 
@@ -252,7 +281,12 @@ class ImportType
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = '* Custom Imports';
                 $fileData['details']['custom'] = true;
-                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $pdo, $validateStructure);
+                $importTypes[ $fileData['details']['type'] ] = new ImportType(
+                    $fileData,
+                    $passwordPolicy,
+                    $pdo,
+                    $validateStructure
+                );
             }
         }
 
@@ -281,11 +315,19 @@ class ImportType
     /**
      * Loads a YAML file and creates an importType object
      *
-     * @param   string  Filename of the Import Type
-     * @param   Object  PDO Conenction
-     * @return  [importType]
+     * @param   string          Filename of the Import Type
+     * @param   SettingGateway  SettingGateway instance
+     * @param   PasswordPolicy  Password policy to generate password with.
+     * @param   Connection      Database conenction
+     *
+     * @return  ImportType
      */
-    public static function loadImportType($importTypeName, SettingGateway $settingGateway, Connection $pdo = null)
+    public static function loadImportType(
+        $importTypeName,
+        SettingGateway $settingGateway,
+        PasswordPolicy $passwordPolicy,
+        Connection $pdo = null
+    )
     {
         // Check custom first, this allows for local overrides
         $path = self::getCustomImportTypeDir($settingGateway).'/'.$importTypeName.'.yml';
@@ -302,14 +344,14 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new ImportType($fileData, $pdo);
+        return new ImportType($fileData, $passwordPolicy, $pdo);
     }
 
     /**
      * Is Import Accessible
      *
-     * @param   string  guid
-     * @param   Object  PDO Conenction
+     * @param   string      guid
+     * @param   Connection  Database conenction
      * @return  bool
      */
     public function isImportAccessible($guid, $connection2)
@@ -327,8 +369,8 @@ class ImportType
     /**
      * Compares the importType structure with the database table to ensure imports will succeed
      *
-     * @param   Connection  PDO
-     * @return  bool    true if all fields match existing table columns
+     * @param   Connection  Database connection
+     * @return  bool        true if all fields match existing table columns
      */
     protected function validateWithDatabase(Connection $pdo)
     {
@@ -1233,7 +1275,7 @@ class ImportType
      */
     protected function userFunc_generatePassword()
     {
-        return randomPassword(10);
+        return $this->passwordPolicy->generate();
     }
 
     /**

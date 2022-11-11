@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Domain\User\UserGateway;
@@ -36,11 +37,26 @@ class CreateParents extends CreateStudent implements ViewableProcess
 
     protected $familyAdultGateway;
 
-    public function __construct(UserGateway $userGateway, UserStatusLogGateway $userStatusLogGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway, FamilyAdultGateway $familyAdultGateway)
+    public function __construct(
+        UserGateway $userGateway,
+        UserStatusLogGateway $userStatusLogGateway,
+        UsernameGenerator $usernameGenerator,
+        CustomFieldGateway $customFieldGateway,
+        PersonalDocumentGateway $personalDocumentGateway,
+        FamilyAdultGateway $familyAdultGateway,
+        PasswordPolicy $passwordPolicy
+    )
     {
         $this->familyAdultGateway = $familyAdultGateway;
 
-        parent::__construct($userGateway, $userStatusLogGateway, $usernameGenerator, $customFieldGateway, $personalDocumentGateway);
+        parent::__construct(
+            $userGateway,
+            $userStatusLogGateway,
+            $usernameGenerator,
+            $customFieldGateway,
+            $personalDocumentGateway,
+            $passwordPolicy
+        );
     }
 
     public function getViewClass() : string
@@ -107,7 +123,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
         if ($formData->has('parent2roleChanged')) {
             $this->userGateway->removeRoleFromUser($formData->get('gibbonPersonIDParent2'), '004');
         }
-        
+
         // Only remove users if they were created during this process
         if ($formData->has('parent1created')) {
             $this->userGateway->delete($formData->get('gibbonPersonIDParent1'));
@@ -152,7 +168,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
     protected function updateParentData(FormDataInterface $formData, $i)
     {
         $excludeFields = ['gibbonRoleIDPrimary', 'gibbonRoleIDAll', 'username', 'passwordStrong', 'passwordStrongSalt'];
-        
+
         $userData = $this->getUserData($formData, '004', "parent{$i}");
         $userData = array_diff_key($userData, array_flip($excludeFields));
 

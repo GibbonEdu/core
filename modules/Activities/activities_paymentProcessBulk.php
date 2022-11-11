@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicy;
+
 include '../../gibbon.php';
 
 $action = $_POST['action'] ?? '';
@@ -115,8 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                                     $key = '';
                                     $continue = false;
                                     $count = 0;
+
+                                    // Use password policy to generate random string
+                                    $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+
                                     while ($continue == false and $count < 100) {
-                                        $key = randomPassword(40);
+                                        $key = $randStrGenerator->generate();
 
                                             $dataUnique = array('key' => $key);
                                             $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';

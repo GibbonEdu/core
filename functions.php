@@ -1554,6 +1554,17 @@ function getLastYearGroupID($connection2)
     return $output;
 }
 
+/**
+ * Generate a random password of the specified length.
+ * Deprecated. Use PasswordPolicy::generate() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ *
+ * @param int $length
+ *
+ * @return string
+ */
 function randomPassword($length)
 {
     if (!(is_int($length))) {
