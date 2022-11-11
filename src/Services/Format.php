@@ -178,7 +178,7 @@ class Format
 
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
-        $formatter = new \IntlDateFormatter(null);
+        $formatter = new \IntlDateFormatter(null, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
 
         if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
             $formatter->setPattern('MMM d, yyyy');
