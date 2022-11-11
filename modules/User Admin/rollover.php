@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Services\Format;
+use Gibbon\Session\SessionFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -62,15 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo '</div>';
         } else {
 
-                $dataNext = array('gibbonSchoolYearID' => $nextYearBySession);
-                $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultNext = $connection2->prepare($sqlNext);
-                $resultNext->execute($dataNext);
-            if ($resultNext->rowCount() == 1) {
-                $rowNext = $resultNext->fetch();
-            }
-            $nameNext = $rowNext['name'];
-            if ($nameNext == '') {
+
+            if (empty($nextYearBySession)) {
                 echo "<div class='error'>";
                 echo __('The next school year cannot be determined, so this action cannot be performed.');
                 echo '</div>';
@@ -79,10 +73,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 $form->setClass('smallIntBorder fullWidth');
 
-                $form->addHiddenValue('nextYear', $nextYearID);
+                $form->addHiddenValue('nextYear', $nextYearBySession['gibbonSchoolYearID']);
 
                 $row = $form->addRow();
-                    $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$session->get('gibbonSchoolYearName').'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+                    $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$session->get('gibbonSchoolYearName').'</b>', '<b>'.$nextYearBySession['name'].'</b>', '<span style="color: #cc0000"><i>', '</span>'));
 
                 $row = $form->addRow();
                     $row->addSubmit('Proceed');
@@ -626,14 +620,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $advance2 = false;
                     }
                     if ($advance2) {
-                        try {
-                            $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-                        } catch (\Exception $e) {
-                            die($e->getMessage());
-                        }
-                        $session->set('gibbonSchoolYearIDCurrent', $session->get('gibbonSchoolYearID'));
-                        $session->set('gibbonSchoolYearNameCurrent', $session->get('gibbonSchoolYearName'));
-                        $session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonSchoolYearSequenceNumber'));
+                        $session->forget('gibbonSchoolYearIDCurrent');
+                        SessionFactory::setCurrentSchoolYear($session, $nextYearBySession);
 
                         echo "<div class='success'>";
                         echo __('Advance was successful, you are now in a new academic year!');
