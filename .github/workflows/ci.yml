@@ -83,9 +83,8 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: ""
 
-      - name: Run composer test:phpstan (experimental)
+      - name: Run phpstan static analysis
         run: composer test:phpstan
-        continue-on-error: true
 
       - name: Check PHP warning and deprecated messages in server_log
         run: |
