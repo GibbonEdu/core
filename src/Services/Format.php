@@ -178,15 +178,24 @@ class Format
 
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
+        $formatter = new \IntlDateFormatter(null);
 
         if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-            $output = strftime('%b %e, %Y', $startTime);
+            $formatter->setPattern('MMM d, yyyy');
+            $output = $formatter->format($startTime);
         } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%e, %Y', $endTime);
+            $formatter->setPattern('MMM d');
+            $output = $formatter->format($startTime) . ' - ';
+            $formatter->setPattern('d, yyyy');
+            $output .= $formatter->format($endTime);
         } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+            $formatter->setPattern('MMM d');
+            $output = $formatter->format($startTime) . ' - ';
+            $formatter->setPattern('MMM d, yyyy');
+            $output .= $formatter->format($endTime);
         } else {
-            $output = strftime('%b %e, %Y', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+            $formatter->setPattern('MMM d, yyyy');
+            $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -982,5 +991,76 @@ class Format
         return !empty($expectedFormat)
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
+    }
+
+    /**
+     * Format a given datetime / timestamp into localized day of week name.
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function dayOfWeekName($datetime)
+    {
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'EEEE'
+            );
+        }
+        return $formatter->format($datetime);
+    }
+
+    /**
+     * Format a given datetime / timestamp into abbrivated localized month name.
+     * (i.e. from Jan to Sep).
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function monthName($datetime)
+    {
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MMM'
+            );
+        }
+        return $formatter->format($datetime);
+    }
+
+    /**
+     * Format a given datetime / timestamp into a 2 digits representation
+     * of the month (i.e. from 01 to 12).
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function monthDigits($datetime)
+    {
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MM'
+            );
+        }
+        return $formatter->format($datetime);
     }
 }

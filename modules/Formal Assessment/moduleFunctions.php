@@ -286,7 +286,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
     } else {
         while ($rowAssessments = $resultAssessments->fetch()) {
             echo '<h2>';
-            echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))), 0, 3).' '.substr($rowAssessments['date'], 0, 4).')</span>';
+            echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".Format::monthName(mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))).' '.substr($rowAssessments['date'], 0, 4).')</span>';
             if ($manage == true) {
                 echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 echo "<a href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents&width=600&height=135' class='thickbox'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>";

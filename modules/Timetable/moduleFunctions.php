@@ -2066,6 +2066,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $output .= "<span style='font-weight: normal; font-style: italic;'>".__('Time').'<span>';
             $output .= '</th>';
             $count = 0;
+
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
                     if ($count == 0) {
@@ -2096,7 +2097,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-                        $output .= ($rowDay['nameShort'] ?? strftime('%a', ($startDayStamp + (86400 * $dateCorrection)))).'<br/>';
+                        $output .= ($rowDay['nameShort'] ?? Format::dayOfWeekName($startDayStamp + (86400 * $dateCorrection))).'<br/>';
                     }
                     $output .= "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
