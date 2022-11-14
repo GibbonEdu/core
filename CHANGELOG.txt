@@ -176,6 +176,7 @@ v24.0.00
         System: fixed missing password reset link in plain-text copy of emails
         Activities: fixed sidebar disappearing when opening View Details window
         Attendance: fixed the Available to Roles setting in Attendance Codes
+        Attendance: fixed attendance for classes timetabled multiple times on the same day
         Finance: fixed online payment option not available on invoice print page
         Finance: fixed reminder emails not handling comma separated company email addresses
         Library: fixed missing cost field when duplicating library item

@@ -28,17 +28,18 @@ require __DIR__ . '/../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php' ;
 
-$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ?? '';
-$currentDate=$_POST["currentDate"] ?? '';
-$today=date("Y-m-d");
+$gibbonCourseClassID=$_POST['gibbonCourseClassID'] ?? '';
+$gibbonTTDayRowClassID=!empty($_POST['gibbonTTDayRowClassID']) ? $_POST['gibbonTTDayRowClassID'] : null;
+$currentDate=$_POST['currentDate'] ?? '';
+$today=date('Y-m-d');
 
-$moduleName = getModuleName($_POST["address"] ?? '');
+$moduleName = getModuleName($_POST['address'] ?? '');
 
-if ($moduleName == "Planner") {
+if ($moduleName == 'Planner') {
     $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-    $URL=$session->get("absoluteURL") . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
+    $URL=$session->get('absoluteURL') . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
 } else {
-    $URL=$session->get("absoluteURL") . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . Format::date($currentDate) ;
+    $URL=$session->get('absoluteURL') . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&currentDate=" . Format::date($currentDate) ;
 }
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
@@ -113,13 +114,13 @@ else {
                     }
 
                     if ($resultLog->rowCount()<1) {
-                        $data=array("gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
-                        $sql="INSERT INTO gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
+                        $data=array("gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
+                        $sql="INSERT INTO gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, gibbonTTDayRowClassID=:gibbonTTDayRowClassID, date=:date, timestampTaken=:timestampTaken" ;
 
                     } else {
                         $resultUpdate=$resultLog->fetch() ;
-                        $data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
-                        $sql="UPDATE gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogCourseClassID=:gibbonAttendanceLogCourseClassID" ;
+                        $data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
+                        $sql="UPDATE gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, gibbonTTDayRowClassID=:gibbonTTDayRowClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogCourseClassID=:gibbonAttendanceLogCourseClassID" ;
                     }
 
                     try {
@@ -170,7 +171,7 @@ else {
                         $gibbonAttendanceLogPersonID = '';
                         if ($result->rowCount()>0) {
                             while ($row=$result->fetch()) {
-                                if ($row['context'] == 'Class' && $row['gibbonCourseClassID'] == $gibbonCourseClassID) {
+                                if ($row['context'] == 'Class' && $row['gibbonCourseClassID'] == $gibbonCourseClassID && (empty($row['gibbonTTDayRowClassID']) || $row['gibbonTTDayRowClassID'] == $gibbonTTDayRowClassID) ) {
                                     $existing = true ;
                                     $gibbonAttendanceLogPersonID = $row['gibbonAttendanceLogPersonID'];
                                     break;
@@ -188,6 +189,7 @@ else {
                             'comment'                => $comment,
                             'gibbonPersonIDTaker'    => $session->get('gibbonPersonID'),
                             'gibbonCourseClassID'    => $gibbonCourseClassID,
+                            'gibbonTTDayRowClassID'  => $gibbonTTDayRowClassID,
                             'date'                   => $currentDate,
                             'timestampTaken'         => date('Y-m-d H:i:s'),
                         ];

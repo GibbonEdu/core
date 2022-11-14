@@ -66,7 +66,7 @@ trait MultipleOptionsTrait
      * @param   array  $values
      * @return  self
      */
-    public function fromArray($values)
+    public function fromArray($values, $valCol = null, $nameCol = null, $groupBy = false)
     {
         if (empty($values)) {
             $values = [];
@@ -76,7 +76,10 @@ trait MultipleOptionsTrait
             throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($values)));
         }
 
-        if (array_values($values) === $values) {
+        if (!empty($valCol) && !empty($nameCol)) {
+            // Extract named values from an associative array
+            $this->setOptionsFromArray($values, $valCol, $nameCol, $groupBy);
+        } elseif (array_values($values) === $values) {
             // Convert non-associative array and trim values
             foreach ($values as $value) {
                 $this->options[trim(strval($value))] = (!is_array($value))? trim($value) : $value;
@@ -123,19 +126,7 @@ trait MultipleOptionsTrait
 
         if($dataset->getTotalCount() > 0)
         {
-            $options = array_filter($dataset->toArray(), function ($item) use ($valCol,$nameCol) {
-                return isset($item[$valCol]) && isset($item[$nameCol]);
-            });
-
-            foreach ($options as $option) {
-                $option = array_map('trim', $option);
-
-                if ($groupBy !== false) {
-                    $this->options[$option[$groupBy]][$option[$valCol]] = __($option[$nameCol]);
-                } else {
-                    $this->options[$option[$valCol]]= __($option[$nameCol]);
-                }
-            }
+            $this->setOptionsFromArray($dataset->toArray(), $valCol, $nameCol, $groupBy);
         }
 
         return $this;
@@ -154,21 +145,7 @@ trait MultipleOptionsTrait
         }
 
         if ($results && $results->rowCount() > 0) {
-            $options = array_filter($results->fetchAll(), function ($item) {
-                return isset($item['value']) && isset($item['name']);
-            });
-
-            foreach ($options as $option) {
-                $option = array_map(function ($item) {
-                    return trim((string) $item);
-                }, $option);
-
-                if ($groupBy !== false) {
-                    $this->options[$option[$groupBy]][$option['value']] = __($option['name']);
-                } else {
-                    $this->options[$option['value']] = __($option['name']);
-                }
-            }
+            $this->setOptionsFromArray($results->fetchAll(), 'value', 'name', $groupBy);
         }
 
         return $this;
@@ -190,5 +167,35 @@ trait MultipleOptionsTrait
     public function getOptionCount()
     {
         return count($this->options, COUNT_RECURSIVE);
+    }
+
+    /**
+     * Extract value => name options from an array containing multiple key => value pairs.
+     *
+     * @param array $values
+     * @param string $valCol
+     * @param string $nameCol
+     * @param string $groupBy
+     * @return void
+     */
+    protected function setOptionsFromArray(array $values, string $valCol, string $nameCol, $groupBy = null)
+    {
+        $options = array_filter($values, function ($item) use ($valCol,$nameCol) {
+            return isset($item[$valCol]) && isset($item[$nameCol]);
+        });
+
+        foreach ($options as $option) {
+            $option = is_array($option) ? 
+                array_map(function ($item) {
+                    return is_string($item) ? trim($item) : $item;
+                }, $option) 
+                : $option;
+
+            if (!empty($groupBy)) {
+                $this->options[$option[$groupBy]][$option[$valCol]] = __($option[$nameCol]);
+            } else {
+                $this->options[$option[$valCol]]= __($option[$nameCol]);
+            }
+        }
     }
 }

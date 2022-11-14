@@ -29,6 +29,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -1227,8 +1228,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form->setAutocomplete('off');
                         $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
 
-                        // Display the dated this attendance was taken, if any
+                        // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
+                            // Try to determine the timetable period for this lesson
+                            $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
+                            $form->addHiddenValue('gibbonTTDayRowClassID', $ttPeriod['gibbonTTDayRowClassID']);
+
                             $classLogs = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceLogsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
                             if (empty($classLogs)) {
                                 $form->setDescription(Format::alert(__('Attendance has not been taken. The entries below are a best-guess, not actual data.')));

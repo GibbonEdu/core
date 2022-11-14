@@ -701,4 +701,6 @@ UPDATE `gibbonAction` SET URLList='messenger_manage.php,messenger_manage_delete.
 ALTER TABLE gibbonMarkbookColumn MODIFY name VARCHAR(40);end
 ALTER TABLE `gibbonTTSpaceBooking` ADD `reason` VARCHAR(255) NOT NULL AFTER `timeEnd`;end
 UPDATE `gibbonAction` SET `URLList` = 'tt.php, tt_add.php, tt_edit.php, tt_delete.php, tt_import.php, tt_edit_day_add.php, tt_edit_day_edit.php, tt_edit_day_delete.php, tt_edit_day_edit_class.php, tt_edit_day_edit_class_delete.php, tt_edit_day_edit_class_add.php, tt_edit_day_edit_class_edit.php, tt_edit_day_edit_class_exception.php, tt_edit_day_edit_class_exception_add.php, tt_edit_day_edit_class_exception_delete.php,tt_edit_byClass.php' WHERE name='Manage Timetables' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable Admin');end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonTTDayRowClassID` INT(12) UNSIGNED ZEROFILL NULL AFTER `gibbonCourseClassID`;end
+ALTER TABLE `gibbonAttendanceLogCourseClass` ADD `gibbonTTDayRowClassID` INT(12) UNSIGNED ZEROFILL NULL AFTER `gibbonCourseClassID`;end
 ";
