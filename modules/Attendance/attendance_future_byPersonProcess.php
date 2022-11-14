@@ -121,9 +121,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         $URL .= '&return=error7';
                         header("Location: {$URL}");
                         exit;
-                    } else {
-                        $partialFail = true;
-                        continue;
                     }
                 }
 
