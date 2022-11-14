@@ -52,4 +52,32 @@ class TimetableDayDateGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function selectTimetabledPeriodsByClass($gibbonCourseClassID, $date)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name as period,  gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                AND gibbonTTDayDate.date=:date";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $date, $timeStart, $timeEnd)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd];
+        $sql = "SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name as period,  gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                AND gibbonTTDayDate.date=:date
+                AND gibbonTTColumnRow.timeStart=:timeStart 
+                AND gibbonTTColumnRow.timeEnd=:timeEnd";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
