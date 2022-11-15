@@ -158,7 +158,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                             $rowSpecial = $resultSpecial->fetch();
                             echo '</td>';
                         } else {
-                            echo "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
+                            $class = date('Y-m-d', $i) == date('Y-m-d') ? 'bg-yellow-200' : 'bg-gray-200';
+                            echo "<td class='{$class}' style='text-align: center;  font-size: 10px'>";
 
                             echo "<span style='color: #000000'>".Format::date(date('Y-m-d', $i)).'<br/>'.__('School Day').'</span>';
                             echo '<br/>';

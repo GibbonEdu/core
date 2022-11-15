@@ -53,7 +53,9 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         }
 
         $specialDay = $container->get(SchoolYearSpecialDayGateway::class)->getSpecialDayByDate($currentDate);
-        $specialDay['gibbonYearGroupIDList'] = explode(',', $specialDay['gibbonYearGroupIDList'] ?? '');
+        $gibbonYearGroupIDList = !empty($specialDay) && $specialDay['type'] == 'Off Timetable' ? $specialDay['gibbonYearGroupIDList']  : '';
+        $gibbonFormGroupIDList = !empty($specialDay) && $specialDay['type'] == 'Off Timetable'  ? $specialDay['gibbonFormGroupIDList'] : '';
+            
 
         //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
         if ($enabledByClass == 'Y') {
@@ -61,7 +63,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => $currentDate, 'time' => date("H:i:s"));
 
                 // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND student.status='Full' AND (student.dateStart IS NULL OR student.dateStart<=:date) AND (student.dateEnd IS NULL OR student.dateEnd>=:date)) AS studentCount
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname
                 FROM gibbonCourseClass
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                 JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -104,16 +106,21 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                 }
 
                 while ($row = $result->fetch()) {
+                    // Check for students who are active and do not have Off Timetable days by year group or form group
+                    $dataClassCheck = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonFormGroupIDList' => $gibbonFormGroupIDList, 'date' => $currentDate];
+                    $sqlClassCheck = "SELECT count(*) FROM gibbonCourseClassPerson 
+                        JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) 
+                        WHERE gibbonCourseClassPerson.role='Student' AND student.status='Full' 
+                        AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                        AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+                        AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+                        AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                        AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :gibbonFormGroupIDList)";
+                    
                     // Skip classes with no students
-                    if ($row['studentCount'] <= 0) continue;
-
-                    // Skip classes that are off timetable by year group
-                    if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && !empty($specialDay['gibbonYearGroupIDList']) && !empty($row['gibbonYearGroupIDList'])) {
-                        $row['gibbonYearGroupIDList'] = explode(',', $row['gibbonYearGroupIDList'] ?? '');
-                        if (count($row['gibbonYearGroupIDList']) == count(array_intersect($specialDay['gibbonYearGroupIDList'], $row['gibbonYearGroupIDList']))) {
-                            continue;
-                        }
-                    }
+                    $studentCount = $pdo->selectOne($sqlClassCheck, $dataClassCheck);
+                    if ($studentCount <= 0) continue;
 
                     // Check for a current log
                     if (isset($log[$row['gibbonCourseClassID']]) == false) {
