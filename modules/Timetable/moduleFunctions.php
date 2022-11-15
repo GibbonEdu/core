@@ -1128,15 +1128,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
     $offTimetable = false;
     if ($roleCategory == 'Student') {
-        // Display off-timetable days for students based on their year group
+        // Display off-timetable days for students based on their year group and form group
         $dataEnrolment = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
         $sqlEnrolment = "SELECT gibbonYearGroupID, gibbonFormGroupID FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID";
         $resultEnrolment = $connection2->prepare($sqlEnrolment);
         $resultEnrolment->execute($dataEnrolment);
 
         $enrolment = $resultEnrolment && $resultEnrolment->rowCount() > 0 ? $resultEnrolment->fetch() : [];
-        if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && !empty($enrolment) && in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? [])) {
-            $offTimetable = true;
+        if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && !empty($enrolment)) {
+            $offTimetable |= in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? []);
+            $offTimetable |= in_array($enrolment['gibbonFormGroupID'], $specialDay['gibbonFormGroupIDList'] ?? []);
         }
     } elseif ($roleCategory == 'Staff') {
         // Display off-timetable days for staff on days that have not been timetabled
@@ -1383,12 +1384,15 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
             //Draw periods from TT
             try {
                 $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonPersonID' => $gibbonPersonID);
-                $sqlPeriods = "SELECT gibbonTTDayID, gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
+                $sqlPeriods = "SELECT gibbonTTDayID, gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName
+                FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
                 $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
+
+            
             $periodCount = [];
             while ($rowPeriods = $resultPeriods->fetch()) {
                 $rowPeriods['gibbonYearGroupIDList'] = explode(',', $rowPeriods['gibbonYearGroupIDList'] ?? '');
@@ -1403,8 +1407,35 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                 if ($isSlotInTime == true) {
 
-                    // Check for off-timetable classes by year group
-                    $offTimetableClass = $roleCategory == 'Staff' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable' && !empty($specialDay['gibbonYearGroupIDList']) && !empty($rowPeriods['gibbonYearGroupIDList']) && count($rowPeriods['gibbonYearGroupIDList']) == count(array_intersect($specialDay['gibbonYearGroupIDList'], $rowPeriods['gibbonYearGroupIDList']));
+                    $offTimetableClass = false;
+
+                    // Check for off timetabled classes by year group and by form group
+                    if ($roleCategory == 'Staff' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
+                        try {
+                            $dataClassCheck = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonFormGroupIDList' => implode(',', $specialDay['gibbonFormGroupIDList']), 'gibbonYearGroupIDList' => implode(',', $specialDay['gibbonYearGroupIDList']), 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count)))];
+                            $sqlClassCheck = "SELECT count(*) as count
+                                FROM gibbonCourseClassPerson 
+                                JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
+                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) 
+                                WHERE role='Student' AND student.status='Full' 
+                                AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+                                AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+                                AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :gibbonFormGroupIDList)
+                                AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
+                                ";
+                            $resultClassCheck = $connection2->prepare($sqlClassCheck);
+                            $resultClassCheck->execute($dataClassCheck);
+                        } catch (PDOException $e) {
+                            $output .= "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        
+                        // See if there are no students left in the class after year groups and form groups are checked
+                        $studentCount = $resultClassCheck->fetch(\PDO::FETCH_COLUMN);
+                        if ($studentCount <= 0) {
+                            $offTimetableClass = true;
+                        }
+                    }
 
                     //Check for an exception for the current user
                     try {
