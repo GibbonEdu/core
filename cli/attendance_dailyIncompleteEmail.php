@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -51,14 +52,23 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
             die('Attendance CLI cancelled: Notifications not enabled in Attendance Settings.');
         }
 
+        $specialDay = $container->get(SchoolYearSpecialDayGateway::class)->getSpecialDayByDate($currentDate);
+        $gibbonYearGroupIDList = !empty($specialDay) && $specialDay['type'] == 'Off Timetable' 
+            ? $specialDay['gibbonYearGroupIDList'] ?? ''
+            : '';
+        $gibbonFormGroupIDArray = !empty($specialDay) && $specialDay['type'] == 'Off Timetable' 
+            ? explode(',', $specialDay['gibbonFormGroupIDList'] ?? '')
+            : [];
+
         //Produce array of attendance data ------------------------------------------------------------------------------------------------------
 
         if ($enabledByFormGroup == 'Y') {
             try {
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                $data = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList];
 
                 // Looks for form groups with attendance='Y', also grabs primary tutor name
-                $sql = "SELECT gibbonFormGroupID, gibbonFormGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AS studentCount
+                // Excludes students in year groups with Off Timetable days
+                $sql = "SELECT gibbonFormGroupID, gibbonFormGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(DISTINCT gibbonStudentEnrolment.gibbonPersonID) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)) AS studentCount
                 FROM gibbonFormGroup
                 JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
@@ -74,7 +84,6 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 
             // Proceed if we have attendance-able Form Groups
             if ($result->rowCount() > 0) {
-
                 try {
                     $data = array('date' => $currentDate);
                     $sql = 'SELECT gibbonFormGroupID FROM gibbonAttendanceLogFormGroup WHERE date=:date';
@@ -93,6 +102,9 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                 while ($row = $result->fetch()) {
                     // Skip form groups with no students
                     if ($row['studentCount'] <= 0) continue;
+
+                    // Skip special days by form group ID
+                    if (in_array($row['gibbonFormGroupID'], $gibbonFormGroupIDArray)) continue;
 
                     // Check for a current log
                     if (isset($log[$row['gibbonFormGroupID']]) == false) {
