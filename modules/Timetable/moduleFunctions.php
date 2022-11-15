@@ -1165,7 +1165,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         $output .= "<div style='position: relative'>";
         $output .= "<div class='".($offTimetable ? 'bg-blue-200 border border-blue-700 text-blue-700' : 'ttClosure text-red-700')."' style='z-index: $zCount; position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
         $output .= "<div style='position: relative; top: 50%' title='".($specialDay['description'] ?? '' )."'>";
-        $output .= $offTimetable ? __('Off Timetable') : __('School Closed');
+        $output .= $offTimetable ? __('School Day').'<br/><br/>'.__('Off Timetable') : __('School Closed');
         $output .= '<br/><br/>'.($specialDay['name'] ?? '');
         $output .= '</div>';
         $output .= '</div>';
