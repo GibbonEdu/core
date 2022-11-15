@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
     $contexts = [
         'Year Group' => __('Year Group'),
-        // 'Form Group' => __('Form Group'),
+        'Form Group' => __('Form Group'),
     ];
 
     $row = $form->addRow()->addClass('offTimetable');
