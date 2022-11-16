@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
         $row = $form->addRow();
             $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
-            $row->addCheckbox('allStaff')->checked($allStaff);
+            $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
     }
 
     $row = $form->addRow();
@@ -110,6 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $subs = $subGateway->queryAvailableSubsByDate($criteria, $date, $timeStart, $timeEnd);
 
     $availability = $subGateway->selectUnavailableDatesByDateRange($date, $date)->fetchGrouped();
+
     $subs->transform(function (&$sub) use (&$availability) {
         $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
     });
@@ -123,6 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->setIcon('planner')
         ->setURL('/modules/Staff/report_subs_availabilityWeekly.php')
         ->addParam('sidebar', 'false')
+        ->addParam('allStaff', $allStaff)
         ->addParam('date', Format::date($date))
         ->displayLabel();
 
