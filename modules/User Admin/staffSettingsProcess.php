@@ -51,6 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             'biographicalGroupingOrder',
             'jobOpeningDescriptionTemplate',
             'coverageFullDayThreshold',
+            'coverageMode',
+            'coverageInternal',
         ],
         'System' => [
             'nameFormatStaffFormal',
