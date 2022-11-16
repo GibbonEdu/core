@@ -90,9 +90,11 @@ class StaffCoverageDateGateway extends QueryableGateway
     public function getCoverageTimesByTimetableClass($gibbonTTDayRowClassID)
     {
         $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID];
-        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, 'N' as allDay
+        $sql = "SELECT gibbonTTColumnRow.name as period, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, 'N' as allDay, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className
             FROM gibbonTTDayRowClass
             JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+            JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
             WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
         
         return $this->db()->selectOne($sql, $data);

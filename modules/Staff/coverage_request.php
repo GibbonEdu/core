@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
     $gibbonPersonIDCoverage = $_GET['gibbonPersonIDCoverage'] ?? '';
 
+    $settingGateway = $container->get(SettingGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
@@ -54,29 +55,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     $values = $staffAbsenceGateway->getByID($gibbonStaffAbsenceID);
-    $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->fetchAll();
+    $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->fetchAll();
 
     if (empty($values) || empty($absenceDates)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
-    if ($values['status'] != 'Approved') {
-        $page->addError(__('Coverage may only be requested for an absence after it has been approved.'));
-        return;
-    }
+    // if ($values['status'] != 'Approved') {
+    //     $page->addError(__('Coverage may only be requested for an absence after it has been approved.'));
+    //     return;
+    // }
+
+    // Get coverage mode
+    $coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+
+    $canSelectSubstitutes = $coverageMode == 'Requested' && $values['status'] == 'Approved';
+    
+    // Get date ranges
+    $dateStart = $absenceDates[0] ?? '';
+    $dateEnd = $absenceDates[count($absenceDates) -1] ?? '';
+    $dateRange = Format::dateRangeReadable($dateStart['date'], $dateEnd['date']);
+    $timeRange = $dateStart['allDay'] == 'N'
+        ? Format::timeRange($dateStart['timeStart'], $dateStart['timeEnd'])
+        : '';
+
+    // Get timetabled classes
+    $classes = $staffCoverageDateGateway->selectTimetabledClassCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
+    $coverageByTimetable = !empty($classes);
     
     // Look for available subs
-    $criteria = $substituteGateway->newQueryCriteria(true)
+    $criteria = $substituteGateway->newQueryCriteria()
+        ->filterBy('allStaff', $internalCoverage)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
         ->sortBy(['surname', 'preferredName']);
 
-    $availableSubs = array_reduce($absenceDates, function ($group, $date) use ($substituteGateway, &$criteria) {
-        if (!empty($date['gibbonStaffCoverageID'])) return $group; // Already covered
+    $availabilityCount = 0;
+    $availableSubs = [];
+
+    foreach ($coverageByTimetable ? $classes : $absenceDates as $index => $date) {
+        if (!empty($date['gibbonStaffCoverageID'])) continue; // Already covered
 
         $availableByDate = $substituteGateway->queryAvailableSubsByDate($criteria, $date['date'], $date['timeStart'], $date['timeEnd'])->toArray();
-        return array_merge($group, $availableByDate);
-    }, []);
+        $availabilityCount += !empty($availableByDate)? 1 : 0;
+
+        $availableSubs = array_merge($availableSubs, $availableByDate);
+
+        if ($coverageByTimetable) {
+            $classes[$index]['availability'] = $availableByDate;
+        }
+    }
 
     // Group subs by person
     $availableSubs = array_reduce($availableSubs, function ($group, $item) {
@@ -105,19 +134,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         return $group;
     }, []);
 
-    // Get date ranges
-    $dateStart = $absenceDates[0] ?? '';
-    $dateEnd = $absenceDates[count($absenceDates) -1] ?? '';
-    $dateRange = Format::dateRangeReadable($dateStart['date'], $dateEnd['date']);
-    $timeRange = $dateStart['allDay'] == 'N'
-        ? Format::timeRange($dateStart['timeStart'], $dateStart['timeEnd'])
-        : '';
-
-    // Get timetabled classes
-    $classes = $staffCoverageDateGateway->selectTimetabledClassCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
-    $coverageByTimetable = !empty($classes);
-
-
     // FORM
     $form = Form::create('staffAbsenceEdit', $session->get('absoluteURL').'/modules/Staff/coverage_requestProcess.php');
 
@@ -126,123 +142,98 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
     $form->addRow()->addHeading('Coverage Request', __('Coverage Request'));
-
-    $requestTypes = ['Broadcast'  => __('Any available substitute')];
-
-    if (!empty($availableSubs)) {
-        $requestTypes['Individual'] = __('Specific substitute');
-    }
-
+        
     $row = $form->addRow();
         $row->addLabel('dateLabel', __('Absence'));
         $row->addTextField('date')->readonly()->setValue($dateRange.' '.$timeRange);
 
-    $row = $form->addRow();
-        $row->addLabel('requestType', __('Substitute Required'));
-        $row->addSelect('requestType')->isRequired()->fromArray($requestTypes)->selected('Broadcast');
+    if ($canSelectSubstitutes) {
 
-    $form->toggleVisibilityByClass('individualOptions')->onSelect('requestType')->when('Individual');
-    $form->toggleVisibilityByClass('broadcastOptions')->onSelect('requestType')->when('Broadcast');
+        $requestTypes = ['Broadcast'  => __('Any available substitute')];
 
-        
-    // Broadcast
-    $row = $form->addRow()->addClass('broadcastOptions');
-    if (!empty($availableSubs)) {
-        $row->addAlert(__("This option sends a request out to all available substitutes. There are currently {count} substitutes with availability for this time period. You'll receive a notification once your request is accepted.", ['count' => '<b>'.count($availableSubs).'</b>']), 'message');
+        if (!empty($availableSubs) || ($coverageByTimetable && $availabilityCount > 0)) {
+            $requestTypes['Individual'] = __('Specific substitute');
+        }
 
-        // If there's more than one sub type, allow users to direct their broadcast request to a specific type.
-        // All substitute types are selected by default.
-        $allSubsTypes = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'substituteTypes');
-        $allSubsTypes = array_filter(array_map('trim', explode(',', $allSubsTypes)));
-        if (count($allSubsTypes) > 1) {
+        $row = $form->addRow();
+            $row->addLabel('requestType', __('Substitute Required'));
+            $row->addSelect('requestType')->isRequired()->fromArray($requestTypes)->selected('Broadcast');
+
+        $form->toggleVisibilityByClass('individualOptions')->onSelect('requestType')->when('Individual');
+        $form->toggleVisibilityByClass('broadcastOptions')->onSelect('requestType')->when('Broadcast');
+            
+        // Broadcast
+        if (!empty($availableSubs)) {
+            $col = $form->addRow()->addClass('broadcastOptions')->addColumn();
+            $col->addAlert(__("This option sends a request out to all available substitutes. There are currently {count} substitutes with availability for this time period. You'll receive a notification once your request is accepted.", ['count' => Format::bold(count($availableSubs))]), 'message');
+            
+            if ($coverageByTimetable && count($classes) > $availabilityCount) {
+                $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold(count($classes) - $availabilityCount)]).' '.__('A notification will be sent to administration.'), 'warning');
+            }
+
+            // If there's more than one sub type, allow users to direct their broadcast request to a specific type.
+            // All substitute types are selected by default.
+            $allSubsTypes = $settingGateway->getSettingByScope('Staff', 'substituteTypes');
+            $allSubsTypes = array_filter(array_map('trim', explode(',', $allSubsTypes)));
+            if (count($allSubsTypes) > 1) {
+                $row = $form->addRow()->addClass('broadcastOptions');
+                $row->addLabel('substituteTypes', __('Substitute Types'));
+                $row->addCheckbox('substituteTypes')->fromArray($availableSubsByType)->checkAll()->wrap('<div class="standardWidth floatRight">', '</div>');
+            }
+        } else {
             $row = $form->addRow()->addClass('broadcastOptions');
-            $row->addLabel('substituteTypes', __('Substitute Types'));
-            $row->addCheckbox('substituteTypes')->fromArray($availableSubsByType)->checkAll()->wrap('<div class="standardWidth floatRight">', '</div>');
+            $row->addAlert(__("There are no substitutes currently available for this time period. You should still send a request, as substitute availability may change, but you cannot select a specific substitute at this time. A notification will be sent to administration."), 'warning');
+        }
+
+        // Individual
+        $col = $form->addRow()->addClass('individualOptions')->addColumn();
+            $col->addAlert(__("This option sends your request to the selected substitute. You'll receive a notification when they accept or decline. If your request is declined you'll have to option to send a new request."), 'message');
+
+        if ($coverageByTimetable && count($classes) > $availabilityCount) {
+            $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold(count($classes) - $availabilityCount)]).' '.__('You can still send a request, as substitute availability may change, but you cannot select a specific substitute for these classes.').' '.__('A notification will be sent to administration.'), 'warning');
         }
     } else {
-        $row->addAlert(__("There are no substitutes currently available for this time period. You should still send a request, as substitute availability may change, but you cannot select a specific substitute at this time. A notification will be sent to administration."), 'warning');
+        $form->addHiddenValue('requestType', $coverageByTimetable ? 'Individual' : 'Broadcast');
     }
-
-    // Individual
-    $row = $form->addRow()->addClass('individualOptions');
-        $row->addAlert(__("This option sends your request to the selected substitute. You'll receive a notification when they accept or decline. If your request is declined you'll have to option to send a new request."), 'message');
-
-    // $row = $form->addRow()->addClass('individualOptions');
-    //     $row->addLabel('gibbonPersonIDCoverage', __('Substitute'))->description(__('Only available substitutes are listed here.'));
-    //     $row->addSelectPerson('gibbonPersonIDCoverage')
-    //         ->fromArray($availableSubsOptions)
-    //         ->placeholder()
-    //         ->selected($gibbonPersonIDCoverage)
-    //         ->isRequired();
-    
 
     $sql = "SELECT DATE_FORMAT(schoolStart, '%H:%i') as schoolStart, DATE_FORMAT(schoolEnd, '%H:%i') as schoolEnd FROM gibbonDaysOfWeek WHERE name=DATE_FORMAT(CURRENT_DATE, '%W') AND schoolDay='Y'";
     $weekday = $pdo->selectOne($sql);
 
     $col = $form->addRow()->addColumn();
-        $col->addLabel('when', __('When'));
+    $col->addLabel('when', __('When'));
 
-        $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($coverageByTimetable ? $classes : $absenceDates));
-        $table->getRenderer()->addData('class', 'bulkActionForm mt-2');
-    
-        $table->modifyRows(function ($class, $row) {
-            if (!empty($class['gibbonStaffCoverageID'])) $row->addClass('dull');
-            return $row->addClass('h-16');
+    $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($coverageByTimetable ? $classes : $absenceDates));
+    $table->getRenderer()->addData('class', 'bulkActionForm mt-2');
+
+    $table->modifyRows(function ($class, $row) {
+        if (!empty($class['gibbonStaffCoverageID'])) $row->addClass('dull');
+        return $row->addClass('h-16');
+    });
+
+    $table->addColumn('dateLabel', __('Date'))
+        ->format(Format::using('dateReadable', 'date'));
+
+    if ($coverageByTimetable) {
+        $table->addColumn('columnName', __('Period'));
+        $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+        $table->addColumn('timeStart', __('Time'))
+            ->format(function ($class) {
+                return Format::small(Format::timeRange($class['timeStart'], $class['timeEnd']));
+            });
+    } else {
+        $table->addColumn('allDay', __('All Day'))
+            ->format(Format::using('yesNo', 'allDay'));
+
+        $table->addColumn('timeStart', __('Time'))
+            ->width('50%')
+            ->format(function ($absence) {
+                return $absence['allDay'] == 'N'
+                    ? Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']))
+                    : Format::small(__('All Day'));
         });
-    
-        $table->addColumn('dateLabel', __('Date'))
-            ->format(Format::using('dateReadable', 'date'));
-    
-        if ($coverageByTimetable) {
-            $table->addColumn('columnName', __('Period'));
-            $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
-            $table->addColumn('timeStart', __('Time'))
-                ->format(function ($class) {
-                    return Format::small(Format::timeRange($class['timeStart'], $class['timeEnd']));
-                });
-        } else {
-            $table->addColumn('allDay', __('All Day'))
-                ->format(Format::using('yesNo', 'allDay'));
 
-            $table->addColumn('timeStart', __('Time'))
-                ->width('50%')
-                ->format(function ($absence) {
-                    return $absence['allDay'] == 'N'
-                        ? Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']))
-                        : Format::small(__('All Day'));
-            });
+    }
 
-        }
-
-        $table->addColumn('substitute', __('Substitute'))
-            ->description(__('Only available substitutes are listed here.'))
-            ->addClass('individualOptions')
-            ->width('40%')
-            ->format(function ($class) use (&$substituteGateway, &$criteria, &$form, &$coverageByTimetable) {
-                if (!empty($class['gibbonStaffCoverageID'])) {
-                    return !empty($class['surnameCoverage'])
-                        ? Format::name('', $class['surnameCoverage'], $class['preferredNameCoverage'], 'Staff')
-                        : __('Any available substitute');
-                }
-
-                $availableByDate = $substituteGateway->queryAvailableSubsByDate($criteria, $class['date'], $class['timeStart'], $class['timeEnd'])->toArray();
-
-                $availableSubsOptions = array_reduce($availableByDate, function ($group, $item) {
-                    $group[$item['type']][$item['gibbonPersonID']] = Format::name($item['title'], $item['preferredName'], $item['surname'], 'Staff', true, true);
-                    return $group;
-                }, []);
-
-                $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
-                return $form->getFactory()->createSelectPerson('gibbonPersonIDCoverage')
-                    ->fromArray($availableSubsOptions)
-                    ->setName('gibbonPersonIDCoverage['.$id.']')
-                    ->setID('gibbonPersonIDCoverage'.$id)
-                    ->photo(true, 'small')
-                    ->placeholder()
-                    ->setClass('individualOptions flex-1')
-                    ->getOutput();
-            });
-    
     if ($coverageByTimetable) {
         $form->addHiddenValue('allDay', 'N');
 
@@ -283,38 +274,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 }
             });
     }
-        
-    // No classes - Select absences by time range
-    // if ($dateStart['allDay'] == 'Y') {
-    //     $row = $form->addRow();
-    //     $row->addLabel('allDay', __('When'));
-    //     $row->addCheckbox('allDay')
-    //         ->description(__('All Day'))
-    //         ->setValue('Y')
-    //         ->checked($dateStart['allDay']);
-    // } else {
-    //     $form->addHiddenValue('allDay', 'N');
-    // }
 
-    // $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
+    if ($canSelectSubstitutes) {
+        $table->addColumn('substitute', __('Substitute'))
+            ->description(__('Only available substitutes are listed here.'))
+            ->addClass('individualOptions')
+            ->width('35%')
+            ->format(function ($class) use (&$substituteGateway, &$criteria, &$form, &$coverageByTimetable) {
+                if (!empty($class['gibbonStaffCoverageID'])) {
+                    return !empty($class['surnameCoverage'])
+                        ? Format::name('', $class['surnameCoverage'], $class['preferredNameCoverage'], 'Staff')
+                        : __('Any available substitute');
+                }
 
-    // $row = $form->addRow()->addClass('timeOptions');
-    //     $row->addLabel('timeStart', __('Time'));
-    //     $col = $row->addColumn('timeStart');
-    //     $col->addTime('timeStart')
-    //         ->setClass('w-full mr-1')
-    //         ->isRequired()
-    //         ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
-    //     $col->addTime('timeEnd')
-    //         ->chainedTo('timeStart')
-    //         ->setClass('w-full')
-    //         ->isRequired()
-    //         ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
-    
+                $availableSubsOptions = array_reduce($class['availability'] ?? [], function ($group, $item) {
+                    $group[$item['type']][$item['gibbonPersonID']] = Format::name($item['title'], $item['preferredName'], $item['surname'], 'Staff', true, true);
+                    return $group;
+                }, []);
 
-    // Dates selection - Loaded via AJAX
-    // $row = $form->addRow()->addClass('individualOptions');
-    //     $row->addContent('<div class="datesTable"></div>');
+                if (empty($availableSubsOptions)) {
+                    return Format::small(__('No substitutes available.'));
+                }
+
+                $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
+                return $form->getFactory()->createSelectPerson('gibbonPersonIDCoverage')
+                    ->fromArray($availableSubsOptions)
+                    ->setName('gibbonPersonIDCoverage['.$id.']')
+                    ->setID('gibbonPersonIDCoverage'.$id)
+                    ->photo(true, 'small')
+                    ->placeholder()
+                    ->setClass('individualOptions flex-1')
+                    ->getOutput();
+            });
+    } else {
+        $table->addColumn('notes', __('Notes'))
+            ->width('25%')
+            ->format(function ($class) use ($coverageByTimetable, &$form) {
+                $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
+                $input = $form->getFactory()->createTextField("notes[{$id}]")->setID("notes{$id}")->addClass('coverageNotes');
+                return $input->getOutput();
+        });
+    }
 
     $row = $form->addRow();
         $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
@@ -355,6 +355,10 @@ $(document).ready(function() {
     $(document).on('change', 'input[name="timetableClasses[]"]', function() {
         var checkbox = this;
         $(this).parents('tr').find('.individualOptions.personSelect').each(function() {
+            $(this).toggle($(checkbox).prop("checked"));
+        });
+
+        $(this).parents('tr').find('.coverageNotes').each(function() {
             $(this).toggle($(checkbox).prop("checked"));
         });
 

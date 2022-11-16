@@ -42,11 +42,27 @@ class StaffAbsenceDateGateway extends QueryableGateway
     {
         $gibbonStaffAbsenceIDList = is_array($gibbonStaffAbsenceID)? $gibbonStaffAbsenceID : [$gibbonStaffAbsenceID];
         $data = ['gibbonStaffAbsenceIDList' => implode(',', $gibbonStaffAbsenceIDList) ];
+        $sql = "SELECT gibbonStaffAbsenceDate.gibbonStaffAbsenceID as groupBy, 
+                gibbonStaffAbsenceDate.*, 
+                gibbonStaffAbsenceDate.allDay, 
+                gibbonStaffAbsenceDate.timeStart,
+                gibbonStaffAbsenceDate.timeEnd, '' as coverage, '' as titleCoverage, '' as preferredNameCoverage, '' as surnameCoverage, '' as gibbonPersonIDCoverage, '' as gibbonStaffCoverageID, '' as notes, '' as gibbonTTDayRowClassID
+            FROM gibbonStaffAbsenceDate
+            WHERE FIND_IN_SET(gibbonStaffAbsenceDate.gibbonStaffAbsenceID, :gibbonStaffAbsenceIDList)
+            ORDER BY gibbonStaffAbsenceDate.date, gibbonStaffAbsenceDate.timeStart";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)
+    {
+        $gibbonStaffAbsenceIDList = is_array($gibbonStaffAbsenceID)? $gibbonStaffAbsenceID : [$gibbonStaffAbsenceID];
+        $data = ['gibbonStaffAbsenceIDList' => implode(',', $gibbonStaffAbsenceIDList) ];
         $sql = "SELECT gibbonStaffAbsenceDate.gibbonStaffAbsenceID as groupBy, gibbonStaffAbsenceDate.*, 
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.allDay ELSE gibbonStaffAbsenceDate.allDay END) as allDay, 
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeStart ELSE gibbonStaffAbsenceDate.timeStart END) as timeStart,
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeEnd ELSE gibbonStaffAbsenceDate.timeEnd END) as timeEnd,
-        gibbonStaffCoverage.status as coverage, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverage.gibbonStaffCoverageID
+        gibbonStaffCoverage.status as coverage, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverageDate.reason as notes, gibbonStaffCoverageDate.gibbonTTDayRowClassID
                 FROM gibbonStaffAbsenceDate
                 LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID)
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID)

@@ -26,6 +26,7 @@ use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 /**
  * CoverageDates
@@ -42,23 +43,51 @@ class CoverageDates
     protected $staffCoverageGateway;
     protected $staffCoverageDateGateway;
 
-    public function __construct(Session $session, Connection $db, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway)
+    public function __construct(Session $session, Connection $db, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->staffCoverageDateGateway = $staffCoverageDateGateway;
+        $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
     }
 
     public function create($gibbonStaffCoverageID)
     {
+        $coverage = $this->staffCoverageGateway->getByID($gibbonStaffCoverageID);
+        $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();
+
+        return $this->createFromDates($coverage['status'], $dates);
+    }
+
+    public function createFromAbsence($gibbonStaffAbsenceID, $status)
+    {
+        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->toDataSet();
+
+        return $this->createFromDates($status, $dates);
+    }
+
+    protected function createFromDates($status, $dates) {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
         $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
 
-        $coverage = $this->staffCoverageGateway->getByID($gibbonStaffCoverageID);
-        $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();
+        $coverageByTimetable = count(array_filter($dates->toArray(), function($item) {
+            return !empty($item['gibbonTTDayRowClassID']);
+        }));
+
+        if ($coverageByTimetable) {
+            $dates->transform(function (&$item) {
+                if (empty($item['gibbonTTDayRowClassID'])) return;
+
+                $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['gibbonTTDayRowClassID']);
+                $item['columnName'] = $times['period'];
+                $item['courseNameShort'] = $times['courseName'];
+                $item['classNameShort'] = $times['className'];
+            });
+        }
+
         $table = DataTable::create('staffCoverageDates')->withData($dates);
 
         $table->addColumn('date', __('Date'))
@@ -67,26 +96,35 @@ class CoverageDates
         $table->addColumn('timeStart', __('Time'))
             ->format([AbsenceFormats::class, 'timeDetails']);
 
-        if ($canManage) {
+        if ($coverageByTimetable) {
+            $table->addColumn('columnName', __('Period'));
+            $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+        }
+
+        if ($canManage && $status != 'Pending Approval') {
             $table->addColumn('value', __('Value'));
         }
 
-        if ($coverage['status'] != 'Requested') {
+        if ($status != 'Requested' && $status != 'Pending Approval') {
             $table->addColumn('coverage', __('Coverage'))
-                ->width('30%')
+                ->width('20%')
                 ->format([AbsenceFormats::class, 'coverage']);
         }
+
+        $table->addColumn('notes', __('Notes'))->format(Format::using('truncate', 'notes', 60));
 
         // ACTIONS
         $canDelete = count($dates) > 1;
 
         if ($canManage) {
             $table->addActionColumn()
-                ->addParam('gibbonStaffCoverageID', $gibbonStaffCoverageID)
+                // ->addParam('gibbonStaffCoverageID', $gibbonStaffCoverageID)
                 ->addParam('gibbonStaffCoverageDateID')
                 ->format(function ($coverage, $actions) use ($canManage, $canDelete) {
-                    $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Staff/coverage_manage_edit_edit.php');
+                    if ($canManage) {
+                        $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/Staff/coverage_manage_edit_edit.php');
+                    }
 
                     if ($canDelete) {
                         $actions->addAction('deleteInstant', __('Delete'))

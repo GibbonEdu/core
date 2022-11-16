@@ -91,7 +91,7 @@ class AbsenceFormats
     public static function coverage($absence) {
         if ($absence['coverage'] == 'Accepted') {
             return Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
-        } elseif ($absence['coverage'] == 'Requested') {
+        } elseif ($absence['coverage'] == 'Requested' || $absence['coverage'] == 'Pending') {
             return '<span class="tag message">'.__('Pending').'</span>';
         }
         return '';
@@ -114,7 +114,7 @@ class AbsenceFormats
             return __($coverage['status']);
         }
 
-        $urgencyThreshold = intval($urgencyThreshold);
+        $urgencyThreshold = max(1, intval($urgencyThreshold));
         $relativeSeconds = strtotime($coverage['dateStart']) - time();
         if ($relativeSeconds <= 0) {
             return '<span class="tag dull">'.__('Overdue').'</span>';

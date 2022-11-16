@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
 
     // Join a set of coverage data per absence
     $absenceIDs = $absences->getColumn('gibbonStaffAbsenceID');
-    $coverageData = $staffAbsenceDateGateway->selectDatesByAbsence($absenceIDs)->fetchGrouped();
+    $coverageData = $staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($absenceIDs)->fetchGrouped();
     $absences->joinColumn('gibbonStaffAbsenceID', 'coverageList', $coverageData);
 
     // DATA TABLE
