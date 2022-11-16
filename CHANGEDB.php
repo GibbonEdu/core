@@ -715,7 +715,8 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Staff' AND gibbonAction.name='Duty Schedule_view'));end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('002', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Staff' AND gibbonAction.name='Duty Schedule_view'));end
 ALTER TABLE `gibbonStaffCoverageDate` ADD `gibbonTTDayRowClassID` INT(12) UNSIGNED ZEROFILL NULL AFTER `gibbonStaffAbsenceDateID`;end
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Staff', 'coverageMode', 'Coverage Mode', 'Should teachers send coverage requests directly to substitutes, or will it be assigned for them?', 'request');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Staff', 'coverageMode', 'Coverage Mode', 'Should teachers send coverage requests directly to substitutes, or will it be assigned for them?', 'Requested');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Staff', 'coverageInternal', 'Internal Coverage', 'If Yes, teachers can be assigned to cover each other. Otherwise, only users added through Manage Substitutes will be available for coverage.', 'N');end
+ALTER TABLE `gibbonStaffCoverage` CHANGE `status` `status` ENUM('Requested','Accepted','Declined','Cancelled','Pending') NULL DEFAULT 'Requested';end
 
 ";

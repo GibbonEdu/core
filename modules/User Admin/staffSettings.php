@@ -124,8 +124,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     $form->addRow()->addHeading('Staff Coverage', __('Staff Coverage'));
 
     $coverageModes = [
-        'request'  => __('Teachers can request their own substitutes'),
-        'assign'  => __('Substitutes are assigned to teachers'),
+        'Requested'  => __('Teachers can request their own substitutes'),
+        'Assigned'  => __('Substitutes are assigned to teachers'),
     ];
     $setting = $settingGateway->getSettingByScope('Staff', 'coverageMode', true);
     $row = $form->addRow();
