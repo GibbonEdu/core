@@ -118,7 +118,7 @@ class CoverageDates
 
         if ($canManage) {
             $table->addActionColumn()
-                // ->addParam('gibbonStaffCoverageID', $gibbonStaffCoverageID)
+                ->addParam('gibbonStaffCoverageID')
                 ->addParam('gibbonStaffCoverageDateID')
                 ->format(function ($coverage, $actions) use ($canManage, $canDelete) {
                     if ($canManage) {

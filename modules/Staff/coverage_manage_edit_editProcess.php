@@ -51,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         'timeStart' => $_POST['timeStart'] ?? null,
         'timeEnd'   => $_POST['timeEnd'] ?? null,
         'value'     => $_POST['value'] ?? '',
+        'reason'    => $_POST['reason'] ?? '',
     ];
 
     $updated = $staffCoverageDateGateway->update($gibbonStaffCoverageDateID, $data);
