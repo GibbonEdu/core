@@ -61,7 +61,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
         $passwordPolicies = $container->get(PasswordPolicy::class);
 
         //Check strength of password
-        if (!$passwordPolicies->validate($password)) {
+        if (!$passwordPolicies->validate($passwordNew)) {
             header("Location: {$URL->withReturn('error6')}");
         } else {
             //Check new passwords match

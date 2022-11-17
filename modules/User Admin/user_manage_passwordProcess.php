@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $passwordPolicies = $container->get(PasswordPolicy::class);
 
                 //Check strength of password
-                if (!$passwordPolicies->validate($password)) {
+                if (!$passwordPolicies->validate($passwordNew)) {
                     $URL .= '&return=error6';
                     header("Location: {$URL}");
                 } else {
