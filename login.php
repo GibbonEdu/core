@@ -28,6 +28,7 @@ use Gibbon\Auth\Adapter\OAuthAdapterInterface;
 use Gibbon\Auth\Adapter\OAuthGoogleAdapter;
 use Gibbon\Auth\Adapter\OAuthMicrosoftAdapter;
 use Gibbon\Auth\Adapter\OAuthGenericAdapter;
+use Gibbon\Auth\Adapter\LDAPAdapter;
 use Gibbon\Domain\System\LogGateway;
 use League\Container\Exception\NotFoundException;
 
@@ -73,6 +74,9 @@ try {
         case 'mfa':
             $authAdapter = $container->get(MFAAdapter::class);
             break;
+        case 'ldap':
+            $authAdapter = $container->get(LDAPAdapter::class);
+            break;
         default:
             $authAdapter = $container->get(DefaultAdapter::class);
     }
@@ -104,6 +108,7 @@ if (empty($authFactory) || empty($auth) || empty($authAdapter)) {
 // Handle login
 try {
     $loginService = $authFactory->newLoginService($authAdapter);
+    
     $loginService->login($auth, [
         'username' => $_POST['username'] ?? '',
         'password' => $_POST['password'] ?? '',
@@ -178,6 +183,9 @@ try {
     exit;
 } catch (Exception\MFATokenInvalid $e) {
     header("Location: {$URL->withQueryParam('loginReturn', 'fail11')}");
+    exit;
+} catch (Exception\LDAPBindFailed $e) {
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail12')}");
     exit;
 } catch (Exception\MFATokenRequired $e) {
     header("Location: {$URL->withQueryParam('method', 'mfa')}");

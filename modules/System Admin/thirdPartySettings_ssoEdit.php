@@ -96,6 +96,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addLabel('enabled', __('API Enabled'))->description(__('Enable Gibbon-wide integration with the Microsoft APIs?'));
             $row->addYesNo('enabled')->required();
 
+    } else if ($sso == 'LDAP') {
+        // LDAP
+        $form->addRow()->addHeading('LDAP Integration', __('LDAP Integration'))->append(sprintf(__('todo: this')));
+
+        $row = $form->addRow();
+            $row->addLabel('enabled', __('API Enabled'))->description(__('Enable Gibbon-wide login integration with LDAP?'));
+            $row->addYesNo('enabled')->required();
+            
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('ldapServer', __('LDAP Server'));
+            $row->addTextField('ldapServer')->required();
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('ldapDN', __('LDAP Distinguished Name (DN)'));
+            $row->addTextField('ldapDN')->required();
+
     } else if ($sso == 'Other') {
         $form->addRow()->addHeading('Generic OAuth2 Provider', __('Generic OAuth2 Provider'))->append(__('This setting offers a generic implementation of industry-standard OAuth2 protocols. It uses standard Client ID and Client Secret parameters to connect to an OAuth2 API server. You will need to specify the API endpoints of your chosen service, which can often be found in that service\'s documentation. If your OAuth2 service requires specific API parameters, this feature is unlikely to work.'));
 

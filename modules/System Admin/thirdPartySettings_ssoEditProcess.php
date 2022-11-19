@@ -53,11 +53,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'authorizeEndpoint' => $_POST['authorizeEndpoint'] ?? '',
         'tokenEndpoint'     => $_POST['tokenEndpoint'] ?? '',
         'userEndpoint'      => $_POST['userEndpoint'] ?? '',
+        'ldapServer'     => $_POST['ldapServer'] ?? '',
+        'ldapDN'      => $_POST['ldapDN'] ?? ''
     ];
 
     $calendarFeed = $_POST['calendarFeed'] ?? '';
 
-    if ($data['enabled'] == 'Y' && (empty($data['clientID']) || empty($data['clientSecret']))) {
+    if ($data['enabled'] == 'Y' && ((empty($data['clientID']) || empty($data['clientSecret'])) && ((empty($data['ldapServer']) || empty($data['ldapDN']))))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
