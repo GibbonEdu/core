@@ -25,6 +25,7 @@ v25.0.00
         Activities will now display on student and staff timetables
 
     Significant Changes
+        System: activated the lt_LT Lietuvių Kalba - Lithuanian locale
         School Admin: added an Off Timetable option for special days
         Planner: enabled custom fields for Lesson Plans
         Attendance: added the option to take future attendance for ad hoc groups
