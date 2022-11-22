@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         'notesStatus'            => $_POST['notesStatus'] ?? '',
         'requestType'            => $_POST['requestType'] ?? '',
         'substituteTypes'        => implode(',', $substituteTypes),
-        'status'                 => $values['status'] != 'Approved' ? 'Pending Approval' : 'Requested',
+        'status'                 => $values['status'] != 'Approved' ? 'Pending' : 'Requested',
         'notificationSent'       => 'N',
     ];
 

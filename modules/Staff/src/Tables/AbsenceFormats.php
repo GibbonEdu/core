@@ -48,8 +48,11 @@ class AbsenceFormats
 
     public static function substituteDetails($coverage)
     {
+        $name = !empty($coverage['gibbonPersonIDCoverage'])
+            ? Format::nameLinked($coverage['gibbonPersonIDCoverage'], $coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
+            : Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true);
         return $coverage['gibbonPersonIDCoverage']
-            ? Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
+            ? $name
             : '<span class="tag message">'.__('Pending').'</span>';
     }
 
