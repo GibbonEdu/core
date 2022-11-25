@@ -47,6 +47,7 @@ v25.0.00
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Messenger: improved the success message for confirmed read receipts
         Messenger: added form group name to students in Individual target list
+        Messenger: added the option to determine confirmation type in Send Report
         Markbook: added Term filter to student view, when Group Columns by Term enabled
         Markbook: increased maxlength of Name field to 40 characters
         Planner: improved the error message when unable to access classes in Unit Planner
