@@ -307,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                     ->getOutput();
             });
     } else {
-        $table->addColumn('notes', __('Notes'))
+        $table->addColumn('notes', __('Notes').' *')
             ->width('25%')
             ->format(function ($class) use ($coverageByTimetable, &$form) {
                 $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
@@ -317,7 +317,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     $row = $form->addRow();
-        $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
+        $row->addLabel('notesStatus', __('Notes'))->description('* '.__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
         $row->addTextArea('notesStatus')->setRows(3);
 
     $row = $form->addRow()->addClass('coverageSubmit');

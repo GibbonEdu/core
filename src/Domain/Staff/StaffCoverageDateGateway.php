@@ -52,14 +52,26 @@ class StaffCoverageDateGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function deleteCoverageDatesByAbsenceID($gibbonStaffAbsenceID)
+    public function getCoverageDateDetailsByID($gibbonStaffCoverageDateID)
     {
-        $data = ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID];
-        $sql = "DELETE gibbonStaffCoverageDate FROM gibbonStaffCoverageDate
-                JOIN gibbonStaffAbsenceDate ON (gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID=gibbonStaffCoverageDate.gibbonStaffAbsenceDateID)
-                WHERE gibbonStaffAbsenceDate.gibbonStaffAbsenceID = :gibbonStaffAbsenceID";
+        $data = ['gibbonStaffCoverageDateID' => $gibbonStaffCoverageDateID];
+        $sql = "SELECT gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverage.status, gibbonStaffAbsence.gibbonStaffAbsenceID, gibbonStaffAbsenceType.name as type, gibbonStaffAbsence.reason, gibbonStaffCoverage.substituteTypes,
+                gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.allDay, gibbonStaffCoverageDate.timeStart, gibbonStaffCoverageDate.timeEnd, gibbonStaffCoverage.timestampStatus, gibbonStaffCoverage.timestampCoverage, gibbonStaffCoverage.requestType,
+                gibbonStaffCoverage.notesCoverage, gibbonStaffCoverage.notesStatus, 0 as urgent, gibbonStaffAbsence.notificationSent, gibbonStaffAbsence.gibbonGroupID, gibbonStaffCoverage.notificationList as notificationListCoverage, gibbonStaffAbsence.notificationList as notificationListAbsence, 
+                gibbonStaffCoverage.gibbonPersonID, absence.title AS titleAbsence, absence.preferredName AS preferredNameAbsence, absence.surname AS surnameAbsence, 
+                gibbonStaffCoverage.gibbonPersonIDStatus, status.title AS titleStatus, status.preferredName AS preferredNameStatus, status.surname AS surnameStatus, 
+                gibbonStaffCoverage.gibbonPersonIDCoverage, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, gibbonStaffCoverageDate.gibbonTTDayRowClassID
+            FROM gibbonStaffCoverageDate 
+            JOIN gibbonStaffCoverage ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
+            LEFT JOIN gibbonStaffAbsence ON (gibbonStaffAbsence.gibbonStaffAbsenceID=gibbonStaffCoverage.gibbonStaffAbsenceID)
+            LEFT JOIN gibbonStaffAbsenceType ON (gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID)
+            LEFT JOIN gibbonPerson AS coverage ON (gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID)
+            LEFT JOIN gibbonPerson AS status ON (gibbonStaffCoverage.gibbonPersonIDStatus=status.gibbonPersonID)
+            LEFT JOIN gibbonPerson AS absence ON (gibbonStaffCoverage.gibbonPersonID=absence.gibbonPersonID)
+            WHERE gibbonStaffCoverageDate.gibbonStaffCoverageDateID=:gibbonStaffCoverageDateID
+            ";
 
-        return $this->db()->delete($sql, $data);
+        return $this->db()->selectOne($sql, $data);
     }
 
     public function selectTimetabledClassCoverageByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $dateStart, $dateEnd)
@@ -90,13 +102,24 @@ class StaffCoverageDateGateway extends QueryableGateway
     public function getCoverageTimesByTimetableClass($gibbonTTDayRowClassID)
     {
         $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID];
-        $sql = "SELECT gibbonTTColumnRow.name as period, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, 'N' as allDay, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className
+        $sql = "SELECT gibbonTTColumnRow.name as period, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, 'N' as allDay, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className, gibbonSpace.name as spaceName, gibbonSpace.gibbonSpaceID
             FROM gibbonTTDayRowClass
             JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
             JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
             JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
             WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
         
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function deleteCoverageDatesByAbsenceID($gibbonStaffAbsenceID)
+    {
+        $data = ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID];
+        $sql = "DELETE gibbonStaffCoverageDate FROM gibbonStaffCoverageDate
+                JOIN gibbonStaffAbsenceDate ON (gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID=gibbonStaffCoverageDate.gibbonStaffAbsenceDateID)
+                WHERE gibbonStaffAbsenceDate.gibbonStaffAbsenceID = :gibbonStaffAbsenceID";
+
+        return $this->db()->delete($sql, $data);
     }
 }

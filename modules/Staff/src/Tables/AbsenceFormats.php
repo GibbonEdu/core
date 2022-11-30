@@ -51,7 +51,7 @@ class AbsenceFormats
         $name = !empty($coverage['gibbonPersonIDCoverage'])
             ? Format::nameLinked($coverage['gibbonPersonIDCoverage'], $coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
             : Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true);
-        return $coverage['gibbonPersonIDCoverage']
+        return !empty($coverage['surnameCoverage'])
             ? $name
             : '<span class="tag message">'.__('Pending').'</span>';
     }

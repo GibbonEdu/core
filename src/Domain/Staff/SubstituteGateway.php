@@ -114,7 +114,7 @@ class SubstituteGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID as groupBy', ':date as date', 'gibbonPerson.gibbonPersonID', 'gibbonSubstitute.details', 'gibbonSubstitute.type', 'gibbonSubstitute.priority', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonStaff.gibbonStaffID', 'gibbonPerson.username',
+                'gibbonPerson.gibbonPersonID as groupBy', ':date as date', 'gibbonPerson.gibbonPersonID', 'gibbonSubstitute.details', 'gibbonSubstitute.type', 'gibbonSubstitute.priority', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonStaff.gibbonStaffID', 'gibbonPerson.username', 'gibbonStaff.jobTitle',
                 '(absence.ID IS NULL AND coverage.ID IS NULL AND timetable.ID IS NULL AND unavailable.gibbonStaffCoverageDateID IS NULL) as available',
                 'absence.status as absence', 'coverage.status as coverage', 'timetable.status as timetable', 'unavailable.reason as unavailable',
             ])
@@ -245,14 +245,14 @@ class SubstituteGateway extends QueryableGateway
             $query->where("gibbonSubstitute.active='Y'");
         }
 
-        if (!$criteria->hasFilter('showUnavailable')) {
+        if ($criteria->hasFilter('showUnavailable', true)) {
+            $query->groupBy(['gibbonPerson.gibbonPersonID']);
+            $query->orderBy(['available DESC', 'priority DESC']);
+        } else {
             $query->where('absence.ID IS NULL')
                   ->where('coverage.ID IS NULL')
                   ->where('timetable.ID IS NULL')
                   ->where('unavailable.gibbonStaffCoverageDateID IS NULL');
-        } else {
-            $query->groupBy(['gibbonPerson.gibbonPersonID']);
-            $query->orderBy(['available DESC', 'priority DESC']);
         }
 
         $criteria->addFilterRules([

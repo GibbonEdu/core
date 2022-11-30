@@ -107,8 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
                 // No substitute selected, create an open request for this class
                 if (empty($data['gibbonPersonIDCoverage'])) {
-                    $requests['unassigned']['data'] = $data + ['requestType' => 'Broadcast'];
-                    $requests['unassigned']['periods'][] = $timetableClassPeriod;
+                    $requests[] = ['data' => $data + ['requestType' => 'Broadcast'], 'periods' => [$timetableClassPeriod]];
+                    // $requests['unassigned']['data'] = $data + ['requestType' => 'Broadcast'];
+                    // $requests['unassigned']['periods'][] = $timetableClassPeriod;
                     continue;
                 }
 
@@ -130,8 +131,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
                 // No substitute selected, create an open request for this date
                 if (empty($data['gibbonPersonIDCoverage'])) {
-                    $requests['unassigned']['data'] = $data + ['requestType' => 'Broadcast'];
-                    $requests['unassigned']['dates'][] = $date;
+                    $requests[] = ['data' => $data + ['requestType' => 'Broadcast'], 'dates' => [$date]];
+                    // $requests['unassigned']['data'] = $data + ['requestType' => 'Broadcast'];
+                    // $requests['unassigned']['dates'][] = $date;
                     continue;
                 }
 

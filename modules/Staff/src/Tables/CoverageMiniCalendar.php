@@ -59,6 +59,7 @@ class CoverageMiniCalendar
 
             foreach ($availabilityByDate as $availability) {
                 switch ($availability['status']) {
+                    case 'Available':       $highlight = 'bg-yellow-200'; break;
                     case 'Not Available':   $highlight = 'bg-gray-500'; break;
                     case 'Absent':          $highlight = 'bg-gray-500'; break;
                     case 'Teaching':        $highlight = 'bg-blue-500'; break;

@@ -91,14 +91,22 @@ class CoverageDates
         $table = DataTable::create('staffCoverageDates')->withData($dates);
 
         $table->addColumn('date', __('Date'))
-            ->format(Format::using('dateReadable', 'date'));
-
-        $table->addColumn('timeStart', __('Time'))
-            ->format([AbsenceFormats::class, 'timeDetails']);
+            ->format(Format::using('dateReadable', 'date'))
+            ->formatDetails(function ($coverage) {
+                return Format::small(Format::dateReadable($coverage['date'], '%A'));
+            });
 
         if ($coverageByTimetable) {
-            $table->addColumn('columnName', __('Period'));
+
+            $table->addColumn('columnName', __('Period'))
+                ->description(__('Time'))
+                ->formatDetails([AbsenceFormats::class, 'timeDetails']);
+
+            // $table->addColumn('columnName', __('Period'));
             $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+        } else {
+            $table->addColumn('timeStart', __('Time'))
+                  ->format([AbsenceFormats::class, 'timeDetails']);
         }
 
         if ($canManage && $status != 'Pending Approval') {

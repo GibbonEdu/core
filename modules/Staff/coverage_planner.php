@@ -25,7 +25,6 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Tables\Action;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
     // Access denied
@@ -39,39 +38,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $date = isset($_REQUEST['date'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['date']) :new DateTimeImmutable();
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
-    $StaffCoverageGateway = $container->get(StaffCoverageGateway::class);
+    $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
     // DATE SELECTOR
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php';
 
     $form = Form::create('action', $link);
-	$form->setClass('blank fullWidth');
-	$form->addHiddenValue('address', $session->get('address'));
+    $form->setClass('blank fullWidth');
+    $form->addHiddenValue('address', $session->get('address'));
 
-	$row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap');
 
-	$lastDay = $date->modify('-1 day')->format($dateFormat);
-	$thisDay = (new DateTime('Today'))->format($dateFormat);
-	$nextDay = $date->modify('+1 day')->format($dateFormat);
+    $lastDay = $date->modify('-1 day')->format($dateFormat);
+    $thisDay = (new DateTime('Today'))->format($dateFormat);
+    $nextDay = $date->modify('+1 day')->format($dateFormat);
 
-	$col = $row->addColumn()->setClass('flex-1 flex items-center ');
-		$col->addButton(__('Previous Day'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastDay}'");
-		$col->addButton(__('Today'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisDay}'");
-		$col->addButton(__('Next Day'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextDay}'");
+    $col = $row->addColumn()->setClass('flex-1 flex items-center ');
+        $col->addButton(__('Previous Day'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastDay}'");
+        $col->addButton(__('Today'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisDay}'");
+        $col->addButton(__('Next Day'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
-	$col = $row->addColumn()->addClass('flex items-center justify-end');
-		$col->addDate('date')->setValue($date->format($dateFormat))->setClass('shortWidth');
-		$col->addSubmit(__('Go'));
+    $col = $row->addColumn()->addClass('flex items-center justify-end');
+        $col->addDate('date')->setValue($date->format($dateFormat))->setClass('shortWidth');
+        $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
 
     // COVERAGE
 
-    $coverage = $StaffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
+    $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
 
     $ttDays = [];
     foreach ($coverage as $ttDay => $coverageByTT) {
-        foreach ($coverageByTT as $coverageItem) {
+        foreach ($coverageByTT as $index => $coverageItem) {
             $ttDays[] = $coverageItem['gibbonTTDayID'] ?? '';
         }
     }
@@ -85,20 +84,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         ];
     }
 
-
     echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
     
-    // echo '<pre>';
-    // print_r($coverage);
-    // echo '</pre>';
+    // $page->navigator->addHeaderAction('add', __('Add'))
+    //         ->setURL('/modules/Timetable Admin/tt_add.php')
+    //         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+    //         ->displayLabel();
 
     foreach ($ttDayRows as $ttDayRow) {
 
         $coverageByTT = $coverage[$ttDayRow['name']] ?? [];
 
         if ($ttDayRow['type'] != 'Lesson' && $ttDayRow['type'] != 'Pastoral') {
-
             continue;
         }
 
@@ -106,14 +104,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         $gridRenderer = new GridView($container->get('twig'));
         
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
-        $table->setDescription('<h4>'.__($ttDayRow['name']).'</h4>');
+
+        if (!empty($coverage)) {
+            $table->setDescription('<h4>'.__($ttDayRow['name']).' <span class="text-xs font-normal">('.Format::timeRange($ttDayRow['timeStart'], $ttDayRow['timeEnd']).')</span></h4>');
+        }
 
         $table->addMetaData('gridClass', 'rounded-sm text-sm bg-gray-100 border border-t-0');
-        $table->addMetaData('gridItemClass', 'w-full py-2 px-3 flex items-center sm:flex-row justify-between border-t');
+        $table->addMetaData('gridItemClass', 'w-full py-3 px-3 flex items-center sm:flex-row justify-between border-t');
         $table->addMetaData('blankSlate', __('No coverage required.'));
         $table->addMetaData('hidePagination', true);
 
         $table->modifyRows(function ($coverage, $row) {
+            if ($coverage['absenceStatus'] == 'Pending Approval') return $row->addClass('bg-stripe');
             if ($coverage['status'] == 'Declined') return null;
             if ($coverage['status'] == 'Cancelled') return null;
             if ($coverage['status'] == 'Accepted') $row->addClass('bg-green-200');
@@ -139,50 +141,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
-                return Format::courseClassName($coverage['courseName'], $coverage['className']);
-        });
+                $url = './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID'];
+                return Format::link($url, Format::courseClassName($coverage['courseName'], $coverage['className']));
+            });
 
         $table->addColumn('coverage', __('Substitute'))
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
+                if ($coverage['absenceStatus'] == 'Pending Approval') {
+                    return Format::tag(__('Pending Approval'), 'dull');
+                } elseif ($coverage['status'] == 'Pending') {
+                    return Format::tag(__('Cover Required'), 'bg-red-300 text-red-800');
+                }
                 return AbsenceFormats::substituteDetails($coverage);
         });
-
-        // $table->addColumn('status', __('Status'))
-        //     ->format(function ($coverage) use ($urgencyThreshold) {
-        //         return AbsenceFormats::coverageStatus($coverage, $urgencyThreshold);
-        //     });
-
-        // $table->addColumn('test', '')->setClass('flex-1');
-
-        // $table->addColumn('timestampStatus', __('Requested'))
-        //     ->setClass('flex-1 text-right')
-        //     ->format(function ($coverage) {
-        //         if (empty($coverage['timestampStatus'])) return;
-        //         return Format::small(__('Updated').':').'<br/>'.Format::relativeTime($coverage['timestampStatus'], 'M j, Y H:i');
-        //     });
-
+        
         // ACTIONS
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
+            ->addParam('gibbonStaffCoverageDateID')
+            ->addParam('gibbonTTColumnRowID')
+            ->addParam('gibbonCourseClassID')
+            ->addParam('date', $date->format('Y-m-d'))
+            ->addClass('w-16 justify-end')
             ->format(function ($coverage, $actions) {
                 
-                if ($coverage['status'] == 'Accepted') {
+                if ($coverage['absenceStatus'] == 'Pending Approval') {
+                    $actions->addAction('view', __('View'))
+                        ->addParam('gibbonStaffAbsenceID', $coverage['gibbonStaffAbsenceID'] ?? '')
+                        ->isModal(700, 550)
+                        ->setURL('/modules/Staff/absences_view_details.php');
+                } elseif ($coverage['status'] == 'Accepted') {
                     $actions->addAction('edit', __('Edit'))
                         ->addParam('gibbonStaffAbsenceID', $coverage['gibbonStaffAbsenceID'] ?? '')
-                        ->isModal(800, 550)
-                        ->setURL('/modules/Staff/coverage_manage_edit.php');
+                        ->isModal(900, 700)
+                        ->setURL('/modules/Staff/coverage_planner_assign.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Staff/coverage_planner_unassign.php');
                 } else {
-                    
                     $actions->addAction('assign', __('Assign'))
-                        ->setURL('/modules/Staff/coverage_manage_edit.php')
-                        ->setIcon('page_new');
+                        ->setURL('/modules/Staff/coverage_planner_assign.php')
+                        ->setIcon('page_new')
+                        ->addParam('id', 'test')
+                        ->modalWindow(900, 700);
 
                 }
 
-                // $actions->addAction('delete', __('Delete'))
-                //     ->setURL('/modules/Staff/coverage_manage_delete.php');
+                
             });
 
         echo $table->render($coverageByTT);
