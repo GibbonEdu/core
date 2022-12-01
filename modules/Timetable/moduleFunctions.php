@@ -1413,10 +1413,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     if ($roleCategory == 'Staff' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
                         try {
                             $dataClassCheck = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonFormGroupIDList' => implode(',', $specialDay['gibbonFormGroupIDList']), 'gibbonYearGroupIDList' => implode(',', $specialDay['gibbonYearGroupIDList']), 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count)))];
-                            $sqlClassCheck = "SELECT count(*) as count
+                            $sqlClassCheck = "SELECT count(*) as studentCount, MAX(gibbonCourseClassMap.gibbonCourseClassMapID) as classMap
                                 FROM gibbonCourseClassPerson 
                                 JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
                                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) 
+                                LEFT JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND FIND_IN_SET(gibbonCourseClassMap.gibbonFormGroupID, :gibbonFormGroupIDList))
                                 WHERE role='Student' AND student.status='Full' 
                                 AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
                                 AND (student.dateStart IS NULL OR student.dateStart<=:date) 
@@ -1431,8 +1432,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         
                         // See if there are no students left in the class after year groups and form groups are checked
-                        $studentCount = $resultClassCheck->fetch(\PDO::FETCH_COLUMN);
-                        if ($studentCount <= 0) {
+                        $classCheck = $resultClassCheck->fetch();
+                        if (!empty($classCheck) && ($classCheck['studentCount'] <= 0 || !empty($classCheck['classMap']))) {
                             $offTimetableClass = true;
                         }
                     }
