@@ -53,7 +53,8 @@ class SessionGateway extends QueryableGateway
             ->leftJoin('gibbonPerson', 'gibbonSession.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
             ->leftJoin('gibbonAction', 'gibbonAction.gibbonActionID=gibbonSession.gibbonActionID')
-            ->leftJoin('gibbonModule', 'gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID');
+            ->leftJoin('gibbonModule', 'gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID')
+            ->where('gibbonSession.gibbonPersonID IS NOT NULL');
 
         return $this->runQuery($query, $criteria);
     }

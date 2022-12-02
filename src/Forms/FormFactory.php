@@ -511,7 +511,7 @@ class FormFactory implements FormFactoryInterface
                 'XCD $' => 'Eastern Caribbean Dollars ($)',
                 'XOF FCFA' => 'West African Francs (FCFA)',
                 'ZMW ZK' => 'Zambian Kwacha (ZMW)',
-                'ZWR $' => 'Zimbabwean Dollar (ZWR $)',
+                'ZWL $' => 'Zimbabwean Dollar (ZWL $)',
             ),
         );
 
