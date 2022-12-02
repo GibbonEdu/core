@@ -38,7 +38,7 @@ v25.0.00
         System: updated Parent Weekly Summary CLI to not send if date is outside school year
         System: improved right-to-left support in Default theme
         System: added new hooks for Staff Profile and Lesson Planner
-        System: added Malawian Kwacha, Algerian Dinar, and Zimbabwean Dollar as currency options
+        System: added Malawian Kwacha, Algerian Dinar, Uganda Shilling, Zimbabwean Dollar as currency options
         Attendance: enabled taking Future attendance on the current date
         Data Updater: added a search option to all Manage Update pages
         Data Updater: updated Family Data Updater History to order parents by contact priority

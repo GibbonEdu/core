@@ -506,6 +506,7 @@ class FormFactory implements FormFactoryInterface
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
                 'UAH ₴' => 'Українська гривня (₴)',
+                'UGX USh' => 'Uganda Shilling (USh)',
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
                 'XCD $' => 'Eastern Caribbean Dollars ($)',
