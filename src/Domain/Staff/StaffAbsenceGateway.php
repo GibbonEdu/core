@@ -170,7 +170,8 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->where("gibbonStaffAbsence.status = 'Approved'")
             ->where("gibbonPerson.status = 'Full'")
             ->bindValue('dateStart', $dateStart)
-            ->bindValue('dateEnd', $dateEnd);
+            ->bindValue('dateEnd', $dateEnd)
+            ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
 
         if ($grouped) {
             $query->cols(['COUNT(DISTINCT dates.gibbonStaffAbsenceDateID) as days', 'MIN(dates.date) as dateStart', 'MAX(dates.date) as dateEnd', 'SUM(value) as value'])
