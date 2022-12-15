@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     }
 
     function testEmail() {
-        var email = $('#emailTest').val();
+        var email = encodeURIComponent($('#emailTest').val());
         location.href = "<?php echo $session->get('absoluteURL'); ?>/modules/System Admin/thirdPartySettings_emailProcess.php?email="+email;
     }
 

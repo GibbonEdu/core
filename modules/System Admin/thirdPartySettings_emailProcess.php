@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $mail->SMTPDebug = 2;
     $mail->Debugoutput = 'error_log';
 
-    $mail->AddAddress($session->get('email'));
+    $mail->AddAddress($email);
     $mail->setDefaultSender(__('Test Email'));
     $mail->renderBody('mail/message.twig.html', [
         'title'  => __('Test Email'),
