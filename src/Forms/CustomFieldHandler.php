@@ -64,14 +64,15 @@ class CustomFieldHandler
                 'Staff' => __('Staff'),
             ],
             __('Students') => [
-                'Behaviour' => __('Behaviour'),
-                'Individual Needs' => __('Individual Needs'),
-                'First Aid'    => __('First Aid'),
-                'Medical Form' => __('Medical Form'),
+                'Student Enrolment' => __('Student Enrolment'),
+                'Behaviour'         => __('Behaviour'),
+                'Individual Needs'  => __('Individual Needs'),
+                'First Aid'         => __('First Aid'),
+                'Medical Form'      => __('Medical Form'),
             ],
             __('Timetable Admin') => [
                 'Course' => __('Course'),
-                'Class' => __('Class'),
+                'Class'  => __('Class'),
             ],
             __('Planner') => [
                 'Lesson Plan' => __('Lesson Plan'),
@@ -127,6 +128,9 @@ class CustomFieldHandler
                 'Basic Information' => __('Basic Information'),
                 'First Aid'         => __('First Aid'),
                 'Biography'         => __('Biography'),
+            ],
+            'Student Enrolment' => [
+                'Basic Information' => __('Basic Information'),
             ],
             'Behaviour' => [
                 'Step 1' => __('Step 1'),

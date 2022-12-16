@@ -25,6 +25,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
+use Gibbon\Forms\CustomFieldHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolment_manage_edit.php') == false) {
     // Access denied
@@ -76,6 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
 
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['name']);
         $schoolYearName = $schoolYear['name'] ?? $session->get('gibbonSchoolYearName');
+
+        $row = $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
         $row = $form->addRow();
             $row->addLabel('yearName', __('School Year'));
@@ -130,6 +133,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
             $row->addLabel('schoolHistory', __('School History'));
             $row->addContent('<ul class="list-none w-full sm:max-w-xs text-xs m-0">'.$schoolHistory.'</ul>');
 
+        // Custom Fields
+        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Student Enrolment', [], $values['fields']);
+        
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();

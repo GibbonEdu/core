@@ -39,6 +39,7 @@ v25.0.00
         System: improved right-to-left support in Default theme
         System: added new hooks for Staff Profile and Lesson Planner
         System: added Malawian Kwacha, Algerian Dinar, Uganda Shilling, Zimbabwean Dollar as currency options
+        Admissions: added custom field support to Student Enrolment
         Attendance: enabled taking Future attendance on the current date
         Data Updater: added a search option to all Manage Update pages
         Data Updater: updated Family Data Updater History to order parents by contact priority
