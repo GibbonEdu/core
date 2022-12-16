@@ -6,6 +6,11 @@ sources:
     student: Student
     attendance: AttendanceByCycle
     reportingCycle: ReportingCycle
+config:
+    includePresent:
+        label: Include Present?
+        type: yesno
+        default: N
 -->#}
 {{- stylesheet ? include(stylesheet) -}}
 
@@ -21,20 +26,24 @@ sources:
     <table class="w-full table" cellspacing="0" cellpadding="4" nobr="true">
         <tr>
             {% set width = 100 / reportingCycle.cycleTotal %}
+            {% set count = config.includePresent == 'Y' ? 3 : 2 %}
 
             {% for cycleNum in range(1, reportingCycle.cycleTotal|default(1)) %}
                 {% set cycleName = reportingCycle.cycles[cycleNum] %}
-                <td class="header bg-primary border" style="width:{{ width }}%; line-height: 1.9; text-align: center;" colspan="2">{{ cycleName }} Attendance</td>
+                <td class="header bg-primary border" style="width:{{ width }}%; line-height: 1.9; text-align: center;" colspan="{{ count }}">{{ cycleName }} Attendance</td>
             {% endfor %}
         </tr>
         <tr>
-            
             {% for cycleNum in range(1, reportingCycle.cycleTotal|default(1)) %}
-            <td class="border-bottom border-left attendance" style="width:{{ width / 2 }}%"><div class="subheader">Absent</div>
-                {{ cycleNum? attendance[cycleNum].absent|default(0) }}</td>
-            <td class="border-bottom border-right attendance" style="width:{{ width / 2 }}%"><div class="subheader">Late</div>
-                {{ cycleNum? attendance[cycleNum].late|default(0) }}
-            </td>
+                {% if config.includePresent == 'Y' %}
+                <td class="border-bottom border-left attendance" style="width:{{ width / count }}%"><div class="subheader">Present</div>
+                    {{ cycleNum? attendance[cycleNum].present|default(0) }}</td>
+                {% endif %}
+                <td class="border-bottom attendance {{ config.includePresent != 'Y' ? 'border-left' : '' }}" style="width:{{ width / count }}%"><div class="subheader">Absent</div>
+                    {{ cycleNum? attendance[cycleNum].absent|default(0) }}</td>
+                <td class="border-bottom border-right attendance" style="width:{{ width / count }}%"><div class="subheader">Late</div>
+                    {{ cycleNum? attendance[cycleNum].late|default(0) }}
+                </td>
             {% endfor %}
         </tr> 
     </table>

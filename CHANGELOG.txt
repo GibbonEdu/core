@@ -56,6 +56,7 @@ v25.0.00
         Resources: differentiated the upload button from the sticky submit button
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         Reports: added a school year switcher to the Generate Reports page
+        Reports: updated Attendance template to enable displaying present attendance counts
         School Admin: added an option to cancel activities in Special Days
         School Admin: added custom field support to Departments
         Students: added a permission check for Family Adult comments in Student Profile
