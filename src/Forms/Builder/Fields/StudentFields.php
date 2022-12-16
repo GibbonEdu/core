@@ -125,79 +125,80 @@ class StudentFields extends AbstractFieldGroup
         $row = $form->addRow();
 
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         switch ($field['fieldName']) {
             // STUDENT PERSONAL DATA
             case 'surname':
                 $row->addLabel('surname', __($field['label']))->description(__($field['description']));
-                $row->addTextField('surname')->required($required)->maxLength(60);
+                $row->addTextField('surname')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'firstName':
                 $row->addLabel('firstName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('firstName')->required($required)->maxLength(60);
+                $row->addTextField('firstName')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'preferredName':
                 $row->addLabel('preferredName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('preferredName')->required($required)->maxLength(60);
+                $row->addTextField('preferredName')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'officialName':
                 $row->addLabel('officialName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('officialName')->required($required)->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+                $row->addTextField('officialName')->required($required)->setValue($default)->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
                 break;
 
             case 'nameInCharacters':
                 $row->addLabel('nameInCharacters', __($field['label']))->description(__($field['description']));
-                $row->addTextField('nameInCharacters')->required($required)->maxLength(60);
+                $row->addTextField('nameInCharacters')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'gender':
                 $row->addLabel('gender', __($field['label']))->description(__($field['description']));
-                $row->addSelectGender('gender')->required($required);
+                $row->addSelectGender('gender')->required($required)->selected($default);
                 break;
 
             case 'dob':
                 $row->addLabel('dob', __($field['label']))->description(__($field['description']));
-                $row->addDate('dob')->required($required);
+                $row->addDate('dob')->required($required)->setValue($default);
                 break;
 
             // STUDENT BACKGROUND
             case 'languageHomePrimary':
                 $row->addLabel('languageHomePrimary', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageHomePrimary')->required($required);
+                $row->addSelectLanguage('languageHomePrimary')->required($required)->selected($default);
                 break;
         
             case 'languageHomeSecondary':
                 $row->addLabel('languageHomeSecondary', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageHomeSecondary')->placeholder('')->required($required);
+                $row->addSelectLanguage('languageHomeSecondary')->placeholder('')->required($required)->selected($default);
                 break;
         
             case 'languageFirst':
                 $row->addLabel('languageFirst', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageFirst')->required($required);
+                $row->addSelectLanguage('languageFirst')->required($required)->selected($default);
                 break;
         
             case 'languageSecond':
                 $row->addLabel('languageSecond', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageSecond')->placeholder('')->required($required);
+                $row->addSelectLanguage('languageSecond')->placeholder('')->required($required)->selected($default);
                 break;
         
             case 'languageThird':
                 $row->addLabel('languageThird', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageThird')->placeholder('')->required($required);
+                $row->addSelectLanguage('languageThird')->placeholder('')->required($required)->selected($default);
                 break;
         
             case 'countryOfBirth':
                 $row->addLabel('countryOfBirth', __($field['label']))->description(__($field['description']));
-                $row->addSelectCountry('countryOfBirth')->required($required);
+                $row->addSelectCountry('countryOfBirth')->required($required)->selected($default);
                 break;
 
             // STUDENT CONTACT
             case 'email':
                 $row->addLabel('email', __($field['label']))->description(__($field['description']));
-                $email = $row->addEmail('email')->required($required);
+                $email = $row->addEmail('email')->required($required)->setValue($default);
                 if ($this->uniqueEmailAddress == 'Y') {
                     $email->uniqueField('./publicRegistrationCheck.php');
                 }

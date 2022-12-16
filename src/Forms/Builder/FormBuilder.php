@@ -134,6 +134,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->includeHidden != ($field['hidden'] == 'Y');
     }
 
+    public function hasHiddenValue(array $field) : bool
+    {
+        return $field['hidden'] == 'Y' && !$this->includeHidden && !empty($field['defaultValue']);
+    }
+
     public function getFieldGroup($fieldGroup): FieldGroupInterface
     {
         if (isset($this->fieldGroups[$fieldGroup])) {
@@ -178,7 +183,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $data = [];
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($this->isFieldHidden($field)) continue;
+            if ($this->isFieldHidden($field) && !$this->hasHiddenValue($field)) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -264,8 +269,13 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         // Form is not complete, add fields to current page
         if ($this->pageNumber <= $this->finalPageNumber) {
             foreach ($this->fields as $field) {
-                if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
                 if ($field['pageNumber'] != $this->pageNumber) continue;
+                if ($field['hidden'] == 'Y' && !$this->includeHidden) {
+                    if (!empty($field['defaultValue'])) {
+                        $form->addHiddenValue($field['fieldName'], $field['defaultValue']);
+                    }
+                    continue;
+                }
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);
@@ -305,8 +315,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
             foreach ($this->pages as $formPage) {
                 foreach ($this->fields as $field) {
-                    if ($field['hidden'] == 'N') continue;
                     if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+                    if ($field['hidden'] == 'N') continue;
 
                     $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                     $row = $fieldGroup->addFieldToForm($this, $form, $field);
@@ -317,8 +327,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         // Display all non-hidden fields
         foreach ($this->pages as $formPage) {
             foreach ($this->fields as $field) {
-                if ($field['hidden'] == 'Y') continue;
                 if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+                if ($field['hidden'] == 'Y') continue;
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);

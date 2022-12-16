@@ -50,13 +50,14 @@ class AgreementFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
         
         $row = $form->addRow();
 
         switch ($field['fieldName']) {
             case 'agreement':
                 $row->addLabel($field['fieldName'], __($field['label']))->description(__($field['description']));
-                $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required);
+                $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required)->checked($default == 'Y');
                 break;
         }
 

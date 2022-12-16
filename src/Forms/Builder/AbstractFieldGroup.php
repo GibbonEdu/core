@@ -99,7 +99,8 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         $row->addLabel($field['fieldName'], __($field['label']))
             ->description(__($field['description']));
         $row->addCustomField($field['fieldName'], $field)
-            ->required($this->getRequired($formBuilder, $field));
+            ->required($this->getRequired($formBuilder, $field))
+            ->setValue($field['defaultValue'] ?? '');
 
         return $row;
     }

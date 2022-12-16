@@ -156,6 +156,7 @@ class Parent2Fields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         $row = $form->addRow()->setClass("parentSection2");
 
@@ -173,66 +174,66 @@ class Parent2Fields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             // PARENT 2 PERSONAL DATA
             case 'secondParent':
-                $checked = $formBuilder->hasConfig('gibbonPersonID') ? 'No' : 'Yes';
+                $checked = $formBuilder->hasConfig('gibbonPersonID') ? 'No' : ($default == 'N' || $default == 'No' ? 'No' : 'Yes');
                 $row->setClass('')->addCheckbox('secondParent')->setValue('No')->alignRight()->checked($checked)->description(__($field['label']));
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
 
                 break;
             case 'parent2title':
                 $row->addLabel('parent2title', __($field['label']))->description(__($field['description']));
-                $row->addSelectTitle('parent2title')->required($required);
+                $row->addSelectTitle('parent2title')->required($required)->selected($default);
                 break;
 
             case 'parent2surname':
                 $row->addLabel('parent2surname', __($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2surname')->required($required)->maxLength(60);
+                $row->addTextField('parent2surname')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'parent2firstName':
                 $row->addLabel('parent2firstName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2firstName')->required($required)->maxLength(60);
+                $row->addTextField('parent2firstName')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'parent2preferredName':
                 $row->addLabel('parent2preferredName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2preferredName')->required($required)->maxLength(60);
+                $row->addTextField('parent2preferredName')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'parent2officialName':
                 $row->addLabel('parent2officialName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2officialName')->required($required)->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+                $row->addTextField('parent2officialName')->required($required)->setValue($default)->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
                 break;
 
             case 'parent2nameInCharacters':
                 $row->addLabel('parent2nameInCharacters', __($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2nameInCharacters')->required($required)->maxLength(60);
+                $row->addTextField('parent2nameInCharacters')->required($required)->setValue($default)->maxLength(60);
                 break;
 
             case 'parent2gender':
                 $row->addLabel('parent2gender', __($field['label']))->description(__($field['description']));
-                $row->addSelectGender('parent2gender')->required($required);
+                $row->addSelectGender('parent2gender')->required($required)->selected($default);
                 break;
 
             case 'parent2relationship':
                 $row->addLabel('parent2relationship', __($field['label']))->description(__($field['description']));
-                $row->addSelectRelationship('parent2relationship')->required($required);
+                $row->addSelectRelationship('parent2relationship')->required($required)->selected($default);
                 break;
 
             // PARENT1 BACKGROUND
             case 'parent2languageFirst':
                 $row->addLabel('parent2languageFirst', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('parent2languageFirst')->required($required);
+                $row->addSelectLanguage('parent2languageFirst')->required($required)->selected($default);
                 break;
         
             case 'parent2languageSecond':
                 $row->addLabel('parent2languageSecond', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('parent2languageSecond')->placeholder('')->required($required);
+                $row->addSelectLanguage('parent2languageSecond')->placeholder('')->required($required)->selected($default);
                 break;
 
             // PARENT1 CONTACT
             case 'parent2email':
                 $row->addLabel('parent2email', __($field['label']))->description(__($field['description']));
-                $email = $row->addEmail('parent2email')->required($required);
+                $email = $row->addEmail('parent2email')->required($required)->setValue($default);
                 if ($this->uniqueEmailAddress == 'Y') {
                     $email->uniqueField('./publicRegistrationCheck.php', ['fieldName' => 'email']);
                 }
@@ -251,12 +252,12 @@ class Parent2Fields extends AbstractFieldGroup
             // PARENT1 EMPLOYMENT
             case 'parent2profession':
                 $row->addLabel('parent2profession',__($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2profession')->maxLength(90)->required($required);
+                $row->addTextField('parent2profession')->maxLength(90)->required($required)->setValue($default);
                 break;
 
             case 'parent2employer':
                 $row->addLabel('parent2employer',__($field['label']))->description(__($field['description']));
-                $row->addTextField('parent2employer')->maxLength(90)->required($required);
+                $row->addTextField('parent2employer')->maxLength(90)->required($required)->setValue($default);
                 break;
         }
 

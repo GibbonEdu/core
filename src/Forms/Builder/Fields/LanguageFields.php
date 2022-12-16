@@ -55,6 +55,7 @@ class LanguageFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         $row = $form->addRow();
 
@@ -65,7 +66,7 @@ class LanguageFields extends AbstractFieldGroup
 
             case 'languageChoice':
                 $row->addLabel('languageChoice', __($field['label']))->description(__($field['description']));
-                $row->addSelect('languageChoice')->fromString($field['options'] ?? '')->required($required)->placeholder();
+                $row->addSelect('languageChoice')->fromString($field['options'] ?? '')->required($required)->selected($default)->placeholder();
                 break;
 
             case 'languageChoiceExperience':
@@ -74,7 +75,7 @@ class LanguageFields extends AbstractFieldGroup
                 
                 $column = $row->addClass('languageChoice')->addColumn();
                 $column->addLabel('languageChoiceExperience', __($field['label']))->description(__($field['description']));
-                $column->addTextArea('languageChoiceExperience')->required($required)->setRows(5)->setClass('w-full flex-1');
+                $column->addTextArea('languageChoiceExperience')->required($required)->setValue($default)->setRows(5)->setClass('w-full flex-1');
                 break;
         }
 

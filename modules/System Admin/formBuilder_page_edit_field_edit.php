@@ -106,6 +106,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $row->addYesNo('prefill')->required();
     }
 
+    if (!in_array($values['fieldType'], ['heading', 'subheading', 'phone', 'files', 'personalDocument'])) {
+        $row = $form->addRow();
+            $row->addLabel('defaultValue', __('Default Value'))->description(__('When not prefilled from existing data, what is the default value for this field? Use Y or N for Yes/No fields.'));
+            $row->addTextField('defaultValue');
+    }
+
     if ($values['fieldGroup'] == 'GenericFields' && in_array($values['fieldType'], ['varchar', 'number'])) {
         $row = $form->addRow();
             $row->addLabel('options', __('Max Length'))->description(__('Number of characters, up to 255.'));
@@ -123,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $row->addLabel('options', __('Options'))
                 ->description(__('Comma separated list of options.'))
                 ->description(__('Dropdown: use [] to create option groups.'));
-            $row->addTextArea('options')->setName('options')->required()->setRows(3);
+            $row->addTextArea('options')->setName('options')->setRows(3);
     }
 
     if ($values['fieldGroup'] == 'GenericFields' && in_array($values['fieldType'], ['file'])) {

@@ -61,6 +61,7 @@ v25.0.00
         System Admin: added filename to Import History in Import From File page
         System Admin: added the option to configure phone number fields in Form Builder
         System Admin: removed anonymous sessions from the Active Sessions page
+        System Admin: added the option to set default values for Form Builder fields
         Timetable: enabled View Available Facilities for non-lesson periods
         Timetable: enabled booking facilities for other users with Manage Facility Bookings_allBookings permission
         Timetable: added an option to add a reason when booking facilities
