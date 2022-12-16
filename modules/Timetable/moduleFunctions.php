@@ -1471,28 +1471,50 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60);
                         $top = (ceil((strtotime($effectiveStart) - strtotime($dayTimeStart)) / 60 + ($startPad / 60))).'px';
                         $title = "title='";
+
+                        try {
+                            $dataTeacher = ['gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonTTDayRowClassID' => $rowPeriods['gibbonTTDayRowClassID']];
+                            $sqlTeacher = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title 
+                                FROM gibbonPerson 
+                                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID ) 
+                                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
+                                WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                AND gibbonCourseClassPerson.role='Teacher'
+                                AND gibbonCourseClassPerson.reportable='Y'
+                                AND gibbonPerson.status='Full'
+                                AND gibbonTTDayRowClassExceptionID IS NULL
+                                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                            $resultTeacher = $connection2->prepare($sqlTeacher);
+                            $resultTeacher->execute($dataTeacher);
+                        } catch (PDOException $e) {}
+
+                        if ($resultTeacher->rowCount() > 0) {
+                            $teachers = $resultTeacher->fetchAll();
+                            $title .= __('Teacher').': '.Format::nameList($teachers, 'Staff', false, false, ', ').'<br/>' ;
+                        }
+
                         if ($height < 45) {
-                            $title .= __('Time:').' '.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).' | ';
-                            $title .= __('Timeslot:').' '.$rowPeriods['name'].' | ';
+                            $title .= __('Time:').' '.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'<br/>';
+                            $title .= __('Timeslot:').' '.$rowPeriods['name'].'<br/>';
                         }
                         if ($rowPeriods['roomName'] != '') {
                             if ($height < 30) {
                                 // Handle room changes in the title
                                 if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']]) == false) {
-                                    $title .= __('Room:').' '.$rowPeriods['roomName'].' | ';
+                                    $title .= __('Room:').' '.$rowPeriods['roomName'].'<br/>';
                                 } else {
                                     if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
-                                        $title .= __('Room:').' ('.__('Changed').') '.$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].' | ';
+                                        $title .= __('Room:').' ('.__('Changed').') '.$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].'<br/>';
                                     } else {
-                                        $title .= __('Room:').' ('.__('Changed').') '.__('No Facility').' | ';
+                                        $title .= __('Room:').' ('.__('Changed').') '.__('No Facility').'<br/>';
                                     }
                                 }
                             }
                             if ($rowPeriods['phoneInternal'] != '') {
                                 if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0]) == false) {
-                                    $title .= __('Phone:').' '.$rowPeriods['phoneInternal'].' | ';
+                                    $title .= __('Phone:').' '.$rowPeriods['phoneInternal'].'<br/>';
                                 } else {
-                                    $title .= __('Phone:').' '.$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][1].' | ';
+                                    $title .= __('Phone:').' '.$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][1].'<br/>';
                                 }
                             }
                         }
