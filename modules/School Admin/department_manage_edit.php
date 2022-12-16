@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -76,6 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 'Administrator' => __('Administrator'),
                 'Other'         => __('Other'),
             );
+
+            $row = $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
@@ -147,12 +150,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                     $row->addSelect('role')->fromArray($typesAdmin);
             }
 
+            // Custom Fields
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Department', [], $values['fields']);
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
 
             $form->loadAllValuesFrom($values);
-
+            
             echo $form->getOutput();
         }
     }

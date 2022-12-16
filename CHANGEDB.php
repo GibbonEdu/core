@@ -705,4 +705,5 @@ ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonTTDayRowClassID` INT(12) UNSI
 ALTER TABLE `gibbonAttendanceLogCourseClass` ADD `gibbonTTDayRowClassID` INT(12) UNSIGNED ZEROFILL NULL AFTER `gibbonCourseClassID`;end
 INSERT IGNORE INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('lt_LT', 'Lietuvių Kalba - Lithuanian', '25.0.00', 'Y', 'N', 'N', 'yyyy.mm.dd', '/^[0-9]{4}.(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y.m.d', 'N');end
 ALTER TABLE `gibbonFormField` ADD `defaultValue` VARCHAR(255) NULL DEFAULT NULL AFTER `conditional`;end
+ALTER TABLE `gibbonDepartment` ADD `fields` TEXT NULL AFTER `sequenceNumber`;end
 ";

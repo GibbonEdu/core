@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Forms\CustomFieldHandler;
 
 require_once '../../gibbon.php';
 
@@ -59,6 +60,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             $nameShort = $_POST['nameShort'] ?? '';
             $subjectListing = $_POST['subjectListing'] ?? '';
             $blurb = $_POST['blurb'] ?? '';
+
+            $customRequireFail = false;
+            $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Department', [], $customRequireFail);
+
+            if ($customRequireFail) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
 
             if ($name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
@@ -118,8 +128,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
                 //Write to database
                 try {
-                    $data = array('name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment, 'gibbonDepartmentID' => $gibbonDepartmentID);
-                    $sql = 'UPDATE gibbonDepartment SET name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo WHERE gibbonDepartmentID=:gibbonDepartmentID';
+                    $data = array('name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment, 'fields' => $fields, 'gibbonDepartmentID' => $gibbonDepartmentID);
+                    $sql = 'UPDATE gibbonDepartment SET name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo, fields=:fields WHERE gibbonDepartmentID=:gibbonDepartmentID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

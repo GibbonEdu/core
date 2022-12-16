@@ -22,6 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -72,6 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 echo $row['blurb'];
                 echo '</p>';
             }
+
+            // Custom fields
+            $table = DataTable::createDetails('fields');
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Department', [], $row['fields']);
+            echo $table->render([$row]);
 
             //Print staff
             $dataStaff = array('gibbonDepartmentID' => $gibbonDepartmentID);

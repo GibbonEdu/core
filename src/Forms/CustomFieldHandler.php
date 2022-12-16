@@ -76,6 +76,9 @@ class CustomFieldHandler
             __('Planner') => [
                 'Lesson Plan' => __('Lesson Plan'),
             ],
+            __('School Admin') => [
+                'Department' => __('Department'),
+            ],
             __('Other') => [
                 'Custom' => __('Custom Context'),
             ]
@@ -145,6 +148,9 @@ class CustomFieldHandler
                 'Configure' => __('Configure'),
             ],
             'Class' => [
+                'Basic Details' => __('Basic Details'),
+            ],
+            'Department' => [
                 'Basic Details' => __('Basic Details'),
             ],
             'Lesson Plan' => [
