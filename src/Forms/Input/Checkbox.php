@@ -244,7 +244,7 @@ class Checkbox extends Input
             $hasMultiple = count($this->options, COUNT_RECURSIVE) > 1;
 
             if ($hasMultiple) {
-                $output .= '<fieldset id="'.$this->getID().'"  style="border: 0px;">';
+                $output .= '<fieldset id="'.$this->getID().'" class="'.($this->inline && $this->align == 'left' ? 'flex text-left items-center' : '').'" style="border: 0px;">';
             }
             
             if (!empty($this->checkall)) {
