@@ -23,6 +23,8 @@ v25.0.00
     Headlines
         Messages can now be saved as a draft and previewed before sending
         Activities will now display on student and staff timetables
+        Staff coverage can now be assigned to specific timetabled classes
+        Added the ability to assign and manage coverage internally
 
     Significant Changes
         Attendance: added the option to take future attendance for ad hoc groups
