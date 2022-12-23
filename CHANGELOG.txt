@@ -25,10 +25,11 @@ v25.0.00
         Activities will now display on student and staff timetables
 
     Significant Changes
+        Attendance: added the option to take future attendance for ad hoc groups
         System: activated the lt_LT Lietuvių Kalba - Lithuanian locale
         School Admin: added an Off Timetable option for special days
         Planner: enabled custom fields for Lesson Plans
-        Attendance: added the option to take future attendance for ad hoc groups
+        Staff: added a drag-drop interface for creating and managing a duty schedule
 
     Changes With Important Notices
         Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses

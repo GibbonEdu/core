@@ -531,6 +531,12 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
                 $(this).attr("checked", true);
             }
         });
+        $("input:checkbox[name='"+key+"[]']", block).each(function () {
+            var options = Array.isArray(data[key]) ? data[key] : data[key].split(',');
+            if (options.includes($(this).val())) {
+                $(this).attr("checked", true);
+            }
+        });
     }
 
     var readonly = data.readonly || [];
@@ -552,6 +558,8 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
             case 'array':   name = $(this).prop("name")+"["+block.blockNumber+"]"; break;
             case 'string':  name = $(this).prop("name")+block.blockNumber; break;
         }
+
+        name = name.replace('[]]', '][]');
 
         $(this).prop("name", name);
         if ($(this).prop("id") != '') {
