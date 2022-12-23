@@ -123,7 +123,7 @@ class CourseGateway extends QueryableGateway
     public function getCourseClassByID($gibbonCourseClassID)
     {
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, enrolmentMin, enrolmentMax, COUNT(DISTINCT gibbonCourseClassPerson.gibbonPersonID) as studentsTotal
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, enrolmentMin, enrolmentMax, COUNT(DISTINCT gibbonCourseClassPerson.gibbonPersonID) as studentsTotal
                 FROM gibbonCourseClass
                 JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                 JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)

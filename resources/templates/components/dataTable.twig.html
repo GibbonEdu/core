@@ -89,6 +89,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 
+                                {% block actions %}
                                 <nav class="relative group">
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
@@ -106,6 +107,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                                     </button>
                                     {% endif %}
                                 </nav>
+
+                                {% endblock actions %}
 
                             {% else %}
                                 {{ column.getOutput(rowData.data)|raw }}

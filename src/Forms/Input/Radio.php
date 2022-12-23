@@ -84,6 +84,17 @@ class Radio extends Input
     }
 
     /**
+     * Aligns the list options to the center.
+     * @return  self
+     */
+    public function alignCenter()
+    {
+        $this->align = 'center';
+        $this->addClass('text-center');
+        return $this;
+    }
+
+    /**
      * Dead-end stub for interface: LiveValidation does not support Radio elements.
      * @param  string  $type
      * @param  string  $params
@@ -136,7 +147,7 @@ class Radio extends Input
                     $output .= '<label class="leading-compact ml-2" for="'.$id.'">'.$label.'</label><br/>';
                     $output .= '</div>';
                 } else {
-                    $output .= '<div class="flex justify-end text-right '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
+                    $output .= '<div class="flex justify-'.($this->align == 'center' ? 'between' : 'end').' text-right '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
                     $output .= '<label class="leading-compact mr-1" for="'.$id.'">'.$label.'</label>&nbsp;';
                     $output .= '<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'><br/>';
                     $output .= '</div>';

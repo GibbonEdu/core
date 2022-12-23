@@ -59,7 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         $row->addLabel('dateLabel', __('Date'));
         $row->addTextField('dateLabel')->readonly()->setValue(Format::date($values['date']));
 
-    $row = $form->addRow();
+    if (empty($values['gibbonTTDayRowClassID'])) {
+        $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
         $row->addCheckbox('allDay')
             ->description(__('All Day'))
@@ -68,6 +69,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
             ->setValue('Y')
             ->checked($values['allDay'])
             ->wrap('<div class="standardWidth floatRight">', '</div>');
+    } else {
+        $form->addHiddenValue('allDay', 'N');
+    }
 
     $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
 
@@ -85,6 +89,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
     $row = $form->addRow();
         $row->addLabel('value', __('Value'));
         $row->addNumber('value')->decimalPlaces(2)->maxLength(4)->minimum(0)->maximum(1);
+
+    $row = $form->addRow();
+        $row->addLabel('reason', __('Notes'));
+        $row->addTextField('reason')->maxLength(255);
 
     $row = $form->addRow();
         $row->addFooter();

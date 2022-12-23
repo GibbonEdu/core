@@ -64,8 +64,10 @@ class CoverageView
         if ($coverage['status'] == 'Requested') {
             if ($coverage['requestType'] == 'Individual') {
                 $params = [
-                    'type' => __('Individual'),
-                    'name' => Format::name($substitute['title'], $substitute['preferredName'], $substitute['surname'], 'Staff', false, true),
+                    'type' => !empty($substitute['surname']) ? __('Individual') : __('Open'),
+                    'name' => !empty($substitute['surname'])
+                        ? Format::name($substitute['title'], $substitute['preferredName'], $substitute['surname'], 'Staff', false, true)
+                        : __('Pending'),
                 ];
             } elseif ($coverage['requestType'] == 'Broadcast') {
                 if ($notificationList = json_decode($coverage['notificationList'])) {
@@ -87,7 +89,7 @@ class CoverageView
             'action'   => __('Requested Coverage'),
             'photo'   => $requester['image_240'],
             'date'    => Format::relativeTime($coverage['timestampStatus']),
-            'status'  => $coverage['status'] == 'Requested' || $coverage['status'] == 'Cancelled' ? __($coverage['status']) : '',
+            'status'  => $coverage['status'] != 'Accepted' && $coverage['status'] != 'Declined' ? __($coverage['status']) : '',
             'tag'     => $this->getStatusColor($coverage['status']),
             'comment' => $coverage['notesStatus'],
             'message' => $message ?? '',

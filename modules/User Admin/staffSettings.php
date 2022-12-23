@@ -123,6 +123,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $form->addRow()->addHeading('Staff Coverage', __('Staff Coverage'));
 
+    $coverageModes = [
+        'Requested'  => __('Teachers can request their own substitutes'),
+        'Assigned'  => __('Substitutes are assigned to teachers'),
+    ];
+    $setting = $settingGateway->getSettingByScope('Staff', 'coverageMode', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromArray($coverageModes)->selected($setting['value']);
+
+    $setting = $settingGateway->getSettingByScope('Staff', 'coverageInternal', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value']);
+
     $setting = $settingGateway->getSettingByScope('Staff', 'substituteInfo', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

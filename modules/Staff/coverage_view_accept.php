@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
     $unavailable = $container->get(SubstituteGateway::class)->selectUnavailableDatesBySub($gibbonPersonID, $gibbonStaffCoverageID)->fetchGrouped();
 
     $datesAvailableToRequest = 0;
-    $table->addCheckboxColumn('coverageDates', 'date')
+    $table->addCheckboxColumn('coverageDates', 'gibbonStaffCoverageDateID')
         ->width('15%')
         ->checked(true)
         ->format(function ($coverage) use (&$datesAvailableToRequest, &$unavailable) {
@@ -91,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
                     if ($time['allDay'] == 'Y' 
                     || ($time['allDay'] == 'N' && $coverage['allDay'] == 'Y')
                     || ($time['allDay'] == 'N' && $coverage['allDay'] == 'N'
-                        && $time['timeStart'] <= $coverage['timeEnd']
-                        && $time['timeEnd'] >= $coverage['timeStart'])) {
+                        && $time['timeStart'] < $coverage['timeEnd']
+                        && $time['timeEnd'] > $coverage['timeStart'])) {
                         return Format::small(__($time['status'] ?? 'Not Available'));
                     }
                 }

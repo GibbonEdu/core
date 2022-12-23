@@ -21,6 +21,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\AbsenceView;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
+use Gibbon\Module\Staff\Tables\CoverageDates;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_details.php') == false) {
     // Access denied
@@ -62,8 +63,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_detail
     $staffCard->setPerson($absence['gibbonPersonID'])->compose($page);
 
     // Absence Dates
-    $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true);
+    $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true, false);
+    $table->setTitle($absence['coverageRequired'] == 'Y' ? __('Absence') : '');
     $page->write($table->getOutput());
+
+    // Coverage Dates
+    if ($absence['coverageRequired'] == 'Y') {
+        $table = $container->get(CoverageDates::class)->createFromAbsence($gibbonStaffAbsenceID, $absence['status']);
+        $table->setTitle(__('Coverage'));
+        $page->write($table->getOutput());
+    }
 
     // Absence View Composer
     $absenceView = $container->get(AbsenceView::class);
