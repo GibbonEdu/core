@@ -223,6 +223,15 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->insert($sql, $data);
     }
 
+    public function updateDayRowClass(string $gibbonTTDayRowClassID, array $data)
+    {
+        $data['gibbonTTDayRowClassID'] = $gibbonTTDayRowClassID;
+
+        $sql = "UPDATE gibbonTTDayRowClass SET gibbonTTDayID=:gibbonTTDayID, gibbonTTColumnRowID=:gibbonTTColumnRowID, gibbonCourseClassID=:gibbonCourseClassID, gibbonSpaceID=:gibbonSpaceID WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
+
+        return $this->db()->update($sql, $data);
+    }
+
     public function insertDayRowClassException(array $data)
     {
         $sql = "INSERT INTO gibbonTTDayRowClassException SET gibbonTTDayRowClassID=:gibbonTTDayRowClassID, gibbonPersonID=:gibbonPersonID ON DUPLICATE KEY UPDATE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
@@ -239,6 +248,22 @@ class TimetableDayGateway extends QueryableGateway
                 INNER JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
                 WHERE gibbonTT.gibbonTTID=:gibbonTTID
                 AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID";
+
+        return $this->db()->delete($sql, $data);
+    }
+
+    public function deleteTTDayRowClassesNotInSet($gibbonTTID, $gibbonCourseClassID, $gibbonTTDayRowClassIDList)
+    {
+        $gibbonTTDayRowClassIDList = is_array($gibbonTTDayRowClassIDList)? implode(',', $gibbonTTDayRowClassIDList) : $gibbonTTDayRowClassIDList;
+
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID, 'gibbonTTDayRowClassIDList' => $gibbonTTDayRowClassIDList];
+        $sql = "DELETE gibbonTTDayRowClass
+                FROM gibbonTTDayRowClass
+                INNER JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                INNER JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                AND NOT FIND_IN_SET(gibbonTTDayRowClass.gibbonTTDayRowClassID, :gibbonTTDayRowClassIDList)";
 
         return $this->db()->delete($sql, $data);
     }

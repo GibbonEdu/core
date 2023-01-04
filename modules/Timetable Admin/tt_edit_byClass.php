@@ -96,7 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
                     ->fromResults($dayResults)
                     ->required()
                     ->selected($gibbonTTDayID)
-                    ->addClass('float-left');
+                    ->addClass('float-left')
+                    ->append('<input type="hidden" id="gibbonTTDayRowClassID" name="gibbonTTDayRowClassID" value="">');
 
                 $row->addLabel('gibbonTTColumnRowID', __('Period'))->addClass('ml-4');
                 $row->addSelect('gibbonTTColumnRowID')

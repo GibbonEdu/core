@@ -40,10 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
 
     $timetableDayGateway = $container->get(TimetableDayGateway::class);
 
-    $timetableDayGateway->deleteTTDayRowClasses($gibbonTTID, $gibbonCourseClassID);
-
     $entryOrders = $_POST['order'] ?? [];
-    $inserted = 0;
+    $entries = [];
 
     foreach ($entryOrders as $order) {
         $entry = $_POST['ttBlocks'][$order];
@@ -54,17 +52,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
 
         $data = [
             'gibbonTTColumnRowID' => strstr($entry['gibbonTTColumnRowID'], '-', true),
-            'gibbonTTDayID' => $entry['gibbonTTDayID'],
+            'gibbonTTDayID'       => $entry['gibbonTTDayID'],
             'gibbonCourseClassID' => $gibbonCourseClassID,
-            'gibbonSpaceID' => $entry['gibbonTTSpaceID'] ?? ''
+            'gibbonSpaceID'       => $entry['gibbonTTSpaceID'] ?? ''
         ]; 
-
-        if ($timetableDayGateway->insertDayRowClass($data) > 0) {
-            $inserted++;
+        
+        if (!empty($entry['gibbonTTDayRowClassID'])) {
+            // Already exists, update
+            $gibbonTTDayRowClassID = $entry['gibbonTTDayRowClassID'];
+            $timetableDayGateway->updateDayRowClass($gibbonTTDayRowClassID, $data);
+        } else {
+            // Doesn't exist, create new
+            $gibbonTTDayRowClassID = $timetableDayGateway->insertDayRowClass($data);
+            $gibbonTTDayRowClassID = str_pad($gibbonTTDayRowClassID, 12, '0', STR_PAD_LEFT);
         }
+
+        $entries[] = $gibbonTTDayRowClassID;
     }
 
-    $URL .= $inserted != count($entryOrders)
+    $timetableDayGateway->deleteTTDayRowClassesNotInSet($gibbonTTID, $gibbonCourseClassID, $entries);
+
+    $URL .= count($entries) != count($entryOrders)
         ? '&return=warning1'
         : '&return=success0';
     header("Location: {$URL}");
