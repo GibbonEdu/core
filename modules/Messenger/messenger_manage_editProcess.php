@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $data['messageWallPin'] = ($data['messageWall'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php', 'Manage Messages_all')) ? $data['messageWallPin'] : 'N';
 
     // Validate that the required values are present
-    if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $data['emailFrom'] == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
+    if (empty($data['subject']) || empty($data['body']) || ($status == 'Draft' && $data['email'] == 'Y' && $data['emailFrom'] == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
         $URL.="&return=error3";
         header("Location: {$URL}");
         exit;
