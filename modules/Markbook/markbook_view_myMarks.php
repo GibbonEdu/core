@@ -59,16 +59,19 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
         $and .= ' AND gibbonSchoolYearID=:gibbonSchoolYearID';
     }
 
-    $termDefault = '';
-    $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-    $termCurrent = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
-    $termDefault = (is_array($termCurrent) && $termCurrent['gibbonSchoolYearID'] == $gibbonSchoolYearID) ? $termCurrent['gibbonSchoolYearTermID'] : '' ;
-    $gibbonSchoolYearTermID = isset($_REQUEST['gibbonSchoolYearTermID']) ? $_REQUEST['gibbonSchoolYearTermID'] : $termDefault;
-    if (!empty($gibbonSchoolYearTermID)) {
-        $term = $schoolYearTermGateway->getByID($gibbonSchoolYearTermID);
-        $dataEntry['firstDay'] = $term['firstDay'];
-        $dataEntry['lastDay'] = $term['lastDay'];
-        $and2 .= ' AND completeDate>=:firstDay AND completeDate<=:lastDay';
+    $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+    if ($enableGroupByTerm == "Y") {
+        $termDefault = '';
+        $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+        $termCurrent = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+        $termDefault = (is_array($termCurrent) && $termCurrent['gibbonSchoolYearID'] == $gibbonSchoolYearID) ? $termCurrent['gibbonSchoolYearTermID'] : '' ;
+        $gibbonSchoolYearTermID = isset($_REQUEST['gibbonSchoolYearTermID']) ? $_REQUEST['gibbonSchoolYearTermID'] : $termDefault;
+        if (!empty($gibbonSchoolYearTermID)) {
+            $term = $schoolYearTermGateway->getByID($gibbonSchoolYearTermID);
+            $dataEntry['firstDay'] = $term['firstDay'];
+            $dataEntry['lastDay'] = $term['lastDay'];
+            $and2 .= ' AND completeDate>=:firstDay AND completeDate<=:lastDay';
+        }
     }
 
     $type = isset($_REQUEST['type'])? $_REQUEST['type'] : '';
@@ -99,7 +102,6 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
             ->fromQuery($pdo, $sqlSelect, $dataSelect)
             ->selected($gibbonSchoolYearID);
 
-    $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
     if ($enableGroupByTerm == "Y") {
         $dataSelect = [];
         $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
