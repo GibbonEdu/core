@@ -1712,7 +1712,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                     if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
                         $label = $event[0];
-                        $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])." ".$event[4]."'";
+                        $title = "title='".htmlPrep(__('Staff Duty')).'<br/>'.date('H:i', $event[2]).' to '.date('H:i', $event[3])." ".$event[4]."'";
                         $height = ceil(($event[3] - $event[2]) / 60);
                         $charCut = 40;
                         if ($height <= 60) {
@@ -1720,7 +1720,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         if (strlen($label) > $charCut) {
                             $label = substr($label, 0, $charCut).'...';
-                            $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")  ".$event[4]."'";
+                            $title = "title='".htmlPrep(__('Staff Duty')).'<br/>'.htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")  ".$event[4]."'";
                         }
 
                         $class = 'ttStaffDuty ttPeriod';
