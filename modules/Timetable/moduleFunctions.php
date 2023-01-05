@@ -729,24 +729,21 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     ->filterBy('endDate', date('Y-m-d', $endDayStamp))
                     ->filterBy('status', 'Accepted');
                 $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+                $staffCoverage = [];
 
                 foreach ($coverageList as $coverage) {
-                    $fullName = Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true);
-                    if (empty($fullName)) {
-                        $fullName = Format::name($coverage['titleStatus'], $coverage['preferredNameStatus'], $coverage['surnameStatus'], 'Staff', false, true);
-                    }
+                    $fullName = !empty($coverage['surnameAbsence']) 
+                        ? Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true)
+                        : Format::name($coverage['titleStatus'], $coverage['preferredNameStatus'], $coverage['surnameStatus'], 'Staff', false, true);
 
-                    $eventsSpaceBooking[] = [
+                    $staffCoverage[] = [
                         0 => 'Coverage',
-                        1 => __('Coverage'),
+                        1 => $coverage['allDay'],
                         2 => strtotime($date.' '.$coverage['timeStart']),
                         3 => strtotime($date.' '.$coverage['timeEnd']),
-                        4 => $coverage['allDay'] == 'N' ? $coverage['timeStart'] : $timeStart,
-                        5 => $coverage['allDay'] == 'N' ? $coverage['timeEnd'] : $timeEnd,
+                        4 => $coverage['date'],
+                        5 => $coverage,
                         6 => $fullName,
-                        7 => '',
-                        8 => $coverage['gibbonPersonID'],
-                        9 => $coverage['date'],
                     ];
                 }
 
@@ -758,19 +755,27 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
                     ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
                     ->filterBy('status', 'Approved');
-                $absenceList = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID, false);
+                $absenceList = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID, 'coverage');
                 $canViewAbsences = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php');
 
+                // Group the absences by date and collect any coverage information separately
+                $absenceList = array_reduce($absenceList->toArray(), function ($group, $item) {
+                    $item['coverageList'] = $group[$item['date']]['coverageList'] ?? [];
+                    $item['coverageList'][] = ['date' => $item['date'], 'gibbonTTDayRowClassID' => $item['gibbonTTDayRowClassID'], 'coverageName' => Format::name($item['titleCoverage'], $item['preferredNameCoverage'], $item['surnameCoverage'], 'Staff', false, true)];
+
+                    $group[$item['date']] = $item;
+
+                    return $group;
+                }, []);
+                
                 foreach ($absenceList as $absence) {
                     $summary = __('Absent');
-                    if ($absence['coverage'] == 'Accepted') {
-                        $summary .= ' - '.__('Coverage').': '.Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
-                    }
                     $allDay = true;
                     $url = $canViewAbsences
                         ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$absence['gibbonStaffAbsenceID']
                         : '';
-                    $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, '', $url];
+
+                    $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, '', $url, $absence['coverageList']];
                 }
             }
 
@@ -849,28 +854,30 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
 
             // Max diff based on all other calendar events, activities and duty
-            $allEvents = [];
-            if (!empty($eventsSchool) && $self == true) $allEvents = array_merge($allEvents, $eventsSchool);
-            if (!empty($eventsPersonal) && $self == true) $allEvents = array_merge($allEvents, $eventsPersonal);
-            if (!empty($eventsSpaceBooking) && $self == true) $allEvents = array_merge($allEvents, $eventsSpaceBooking);
-            if (!empty($activities)) $allEvents = array_merge($allEvents, $activities);
-            if (!empty($staffDuty)) $allEvents = array_merge($allEvents, $staffDuty);
-
-            foreach ($allEvents as $event) {
-                if (date('Y-m-d', $event[2]) <= date('Y-m-d', ($startDayStamp + (86400 * 6)))) {
-                    if ($event[1] != 'All Day') {
-                        if (date('H:i:s', $event[2]) < $timeStart) {
-                            $timeStart = date('H:i:s', $event[2]);
-                        }
-                        if (date('H:i:s', $event[3]) > $timeEnd) {
-                            $timeEnd = date('H:i:s', $event[3]);
-                        }
-                        if (date('Y-m-d', $event[2]) != date('Y-m-d', $event[3])) {
-                            $timeEnd = '23:59:59';
+            $maxDiffEvents = function ($events) use (&$startDayStamp, &$timeStart, &$timeEnd) {
+                foreach ($events as $event) {
+                    if (date('Y-m-d', $event[2]) <= date('Y-m-d', ($startDayStamp + (86400 * 6)))) {
+                        if ($event[1] != 'All Day') {
+                            if (date('H:i:s', $event[2]) < $timeStart) {
+                                $timeStart = date('H:i:s', $event[2]);
+                            }
+                            if (date('H:i:s', $event[3]) > $timeEnd) {
+                                $timeEnd = date('H:i:s', $event[3]);
+                            }
+                            if (date('Y-m-d', $event[2]) != date('Y-m-d', $event[3])) {
+                                $timeEnd = '23:59:59';
+                            }
                         }
                     }
                 }
-            }
+            };
+            
+            if (!empty($eventsSchool) && $self == true) $maxDiffEvents($eventsSchool);
+            if (!empty($eventsPersonal) && $self == true) $maxDiffEvents($eventsPersonal);
+            if (!empty($eventsSpaceBooking) && $self == true) $maxDiffEvents($eventsSpaceBooking);
+            if (!empty($activities)) $maxDiffEvents($activities);
+            if (!empty($staffCoverage)) $maxDiffEvents($staffCoverage);
+            if (!empty($staffDuty)) $maxDiffEvents($staffDuty);
 
             //Final calc
             $diffTime = strtotime($timeEnd) - strtotime($timeStart);
@@ -1093,7 +1100,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $isSchoolOpen = false;
                     }
 
-                    $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], $isSchoolOpen, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $diffTime, $maxAllDays, $narrow, $specialDayStart, $specialDayEnd, $specialDay, $roleCategory, $edit);
+                    $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], $isSchoolOpen, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities ?? [], $staffDuty ?? [], $staffCoverage ?? [], $diffTime, $maxAllDays, $narrow, $specialDayStart, $specialDayEnd, $specialDay, $roleCategory, $edit);
 
                     if ($dayOutput == '') {
                         $dayOutput .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
@@ -1111,7 +1118,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
     return $output;
 }
 
-function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $roleCategory, $edit = false)
+function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $staffCoverage, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $roleCategory, $edit = false)
 {
     global $session;
 
@@ -1393,18 +1400,36 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
             //Draw periods from TT
             try {
-                $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonPersonID' => $gibbonPersonID);
-                $sqlPeriods = "SELECT gibbonTTDayID, gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName
-                FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
+                $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonPersonID' => $gibbonPersonID, 'date' => $date);
+                $sqlPeriods = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, phoneInternal, gibbonSpace.name AS roomName, gibbonStaffCoverageDate.gibbonStaffCoverageID as coverageStatus
+                FROM gibbonCourse 
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
+                JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
+                LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
+                LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.date=:date)
+                
+                WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
                 $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
 
+            $periods = $resultPeriods->rowCount() > 0 ? $resultPeriods->fetchAll() : [];
+
+            if (!empty($staffCoverage)) {
+                foreach ($staffCoverage as $coverageDetails) {
+                    if ($coverageDetails[4] != $date) continue;
+                    $coverage = $coverageDetails[5];
+                    $coverage['coveragePerson'] = $coverageDetails[6];
+                    $periods[] = $coverage;
+                }
+            }
             
             $periodCount = [];
-            while ($rowPeriods = $resultPeriods->fetch()) {
+            foreach ($periods as $rowPeriods) {
                 $rowPeriods['gibbonYearGroupIDList'] = explode(',', $rowPeriods['gibbonYearGroupIDList'] ?? '');
                 $isSlotInTime = false;
                 if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -1414,6 +1439,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 } elseif ($rowPeriods['timeStart'] < $dayTimeEnd and $rowPeriods['timeEnd'] >= $dayTimeEnd) {
                     $isSlotInTime = true;
                 }
+
+                $isCovering = !empty($rowPeriods['coveragePerson']);
+                $isCoveredBy = !empty($rowPeriods['coverageStatus']);
 
                 if ($isSlotInTime == true) {
 
@@ -1482,25 +1510,40 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $top = (ceil((strtotime($effectiveStart) - strtotime($dayTimeStart)) / 60 + ($startPad / 60))).'px';
                         $title = "title='";
 
-                        try {
-                            $dataTeacher = ['gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonTTDayRowClassID' => $rowPeriods['gibbonTTDayRowClassID']];
-                            $sqlTeacher = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title 
-                                FROM gibbonPerson 
-                                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID ) 
-                                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
-                                WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
-                                AND gibbonCourseClassPerson.role='Teacher'
-                                AND gibbonCourseClassPerson.reportable='Y'
-                                AND gibbonPerson.status='Full'
-                                AND gibbonTTDayRowClassExceptionID IS NULL
-                                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-                            $resultTeacher = $connection2->prepare($sqlTeacher);
-                            $resultTeacher->execute($dataTeacher);
-                        } catch (PDOException $e) {}
+                        if ($isCovering) {
+                            $title .= __('Covering for {name}', ['name' => $rowPeriods['coveragePerson']]).'<br/>' ;
+                        } elseif ($isCoveredBy) {
+                            foreach ($eventsPersonal as $event) {
+                                if (empty($event[6]) || !is_array($event[6])) continue;
+                                foreach ($event[6] as $coverage) {
+                                    if (empty($coverage['coverageName']) || $coverage['date'] != $date) continue;
+                                    if ($coverage['gibbonTTDayRowClassID'] != $rowPeriods['gibbonTTDayRowClassID']) continue;
 
-                        if ($resultTeacher->rowCount() > 0) {
-                            $teachers = $resultTeacher->fetchAll();
-                            $title .= __('Teacher').': '.Format::nameList($teachers, 'Staff', false, false, ', ').'<br/>' ;
+                                    $title .= __('Covered by {name}', ['name' => $coverage['coverageName']]).'<br/>';
+                                }
+
+                            }
+                        } else {
+                            try {
+                                $dataTeacher = ['gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonTTDayRowClassID' => $rowPeriods['gibbonTTDayRowClassID']];
+                                $sqlTeacher = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title 
+                                    FROM gibbonPerson 
+                                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID ) 
+                                    LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
+                                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                    AND gibbonCourseClassPerson.role='Teacher'
+                                    AND gibbonCourseClassPerson.reportable='Y'
+                                    AND gibbonPerson.status='Full'
+                                    AND gibbonTTDayRowClassExceptionID IS NULL
+                                    ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                                $resultTeacher = $connection2->prepare($sqlTeacher);
+                                $resultTeacher->execute($dataTeacher);
+                            } catch (PDOException $e) {}
+
+                            if ($resultTeacher->rowCount() > 0) {
+                                $teachers = $resultTeacher->fetchAll();
+                                $title .= __('Teacher').': '.Format::nameList($teachers, 'Staff', false, false, ', ').'<br/>' ;
+                            }
                         }
 
                         if ($height < 45) {
@@ -1541,6 +1584,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $class2 = 'border';
                             $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;';
                         }
+                        else if ($isCoveredBy) {
+                            $bg = 'background-image: linear-gradient(45deg, #84acd9 25%, #96beea 25%, #96beea 50%, #84acd9 50%, #84acd9 75%, #96beea 75%, #96beea 100%); background-size: 23.0px 23.0px;';
+                        }
+                        else if ($isCovering) {
+                            $bg = 'background-color: #a5f3fc !important; '; //outline: 2px solid rgb(136, 136, 136); outline-offset: -2px;
+                        }
 
                         //Create div to represent period
                         $fontSize = '100%';
@@ -1549,7 +1598,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px;  font-size: $fontSize; $bg'>";
                         if ($height >= 45) {
-                            $output .= $rowPeriods['name'].'<br/>';
+                            if ($isCovering) {
+                                $output .= '<b>'.__('Covering').' '.$rowPeriods['nameShort'].'</b><br/>';
+                            } elseif ($isCoveredBy) {
+                                $output .= __('Absent').' '.$rowPeriods['nameShort'].'<br/>';
+                            } else {
+                                $output .= $rowPeriods['name'].'<br/>';
+                            }
                             $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                         }
 
