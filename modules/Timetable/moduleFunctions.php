@@ -2588,6 +2588,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
 
+        $periodCount = [];
         while ($rowPeriods = $resultPeriods->fetch()) {
             $isSlotInTime = false;
             if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -2600,6 +2601,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
             if ($isSlotInTime == true) {
                 if ((isset($spaceChanges[str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, '0', STR_PAD_LEFT)]) == false and $rowPeriods['type'] == 'Normal') or $rowPeriods['type'] == 'Change') {
+
+                    // Count how many classes are in this period
+                    $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
+
                     $effectiveStart = $rowPeriods['timeStart'];
                     $effectiveEnd = $rowPeriods['timeEnd'];
                     if ($dayTimeStart > $rowPeriods['timeStart']) {
@@ -2640,6 +2645,11 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     if ($height >= 45) {
                         $output .= $rowPeriods['name'].'<br/>';
                         $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
+                    }
+
+                    $classCount = count($periodCount[$rowPeriods['name']] ?? []);
+                    if ($classCount > 1) {
+                        $output .= Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
                     }
 
                     if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
