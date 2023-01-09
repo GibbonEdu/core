@@ -1582,7 +1582,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         if ($offTimetableClass) {
-                            $class2 = 'border';
+                            $class2 = 'border bg-stripe-dark';
                             $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;';
                         }
                         else if ($isCoveredBy) {
@@ -1730,7 +1730,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
-                            $class = 'ttActivities border';
+                            $class = 'ttActivities border bg-stripe-dark';
                             $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;';
                         } else {
                             $class = 'ttActivities ttPeriod';
@@ -2677,7 +2677,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     }
 
                     if ($offTimetableClass) {
-                        $class2 = 'border';
+                        $class2 = 'border bg-stripe-dark';
                         $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px; border: 1px solid rgb(136, 136, 136);';
                     }
 
