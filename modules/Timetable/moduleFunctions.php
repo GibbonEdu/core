@@ -1744,7 +1744,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $output .= '<i>'.date('H:i', $event[2]).' - '.date('H:i', $event[3]).'</i><br/>';
                         }
 
-                        $output .= "<a class='thickbox' style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
+                        $output .= "<a style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
 
                         if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
                             $output .= '<i>'.__('Cancelled').'</i><br/>';
