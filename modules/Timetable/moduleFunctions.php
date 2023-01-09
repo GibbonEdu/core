@@ -1079,10 +1079,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     if ($isDayInTerm == true) {
                         //Check for school closure day
                         $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
-                        $specialDay = $specialDays[$dateCheck] ?? [];
 
-                        if (!empty($rowClosure)) {
-                            $specialDay = $rowClosure;
+                        $specialDay = $specialDays[$dateCheck] ?? [];
+                        
+
+                        if (!empty($specialDay)) {
                             $specialDay['gibbonYearGroupIDList'] = explode(',', $specialDay['gibbonYearGroupIDList'] ?? '');
                             $specialDay['gibbonFormGroupIDList'] = explode(',', $specialDay['gibbonFormGroupIDList'] ?? '');
 
@@ -1205,7 +1206,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         $height = 30;
                         $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                         $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                         $output .= '</div>';
                         ++$allDay;
@@ -1222,7 +1223,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                         $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                         $output .= '</div>';
                     }
@@ -1247,7 +1248,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         $height = 30;
                         $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                         $output .= !empty($event[5])
                             ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                             : $label;
@@ -1266,7 +1267,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                         $output .= !empty($event[5])
                             ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                             : $label;
@@ -1817,7 +1818,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             $height = 30;
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                             $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                             $output .= '</div>';
                             ++$allDay;
@@ -1834,7 +1835,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                             $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                             $output .= '</div>';
                         }
@@ -1859,7 +1860,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             $height = 30;
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                             $output .= !empty($event[5])
                                 ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                                 : $label;
@@ -1878,7 +1879,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                             $output .= !empty($event[5])
                                 ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                                 : $label;
@@ -1916,7 +1917,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
                     } 
                     
-                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                     $output .= $label;
                     $output .= '</div>';
                     ++$zCount;
@@ -2374,9 +2375,9 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                                 $dayOut .= '</div>';
                                 $dayOut .= '</td>';
                             } elseif ($rowClosure['type'] == 'Timing Change') {
-                                $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure['schoolStart'], $rowClosure['schoolEnd']);
+                                $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure, $rowClosure['schoolStart'], $rowClosure['schoolEnd']);
                             } elseif ($rowClosure['type'] == 'Off Timetable') {
-                                $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure['schoolStart'], $rowClosure['schoolEnd']);
+                                $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure, $rowClosure['schoolStart'], $rowClosure['schoolEnd']);
                             }
                         } else {
                             $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking);
@@ -2407,7 +2408,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
     return $output;
 }
 
-function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDayStart = '', $specialDayEnd = '')
+function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDay = [], $specialDayStart = '', $specialDayEnd = '')
 {
     global $session;
 
@@ -2418,6 +2419,8 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     $output = '';
     $blank = true;
+
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     //Make array of space changes
     $spaceChanges = array();
@@ -2602,6 +2605,38 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             if ($isSlotInTime == true) {
                 if ((isset($spaceChanges[str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, '0', STR_PAD_LEFT)]) == false and $rowPeriods['type'] == 'Normal') or $rowPeriods['type'] == 'Change') {
 
+                    $offTimetableClass = false;
+
+                    // Check for off timetabled classes by year group and by form group
+                    if ($roleCategory == 'Staff' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
+
+                        try {
+                            $dataClassCheck = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonFormGroupIDList' => $specialDay['gibbonFormGroupIDList'], 'gibbonYearGroupIDList' => $specialDay['gibbonYearGroupIDList'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count)))];
+                            $sqlClassCheck = "SELECT count(*) as studentCount, MAX(gibbonCourseClassMap.gibbonCourseClassMapID) as classMap
+                                FROM gibbonCourseClassPerson 
+                                JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
+                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) 
+                                LEFT JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND FIND_IN_SET(gibbonCourseClassMap.gibbonFormGroupID, :gibbonFormGroupIDList))
+                                WHERE role='Student' AND student.status='Full' 
+                                AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+                                AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+                                AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :gibbonFormGroupIDList)
+                                AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
+                                ";
+                            $resultClassCheck = $connection2->prepare($sqlClassCheck);
+                            $resultClassCheck->execute($dataClassCheck);
+                        } catch (PDOException $e) {
+                            $output .= "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        
+                        // See if there are no students left in the class after year groups and form groups are checked
+                        $classCheck = $resultClassCheck->fetch();
+                        if (!empty($classCheck) && ($classCheck['studentCount'] <= 0 || !empty($classCheck['classMap']))) {
+                            $offTimetableClass = true;
+                        }
+                    }
+
                     // Count how many classes are in this period
                     $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
 
@@ -2635,13 +2670,20 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $title = substr($title, 0, -3);
                     $title .= "'";
                     $class2 = 'ttPeriod';
+                    $bg = '';
 
                     if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $date == date('Y-m-d')) {
                         $class2 = 'ttPeriodCurrent';
                     }
 
-                        //Create div to represent period
-                        $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                    if ($offTimetableClass) {
+                        $class2 = 'border';
+                        $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px; border: 1px solid rgb(136, 136, 136);';
+                    }
+
+                    //Create div to represent period
+                    $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; opacity: $ttAlpha; {$bg}'>";
+
                     if ($height >= 45) {
                         $output .= $rowPeriods['name'].'<br/>';
                         $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
@@ -2658,7 +2700,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
                     }
                     if ($height >= 60) {
-                        if ($rowPeriods['type'] == 'Normal') {
+                        if ($offTimetableClass) {
+                            $output .= "<span class=''><i>".($specialDay['name'] ?? __('Off Timetable')).'</i></span>';
+                        } elseif ($rowPeriods['type'] == 'Normal') {
                             $output .= $rowPeriods['roomName'];
                         } else {
                             $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>".$rowPeriods['roomName'].'</span>';
@@ -2701,7 +2745,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     if ($height > 56) {
                         $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
                     } 
-                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                     $output .= $label;
                     $output .= '</div>';
                     ++$zCount;
