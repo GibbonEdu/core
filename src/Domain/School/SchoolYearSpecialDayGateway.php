@@ -51,4 +51,42 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getIsFormGroupOffTimetableByDate($gibbonSchoolYearID, $gibbonFormGroupID, $date)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $date];
+        $sql = "SELECT (CASE WHEN count(*) = 0 THEN 1 ELSE 0 END) as offTimetable 
+            FROM gibbonPerson AS student
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID ) 
+            LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=:date AND gibbonSchoolYearSpecialDay.type='Off Timetable')
+            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID 
+            AND student.status='Full' 
+            AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+            AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
+            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getIsClassOffTimetableByDate($gibbonSchoolYearID, $gibbonCourseClassID, $date)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
+        $sql = "SELECT (CASE WHEN gibbonSchoolYearSpecialDayID IS NOT NULL AND count(*) = 0 THEN 1 ELSE 0 END) as offTimetable 
+            FROM gibbonCourseClassPerson 
+            JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) 
+            LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=:date AND gibbonSchoolYearSpecialDay.type='Off Timetable')
+            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonCourseClassPerson.role='Student' 
+            AND student.status='Full' 
+            AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+            AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+            AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+            AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) 
+            AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList)";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,6 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo '<h2>';
         echo __('Report Data');
         echo '</h2>';
+
+        $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
         //Produce array of attendance data
 
@@ -200,8 +203,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 echo '</td>';
                             } else {
                                 $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
+                                $title = '';
 
-                                if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
+                                $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonCourseClassID'], $lastNSchoolDays[$i]);
+
+                                if ($offTimetable) {
+                                    $class = 'bg-stripe-dark';
+                                    $title = __('Off Timetable');
+                                } elseif ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
                                     $class = 'highlightPresent';
                                 } else {
                                     if (isset($tt[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
@@ -213,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                     }
                                 }
 
-                                echo "<td class='$class' style='padding: 12px !important;'>";
+                                echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
                                     echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';

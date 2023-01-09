@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -98,6 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         echo __('Report Data');
         echo '</h2>';
 
+        $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
+
         //Produce array of attendance data
 
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
@@ -170,13 +173,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                         $historyCount = 0;
                         for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
 
-                            $link = '';
+                            $link = $title = '';
                             if ($i > ( count($lastNSchoolDays) - 1)) {
                                 echo "<td class='highlightNoData'>";
                                 echo '<i>'.__('NA').'</i>';
                                 echo '</td>';
                             } else {
-                                if (isset($log[$row['gibbonFormGroupID']][$lastNSchoolDays[$i]]) == false) {
+                                $offTimetable = $specialDayGateway->getIsFormGroupOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonFormGroupID'], $lastNSchoolDays[$i]);
+
+                                if ($offTimetable) {
+                                    $class = 'bg-stripe-dark';
+                                    $title = __('Off Timetable');
+                                } elseif (isset($log[$row['gibbonFormGroupID']][$lastNSchoolDays[$i]]) == false) {
                                     //$class = 'highlightNoData';
                                     $class = 'highlightAbsent';
                                 } else {
@@ -184,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                                     $class = 'highlightPresent';
                                 }
 
-                                echo "<td class='$class' style='padding: 12px !important;'>";
+                                echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
                                     echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
