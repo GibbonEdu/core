@@ -21,6 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_edit.php') == false) {
     // Access denied
@@ -128,6 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
         $row->addYesNo('hidden')->required();
 
+    $isSecureFieldType = $values['type'] == 'editor' || $values['type'] == 'code';
+
     if ($values['context'] == 'User') {
         $form->addRow()->addHeading('Visibility', __('Visibility'));
 
@@ -144,25 +147,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
             $row->addLabel('roleCategories', __('Role Categories'));
             $row->addCheckbox('roleCategories')->fromArray($activePersonOptions)->checked(array_keys($checked));
 
-        $row = $form->addRow();
-            $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
-            $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
-
-        $row = $form->addRow();
-            $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
-            $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
-
-        $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
-        if ($enablePublicRegistration == 'Y') {
+        if (!$isSecureFieldType) {
             $row = $form->addRow();
-                $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
-                $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
+                $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
+                $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
+
+            $row = $form->addRow();
+                $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
+                $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
+
+            $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
+            if ($enablePublicRegistration == 'Y') {
+                $row = $form->addRow();
+                    $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
+                    $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
+            }
         }
-    } elseif ($values['context'] == 'Medical Form') {
+    } elseif ($values['context'] == 'Medical Form' && !$isSecureFieldType) {
         $row = $form->addRow();
             $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
             $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
-    } elseif ($values['context'] == 'Staff') {
+    } elseif ($values['context'] == 'Staff' && !$isSecureFieldType) {
         $row = $form->addRow();
             $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
             $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
@@ -170,7 +175,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row = $form->addRow();
             $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
             $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
+    }
 
+    if ($isSecureFieldType && ($values['activeDataUpdater'] == 1 || $values['activeApplicationForm'] == 1 || $values['activePublicRegistration'] == 1)) {
+        $row = $form->addRow()->addContent(Format::alert(__('For security reasons, Rich Text and Code fields cannot be used on public facing forms. These fields have been disabled.'), 'warning'));
     }
 
     $row = $form->addRow();
