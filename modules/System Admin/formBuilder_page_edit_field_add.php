@@ -126,6 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         // Prevent files in generic types: these should be handled as documents
         $types = $container->get(CustomFieldHandler::class)->getTypes();
         unset($types[__('File')], $types['File']);
+        unset($types[__('Text')]['editor'], $types[__('Text')]['code']);
 
         $row = $form->addRow();
         $row->addLabel('type', __('Type'));
