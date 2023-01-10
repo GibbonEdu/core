@@ -480,7 +480,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     for ($i = 1; $i < 5; ++$i) {
                         $row = $form->addRow()->onlyIf($isVisible('phone'.$i));
-                        $row->addLabel('phone'.$i, __('Phone').' '.$i)->description(__('Type, country code, number.'));
+                        $prependRole = $primaryRoleCategory == 'Student' || $primaryRoleCategory == 'Parent' ? __($primaryRoleCategory).' ' : '';
+                        $row->addLabel('phone'.$i, $prependRole.__('Phone').' '.$i)->description(__('Type, country code, number.'));
                         $row->addPhoneNumber('phone'.$i);
                     }
 
