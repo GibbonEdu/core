@@ -153,8 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo $table->render([$row]);
 
             $ttDate = null;
-            if (!empty($_POST['ttDate'])) {
-                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+            if (!empty($_REQUEST['ttDate'])) {
+                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
             }
 
             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_view.php', "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");

@@ -74,6 +74,7 @@ v25.0.00
         Timetable: added an option to add a reason when booking facilities
         Timetable: added an Edit Timetable by Class tool to Manage Timetables
         Timetable: added class teacher names to timetable hover-over information
+        Timetable: added a simple Print option to student and facility timetables
         User Admin: added last login timestamp and IP address to password troubleshooting page
         User Admin: added the ability to search users by first name
 

@@ -572,19 +572,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Timetable');
                             echo '</h4>';
 
+                            // Timetable Links
+                            $table = DataTable::createDetails('timetable');
+
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
                                 if ($role == 'Student' or $role == 'Staff') {
-                                    echo "<div class='linkTop'>";
-                                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role&allUsers=$allStudents'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                                    echo '</div>';
+                                    $table->addHeaderAction('edit', __('Edit'))
+                                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                    ->addParam('type', $role)
+                                    ->addParam('allUsers', $allStudents)
+                                    ->displayLabel()
+                                    ->append(' | ');
                                 }
                             }
 
+                            $table->addHeaderAction('print', __('Print'))
+                                ->setURL('/report.php')
+                                ->addParam('q', '/modules/Timetable/tt_view.php')
+                                ->addParam('gibbonPersonID', $gibbonPersonID)
+                                ->addParam('gibbonTTID', $_GET['gibbonTTID'] ?? '')
+                                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
+                                ->setIcon('print')
+                                ->setTarget('_blank')
+                                ->directLink()
+                                ->displayLabel();
+
+                            echo $table->render([['' => '']]);
+
+                            echo '<pre>';
+                            print_r($_REQUEST['ttDate']);
+                            echo '</pre>';
+
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = null;
-                            if (isset($_POST['ttDate'])) {
-                                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+                            if (!empty($_REQUEST['ttDate'])) {
+                                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
