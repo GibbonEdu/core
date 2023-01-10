@@ -47,6 +47,7 @@ v25.0.00
         Attendance: enabled taking Future attendance on the current date
         Data Updater: added a search option to all Manage Update pages
         Data Updater: updated Family Data Updater History to order parents by contact priority
+        Finance: added Outstanding Amount total to payment log for partial paid invoices
         Individual Needs: add a notification event for New Investigation
         Messenger: added the ability to send confidential messages which are not viewable by other users
         Messenger: updated the Transport target to be able to handle comma-separated transport values
