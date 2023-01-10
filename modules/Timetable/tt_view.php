@@ -125,6 +125,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     ->prepend((!empty($search)) ? ' | ' : '');;
                 }
 
+                $table->addHeaderAction('print', __('Print'))
+                    ->setURL('/report.php')
+                    ->addParam('q', '/modules/Timetable/tt_view.php')
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonTTID', $gibbonTTID)
+                    ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
+                    ->setIcon('print')
+                    ->setTarget('_blank')
+                    ->directLink()
+                    ->displayLabel();
+
                 if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                     $table->addHeaderAction('export', __('Export'))
                         ->modalWindow()
@@ -142,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo $table->render([$row]);
 
             $ttDate = null;
-            if (isset($_POST['ttDate'])) {
+            if (!empty($_POST['ttDate'])) {
                 $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
             }
 
