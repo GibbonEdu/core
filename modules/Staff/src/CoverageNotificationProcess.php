@@ -34,6 +34,7 @@ use Gibbon\Module\Staff\Messages\CoverageDeclined;
 use Gibbon\Module\Staff\Messages\IndividualRequest;
 use Gibbon\Module\Staff\Messages\BroadcastRequest;
 use Gibbon\Module\Staff\Messages\NoCoverageAvailable;
+use Gibbon\Module\Staff\Messages\NewCoverageRequest;
 
 /**
  * CoverageNotificationProcess
@@ -49,6 +50,7 @@ class CoverageNotificationProcess extends BackgroundProcess
     protected $groupGateway;
 
     protected $messageSender;
+    protected $urgentNotifications;
     protected $urgencyThreshold;
     protected $organisationHR;
 
@@ -69,6 +71,35 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
         $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
+    }
+
+    public function runNewCoverageRequest($gibbonStaffCoverageID)
+    {
+        $coverage = $this->getCoverageDetailsByID($gibbonStaffCoverageID);
+        if (empty($coverage)) return false;
+
+        $recipients = [$this->organisationHR, $coverage['gibbonPersonIDCoverage']];
+        $message = new NewCoverageRequest($coverage);
+
+        // Add the absent person, if this coverage request was created by someone else
+        if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus']) {
+            $recipients[] = $coverage['gibbonPersonID'];
+        }
+
+        // Add the notification group members, if selected
+        if (!empty($coverage['gibbonGroupID'])) {
+            $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($coverage['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $recipients = array_merge($recipients, $groupRecipients);
+        }
+
+        if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
+            $this->staffCoverageGateway->update($gibbonStaffCoverageID, [
+                'notificationSent' => 'Y',
+                'notificationList' => json_encode($recipients),
+            ]);
+        }
+
+        return $sent;
     }
 
     public function runIndividualRequest($gibbonStaffCoverageID)

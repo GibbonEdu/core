@@ -248,6 +248,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             }
         }
     }
+
+    // Let users know about a new coverage request for an existing absence, update the absence
+    if ($absence['coverageRequired'] == 'N' && ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N')) {
+        $container->get(StaffAbsenceGateway::class)->update($gibbonStaffAbsenceID, ['coverageRequired' => 'Y']);
+
+        $process = $container->get(CoverageNotificationProcess::class);
+        $process->startNewCoverageRequest($request['gibbonStaffCoverageID']);
+    }
     
     $URLSuccess .= $partialFail
         ? "&return=warning1"
