@@ -118,6 +118,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
             ->isRequired();
 
     $row = $form->addRow();
+        $row->addLabel('coverageRequired', __('Cover Required'));
+        $row->addYesNo('coverageRequired');
+
+    $row = $form->addRow();
         $row->addLabel('comment', __('Comment'));
         $row->addTextArea('comment')->setRows(2);
 
@@ -138,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     // Absence Dates
     $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true);
-    $table->setTitle(__('Dates'));
+    $table->setTitle(__('Absence'));
     echo $table->getOutput();
 
     $form = Form::create('staffAbsenceAdd', $session->get('absoluteURL').'/modules/Staff/absences_manage_edit_addProcess.php');

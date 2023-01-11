@@ -50,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
         'gibbonStaffAbsenceTypeID' => $_POST['gibbonStaffAbsenceTypeID'] ?? '',
         'reason'                   => $_POST['reason'] ?? '',
         'comment'                  => $_POST['comment'] ?? '',
+        'coverageRequired'         => $_POST['coverageRequired'] ?? 'N',
     ];
 
     $updated = $staffAbsenceGateway->update($gibbonStaffAbsenceID, $data);

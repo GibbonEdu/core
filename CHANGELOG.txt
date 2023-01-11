@@ -64,6 +64,7 @@ v25.0.00
         Reports: updated Attendance template to enable displaying present attendance counts
         School Admin: added an option to cancel activities in Special Days
         School Admin: added custom field support to Departments
+        Staff: enabled editing the Cover Required field in Manage Absences
         Students: added a permission check for Family Adult comments in Student Profile
         Students: added the ability to search students by first name
         System Admin: added filename to Import History in Import From File page
