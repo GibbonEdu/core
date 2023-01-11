@@ -89,11 +89,13 @@ class StaffCoverageDateGateway extends QueryableGateway
         LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date)
         LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
         LEFT JOIN gibbonPerson as coverage ON (coverage.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage)
+        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
         WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
         AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
         AND gibbonTT.active='Y' 
         AND gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
         AND gibbonCourseClassPerson.role NOT LIKE '%Left'
+        AND gibbonTTDayRowClassExceptionID IS NULL
         ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timeStart ASC";
 
         return $this->db()->select($sql, $data);
