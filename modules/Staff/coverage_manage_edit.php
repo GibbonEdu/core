@@ -63,6 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
+    $form->addHeaderAction('delete', __('Cancel').' '.__('Request'))
+        ->setURL('/modules/Staff/coverage_manage_delete.php')
+        ->addParam('gibbonStaffCoverageID', $gibbonStaffCoverageID)
+        ->setIcon('iconCross')
+        ->displayLabel();
+
     $form->addRow()->addHeading('Coverage Request', __('Coverage Request'));
 
     if (!empty($coverage['gibbonPersonID'])) {

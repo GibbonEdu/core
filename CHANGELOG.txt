@@ -65,6 +65,7 @@ v25.0.00
         School Admin: added an option to cancel activities in Special Days
         School Admin: added custom field support to Departments
         Staff: enabled editing the Cover Required field in Manage Absences
+        Staff: improved the visibility of absences requiring coverage in lists
         Students: added a permission check for Family Adult comments in Student Profile
         Students: added the ability to search students by first name
         System Admin: added filename to Import History in Import From File page

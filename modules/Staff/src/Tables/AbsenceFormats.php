@@ -48,12 +48,16 @@ class AbsenceFormats
 
     public static function substituteDetails($coverage)
     {
+        if (empty($coverage['gibbonPersonIDCoverage']) && $coverage['status'] == 'Pending') {
+            return Format::tag(__('Cover Required'), 'error');
+        }
+
         $name = !empty($coverage['gibbonPersonIDCoverage'])
             ? Format::nameLinked($coverage['gibbonPersonIDCoverage'], $coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
             : Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true);
         return !empty($coverage['surnameCoverage'])
             ? $name
-            : '<span class="tag message">'.__('Pending').'</span>';
+            : Format::tag(__('Pending'), 'message');
     }
 
     public static function dateDetails($absence)
@@ -92,6 +96,10 @@ class AbsenceFormats
     }
 
     public static function coverage($absence) {
+        if (empty($absence['gibbonPersonIDCoverage']) && $absence['coverage'] == 'Pending') {
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        }
+        
         if ($absence['coverage'] == 'Accepted') {
             return Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
         } elseif ($absence['coverage'] == 'Requested' || $absence['coverage'] == 'Pending') {
@@ -102,6 +110,14 @@ class AbsenceFormats
 
     public static function coverageList($absence)
     {
+        if (empty($absence['gibbonPersonIDCoverage']) && $absence['coverage'] == 'Pending') {
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        }
+
+        if ($absence['coverageRequired'] == 'N') {
+            return Format::small(__('N/A'));
+        }
+
         if (empty($absence['coverage']) || empty($absence['coverageList'])) {
             return '';
         }

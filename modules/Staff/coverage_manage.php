@@ -89,6 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         'date:upcoming'    => __('Upcoming'),
         'date:today'       => __('Today'),
         'date:past'        => __('Past'),
+        'status:pending'   => __('Coverage').': '.__('Pending'),
         'status:requested' => __('Coverage').': '.__('Requested'),
         'status:accepted'  => __('Coverage').': '.__('Accepted'),
         'status:declined'  => __('Coverage').': '.__('Declined'),

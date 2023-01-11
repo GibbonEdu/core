@@ -153,7 +153,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStaffAbsenceDate.date = :date')
             ->bindValue('date', $date)
-            // ->where('gibbonStaffAbsence.status <> "Pending Approval"')
+            ->where('gibbonStaffAbsence.coverageRequired <> "N"')
             ->groupBy(['gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
 
         return $this->runSelect($query);
