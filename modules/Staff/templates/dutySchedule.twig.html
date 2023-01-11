@@ -1,3 +1,4 @@
+{% if duty %}
 <div id="duty" class="dutyContainer overflow-x-auto max-w-4xl font-sans">
 
     <div style="width:{{ (duty|length * 16.5) }}rem">
@@ -47,6 +48,11 @@
 
     </div>
 </div>
+{% else %}
+    <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
+        {{ include('components/blankSlate.twig.html') }}
+    </div>
+{% endif %}
 
 {% if canEdit %}
 <script>
@@ -65,16 +71,10 @@ $('#duty .dutySection').droppable({
     accept: '.dutyPerson',
 
     over: function(event, ui) {
-            // $(this).addClass('relative');
-            // $(this).append('<div id="droppable-overlay" class="absolute top-0 left-0 w-full h-full rounded-sm opacity-75 bg-transparent-600 flex items-stretch z-10"><div class="flex-1 flex justify-center items-center m-3 border-4 border-dashed border-white text-white text-xl font-bold uppercase">{{ __('Drop Here') }}</div></div>');
         },
         out: function(event, ui) {
-            // $('#droppable-overlay').remove();
-            // $(this).removeClass('relative');
         },
         deactivate: function(event, ui) {
-            // $('#droppable-overlay').remove();
-            // $(this).removeClass('relative');
         },
 
         drop: function(event, ui) {

@@ -49,11 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == 
     $staffDutyPersonGateway = $container->get(StaffDutyPersonGateway::class);
     $dutyRoster = $staffDutyPersonGateway->selectDutyRoster()->fetchGrouped();
 
-    // echo '<pre>';
-    // print_r($duty);
-    // print_r($dutyRoster);
-    // echo '</pre>';
-
     foreach ($duty as $weekday => $dutyList) {
 
         $duty[$weekday] = array_map(function ($item) use (&$weekday, &$dutyRoster) {

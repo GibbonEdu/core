@@ -25,8 +25,9 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -86,11 +87,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
-    
-    // $page->navigator->addHeaderAction('add', __('Add'))
-    //         ->setURL('/modules/Timetable Admin/tt_add.php')
-    //         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-    //         ->displayLabel();
 
     foreach ($ttDayRows as $ttDayRow) {
 
@@ -129,7 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         $table->addColumn('status', __('Status'))
             ->setClass('w-12 text-left')
             ->format(function ($coverage) {
-                return $coverage['status'] != 'Requested' && $coverage['status'] != 'Pending' ? Format::icon('iconTick', __('Covered')) : Format::icon('iconCross', __('Cover Required'));
+                $url = Url::fromModuleRoute('Staff', 'coverage_manage_edit')->withQueryParams(['gibbonStaffCoverageID' => $coverage['gibbonStaffCoverageID']]);
+                $output = $coverage['status'] != 'Requested' && $coverage['status'] != 'Pending' ? Format::icon('iconTick', __('Covered')) : Format::icon('iconCross', __('Cover Required'));
+
+                return Format::link($url, $output);
             });
 
         $table->addColumn('requested', __('Name'))
