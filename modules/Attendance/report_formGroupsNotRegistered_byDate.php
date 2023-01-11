@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             foreach ($formGroups as $row) {
                 for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
                     $date = $lastNSchoolDays[$i];
-                    $offTimetableList[$date][$row['gibbonFormGroupID']] = $specialDayGateway->getIsFormGroupOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonFormGroupID'], $lastNSchoolDays[$i]);
+                    $offTimetableList[$row['gibbonFormGroupID']][$date] = $specialDayGateway->getIsFormGroupOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonFormGroupID'], $lastNSchoolDays[$i]);
                 }
             }
 
@@ -165,7 +165,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
                 //Output row only if not registered on specified date
                 if ( isset($log[$row['gibbonFormGroupID']]) == false || count($log[$row['gibbonFormGroupID']]) < count($lastNSchoolDays) ) {
-                    if ($dateStart == $dateEnd && $offTimetableList[$dateStart][$row['gibbonFormGroupID']] == true) {
+                    if ($dateStart == $dateEnd && !empty($offTimetableList[$row['gibbonFormGroupID']]) && ($offTimetableList[$row['gibbonFormGroupID']][$dateStart] == true || count($offTimetableList[$row['gibbonFormGroupID']]) == count($lastNSchoolDays))) {
+                        continue;
+                    }
+
+                    if (!empty($offTimetableList[$row['gibbonFormGroupID']]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonFormGroupID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonFormGroupID']])) == count($lastNSchoolDays))) {
                         continue;
                     }
 
@@ -193,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                                 echo '<i>'.__('NA').'</i>';
                                 echo '</td>';
                             } else {
-                                $offTimetable = $offTimetableList[$date][$row['gibbonFormGroupID']];
+                                $offTimetable = $offTimetableList[$row['gibbonFormGroupID']][$date];
 
                                 if ($offTimetable) {
                                     $class = 'bg-stripe-dark';

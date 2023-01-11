@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             foreach ($classes as $row) {
                 for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
                     $date = $lastNSchoolDays[$i];
-                    $offTimetableList[$date][$row['gibbonCourseClassID']] = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonCourseClassID'], $lastNSchoolDays[$i]);
+                    $offTimetableList[$row['gibbonCourseClassID']][$date] = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonCourseClassID'], $lastNSchoolDays[$i]);
                 }
             }
 
@@ -189,12 +189,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false ||
                     count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
                         
-                    if ($dateStart == $dateEnd && $offTimetableList[$dateStart][$row['gibbonCourseClassID']] == true) {
+                    if (!empty($offTimetableList[$row['gibbonCourseClassID']]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonCourseClassID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonCourseClassID']])) == count($lastNSchoolDays))) {
                         continue;
                     }
                     
                     ++$count;
-                    
+
                     //COLOR ROW BY STATUS!
                     echo "<tr>";
                     echo '<td>';
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$date;
                                 $title = '';
 
-                                $offTimetable = $offTimetableList[$date][$row['gibbonCourseClassID']];
+                                $offTimetable = $offTimetableList[$row['gibbonCourseClassID']][$date];
 
                                 if ($offTimetable) {
                                     $class = 'bg-stripe-dark';
