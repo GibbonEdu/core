@@ -80,6 +80,7 @@ v25.0.00
         Timetable: added a simple Print option to student and facility timetables
         User Admin: added last login timestamp and IP address to password troubleshooting page
         User Admin: added the ability to search users by first name
+        User Admin: updated Manage Permissions to require filtering by either module or role
 
     Bug Fixes
         System: improved exception handling for transactions in Connection class
