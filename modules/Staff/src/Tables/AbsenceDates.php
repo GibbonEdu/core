@@ -42,6 +42,7 @@ class AbsenceDates
     protected $db;
     protected $staffAbsenceGateway;
     protected $staffAbsenceDateGateway;
+    protected $staffCoverageDateGateway;
 
     public function __construct(Session $session, Connection $db, StaffAbsenceGateway $staffAbsenceGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway, StaffCoverageDateGateway $staffCoverageDateGateway)
     {

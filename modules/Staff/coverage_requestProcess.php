@@ -49,8 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
     $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
-    $canSelectSubstitutes = $coverageMode == 'Requested' && $values['status'] == 'Approved';
-
     $requestDates = $_POST['requestDates'] ?? [];
     $substituteTypes = $_POST['substituteTypes'] ?? [];
     $timetableClasses = $_POST['timetableClasses'] ?? [];
@@ -66,6 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         exit;
     }
 
+    $canSelectSubstitutes = $coverageMode == 'Requested' && $absence['status'] == 'Approved';
+
     $data = [
         'gibbonStaffAbsenceID'   => $gibbonStaffAbsenceID,
         'gibbonSchoolYearID'     => $gibbon->session->get('gibbonSchoolYearID'),
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         'notesStatus'            => $_POST['notesStatus'] ?? '',
         'requestType'            => $_POST['requestType'] ?? '',
         'substituteTypes'        => implode(',', $substituteTypes),
-        'status'                 => $values['status'] != 'Approved' ? 'Pending' : 'Requested',
+        'status'                 => $absence['status'] != 'Approved' || $coverageMode == 'Assigned' ? 'Pending' : 'Requested',
         'notificationSent'       => 'N',
     ];
 
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     // Let users know about a new coverage request for an existing absence, update the absence
-    if ($absence['coverageRequired'] == 'N' && ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N')) {
+    if ( ($absence['coverageRequired'] == 'N' && $coverageMode == 'Assigned') || $absence['notificationSent'] == 'N') {
         $container->get(StaffAbsenceGateway::class)->update($gibbonStaffAbsenceID, ['coverageRequired' => 'Y']);
 
         $process = $container->get(CoverageNotificationProcess::class);

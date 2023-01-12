@@ -26,16 +26,20 @@ class NewCoverageRequest extends Message
 {
     protected $coverage;
     protected $details;
+    protected $dates;
 
-    public function __construct($coverage)
+    public function __construct($coverage, $dates)
     {
         $this->coverage = $coverage;
+        $this->dates = $dates;
         $this->details = [
             'nameAbsent'   => Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true),
             'date'         => Format::dateRangeReadable($coverage['dateStart'], $coverage['dateEnd']),
             'time'         => $coverage['allDay'] == 'Y' ? __('All Day') : Format::timeRange($coverage['timeStart'], $coverage['timeEnd']),
             'type'         => trim($coverage['type'].' '.$coverage['reason']),
         ];
+
+
     }
 
     public function via() : array
@@ -57,14 +61,17 @@ class NewCoverageRequest extends Message
 
     public function getDetails() : array
     {
-        return [
+        $details = [
             __('Staff')      => $this->details['nameAbsent'],
-            __('Type')       => $this->details['type'],
-            __('Date')       => $this->details['date'],
-            __('Time')       => $this->details['time'],
-            __('Comment')    => $this->coverage['notesStatus'],
-            __('Reply')      => $this->coverage['notesCoverage'],
+            __('Comment')      => $this->coverage['notesStatus'],
         ];
+
+        foreach ($this->dates as $date) {
+            $notes = !empty($date['notes']) ? ' ('.$date['notes'].')' : '';
+            $details[$date['columnName']] = Format::courseClassName($date['courseNameShort'], $date['classNameShort']).$notes;
+        }
+
+        return $details;
     }
 
     public function getModule() : string

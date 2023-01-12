@@ -42,6 +42,7 @@ class CoverageDates
     protected $db;
     protected $staffCoverageGateway;
     protected $staffCoverageDateGateway;
+    protected $staffAbsenceDateGateway;
 
     public function __construct(Session $session, Connection $db, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway)
     {
@@ -97,12 +98,10 @@ class CoverageDates
             });
 
         if ($coverageByTimetable) {
-
             $table->addColumn('columnName', __('Period'))
                 ->description(__('Time'))
                 ->formatDetails([AbsenceFormats::class, 'timeDetails']);
 
-            // $table->addColumn('columnName', __('Period'));
             $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
         } else {
             $table->addColumn('timeStart', __('Time'))

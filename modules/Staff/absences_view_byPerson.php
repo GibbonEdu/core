@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($absence, $actions) use ($canManage, $canRequest, $coverageMode) {
             $noApprovalRequired = ($coverageMode == 'Requested' && $absence['status'] == 'Approved') || $coverageMode == 'Assigned';
-            if ($canRequest && $noApprovalRequired && empty($absence['coverage']) && $absence['dateEnd'] >= date('Y-m-d')) {
+            if ($canRequest && $noApprovalRequired && $absence['dateEnd'] >= date('Y-m-d')) {
                 $actions->addAction('coverage', __('Request Coverage'))
                     ->setIcon('attendance')
                     ->setURL('/modules/Staff/coverage_request.php');

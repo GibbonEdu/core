@@ -133,7 +133,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->innerJoin('gibbonSchoolYear', 'gibbonStaffAbsenceDate.date BETWEEN firstDay AND lastDay')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
 
-            ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
+            ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID AND gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"')
             ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
 
             ->leftJoin('gibbonTTDayDate', 'gibbonTTDayDate.date=:date')
@@ -142,7 +142,6 @@ class StaffCoverageGateway extends QueryableGateway
             ->leftJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonStaffCoverageDate.gibbonTTDayRowClassID')
             ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID')
             ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
-            
             
             ->leftJoin('gibbonPerson AS coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID')
             ->leftJoin('gibbonPerson AS status', 'gibbonStaffCoverage.gibbonPersonIDStatus=status.gibbonPersonID')
@@ -180,23 +179,40 @@ class StaffCoverageGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function queryCoverageByPersonAbsent(QueryCriteria $criteria, $gibbonPersonID)
+    public function queryCoverageByPersonAbsent(QueryCriteria $criteria, $gibbonPersonID, $grouped = true)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status',  'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverage.gibbonPersonID', 
-                'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage', 'gibbonStaffCoverage.notesCoverage'
+                'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status',  'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'gibbonStaffCoverageDate.date',  'gibbonStaffCoverageDate.allDay', 'gibbonStaffCoverageDate.timeStart', 'gibbonStaffCoverageDate.timeEnd', 'timestampStatus', 'timestampCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverage.gibbonPersonID', 
+                'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage', 'gibbonStaffCoverage.notesStatus', 'gibbonStaffCoverage.notesCoverage', 'gibbonTTColumnRow.name as period', 'gibbonStaffCoverageDate.gibbonTTDayRowClassID',
+                'gibbonCourse.gibbonCourseID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourseClass.nameShort as className', 'gibbonCourse.gibbonDepartmentID',
             ])
             ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
             ->leftJoin('gibbonStaffAbsence', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->leftJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->leftJoin('gibbonPerson AS coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID')
+
+            ->leftJoin('gibbonTTDayDate', 'gibbonTTDayDate.date=gibbonStaffCoverageDate.date')
+            ->leftJoin('gibbonTTDay', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID')
+            ->leftJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID AND (gibbonStaffCoverageDate.timeStart >= gibbonTTColumnRow.timeStart AND gibbonStaffCoverageDate.timeEnd <= gibbonTTColumnRow.timeEnd)')
+            ->leftJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonStaffCoverageDate.gibbonTTDayRowClassID')
+            ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID')
+            ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+
             ->where('gibbonStaffCoverage.gibbonPersonID = :gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->groupBy(['gibbonStaffCoverage.gibbonStaffCoverageID'])
             ->orderBy(["gibbonStaffCoverage.status = 'Requested' DESC"]);
+
+        if ($grouped) {
+            $query->cols(['COUNT(*) as days', 'MIN(gibbonStaffCoverageDate.date) as dateStart', 'MAX(gibbonStaffCoverageDate.date) as dateEnd'])
+                  ->groupBy(['gibbonStaffCoverage.gibbonStaffCoverageID']);
+        } else {
+            $query->cols(['"" as days', 'gibbonStaffCoverageDate.date as dateStart', 'gibbonStaffCoverageDate.date as dateEnd'])
+                ->groupBy(['gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
+        }
 
         $criteria->addFilterRules($this->getSharedFilterRules());
 
@@ -339,7 +355,7 @@ class StaffCoverageGateway extends QueryableGateway
             },
             'date' => function ($query, $date) {
                 switch (ucfirst($date)) {
-                    case 'Upcoming': return $query->where("date >= CURRENT_DATE()")->where("gibbonStaffCoverage.status <> 'Declined' AND gibbonStaffCoverage.status <> 'Cancelled'");
+                    case 'Upcoming': return $query->where("gibbonStaffCoverageDate.date >= CURRENT_DATE()")->where("gibbonStaffCoverage.status <> 'Declined' AND gibbonStaffCoverage.status <> 'Cancelled'");
                     case 'Today'   : return $query->where("gibbonStaffCoverageDate.date = CURRENT_DATE()");
                     case 'Past'    : return $query->where("gibbonStaffCoverageDate.date < CURRENT_DATE()");
                     default: return $query->bindValue('dateFilter', $date)->where("gibbonStaffCoverageDate.date = :dateFilter");

@@ -49,7 +49,7 @@ class AbsenceFormats
     public static function substituteDetails($coverage)
     {
         if (empty($coverage['gibbonPersonIDCoverage']) && $coverage['status'] == 'Pending') {
-            return Format::tag(__('Cover Required'), 'error');
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }
 
         $name = !empty($coverage['gibbonPersonIDCoverage'])
@@ -99,7 +99,7 @@ class AbsenceFormats
         if (empty($absence['gibbonPersonIDCoverage']) && $absence['coverage'] == 'Pending') {
             return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }
-        
+
         if ($absence['coverage'] == 'Accepted') {
             return Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
         } elseif ($absence['coverage'] == 'Requested' || $absence['coverage'] == 'Pending') {

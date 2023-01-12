@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
     }
 
     // Send messages (Mail, SMS) to relevant users
-    if ($coverage['requestType'] == 'Individual' || $coverage['status'] == 'Accepted') {
+    if ($coverage['requestType'] == 'Assigned' || $coverage['requestType'] == 'Individual' || $coverage['status'] == 'Accepted') {
         $process = $container->get(CoverageNotificationProcess::class);
         $process->startCoverageCancelled($gibbonStaffCoverageID);
     }
