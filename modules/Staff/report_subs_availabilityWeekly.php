@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
+use Gibbon\Domain\School\DaysOfWeekGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
@@ -71,10 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $dateStart = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday this week" : "Sunday last week");
     $dateEnd = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday next week" : "Sunday this week");
 
-    $criteria = $subGateway->newQueryCriteria(true)
+    $criteria = $subGateway->newQueryCriteria()
         ->sortBy('priority', 'DESC')
         ->sortBy(['type', 'surname', 'preferredName'])
         ->filterBy('active', 'Y')
+        ->filterBy('status', 'Full')
         ->filterBy('allStaff', $allStaff)
         ->fromPOST();
 
@@ -131,9 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         });
 
     $dateRange = new DatePeriod($dateStart, new DateInterval('P1D'), $dateEnd);
-
+    $daysOfWeekGateway = $container->get(DaysOfWeekGateway::class);
+    
     foreach ($dateRange as $weekday) {
         if (!isSchoolOpen($guid, $weekday->format('Y-m-d'), $connection2)) continue;
+
+        $dayOfWeek = $daysOfWeekGateway->getDayOfWeekByDate($weekday->format('Y-m-d'));
 
         $url = './index.php?q=/modules/Staff/report_subs_availability.php&date='.Format::date($weekday->format('Y-m-d'));
         $columnTitle = Format::link($url, Format::dateReadable($weekday->format('Y-m-d'), '%a, %b %e'));
@@ -142,8 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->context('primary')
             ->notSortable()
             ->description(Format::date($weekday->format('Y-m-d')))
-            ->format(function ($values) use ($weekday) {
-                return CoverageMiniCalendar::renderTimeRange($values['dates'][$weekday->format('Y-m-d')] ?? [], $weekday);
+            ->format(function ($values) use ($weekday, $dayOfWeek) {
+                return CoverageMiniCalendar::renderTimeRange($dayOfWeek, $values['dates'][$weekday->format('Y-m-d')] ?? [], $weekday);
             })
             ->modifyCells(function ($values, $cell) use ($weekday) {
                 if ($weekday->format('Y-m-d') == date('Y-m-d')) $cell->addClass('bg-yellow-100');

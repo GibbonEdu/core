@@ -36,7 +36,7 @@ use DatePeriod;
  */
 class CoverageMiniCalendar
 {
-    public static function renderTimeRange($availabilityByDate, $date)
+    public static function renderTimeRange($dayOfWeek, $availabilityByDate, $date)
     {
         $title = '';
         foreach ($availabilityByDate as $availability) {
@@ -49,7 +49,7 @@ class CoverageMiniCalendar
 
         $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
 
-        $timeRange = new DatePeriod($date->modify('8:30am'), new DateInterval('PT10M'), $date->modify('4pm'));
+        $timeRange = new DatePeriod(new DateTime($dayOfWeek['schoolStart']), new DateInterval('PT10M'), new DateTime($dayOfWeek['schoolEnd']));
 
         foreach ($timeRange as $time) {
             $class = 'bg-white';

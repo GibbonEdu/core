@@ -29,6 +29,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\School\DaysOfWeekGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
     // Access denied
@@ -68,6 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $times = !empty($coverage['gibbonTTDayRowClassID'])
         ? $staffCoverageDateGateway->getCoverageTimesByTimetableClass($coverage['gibbonTTDayRowClassID'])
         : [];
+    $dayOfWeek = $container->get(DaysOfWeekGateway::class)->getDayOfWeekByDate($coverage['date']);
 
     // DETAILS
     $table = DataTable::createDetails('coverage');
@@ -221,14 +223,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
             return Format::listDetails([
                 __('Week') => $person['coverageCounts']['weekCoverage'] ?? 0,
                 __('Year') => $person['coverageCounts']['totalCoverage'] ?? 0,
-            ], 'ul', 'list-none text-xs text-right p-0 m-0', 'w-2/3');
+            ], 'ul', 'list-none text-xs text-right p-0 m-0', 'w-2/3 whitespace-nowrap');
         });
 
     $table->addColumn('availability', __('Availability'))
         ->context('primary')
         ->notSortable()
-        ->format(function ($person) use ($dateObject) {
-            return CoverageMiniCalendar::renderTimeRange($person['dates'] ?? [], $dateObject);
+        ->format(function ($person) use ($dateObject, $dayOfWeek) {
+            return CoverageMiniCalendar::renderTimeRange($dayOfWeek, $person['dates'] ?? [], $dateObject);
         });
 
     $table->addRadioColumn('gibbonPersonIDCoverage', 'gibbonPersonID')->checked($coverage['gibbonPersonIDCoverage'] ?? null);

@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
+use Gibbon\Domain\School\DaysOfWeekGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
@@ -90,11 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeEnd);
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
-        $row = $form->addRow();
-            $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
-            $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
-    }
+    $row = $form->addRow();
+        $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
+        $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
 
     $row = $form->addRow();
         $row->addFooter();
@@ -114,6 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $subs->transform(function (&$sub) use (&$availability) {
         $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
     });
+
+    $dayOfWeek = $container->get(DaysOfWeekGateway::class)->getDayOfWeekByDate($date);
     
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
@@ -164,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->description(__('Availability'))
         ->context('primary')
         ->notSortable()
-        ->format(function ($person) use ($dateObject) {
+        ->format(function ($person) use ($dateObject, $dayOfWeek) {
             $output = '';
 
             if ($person['available']) {
@@ -184,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
                 $output .= !empty($reason)? $reason : __('Not Available');
 
                 $output .= '<br/>';
-                $output .= CoverageMiniCalendar::renderTimeRange($person['dates'] ?? [], $dateObject);
+                $output .= CoverageMiniCalendar::renderTimeRange($dayOfWeek, $person['dates'] ?? [], $dateObject);
             }
             
             
