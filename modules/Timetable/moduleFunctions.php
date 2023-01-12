@@ -404,6 +404,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $roleCategory = $resultRole && $resultRole->rowCount() > 0 ? $resultRole->fetch(\PDO::FETCH_COLUMN, 0) : 'Other';
         }
 
+        $viewerIsStaff = $session->get('gibbonRoleIDCurrentCategory') == 'Staff';
+
         $blank = true;
         if ($startDayStamp == '') {
             $startDayStamp = time();
@@ -691,7 +693,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
-            if ($roleCategory == 'Staff') {
+            if ($viewerIsStaff && $roleCategory == 'Staff') {
                 // STAFF DUTY
                 // Add duty to the timetable in the same way as activities
                 $staffDutyGateway = $container->get(StaffDutyPersonGateway::class);
@@ -775,7 +777,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$absence['gibbonStaffAbsenceID']
                         : '';
 
-                    $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, '', $url, $absence['coverageList']];
+                    $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, $absence['allDay'], $url, $absence['coverageList']];
                 }
             }
 
@@ -1442,7 +1444,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 }
 
                 $isCovering = !empty($rowPeriods['coveragePerson']);
-                $isCoveredBy = !empty($rowPeriods['coverageStatus']);
+                $isCoveredBy = !empty($rowPeriods['coverageStatus']) && !empty($eventsPersonal);
 
                 if ($isSlotInTime == true) {
 
@@ -1850,6 +1852,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 $top = 0;
                 $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
                 foreach ($eventsPersonal as $event) {
+                    if ($event[0] == __('Absent') && $event[4] == 'N') continue;
+
                     if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
                         if ($event[1] == 'All Day') {
                             $label = $event[0];
