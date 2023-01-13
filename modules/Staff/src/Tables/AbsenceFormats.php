@@ -110,7 +110,7 @@ class AbsenceFormats
 
     public static function coverageList($absence)
     {
-        if (empty($absence['gibbonPersonIDCoverage']) && $absence['coverage'] == 'Pending') {
+        if (empty($absence['gibbonPersonIDCoverage']) && !empty($absence['coverage']) && $absence['coverage'] == 'Pending') {
             return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }
 
@@ -118,7 +118,7 @@ class AbsenceFormats
             return Format::small(__('N/A'));
         }
 
-        if (empty($absence['coverage']) || empty($absence['coverageList'])) {
+        if (empty($absence['coverageList'])) {
             return '';
         }
 

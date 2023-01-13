@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // Proceed!
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonStaffCoverageDateID = $_REQUEST['gibbonStaffCoverageDateID'] ?? '';
-    $gibbonCourseClassID = $_REQUEST['gibbonCourseClassID'] ?? '';
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
@@ -52,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     }
 
     $coverage = $staffCoverageDateGateway->getCoverageDateDetailsByID($gibbonStaffCoverageDateID);
-    $class = $courseGateway->getCourseClassByID($gibbonCourseClassID);
+    
 
     if (empty($coverage)) {
         $page->addError(__('The specified record cannot be found.'));
@@ -66,9 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     }
 
     $dateObject = new \DateTimeImmutable($coverage['date']);
-    $times = !empty($coverage['gibbonTTDayRowClassID'])
-        ? $staffCoverageDateGateway->getCoverageTimesByTimetableClass($coverage['gibbonTTDayRowClassID'])
-        : [];
+
+    $times = $staffCoverageDateGateway->getCoverageTimesByForeignTable($coverage['foreignTable'], $coverage['foreignTableID'], $coverage['date']);
+
     $dayOfWeek = $container->get(DaysOfWeekGateway::class)->getDayOfWeekByDate($coverage['date']);
 
     // DETAILS
@@ -78,21 +77,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $table->addColumn('period', __('Period'));
     $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
 
-    $table->addColumn('class', __('Class'))
-        ->format(function($coverage) {
-            $url = './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID'];
-            return Format::link($url, Format::courseClassName($coverage['courseNameShort'], $coverage['nameShort']), ['target' => '_blank']);
-        });
-    
-    $table->addColumn('studentsTotal', __('Students'));
+    if ($coverage['foreignTable'] == 'gibbonTTDayRowClass') {
+        $details = $courseGateway->getCourseClassByID($times['gibbonCourseClassID']);
 
-    $table->addColumn('spaceName', __('Room'))
-        ->format(function($coverage) {
-            $url = './index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$coverage['gibbonSpaceID'].'&ttDate='.Format::date($coverage['date']);
-            return Format::link($url, $coverage['spaceName'], ['target' => '_blank']);
-        });
+        $table->addColumn('class', __('Class'))
+            ->format(function($coverage) {
+                if (empty($coverage['gibbonCourseID'])) return '';
 
-    echo $table->render([$coverage + $class + $times]);
+                $url = './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID'];
+                return Format::link($url, Format::courseClassName($coverage['courseNameShort'], $coverage['nameShort']), ['target' => '_blank']);
+            });
+        
+        $table->addColumn('studentsTotal', __('Students'));
+
+        $table->addColumn('spaceName', __('Room'))
+            ->format(function($coverage) {
+                if (empty($coverage['gibbonSpaceID'])) return '';
+
+                $url = './index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$coverage['gibbonSpaceID'].'&ttDate='.Format::date($coverage['date']);
+                return Format::link($url, $coverage['spaceName'] ?? '', ['target' => '_blank']);
+            });
+    } else {
+        $details = [];
+    }
+
+    echo $table->render([array_merge($coverage, $details, $times)]);
 
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria()

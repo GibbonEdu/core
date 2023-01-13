@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }, $classes);
 
     $coverageByTimetable = !empty($classes);
-    
+
     // Look for available subs
     $criteria = $substituteGateway->newQueryCriteria()
         ->filterBy('allStaff', $internalCoverage)
@@ -254,9 +254,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             })
             ->format(function ($class) {
                 if (!empty($class['gibbonStaffCoverageID'])) {
-                    return  $class['status'] == 'Requested'
+                    return  $class['coverage'] == 'Requested' || $class['coverage'] == 'Pending'
                         ? Format::tag(__('Pending'), 'message')
-                        : Format::small(__($class['status']));
+                        : Format::small(__($class['coverage']));
                 }
             });
     } else {
@@ -318,8 +318,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $table->addColumn('notes', __('Notes').' *')
             ->width('25%')
             ->format(function ($class) use ($coverageByTimetable, &$form) {
+                if (!empty($class['gibbonPersonIDCoverage'])) {
+                    return Format::name('', $class['preferredNameCoverage'], $class['surnameCoverage'], 'Staff', false, true);
+                }
                 $id = $coverageByTimetable ? $class['contextCheckboxID'] : $class['date'];
-                $input = $form->getFactory()->createTextField("notes[{$id}]")->setID("notes{$id}")->addClass('coverageNotes');
+                $input = $form->getFactory()->createTextField("notes[{$id}]")->setID("notes{$id}")->addClass('coverageNotes hidden');
                 return $input->getOutput();
         });
     }
@@ -345,7 +348,7 @@ checkSelections = function ()
         return $(this).val() != '';
     }).length;
 
-    if (datesChecked.length <= 0 || ($('#requestType').val() == 'Individual' && subsChecked <= 0 ) ) {
+    if (datesChecked === undefined || datesChecked.length <= 0 || ($('#requestType').val() == 'Individual' && subsChecked <= 0 ) ) {
         $('.coverageNoSubmit').show();
         $('.coverageSubmit :input').prop('disabled', true);
     } else {
@@ -374,6 +377,7 @@ $(document).ready(function() {
     });
 
     $('input[name="timetableClasses[]"]').trigger('change');
+    checkSelections();
 
     $(document).on('change', '#requestType', function() {
         $('input[name="timetableClasses[]"]').trigger('change');

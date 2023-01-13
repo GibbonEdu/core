@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     ->description(__('Time'))
                     ->formatDetails([AbsenceFormats::class, 'timeDetails']);
 
-            $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseName', 'className']));
+            $table->addColumn('contextName', __('Cover'));
         } else {            
             $table->addColumn('date', __('Date'))
                 ->context('primary')

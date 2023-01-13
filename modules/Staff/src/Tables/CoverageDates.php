@@ -27,6 +27,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 /**
  * CoverageDates
@@ -43,14 +44,16 @@ class CoverageDates
     protected $staffCoverageGateway;
     protected $staffCoverageDateGateway;
     protected $staffAbsenceDateGateway;
+    protected $coverageMode;
 
-    public function __construct(Session $session, Connection $db, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway)
+    public function __construct(Session $session, Connection $db, SettingGateway $settingGateway, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->staffCoverageDateGateway = $staffCoverageDateGateway;
         $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
+        $this->coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
     }
 
     public function create($gibbonStaffCoverageID)
@@ -82,17 +85,7 @@ class CoverageDates
             $dates->transform(function (&$item) {
                 if (empty($item['foreignTableID'])) return;
 
-                switch ($item['foreignTable']) {
-                    case 'gibbonTTDayRowClass': 
-                        $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['foreignTableID']);
-                        break;
-                    case 'gibbonStaffDutyPerson': 
-                        $times = $this->staffCoverageDateGateway->getCoverageTimesByStaffDuty($item['foreignTableID'], $item['date']);
-                        break;
-                    case 'gibbonActivity': 
-                        $times = $this->staffCoverageDateGateway->getCoverageTimesByActivity($item['foreignTableID'], $item['date']);
-                        break;
-                }
+                $times = $this->staffCoverageDateGateway->getCoverageTimesByForeignTable($item['foreignTable'], $item['foreignTableID'], $item['date']);
 
                 $item['period'] = $times['period'] ?? '';
                 $item['contextName'] = $times['contextName'] ?? '';
@@ -137,11 +130,30 @@ class CoverageDates
             $table->addActionColumn()
                 ->addParam('gibbonStaffCoverageID')
                 ->addParam('gibbonStaffCoverageDateID')
-                ->format(function ($coverage, $actions) use ($canManage, $canDelete) {
-                    if ($canManage) {
-                        $actions->addAction('edit', __('Edit'))
-                            ->setURL('/modules/Staff/coverage_manage_edit_edit.php');
+                ->addParam('gibbonCourseClassID')
+                ->addParam('date')
+                ->format(function ($coverage, $actions) use ($canDelete) {
+
+                    if ($this->coverageMode == 'Assigned') {
+                        if (empty($coverage['gibbonPersonIDCoverage'])) {
+                            $actions->addAction('assign', __('Assign'))
+                                ->setURL('/modules/Staff/coverage_planner_assign.php')
+                                ->setIcon('attendance')
+                                ->addClass('mr-1 -mt-px')
+                                ->modalWindow(900, 700)
+                                ->append('<img src="themes/Default/img/page_new.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
+                        } else {
+                            $actions->addAction('cancel', __('Unassign'))
+                                ->setURL('/modules/Staff/coverage_planner_unassign.php')
+                                ->setIcon('attendance')
+                                ->addClass('mr-1 -mt-px')
+                                ->modalWindow(650, 250)
+                                ->append('<img src="themes/Default/img/iconCross.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
+                        }
                     }
+
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Staff/coverage_manage_edit_edit.php');
 
                     if ($canDelete) {
                         $actions->addAction('deleteInstant', __('Delete'))
@@ -150,6 +162,7 @@ class CoverageDates
                             ->setURL('/modules/Staff/coverage_manage_edit_deleteProcess.php')
                             ->addConfirmation(__('Are you sure you wish to delete this record?'));
                     }
+                
                 });
         }
 

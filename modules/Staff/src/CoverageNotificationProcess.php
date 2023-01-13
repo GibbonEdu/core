@@ -256,17 +256,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         $dates->transform(function (&$item) {
             if (empty($item['foreignTableID'])) return;
 
-            switch ($item['foreignTable']) {
-                case 'gibbonTTDayRowClass': 
-                    $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['foreignTableID']);
-                    break;
-                case 'gibbonStaffDutyPerson': 
-                    $times = $this->staffCoverageDateGateway->getCoverageTimesByStaffDuty($item['foreignTableID'], $item['date']);
-                    break;
-                case 'gibbonActivity': 
-                    $times = $this->staffCoverageDateGateway->getCoverageTimesByActivity($item['foreignTableID'], $item['date']);
-                    break;
-            }
+            $times = $this->staffCoverageDateGateway->getCoverageTimesByForeignTable($item['foreignTable'], $item['foreignTableID'], $item['date']);
 
             $item['period'] = $times['period'] ?? '';
             $item['contextName'] = $times['contextName'] ?? '';

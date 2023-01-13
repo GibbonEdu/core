@@ -61,13 +61,14 @@ class StaffAbsenceDateGateway extends QueryableGateway
         $sql = "SELECT gibbonStaffAbsenceDate.gibbonStaffAbsenceID as groupBy, gibbonStaffAbsenceDate.*, 
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.allDay ELSE gibbonStaffAbsenceDate.allDay END) as allDay, 
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeStart ELSE gibbonStaffAbsenceDate.timeStart END) as timeStart,
-        (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeEnd ELSE gibbonStaffAbsenceDate.timeEnd END) as timeEnd,
+        (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeEnd ELSE gibbonStaffAbsenceDate.timeEnd END) as timeEnd, gibbonStaffCoverage.requestType,
         gibbonStaffCoverage.status as coverage, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverageDate.reason as notes, gibbonStaffCoverageDate.gibbonStaffCoverageDateID, gibbonStaffCoverageDate.foreignTable, gibbonStaffCoverageDate.foreignTableID
                 FROM gibbonStaffAbsenceDate
                 LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID)
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID)
                 LEFT JOIN gibbonPerson AS coverage ON (gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID)
                 WHERE FIND_IN_SET(gibbonStaffAbsenceDate.gibbonStaffAbsenceID, :gibbonStaffAbsenceIDList)
+                AND gibbonStaffCoverage.status <> 'Cancelled' AND gibbonStaffCoverage.status <> 'Declined'
                 ORDER BY gibbonStaffAbsenceDate.date, gibbonStaffAbsenceDate.timeStart, gibbonStaffCoverageDate.timeStart";
 
         return $this->db()->select($sql, $data);

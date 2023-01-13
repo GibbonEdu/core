@@ -39,17 +39,23 @@ class CoverageMiniCalendar
     public static function renderTimeRange($dayOfWeek, $availabilityByDate, $date)
     {
         $title = '';
+        $timeRangeStart = $dayOfWeek['schoolStart'];
+        $timeRangeEnd = $dayOfWeek['schoolEnd'];
+
         foreach ($availabilityByDate as $availability) {
             $title .= __($availability['status']).': ';
             $title .= $availability['allDay'] == 'N'
                 ? Format::timeRange($availability['timeStart'], $availability['timeEnd'])
                 : __('All Day');
             $title .= '<br/>';
+
+            if ($availability['timeStart'] < $timeRangeStart) $timeRangeStart = $availability['timeStart'];
+            if ($availability['timeEnd'] > $timeRangeEnd) $timeRangeEnd = $availability['timeEnd'];
         }
 
         $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
 
-        $timeRange = new DatePeriod(new DateTime($dayOfWeek['schoolStart']), new DateInterval('PT10M'), new DateTime($dayOfWeek['schoolEnd']));
+        $timeRange = new DatePeriod(new DateTime($timeRangeStart), new DateInterval('PT10M'), new DateTime($timeRangeEnd));
 
         foreach ($timeRange as $time) {
             $class = 'bg-white';

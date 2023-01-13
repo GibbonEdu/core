@@ -17,15 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Staff\StaffCoverageGateway;
-use Gibbon\Domain\Timetable\TimetableDayGateway;
-use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Http\Url;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\Staff\StaffCoverageDateGateway;
+use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php') == false) {
     // Access denied
@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
+    $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
 
     // DATE SELECTOR
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php';
@@ -66,43 +67,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     echo $form->getOutput();
 
     // COVERAGE
-
     $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
+    $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchAll();
 
-    $ttDays = [];
-    foreach ($coverage as $ttDay => $coverageByTT) {
-        foreach ($coverageByTT as $index => $coverageItem) {
-            $ttDays[] = $coverageItem['gibbonTTDayID'] ?? '';
-        }
-    }
-    $ttDays = array_unique($ttDays);
-
-    if (!empty($ttDays)) {
-        $ttDayRows = $container->get(TimetableDayGateway::class)->selectTTDayRowsByID($ttDays[0] ?? '');
-    } else {
-        $ttDayRows = [
-            ['name' => ' ', 'type' => 'Lesson']
-        ];
+    if (empty($times)) {
+        $times = [['groupBy' => '']];
     }
 
     echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
 
-    foreach ($ttDayRows as $ttDayRow) {
+    foreach ($times as $timeSlot) {
 
-        $coverageByTT = $coverage[$ttDayRow['name']] ?? [];
-
-        if ($ttDayRow['type'] != 'Lesson' && $ttDayRow['type'] != 'Pastoral') {
-            continue;
-        }
+        $coverageByTT = $coverage[$timeSlot['groupBy']] ?? [];
 
         // DATA TABLE
         $gridRenderer = new GridView($container->get('twig'));
         
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
-        if (!empty($coverage)) {
-            $table->setDescription('<h4>'.__($ttDayRow['name']).' <span class="text-xs font-normal">('.Format::timeRange($ttDayRow['timeStart'], $ttDayRow['timeEnd']).')</span></h4>');
+        if (!empty($timeSlot['groupBy'])) {
+            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' <span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).')</span></h4>');
         }
 
         $table->addMetaData('gridClass', 'rounded-sm text-sm bg-gray-100 border border-t-0');
@@ -140,8 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
-                $url = './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID'];
-                return Format::link($url, Format::courseClassName($coverage['courseName'], $coverage['className']));
+                $url = $coverage['context'] == 'Class' 
+                    ? './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID']
+                    : '';
+                return Format::link($url, $coverage['contextName']);
             });
 
         $table->addColumn('coverage', __('Substitute'))
@@ -160,7 +147,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
             ->addParam('gibbonStaffCoverageDateID')
-            ->addParam('gibbonTTColumnRowID')
             ->addParam('gibbonCourseClassID')
             ->addParam('date', $date->format('Y-m-d'))
             ->addClass('w-16 justify-end')
@@ -177,21 +163,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                         ->isModal(900, 700)
                         ->setURL('/modules/Staff/coverage_planner_assign.php');
 
-                    $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Staff/coverage_planner_unassign.php');
+                    $actions->addAction('delete', __('Unassign'))
+                        ->setURL('/modules/Staff/coverage_planner_unassign.php')
+                        ->setIcon('attendance')
+                        ->addClass('mr-1')
+                        ->append('<img src="themes/Default/img/iconCross.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
                 } else {
                     $actions->addAction('assign', __('Assign'))
                         ->setURL('/modules/Staff/coverage_planner_assign.php')
-                        ->setIcon('page_new')
-                        ->addParam('id', 'test')
-                        ->modalWindow(900, 700);
-
+                        ->setIcon('attendance')
+                        ->addClass('mr-1')
+                        ->modalWindow(900, 700)
+                        ->append('<img src="themes/Default/img/page_new.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
                 }
-
-                
             });
 
         echo $table->render($coverageByTT);
-
     }
 }

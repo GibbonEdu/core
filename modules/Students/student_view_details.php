@@ -602,10 +602,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             echo $table->render([['' => '']]);
 
-                            echo '<pre>';
-                            print_r($_REQUEST['ttDate']);
-                            echo '</pre>';
-
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = null;
                             if (!empty($_REQUEST['ttDate'])) {

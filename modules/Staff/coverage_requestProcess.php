@@ -179,22 +179,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 list($date, $foreignTable, $foreignTableID) = explode(':', $contextCheckboxID);
                 if (empty($absenceDatesByDate[$date])) continue;
 
-                switch ($foreignTable) {
-                    case 'gibbonTTDayRowClass': 
-                        $times = $staffCoverageDateGateway->getCoverageTimesByTimetableClass($foreignTableID);
-                        break;
-                    case 'gibbonStaffDutyPerson': 
-                        $times = $staffCoverageDateGateway->getCoverageTimesByStaffDuty($foreignTableID, $date);
-                        break;
-                    case 'gibbonActivity': 
-                        $times = $staffCoverageDateGateway->getCoverageTimesByActivity($foreignTableID, $date);
-                        break;
-                }
+                $times = $staffCoverageDateGateway->getCoverageTimesByForeignTable($foreignTable, $foreignTableID, $date);
 
                 $absenceDates[] = array_merge($absenceDatesByDate[$date], $times, [
-                    'foreignTable'   => $foreignTable,
-                    'foreignTableID' => $foreignTableID,
-                    'reason'         => $notesList[$contextCheckboxID] ?? '',
+                    'gibbonStaffCoverageID'     => $request['gibbonStaffCoverageID'] ?? '',
+                    'gibbonStaffCoverageDateID' => $request['gibbonStaffCoverageDateID'] ?? '',
+                    'foreignTable'              => $foreignTable,
+                    'foreignTableID'            => $foreignTableID,
+                    'reason'                    => $notesList[$contextCheckboxID] ?? '',
                 ]);
             }
         } elseif (!empty($request['dates'])) {
@@ -208,10 +200,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
         // Create a coverage date for each absence date, allow coverage request form to override absence times
         foreach ($absenceDates as $absenceDate) {
+            // TODO: Removed for Internal coverage, check for External coverage
             // Skip any absence dates that have already been covered
-            if (!empty($absenceDate['gibbonStaffCoverageID'])) {
-                continue;
-            }
+            // if (!empty($absenceDate['gibbonStaffCoverageID'])) {
+            //     continue;
+            // }
 
             $dateData = [
                 'gibbonStaffCoverageID'    => $request['gibbonStaffCoverageID'],

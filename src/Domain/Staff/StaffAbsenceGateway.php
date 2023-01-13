@@ -56,20 +56,20 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffAbsence.*', 'gibbonStaffAbsenceDate.*', 'gibbonStaffAbsenceType.name as type', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'MIN(gibbonStaffCoverage.status) as coverage',
+                'gibbonStaffAbsence.*', 'gibbonStaffAbsenceDate.*', 'gibbonStaffAbsenceType.name as type', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator'
             ])
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonSchoolYear', '((gibbonStaffAbsenceDate.date BETWEEN firstDay AND lastDay) OR (gibbonStaffAbsence.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID))')
-            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID')
-            ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID')
+            // ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID')
+            // ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID')
             ->leftJoin('gibbonPerson', 'gibbonStaffAbsence.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonStaffAbsence.gibbonPersonIDCreator=creator.gibbonPersonID')
             ->where('gibbonSchoolYear.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         if ($grouped) {
-            $query->cols(['COUNT(*) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
+            $query->cols(['COUNT(DISTINCT gibbonStaffAbsenceDate.date) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
                 ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID']);
         } else {
             $query->cols(['1 as days', 'gibbonStaffAbsenceDate.date as dateStart', 'gibbonStaffAbsenceDate.date as dateEnd', 'gibbonStaffAbsenceDate.value as value'])
@@ -101,10 +101,10 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->bindValue('gibbonPersonID', $gibbonPersonID);
 
         if ($grouped === true) {
-            $query->cols(['COUNT(*) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
+            $query->cols(['COUNT(DISTINCT gibbonStaffAbsenceDate.date) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
                 ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID']);
         } elseif ($grouped === 'coverage') {
-            $query->cols(['COUNT(*) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
+            $query->cols(['COUNT(DISTINCT gibbonStaffAbsenceDate.date) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'SUM(gibbonStaffAbsenceDate.value) as value'])
                 ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
         } else {
             $query->cols(['1 as days', 'gibbonStaffAbsenceDate.date as dateStart', 'gibbonStaffAbsenceDate.date as dateEnd', 'gibbonStaffAbsenceDate.value as value'])
@@ -193,7 +193,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
     {
         $data = ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID];
         $sql = "SELECT gibbonStaffAbsence.gibbonStaffAbsenceID, gibbonStaffAbsence.gibbonStaffAbsenceID, gibbonStaffAbsenceType.name as type, gibbonStaffAbsenceType.sequenceNumber, gibbonStaffAbsence.gibbonStaffAbsenceTypeID, gibbonStaffAbsence.reason, gibbonStaffAbsence.comment, gibbonStaffAbsence.commentConfidential, gibbonStaffAbsence.coverageRequired,
-                MIN(gibbonStaffAbsenceDate.date) as date, COUNT(DISTINCT gibbonStaffAbsenceDateID) as days, MIN(gibbonStaffAbsenceDate.date) as dateStart, MAX(gibbonStaffAbsenceDate.date) as dateEnd, MAX(gibbonStaffAbsenceDate.allDay) as allDay, MIN(gibbonStaffAbsenceDate.timeStart) as timeStart, MAX(gibbonStaffAbsenceDate.timeEnd) as timeEnd, 0 as urgent, SUM(gibbonStaffAbsenceDate.value) as value,
+                MIN(gibbonStaffAbsenceDate.date) as date, COUNT(DISTINCT gibbonStaffAbsenceDateID) as days, MIN(gibbonStaffAbsenceDate.date) as dateStart, MAX(gibbonStaffAbsenceDate.date) as dateEnd, MAX(gibbonStaffAbsenceDate.allDay) as allDay, MIN(gibbonStaffAbsenceDate.timeStart) as timeStart, MAX(gibbonStaffAbsenceDate.timeEnd) as timeEnd, 0 as urgent, gibbonStaffAbsenceDate.value as value,
                 gibbonStaffAbsence.status, gibbonStaffAbsence.timestampApproval, gibbonStaffAbsence.notesApproval,
                 gibbonPersonIDCreator, timestampCreator, timestampStatus, timestampCoverage, gibbonStaffAbsence.notificationList, gibbonStaffAbsence.notificationSent, gibbonStaffAbsence.gibbonGroupID, gibbonStaffAbsence.googleCalendarEventID,
                 gibbonStaffCoverage.status as coverage, gibbonStaffCoverage.notesCoverage, gibbonStaffCoverage.notesStatus, 
