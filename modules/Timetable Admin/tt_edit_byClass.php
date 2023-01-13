@@ -72,6 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
         $form = Form::create('ttAdd', $session->get('absoluteURL').'/modules/Timetable Admin/tt_edit_byClassProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
+        $form->setDescription(Format::alert(__('This is an administrative tool to assist with timetable changes. When changing facilities, it <b>does not</b> prevent timetabling into a facility that is already in use. Be sure to check availability before making such changes.'), 'message'));
+
         $form->addHiddenValue('gibbonSchoolYearID', $timetable['gibbonSchoolYearID']);
         $form->addHiddenValue('gibbonTTID', $gibbonTTID);
         $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
@@ -108,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
                     ->addClass('chainTo float-left');
 
             // $row = $ttBlock->addRow();
-                $row->addLabel('gibbonTTSpaceID', __('Location'))->addClass('ml-4');
+                $row->addLabel('gibbonTTSpaceID', __('Facility'))->addClass('ml-4');
                 $row->addSelectSpace('gibbonTTSpaceID')->selected($gibbonTTSpaceID)->addClass('float-left');
 
         $addTTButton = $form->getFactory()->createButton(__('Add Timetable Entry'))->addClass('addBlock');
