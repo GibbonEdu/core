@@ -720,6 +720,8 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonStaffCoverage` CHANGE `status` `status` ENUM('Requested','Accepted','Declined','Cancelled','Pending') NULL DEFAULT 'Requested';end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff'), 'Daily Coverage Planner', 0, 'Coverage', '', 'coverage_planner.php,coverage_planner_assign.php,coverage_planner_unassign.php', 'coverage_planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Staff' AND gibbonAction.name='Daily Coverage Planner'));end
-
+ALTER TABLE `gibbonStaffCoverageDate` ADD `foreignTable` VARCHAR(60) NULL AFTER `gibbonStaffAbsenceDateID`;end
+ALTER TABLE `gibbonStaffCoverageDate` CHANGE `gibbonTTDayRowClassID` `foreignTableID` INT(12) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonStaffCoverageDate` ADD INDEX(`foreignTable`, `foreignTableID`);end
 
 ";

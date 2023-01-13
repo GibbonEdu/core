@@ -73,13 +73,15 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
     }
 
-    public function runNewCoverageRequest($gibbonStaffCoverageID)
+    public function runNewCoverageRequest($coverageList)
     {
-        $coverage = $this->getCoverageDetailsByID($gibbonStaffCoverageID);
-        if (empty($coverage)) return false;
+        if (empty($coverageList)) return false;
+
+        $dates = $this->getCoverageDates($coverageList);
+
+        $coverage = $this->getCoverageDetailsByID(current($coverageList));
 
         $recipients = [$this->organisationHR];
-        $dates = $this->getCoverageDates($gibbonStaffCoverageID);
         $message = new NewCoverageRequest($coverage, $dates);
 
         // Add the absent person, if this coverage request was created by someone else
@@ -94,10 +96,14 @@ class CoverageNotificationProcess extends BackgroundProcess
         }
 
         if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
-            $this->staffCoverageGateway->update($gibbonStaffCoverageID, [
+            $data = [
                 'notificationSent' => 'Y',
                 'notificationList' => json_encode($recipients),
-            ]);
+            ];
+            foreach ($coverageList as $gibbonStaffCoverageID) {
+                $this->staffCoverageGateway->update($gibbonStaffCoverageID, $data);
+            }
+            
         }
 
         return $sent;
@@ -242,18 +248,28 @@ class CoverageNotificationProcess extends BackgroundProcess
         $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();
 
         $coverageByTimetable = count(array_filter($dates->toArray(), function($item) {
-            return !empty($item['gibbonTTDayRowClassID']);
+            return !empty($item['foreignTableID']);
         }));
 
         if (!$coverageByTimetable) return $dates;
 
         $dates->transform(function (&$item) {
-            if (empty($item['gibbonTTDayRowClassID'])) return;
+            if (empty($item['foreignTableID'])) return;
 
-            $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['gibbonTTDayRowClassID']);
-            $item['columnName'] = $times['period'];
-            $item['courseNameShort'] = $times['courseName'];
-            $item['classNameShort'] = $times['className'];
+            switch ($item['foreignTable']) {
+                case 'gibbonTTDayRowClass': 
+                    $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['foreignTableID']);
+                    break;
+                case 'gibbonStaffDutyPerson': 
+                    $times = $this->staffCoverageDateGateway->getCoverageTimesByStaffDuty($item['foreignTableID'], $item['date']);
+                    break;
+                case 'gibbonActivity': 
+                    $times = $this->staffCoverageDateGateway->getCoverageTimesByActivity($item['foreignTableID'], $item['date']);
+                    break;
+            }
+
+            $item['period'] = $times['period'] ?? '';
+            $item['contextName'] = $times['contextName'] ?? '';
         });
 
         return $dates;

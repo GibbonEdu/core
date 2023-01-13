@@ -68,7 +68,7 @@ class NewCoverageRequest extends Message
 
         foreach ($this->dates as $date) {
             $notes = !empty($date['notes']) ? ' ('.$date['notes'].')' : '';
-            $details[$date['columnName']] = Format::courseClassName($date['courseNameShort'], $date['classNameShort']).$notes;
+            $details[$date['period']] = $date['contextName'].$notes;
         }
 
         return $details;

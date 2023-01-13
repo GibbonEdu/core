@@ -81,8 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         ? Format::timeRange($dateStart['timeStart'], $dateStart['timeEnd'])
         : '';
 
-    // Get timetabled classes
-    $classes = $staffCoverageDateGateway->selectTimetabledClassCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
+    // Get timetabled classes and non-class records that need coverage (activities and duty)
+    $classes = $staffCoverageDateGateway->selectPotentialCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
+    $classes = array_map(function ($item) {
+        $item['contextCheckboxID'] = $item['date'].':'.$item['foreignTable'].':'.$item['foreignTableID'];
+        return $item;
+    }, $classes);
+
     $coverageByTimetable = !empty($classes);
     
     // Look for available subs
@@ -211,11 +216,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     });
 
     $table->addColumn('dateLabel', __('Date'))
-        ->format(Format::using('dateReadable', 'date'));
+        ->format(Format::using('dateReadable', 'date'))
+        ->formatDetails(function ($coverage) {
+            return Format::small(Format::dateReadable($coverage['date'], '%A'));
+        });
 
     if ($coverageByTimetable) {
-        $table->addColumn('columnName', __('Period'));
-        $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+        $table->addColumn('period', __('Period'));
+        $table->addColumn('contextName', __('Cover'));
         $table->addColumn('timeStart', __('Time'))
             ->format(function ($class) {
                 return Format::small(Format::timeRange($class['timeStart'], $class['timeEnd']));
@@ -237,12 +245,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     if ($coverageByTimetable) {
         $form->addHiddenValue('allDay', 'N');
 
-        $table->addCheckboxColumn('timetableClasses', 'timetableClassPeriod')
+        $table->addCheckboxColumn('timetableClasses', 'contextCheckboxID')
             ->width('15%')
             ->checked(function ($class) use ($dateStart, $dateEnd) {
                 $insideTimeRange = $class['timeStart'] <= $dateStart['timeEnd'] && $class['timeEnd'] >= $dateEnd['timeStart'];
 
-                return $dateStart['allDay'] == 'Y' || $insideTimeRange ? $class['timetableClassPeriod'] : false;
+                return $dateStart['allDay'] == 'Y' || $insideTimeRange ? $class['contextCheckboxID'] : false;
             })
             ->format(function ($class) {
                 if (!empty($class['gibbonStaffCoverageID'])) {
@@ -296,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                     return Format::small(__('No substitutes available.'));
                 }
 
-                $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
+                $id = $coverageByTimetable ? $class['contextCheckboxID'] : $class['date'];
                 return $form->getFactory()->createSelectPerson('gibbonPersonIDCoverage')
                     ->fromArray($availableSubsOptions)
                     ->setName('gibbonPersonIDCoverage['.$id.']')
@@ -310,7 +318,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $table->addColumn('notes', __('Notes').' *')
             ->width('25%')
             ->format(function ($class) use ($coverageByTimetable, &$form) {
-                $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
+                $id = $coverageByTimetable ? $class['contextCheckboxID'] : $class['date'];
                 $input = $form->getFactory()->createTextField("notes[{$id}]")->setID("notes{$id}")->addClass('coverageNotes');
                 return $input->getOutput();
         });

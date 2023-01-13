@@ -102,14 +102,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         // Group coverage requests by person
         if (!empty($timetableClasses)) {
             // Get selected substitute per timetable class
-            foreach ($timetableClasses as $timetableClassPeriod) {
-                $data['gibbonPersonIDCoverage'] = $gibbonPersonIDCoverageList[$timetableClassPeriod] ?? null;
+            foreach ($timetableClasses as $contextCheckboxID) {
+                $data['gibbonPersonIDCoverage'] = $gibbonPersonIDCoverageList[$contextCheckboxID] ?? null;
 
                 // No substitute selected, create an open request for this class
                 if (empty($data['gibbonPersonIDCoverage'])) {
-                    $requests[] = ['data' => $data + ['requestType' => 'Broadcast'], 'periods' => [$timetableClassPeriod]];
-                    // $requests['unassigned']['data'] = $data + ['requestType' => 'Broadcast'];
-                    // $requests['unassigned']['periods'][] = $timetableClassPeriod;
+                    $requests[] = ['data' => $data + ['requestType' => 'Broadcast'], 'periods' => [$contextCheckboxID]];
                     continue;
                 }
 
@@ -122,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 }
                 
                 $requests[$data['gibbonPersonIDCoverage']]['data'] = $data;
-                $requests[$data['gibbonPersonIDCoverage']]['periods'][] = $timetableClassPeriod;
+                $requests[$data['gibbonPersonIDCoverage']]['periods'][] = $contextCheckboxID;
             }
         } else {
             // Get selected substitute per date
@@ -132,8 +130,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 // No substitute selected, create an open request for this date
                 if (empty($data['gibbonPersonIDCoverage'])) {
                     $requests[] = ['data' => $data + ['requestType' => 'Broadcast'], 'dates' => [$date]];
-                    // $requests['unassigned']['data'] = $data + ['requestType' => 'Broadcast'];
-                    // $requests['unassigned']['dates'][] = $date;
                     continue;
                 }
 
@@ -156,9 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     // Create the coverage request(s)
+    $coverageList = [];
     foreach ($requests as $index => $request) {
         $gibbonStaffCoverageID = $staffCoverageGateway->insert($request['data']);
         $requests[$index]['gibbonStaffCoverageID'] = str_pad($gibbonStaffCoverageID, 14, '0', STR_PAD_LEFT);
+        $coverageList[] = str_pad($gibbonStaffCoverageID, 14, '0', STR_PAD_LEFT);
 
         $partialFail &= empty($gibbonStaffCoverageID);
     }
@@ -177,14 +175,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         // Get the specific absence dates and times that relate to this request
         if (!empty($request['periods'])) {
             // Get and merge timetable period times with absence times
-            foreach ($request['periods'] as $timetableClassPeriod) {
-                list($date, $gibbonTTDayRowClassID) = explode(':', $timetableClassPeriod);
-                $times = $staffCoverageDateGateway->getCoverageTimesByTimetableClass($gibbonTTDayRowClassID);
+            foreach ($request['periods'] as $contextCheckboxID) {
+                list($date, $foreignTable, $foreignTableID) = explode(':', $contextCheckboxID);
                 if (empty($absenceDatesByDate[$date])) continue;
 
+                switch ($foreignTable) {
+                    case 'gibbonTTDayRowClass': 
+                        $times = $staffCoverageDateGateway->getCoverageTimesByTimetableClass($foreignTableID);
+                        break;
+                    case 'gibbonStaffDutyPerson': 
+                        $times = $staffCoverageDateGateway->getCoverageTimesByStaffDuty($foreignTableID, $date);
+                        break;
+                    case 'gibbonActivity': 
+                        $times = $staffCoverageDateGateway->getCoverageTimesByActivity($foreignTableID, $date);
+                        break;
+                }
+
                 $absenceDates[] = array_merge($absenceDatesByDate[$date], $times, [
-                    'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
-                    'reason' => $notesList[$timetableClassPeriod] ?? '',
+                    'foreignTable'   => $foreignTable,
+                    'foreignTableID' => $foreignTableID,
+                    'reason'         => $notesList[$contextCheckboxID] ?? '',
                 ]);
             }
         } elseif (!empty($request['dates'])) {
@@ -206,12 +216,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             $dateData = [
                 'gibbonStaffCoverageID'    => $request['gibbonStaffCoverageID'],
                 'gibbonStaffAbsenceDateID' => $absenceDate['gibbonStaffAbsenceDateID'],
-                'gibbonTTDayRowClassID' => $absenceDate['gibbonTTDayRowClassID'] ?? null,
-                'date'      => $absenceDate['date'],
-                'allDay'    => $_POST['allDay'] ?? 'N',
-                'timeStart' => $_POST['timeStart'] ?? $absenceDate['timeStart'],
-                'timeEnd'   => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
-                'reason'    => $absenceDate['reason'] ?? '',
+                'foreignTable'             => $absenceDate['foreignTable'] ?? null,
+                'foreignTableID'           => $absenceDate['foreignTableID'] ?? null,
+                'date'                     => $absenceDate['date'],
+                'allDay'                   => $_POST['allDay'] ?? 'N',
+                'timeStart'                => $_POST['timeStart'] ?? $absenceDate['timeStart'],
+                'timeEnd'                  => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
+                'reason'                   => $absenceDate['reason'] ?? '',
             ];
 
             // Calculate the day 'value' of each date, based on thresholds from Staff Settings.
@@ -250,11 +261,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     // Let users know about a new coverage request for an existing absence, update the absence
-    if ( ($absence['coverageRequired'] == 'N' && $coverageMode == 'Assigned') || $absence['notificationSent'] == 'N') {
+    if ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N') {
         $container->get(StaffAbsenceGateway::class)->update($gibbonStaffAbsenceID, ['coverageRequired' => 'Y']);
 
         $process = $container->get(CoverageNotificationProcess::class);
-        $process->startNewCoverageRequest($request['gibbonStaffCoverageID']);
+        $process->startNewCoverageRequest($coverageList);
     }
     
     $URLSuccess .= $partialFail

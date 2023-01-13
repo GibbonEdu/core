@@ -75,17 +75,27 @@ class CoverageDates
         $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
 
         $coverageByTimetable = count(array_filter($dates->toArray(), function($item) {
-            return !empty($item['gibbonTTDayRowClassID']);
+            return !empty($item['foreignTableID']);
         }));
 
         if ($coverageByTimetable) {
             $dates->transform(function (&$item) {
-                if (empty($item['gibbonTTDayRowClassID'])) return;
+                if (empty($item['foreignTableID'])) return;
 
-                $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['gibbonTTDayRowClassID']);
-                $item['columnName'] = $times['period'];
-                $item['courseNameShort'] = $times['courseName'];
-                $item['classNameShort'] = $times['className'];
+                switch ($item['foreignTable']) {
+                    case 'gibbonTTDayRowClass': 
+                        $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['foreignTableID']);
+                        break;
+                    case 'gibbonStaffDutyPerson': 
+                        $times = $this->staffCoverageDateGateway->getCoverageTimesByStaffDuty($item['foreignTableID'], $item['date']);
+                        break;
+                    case 'gibbonActivity': 
+                        $times = $this->staffCoverageDateGateway->getCoverageTimesByActivity($item['foreignTableID'], $item['date']);
+                        break;
+                }
+
+                $item['period'] = $times['period'] ?? '';
+                $item['contextName'] = $times['contextName'] ?? '';
             });
         }
 
@@ -98,11 +108,11 @@ class CoverageDates
             });
 
         if ($coverageByTimetable) {
-            $table->addColumn('columnName', __('Period'))
+            $table->addColumn('period', __('Period'))
                 ->description(__('Time'))
                 ->formatDetails([AbsenceFormats::class, 'timeDetails']);
 
-            $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+            $table->addColumn('contextName', __('Cover'));
         } else {
             $table->addColumn('timeStart', __('Time'))
                   ->format([AbsenceFormats::class, 'timeDetails']);
