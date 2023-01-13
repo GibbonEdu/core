@@ -197,7 +197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     $row->addSelect('gibbonDaysOfWeekID')
                         ->fromQuery($pdo, $sqlWeekdays)
                         ->placeholder()
-                        ->addClass('floatLeft');
+                        ->addClass('floatLeft')
+                        ->append('<input type="hidden" id="gibbonActivitySlotID" name="gibbonActivitySlotID" value="">');
 
                 $row = $slotBlock->addRow();
                     $row->addLabel('timeStart', __('Slot Start Time'));

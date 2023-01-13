@@ -37,4 +37,14 @@ class ActivitySlotGateway extends QueryableGateway
     private static $primaryKey = 'gibbonActivitySlotID';
 
     private static $searchableColumns = [];
+
+    public function deleteActivitySlotsNotInList($gibbonActivityID, $gibbonActivitySlotIDList)
+    {
+        $gibbonActivitySlotIDList = is_array($gibbonActivitySlotIDList) ? implode(',', $gibbonActivitySlotIDList) : $gibbonActivitySlotIDList;
+
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'gibbonActivitySlotIDList' => $gibbonActivitySlotIDList];
+        $sql = "DELETE FROM gibbonActivitySlot WHERE gibbonActivityID=:gibbonActivityID AND NOT FIND_IN_SET(gibbonActivitySlotID, :gibbonActivitySlotIDList)";
+
+        return $this->db()->delete($sql, $data);
+    }
 }
