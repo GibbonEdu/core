@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
     $collections = $collectionsChained = array();
-    $categories = array_reduce($typeList, function ($group, $item) use (&$collections, &$collectionsChained) {
+    $types = array_reduce($typeList, function ($group, $item) use (&$collections, &$collectionsChained) {
         $group[$item['value']] = __($item['name']);
         foreach (json_decode($item['fields'], true) as $field) {
             if ($field['name'] == 'Collection' and $field['type'] == 'Select') {
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $col = $row->addColumn()->setClass('quarterWidth');
     $col->addLabel('type', __('Type'));
     $col->addSelect('type')
-        ->fromArray($categories)
+        ->fromArray($types)
         ->setClass('fullWidth')
         ->selected($type)
         ->placeholder();
