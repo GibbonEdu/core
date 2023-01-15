@@ -77,7 +77,7 @@ class StaffDutyGateway extends QueryableGateway
     public function selectDutyTimeSlotsByWeekday($gibbonDaysOfWeekID)
     {
         $data = ['gibbonDaysOfWeekID' => $gibbonDaysOfWeekID];
-        $sql = "SELECT gibbonStaffDutyID as value, name FROM gibbonStaffDuty WHERE FIND_IN_SET(:gibbonDaysOfWeekID, gibbonDaysOfWeekIDList)";
+        $sql = "SELECT gibbonStaffDutyID as value, name FROM gibbonStaffDuty WHERE FIND_IN_SET(:gibbonDaysOfWeekID, gibbonDaysOfWeekIDList) ORDER BY gibbonStaffDuty.sequenceNumber";
 
         return $this->db()->select($sql, $data);
     }
