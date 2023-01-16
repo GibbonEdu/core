@@ -65,6 +65,7 @@ class StudentHistoryView extends DataTableView implements RendererInterface
             
             foreach ($terms['weeks'] as $week) {
                 foreach ($week as $dayData) {
+                    if (empty($dayData['endOfDay'])) continue;
                     if (!$dayData['specialDay'] && !$dayData['outsideTerm']) {
                         $summary['total'] += 1;
                         if (!isset($summary[$dayData['endOfDay']['status']])) {
