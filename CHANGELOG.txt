@@ -101,6 +101,7 @@ v25.0.00
         Attendance: fixed Attendance Summary by Date to use end-of-day status for school-wide attendance
         Attendance: removed print option from Attendance Summary by Date until the form is refactored
         Attendance: fixed numerical indicator on Student History for days with partial attendance
+        Attendance: fixed non-attendance classes showing up for partial absence in Set Future Absence
         Data Updater: fixed incorrect top links on Edit Request pages
         Data Updater: removed parent emails from Family Data Updater History when contact email is No
         Data Updater: fixed unable to remove all privacy settings via data update

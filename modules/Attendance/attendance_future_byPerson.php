@@ -296,6 +296,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     //Get classes for partial attendance
                     $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $targetDate)->fetchAll();
                     $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $student['gibbonPersonID'], $targetDate)->fetchAll();
+                    
+                    // Filter only classes that are attendanceable
+                    $classes = array_filter($classes, function ($item) {
+                        return $item['attendance'] == 'Y';
+                    });
 
                     if (!empty($classes)) {
                         $classOptions = array_reduce($classes, function ($group, $class) use (&$logs, $targetDate) {
