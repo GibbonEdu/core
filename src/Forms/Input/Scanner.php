@@ -34,7 +34,9 @@ class Scanner extends TextField
      */
     protected function getElement()
     {
-        
+        global $page;
+
+        $page->scripts->add('instascan');
         
         $output = '<div class="input-box border-0 standardWidth">';
         $output .= '<input type="text" '.$this->getAttributeString().'>';
@@ -44,7 +46,7 @@ class Scanner extends TextField
         
         </div>';
         $output .= '</div>';
-        $output .= '<script type="text/javascript" src="./lib/instascan/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
+
         $output .= '<script type="text/javascript">
             function scanner(self) {
                 if ($("#preview").length > 0) {

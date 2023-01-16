@@ -354,6 +354,7 @@ $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
 $page->scripts->register('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
+$page->scripts->register('instascan', 'lib/instascan/instascan.min.js', ['context' => 'head']);
 
 // Set system analytics code from session cache
 $page->addHeadExtra($session->get('analytics'));
