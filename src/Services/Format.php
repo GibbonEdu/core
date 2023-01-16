@@ -40,6 +40,8 @@ class Format
         'timeFormatPHP'     => 'H:i',
     ];
 
+    protected static $intlFormatterAvailable = false;
+
     /**
      * Sets the internal formatting options from an array.
      *
@@ -48,6 +50,7 @@ class Format
     public static function setup(array $settings)
     {
         static::$settings = array_replace(static::$settings, $settings);
+        static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
     }
 
     /**
@@ -178,24 +181,37 @@ class Format
 
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
-        $formatter = new \IntlDateFormatter(null, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
 
-        if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-            $formatter->setPattern('MMM d, yyyy');
-            $output = $formatter->format($startTime);
-        } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-            $formatter->setPattern('MMM d');
-            $output = $formatter->format($startTime) . ' - ';
-            $formatter->setPattern('d, yyyy');
-            $output .= $formatter->format($endTime);
-        } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-            $formatter->setPattern('MMM d');
-            $output = $formatter->format($startTime) . ' - ';
-            $formatter->setPattern('MMM d, yyyy');
-            $output .= $formatter->format($endTime);
+        if (static::$intlFormatterAvailable) {
+            $formatter = new \IntlDateFormatter(null, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
+
+            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+                $formatter->setPattern('MMM d, yyyy');
+                $output = $formatter->format($startTime);
+            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+                $formatter->setPattern('MMM d');
+                $output = $formatter->format($startTime) . ' - ';
+                $formatter->setPattern('d, yyyy');
+                $output .= $formatter->format($endTime);
+            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+                $formatter->setPattern('MMM d');
+                $output = $formatter->format($startTime) . ' - ';
+                $formatter->setPattern('MMM d, yyyy');
+                $output .= $formatter->format($endTime);
+            } else {
+                $formatter->setPattern('MMM d, yyyy');
+                $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
+            }
         } else {
-            $formatter->setPattern('MMM d, yyyy');
-            $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
+            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+                $output = $startDate->format('M j, Y', $startTime);
+            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('j, Y', $endTime);
+            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+            } else {
+                $output = $startDate->format('M j, Y', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+            }
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -1002,6 +1018,10 @@ class Format
      */
     public static function dayOfWeekName($datetime)
     {
+        if (!static::$intlFormatterAvailable) {
+            return DateTime::createFromFormat('D', $datetime);
+        }
+
         static $formatter;
         if (!isset($formatter)) {
             $formatter = new \IntlDateFormatter(
@@ -1026,6 +1046,10 @@ class Format
      */
     public static function monthName($datetime)
     {
+        if (!static::$intlFormatterAvailable) {
+            return DateTime::createFromFormat('M', $datetime);
+        }
+
         static $formatter;
         if (!isset($formatter)) {
             $formatter = new \IntlDateFormatter(
@@ -1050,6 +1074,10 @@ class Format
      */
     public static function monthDigits($datetime)
     {
+        if (!static::$intlFormatterAvailable) {
+            return DateTime::createFromFormat('m', $datetime);
+        }
+
         static $formatter;
         if (!isset($formatter)) {
             $formatter = new \IntlDateFormatter(
