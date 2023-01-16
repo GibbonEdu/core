@@ -730,6 +730,8 @@ class Format
     public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
+        if (empty($name)) return __('Unknown');
+
         if ($roleCategory == 'Parent' || $roleCategory == 'Other') {
             $url = Url::fromModuleRoute('User Admin', 'user_manage_edit')
                 ->withAbsoluteUrl()
