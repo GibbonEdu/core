@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonIDStudent', __('Student'));
-            	$row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder(__('Please select...'))->selected($investigation['gibbonPersonIDStudent'])->required()->readonly();
+            	$row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder()->selected($investigation['gibbonPersonIDStudent'])->required()->readonly();
 
             //Status
             $row = $form->addRow();

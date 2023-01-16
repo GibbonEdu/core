@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     $row = $form->addRow();
         $row->addLabel('gibbonTTID', __('Timetable'));
-        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder(__('Please select...'))->selected($gibbonTTID);
+        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder()->selected($gibbonTTID);
 
     $facilityTypes = $container->get(SettingGateway::class)->getSettingByScope('School Admin', 'facilityTypes');
     $facilityTypes = (!empty($facilityTypes))? explode(',', $facilityTypes) : [];

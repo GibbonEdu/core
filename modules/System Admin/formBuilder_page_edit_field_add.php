@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('optionsFile', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
         $row->addTextField('optionsFile')->setName('options');
 
-        $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot(__('Please select...'));
+        $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot('Please select...');
 
         $row = $form->addRow()->addClass('optionsRequired');
         $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));

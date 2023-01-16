@@ -303,7 +303,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder(__('Please select...'));
+            $row->addYesNo('sen')->required()->placeholder();
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
@@ -318,7 +318,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
-        $row->addYesNo('medical')->required()->placeholder(__('Please select...'));
+        $row->addYesNo('medical')->required()->placeholder();
 
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
 
@@ -341,7 +341,7 @@ if ($proceed == false) {
             $data = array();
             $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber";
         }
-        $row->addSelect('gibbonSchoolYearIDEntry')->fromQuery($pdo, $sql, $data)->required()->placeholder(__('Please select...'));
+        $row->addSelect('gibbonSchoolYearIDEntry')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Intended Start Date'))->description(__('Student\'s intended first day at school.'))->append('<br/>'.__('Format:'))->append(' '.$session->get('i18n')['dateFormat']);
@@ -350,7 +350,7 @@ if ($proceed == false) {
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDEntry', __('Year Group at Entry'))->description('Which year level will student enter.');
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
-        $row->addSelect('gibbonYearGroupIDEntry')->fromQuery($pdo, $sql)->required()->placeholder(__('Please select...'));
+        $row->addSelect('gibbonYearGroupIDEntry')->fromQuery($pdo, $sql)->required()->placeholder();
 
     // DAY TYPE
     $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
@@ -866,7 +866,7 @@ if ($proceed == false) {
     } else {
         $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->loadFrom($application);
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
 
         $row = $form->addRow()->addClass('tellUsMore');
             $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));

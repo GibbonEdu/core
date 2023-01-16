@@ -127,18 +127,18 @@ class AdmissionsFields extends AbstractFieldGroup
                     : $this->schoolYearGateway->getSchoolYearList(true);
 
                 $row->addLabel('gibbonSchoolYearIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder(__('Please select...'))->readonly($accepted)->selected($default);
+                $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder()->readonly($accepted)->selected($default);
                 break;
 
             case 'gibbonYearGroupIDEntry':
                 $yearGroups = $this->yearGroupGateway->selectYearGroupsByIDs($formBuilder->getDetail('gibbonYearGroupIDList'))->fetchKeyPair();
                 $row->addLabel('gibbonYearGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder(__('Please select...'))->readonly($accepted)->selected($default);
+                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder()->readonly($accepted)->selected($default);
                 break;
                 
             case 'gibbonFormGroupIDEntry':
                 $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ? __('Please select...') : '')->readonly($accepted)->selected($default);
+                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ?  : '')->readonly($accepted)->selected($default);
                 break;
 
             case 'dayType':
@@ -191,7 +191,7 @@ class AdmissionsFields extends AbstractFieldGroup
                 } else {
                     $col->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
 
-                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
 
                     $col = $colGroup->addColumn()->setClass('tellUsMore flex flex-row justify-between items-center');
                         $col->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));

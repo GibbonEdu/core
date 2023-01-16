@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonID', __('Student'));
-            	$row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder(__('Please select...'))->selected($gibbonPersonID)->required();
+            	$row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonID)->required();
 
             //Date
             $row = $form->addRow();
