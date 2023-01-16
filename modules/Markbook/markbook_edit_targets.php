@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                     $row->addLabel('gibbonScaleIDTarget', __('Target Scale'));
                     $row->addSelectGradeScale('gibbonScaleIDTarget')->selected($selectedGradeScale);
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding');
 
                 $header = $table->addHeaderRow();
                 $header->addContent(__('Student'));
