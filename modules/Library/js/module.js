@@ -48,12 +48,15 @@ $.prototype.loadGoogleBookData = function (settings) {
                         $("#fieldPublicationDate").val(obj['items'][0]['volumeInfo']['publishedDate'].substring(0, 4));
                     }
                     $("#fieldDescription").val(obj['items'][0]['volumeInfo']['description']);
-                    if (obj['items'][0]['volumeInfo']['industryIdentifiers'][0]['type'] == 'ISBN_10') {
-                        $("#fieldISBN10").val(obj['items'][0]['volumeInfo']['industryIdentifiers'][0]['identifier']);
+                    for (var i = 0; i < obj['items'][0]['volumeInfo']['industryIdentifiers'].length; i++) {
+                        if (obj['items'][0]['volumeInfo']['industryIdentifiers'][i]['type'] == 'ISBN_13') {
+                            $("#fieldISBN13").val(obj['items'][0]['volumeInfo']['industryIdentifiers'][i]['identifier']);
+                        }
+                        if (obj['items'][0]['volumeInfo']['industryIdentifiers'][i]['type'] == 'ISBN_10') {
+                            $("#fieldISBN10").val(obj['items'][0]['volumeInfo']['industryIdentifiers'][i]['identifier']);
+                        }                    
                     }
-                    if (obj['items'][0]['volumeInfo']['industryIdentifiers'][1]['type'] == 'ISBN_13') {
-                        $("#fieldISBN13").val(obj['items'][0]['volumeInfo']['industryIdentifiers'][1]['identifier']);
-                    }
+
                     $("#fieldPageCount").val(obj['items'][0]['volumeInfo']['pageCount']);
                     var format = obj['items'][0]['volumeInfo']['printType'].toLowerCase();
                     format = format.charAt(0).toUpperCase() + format.slice(1);
