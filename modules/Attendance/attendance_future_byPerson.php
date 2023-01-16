@@ -69,6 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $timeStart = $_GET['timeStart'] ?? '';
     $timeEnd = $_GET['timeEnd'] ?? '';
 
+    $urlParams = compact('target', 'gibbonActivityID', 'gibbonGroupID', 'absenceType', 'date', 'timeStart', 'timeEnd');
+
     $targetDate = !empty($date) ? Format::dateConvert($date) : date('Y-m-d');
     $effectiveStart = strtotime($targetDate.' '.$timeStart);
     $effectiveEnd = strtotime($targetDate.' '.$timeEnd);
@@ -253,6 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonIDList[0] ?? '')
                     ->addParam('gibbonAttendanceLogPersonID')
+                    ->addParams($urlParams)
                     ->format(function ($row, $actions) {
                         $actions->addAction('deleteInstant', __('Delete'))
                             ->setIcon('garbage')
