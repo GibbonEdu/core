@@ -214,8 +214,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         document.onkeypress = stopRKey;
         
         $(".gbooks").loadGoogleBookData({
-            "notFound": "'.__('The specified record cannot be found.').'",
-            "dataRequired": "'.__('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.').'",
+            "notFound": "<?php echo __('The specified record cannot be found.'); ?>",
+            "dataRequired": "<?php echo __('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.'); ?>",
         });
 
         $('#gibbonLibraryTypeID').change(function(){
