@@ -278,10 +278,10 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             //Controls for viewing mode
             if ($gibbonPersonID != '') {
                 $output .= "<div class='linkTop'>";
-                $output .= "Viewing Mode: <select name='type' id='type' class='type' style='width: 152px; float: none'>";
-                $output .= "<option id='type' name='type' value='Current'>".__('Current').'</option>';
-                $output .= "<option id='type' name='type' value='Visualise'>".__('Visualise').'</option>';
-                $output .= "<option id='type' name='type' value='Historical'>".__('Historical Data').'</option>';
+                $output .= "Viewing Mode: <select name='rubricTypeSelect' id='rubricTypeSelect' class='type' style='width: 152px; float: none'>";
+                $output .= "<option name='rubricTypeSelect' value='Current'>".__('Current').'</option>';
+                $output .= "<option name='rubricTypeSelect' value='Visualise'>".__('Visualise').'</option>';
+                $output .= "<option name='rubricTypeSelect' value='Historical'>".__('Historical Data').'</option>';
                 $output .= '</select>';
                 $output .= '</div>';
             }
@@ -302,8 +302,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $row->addContent()->addClass('');
 
                 if ($hasContexts) {
-                    $form->toggleVisibilityByClass('currentView')->onSelect('type')->when('Current');
-                    $form->toggleVisibilityByClass('historical')->onSelect('type')->when('Historical');
+                    $form->toggleVisibilityByClass('currentView')->onSelect('rubricTypeSelect')->when('Current');
+                    $form->toggleVisibilityByClass('historical')->onSelect('rubricTypeSelect')->when('Historical');
                 }
 
                     // Column Headers
@@ -418,7 +418,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             //Function to show/hide rubric/visualisation
             $output .= "<script type='text/javascript'>
                  $(document).ready(function(){
-                    $('#type').change(function () {
+                    $('#rubricTypeSelect').change(function () {
                         if ($(this).val() == 'Current' || $(this).val() == 'Historical') {
                             $('#rubric').slideDown('fast', $('#rubric').css('display','block'));
                             $('#visualise').css('display','none');

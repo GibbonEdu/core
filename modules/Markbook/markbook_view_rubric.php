@@ -28,8 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-
     //Proceed!
+    $page->scripts->add('chart');
+
     //Check if gibbonCourseClassID and gibbonMarkbookColumnID and gibbonPersonID and gibbonRubricID specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
