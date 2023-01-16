@@ -112,11 +112,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         echo "<span style='font-size: 65%; font-style: italic'>".Format::name('', $row4['preferredName'], $row4['surname'], 'Student', true).'</span>';
                         echo '</h2>';
 
-                        $mark = true;
-                        if (isset($_GET['mark'])) {
-                            if ($_GET['mark'] == 'FALSE') {
-                                $mark = false;
-                            }
+                        $mark = $session->get('gibbonRoleIDCurrentCategory') == 'Staff';
+                        if (isset($_GET['mark']) && $_GET['mark'] == 'FALSE') {
+                            $mark = false;
                         }
 
                         echo rubricView($guid, $connection2, $gibbonRubricID, $mark, $row4['gibbonPersonID'], 'gibbonMarkbookColumn', 'gibbonMarkbookColumnID', $gibbonMarkbookColumnID,  $contextDBTableGibbonRubricIDField, 'name', 'completeDate');
