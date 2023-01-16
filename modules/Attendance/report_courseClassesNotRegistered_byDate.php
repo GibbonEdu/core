@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$date;
                                 $title = '';
 
-                                $offTimetable = $offTimetableList[$row['gibbonCourseClassID']][$date];
+                                $offTimetable = $offTimetableList[$row['gibbonCourseClassID']][$date] ?? false;
 
                                 if ($offTimetable) {
                                     $class = 'bg-stripe-dark';

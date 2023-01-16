@@ -85,25 +85,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         $row->addTextField('description')->maxLength(255);
 
     $form->toggleVisibilityByClass('offTimetable')->onSelect('type')->when('Off Timetable');
-
-    $contexts = [
-        'Year Group' => __('Year Group'),
-        'Form Group' => __('Form Group'),
-    ];
-
+    
     $row = $form->addRow()->addClass('offTimetable');
-        $row->addLabel('context', __('Context'));
-        $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
-
-    $form->toggleVisibilityByClass('offTimetableYearGroup')->onSelect('context')->when('Year Group');
-
-    $row = $form->addRow()->addClass('offTimetableYearGroup');
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
         $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple();
 
-    $form->toggleVisibilityByClass('offTimetableFormGroup')->onSelect('context')->when('Form Group');
-
-    $row = $form->addRow()->addClass('offTimetableFormGroup');
+    $row = $form->addRow()->addClass('offTimetable');
         $row->addLabel('gibbonFormGroupIDList', __('Form Groups'));
         $row->addSelectFormGroup('gibbonFormGroupIDList', $session->get('gibbonSchoolYearID'))->selectMultiple();
 

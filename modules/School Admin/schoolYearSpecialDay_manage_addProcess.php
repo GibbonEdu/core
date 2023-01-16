@@ -47,7 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         'schoolStart'            => null,
         'schoolEnd'              => null,
         'schoolClose'            => null,
-        'context'                => $_POST['context'] ?? '',
         'gibbonYearGroupIDList'  => $_POST['gibbonYearGroupIDList'] ?? '',
         'gibbonFormGroupIDList'  => $_POST['gibbonFormGroupIDList'] ?? '',
         'cancelActivities'       => $_POST['cancelActivities'] ?? 'N',

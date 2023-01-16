@@ -165,11 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
                 //Output row only if not registered on specified date
                 if ( isset($log[$row['gibbonFormGroupID']]) == false || count($log[$row['gibbonFormGroupID']]) < count($lastNSchoolDays) ) {
-                    if ($dateStart == $dateEnd && !empty($offTimetableList[$row['gibbonFormGroupID']]) && ($offTimetableList[$row['gibbonFormGroupID']][$dateStart] == true || count($offTimetableList[$row['gibbonFormGroupID']]) == count($lastNSchoolDays))) {
-                        continue;
-                    }
-
-                    if (!empty($offTimetableList[$row['gibbonFormGroupID']]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonFormGroupID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonFormGroupID']])) == count($lastNSchoolDays))) {
+                    if (!empty($offTimetableList[$row['gibbonFormGroupID']][$dateStart]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonFormGroupID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonFormGroupID']])) == count($lastNSchoolDays))) {
                         continue;
                     }
 
@@ -197,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                                 echo '<i>'.__('NA').'</i>';
                                 echo '</td>';
                             } else {
-                                $offTimetable = $offTimetableList[$row['gibbonFormGroupID']][$date];
+                                $offTimetable = $offTimetableList[$row['gibbonFormGroupID']][$date] ?? false;
 
                                 if ($offTimetable) {
                                     $class = 'bg-stripe-dark';
