@@ -58,7 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         if ($session->get('gibbonRoleIDCurrentCategory') == "Staff") {
             $table->addColumn('students', __('Students'));
         }
-        $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
         $actions = $table->addActionColumn()->addParam('gibbonFormGroupID');
         $actions->addAction('view', __('View'))
