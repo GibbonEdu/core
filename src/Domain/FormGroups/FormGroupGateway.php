@@ -68,7 +68,7 @@ class FormGroupGateway extends QueryableGateway
     public function selectFormGroupsBySchoolYear($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonSpace.name AS space, gibbonFormGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) as sequenceNumber
+        $sql = "SELECT gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonFormGroup.gibbonSpaceID, gibbonSpace.name AS space, gibbonFormGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) as sequenceNumber
                 FROM gibbonFormGroup
                 LEFT JOIN (
                     SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment
