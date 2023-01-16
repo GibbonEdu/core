@@ -24,6 +24,7 @@ use Gibbon\Data\ImportType;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Data\PasswordPolicy;
 
 require __DIR__ . '/moduleFunctions.php';
 
@@ -34,7 +35,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
     $type = $_GET['type'] ?? '';
     $step = isset($_GET['step'])? min(max(1, $_GET['step']), 4) : 1;
 
-    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $pdo);
+    $passwordPolicy = $container->get(PasswordPolicy::class);
+    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $passwordPolicy, $pdo);
 
     $nameParts = array_map('trim', explode('-', $importType->getDetail('name')));
     $name = implode(' - ', array_map('__', $nameParts));
