@@ -86,7 +86,7 @@ class StaffCoverageDateGateway extends QueryableGateway
         JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
         JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
         JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-        LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.foreignTable='gibbonTTDayRowClass' AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date)
+        LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.foreignTable='gibbonTTDayRowClass' AND gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date)
         LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
         LEFT JOIN gibbonPerson as coverage ON (coverage.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage)
         LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
@@ -105,17 +105,17 @@ class StaffCoverageDateGateway extends QueryableGateway
     {
         $query = $this
             ->newSelect()
-            ->cols(['gibbonTT.gibbonTTID as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName', '"gibbonTTDayRowClass" as foreignTable', 'gibbonTTDayRowClass.gibbonTTDayRowClassID as foreignTableID', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage', 'coverage.preferredName as preferredNameCoverage' ])
-            ->from('gibbonTT')
-            ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
-            ->innerJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID') 
-            ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
-            ->innerJoin('gibbonCourseClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
-            ->innerJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID')
-            ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+            ->cols(['gibbonTT.gibbonTTID as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName', 'gibbonCourseClass.gibbonCourseClassID as contextID', '"gibbonTTDayRowClass" as foreignTable', 'gibbonTTDayRowClass.gibbonTTDayRowClassID as foreignTableID', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage', 'coverage.preferredName as preferredNameCoverage' ])
+            ->from('gibbonCourseClassPerson')
+            ->innerJoin('gibbonCourseClass', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
-            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.foreignTable="gibbonTTDayRowClass" AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date')
-            ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
+            ->innerJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+            ->innerJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID')
+            ->innerJoin('gibbonTTDay', 'gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID') 
+            ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
+            ->innerJoin('gibbonTT', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
+            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTable="gibbonTTDayRowClass" AND gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date')
+            ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"')
             ->leftJoin('gibbonPerson as coverage', 'coverage.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage')
             ->leftJoin('gibbonTTDayRowClassException', 'gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
             ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID')
@@ -126,19 +126,18 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->where('gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd')
             ->bindValues(['dateStart' => $dateStart, 'dateEnd' => $dateEnd])
             ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"')
-            ->where('gibbonTTDayRowClassExceptionID IS NULL')
-            ->where('gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"');
+            ->where('gibbonTTDayRowClassExceptionID IS NULL');
 
         $query->unionAll()
             ->cols([
-                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', '"Staff Duty" as context', 'gibbonStaffDuty.name as contextName', '"gibbonStaffDutyPerson" as foreignTable', 'gibbonStaffDutyPerson.gibbonStaffDutyPersonID as foreignTableID', 'gibbonStaffCoverage.gibbonStaffCoverageID',  "DATE_ADD(:dateStart, INTERVAL (((1-DAYOFWEEK(:dateStart)) % 7)+gibbonDaysOfWeek.gibbonDaysOfWeekID) % 7 DAY) as date", '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage, coverage.preferredName as preferredNameCoverage'
+                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', '"Staff Duty" as context', 'gibbonStaffDuty.name as contextName', 'gibbonStaffDuty.gibbonStaffDutyID as contextID', '"gibbonStaffDutyPerson" as foreignTable', 'gibbonStaffDutyPerson.gibbonStaffDutyPersonID as foreignTableID',  "DATE_ADD(:dateStart, INTERVAL (((1-DAYOFWEEK(:dateStart)) % 7)+gibbonDaysOfWeek.gibbonDaysOfWeekID) % 7 DAY) as date", '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage, coverage.preferredName as preferredNameCoverage'
             ])
             ->from('gibbonStaffDutyPerson')
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonStaffDutyPerson.gibbonDaysOfWeekID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStaffDutyPerson.gibbonPersonID')
 
-            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTableID=gibbonStaffDutyPerson.gibbonStaffDutyPersonID AND gibbonStaffCoverageDate.foreignTable="gibbonStaffDutyPerson" AND gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
+            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTable="gibbonStaffDutyPerson" AND gibbonStaffCoverageDate.foreignTableID=gibbonStaffDutyPerson.gibbonStaffDutyPersonID AND gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
             ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonStaffDutyPerson.gibbonPersonID')
             ->leftJoin('gibbonPerson as coverage', 'coverage.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage')
 
@@ -150,21 +149,25 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         $query->unionAll()
             ->cols([
-                'gibbonActivitySlot.gibbonActivitySlotID as groupBy', '"Activity" as context', 'gibbonActivity.name as contextName', '"gibbonActivitySlot" as foreignTable', 'gibbonActivitySlot.gibbonActivitySlotID as foreignTableID', 'gibbonStaffCoverage.gibbonStaffCoverageID',  "DATE_ADD(:dateStart, INTERVAL (((1-DAYOFWEEK(:dateStart)) % 7)+gibbonDaysOfWeek.gibbonDaysOfWeekID) % 7 DAY) as date", '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage', 'coverage.preferredName as preferredNameCoverage'
+                'gibbonActivitySlot.gibbonActivitySlotID as groupBy', '"Activity" as context', 'gibbonActivity.name as contextName', 'gibbonActivity.gibbonActivityID as contextID', '"gibbonActivitySlot" as foreignTable', 'gibbonActivitySlot.gibbonActivitySlotID as foreignTableID', "DATE_ADD(:dateStart, INTERVAL (((1-DAYOFWEEK(:dateStart)) % 7)+gibbonDaysOfWeek.gibbonDaysOfWeekID) % 7 DAY) as date", '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 
+                'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage', 'coverage.preferredName as preferredNameCoverage'
             ])
-            ->from('gibbonActivityStaff')
-            ->innerJoin('gibbonActivity', 'gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID')
+            ->from('gibbonActivity')
+            ->innerJoin('gibbonActivityStaff', 'gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID')
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
 
-            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTableID=gibbonActivitySlot.gibbonActivitySlotID AND gibbonStaffCoverageDate.foreignTable="gibbonActivitySlot" AND gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
+            ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTable="gibbonActivitySlot" AND gibbonStaffCoverageDate.foreignTableID=gibbonActivitySlot.gibbonActivitySlotID AND gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
             ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
             ->leftJoin('gibbonPerson as coverage', 'coverage.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage')
 
-            ->where('gibbonActivityStaff.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->where('gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivity.active="Y"')
             ->where('gibbonPerson.status="Full"')
+            ->where('gibbonActivity.active="Y"')
             ->where('(gibbonDaysOfWeek.gibbonDaysOfWeekID-1) BETWEEN WEEKDAY(:dateStart) AND WEEKDAY(:dateEnd)')
             ->bindValues(['dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
 

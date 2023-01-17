@@ -65,10 +65,10 @@ class StaffAbsenceDateGateway extends QueryableGateway
         gibbonStaffCoverage.status as coverage, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverageDate.reason as notes, gibbonStaffCoverageDate.gibbonStaffCoverageDateID, gibbonStaffCoverageDate.foreignTable, gibbonStaffCoverageDate.foreignTableID
                 FROM gibbonStaffAbsenceDate
                 LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID)
-                LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID)
+                LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.status <> 'Cancelled' AND gibbonStaffCoverage.status <> 'Declined')
                 LEFT JOIN gibbonPerson AS coverage ON (gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID)
                 WHERE FIND_IN_SET(gibbonStaffAbsenceDate.gibbonStaffAbsenceID, :gibbonStaffAbsenceIDList)
-                AND gibbonStaffCoverage.status <> 'Cancelled' AND gibbonStaffCoverage.status <> 'Declined'
+                
                 ORDER BY gibbonStaffAbsenceDate.date, gibbonStaffAbsenceDate.timeStart, gibbonStaffCoverageDate.timeStart";
 
         return $this->db()->select($sql, $data);

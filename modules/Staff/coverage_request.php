@@ -27,6 +27,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') == false) {
     // Access denied
@@ -62,10 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         return;
     }
 
-    // if ($values['status'] != 'Approved') {
-    //     $page->addError(__('Coverage may only be requested for an absence after it has been approved.'));
-    //     return;
-    // }
+    if ($values['status'] != 'Approved' && $coverageMode == 'Requested') {
+        $page->addMessage(__('Coverage may only be requested for an absence after it has been approved.'));
+        return;
+    }
 
     // Get coverage mode
     $coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
@@ -82,11 +83,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         : '';
 
     // Get timetabled classes and non-class records that need coverage (activities and duty)
-    $classes = $staffCoverageDateGateway->selectPotentialCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
+    $classes = $staffCoverageDateGateway->selectPotentialCoverageByPersonAndDate($session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
     $classes = array_map(function ($item) {
         $item['contextCheckboxID'] = $item['date'].':'.$item['foreignTable'].':'.$item['foreignTableID'];
         return $item;
     }, $classes);
+
+    // Check for special days for these classes
+    $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
+    $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($dateStart['date'], $dateEnd['date'])->fetchGroupedUnique();
+
+    // Check if classes are running on a special day
+    $classes = array_reduce($classes, function ($group, $item) use (&$specialDayGateway, &$session, &$specialDays) {
+        $item['offTimetable'] = false;
+
+        if ($item['context'] == 'Class' && isset($specialDays[$item['date']])) {
+            $item['offTimetable'] = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $item['contextID'], $item['date']);
+        }
+
+        if ($item['context'] == 'Activity' && isset($specialDays[$item['date']])) {
+            $item['offTimetable'] = $specialDays[$item['date']]['cancelActivities'] == 'Y';
+        }
+
+        $group[] = $item;
+        return $group;
+    }, []);
 
     $coverageByTimetable = !empty($classes);
 
@@ -248,11 +269,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $table->addCheckboxColumn('timetableClasses', 'contextCheckboxID')
             ->width('15%')
             ->checked(function ($class) use ($dateStart, $dateEnd) {
+                if ($class['offTimetable']) return false;
+                
                 $insideTimeRange = $class['timeStart'] <= $dateStart['timeEnd'] && $class['timeEnd'] >= $dateEnd['timeStart'];
 
                 return $dateStart['allDay'] == 'Y' || $insideTimeRange ? $class['contextCheckboxID'] : false;
             })
             ->format(function ($class) {
+                if ($class['offTimetable']) {
+                    return __('Off Timetable');
+                }
                 if (!empty($class['gibbonStaffCoverageID'])) {
                     return  $class['coverage'] == 'Requested' || $class['coverage'] == 'Pending'
                         ? Format::tag(__('Pending'), 'message')
@@ -317,7 +343,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     } else {
         $table->addColumn('notes', __('Notes').' *')
             ->width('25%')
-            ->format(function ($class) use ($coverageByTimetable, &$form) {
+            ->format(function ($class) use ($coverageByTimetable, &$form, &$specialDays) {
+                if ($class['offTimetable']) {
+                    return Format::small($specialDays[$class['date']]['name'] ?? '');
+                }
                 if (!empty($class['gibbonPersonIDCoverage'])) {
                     return Format::name('', $class['preferredNameCoverage'], $class['surnameCoverage'], 'Staff', false, true);
                 }

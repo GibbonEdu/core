@@ -723,5 +723,6 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 ALTER TABLE `gibbonStaffCoverageDate` ADD `foreignTable` VARCHAR(60) NULL AFTER `gibbonStaffAbsenceDateID`;end
 ALTER TABLE `gibbonStaffCoverageDate` CHANGE `gibbonTTDayRowClassID` `foreignTableID` INT(12) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonStaffCoverageDate` ADD INDEX(`foreignTable`, `foreignTableID`);end
+ALTER TABLE `gibbonActivityStaff` ADD INDEX(`gibbonActivityID`, `gibbonPersonID`);end
 
 ";
