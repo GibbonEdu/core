@@ -150,6 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $timeEnd = $_POST['timeEnd'];
             $reason = $_POST['reason'];
             $repeat = $_POST['repeat'];
+            $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $repeatDaily = null;
             $repeatWeekly = null;
             if ($repeat == 'Daily') {
@@ -203,6 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $form->addHiddenValue('repeat', $repeat);
                     $form->addHiddenValue('repeatDaily', $repeatDaily);
                     $form->addHiddenValue('repeatWeekly', $repeatWeekly);
+                    $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
                     if ($repeat == 'No') {
                         $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd);
