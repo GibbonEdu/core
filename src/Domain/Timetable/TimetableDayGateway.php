@@ -59,7 +59,8 @@ class TimetableDayGateway extends QueryableGateway
         $sql = "SELECT gibbonTTDay.*, gibbonTTColumn.name AS columnName
                 FROM gibbonTTDay
                 JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID)
-                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID";
+                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID
+                ORDER BY (gibbonTTDay.name LIKE '%Mon%') DESC, (gibbonTTDay.name LIKE '%Tue%') DESC, (gibbonTTDay.name LIKE '%Wed%') DESC, (gibbonTTDay.name LIKE '%Thu%') DESC, (gibbonTTDay.name LIKE '%Fri%') DESC, (gibbonTTDay.name LIKE '%Sat%') DESC";
 
         return $this->db()->select($sql, $data);
     }
