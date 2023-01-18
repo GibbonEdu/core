@@ -2172,7 +2172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $fields = json_decode($item['fields'], true) ?? [];
                                 $typeFields = json_decode($item['typeFields'], true) ?? [];
                                 foreach ($typeFields as $typeField) {
-                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']]);
+                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']] ?? '');
                                 }
                                 $detailTable .= '</table>';
                                 return $detailTable;
