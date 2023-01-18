@@ -88,6 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $table->addColumn('category', __('Category'))->translatable();
     $table->addColumn('status', __('Status'))
         ->width('20%')
+        ->notSortable()
         ->format(function ($template) {
             return '<span class="tag '.($template['statusClass'] ?? '').'" title="'.($template['statusTitle'] ?? '').'">'.$template['status'].'</span>';
         });
@@ -144,6 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         
     $table->addColumn('tcpdf', __('Status'))
         ->width('20%')
+        ->notSortable()
         ->format(function ($font) use ($absolutePath) {
             $assetFile = $absolutePath.'/'.$font['fontPath'];
             if (!is_file($assetFile)) {
