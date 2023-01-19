@@ -195,6 +195,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                         exit();
                     }
 
+                    // Clean up unused tags
+                    $pdo->delete("DELETE FROM gibbonResourceTag WHERE count=0");
+
                     //Write to database
 
                         $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => substr($tagList, 0, -1), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonResourceID' => $gibbonResourceID);
