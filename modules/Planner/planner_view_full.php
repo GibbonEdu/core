@@ -1232,7 +1232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         if ($canTakeAttendance) {
                             // Try to determine the timetable period for this lesson
                             $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
-                            $form->addHiddenValue('gibbonTTDayRowClassID', $ttPeriod['gibbonTTDayRowClassID']);
+                            $form->addHiddenValue('gibbonTTDayRowClassID', $ttPeriod['gibbonTTDayRowClassID'] ?? '');
 
                             $classLogs = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceLogsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
                             if (empty($classLogs)) {

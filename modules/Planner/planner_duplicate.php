@@ -84,14 +84,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'subView' => $subView,
             ];
-		}
+        }
 
         [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
         ///Check if gibbonPlannerEntryID and gibbonCourseClassID specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? ''; 
+        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -112,7 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             }
 
             if ($result->rowCount() != 1) {
-                $otherYearDuplicateSuccess = false;
+                $page->breadcrumbs
+                    ->add(__('Duplicate Lesson Plan'));
+
+                $otherYearDuplicateSuccess = !empty($_GET['return']) && $_GET['return'] == 'success0';
                 //Deal with duplicate to other year
                 $returns = array();
                 $returns['success0'] = __('Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
@@ -124,16 +127,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 }
             } else {
                 //Let's go!
-				$values = $result->fetch();
+                $values = $result->fetch();
 
-				// target of the planner
-				$target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
+                // target of the planner
+                $target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
 
-				$page->breadcrumbs
-					->add(__('Planner for {classDesc}', [
-						'classDesc' => $target,
-					]), 'planner.php', $params)
-					->add(__('Duplicate Lesson Plan'));
+                $page->breadcrumbs
+                    ->add(__('Planner for {classDesc}', [
+                        'classDesc' => $target,
+                    ]), 'planner.php', $params)
+                    ->add(__('Duplicate Lesson Plan'));
 
                 $step = null;
                 if (isset($_GET['step'])) {
