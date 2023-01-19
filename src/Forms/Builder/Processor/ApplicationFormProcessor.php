@@ -53,6 +53,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
     {
         $this->run(PayProcessingFee::class);
         $this->run(SendReferenceRequest::class);
+        $this->run(SendAcceptanceEmail::class);
     }
 
     protected function acceptProcess()

@@ -50,4 +50,8 @@ abstract class AbstractFormView implements FormViewInterface
     {
         return str_replace('View', 'Result', $this->getViewName());
     }
+
+    public function configureEdit(Form $form, FormDataInterface $data, string $id) {} 
+
+    public function configureAccept(Form $form, FormDataInterface $data, string $id) {}
 }

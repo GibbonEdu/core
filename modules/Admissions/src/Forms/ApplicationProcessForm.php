@@ -25,6 +25,7 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 /**
  * ApplicationProcessForm
@@ -43,7 +44,7 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
         $this->session = $session;
     }
 
-    public function createForm($urlParams, FormBuilderInterface $formBuilder, $processes)
+    public function createForm($urlParams, FormBuilderInterface $formBuilder, $processes, FormDataInterface $formData)
     {
         $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
@@ -63,6 +64,8 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
                 $row = $form->addRow();
                     $row->addLabel('applicationProcess['.$process->getProcessName().'][enabled]', $view->getName())->description($view->getDescription());
                     $row->addCheckbox('applicationProcess['.$process->getProcessName().'][enabled]')->setValue('Y');
+
+                $view->configureEdit($form, $formData, 'applicationProcess['.$process->getProcessName().']');
             }
         }
         $form->addRow()->addSubmit();
