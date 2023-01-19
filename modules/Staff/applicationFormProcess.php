@@ -210,7 +210,7 @@ if ($proceed == false) {
 
                         //Email reference form link to referee
                         $applicationFormRefereeLink = unserialize($settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink'));
-                        if ($applicationFormRefereeLink[$type] != '' and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
+                        if (is_array($applicationFormRefereeLink) && !empty($applicationFormRefereeLink[$type]) and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
                             //Prep message
                             $subject = __('Request For Reference');
                             $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $session->get('organisationHRName'), '<br/><br/>', $jobTitle);
