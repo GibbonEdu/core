@@ -27,7 +27,7 @@ use Gibbon\Contracts\Comms\SMS;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php') == FALSE) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_send.php') == FALSE) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
         ->add(__('Edit Message'), 'messenger_manage_edit.php', ['gibbonMessengerID' => $gibbonMessengerID, 'sidebar' => true])
         ->add(__('Preview & Send'));
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/messenger_post.php', $connection2) ;
+    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/messenger_send.php', $connection2) ;
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
