@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     // Includes are loaded inside a function to limit their variable scope.
     $hooks = $container->get(HookGateway::class)->selectHooksByType('Report Writing')->fetchGroupedUnique();
     $hookInclude = function ($options, $criteria) use (&$gibbon, &$container, &$form, $student, $scopeDetails, $reportingScope, $reportingCriteria, $urlParams, $canWriteReport) {
-        $options = json_decode($options, true);
+        $options = json_decode($options['options'] ?? '', true);
         $includePath = $gibbon->session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
 
         if (!empty($options) && is_file($includePath)) {
