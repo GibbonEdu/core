@@ -32,6 +32,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <p>{{ form.getDescription|raw }}</p>
     {% endif %}
 
+    {% if introduction %}
+        <p>{{ introduction|raw }}</p>
+    {% endif %}
 
     {% block header %}
         <header class="relative">
@@ -117,6 +120,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endfor %}
         {% endfor %}
     </div>
+    {% endif %}
+
+    {% if postScript %}
+        <p>{{ postScript|raw }}</p>
     {% endif %}
 
     <script type="text/javascript">

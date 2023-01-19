@@ -101,6 +101,7 @@ v25.0.00
         Activities: fixed activities not viewable from profile after listing end date
         Admissions: fixed application username check to include other applications
         Admissions: fixed database error when using Add Application to create a blank application form
+        Admissions: fixed missing Introduction and Post Script on application form
         Attendance: fixed duplicate entries in Students Not Present and Students Not Onsite
         Attendance: fixed Students Not Onsite reports not displaying student name on mobile
         Attendance: fixed Attendance Summary by Date to use end-of-day status for school-wide attendance

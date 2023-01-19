@@ -101,11 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     echo $form->getOutput();
 
     // QUERY
-    $criteria = $formPageGateway->newQueryCriteria()
-        ->sortBy('sequenceNumber', 'ASC')
-        ->fromPOST();
-
-    $pages = $formPageGateway->queryPagesByForm($criteria, $gibbonFormID);
+    $pages = $formPageGateway->selectPagesByForm($gibbonFormID)->fetchGroupedUnique();
 
     // DATA TABLE
     $table = $container->get(DataTable::class);

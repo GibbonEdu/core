@@ -74,6 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $form->setMaxPage($formData->get('maxPage') ?? $formBuilder->getPageNumber());
         $form->loadAllValuesFrom($values);
 
+        $currentPage = $formBuilder->getCurrentPage();
+        $form->getRenderer()->addData('introduction', $currentPage['introduction'] ?? '');
+        $form->getRenderer()->addData('postScript', $currentPage['postScript'] ?? '');
+
         echo $form->getOutput();
 
     } else {

@@ -122,6 +122,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->finalPageNumber;
     }
 
+    public function getCurrentPage() : array
+    {
+        return $this->pages[$this->pageNumber] ?? [];
+    }
+
     public function includeHidden(bool $includeHidden = true)
     {
         $this->includeHidden = $includeHidden;
@@ -164,8 +169,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $this->config = json_decode($this->details['config'] ?? '', true);
 
         // Load all page data
-        $criteria = $this->formPageGateway->newQueryCriteria()->sortBy('sequenceNumber', 'ASC');
-        $this->pages = $this->formPageGateway->queryPagesByForm($criteria, $this->gibbonFormID)->toArray();
+        $this->pages = $this->formPageGateway->selectPagesByForm($this->gibbonFormID)->fetchGroupedUnique();
         $this->details['gibbonFormPageID'] = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
 
         // Determine the final page number
@@ -256,6 +260,9 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $form->addHiddenValue('page', $this->pageNumber);
         $form->addHiddenValue('direction', 'next');
         $form->addHiddenValues($this->urlParams);
+
+        // Get the current page data
+        $currentPage = $this->pages[$this->pageNumber];
 
         // Add pages to the multi-part form
         if (count($this->pages) > 1) {
