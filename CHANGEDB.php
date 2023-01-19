@@ -724,5 +724,9 @@ ALTER TABLE `gibbonStaffCoverageDate` ADD `foreignTable` VARCHAR(60) NULL AFTER 
 ALTER TABLE `gibbonStaffCoverageDate` CHANGE `gibbonTTDayRowClassID` `foreignTableID` INT(12) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonStaffCoverageDate` ADD INDEX(`foreignTable`, `foreignTableID`);end
 ALTER TABLE `gibbonActivityStaff` ADD INDEX(`gibbonActivityID`, `gibbonPersonID`);end
+UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='New Application Form';end
+UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='New Application with SEN/Medical';end
+UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='Application Form Accepted';end
+UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='Student Withdrawn';end
 
 ";

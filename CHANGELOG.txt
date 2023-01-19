@@ -34,6 +34,7 @@ v25.0.00
         Staff: added a drag-drop interface for creating and managing a duty schedule
 
     Changes With Important Notices
+        Admissions: the new application system is now turned on by default and is no longer in beta
         Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
 
     Tweaks & Additions
@@ -125,6 +126,7 @@ v25.0.00
         Reports: fixed HTML being removed from Rich Text template sections
         Reports: fixed file upload not working in Template Builder
         Reports: fixed json_decode error for hooks in Write Reports By Student
+        Reports: fixed unable to re-send acceptance email from Edit Application page
         School Admin: fixed error in Add Attendance Code when no roles specified
         School Admin: fixed possible duplicate values using Copy All To Next Year in Manage Form Groups
         Staff: fixed staff absences not showing up if outside school year dates

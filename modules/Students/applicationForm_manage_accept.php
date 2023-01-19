@@ -1161,7 +1161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
 
                     // Raise a new notification event
-                    $event = new NotificationEvent('Students', 'Application Form Accepted');
+                    $event = new NotificationEvent('Admissions', 'Application Form Accepted');
 
                     $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
                     $studentGroup = (!empty($formGroupName))? $formGroupName : $yearGroupName;
@@ -1183,7 +1183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     // Raise a new notification event for SEN
                     if (!empty($values['senDetails']) || !empty($values['medicalInformation'])) {
-                        $event = new NotificationEvent('Students', 'New Application with SEN/Medical');
+                        $event = new NotificationEvent('Admissions', 'New Application with SEN/Medical');
                         $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                         $event->addScope('gibbonYearGroupID', $values['gibbonYearGroupIDEntry']);
 
