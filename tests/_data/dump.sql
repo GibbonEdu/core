@@ -50,3 +50,13 @@ SELECT * FROM (SELECT (SELECT gibbonFamilyID FROM gibbonFamily WHERE `name`='Tes
 WHERE NOT EXISTS (
     SELECT gibbonFamilyRelationshipID FROM gibbonFamilyRelationship JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyRelationship.gibbonFamilyID) WHERE gibbonFamily.`name`='Testing Family' AND gibbonFamily.`familySync`='TESTINGFAMILY'
 ) LIMIT 1;
+
+--- Create permissions to access the old application form system
+INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID`, `gibbonActionID`) VALUES
+(001, 0000074),
+(001, 0000001),
+(001, 0000078),
+(001, 0000858),
+(002, 0000074),
+(004, 0000074),
+(006, 0000074);
