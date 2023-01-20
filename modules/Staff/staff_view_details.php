@@ -47,6 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
         echo '</div>';
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, 0, STR_PAD_LEFT);
+
         if ($gibbonPersonID == '' ) {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -359,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         // CRITERIA
                         $criteria = $familyGateway->newQueryCriteria()
                             ->sortBy(['gibbonFamily.name'])
-                            ->fromPOST();
+                            ->fromPOST('family');
 
                         $families = $familyGateway->queryFamiliesByAdult($criteria, $gibbonPersonID);
                         $familyIDs = $families->getColumn('gibbonFamilyID');

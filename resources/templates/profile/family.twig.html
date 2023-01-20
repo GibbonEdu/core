@@ -7,6 +7,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% for family in families %}
+    {{ not loop.first ? '<hr class="my-8">' }}
     <table class='smallIntBorder' cellspacing='0' style='width: 100%'>
         <tr>
             <td style='width: 33%; vertical-align: top'>
