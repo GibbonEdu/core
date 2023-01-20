@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $list = $col->addContent();
 
                 if (empty($values['gibbonFormGroupID'])) {
-                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
+                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has not been assigned to a form group).').'</li>');
                 }
 
                 $list->append('<li>'.__('Create an individual needs record for the student.').'</li>')

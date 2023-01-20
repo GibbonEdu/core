@@ -178,12 +178,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     //  List manual actions
     $manualActions = [];
 
+    if (!$formData->has('gibbonSchoolYearIDEntry')) {
+        $manualActions[] = __('Enrol the student in the relevant academic year.');
+    }
+
     if (!$formData->has('gibbonFormGroupIDEntry')) {
         $manualActions[] = __('Enrol the student in the selected school year (as the student has not been assigned to a form group).');
     }
 
+    if ($container->get(SettingGateway::class)->getSettingByScope('Timetable Admin', 'autoEnrolCourses') != 'Y') {
+        $manualActions[] = __('Create a timetable for the student.');
+    }
+    
     // $manualActions[] = __('Create a note of the student\'s scholarship information outside of Gibbon.');
-    // $manualActions[] = __('Create a timetable for the student.');
+    // $manualActions[] = __('Inform the student and parents of their Gibbon login details (if this was not done automatically).');
 
     if (!empty($manualActions)) {
         $col = $form->addRow()->addColumn();
