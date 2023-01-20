@@ -3746,7 +3746,10 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054053, 001, 0000985),
 (0000054054, 001, 0000986),
 (0000054056, 001, 0000988),
-(0000054057, 001, 0000989);
+(0000054057, 001, 0000989),
+(0000054058, 002, 0000990),
+(0000054059, 004, 0000990),
+(0000054060, 006, 0000990);
 
 -- --------------------------------------------------------
 
@@ -5203,7 +5206,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00047, 'Planner', 'teachersNotesTemplate', 'Teacher\'s Notes Template', 'Template to be inserted into Teacher\'s Notes field', ''),
 (00048, 'Planner', 'smartBlockTemplate', 'Smart Block Template', 'Template to be inserted into new block in Smart Unit', ''),
 (00049, 'Planner', 'unitOutlineTemplate', 'Unit Outline Template', 'Template to be inserted into Unit Outline section of planner', ''),
-(00050, 'Application Form', 'milestones', 'Milestones', 'Comma-separated list of the major steps in the application process. Applicants can be tracked through the various stages.', ''),
+(00050, 'Application Form', 'milestones', 'Milestones', 'Comma-separated list of the major steps in the application process. Applicants can be tracked through the various stages.', 'Information Reviewed,Documents Checked,Ready to Accept'),
 (00051, 'Library', 'defaultLoanLength', 'Default Loan Length', 'The standard loan length for a library item, in days', '7'),
 (00052, 'Behaviour', 'policyLink', 'Policy Link', 'A link to the school behaviour policy.', ''),
 (00053, 'Library', 'browseBGColor', 'Browse Library BG Colour', 'Click to select a colour.', ''),
@@ -8050,7 +8053,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54058;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54061;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
