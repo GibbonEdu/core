@@ -727,9 +727,7 @@ class MessengerGateway extends QueryableGateway
             }
 
             if ($resultPosts->rowCount() < 1) {
-                $return .= "<div class='warning'>";
-                $return .= __('There are no records to display.');
-                $return .= '</div>';
+                $return .= Format::alert(__('There are no records to display.'), 'message');
             } else {
                 $output = array();
                 $last = '';

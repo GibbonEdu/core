@@ -114,9 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             $result = $connection2->prepare($sql);
             $result->execute($data);
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('Access denied.');
-            echo '</div>';
+            $page->addMessage(__('There are no records to display.'));
         } else {
             //Get child list
             $count = 0;
@@ -136,9 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             }
 
             if ($count == 0) {
-                echo "<div class='error'>";
-                echo __('Access denied.');
-                echo '</div>';
+                $page->addMessage(__('There are no records to display.'));
             } elseif ($count == 1) {
                 $gibbonPersonID = $gibbonPersonIDArray[0];
             } else {

@@ -96,9 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				$result->execute($data);
 
 			if ($result->rowCount() < 1) {
-				echo "<div class='error'>";
-				echo __('Access denied.');
-				echo '</div>';
+				$page->addMessage(__('There are no records to display.'));
 			} else {
 				//Get child list
 				$options = array();
@@ -115,9 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				$gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
 				if (count($options) == 0) {
-					echo "<div class='error'>";
-					echo __('Access denied.');
-					echo '</div>';
+					$page->addMessage(__('There are no records to display.'));
 				} elseif (count($options) == 1) {
 					$gibbonPersonID = key($options);
 				} else {

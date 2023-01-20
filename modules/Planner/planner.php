@@ -104,9 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('Access denied.');
-                echo '</div>';
+                $page->addMessage(__('There are no records to display.'));
             } else {
                 //Get child list
                 $count = 0;
@@ -125,9 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 }
 
                 if ($count == 0) {
-                    echo "<div class='error'>";
-                    echo __('Access denied.');
-                    echo '</div>';
+                    $page->addMessage(__('There are no records to display.'));
                 } elseif ($count == 1) {
                     $search = $gibbonPersonIDArray[0];
                 } else {

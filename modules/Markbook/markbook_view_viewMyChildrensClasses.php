@@ -35,9 +35,8 @@ $attainmentAltName = $settingGateway->getSettingByScope('Markbook', 'attainmentA
 $effortAltName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 
 $entryCount = 0;
-echo '<p>';
-echo "This page shows your children's academic results throughout your school career. Only subjects with published results are shown.";
-echo '</p>';
+
+$page->write('<p>'.__("This page shows your children's academic results throughout your school career. Only subjects with published results are shown.").'</p>');
 
 //Test data access field for permission
 
@@ -47,9 +46,8 @@ echo '</p>';
     $result->execute($data);
 
 if ($result->rowCount() < 1) {
-    echo "<div class='error'>";
-    echo __('Access denied.');
-    echo '</div>';
+    echo Format::alert(__('There are no records to display.'), 'message');
+    return;
 } else {
     //Get child list
     $count = 0;
@@ -66,9 +64,8 @@ if ($result->rowCount() < 1) {
     }
 
     if (count($options) == 0) {
-        echo "<div class='error'>";
-        echo __('Access denied.');
-        echo '</div>';
+        echo Format::alert(__('There are no records to display.'), 'message');
+        return;
     } elseif (count($options) == 1) {
         $gibbonPersonID = key($options);
     } else {
@@ -522,7 +519,5 @@ if ($result->rowCount() < 1) {
     }
 }
 if ($entryCount < 1) {
-    echo "<div class='error'>";
-    echo __('There are no records to display.');
-    echo '</div>';
+    echo Format::alert(__('There are no records to display.'), 'message');
 }

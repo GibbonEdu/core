@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('Access denied.');
-        echo '</div>';
+        $page->addMessage(__('There are no records to display.'));
     } else {
         //Get child list
         $count = 0;
@@ -61,9 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
 
         if (count($options) == 0) {
-            echo "<div class='error'>";
-            echo __('Access denied.');
-            echo '</div>';
+            $page->addMessage(__('There are no records to display.'));
         } elseif (count($options) == 1) {
             $gibbonPersonID = key($options);
         } else {

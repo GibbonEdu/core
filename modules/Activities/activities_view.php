@@ -85,9 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $result->execute($data);
 
                 if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('Access denied.');
-                    echo '</div>';
+                    $page->addMessage(__('There are no records to display.'));
                 } else {
                     $options = array();
                     while ($row = $result->fetch()) {

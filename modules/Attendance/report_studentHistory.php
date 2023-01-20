@@ -117,15 +117,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $gibbonPersonID = $_GET['gibbonPersonID'];
             }
             //Test data access field for permission
-
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+            $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+            
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('Access denied.');
-                echo '</div>';
+                $page->addMessage(__('There are no records to display.'));
             } else {
                 //Get child list
                 $countChild = 0;
@@ -153,9 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 }
 
                 if ($countChild == 0) {
-                    echo "<div class='error'>";
-                    echo __('Access denied.');
-                    echo '</div>';
+                    $page->addMessage(__('There are no records to display.'));
                 } else {
                     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
                     $form->setTitle(__('Choose'));
