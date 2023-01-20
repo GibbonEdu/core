@@ -176,7 +176,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonPerson.preferredName',
                 'gibbonPerson.email',
                 'gibbonPerson.gibbonPersonID',
-                'MAX(gibbonRole.category) as roleCategory',
+                'gibbonRole.category as roleCategory',
                 'gibbonPerson.status',
                 'gibbonPerson.image_240',
                 'gibbonFamilyRelationship.relationship',
@@ -187,13 +187,12 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->innerJoin('gibbonAdmissionsAccount', 'gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
             ->leftJoin('gibbonFamilyAdult', 'gibbonFamilyAdult.gibbonFamilyID=gibbonAdmissionsAccount.gibbonFamilyID')
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID OR gibbonPerson.gibbonPersonID=gibbonAdmissionsAccount.gibbonPersonID')
-            ->leftJoin('gibbonRole', 'FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)')
+            ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
             ->leftJoin('gibbonFamilyRelationship', 'gibbonFamilyRelationship.gibbonFamilyID=gibbonAdmissionsAccount.gibbonFamilyID AND gibbonFamilyRelationship.gibbonPersonID1=gibbonPerson.gibbonPersonID AND gibbonFamilyRelationship.gibbonPersonID2=JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDStudent"))')
             ->where('gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount"')
             ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
             ->where('gibbonPerson.gibbonPersonID IS NOT NULL')
-            ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->groupBy(['gibbonPerson.gibbonPersonID']);
+            ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
         // Application parents, existing family not attached to account, post-acceptance or pre-existing
         $this->unionAllWithCriteria($query, $criteria)
@@ -203,7 +202,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonPerson.preferredName',
                 'gibbonPerson.email',
                 'gibbonPerson.gibbonPersonID',
-                'MAX(gibbonRole.category) as roleCategory',
+                'gibbonRole.category as roleCategory',
                 'gibbonPerson.status',
                 'gibbonPerson.image_240',
                 'gibbonFamilyRelationship.relationship',
@@ -214,14 +213,13 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->innerJoin('gibbonAdmissionsAccount', 'gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
             ->leftJoin('gibbonFamilyAdult', 'gibbonFamilyAdult.gibbonFamilyID=JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.gibbonFamilyID"))')
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID')
-            ->leftJoin('gibbonRole', 'FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)')
+            ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
             ->leftJoin('gibbonFamilyRelationship', 'gibbonFamilyRelationship.gibbonFamilyID=gibbonAdmissionsAccount.gibbonFamilyID AND gibbonFamilyRelationship.gibbonPersonID1=gibbonPerson.gibbonPersonID AND gibbonFamilyRelationship.gibbonPersonID2=JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDStudent"))')
             ->where('gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount"')
             ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
             ->where('gibbonPerson.gibbonPersonID IS NOT NULL')
             ->where('gibbonAdmissionsAccount.gibbonFamilyID IS NULL')
-            ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->groupBy(['gibbonPerson.gibbonPersonID']);
+            ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
         // Application Parent 1, pre-acceptance
         $this->unionAllWithCriteria($query, $criteria)
