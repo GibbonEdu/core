@@ -38,7 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     $substituteType = $_GET['substituteType'] ?? '';
     $month = $_GET['month'] ?? '';
 
-    $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
+    $settingGateway = $container->get(SettingGateway::class);
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+    $urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold');
 
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
@@ -72,6 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     
     // Get all substitutes
     $criteria = $substituteGateway->newQueryCriteria()
+        ->filterBy('allStaff', $internalCoverage == 'Y')
         ->sortBy(['active', 'surname', 'preferredName'])
         ->fromPOST();
 
@@ -179,9 +182,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $table->setTitle(__('Report'));
         $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 
-        $table->modifyRows(function ($person, $row) {
+        $table->modifyRows(function ($person, $row) use ($internalCoverage) {
             if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
-            if ($person['active'] != 'Y') $row->addClass('error');
+            if ($internalCoverage == 'N' && $person['active'] != 'Y') $row->addClass('error');
             return $row;
         });
 

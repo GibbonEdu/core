@@ -24,6 +24,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
@@ -36,6 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->add(__('Substitute Availability'), 'report_subs_availability.php')
         ->add(__('Daily'));
 
+    $subGateway = $container->get(SubstituteGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
+
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
@@ -43,9 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $allDay = $_GET['allDay'] ?? null;
     $timeStart = $_GET['timeStart'] ?? null;
     $timeEnd = $_GET['timeEnd'] ?? null;
-    $allStaff = $_GET['allStaff'] ?? false;
-
-    $subGateway = $container->get(SubstituteGateway::class);
+    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
     
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)

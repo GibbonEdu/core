@@ -37,13 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->add(__('Substitute Availability'), 'report_subs_availability.php')
         ->add(__('Weekly'));
 
+    $subGateway = $container->get(SubstituteGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
+
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $allStaff = $_REQUEST['allStaff'] ?? 'N';
+    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
-    $subGateway = $container->get(SubstituteGateway::class);
-    
     // DATE SELECTOR
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->setClass('blank fullWidth');

@@ -59,12 +59,13 @@ class SubstituteGateway extends QueryableGateway
             ->leftJoin('gibbonStaff', 'gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID');
 
         if ($criteria->hasFilter('allStaff', 'Y')) {
-            $query->leftJoin('gibbonSubstitute', 'gibbonPerson.gibbonPersonID=gibbonSubstitute.gibbonPersonID');
-
+            $query->leftJoin('gibbonSubstitute', 'gibbonPerson.gibbonPersonID=gibbonSubstitute.gibbonPersonID')
+                ->where("gibbonRole.category='Staff' AND gibbonStaff.type='Teaching'");
+                
             $criteria->addFilterRules([
                 'active' => function ($query, $active) {
                     if ($active != 'Y') return $query;
-                    return $query->where("gibbonRole.category='Staff' AND gibbonStaff.type='Teaching'");
+                    return $query->where("gibbonPerson.status='Full'");
                 },
             ]);
             
