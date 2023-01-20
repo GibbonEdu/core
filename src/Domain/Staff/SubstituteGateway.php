@@ -115,7 +115,7 @@ class SubstituteGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->cols([
                 'gibbonPerson.gibbonPersonID as groupBy', ':date as date', 'gibbonPerson.gibbonPersonID', 'gibbonSubstitute.details', '(CASE WHEN gibbonSubstitute.gibbonSubstituteID IS NOT NULL THEN gibbonSubstitute.type ELSE "Internal Substitute" END) as type', 'gibbonSubstitute.priority', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonStaff.gibbonStaffID', 'gibbonPerson.username', 'gibbonStaff.jobTitle',
-                '(absence.ID IS NULL AND coverage.ID IS NULL AND timetable.ID IS NULL AND unavailable.gibbonStaffCoverageDateID IS NULL) as available',
+                '(absence.ID IS NULL AND coverage.ID IS NULL AND timetable.ID IS NULL AND duty.ID IS NULL AND activity.ID IS NULL AND unavailable.gibbonStaffCoverageDateID IS NULL) as available',
                 'absence.status as absence', 'coverage.status as coverage', 'timetable.status as timetable', 'unavailable.reason as unavailable',
             ])
             ->leftJoin('gibbonSubstitute', 'gibbonSubstitute.gibbonPersonID=gibbonPerson.gibbonPersonID');
@@ -173,7 +173,7 @@ class SubstituteGateway extends QueryableGateway
         // Already teaching?
         $query->joinSubSelect(
             'LEFT',
-            "SELECT gibbonTTColumnRow.gibbonTTColumnRowID as ID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as status, gibbonCourseClassPerson.gibbonPersonID, gibbonTTDayDate.date, timeStart, timeEnd
+            "SELECT gibbonTTColumnRow.gibbonTTColumnRowID as ID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as status, gibbonCourseClassPerson.gibbonPersonID, gibbonTTDayDate.date, timeStart, timeEnd, specialDay.name as specialDay
                 FROM gibbonCourseClassPerson 
                 JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
@@ -182,10 +182,14 @@ class SubstituteGateway extends QueryableGateway
                     AND gibbonTTDay.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID)
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
                 JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                JOIN gibbonCourseClassPerson as studentClass ON (studentClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND studentClass.role='Student')
+                LEFT JOIN gibbonPerson as student ON (student.gibbonPersonID=studentClass.gibbonPersonID AND student.status='Full')
+                LEFT JOIN gibbonStudentEnrolment as enrolment ON (enrolment.gibbonPersonID=student.gibbonPersonID AND enrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID)
+                LEFT JOIN gibbonSchoolYearSpecialDay as specialDay ON (specialDay.date=gibbonTTDayDate.date AND specialDay.type='Off Timetable' AND (FIND_IN_SET(enrolment.gibbonYearGroupID, specialDay.gibbonYearGroupIDList) OR FIND_IN_SET(enrolment.gibbonFormGroupID, specialDay.gibbonFormGroupIDList)))
                 WHERE gibbonCourseClassPerson.role = 'Teacher'",
             'timetable',
             "timetable.gibbonPersonID=gibbonPerson.gibbonPersonID AND timetable.date = :date 
-                AND timetable.timeStart < :timeEnd AND timetable.timeEnd > :timeStart"
+                AND timetable.timeStart < :timeEnd AND timetable.timeEnd > :timeStart AND timetable.specialDay IS NULL"
         );
 
         // Already doing staff duty?
@@ -298,25 +302,22 @@ class SubstituteGateway extends QueryableGateway
         $sql = "(
                 SELECT gibbonStaffCoverageDate.gibbonPersonIDUnavailable as gibbonPersonID, gibbonStaffCoverageDate.date, 'Not Available' as status, allDay, timeStart, timeEnd, gibbonSubstitute.type, gibbonSubstitute.priority, gibbonStaffCoverageDate.gibbonStaffCoverageDateID as contextID
                 FROM gibbonStaffCoverageDate 
-                JOIN gibbonSubstitute ON (gibbonSubstitute.gibbonPersonID=gibbonStaffCoverageDate.gibbonPersonIDUnavailable AND gibbonSubstitute.active='Y')
+                LEFT JOIN gibbonSubstitute ON (gibbonSubstitute.gibbonPersonID=gibbonStaffCoverageDate.gibbonPersonIDUnavailable AND gibbonSubstitute.active='Y')
                 WHERE gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd
-                AND gibbonSubstitute.gibbonSubstituteID IS NOT NULL
             ) UNION ALL (
                 SELECT gibbonStaffCoverage.gibbonPersonIDCoverage as gibbonPersonID, gibbonStaffCoverageDate.date, 'Covering' as status, allDay, timeStart, timeEnd, gibbonSubstitute.type, gibbonSubstitute.priority, gibbonStaffCoverage.gibbonStaffCoverageID as contextID
                 FROM gibbonStaffCoverage
                 JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
-                JOIN gibbonSubstitute ON (gibbonSubstitute.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage AND gibbonSubstitute.active='Y')
+                LEFT JOIN gibbonSubstitute ON (gibbonSubstitute.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage AND gibbonSubstitute.active='Y')
                 WHERE gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd
                 AND (gibbonStaffCoverage.status='Accepted')
-                AND gibbonSubstitute.gibbonSubstituteID IS NOT NULL
             ) UNION ALL (
                 SELECT gibbonStaffAbsence.gibbonPersonID as gibbonPersonID, gibbonStaffAbsenceDate.date, 'Absent' as status, allDay, timeStart, timeEnd, gibbonSubstitute.type, gibbonSubstitute.priority, gibbonStaffAbsence.gibbonStaffAbsenceID as contextID
                 FROM gibbonStaffAbsence
                 JOIN gibbonStaffAbsenceDate ON (gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID)
-                JOIN gibbonSubstitute ON (gibbonSubstitute.gibbonPersonID=gibbonStaffAbsence.gibbonPersonID AND gibbonSubstitute.active='Y')
+                LEFT JOIN gibbonSubstitute ON (gibbonSubstitute.gibbonPersonID=gibbonStaffAbsence.gibbonPersonID AND gibbonSubstitute.active='Y')
                 WHERE gibbonStaffAbsenceDate.date BETWEEN :dateStart AND :dateEnd
                 AND gibbonStaffAbsence.status <> 'Declined'
-                AND gibbonSubstitute.gibbonSubstituteID IS NOT NULL
             ) UNION ALL (
                 SELECT DISTINCT gibbonCourseClassPerson.gibbonPersonID as gibbonPersonID, gibbonTTDayDate.date, 'Teaching' as status, 'N', timeStart, timeEnd, gibbonSubstitute.type, gibbonSubstitute.priority, gibbonCourseClassPerson.gibbonCourseClassID as contextID
                 FROM gibbonCourseClassPerson 

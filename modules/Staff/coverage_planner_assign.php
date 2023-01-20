@@ -30,6 +30,7 @@ use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
     // Access denied
@@ -124,6 +125,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $subs = $subGateway->queryAvailableSubsByDate($criteria, $coverage['date'], $coverage['timeStart'], $coverage['timeEnd']);
     $availability = $subGateway->selectUnavailableDatesByDateRange($coverage['date'], $coverage['date'])->fetchGrouped();
     
+    // Check for special days for these classes
+    $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
+    $specialDay = $specialDayGateway->getSpecialDayByDate($coverage['date']);
+    if (!empty($specialDay)) {
+        foreach ($availability as $gibbonPersonID => $dates)
+        $availability[$gibbonPersonID] = array_filter($dates, function ($item) use (&$specialDay, &$specialDayGateway, &$session) {
+            if ($item['status'] != 'Teaching') return true;
+            return !$specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $item['contextID'], $item['date']);
+        });
+    }
+
     $people = $subs->getColumn('gibbonPersonID');
     $coverageCounts = $staffCoverageGateway->selectCoverageCountsByPerson($people)->fetchGroupedUnique();
     $subs->joinColumn('gibbonPersonID', 'coverageCounts', $coverageCounts);
@@ -213,19 +225,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
             return Format::link($url, $name, ['target' => '_blank']).'<br/>'.Format::small($person['type'] ?? $person['jobTitle']);
         });
-        // ->formatDetails(function ($person) {
-        //     $output = '';
-
-        //     $output .= (new Action('view', __('Profile')))
-        //         ->addParam('gibbonPersonID', $person['gibbonPersonID'] ?? '')
-        //         ->addParam('gibbonStaffID', $person['gibbonStaffID'] ?? '')
-        //         ->setURL('/modules/Staff/staff_view_details.php')
-        //         ->setTarget('_blank')
-        //         ->addClass('w-4')
-        //         ->getOutput();
-
-        //     return $output;
-        // });
 
     $table->addColumn('details', __('Details'))
         ->format(function ($person) {
