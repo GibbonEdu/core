@@ -191,14 +191,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
         // CALENDAR VIEW
-        $table = CoverageCalendar::create($coverage->toArray(), $exceptions->toArray(), $schoolYear['firstDay'], $schoolYear['lastDay']);
+        if ($internalCoverage == 'N') {
+            $table = CoverageCalendar::create($coverage->toArray(), $exceptions->toArray(), $schoolYear['firstDay'], $schoolYear['lastDay']);
 
-        $table->addHeaderAction('availability', __('Edit Availability'))
-            ->setURL('/modules/Staff/coverage_availability.php')
-            ->setIcon('planner')
-            ->displayLabel();
+            $table->addHeaderAction('availability', __('Edit Availability'))
+                ->setURL('/modules/Staff/coverage_availability.php')
+                ->setIcon('planner')
+                ->displayLabel();
 
-        echo $table->getOutput().'<br/>';
+            echo $table->getOutput().'<br/>';
+        }
 
         // QUERY
         $criteria = $staffCoverageGateway->newQueryCriteria(true)
@@ -271,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         echo $table->render($coverage);
         $displayCount++;
     }
-
+    
     if ($displayCount == 0) {
         $page->addError(__('There are no records to display.'));
     }

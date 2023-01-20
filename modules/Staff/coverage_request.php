@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         }
 
         if (!$item['offTimetable']) {
-            $classesNeedingCover += $item['coverage'] != 'Requested' && $item['coverage'] != 'Pending' ? 1 : 0;
+            $classesNeedingCover += $item['coverage'] != 'Requested' && $item['coverage'] != 'Pending' && $item['coverage'] != 'Accepted' ? 1 : 0;
         }
 
         $group[] = $item;
@@ -320,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             ->format(function ($class) use (&$substituteGateway, &$criteria, &$form, &$coverageByTimetable) {
                 if (!empty($class['gibbonStaffCoverageID'])) {
                     return !empty($class['surnameCoverage'])
-                        ? Format::name('', $class['surnameCoverage'], $class['preferredNameCoverage'], 'Staff')
+                        ? Format::name('', $class['preferredNameCoverage'], $class['surnameCoverage'], 'Staff', false, true)
                         : __('Any available substitute');
                 }
 

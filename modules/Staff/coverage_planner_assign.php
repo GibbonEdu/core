@@ -39,8 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // Proceed!
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonStaffCoverageDateID = $_REQUEST['gibbonStaffCoverageDateID'] ?? '';
-
-    $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
+    
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $subGateway = $container->get(SubstituteGateway::class);
@@ -52,12 +51,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     }
 
     $coverage = $staffCoverageDateGateway->getCoverageDateDetailsByID($gibbonStaffCoverageDateID);
-    
 
     if (empty($coverage)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold');
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     // ABSENCE DETAILS
     if (!empty($coverage['gibbonPersonID'])) {
@@ -108,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $criteria = $subGateway->newQueryCriteria()
         ->sortBy('gibbonSubstitute.priority', 'DESC')
         ->sortBy(['surname', 'preferredName'])
-        ->filterBy('allStaff', $allStaff ?? 'Y')
+        ->filterBy('allStaff', $internalCoverage == 'Y')
         ->fromPOST();
 
     // FORM
