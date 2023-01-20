@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     $canSelectSubstitutes = $coverageMode == 'Requested' && $values['status'] == 'Approved';
+    $classesNeedingCover = 0;
     
     // Get date ranges
     $dateStart = $absenceDates[0] ?? '';
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($dateStart['date'], $dateEnd['date'])->fetchGroupedUnique();
 
     // Check if classes are running on a special day
-    $classes = array_reduce($classes, function ($group, $item) use (&$specialDayGateway, &$session, &$specialDays) {
+    $classes = array_reduce($classes, function ($group, $item) use (&$specialDayGateway, &$session, &$specialDays, &$classesNeedingCover) {
         $item['offTimetable'] = false;
 
         if ($item['context'] == 'Class' && isset($specialDays[$item['date']])) {
@@ -105,6 +106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             $item['offTimetable'] = $specialDays[$item['date']]['cancelActivities'] == 'Y';
         }
 
+        if (!$item['offTimetable']) {
+            $classesNeedingCover += $item['coverage'] != 'Requested' && $item['coverage'] != 'Pending' ? 1 : 0;
+        }
+
         $group[] = $item;
         return $group;
     }, []);
@@ -113,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     // Look for available subs
     $criteria = $substituteGateway->newQueryCriteria()
-        ->filterBy('allStaff', $internalCoverage)
+        ->filterBy('allStaff', $internalCoverage == 'Y')
         ->sortBy('gibbonSubstitute.priority', 'DESC')
         ->sortBy(['surname', 'preferredName']);
 
@@ -193,15 +198,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             $col = $form->addRow()->addClass('broadcastOptions')->addColumn();
             $col->addAlert(__("This option sends a request out to all available substitutes. There are currently {count} substitutes with availability for this time period. You'll receive a notification once your request is accepted.", ['count' => Format::bold(count($availableSubs))]), 'message');
             
-            if ($coverageByTimetable && count($classes) > $availabilityCount) {
-                $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold(count($classes) - $availabilityCount)]).' '.__('A notification will be sent to administration.'), 'warning');
+            if ($coverageByTimetable && $classesNeedingCover > $availabilityCount) {
+                $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold($classesNeedingCover - $availabilityCount)]).' '.__('A notification will be sent to administration.'), 'warning');
             }
 
             // If there's more than one sub type, allow users to direct their broadcast request to a specific type.
             // All substitute types are selected by default.
-            $allSubsTypes = $settingGateway->getSettingByScope('Staff', 'substituteTypes');
-            $allSubsTypes = array_filter(array_map('trim', explode(',', $allSubsTypes)));
-            if (count($allSubsTypes) > 1) {
+            if (count($availableSubsByType) > 1) {
                 $row = $form->addRow()->addClass('broadcastOptions');
                 $row->addLabel('substituteTypes', __('Substitute Types'));
                 $row->addCheckbox('substituteTypes')->fromArray($availableSubsByType)->checkAll()->wrap('<div class="standardWidth floatRight">', '</div>');
@@ -215,8 +218,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $col = $form->addRow()->addClass('individualOptions')->addColumn();
             $col->addAlert(__("This option sends your request to the selected substitute. You'll receive a notification when they accept or decline. If your request is declined you'll have to option to send a new request."), 'message');
 
-        if ($coverageByTimetable && count($classes) > $availabilityCount) {
-            $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold(count($classes) - $availabilityCount)]).' '.__('You can still send a request, as substitute availability may change, but you cannot select a specific substitute for these classes.').' '.__('A notification will be sent to administration.'), 'warning');
+        if ($coverageByTimetable && $classesNeedingCover > $availabilityCount) {
+            $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold($classesNeedingCover - $availabilityCount)]).' '.__('You can still send a request, as substitute availability may change, but you cannot select a specific substitute for these classes.').' '.__('A notification will be sent to administration.'), 'warning');
         }
     } else {
         $form->addHiddenValue('requestType', $coverageByTimetable ? 'Individual' : 'Broadcast');

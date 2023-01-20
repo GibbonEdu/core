@@ -181,7 +181,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     }
 
     // SUBSTITUTE COVERAGE
-    $substitute = $substituteGateway->getSubstituteByPerson($gibbonPersonID);
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+    $substitute = $substituteGateway->getSubstituteByPerson($gibbonPersonID, $internalCoverage);
     if (!empty($substitute)) {
         $criteria = $staffCoverageGateway->newQueryCriteria();
 
