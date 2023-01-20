@@ -56,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $page = 1;
     }
 
-    echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
-    echo "<div style='width: 762px; margin: 0 auto'>";
+    echo "<div class='w-full' style='border: 1px solid #444; margin-bottom: 30px; background-size: contain; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
+    echo "<div class='w-full lg:w-4/5 px-2 lg:px-0' style='margin: 0 auto'>";
     //Display filters
     echo "<table class='noIntBorder borderGrey mb-1' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
     echo '<tr>';
