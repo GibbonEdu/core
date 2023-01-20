@@ -231,6 +231,7 @@ class MessageForm extends Form
 
         // Get existing TARGETS
         $targets = $this->messengerGateway->selectMessageTargetsByID($gibbonMessengerID)->fetchAll();
+        $selectedRoleCategory = $this->getSelectedTargets($targets, 'Role Category');
 
         //Role
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_role')) {
@@ -269,7 +270,7 @@ class MessageForm extends Form
             $row = $form->addRow()->addClass('roleCategory bg-blue-100');
                 $row->addLabel('roleCategories[]', __('Select Role Categories'));
                 $row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->required()->placeholder()->selected($selected);
-        } else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
+        } else if ($sent && $values['messageWall'] == 'Y' && !empty($selectedRoleCategory) && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
             // Handle the edge case where a user can post a Quick Wall message but doesn't have access to the Role target
             $row = $form->addRow();
                 $row->addLabel('roleCategoryLabel', __('Role Category'))->description(__('Users of a certain type.'));
