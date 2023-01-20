@@ -147,14 +147,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         $table->addColumn('notesCoverage', __('Notes'))
             ->format(function ($coverage) {
-                return $coverage['status'] == 'Requested'
-                    ? Format::small(__('Pending'))
-                    : Format::truncate($coverage['notesStatus'], 60);
+                return Format::truncate($coverage['notesStatus'], 60);
             })
             ->formatDetails(function ($coverage) {
-                return $coverage['status'] == 'Requested'
-                    ? Format::small(__('Pending'))
-                    : Format::small(Format::truncate($coverage['notesCoverage'], 60));
+                return Format::small(Format::truncate($coverage['notesCoverage'], 60));
             });
 
         $table->addActionColumn()

@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 }
             }
 
-            if ($staffCoverageDateGateway->unique($dateData, ['gibbonStaffCoverageID', 'date', 'gibbonTTDayRowClassID'])) {
+            if ($staffCoverageDateGateway->unique($dateData, ['gibbonStaffCoverageID', 'date', 'foreignTableID'])) {
                 $partialFail &= !$staffCoverageDateGateway->insert($dateData);
             } else {
                 $partialFail = true;

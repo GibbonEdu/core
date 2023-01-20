@@ -51,6 +51,7 @@ class CoverageNotificationProcess extends BackgroundProcess
 
     protected $messageSender;
     protected $urgentNotifications;
+    protected $internalCoverage;
     protected $urgencyThreshold;
     protected $organisationHR;
 
@@ -68,6 +69,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->groupGateway = $groupGateway;
         $this->messageSender = $messageSender;
 
+        $this->internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
         $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
         $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
@@ -138,20 +140,23 @@ class CoverageNotificationProcess extends BackgroundProcess
         $availableSubs = [];
         foreach ($coverageDates as $date) {
             $criteria = $this->substituteGateway
-                ->newQueryCriteria(true)
+                ->newQueryCriteria()
+                ->filterBy('allStaff', $this->internalCoverage == 'Y')
                 ->filterBy('substituteTypes', $coverage['substituteTypes']);
             $availableByDate = $this->substituteGateway->queryAvailableSubsByDate($criteria, $date['date'])->toArray();
             $availableSubs = array_merge($availableSubs, $availableByDate);
         }
         
-        if (count($availableSubs) > 0) {
-            // Send messages to available subs
-            $recipients = array_column($availableSubs, 'gibbonPersonID');
-            $message = new BroadcastRequest($coverage);
-        } else {
-            // Send a message to admin - no coverage
-            $recipients = [$this->organisationHR];
-            $message = new NoCoverageAvailable($coverage);
+        if ($this->internalCoverage == 'N' || $coverage['urgent'] == true) {
+            if (count($availableSubs) > 0) {
+                // Send messages to available subs
+                $recipients = array_column($availableSubs, 'gibbonPersonID');
+                $message = new BroadcastRequest($coverage);
+            } else {
+                // Send a message to admin - no coverage
+                $recipients = [$this->organisationHR];
+                $message = new NoCoverageAvailable($coverage);
+            }
         }
 
         if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
