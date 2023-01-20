@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Domain\User\FamilyGateway;
 
 require_once '../../gibbon.php';
 
@@ -48,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationForm
         'email'                => $user['email'],
         'accessID'             => $accessID,
         'gibbonPersonID'       => $session->get('gibbonPersonID'),
+        'gibbonFamilyID'       => $_POST['gibbonFamilyID'] ?? null,
         'accessToken'          => $accessToken,
         'timestampTokenExpire' => $accessExpiry,
         'timestampActive'      => date('Y-m-d H:i:s'),
