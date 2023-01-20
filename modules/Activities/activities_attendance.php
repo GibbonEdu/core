@@ -198,16 +198,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         // Headings as a separate table
         $table = $row->addTable()->setClass('mini w-full m-0 border-0');
         $header = $table->addHeaderRow();
-            $header->addContent(__('Student'))->addClass('w-48 py-8');
+            $header->addContent(__('Student'))->addClass('w-56 py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('emphasis subdued right');
 
-        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-48 border-l-2 border-gray-600 -mt-1')
+        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600 -mt-1')
             ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
 
         $row = $table->addRow();
-            $row->addContent(__('Date'))->addClass('w-48 h-24 absolute left-0 ml-px flex items-center');
+            $row->addContent(__('Date'))->addClass('w-56 h-24 absolute left-0 ml-px flex items-center');
 
         $icon = '<img class="mt-1 inline" title="%1$s" src="./themes/'.$session->get('gibbonThemeName').'/img/%2$s"/>';
 
@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $log = $result->rowCount() > 0? $result->fetch() : ['type' => '', 'direction' => '', 'scope' => ''];
 
             $row = $table->addRow()->addData('student', $student['gibbonPersonID']);
-            $col = $row->addColumn()->addClass('w-48 h-8 absolute left-0 ml-px text-left');
+            $col = $row->addColumn()->addClass('w-56 h-8 absolute left-0 ml-px text-left');
 
             $link = $col->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
                 ->setURl($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php')
@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         // Total students per date
         $row = $table->addRow();
-        $row->addContent(__('Total students:'))->addClass('text-right w-48 h-8 absolute left-0 ml-px');
+        $row->addContent(__('Total students:'))->addClass('text-right w-56 h-8 absolute left-0 ml-px');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
