@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage.php') == false) {
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
 
         $courseGateway = $container->get(CourseGateway::class);
-        
+
         // CRITERIA
         $criteria = $courseGateway->newQueryCriteria()
             ->searchBy($courseGateway->getSearchableColumns(), $search)
@@ -52,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         echo '<h3>';
         echo __('Filters');
-        echo '</h3>'; 
-        
+        echo '</h3>';
+
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -69,7 +70,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
-
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
@@ -98,9 +98,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $table->addColumn('name', __('Name'));
             $table->addColumn('nameShort', __('Short Name'));
-            $table->addColumn('participantsActive', __('Participants'))->description(__('Active'));
-            $table->addColumn('participantsExpected', __('Participants'))->description(__('Expected'));
-            $table->addColumn('participantsTotal', __('Participants'))->description(__('Total'));
+            $table->addColumn('teachersTotal', __('Teachers'));
+            $table->addColumn('studentsActive', __('Students'))->description(__('Active'));
+            $table->addColumn('studentsExpected', __('Students'))->description(__('Expected'));
+
+            $table->addColumn('studentsTotal', __('Students'))
+                ->description(__('Total'))
+                ->format(function ($values) {
+                   $return = $values['studentsTotal'];
+                   if (is_numeric($values['enrolmentMin']) && $values['studentsTotal'] < $values['enrolmentMin']) {
+                       $return .= Format::tag(__('Under Enrolled'), 'warning ml-2');
+                   }
+                   if (is_numeric($values['enrolmentMax']) && $values['studentsTotal'] > $values['enrolmentMax']) {
+                       $return .= Format::tag(__('Over Enrolled'), 'error ml-2');
+                   }
+                   return $return;
+                });
 
             // ACTIONS
             $table->addActionColumn()

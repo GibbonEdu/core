@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -60,10 +61,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             $attachment = '';
         }
 
+        $customRequireFail = false;
+        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Department', [], $customRequireFail);
+
+        if ($customRequireFail) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+
         //Write to database
         try {
-            $data = array('type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment);
-            $sql = 'INSERT INTO gibbonDepartment SET type=:type, name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo';
+            $data = array('type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment, 'fields' => $fields);
+            $sql = 'INSERT INTO gibbonDepartment SET type=:type, name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo, fields=:fields';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

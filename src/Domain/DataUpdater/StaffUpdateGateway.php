@@ -34,7 +34,7 @@ class StaffUpdateGateway extends QueryableGateway
     private static $tableName = 'gibbonStaffUpdate';
     private static $primaryKey = 'gibbonStaffUpdateID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['person.surname', 'person.preferredName', 'person.username'];
     
     /**
      * @param QueryCriteria $criteria
@@ -46,7 +46,7 @@ class StaffUpdateGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffUpdateID', 'gibbonStaffUpdate.status', 'gibbonStaffUpdate.timestamp', 'person.title', 'person.preferredName', 'person.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
+                'gibbonStaffUpdateID', 'gibbonStaffUpdate.status', 'gibbonStaffUpdate.timestamp', 'person.title', 'person.preferredName', 'person.surname', 'person.gibbonPersonID as gibbonPersonIDTarget', 'updater.gibbonPersonID as gibbonPersonIDUpdater', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
             ])
             ->leftJoin('gibbonStaff', 'gibbonStaff.gibbonStaffID=gibbonStaffUpdate.gibbonStaffID')
             ->leftJoin('gibbonPerson AS person', 'person.gibbonPersonID=gibbonStaff.gibbonPersonID')

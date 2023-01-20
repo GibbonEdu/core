@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jun 20, 2022 at 08:23 AM
+-- Generation Time: Jan 20, 2023 at 01:13 PM
 -- Server version: 5.7.34
 -- PHP Version: 7.4.21
 
@@ -48,7 +48,7 @@ CREATE TABLE `gibbonAction` (
 --
 
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES
-(0000001, 0002, 'Application Form Settings', 0, 'Student Management', 'Allows admins to control the application form', 'administrators/getting-started/getting-started-with-gibbon/#admissions', 'applicationFormSettings.php', 'applicationFormSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000001, 0002, 'Application Form Settings', 0, 'Student Management', 'Allows admins to control the application form', 'administrators/getting-started/getting-started-with-gibbon/#admissions', 'applicationFormSettings.php', 'applicationFormSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000002, 0002, 'Manage Users_editDelete', 1, 'User Management', 'Edit any user within the system', 'administrators/getting-started/getting-started-with-gibbon/#users', 'user_manage.php, user_manage_add.php, user_manage_edit.php, user_manage_delete.php, user_manage_password.php', 'user_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000003, 0001, 'Manage School Years', 0, 'Years, Days & Times', 'Allows user to control the definition of academic years within the system', 'administrators/getting-started/getting-started-with-gibbon/#years-days-times', 'schoolYear_manage.php,schoolYear_manage_edit.php,schoolYear_manage_delete.php,schoolYear_manage_add.php', 'schoolYear_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000004, 0145, 'Student Enrolment', 0, 'Current Students', 'Allows user to control student enrolment in the current year', NULL, 'studentEnrolment_manage.php,studentEnrolment_manage_add.php,studentEnrolment_manage_edit.php,studentEnrolment_manage_delete.php', 'studentEnrolment_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -94,7 +94,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000045, 0011, 'Individual Needs Records_view', 0, 'Individual Needs', 'Allows user to view IN records for all students', NULL, 'in_view.php, in_edit.php', 'in_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000046, 0011, 'Individual Needs Records_viewEdit', 2, 'Individual Needs', 'Allows users to edit IN records for all students', NULL, 'in_view.php, in_edit.php', 'in_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000047, 0012, 'Assess', 0, 'Crowd Assessment', 'Allows users to assess each other\'s work', 'teachers/assess/crowd-assessment/', 'crowdAssess.php,crowdAssess_view.php,crowdAssess_view_discuss.php, crowdAssess_view_discuss_post.php', 'crowdAssess.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
-(0000048, 0013, 'Manage Timetables', 0, 'Timetable', 'Allow admins to create and manage timetables', 'administrators/timetable/timetabling/', 'tt.php, tt_add.php, tt_edit.php, tt_delete.php, tt_import.php, tt_edit_day_add.php, tt_edit_day_edit.php, tt_edit_day_delete.php, tt_edit_day_edit_class.php, tt_edit_day_edit_class_delete.php, tt_edit_day_edit_class_add.php, tt_edit_day_edit_class_edit.php, tt_edit_day_edit_class_exception.php, tt_edit_day_edit_class_exception_add.php, tt_edit_day_edit_class_exception_delete.php', 'tt.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000048, 0013, 'Manage Timetables', 0, 'Timetable', 'Allow admins to create and manage timetables', 'administrators/timetable/timetabling/', 'tt.php, tt_add.php, tt_edit.php, tt_delete.php, tt_import.php, tt_edit_day_add.php, tt_edit_day_edit.php, tt_edit_day_delete.php, tt_edit_day_edit_class.php, tt_edit_day_edit_class_delete.php, tt_edit_day_edit_class_add.php, tt_edit_day_edit_class_edit.php, tt_edit_day_edit_class_exception.php, tt_edit_day_edit_class_exception_add.php, tt_edit_day_edit_class_exception_delete.php,tt_edit_byClass.php', 'tt.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000049, 0013, 'Manage Columns', 0, 'Timetable', 'Allow admins to manage timetable columns', NULL, 'ttColumn.php, ttColumn_add.php, ttColumn_edit.php, ttColumn_delete.php, ttColumn_edit_row_add.php, ttColumn_edit_row_edit.php, ttColumn_edit_row_delete.php', 'ttColumn.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000050, 0013, 'Tie Days To Dates', 0, 'Timetable', 'Allows admins to place timetable days into the school calendar', NULL, 'ttDates.php, ttDates_edit.php, ttDates_edit_add.php, ttDates_edit_delete.php', 'ttDates.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000051, 0014, 'View Timetable by Person', 2, 'View Timetables', 'Allows users to view timetables', NULL, 'tt.php, tt_view.php', 'tt.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
@@ -119,10 +119,10 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000070, 0002, 'Rollover', 0, 'Student Management', 'Allows admins to kick the school forward one year', NULL, 'rollover.php', 'rollover.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000072, 0005, 'Student Transport', 0, 'Reports', 'Shows student transport details', NULL, 'report_transport_student.php', 'report_transport_student.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000073, 0008, 'Student Data Updater History', 0, 'Reports', 'Allows users to check, for a group of students, how recently they have been updated', NULL, 'report_student_dataUpdaterHistory.php', 'report_student_dataUpdaterHistory.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
-(0000074, 0005, 'Application Form', 0, 'Admissions', 'Allows users, with or without an account, to apply for student place.', NULL, 'applicationForm.php', 'applicationForm.php', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
+(0000074, 0005, 'Application Form', 0, 'Admissions', 'Allows users, with or without an account, to apply for student place.', NULL, 'applicationForm.php', 'applicationForm.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000075, 0005, 'Medical Data Summary', 0, 'Reports', 'Allows users to show a summary of medical data for a group of students.', NULL, 'report_student_medicalSummary.php, report_student_medicalSummary_print.php', 'report_student_medicalSummary.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
 (0000077, 0005, 'Emergency Data Summary', 0, 'Reports', 'Allows users to show a summary of emergency contact data for a group of students.', NULL, 'report_student_emergencySummary.php, report_student_emergencySummary_print.php', 'report_student_emergencySummary.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
-(0000078, 0005, 'Manage Applications_editDelete', 1, 'Admissions', 'Allows admins to view and action applications', NULL, 'applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php', 'applicationForm_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000078, 0005, 'Manage Applications_editDelete', 1, 'Admissions', 'Allows admins to view and action applications', NULL, 'applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php', 'applicationForm_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000585, 0008, 'Update Personal Data_any', 1, 'Request Updates', 'Create personal data update request for any user', NULL, 'data_personal.php', 'data_personal.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000586, 0008, 'Update Medical Data_any', 1, 'Request Updates', 'Create medical data update request for any user', NULL, 'data_medical.php', 'data_medical.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000605, 0001, 'Behaviour Settings', 0, 'People', 'Manage settings for the Behaviour module', NULL, 'behaviourSettings.php', 'behaviourSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -149,8 +149,8 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000626, 0121, 'New Message_yearGroups_any', 8, 'Manage Messages', 'Bulk email to any year group', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000627, 0121, 'New Message_yearGroups_parents', 4, 'Manage Messages', 'Include parents in messages posted to year group', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000628, 0121, 'New Message_role', 8, 'Manage Messages', 'Bulk email to a particular role', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
-(0000629, 0121, 'Manage Messages_my', 0, 'Manage Messages', 'Edit all messages created by the user', NULL, 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
-(0000630, 0121, 'Manage Messages_all', 1, 'Manage Messages', 'Edit all messages', NULL, 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'Y', 'N'),
+(0000629, 0121, 'Manage Messages_my', 0, 'Manage Messages', 'Edit all messages created by the user', NULL, 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
+(0000630, 0121, 'Manage Messages_all', 1, 'Manage Messages', 'Edit all messages', NULL, 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'Y', 'N'),
 (0000631, 0003, 'Update', 0, 'Extend & Update', 'Update Gibbon to a new version', NULL, 'update.php', 'update.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000632, 0121, 'New Message_fromSchool', 0, 'Manage Messages', 'Bulk email from the school\'s email address', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000655, 0014, 'View Timetable by Facility', 0, 'View Timetables', 'View space usage according to the timetable', NULL, 'tt_space.php,tt_space_view.php', 'tt_space.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -401,7 +401,12 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000988, 0003, 'Form Builder', 0, 'Customise', '', NULL, 'formBuilder.php,formBuilder_preview.php,formBuilder_add.php,formBuilder_edit.php,formBuilder_delete.php,formBuilder_duplicate.php,formBuilder_page_add.php,formBuilder_page_edit.php,formBuilder_page_delete.php,formBuilder_page_edit_field_add.php,formBuilder_page_edit_field_edit.php,formBuilder_page_edit_field_delete.php', 'formBuilder.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES
 (0000989, 0001, 'Admissions Settings', 0, 'People', '', NULL, 'admissions_settings.php', 'admissions_settings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000990, 0145, 'My Application Forms', 0, 'Admissions', '', NULL, 'applicationForm.php,applicationFormView.php', 'applicationFormView.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'Y', 'Y', 'Y', 'N');
+(0000990, 0145, 'My Application Forms', 0, 'Admissions', '', NULL, 'applicationForm.php,applicationFormView.php', 'applicationFormView.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'Y', 'Y', 'Y', 'N'),
+(0000991, 0121, 'New Message_confidential', 0, 'Manage Messages', 'Enable users to send confidential messages which are not listed in Manage Messages for any other user.', NULL, 'messenger_post.php', 'messenger_post.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000992, 0013, 'Timetable Settings', 0, 'Settings', 'Manage settings to control timetable functionality.', NULL, 'ttSettings.php', 'ttSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000993, 0136, 'Duty Schedule_edit', 0, 'Reports', 'Manage the staff duty schedule.', NULL, 'staff_duty.php,staff_duty_edit.php', 'staff_duty.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000994, 0136, 'Duty Schedule_view', 0, 'Reports', 'View the staff duty schedule.', NULL, 'staff_duty.php', 'staff_duty.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000995, 0136, 'Daily Coverage Planner', 0, 'Coverage', '', NULL, 'coverage_planner.php,coverage_planner_assign.php,coverage_planner_unassign.php', 'coverage_planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -826,6 +831,7 @@ INSERT INTO `gibbonAttendanceCode` (`gibbonAttendanceCodeID`, `name`, `nameShort
 CREATE TABLE `gibbonAttendanceLogCourseClass` (
   `gibbonAttendanceLogCourseClassID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -864,6 +870,7 @@ CREATE TABLE `gibbonAttendanceLogPerson` (
   `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonFormGroupID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampTaken` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1197,6 +1204,8 @@ CREATE TABLE `gibbonCourseClass` (
   `nameShort` varchar(8) NOT NULL,
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `enrolmentMin` int(4) DEFAULT NULL,
+  `enrolmentMax` int(4) DEFAULT NULL,
   `gibbonScaleIDTarget` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `fields` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1332,7 +1341,8 @@ CREATE TABLE `gibbonDepartment` (
   `subjectListing` varchar(255) NOT NULL,
   `blurb` text NOT NULL,
   `logo` varchar(255) NOT NULL,
-  `sequenceNumber` int(4) UNSIGNED DEFAULT NULL
+  `sequenceNumber` int(4) UNSIGNED DEFAULT NULL,
+  `fields` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2146,6 +2156,7 @@ CREATE TABLE `gibbonFormField` (
   `label` varchar(90) DEFAULT NULL,
   `description` text,
   `conditional` text COMMENT 'json',
+  `defaultValue` varchar(255) DEFAULT NULL,
   `sequenceNumber` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2153,111 +2164,111 @@ CREATE TABLE `gibbonFormField` (
 -- Dumping data for table `gibbonFormField`
 --
 
-INSERT INTO `gibbonFormField` (`gibbonFormFieldID`, `gibbonFormPageID`, `fieldName`, `fieldType`, `fieldGroup`, `required`, `hidden`, `prefill`, `options`, `label`, `description`, `conditional`, `sequenceNumber`) VALUES
-(0000000001, 00000001, 'headingStudentPersonalData', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Personal Data', NULL, NULL, 2),
-(0000000002, 00000001, 'surname', 'varchar', 'StudentFields', 'X', 'N', 'N', NULL, 'Surname', 'Family name as shown in ID documents.', NULL, 3),
-(0000000003, 00000001, 'firstName', 'varchar', 'StudentFields', 'X', 'N', 'N', NULL, 'First Name', 'First name as shown in ID documents.', NULL, 4),
-(0000000004, 00000001, 'preferredName', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Preferred Name', 'Most common name, alias, nickname, etc.', NULL, 5),
-(0000000005, 00000001, 'officialName', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Official Name', 'Full name as shown in ID documents.', NULL, 6),
-(0000000006, 00000001, 'nameInCharacters', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Name In Characters', 'Chinese or other character-based name.', NULL, 7),
-(0000000007, 00000001, 'gender', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Gender', NULL, NULL, 8),
-(0000000008, 00000001, 'dob', 'date', 'StudentFields', 'Y', 'N', 'N', NULL, 'Date of Birth', NULL, NULL, 9),
-(0000000009, 00000001, 'headingStudentBackground', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Background', NULL, NULL, 10),
-(0000000010, 00000001, 'languageHomePrimary', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Home Language - Primary', 'The primary language used in the student\'s home.', NULL, 11),
-(0000000011, 00000001, 'languageHomeSecondary', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Home Language - Secondary', NULL, NULL, 12),
-(0000000012, 00000001, 'languageFirst', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'First Language', 'Student\'s native/first/mother language.', NULL, 13),
-(0000000013, 00000001, 'languageSecond', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Second Language', NULL, NULL, 14),
-(0000000014, 00000001, 'languageThird', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Third Language', NULL, NULL, 15),
-(0000000015, 00000001, 'countryOfBirth', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Country of Birth', NULL, NULL, 16),
-(0000000016, 00000001, 'headingStudentContact', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Contact', NULL, NULL, 17),
-(0000000017, 00000001, 'phone', 'phone', 'StudentFields', 'N', 'N', 'N', NULL, 'Phone', 'Type, country code, number.', NULL, 20),
-(0000000018, 00000002, 'headingStudentEducation', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Education', NULL, NULL, 1),
-(0000000019, 00000002, 'gibbonSchoolYearIDEntry', 'varchar', 'AdmissionsFields', 'X', 'N', 'N', NULL, 'Anticipated Year of Entry', 'What school year will the student join in?', NULL, 2),
-(0000000020, 00000002, 'dateStart', 'date', 'AdmissionsFields', 'X', 'N', 'N', NULL, 'Intended Start Date', 'Student\'s intended first day at school.', NULL, 3),
-(0000000021, 00000002, 'gibbonYearGroupIDEntry', 'varchar', 'AdmissionsFields', 'X', 'N', 'N', NULL, 'Year Group at Entry', 'Which year level will student enter.', NULL, 4),
-(0000000022, 00000002, 'gibbonFormGroupIDEntry', 'varchar', 'AdmissionsFields', 'N', 'Y', 'N', NULL, 'Form Group at Entry', 'If set, the student will automatically be enrolled on Accept.', NULL, 5),
-(0000000023, 00000002, 'referenceEmail', 'varchar', 'AdmissionsFields', 'Y', 'N', 'N', NULL, 'Current School Reference Email', 'An email address for a referee at the applicant\'s current school.', NULL, 9),
-(0000000024, 00000002, 'previousSchools', 'varchar', 'AdmissionsFields', 'N', 'N', 'N', NULL, 'Previous Schools', 'Please give information on the last two schools attended by the applicant.', NULL, 10),
-(0000000025, 00000002, 'dayType', 'varchar', 'AdmissionsFields', 'N', 'N', 'N', NULL, 'Day Type', 'This is example text.', NULL, 6),
-(0000000026, 00000003, 'headingHomeAddress', 'heading', 'LayoutHeadings', 'N', 'N', 'N', 'familySection', 'Home Address', 'This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.', NULL, 1),
-(0000000027, 00000003, 'homeAddress', 'varchar', 'FamilyFields', 'X', 'N', 'Y', NULL, 'Home Address', 'Unit, Building, Street', NULL, 2),
-(0000000028, 00000003, 'homeAddressDistrict', 'varchar', 'FamilyFields', 'Y', 'N', 'Y', NULL, 'Home Address (District)', 'County, State, District', NULL, 3),
-(0000000029, 00000003, 'homeAddressCountry', 'varchar', 'FamilyFields', 'Y', 'N', 'Y', NULL, 'Home Address (Country)', NULL, NULL, 4),
-(0000000030, 00000003, 'headingParentGuardian1PersonalData', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Personal Data', NULL, NULL, 6),
-(0000000031, 00000003, 'parent1title', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Title', NULL, NULL, 7),
-(0000000032, 00000003, 'parent1surname', 'varchar', 'Parent1Fields', 'X', 'N', 'Y', NULL, 'Surname', 'Family name as shown in ID documents.', NULL, 8),
-(0000000033, 00000003, 'parent1firstName', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'First Name', 'First name as shown in ID documents.', NULL, 9),
-(0000000034, 00000003, 'parent1preferredName', 'varchar', 'Parent1Fields', 'X', 'N', 'Y', NULL, 'Preferred Name', 'Most common name, alias, nickname, etc.', NULL, 10),
-(0000000035, 00000003, 'parent1officialName', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Official Name', 'Full name as shown in ID documents.', NULL, 11),
-(0000000036, 00000003, 'parent1nameInCharacters', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'Name In Characters', 'Chinese or other character-based name.', NULL, 12),
-(0000000037, 00000003, 'parent1gender', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Gender', NULL, NULL, 13),
-(0000000038, 00000003, 'parent1relationship', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Relationship', NULL, NULL, 14),
-(0000000039, 00000003, 'headingParentGuardian1PersonalBackground', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Personal Background', NULL, NULL, 15),
-(0000000040, 00000003, 'parent1languageFirst', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'First Language', 'Student\'s native/first/mother language.', NULL, 16),
-(0000000041, 00000003, 'parent1languageSecond', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'Second Language', NULL, NULL, 17),
-(0000000042, 00000003, 'headingParentGuardian1Contact', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Contact', NULL, NULL, 18),
-(0000000043, 00000003, 'parent1email', 'email', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Email', NULL, NULL, 19),
-(0000000044, 00000003, 'parent1phone', 'phone', 'Parent1Fields', 'N', 'N', 'N', NULL, 'Phone', 'Type, country code, number.', NULL, 20),
-(0000000045, 00000003, 'headingParentGuardian1Employment', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Employment', NULL, NULL, 21),
-(0000000046, 00000003, 'parent1profession', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Profession', NULL, NULL, 22),
-(0000000047, 00000003, 'parent1employer', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'Employer', NULL, NULL, 23),
-(0000000048, 00000003, 'secondParent', 'checkbox', 'Parent2Fields', 'N', 'N', 'N', NULL, 'Do not include a second parent/guardian', NULL, NULL, 26),
-(0000000049, 00000003, 'headingParentGuardian2PersonalData', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Personal Data', NULL, NULL, 27),
-(0000000050, 00000003, 'parent2title', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Title', NULL, NULL, 28),
-(0000000051, 00000003, 'parent2surname', 'varchar', 'Parent2Fields', 'X', 'N', 'Y', NULL, 'Surname', 'Family name as shown in ID documents.', NULL, 29),
-(0000000052, 00000003, 'parent2firstName', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'First Name', 'First name as shown in ID documents.', NULL, 30),
-(0000000053, 00000003, 'parent2preferredName', 'varchar', 'Parent2Fields', 'X', 'N', 'Y', NULL, 'Preferred Name', 'Most common name, alias, nickname, etc.', NULL, 31),
-(0000000054, 00000003, 'parent2officialName', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Official Name', 'Full name as shown in ID documents.', NULL, 32),
-(0000000055, 00000003, 'parent2nameInCharacters', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Name In Characters', 'Chinese or other character-based name.', NULL, 33),
-(0000000056, 00000003, 'parent2gender', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Gender', NULL, NULL, 34),
-(0000000057, 00000003, 'parent2relationship', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Relationship', NULL, NULL, 35),
-(0000000058, 00000003, 'headingParentGuardian2PersonalBackground', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Personal Background', NULL, NULL, 36),
-(0000000059, 00000003, 'parent2languageFirst', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'First Language', 'Student\'s native/first/mother language.', NULL, 37),
-(0000000060, 00000003, 'parent2languageSecond', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Second Language', NULL, NULL, 38),
-(0000000061, 00000003, 'headingParentGuardian2Contact', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Contact', NULL, NULL, 39),
-(0000000062, 00000003, 'parent2email', 'email', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Email', NULL, NULL, 40),
-(0000000063, 00000003, 'parent2phone', 'phone', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Phone', 'Type, country code, number.', NULL, 41),
-(0000000064, 00000003, 'headingParentGuardian2Employment', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Employment', NULL, NULL, 42),
-(0000000065, 00000003, 'parent2profession', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Profession', NULL, NULL, 43),
-(0000000066, 00000003, 'parent2employer', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Employer', NULL, NULL, 44),
-(0000000067, 00000003, 'heading', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Parent/Guardian 1', '', NULL, 5),
-(0000000068, 00000003, 'headingParentGuardian2', 'heading', 'LayoutHeadings', 'N', 'N', 'N', 'familySection', 'Parent/Guardian 2', NULL, NULL, 25),
-(0000000069, 00000003, 'parent1Documents', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, 24),
-(0000000070, 00000003, 'headingSiblings', 'heading', 'LayoutHeadings', 'N', 'N', 'N', 'familySection', 'Siblings', NULL, NULL, 46),
-(0000000071, 00000003, 'siblings', 'varchar', 'FamilyFields', 'N', 'N', 'Y', NULL, 'Siblings', 'Please give information on the applicants\'s siblings.', NULL, 47),
-(0000000072, 00000004, 'requiredDocuments', 'files', 'RequiredDocuments', 'N', 'N', 'N', 'Most Recent School Report,Recent Photo of Applicant,Special Educational Needs Report ', 'Required Documents', '', NULL, 3),
-(0000000073, 00000004, 'headingRequiredDocuments', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Supporting Documents', 'Please provide the following documents.', NULL, 1),
-(0000000074, 00000004, 'studentDocuments', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, 2),
-(0000000075, 00000005, 'headingMedicalInformation', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Medical Information', NULL, NULL, 1),
-(0000000076, 00000005, 'medical', 'varchar', 'MedicalFields', 'X', 'N', 'N', NULL, 'Medical Conditions', 'Does your child have any medical conditions or concerns?', NULL, 2),
-(0000000077, 00000005, 'medicalInformation', 'varchar', 'MedicalFields', 'Y', 'N', 'N', NULL, 'Medical Information', 'Please indicate any medical conditions.', NULL, 3),
-(0000000078, 00000005, 'headingSpecialEducationalNeeds', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Special Educational Needs', NULL, NULL, 4),
-(0000000079, 00000005, 'sen', 'varchar', 'INFields', 'X', 'N', 'N', NULL, 'Special Educational Needs (SEN)', 'Are there any known or suspected SEN concerns, or previous SEN assessments?', NULL, 5),
-(0000000080, 00000005, 'senDetails', 'varchar', 'INFields', 'Y', 'N', 'N', NULL, 'SEN Details', 'Provide any comments or information concerning your child\'s development and SEN history.', NULL, 6),
-(0000000081, 00000005, 'headingPayment', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Payment', '', NULL, 7),
-(0000000082, 00000005, 'payment', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Send Future Invoices To', NULL, NULL, 9),
-(0000000083, 00000005, 'companyName', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Name', NULL, NULL, 10),
-(0000000084, 00000005, 'companyContact', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Contact Person', NULL, NULL, 11),
-(0000000085, 00000005, 'companyAddress', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Address', NULL, NULL, 12),
-(0000000086, 00000005, 'companyEmail', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Emails', 'Comma-separated list of email address', NULL, 13),
-(0000000087, 00000005, 'companyCCFamily', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'CC Family?', 'Should the family be sent a copy of billing emails?', NULL, 14),
-(0000000088, 00000005, 'companyPhone', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'Company Phone', NULL, NULL, 15),
-(0000000089, 00000005, 'companyAll', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'Company All?', 'Should all items be billed to the specified company, or just some?', NULL, 16),
-(0000000090, 00000005, 'gibbonFinanceFeeCategoryIDList', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'Company Fee Categories', 'If the specified company is not paying all fees, which categories are they paying?', NULL, 17),
-(0000000091, 00000005, 'headingAgreement', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Agreement', 'This is example text. Edit it to suit your school context.', NULL, 22),
-(0000000092, 00000005, 'agreement', 'checkbox', 'AgreementFields', 'X', 'N', 'N', NULL, 'Do you agree to the above?', NULL, NULL, 23),
-(0000000093, 00000002, 'headingLanguageSelection', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Language Selection', 'This is example text. Edit it to suit your school context.', NULL, 11),
-(0000000094, 00000002, 'languageChoice', 'select', 'LanguageFields', 'N', 'N', 'N', 'One,Two,Three', 'Language Choice', 'Please choose preferred additional language to study.', NULL, 12),
-(0000000095, 00000002, 'languageChoiceExperience', 'varchar', 'LanguageFields', 'N', 'N', 'N', NULL, 'Language Choice Experience', 'Has the applicant studied the selected language before? If so, please describe the level and type of experience.', NULL, 13),
-(0000000096, 00000002, 'headingScholarships', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Scholarships', 'Information to display before the scholarship options', NULL, 14),
-(0000000097, 00000002, 'scholarshipInterest', 'radio', 'ScholarshipFields', 'N', 'N', 'N', NULL, 'Interest', 'Indicate if you are interested in a scholarship.', NULL, 15),
-(0000000098, 00000002, 'scholarshipRequired', 'radio', 'ScholarshipFields', 'N', 'N', 'N', NULL, 'Required?', 'Is a scholarship required for you to take up a place at the school?', NULL, 16),
-(0000000099, 00000005, 'text', 'layout', 'LayoutText', 'N', 'N', 'N', NULL, '', 'If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.', NULL, 8),
-(0000000100, 00000005, 'headingMiscellaneous', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Miscellaneous', NULL, NULL, 18),
-(0000000101, 00000005, 'howDidYouHear', 'varchar', 'AdmissionsFields', 'N', 'N', 'Y', NULL, 'How Did You Hear About Us?', NULL, NULL, 19),
-(0000000102, 00000001, 'email', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Email', NULL, NULL, 18),
-(0000000103, 00000001, 'headingStudent', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student', NULL, NULL, 1),
-(0000000104, 00000003, 'parent2Documents', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, 45);
+INSERT INTO `gibbonFormField` (`gibbonFormFieldID`, `gibbonFormPageID`, `fieldName`, `fieldType`, `fieldGroup`, `required`, `hidden`, `prefill`, `options`, `label`, `description`, `conditional`, `defaultValue`, `sequenceNumber`) VALUES
+(0000000001, 00000001, 'headingStudentPersonalData', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Personal Data', NULL, NULL, NULL, 2),
+(0000000002, 00000001, 'surname', 'varchar', 'StudentFields', 'X', 'N', 'N', NULL, 'Surname', 'Family name as shown in ID documents.', NULL, NULL, 3),
+(0000000003, 00000001, 'firstName', 'varchar', 'StudentFields', 'X', 'N', 'N', NULL, 'First Name', 'First name as shown in ID documents.', NULL, NULL, 4),
+(0000000004, 00000001, 'preferredName', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Preferred Name', 'Most common name, alias, nickname, etc.', NULL, NULL, 5),
+(0000000005, 00000001, 'officialName', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Official Name', 'Full name as shown in ID documents.', NULL, NULL, 6),
+(0000000006, 00000001, 'nameInCharacters', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Name In Characters', 'Chinese or other character-based name.', NULL, NULL, 7),
+(0000000007, 00000001, 'gender', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Gender', NULL, NULL, NULL, 8),
+(0000000008, 00000001, 'dob', 'date', 'StudentFields', 'Y', 'N', 'N', NULL, 'Date of Birth', NULL, NULL, NULL, 9),
+(0000000009, 00000001, 'headingStudentBackground', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Background', NULL, NULL, NULL, 10),
+(0000000010, 00000001, 'languageHomePrimary', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Home Language - Primary', 'The primary language used in the student\'s home.', NULL, NULL, 11),
+(0000000011, 00000001, 'languageHomeSecondary', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Home Language - Secondary', NULL, NULL, NULL, 12),
+(0000000012, 00000001, 'languageFirst', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'First Language', 'Student\'s native/first/mother language.', NULL, NULL, 13),
+(0000000013, 00000001, 'languageSecond', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Second Language', NULL, NULL, NULL, 14),
+(0000000014, 00000001, 'languageThird', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Third Language', NULL, NULL, NULL, 15),
+(0000000015, 00000001, 'countryOfBirth', 'varchar', 'StudentFields', 'Y', 'N', 'N', NULL, 'Country of Birth', NULL, NULL, NULL, 16),
+(0000000016, 00000001, 'headingStudentContact', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Contact', NULL, NULL, NULL, 17),
+(0000000017, 00000001, 'phone', 'phone', 'StudentFields', 'N', 'N', 'N', NULL, 'Phone', 'Type, country code, number.', NULL, NULL, 20),
+(0000000018, 00000002, 'headingStudentEducation', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student Education', NULL, NULL, NULL, 1),
+(0000000019, 00000002, 'gibbonSchoolYearIDEntry', 'varchar', 'AdmissionsFields', 'X', 'N', 'N', NULL, 'Anticipated Year of Entry', 'What school year will the student join in?', NULL, NULL, 2),
+(0000000020, 00000002, 'dateStart', 'date', 'AdmissionsFields', 'X', 'N', 'N', NULL, 'Intended Start Date', 'Student\'s intended first day at school.', NULL, NULL, 3),
+(0000000021, 00000002, 'gibbonYearGroupIDEntry', 'varchar', 'AdmissionsFields', 'X', 'N', 'N', NULL, 'Year Group at Entry', 'Which year level will student enter.', NULL, NULL, 4),
+(0000000022, 00000002, 'gibbonFormGroupIDEntry', 'varchar', 'AdmissionsFields', 'N', 'Y', 'N', NULL, 'Form Group at Entry', 'If set, the student will automatically be enrolled on Accept.', NULL, NULL, 5),
+(0000000023, 00000002, 'referenceEmail', 'varchar', 'AdmissionsFields', 'Y', 'N', 'N', NULL, 'Current School Reference Email', 'An email address for a referee at the applicant\'s current school.', NULL, NULL, 9),
+(0000000024, 00000002, 'previousSchools', 'varchar', 'AdmissionsFields', 'N', 'N', 'N', NULL, 'Previous Schools', 'Please give information on the last two schools attended by the applicant.', NULL, NULL, 10),
+(0000000025, 00000002, 'dayType', 'varchar', 'AdmissionsFields', 'N', 'N', 'N', NULL, 'Day Type', 'This is example text.', NULL, NULL, 6),
+(0000000026, 00000003, 'headingHomeAddress', 'heading', 'LayoutHeadings', 'N', 'N', 'N', 'familySection', 'Home Address', 'This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.', NULL, NULL, 1),
+(0000000027, 00000003, 'homeAddress', 'varchar', 'FamilyFields', 'X', 'N', 'Y', NULL, 'Home Address', 'Unit, Building, Street', NULL, NULL, 2),
+(0000000028, 00000003, 'homeAddressDistrict', 'varchar', 'FamilyFields', 'Y', 'N', 'Y', NULL, 'Home Address (District)', 'County, State, District', NULL, NULL, 3),
+(0000000029, 00000003, 'homeAddressCountry', 'varchar', 'FamilyFields', 'Y', 'N', 'Y', NULL, 'Home Address (Country)', NULL, NULL, NULL, 4),
+(0000000030, 00000003, 'headingParentGuardian1PersonalData', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Personal Data', NULL, NULL, NULL, 6),
+(0000000031, 00000003, 'parent1title', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Title', NULL, NULL, NULL, 7),
+(0000000032, 00000003, 'parent1surname', 'varchar', 'Parent1Fields', 'X', 'N', 'Y', NULL, 'Surname', 'Family name as shown in ID documents.', NULL, NULL, 8),
+(0000000033, 00000003, 'parent1firstName', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'First Name', 'First name as shown in ID documents.', NULL, NULL, 9),
+(0000000034, 00000003, 'parent1preferredName', 'varchar', 'Parent1Fields', 'X', 'N', 'Y', NULL, 'Preferred Name', 'Most common name, alias, nickname, etc.', NULL, NULL, 10),
+(0000000035, 00000003, 'parent1officialName', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Official Name', 'Full name as shown in ID documents.', NULL, NULL, 11),
+(0000000036, 00000003, 'parent1nameInCharacters', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'Name In Characters', 'Chinese or other character-based name.', NULL, NULL, 12),
+(0000000037, 00000003, 'parent1gender', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Gender', NULL, NULL, NULL, 13),
+(0000000038, 00000003, 'parent1relationship', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Relationship', NULL, NULL, NULL, 14),
+(0000000039, 00000003, 'headingParentGuardian1PersonalBackground', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Personal Background', NULL, NULL, NULL, 15),
+(0000000040, 00000003, 'parent1languageFirst', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'First Language', 'Student\'s native/first/mother language.', NULL, NULL, 16),
+(0000000041, 00000003, 'parent1languageSecond', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'Second Language', NULL, NULL, NULL, 17),
+(0000000042, 00000003, 'headingParentGuardian1Contact', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Contact', NULL, NULL, NULL, 18),
+(0000000043, 00000003, 'parent1email', 'email', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Email', NULL, NULL, NULL, 19),
+(0000000044, 00000003, 'parent1phone', 'phone', 'Parent1Fields', 'N', 'N', 'N', NULL, 'Phone', 'Type, country code, number.', NULL, NULL, 20),
+(0000000045, 00000003, 'headingParentGuardian1Employment', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection1', 'Parent/Guardian 1 Employment', NULL, NULL, NULL, 21),
+(0000000046, 00000003, 'parent1profession', 'varchar', 'Parent1Fields', 'Y', 'N', 'Y', NULL, 'Profession', NULL, NULL, NULL, 22),
+(0000000047, 00000003, 'parent1employer', 'varchar', 'Parent1Fields', 'N', 'N', 'Y', NULL, 'Employer', NULL, NULL, NULL, 23),
+(0000000048, 00000003, 'secondParent', 'checkbox', 'Parent2Fields', 'N', 'N', 'N', NULL, 'Do not include a second parent/guardian', NULL, NULL, NULL, 26),
+(0000000049, 00000003, 'headingParentGuardian2PersonalData', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Personal Data', NULL, NULL, NULL, 27),
+(0000000050, 00000003, 'parent2title', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Title', NULL, NULL, NULL, 28),
+(0000000051, 00000003, 'parent2surname', 'varchar', 'Parent2Fields', 'X', 'N', 'Y', NULL, 'Surname', 'Family name as shown in ID documents.', NULL, NULL, 29),
+(0000000052, 00000003, 'parent2firstName', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'First Name', 'First name as shown in ID documents.', NULL, NULL, 30),
+(0000000053, 00000003, 'parent2preferredName', 'varchar', 'Parent2Fields', 'X', 'N', 'Y', NULL, 'Preferred Name', 'Most common name, alias, nickname, etc.', NULL, NULL, 31),
+(0000000054, 00000003, 'parent2officialName', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Official Name', 'Full name as shown in ID documents.', NULL, NULL, 32),
+(0000000055, 00000003, 'parent2nameInCharacters', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Name In Characters', 'Chinese or other character-based name.', NULL, NULL, 33),
+(0000000056, 00000003, 'parent2gender', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Gender', NULL, NULL, NULL, 34),
+(0000000057, 00000003, 'parent2relationship', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Relationship', NULL, NULL, NULL, 35),
+(0000000058, 00000003, 'headingParentGuardian2PersonalBackground', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Personal Background', NULL, NULL, NULL, 36),
+(0000000059, 00000003, 'parent2languageFirst', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'First Language', 'Student\'s native/first/mother language.', NULL, NULL, 37),
+(0000000060, 00000003, 'parent2languageSecond', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Second Language', NULL, NULL, NULL, 38),
+(0000000061, 00000003, 'headingParentGuardian2Contact', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Contact', NULL, NULL, NULL, 39),
+(0000000062, 00000003, 'parent2email', 'email', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Email', NULL, NULL, NULL, 40),
+(0000000063, 00000003, 'parent2phone', 'phone', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Phone', 'Type, country code, number.', NULL, NULL, 41),
+(0000000064, 00000003, 'headingParentGuardian2Employment', 'subheading', 'LayoutHeadings', 'N', 'N', 'N', 'parentSection2', 'Parent/Guardian 2 Employment', NULL, NULL, NULL, 42),
+(0000000065, 00000003, 'parent2profession', 'varchar', 'Parent2Fields', 'Y', 'N', 'Y', NULL, 'Profession', NULL, NULL, NULL, 43),
+(0000000066, 00000003, 'parent2employer', 'varchar', 'Parent2Fields', 'N', 'N', 'Y', NULL, 'Employer', NULL, NULL, NULL, 44),
+(0000000067, 00000003, 'heading', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Parent/Guardian 1', '', NULL, NULL, 5),
+(0000000068, 00000003, 'headingParentGuardian2', 'heading', 'LayoutHeadings', 'N', 'N', 'N', 'familySection', 'Parent/Guardian 2', NULL, NULL, NULL, 25),
+(0000000069, 00000003, 'parent1Documents', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, NULL, 24),
+(0000000070, 00000003, 'headingSiblings', 'heading', 'LayoutHeadings', 'N', 'N', 'N', 'familySection', 'Siblings', NULL, NULL, NULL, 46),
+(0000000071, 00000003, 'siblings', 'varchar', 'FamilyFields', 'N', 'N', 'Y', NULL, 'Siblings', 'Please give information on the applicants\'s siblings.', NULL, NULL, 47),
+(0000000072, 00000004, 'requiredDocuments', 'files', 'RequiredDocuments', 'N', 'N', 'N', 'Most Recent School Report,Recent Photo of Applicant,Special Educational Needs Report ', 'Required Documents', '', NULL, NULL, 3),
+(0000000073, 00000004, 'headingRequiredDocuments', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Supporting Documents', 'Please provide the following documents.', NULL, NULL, 1),
+(0000000074, 00000004, 'studentDocuments', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, NULL, 2),
+(0000000075, 00000005, 'headingMedicalInformation', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Medical Information', NULL, NULL, NULL, 1),
+(0000000076, 00000005, 'medical', 'varchar', 'MedicalFields', 'X', 'N', 'N', NULL, 'Medical Conditions', 'Does your child have any medical conditions or concerns?', NULL, NULL, 2),
+(0000000077, 00000005, 'medicalInformation', 'varchar', 'MedicalFields', 'Y', 'N', 'N', NULL, 'Medical Information', 'Please indicate any medical conditions.', NULL, NULL, 3),
+(0000000078, 00000005, 'headingSpecialEducationalNeeds', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Special Educational Needs', NULL, NULL, NULL, 4),
+(0000000079, 00000005, 'sen', 'varchar', 'INFields', 'X', 'N', 'N', NULL, 'Special Educational Needs (SEN)', 'Are there any known or suspected SEN concerns, or previous SEN assessments?', NULL, NULL, 5),
+(0000000080, 00000005, 'senDetails', 'varchar', 'INFields', 'Y', 'N', 'N', NULL, 'SEN Details', 'Provide any comments or information concerning your child\'s development and SEN history.', NULL, NULL, 6),
+(0000000081, 00000005, 'headingPayment', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Payment', '', NULL, NULL, 7),
+(0000000082, 00000005, 'payment', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Send Future Invoices To', NULL, NULL, NULL, 9),
+(0000000083, 00000005, 'companyName', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Name', NULL, NULL, NULL, 10),
+(0000000084, 00000005, 'companyContact', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Contact Person', NULL, NULL, NULL, 11),
+(0000000085, 00000005, 'companyAddress', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Address', NULL, NULL, NULL, 12),
+(0000000086, 00000005, 'companyEmail', 'varchar', 'FinanceFields', 'X', 'N', 'Y', NULL, 'Company Emails', 'Comma-separated list of email address', NULL, NULL, 13),
+(0000000087, 00000005, 'companyCCFamily', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'CC Family?', 'Should the family be sent a copy of billing emails?', NULL, NULL, 14),
+(0000000088, 00000005, 'companyPhone', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'Company Phone', NULL, NULL, NULL, 15),
+(0000000089, 00000005, 'companyAll', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'Company All?', 'Should all items be billed to the specified company, or just some?', NULL, NULL, 16),
+(0000000090, 00000005, 'gibbonFinanceFeeCategoryIDList', 'varchar', 'FinanceFields', 'N', 'N', 'Y', NULL, 'Company Fee Categories', 'If the specified company is not paying all fees, which categories are they paying?', NULL, NULL, 17),
+(0000000091, 00000005, 'headingAgreement', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Agreement', 'This is example text. Edit it to suit your school context.', NULL, NULL, 22),
+(0000000092, 00000005, 'agreement', 'checkbox', 'AgreementFields', 'X', 'N', 'N', NULL, 'Do you agree to the above?', NULL, NULL, NULL, 23),
+(0000000093, 00000002, 'headingLanguageSelection', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Language Selection', 'This is example text. Edit it to suit your school context.', NULL, NULL, 11),
+(0000000094, 00000002, 'languageChoice', 'select', 'LanguageFields', 'N', 'N', 'N', 'One,Two,Three', 'Language Choice', 'Please choose preferred additional language to study.', NULL, NULL, 12),
+(0000000095, 00000002, 'languageChoiceExperience', 'varchar', 'LanguageFields', 'N', 'N', 'N', NULL, 'Language Choice Experience', 'Has the applicant studied the selected language before? If so, please describe the level and type of experience.', NULL, NULL, 13),
+(0000000096, 00000002, 'headingScholarships', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Scholarships', 'Information to display before the scholarship options', NULL, NULL, 14),
+(0000000097, 00000002, 'scholarshipInterest', 'radio', 'ScholarshipFields', 'N', 'N', 'N', NULL, 'Interest', 'Indicate if you are interested in a scholarship.', NULL, NULL, 15),
+(0000000098, 00000002, 'scholarshipRequired', 'radio', 'ScholarshipFields', 'N', 'N', 'N', NULL, 'Required?', 'Is a scholarship required for you to take up a place at the school?', NULL, NULL, 16),
+(0000000099, 00000005, 'text', 'layout', 'LayoutText', 'N', 'N', 'N', NULL, '', 'If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.', NULL, NULL, 8),
+(0000000100, 00000005, 'headingMiscellaneous', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Miscellaneous', NULL, NULL, NULL, 18),
+(0000000101, 00000005, 'howDidYouHear', 'varchar', 'AdmissionsFields', 'N', 'N', 'Y', NULL, 'How Did You Hear About Us?', NULL, NULL, NULL, 19),
+(0000000102, 00000001, 'email', 'varchar', 'StudentFields', 'N', 'N', 'N', NULL, 'Email', NULL, NULL, NULL, 18),
+(0000000103, 00000001, 'headingStudent', 'heading', 'LayoutHeadings', 'N', 'N', 'N', NULL, 'Student', NULL, NULL, NULL, 1),
+(0000000104, 00000003, 'parent2Documents', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, NULL, 45);
 
 -- --------------------------------------------------------
 
@@ -2384,7 +2395,7 @@ CREATE TABLE `gibbonGroupPerson` (
 CREATE TABLE `gibbonHook` (
   `gibbonHookID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
-  `type` enum('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing') DEFAULT NULL,
+  `type` enum('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing','Staff Profile','Lesson Planner') DEFAULT NULL,
   `options` text NOT NULL,
   `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL COMMENT 'The module which installed this hook.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2471,7 +2482,8 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `version`, `active`, `
 (0044, 'es_MX', 'Español - Mexico', NULL, 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0045, 'af_ZA', 'Afrikaans - Suid-Afrika', '21.0.00', 'Y', 'Y', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0046, 'uk_UA', 'українська мова - Україна', '21.0.00', 'Y', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd.m.Y', 'N'),
-(0047, 'es_DO', 'Español - República Dominicana', NULL, 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
+(0047, 'es_DO', 'Español - República Dominicana', NULL, 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0048, 'lt_LT', 'Lietuvių Kalba - Lithuanian', '25.0.00', 'Y', 'N', 'N', 'yyyy.mm.dd', '/^[0-9]{4}.(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y.m.d', 'N');
 
 -- --------------------------------------------------------
 
@@ -2868,7 +2880,7 @@ CREATE TABLE `gibbonMarkbookColumn` (
   `gibbonSchoolYearTermID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `groupingID` int(8) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'A value used to group multiple markbook columns.',
   `type` varchar(50) NOT NULL,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(40) DEFAULT NULL,
   `description` text NOT NULL,
   `date` date DEFAULT NULL,
   `sequenceNumber` int(3) UNSIGNED NOT NULL DEFAULT '0',
@@ -2998,6 +3010,7 @@ INSERT INTO `gibbonMedicalCondition` (`gibbonMedicalConditionID`, `name`, `descr
 CREATE TABLE `gibbonMessenger` (
   `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
+  `status` enum('Draft','Sending','Sent') NOT NULL DEFAULT 'Sent',
   `email` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWall` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWallPin` enum('N','Y') NOT NULL DEFAULT 'N',
@@ -3009,10 +3022,13 @@ CREATE TABLE `gibbonMessenger` (
   `body` text NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL,
+  `emailFrom` varchar(75) DEFAULT NULL,
+  `emailReplyTo` varchar(75) DEFAULT NULL,
   `emailReport` text NOT NULL,
   `emailReceipt` enum('N','Y') DEFAULT NULL,
   `emailReceiptText` text,
-  `smsReport` text NOT NULL
+  `smsReport` text NOT NULL,
+  `confidential` enum('N','Y') NOT NULL DEFAULT 'N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3039,6 +3055,7 @@ CREATE TABLE `gibbonMessengerReceipt` (
   `gibbonMessengerReceiptID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `sent` enum('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   `targetType` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') COLLATE utf8_unicode_ci NOT NULL,
   `targetID` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `contactType` enum('Email','SMS') COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3046,7 +3063,8 @@ CREATE TABLE `gibbonMessengerReceipt` (
   `key` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `confirmed` enum('N','Y') COLLATE utf8_unicode_ci DEFAULT NULL,
   `confirmedTimestamp` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDListStudent` text COLLATE utf8_unicode_ci
+  `gibbonPersonIDListStudent` text COLLATE utf8_unicode_ci,
+  `nameListStudent` text COLLATE utf8_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -3175,7 +3193,7 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 (000007, 'Personal Data Updates', 'Data Updater', 'Personal Data Updates', 'Core', 'All', 'Y'),
 (000008, 'Login - Failed', 'User Admin', 'Manage Users', 'Core', 'All', 'Y'),
 (000009, 'New Public Registration', 'User Admin', 'Manage Users', 'Core', 'All', 'Y'),
-(000010, 'New Application Form', 'Students', 'View Student Profile_full', 'Core', 'All', 'Y'),
+(000010, 'New Application Form', 'Admissions', 'View Student Profile_full', 'Core', 'All', 'Y'),
 (000011, 'New Application Form', 'Staff', 'Manage Applications', 'Core', 'All', 'Y'),
 (000012, 'Student Withdrawn', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
 (000013, 'New Activity Registration', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
@@ -3187,19 +3205,20 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 (000019, 'Overdue Loan Items', 'Library', 'Lending & Activity Log', 'CLI', 'All', 'Y'),
 (000020, 'Behaviour Letters', 'Behaviour', 'View Behaviour Records_all', 'CLI', 'All', 'Y'),
 (000021, 'Parent Weekly Email Summary', 'School Admin', 'Parent Weekly Email Summary', 'CLI', 'All', 'Y'),
-(000022, 'Application Form Accepted', 'Students', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y'),
+(000022, 'Application Form Accepted', 'Admissions', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y'),
 (000023, 'Weekly Attendance Summary', 'Attendance', 'Attendance Summary by Date', 'CLI', 'All,gibbonYearGroupID', 'Y'),
 (000024, 'Student Bumped', 'Activities', 'Manage Activities', 'Core', 'All', 'Y'),
 (000025, 'Updated Behaviour Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
-(000026, 'Student Withdrawn', 'Students', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y'),
+(000026, 'Student Withdrawn', 'Admissions', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y'),
 (000027, 'New Staff', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y'),
 (000028, 'Staff Left', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y'),
 (000029, 'Parent Daily Email Summary', 'School Admin', 'Parent Weekly Email Summary', 'CLI', 'All', 'Y'),
 (000030, 'Tutor Daily Email Summary', 'School Admin', 'Parent Weekly Email Summary', 'CLI', 'All', 'Y'),
 (000031, 'Medical Condition', 'Students', 'Manage Medical Forms', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
-(000032, 'New Application with SEN/Medical', 'Students', 'Manage Applications', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
+(000032, 'New Application with SEN/Medical', 'Admissions', 'Manage Applications', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
 (000033, 'Staff Data Updates', 'Data Updater', 'Staff Data Updates', 'Core', 'All', 'Y'),
-(000034, 'Updated Timetable Subscriber', 'Timetable', 'View Timetable by Person', 'Core', 'All', 'Y');
+(000034, 'Updated Timetable Subscriber', 'Timetable', 'View Timetable by Person', 'Core', 'All', 'Y'),
+(000035, 'New Investigation', 'Individual Needs', 'Manage Investigations', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');
 
 -- --------------------------------------------------------
 
@@ -3302,10 +3321,6 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053580, 004, 0000052),
 (0000053581, 006, 0000052),
 (0000053582, 002, 0000052),
-(0000053583, 001, 0000074),
-(0000053584, 004, 0000074),
-(0000053585, 006, 0000074),
-(0000053586, 002, 0000074),
 (0000053587, 001, 0000026),
 (0000053588, 006, 0000026),
 (0000053589, 002, 0000026),
@@ -3530,11 +3545,9 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053808, 001, 0000017),
 (0000053809, 001, 0000048),
 (0000053810, 001, 0000050),
-(0000053811, 001, 0000001),
 (0000053812, 001, 0000725),
 (0000053813, 001, 0000766),
 (0000053814, 001, 0000775),
-(0000053815, 001, 0000078),
 (0000053816, 001, 0000019),
 (0000053817, 001, 0000021),
 (0000053818, 001, 0000012),
@@ -3616,7 +3629,6 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053916, 002, 0000856),
 (0000053917, 006, 0000856),
 (0000053918, 001, 0000857),
-(0000053919, 001, 0000858),
 (0000053920, 001, 0000859),
 (0000053921, 001, 0000860),
 (0000053922, 002, 0000860),
@@ -3753,7 +3765,16 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054053, 001, 0000985),
 (0000054054, 001, 0000986),
 (0000054056, 001, 0000988),
-(0000054057, 001, 0000989);
+(0000054057, 001, 0000989),
+(0000054058, 002, 0000990),
+(0000054059, 004, 0000990),
+(0000054060, 006, 0000990),
+(0000054061, 001, 0000991),
+(0000054062, 001, 0000992),
+(0000054063, 001, 0000993),
+(0000054064, 001, 0000994),
+(0000054065, 002, 0000994),
+(0000054066, 001, 0000995);
 
 -- --------------------------------------------------------
 
@@ -3925,10 +3946,8 @@ INSERT INTO `gibbonPersonalDocumentType` (`gibbonPersonalDocumentTypeID`, `name`
 CREATE TABLE `gibbonPersonMedical` (
   `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
-  `tetanusWithin10Years` enum('','Y','N') NOT NULL,
   `comment` text NOT NULL,
   `fields` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -3991,10 +4010,8 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
-  `tetanusWithin10Years` enum('','Y','N') NOT NULL,
   `comment` text NOT NULL,
   `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -4128,7 +4145,8 @@ CREATE TABLE `gibbonPlannerEntry` (
   `viewableStudents` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewableParents` enum('Y','N') NOT NULL DEFAULT 'N',
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `fields` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -5088,8 +5106,13 @@ CREATE TABLE `gibbonSchoolYear` (
 --
 
 INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`) VALUES
+<<<<<<< HEAD
 (025,'2022-2023','Current',3,'2022-06-13','2023-06-29'),
 (026,'2023-2024','Upcoming',4,'2023-08-14','2024-06-29');
+=======
+(025, '2022-2023', 'Current', 3, '2022-06-13', '2023-06-29'),
+(026, '2023-2024', 'Upcoming', 4, '2023-08-14', '2024-06-29');
+>>>>>>> v25.0.00
 
 -- --------------------------------------------------------
 
@@ -5100,14 +5123,18 @@ INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenc
 CREATE TABLE `gibbonSchoolYearSpecialDay` (
   `gibbonSchoolYearSpecialDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonSchoolYearTermID` int(5) UNSIGNED ZEROFILL NOT NULL,
-  `type` enum('School Closure','Timing Change') NOT NULL,
+  `type` enum('School Closure','Timing Change','Off Timetable') DEFAULT NULL,
   `name` varchar(20) NOT NULL,
   `description` varchar(255) NOT NULL,
   `date` date NOT NULL,
   `schoolOpen` time DEFAULT NULL,
   `schoolStart` time DEFAULT NULL,
   `schoolEnd` time DEFAULT NULL,
-  `schoolClose` time DEFAULT NULL
+  `schoolClose` time DEFAULT NULL,
+  `context` enum('Year Group','Form Group') DEFAULT NULL,
+  `gibbonYearGroupIDList` varchar(255) DEFAULT NULL,
+  `gibbonFormGroupIDList` varchar(255) DEFAULT NULL,
+  `cancelActivities` enum('Y','N') DEFAULT 'N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -5131,12 +5158,21 @@ CREATE TABLE `gibbonSchoolYearTerm` (
 --
 
 INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearID`, `sequenceNumber`, `name`, `nameShort`, `firstDay`, `lastDay`) VALUES
+<<<<<<< HEAD
 (00034,025,31,'Term 1','T1','2022-06-13','2022-12-18'),
 (00035,025,32,'Term 2','T2','2023-01-09','2023-04-02'),
 (00036,025,33,'Term 3','T3','2023-04-17','2023-06-29'),
 (00037,026,34,'Term 1','T1','2023-08-14','2023-12-17'),
 (00038,026,35,'Term 2','T2','2024-01-08','2024-03-25'),
 (00039,026,36,'Term 3','T3','2024-04-16','2024-06-29');
+=======
+(00034, 025, 31, 'Term 1', 'T1', '2022-06-13', '2022-12-18'),
+(00035, 025, 32, 'Term 2', 'T2', '2023-01-09', '2023-04-02'),
+(00036, 025, 33, 'Term 3', 'T3', '2023-04-17', '2023-06-29'),
+(00037, 026, 34, 'Term 1', 'T1', '2023-08-14', '2023-12-17'),
+(00038, 026, 35, 'Term 2', 'T2', '2024-01-08', '2024-03-25'),
+(00039, 026, 36, 'Term 3', 'T3', '2024-04-16', '2024-06-29');
+>>>>>>> v25.0.00
 
 -- --------------------------------------------------------
 
@@ -5203,7 +5239,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00036, 'Behaviour', 'levels', 'Levels', 'Allowable choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
 (00037, 'Resources', 'categories', 'Categories', 'Allowable choices for category', 'Article,Book,Document,Graphic,Idea,Music,Object,Painting,Person,Photo,Place,Poetry,Prose,Rubric,Text,Video,Website,Work Sample,Other'),
 (00038, 'Resources', 'purposesGeneral', 'Purposes (General)', 'Allowable choices for purpose when creating a resource', 'Assessment Aid,Concept,Inspiration,Learner Profile,Mass Mailer Attachment,Provocation,Skill,Teaching and Learning Strategy,Other'),
-(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '24.0.01'),
+(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '25.0.00'),
 (00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with \"Manage All Resources\" rights', ''),
 (00041, 'System', 'organisationEmail', 'Organisation Email', 'General email address for the school', ''),
 (00042, 'Activities', 'dateType', 'Date Type', 'Should activities be organised around dates (flexible) or terms (easy)?', 'Term'),
@@ -5214,7 +5250,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00047, 'Planner', 'teachersNotesTemplate', 'Teacher\'s Notes Template', 'Template to be inserted into Teacher\'s Notes field', ''),
 (00048, 'Planner', 'smartBlockTemplate', 'Smart Block Template', 'Template to be inserted into new block in Smart Unit', ''),
 (00049, 'Planner', 'unitOutlineTemplate', 'Unit Outline Template', 'Template to be inserted into Unit Outline section of planner', ''),
-(00050, 'Application Form', 'milestones', 'Milestones', 'Comma-separated list of the major steps in the application process. Applicants can be tracked through the various stages.', ''),
+(00050, 'Application Form', 'milestones', 'Milestones', 'Comma-separated list of the major steps in the application process. Applicants can be tracked through the various stages.', 'Information Reviewed,Documents Checked,Ready to Accept'),
 (00051, 'Library', 'defaultLoanLength', 'Default Loan Length', 'The standard loan length for a library item, in days', '7'),
 (00052, 'Behaviour', 'policyLink', 'Policy Link', 'A link to the school behaviour policy.', ''),
 (00053, 'Library', 'browseBGColor', 'Browse Library BG Colour', 'Click to select a colour.', ''),
@@ -5481,9 +5517,13 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00342, 'Installer', 'demoData', 'Install Demo Data?', '', 'N'),
 (00343, 'Admissions', 'welcomeHeading', 'Admissions Welcome Heading', 'Displayed on the admissions landing page.', 'Welcome to Admissions at {organisationNameShort}'),
 (00344, 'Admissions', 'welcomeText', 'Admissions Welcome Text', 'Displayed on the admissions landing page.', '<p>Our admissions system will help you to create new application forms as well as submit required documents and track your application status.</p><p>Select an application form below to begin the admissions process. If you already have one or more application forms in progress, you can choose to receive an email which will give you access to your existing forms.</p>'),
-(00345, 'Admissions', 'admissionsEnabled', 'Enable New Admissions Page', 'Should the new admissions page show up on the homepage, in place of the original student application link?', 'N'),
+(00345, 'Admissions', 'admissionsEnabled', 'Enable New Admissions Page', 'Should the new admissions page show up on the homepage, in place of the original student application link?', 'Y'),
 (00346, 'Admissions', 'admissionsLinkText', 'Admissions Link Text', 'Text to display on the homepage with the admissions link.', 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'),
-(00347, 'Admissions', 'admissionsLinkName', 'Admissions Link Name', 'Title of the admissions link on the homepage.', 'Student Applications');
+(00347, 'Admissions', 'admissionsLinkName', 'Admissions Link Name', 'Title of the admissions link on the homepage.', 'Student Applications'),
+(00348, 'Timetable Admin', 'enrolmentMinDefault', 'Minimum Enrolment Default', 'The default value for minimum class enrolment.', ''),
+(00349, 'Timetable Admin', 'enrolmentMaxDefault', 'Maximum Enrolment Default', 'The default value for maximum class enrolment.', ''),
+(00350, 'Staff', 'coverageMode', 'Coverage Mode', 'Should teachers send coverage requests directly to substitutes, or will it be assigned for them?', 'Requested'),
+(00351, 'Staff', 'coverageInternal', 'Internal Coverage', 'If Yes, teachers can be assigned to cover each other. Otherwise, only users added through Manage Substitutes will be available for coverage.', 'N');
 
 -- --------------------------------------------------------
 
@@ -5714,7 +5754,7 @@ CREATE TABLE `gibbonStaffCoverage` (
   `gibbonStaffAbsenceID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `status` enum('Requested','Accepted','Declined','Cancelled') DEFAULT 'Requested',
+  `status` enum('Requested','Accepted','Declined','Cancelled','Pending') DEFAULT 'Requested',
   `requestType` enum('Individual','Broadcast','Assigned') DEFAULT 'Broadcast',
   `substituteTypes` varchar(255) DEFAULT NULL,
   `gibbonPersonIDStatus` int(10) UNSIGNED ZEROFILL NOT NULL,
@@ -5739,6 +5779,8 @@ CREATE TABLE `gibbonStaffCoverageDate` (
   `gibbonStaffCoverageDateID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonStaffCoverageID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonStaffAbsenceDateID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
+  `foreignTable` varchar(60) DEFAULT NULL,
+  `foreignTableID` int(12) UNSIGNED ZEROFILL DEFAULT NULL,
   `date` date DEFAULT NULL,
   `allDay` enum('N','Y') DEFAULT 'Y',
   `timeStart` time DEFAULT NULL,
@@ -5746,6 +5788,34 @@ CREATE TABLE `gibbonStaffCoverageDate` (
   `value` decimal(3,2) NOT NULL DEFAULT '1.00',
   `gibbonPersonIDUnavailable` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `reason` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonStaffDuty`
+--
+
+CREATE TABLE `gibbonStaffDuty` (
+  `gibbonStaffDutyID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonDaysOfWeekIDList` varchar(30) DEFAULT NULL,
+  `name` varchar(90) NOT NULL,
+  `timeStart` time NOT NULL,
+  `timeEnd` time NOT NULL,
+  `sequenceNumber` int(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonStaffDutyPerson`
+--
+
+CREATE TABLE `gibbonStaffDutyPerson` (
+  `gibbonStaffDutyPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonStaffDutyID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonDaysOfWeekID` int(2) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -5817,7 +5887,8 @@ CREATE TABLE `gibbonStudentEnrolment` (
   `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonFormGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
-  `rollOrder` int(2) DEFAULT NULL
+  `rollOrder` int(2) DEFAULT NULL,
+  `fields` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -6024,7 +6095,8 @@ CREATE TABLE `gibbonTTSpaceBooking` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL,
   `timeStart` time NOT NULL,
-  `timeEnd` time NOT NULL
+  `timeEnd` time NOT NULL,
+  `reason` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -6214,7 +6286,8 @@ ALTER TABLE `gibbonActivitySlot`
 -- Indexes for table `gibbonActivityStaff`
 --
 ALTER TABLE `gibbonActivityStaff`
-  ADD PRIMARY KEY (`gibbonActivityStaffID`);
+  ADD PRIMARY KEY (`gibbonActivityStaffID`),
+  ADD KEY `gibbonActivityID` (`gibbonActivityID`,`gibbonPersonID`);
 
 --
 -- Indexes for table `gibbonActivityStudent`
@@ -7270,7 +7343,21 @@ ALTER TABLE `gibbonStaffCoverage`
 -- Indexes for table `gibbonStaffCoverageDate`
 --
 ALTER TABLE `gibbonStaffCoverageDate`
-  ADD PRIMARY KEY (`gibbonStaffCoverageDateID`);
+  ADD PRIMARY KEY (`gibbonStaffCoverageDateID`),
+  ADD KEY `foreignTable` (`foreignTable`,`foreignTableID`);
+
+--
+-- Indexes for table `gibbonStaffDuty`
+--
+ALTER TABLE `gibbonStaffDuty`
+  ADD PRIMARY KEY (`gibbonStaffDutyID`);
+
+--
+-- Indexes for table `gibbonStaffDutyPerson`
+--
+ALTER TABLE `gibbonStaffDutyPerson`
+  ADD PRIMARY KEY (`gibbonStaffDutyPersonID`),
+  ADD UNIQUE KEY `gibbonStaffDutyID` (`gibbonStaffDutyID`,`gibbonDaysOfWeekID`,`gibbonPersonID`);
 
 --
 -- Indexes for table `gibbonStaffJobOpening`
@@ -7443,7 +7530,7 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=991;
+  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=996;
 
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
@@ -7659,13 +7746,13 @@ ALTER TABLE `gibbonEmailTemplate`
 -- AUTO_INCREMENT for table `gibbonExternalAssessment`
 --
 ALTER TABLE `gibbonExternalAssessment`
-  MODIFY `gibbonExternalAssessmentID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `gibbonExternalAssessmentID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessmentField`
 --
 ALTER TABLE `gibbonExternalAssessmentField`
-  MODIFY `gibbonExternalAssessmentFieldID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+  MODIFY `gibbonExternalAssessmentFieldID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessmentStudent`
@@ -7713,7 +7800,7 @@ ALTER TABLE `gibbonFamilyUpdate`
 -- AUTO_INCREMENT for table `gibbonFileExtension`
 --
 ALTER TABLE `gibbonFileExtension`
-  MODIFY `gibbonFileExtensionID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `gibbonFileExtensionID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `gibbonFinanceBillingSchedule`
@@ -7863,7 +7950,7 @@ ALTER TABLE `gibbonGroupPerson`
 -- AUTO_INCREMENT for table `gibbonHook`
 --
 ALTER TABLE `gibbonHook`
-  MODIFY `gibbonHookID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `gibbonHookID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonHouse`
@@ -7875,7 +7962,7 @@ ALTER TABLE `gibbonHouse`
 -- AUTO_INCREMENT for table `gibboni18n`
 --
 ALTER TABLE `gibboni18n`
-  MODIFY `gibboni18nID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `gibboni18nID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `gibbonIN`
@@ -8037,7 +8124,7 @@ ALTER TABLE `gibbonNotification`
 -- AUTO_INCREMENT for table `gibbonNotificationEvent`
 --
 ALTER TABLE `gibbonNotificationEvent`
-  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `gibbonNotificationListener`
@@ -8061,13 +8148,13 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54058;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54067;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
 --
 ALTER TABLE `gibbonPerson`
-  MODIFY `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1099;
+  MODIFY `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonPersonalDocument`
@@ -8277,7 +8364,7 @@ ALTER TABLE `gibbonResourceTag`
 -- AUTO_INCREMENT for table `gibbonRole`
 --
 ALTER TABLE `gibbonRole`
-  MODIFY `gibbonRoleID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `gibbonRoleID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `gibbonRubric`
@@ -8343,7 +8430,7 @@ ALTER TABLE `gibbonSchoolYearTerm`
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=348;
+  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=352;
 
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
@@ -8412,6 +8499,18 @@ ALTER TABLE `gibbonStaffCoverageDate`
   MODIFY `gibbonStaffCoverageDateID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `gibbonStaffDuty`
+--
+ALTER TABLE `gibbonStaffDuty`
+  MODIFY `gibbonStaffDutyID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gibbonStaffDutyPerson`
+--
+ALTER TABLE `gibbonStaffDutyPerson`
+  MODIFY `gibbonStaffDutyPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `gibbonStaffJobOpening`
 --
 ALTER TABLE `gibbonStaffJobOpening`
@@ -8445,7 +8544,7 @@ ALTER TABLE `gibbonStudentNote`
 -- AUTO_INCREMENT for table `gibbonStudentNoteCategory`
 --
 ALTER TABLE `gibbonStudentNoteCategory`
-  MODIFY `gibbonStudentNoteCategoryID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `gibbonStudentNoteCategoryID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `gibbonSubstitute`
@@ -8560,4 +8659,3 @@ ALTER TABLE `gibbonUsernameFormat`
 --
 ALTER TABLE `gibbonYearGroup`
   MODIFY `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-

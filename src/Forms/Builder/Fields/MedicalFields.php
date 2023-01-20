@@ -93,6 +93,7 @@ class MedicalFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
         $customField = $this->fields[$field['fieldName']]['custom'] ?? false;
 
         $row = $form->addRow();
@@ -107,19 +108,19 @@ class MedicalFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'medical':
                 $row->addLabel('medical', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('medical')->required($required)->placeholder();
+                $row->addYesNo('medical')->required($required)->selected($default)->placeholder();
                 break;
 
             case 'medicalInformation':
                 $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
                 $col = $row->setClass('medicalDetailsRow')->addColumn();
                     $col->addLabel('medicalInformation', __($field['label']))->description(__($field['description']));
-                    $col->addTextArea('medicalInformation')->setRows(5)->required($required)->setClass('w-full');
+                    $col->addTextArea('medicalInformation')->setRows(5)->required($required)->setValue($default)->setClass('w-full');
                 break;
 
             case 'longTermMedication':
                 $row->addLabel('longTermMedication', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('longTermMedication')->placeholder()->required($required);
+                $row->addYesNo('longTermMedication')->placeholder()->required($required)->selected($default);
                 break;
 
             case 'longTermMedicationDetails':
@@ -127,7 +128,7 @@ class MedicalFields extends AbstractFieldGroup
 
                 $row->addClass('longTermMedicationDetails');
                 $row->addLabel('longTermMedicationDetails', __($field['label']))->description(__($field['description']));
-                $row->addTextArea('longTermMedicationDetails')->setRows(5)->required($required);
+                $row->addTextArea('longTermMedicationDetails')->setRows(5)->required($required)->setValue($default);
                 break;
         }
 

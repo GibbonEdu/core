@@ -72,7 +72,7 @@ class ApplicationDetailsTable extends DataTable
 
             return Format::tag($values['status'], $class);
         });
-        $table->addColumn('priority', __('Priority'));
+        $table->addColumn('schoolYear', __('School Year'));
         $table->addColumn('timestampCreated', __('Created'))->format(Format::using('date', 'timestampCreated'));
 
         return $table;

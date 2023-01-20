@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
             }
 
             // Raise a new notification event
-            $event = new NotificationEvent('Students', 'Student Withdrawn');
+            $event = new NotificationEvent('Admissions', 'Student Withdrawn');
             $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
             $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
             $event->setNotificationText($notificationString);

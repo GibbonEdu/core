@@ -24,12 +24,19 @@ use Gibbon\Module\Reports\DataContext;
 
 class NullContext implements DataContext
 {
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFormatter()
     {
         return function () { return ''; };
     }
 
-    public function getIdentifiers(Connection $db, string $gibbonSchoolYearID, string $gibbonReportID, string $gibbonYearGroupID)
+    /**
+     * {@inheritDoc}
+     */
+    public function getIdentifiers(Connection $pdo, string $gibbonReportID, string $gibbonYearGroupID)
     {
         return [];
     }

@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 //Module includes
+
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
@@ -41,7 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo '</div>';
     } else {
         $enableModifiedAssessment = $container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableModifiedAssessment');
-        $alert = getAlert($guid, $connection2, 002);
+
+        /**
+         * @var AlertLevelGateway
+         */
+        $alertLevelGateway = $container->get(AlertLevelGateway::class);
+        $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
 
         // Define a randomized lock for this script
         define("MARKBOOK_VIEW_LOCK", sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') );

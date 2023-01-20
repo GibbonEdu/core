@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
 
         $table->addColumn('yearGroupList', __('Year Groups'));
 
-        $table->addColumn('active', __('active'))
+        $table->addColumn('active', __('Active'))
             ->format(function ($row) {
                 return Format::yesNo(__($row['active']));
             });

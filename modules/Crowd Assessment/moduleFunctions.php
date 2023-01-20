@@ -94,7 +94,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
     global $session;
 
     $role = '';
-    if (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) == 'Parent') {
+    if ($session->get('gibbonRoleIDCurrentCategory') == 'Parent') {
         $role = 'Parent';
         $childInClass = false;
 

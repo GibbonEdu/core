@@ -88,16 +88,17 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     $output = '';
                     if (!empty($beahviour['comment'])) {
                         $output .= '<strong>'.__('Incident').'</strong><br/>';
-                        $output .= nl2brr($beahviour['comment']).'<br/>';
+                        $output .= nl2br($beahviour['comment']).'<br/>';
                     }
                     if (!empty($beahviour['followup'])) {
                         $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                        $output .= nl2brr($beahviour['followup']).'<br/>';
+                        $output .= nl2br($beahviour['followup']).'<br/>';
                     }
                     return $output;
                 });
 
             $table->addColumn('date', __('Date'))
+                ->context('primary')
                 ->format(function($beahviour) {
                     if (substr($beahviour['timestamp'], 0, 10) > $beahviour['date']) {
                         return __('Updated:').' '.Format::date($beahviour['timestamp']).'<br/>'
@@ -108,6 +109,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 });
 
             $table->addColumn('type', __('Type'))
+                ->context('secondary')
                 ->width('5%')
                 ->format(function($beahviour) use ($session) {
                     if ($beahviour['type'] == 'Negative') {
@@ -118,7 +120,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 });
 
             if ($enableDescriptors == 'Y') {
-                $table->addColumn('descriptor', __('Descriptor'));
+                $table->addColumn('descriptor', __('Descriptor'))->context('primary');
             }
 
             if ($enableLevels == 'Y') {
@@ -126,6 +128,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
             }
 
             $table->addColumn('teacher', __('Teacher'))
+                ->context('primary')
                 ->sortable(['preferredNameCreator', 'surnameCreator'])
                 ->width('25%')
                 ->format(function($person) {

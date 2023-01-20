@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
@@ -43,7 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $alert = getAlert($guid, $connection2, 002);
+        /**
+         * @var AlertLevelGateway
+         */
+        $alertLevelGateway = $container->get(AlertLevelGateway::class);
+        $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
 
         //Proceed!
         //Get class variable

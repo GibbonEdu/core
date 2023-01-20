@@ -19,12 +19,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Messenger;
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Session\SessionFactory;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Comms\NotificationSender;
 use Gibbon\Services\BackgroundProcess;
+use Gibbon\Contracts\Comms\SMS;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Session\SessionFactory;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 
@@ -42,40 +51,293 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
     {
     }
 
-    public function runSendMessage($gibbonMessengerID, $gibbonSchoolYearID, $gibbonPersonID, $gibbonRoleIDCurrent, $messageData)
+    public function runSendMessage($gibbonMessengerID, $gibbonSchoolYearID, $gibbonPersonID, $gibbonRoleIDCurrent, $message)
     {
-        // Extract the message data back into POST
-        $_POST = $messageData;
-        
         // Setup the core Gibbon objects
         $container = $this->getContainer();
-        $gibbon = $container->get('config');
-        $guid = $gibbon->getConfig('guid');
         $pdo = $container->get(Connection::class);
         $connection2 = $pdo->getConnection();
-        $session = $gibbon->session;
+        $session = $container->get(Session::class);
 
         // Setup session variables for this user
         SessionFactory::populateSettings($session, $pdo);
         $userData = $container->get(UserGateway::class)->getSafeUserData($gibbonPersonID);
         $session->set($userData);
 
-        $gibbon->session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
-        $gibbon->session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
-        $gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);
+        $session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
+        $session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
+        $session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);
 
         // Setup messenger variables
         $AI = str_pad($gibbonMessengerID, 12, '0', STR_PAD_LEFT);
 
-        // Run the original message process script
-        $sendResult = include __DIR__ . '/../messenger_postProcess.php';
+        // Setup gateways
+        $messengerReceiptGateway = $container->get(MessengerReceiptGateway::class);
+        $messengerGateway = $container->get(MessengerGateway::class);
+        $settingGateway = $container->get(SettingGateway::class);
+        $logGateway = $container->get(LogGateway::class);
 
+        // Get the recipients (which have already been manually checked)
+        $report = $messengerReceiptGateway->selectMessageRecipientList($gibbonMessengerID)->fetchAll();
+
+        //Proceed!
+        //Setup return variables
+        $emailCount = $smsCount = $smsBatchCount = 0;
+
+        // Validate Inputs
+        $validator = $container->get(Validator::class);
+        $message = $validator->sanitize($message, ['body' => 'HTML']);
+        
+        $email = $message['email'] ?? 'N';
+        $from = $message['emailFrom'];
+        $emailReplyTo = $message['emailReplyTo'] ?? '';
+
+        $sms = $message['sms'] ?? 'N';
+        $smsCreditBalance = ($sms == 'Y' && !empty($message['smsCreditBalance'])) ? $message['smsCreditBalance'] : null;
+
+        $subject = $message['subject'] ?? '';
+        $body = stripslashes($message['body'] ?? '');
+
+        $emailReceipt = $message['emailReceipt'] ?? 'N';
+        $emailReceiptText = $message['emailReceiptText'] ?? '';
+        $individualNaming = $message['individualNaming'] ?? 'N';
+        $confidential = $message['confidential'] ?? 'N';
+
+        // SMS Credit notification
+        if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
+            $notificationGateway = new NotificationGateway($pdo);
+            $notificationSender = new NotificationSender($notificationGateway, $session);
+            $organisationAdministrator = $settingGateway->getSettingByScope('System', 'organisationAdministrator');
+            $notificationString = __('Low SMS credit warning.');
+            $notificationSender->addNotification($organisationAdministrator, $notificationString, "Messenger", "/index.php?q=/modules/Messenger/messenger_post.php");
+            $notificationSender->sendNotifications();
+        }
+        
+        $partialFail = false;
+
+        if ($sms=="Y") {
+            $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
+                if ($reportEntry['contactType'] == 'SMS') $phoneNumbers[] = '+'.$reportEntry['contactDetail'];
+                return $phoneNumbers;
+            }, []));
+
+            $sms = $container->get(SMS::class);
+
+            $result = $sms
+                ->content($body)
+                ->send($recipients);
+
+            $smsCount = count($recipients);
+            $smsBatchCount = count($result);
+
+            $smsStatus = $result ? 'OK' : 'Not OK';
+            $partialFail &= !empty($result);
+
+            // Update the send status based on SMS results
+            foreach ($report as $reportEntry) {
+                if (in_array('+'.$reportEntry['contactDetail'], $result)) {
+                    $messengerReceiptGateway->update($reportEntry['gibbonMessengerReceiptID'], ['sent' => 'Y']);
+                }
+            }
+
+            //Set log
+            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $message["address"]), $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
+        }
+
+        if ($email=="Y") {
+            //Set up email
+            $emailCount = 0;
+            $emailErrors = [];
+            $mail= $container->get(Mailer::class);
+            $mail->SMTPKeepAlive = true;
+            $mail->SMTPDebug = 1;
+            $mail->Debugoutput = 'error_log';
+            
+            if ($emailReplyTo!="") {
+                $mail->AddReplyTo($emailReplyTo, '');
+            }
+            if ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+                $mail->SetFrom($from, $session->get('organisationName'));
+            } else { //Else, send from individual
+                $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
+            }
+            
+            // Turn copy-pasted div breaks into paragraph breaks
+            $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
+
+            $mail->Subject = $subject;
+            $mail->renderBody('mail/email.twig.html', [
+                'title'  => $subject,
+                'body'   => $body
+            ]);
+
+            //Send to sender, if not in recipient list
+            $includeSender = true;
+            foreach ($report as $reportEntry) {
+                if ($reportEntry['contactType'] == 'Email') {
+                    if ($reportEntry['contactDetail'] == $from) {
+                        $includeSender = false;
+                    }
+                }
+            }
+            if ($includeSender) {
+                $emailCount ++;
+                $mail->AddAddress($from);
+                if(!$mail->Send()) {
+                    $partialFail = TRUE;
+                }
+            }
+
+            //If sender is using school-wide address, and it is not in recipient list, send to school-wide address
+            if ($from!=$session->get('email')) { //If sender is using school-wide address, add them to recipient list.
+                $includeSender = true;
+                foreach ($report as $reportEntry) {
+                    if ($reportEntry['contactType'] == 'Email') {
+                        if ($reportEntry['contactDetail'] == $session->get('email')) {
+                            $includeSender = false;
+                        }
+                    }
+                }
+                if ($includeSender) {
+                    $emailCount ++;
+                    $mail->ClearAddresses();
+                    $mail->AddAddress($session->get('email'));
+                    if(!$mail->Send()) {
+                        $partialFail = TRUE;
+                    }
+                }
+            }
+
+            //Send to each recipient
+            foreach ($report as $reportEntry) {
+                if ($reportEntry['contactType'] == 'Email') {
+                    $emailCount ++;
+                    $mail->ClearAddresses();
+                    $mail->AddAddress($reportEntry['contactDetail']);
+
+                    //Deal with email receipt and body finalisation
+                    if ($emailReceipt == 'Y') {
+                        $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry['gibbonPersonID']."&key=".$reportEntry['key']."'>".$emailReceiptText."</a>";
+                        if (is_numeric(strpos($body, '[confirmLink]'))) {
+                            $bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body);
+                        }
+                        else {
+                            $bodyOut = $body.$bodyReadReceipt;
+                        }
+                    }
+                    else {
+                        $bodyOut = $body;
+                    }
+
+                    //Deal with student names
+                    if ($individualNaming == "Y" && !empty($reportEntry['nameListStudent'])) {
+                        $studentNames = '';
+                        $nameArray = array_filter(json_decode($reportEntry['nameListStudent'], true));
+
+                        if (!empty($nameArray) && count($nameArray) > 0) {
+                            // Remove duplicates and build a string list of names
+                            $nameArray = array_unique($nameArray);
+                            $studentNameList = join(' & ', array_filter(array_merge(array(join(', ', array_slice($nameArray, 0, -1))), array_slice($nameArray, -1)), 'strlen'));
+
+                            if (count($nameArray) > 1) {
+                                $studentNames = '<i>'.__('This email relates to the following students: ').$studentNameList.'</i><br/><br/>';
+                            } else {
+                                $studentNames = '<i>'.__('This email relates to the following student: ').$studentNameList.'</i><br/><br/>';
+                            }
+                        }
+                        $bodyOut = $studentNames.$bodyOut;
+                    }
+
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $bodyOut
+                    ]);
+                    if(!$mail->Send()) {
+                        $partialFail = TRUE;
+                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $message["address"]), $session->get('gibbonPersonID'), 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry['contactDetail']));
+                        $emailErrors[] = $reportEntry['contactDetail'];
+                    } else {
+                        $messengerReceiptGateway->update($reportEntry['gibbonMessengerReceiptID'], ['sent' => 'Y']);
+                    }
+                }
+            }
+
+            // Optionally send bcc copies of this message, excluding recipients already sent to.
+            $recipientList = array_column($report, 4);
+            $messageBccList = array_map('trim', explode(',', $settingGateway->getSettingByScope('Messenger', 'messageBcc')));
+            $messageBccList = array_filter($messageBccList, function($recipient) use ($recipientList, $from) {
+                return $recipient != $from && !in_array($recipient, $recipientList);
+            });
+
+            if (!empty($messageBccList) && !empty($report) && $confidential == 'N') {
+                $mail->ClearAddresses();
+                foreach ($messageBccList as $recipient) {
+                    $mail->AddBCC($recipient, '');
+                }
+
+                $sender = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff');
+                $date = Format::date(date('Y-m-d')).' '.date('H:i:s');
+
+                $mail->renderBody('mail/email.twig.html', [
+                    'title'  => $subject,
+                    'body'   => __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body
+                ]);
+                $mail->Send();
+            }
+
+            $mail->smtpClose();
+        }
+
+        $messengerGateway->update($gibbonMessengerID, ['status' => 'Sent']);
+
+        $sendResult = [
+            'return'        => $partialFail ? 'error4' : 'success0',
+            'email'         => $message['email'],
+            'emailCount'    => $emailCount ?? 0,
+            'emailErrors'   => $emailErrors ?? [],
+            'sms'           => $message['sms'],
+            'smsCount'      => $smsCount ?? 0,
+            'smsBatchCount' => $smsBatchCount ?? 0,
+        ];
+    
         // Send a notification to the user and return the result
-        if ((!empty($messageData['email']) && $messageData['email'] == 'Y') || (!empty($messageData['sms']) && $messageData['sms'] == 'Y')) {
-            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $messageData['subject'], $sendResult);
+        if ((!empty($message['email']) && $message['email'] == 'Y') || (!empty($message['sms']) && $message['sms'] == 'Y')) {
+            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $message['subject'], $sendResult);
         }
 
         return $sendResult;
+    }
+
+    public function runSendDraft($message)
+    {
+        if ($message['email'] != 'Y') return false;
+
+        $session = $this->getContainer()->get(Session::class);
+        $mail = $this->getContainer()->get(Mailer::class);
+
+        $mail->Subject = __('Draft').': '.$message['subject'];
+        $mail->SetFrom($message['emailFrom']);
+        $mail->AddReplyTo($message['emailReplyTo']);
+        $mail->AddAddress($session->get('email'));
+
+        $message['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $message['body']);
+
+        if ($message['emailReceipt'] == 'Y') {
+            $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$message['emailReceiptText']."</a>";
+            if (is_numeric(strpos($message['body'], '[confirmLink]'))) {
+                $message['body'] = str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
+            }
+            else {
+                $message['body'] = $message['body'].$bodyReadReceipt;
+            }
+        }
+
+        $mail->renderBody('mail/email.twig.html', [
+            'title'  => $message['subject'],
+            'body'   => $message['body'],
+        ]);
+
+        return $mail->Send();
     }
 
     protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $subject, $sendResult)
@@ -84,23 +346,23 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             case 'success0':
                 $actionText = __('Your message "{subject}" was sent successfully.', ['subject' => $subject]);
 
-                if (is_numeric($sendResult['emailCount'])) {
+                if ($sendResult['email'] == 'Y' && is_numeric($sendResult['emailCount'])) {
                     $actionText .= '<br/>'. sprintf(__('%1$s email(s) were dispatched.'), $sendResult['emailCount']);
                 }
-                if (is_numeric($sendResult['smsCount']) && is_numeric($sendResult['smsBatchCount'])) {
+                if ($sendResult['sms'] == 'Y' && is_numeric($sendResult['smsCount'])) {
                     $actionText .= '<br/>' . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $sendResult['smsCount'], $sendResult['smsBatchCount']);
                 }
                 break;
-            case 'fail0':
+            case 'error0':
                 $actionText = __('Your request failed because you do not have access to this action.');
                 break;
-            case 'fail2':
+            case 'error2':
                 $actionText = __('Your request failed due to a database error.');
                 break;
-            case 'fail3':
+            case 'error3':
                 $actionText = __('Your request failed because your inputs were invalid.');
                 break;
-            case 'fail5':
+            case 'error5':
                 $actionText = __('Your request failed due to an attachment error.');
                 break;
             default:

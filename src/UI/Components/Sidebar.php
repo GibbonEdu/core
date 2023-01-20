@@ -31,6 +31,7 @@ use Gibbon\Domain\System\SettingGateway;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 
 /**
  * Sidebar View Composer
@@ -45,14 +46,32 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
     protected $db;
     protected $session;
     protected $category;
+
+    /**
+     * Setting gateway
+     *
+     * @var SettingGateway
+     */
     protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
-    {
+    /**
+     * School Year gateway.
+     *
+     * @var SchoolYearGateway
+     */
+    protected $schoolYearGateway;
+
+    public function __construct(
+        Connection $db,
+        Session $session,
+        SettingGateway $settingGateway,
+        SchoolYearGateway $schoolYearGateway
+    ) {
         $this->db = $db;
         $this->session = $session;
-        $this->category = getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $this->db->getConnection());
+        $this->category = $this->session->get('gibbonRoleIDCurrentCategory');
         $this->settingGateway = $settingGateway;
+        $this->schoolYearGateway = $schoolYearGateway;
     }
 
     public function getOutput()
@@ -97,8 +116,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 echo Format::alert($loginReturnMessage, 'error');
             }
         }
-        
-        
+
+
 
         if ($this->session->get('sidebarExtra') != '' and $this->session->get('sidebarExtraPosition') != 'bottom') {
             echo "<div class='sidebarExtra'>";
@@ -179,7 +198,6 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     echo __('Login');
                 echo '</h2>';
 
-                if (!$this->session->has('gibbonSchoolYearID')) setCurrentSchoolYear($guid, $connection2);
                 unset($_GET['return']);
 
                 $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
@@ -206,7 +224,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $form->addHiddenValue('address', $this->session->get('address'));
                     $form->addHiddenValue('method', 'mfa');
                     $form->addHiddenValue('mfaFormNonce', $nonce);
-                    
+
                     $col = $form->addRow()->addColumn();
                         $col->addLabel('mfaCode', __('Multi Factor Authentication Code'));
                         $col->addNumber('mfaCode');

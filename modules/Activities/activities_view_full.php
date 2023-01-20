@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
@@ -66,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
                         $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND gibbonActivityID=:gibbonActivityID";
                     } else {
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND gibbonActivityID=:gibbonActivityID";
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID, 'today' => $today);
+                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:today AND gibbonActivityID=:gibbonActivityID";
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -96,18 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($dateType != 'Date') {
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Terms').'</span><br/>';
-                        $terms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
-                        $termList = '';
-                        for ($i = 0; $i < count($terms); $i = $i + 2) {
-                            if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                $termList .= $terms[($i + 1)].', ';
-                            }
-                        }
-                        if ($termList == '') {
-                            echo '<i>'.__('NA').'</i>';
-                        } else {
-                            echo substr($termList, 0, -2);
-                        }
+
+                        /**
+                         * @var SchoolYearTermGateway
+                         */
+                        $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                        $termList = $schoolYearTermGateway->getTermNamesByID($row['gibbonSchoolYearTermIDList']);
+                        echo !empty($termList)
+                            ? implode(', ', $termList)
+                            : '<i>'.__('NA').'</i>';
                         echo '</td>';
                     } else {
                         echo "<td style='width: 33%; vertical-align: top'>";
@@ -226,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '<i>'.__('None').'</i>';
                     }
 
-                    $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                    $role = $session->get('gibbonRoleIDCurrentCategory');
                     if ($role == 'Staff') {
                         echo '<h3>'.__('Participants').'</h3>';
 

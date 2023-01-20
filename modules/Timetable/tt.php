@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         echo '</h2>';
 
         if ($highestAction == 'View Timetable by Person_my') {
-            $role = getRoleCategory($session->get('gibbonRoleIDPrimary'), $connection2);
+            $role = $session->get('gibbonRoleIDCurrentCategory');
             if ($role == 'Student') {
                 $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
             } else {

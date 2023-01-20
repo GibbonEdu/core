@@ -64,14 +64,21 @@ class CustomFieldHandler
                 'Staff' => __('Staff'),
             ],
             __('Students') => [
-                'Behaviour' => __('Behaviour'),
-                'Individual Needs' => __('Individual Needs'),
-                'First Aid'    => __('First Aid'),
-                'Medical Form' => __('Medical Form'),
+                'Student Enrolment' => __('Student Enrolment'),
+                'Behaviour'         => __('Behaviour'),
+                'Individual Needs'  => __('Individual Needs'),
+                'First Aid'         => __('First Aid'),
+                'Medical Form'      => __('Medical Form'),
             ],
             __('Timetable Admin') => [
                 'Course' => __('Course'),
-                'Class' => __('Class'),
+                'Class'  => __('Class'),
+            ],
+            __('Planner') => [
+                'Lesson Plan' => __('Lesson Plan'),
+            ],
+            __('School Admin') => [
+                'Department' => __('Department'),
             ],
             __('Other') => [
                 'Custom' => __('Custom Context'),
@@ -122,6 +129,9 @@ class CustomFieldHandler
                 'First Aid'         => __('First Aid'),
                 'Biography'         => __('Biography'),
             ],
+            'Student Enrolment' => [
+                'Basic Information' => __('Basic Information'),
+            ],
             'Behaviour' => [
                 'Step 1' => __('Step 1'),
                 'Details' => __('Details'),
@@ -143,6 +153,19 @@ class CustomFieldHandler
             ],
             'Class' => [
                 'Basic Details' => __('Basic Details'),
+            ],
+            'Department' => [
+                'Basic Details' => __('Basic Details'),
+            ],
+            'Lesson Plan' => [
+                'Basic Information' => __('Basic Information'),
+                'Lesson Content' => __('Lesson Content'),
+                'Homework' => __('Homework'),
+                'Markbook' => __('Markbook'),
+                'Advanced Options' => __('Advanced Options'),
+                'Outcomes' => __('Outcomes'),
+                'Access' => __('Access'),
+                'Guests' => __('Guests'),
             ],
             'Custom' => [
             ],
@@ -378,8 +401,14 @@ class CustomFieldHandler
 
             $row = $form->addRow();
             $row->addLabel('new'.$fieldID.'On', $label);
-            $row->addContent($oldValue);
-            $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
+
+            if ($field['type'] == 'file' || $field['type'] == 'image') {
+                $row->addContent(!empty($oldValue) ? Format::link('./'.$oldValue, $oldValue, ['target' => '_blank']) : '');
+                $row->addContent(!empty($newValue) ? Format::link('./'.$newValue, $newValue, ['class' => $isNotMatching ? 'matchHighlightText underline' : '', 'target' => '_blank']) : '');
+            } else {
+                $row->addContent($oldValue);
+                $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
+            }
 
             if ($isNotMatching) {
                 $row->addCheckbox('newcustom'.$fieldID.'On')->checked(true)->setClass('textCenter');
@@ -414,5 +443,41 @@ class CustomFieldHandler
         }
 
         return json_encode($fields);
+    }
+
+    public function formatFieldData($customFields = [], $fields = [])
+    {  
+        if (empty($customFields)) return $fields;
+
+        $fields = is_string($fields) ? json_decode($fields, true) : $fields;
+
+        foreach ($customFields as $index => $field) {
+            if (empty($fields[$field['gibbonCustomFieldID']])) continue;
+
+            $value = $fields[$field['gibbonCustomFieldID']];
+
+            switch ($field['type']) {
+                case 'date':
+                    $value = Format::date($value);
+                    break;
+                case 'url':
+                    $value = Format::link($value, $value);
+                    break;
+                case 'file':
+                case 'image':
+                    $value = Format::link($value, __('Attachment'), '', ['target' => '_blank']);
+                    break;
+                case 'yesno':
+                    $value = Format::yesNo($value);
+                    break;
+                case 'color':
+                    $value = "<span class='tag text-xxs w-12' title='$value' style='background-color: $value'>&nbsp;</span>";
+                    break;
+            }
+
+            $fields[$field['gibbonCustomFieldID']] = $value;
+        }
+
+        return $fields;
     }
 }

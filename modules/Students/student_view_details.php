@@ -26,6 +26,7 @@ use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
@@ -35,11 +36,13 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -49,6 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $page->addError(__('You do not have access to this action.'));
 } else {
     $page->scripts->add('chart');
+
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
 
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -70,6 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             return;
         } else {
             $settingGateway = $container->get(SettingGateway::class);
+            $hookGateway = $container->get(HookGateway::class);
             $enableStudentNotes = $settingGateway->getSettingByScope('Students', 'enableStudentNotes');
             $skipBrief = false;
 
@@ -106,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and $skipBrief == false) {
                 //Proceed!
                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 
@@ -186,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 try {
                     if ($highestAction == 'View Student Profile_myChildren') {
                         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d'));
-                        $sql = "SELECT * FROM gibbonFamilyChild
+                        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonFamilyChild
                             JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                             JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -199,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     } elseif ($highestAction == 'View Student Profile_my') {
                         $gibbonPersonID = $session->get('gibbonPersonID');
                         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-                        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.* FROM gibbonPerson
+                        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
@@ -207,14 +214,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     } elseif ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-                            $sql = "SELECT * FROM gibbonPerson
+                            $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'
                                 AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
                         } else {
                             $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                            $sql = "SELECT gibbonStudentEnrolment.*, gibbonPerson.* FROM gibbonPerson
+                            $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonFormGroupID, gibbonStudentEnrolment.rollOrder FROM gibbonPerson
                                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
                         }
@@ -247,15 +254,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     $subpage = $_GET['subpage'] ?? '';
                     $hook = $_GET['hook'] ?? '';
-                    $module = $_GET['module'] ?? '';
-                    $action = $_GET['action'] ?? '';
 
                     // When viewing left students, they won't have a year group ID
                     if (empty($row['gibbonYearGroupID'])) {
                         $row['gibbonYearGroupID'] = '';
                     }
 
-                    if ($subpage == '' and ($hook == '' or $module == '' or $action == '')) {
+                    if ($subpage == '' and $hook == '') {
                         $subpage = 'Overview';
                     }
 
@@ -279,14 +284,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</h2>';
 
                     if ($subpage == 'Overview') {
+                        /** @var MedicalGateway */
+                        $medicalGateway = $container->get(MedicalGateway::class);
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
-                        if ($alert != false) {
-                            $highestLevel = $alert[1];
-                            $highestColour = $alert[3];
-                            $highestColourBG = $alert[4];
-                            echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($highestLevel))).'</b>';
+                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                        if (!empty($alert)) {
+                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
                         }
 
@@ -504,8 +508,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $view = $_GET['view'] ?? 'grid';
                             if ($view == 'grid') {
-                                $table->setRenderer(new GridView($container->get('twig')));
-                                $table->getRenderer()->setCriteria($criteria);
+                                /** @var GridView */
+                                $gridView = $container->get(GridView::class);
+                                $table->setRenderer($gridView->setCriteria($criteria));
 
                                 $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
                                 $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
@@ -515,7 +520,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->format(function ($person) use ($canViewStaff) {
                                         $photo = Format::userPhoto($person['image_240'], 'sm');
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return $canViewStaff 
+                                        return $canViewStaff
                                             ? Format::link($url, $photo)
                                             : $photo;
                                     });
@@ -527,7 +532,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->format(function ($person) use ($canViewStaff) {
                                         $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return $canViewStaff 
+                                        return $canViewStaff
                                             ? Format::link($url, $text, ['class' => 'font-bold underline leading-normal'])
                                             : $text;
                                     });
@@ -567,19 +572,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Timetable');
                             echo '</h4>';
 
+                            // Timetable Links
+                            $table = DataTable::createDetails('timetable');
+
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+                                $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
                                 if ($role == 'Student' or $role == 'Staff') {
-                                    echo "<div class='linkTop'>";
-                                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role&allUsers=$allStudents'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                                    echo '</div>';
+                                    $table->addHeaderAction('edit', __('Edit'))
+                                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                    ->addParam('type', $role)
+                                    ->addParam('allUsers', $allStudents)
+                                    ->displayLabel()
+                                    ->append(' | ');
                                 }
                             }
 
+                            $table->addHeaderAction('print', __('Print'))
+                                ->setURL('/report.php')
+                                ->addParam('q', '/modules/Timetable/tt_view.php')
+                                ->addParam('gibbonPersonID', $gibbonPersonID)
+                                ->addParam('gibbonTTID', $_GET['gibbonTTID'] ?? '')
+                                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
+                                ->setIcon('print')
+                                ->setTarget('_blank')
+                                ->directLink()
+                                ->displayLabel();
+
+                            echo $table->render([['' => '']]);
+
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = null;
-                            if (isset($_POST['ttDate'])) {
-                                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+                            if (!empty($_REQUEST['ttDate'])) {
+                                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
@@ -695,6 +721,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
                         $col->addColumn('departureReason', __('Departure Reason'));
 
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields']);
+                        
                         $col = $table->addColumn('Background Information', __('Background Information'));
                         $country = $gibbon->session->get('country');
 
@@ -960,7 +988,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                     echo '</tr>';
 
-                                    if ($rowMember['comment'] != '') {
+                                    // Check to ensure only people with full profile access can view these comments
+                                    if ($rowMember['comment'] != '' && ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes')) {
                                         echo '<tr>';
                                         echo "<td $class style='width: 33%; vertical-align: top' colspan=3>";
                                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';
@@ -1149,19 +1178,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
                     } elseif ($subpage == 'Medical') {
+                        /** @var MedicalGateway */
                         $medicalGateway = $container->get(MedicalGateway::class);
 
                         $medical = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
                         $conditions = $medicalGateway->selectMedicalConditionsByID($medical['gibbonPersonMedicalID'] ?? null)->fetchAll();
 
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
-                        if ($alert != false) {
-                            $highestLevel = $alert[1];
-                            $highestColour = $alert[3];
-                            $highestColourBG = $alert[4];
-                            echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>';
+                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                        if (!empty($alert)) {
+                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
                         }
 
@@ -1213,9 +1240,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
 
+                        if (!empty($medical['fields']) && is_string($medical['fields'])) {
+                            $fields = json_decode($medical['fields'], true);
+                            $medical = is_array($fields) ? array_merge($medical, $fields) : $medical;
+                        }
 
-                        $fields = !empty($medical['fields']) && is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
-                        echo $table->render(!empty($medical) ? [$medical + $fields] : []);
+                        echo $table->render([$medical]);
 
                         // MEDICAL CONDITIONS
                         $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');
@@ -1420,8 +1450,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
                                 $enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
-                                $alert = getAlert($guid, $connection2, 002);
-                                $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                                /**
+                                 * @var AlertLevelGateway
+                                 */
+                                $alertLevelGateway = $container->get(AlertLevelGateway::class);
+                                $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
+                                $role = $session->get('gibbonRoleIDCurrentCategory');
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
                                     $showParentEffortWarning = $settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning');
@@ -1953,7 +1987,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             // QUERY
                             $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
                             $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
-                            $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+                            $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
                             $reports = $reportArchiveEntryGateway->queryArchiveByStudent($criteria, $gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
@@ -2138,7 +2172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $fields = json_decode($item['fields'], true) ?? [];
                                 $typeFields = json_decode($item['typeFields'], true) ?? [];
                                 foreach ($typeFields as $typeField) {
-                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']]);
+                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']] ?? '');
                                 }
                                 $detailTable .= '</table>';
                                 return $detailTable;
@@ -2182,7 +2216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+                                $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
                                 if ($role == 'Student' or $role == 'Staff') {
                                     echo "<div class='linkTop'>";
                                     echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
@@ -2279,7 +2313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                            $role = $session->get('gibbonRoleIDCurrentCategory');
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
                             // DEADLINES
@@ -2312,47 +2346,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     }
 
-                    //GET HOOK IF SPECIFIED
-                    if ($hook != '' and $module != '' and $action != '') {
-                        //GET HOOKS AND DISPLAY LINKS
-                        //Check for hook
-
-                            $dataHook = array('gibbonHookID' => $_GET['gibbonHookID']);
-                            $sqlHook = 'SELECT * FROM gibbonHook WHERE gibbonHookID=:gibbonHookID';
-                            $resultHook = $connection2->prepare($sqlHook);
-                            $resultHook->execute($dataHook);
-                        if ($resultHook->rowCount() != 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                    // Handle Student Profile Hooks
+                    if (!empty($hook)) {
+                        $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
+                        if (empty($rowHook)) {
+                            echo Format::alert(__('There are no records to display.'), 'error');
                         } else {
-                            $rowHook = $resultHook->fetch();
                             $options = unserialize($rowHook['options']);
 
-                            //Check for permission to hook
-                                $dataHook = array('gibbonRoleIDCurrent' => $session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
-                                    FROM gibbonHook
-                                    JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                    JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                                    WHERE gibbonModule.name=:sourceModuleName
-                                    AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
-                                    AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
-                                    AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
-                                    AND gibbonHook.type='Student Profile' ORDER BY name";
-                                $resultHook = $connection2->prepare($sqlHook);
-                                $resultHook->execute($dataHook);
-                            if ($resultHook->rowCount() == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed because you do not have access to this action.');
-                                echo '</div>';
+                            // Check for permission to hook
+                            $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
+                            if (empty($options) || empty($hookPermission)) {
+                                echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
                             } else {
                                 $include = $session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
                                 if (!file_exists($include)) {
-                                    echo "<div class='error'>";
-                                    echo __('The selected page cannot be displayed due to a hook error.');
-                                    echo '</div>';
+                                    echo Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
                                 } else {
                                     include $include;
                                 }
@@ -2550,41 +2560,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 
                     //Check for hooks, and slot them into array
+                    $hooks = $hookGateway->selectHooksByType('Student Profile')->fetchGroupedUnique();
 
-                        $dataHooks = array();
-                        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Student Profile'";
-                        $resultHooks = $connection2->prepare($sqlHooks);
-                        $resultHooks->execute($dataHooks);
-
-                    if ($resultHooks->rowCount() > 0) {
-                        $hooks = array();
+                    if (!empty($hooks)) {
                         $count = 0;
-                        while ($rowHooks = $resultHooks->fetch()) {
-                            $options = unserialize($rowHooks['options']);
+                        foreach ($hooks as $rowHook) {
+                            if (empty($rowHook) || empty($rowHook['options'])) continue;
+
+                            $options = unserialize($rowHook['options']);
+
+                            $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
                             //Check for permission to hook
 
-                                $dataHook = array('gibbonRoleIDCurrent' => $session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'],  'sourceModuleAction' => $options['sourceModuleAction']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
-                                        FROM gibbonHook
-                                        JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                        JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                        JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                                        WHERE gibbonModule.name=:sourceModuleName
-                                        AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
-                                        AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
-                                        AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
-                                        AND gibbonHook.type='Student Profile'
-                                        ORDER BY name";
-                                $resultHook = $connection2->prepare($sqlHook);
-                                $resultHook->execute($dataHook);
-                            if ($resultHook->rowCount() >= 1) {
+                            if (!empty($hookPermission)) {
                                 $style = '';
-                                if ($hook == $rowHooks['name'] and $_GET['module'] == $options['sourceModuleName']) {
+                                if ($hook == $rowHook['name']) {
                                     $style = "style='font-weight: bold'";
                                 }
                                 $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];
-                                $studentMenuName[$studentMenuCount] = __($rowHooks['name']);
-                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHooks['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHooks['gibbonHookID']."'>".__($rowHooks['name']).'</a></li>';
+                                $studentMenuName[$studentMenuCount] = __($rowHook['name']);
+                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
                                 ++$studentMenuCount;
                                 ++$count;
                             }

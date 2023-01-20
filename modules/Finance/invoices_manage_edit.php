@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
             $form->addRow()->addHeading('Payment Log', __('Payment Log'));
 
-            $form->addRow()->addContent(getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID));
+            $form->addRow()->addContent(getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID, null, $feeTotal ?? ''));
 
             $settingGateway = $container->get(SettingGateway::class);
 

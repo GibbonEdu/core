@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         'future'         => $_POST['future'] ?? null,
     ];
 
-    $gibbonRoleIDArray = $_POST['gibbonRoleIDAll'] ?? null;
+    $gibbonRoleIDArray = $_POST['gibbonRoleIDAll'] ?? '';
     $data['gibbonRoleIDAll'] = (is_array($gibbonRoleIDArray))? implode(',', $gibbonRoleIDArray) : $gibbonRoleIDArray;
 
     // Validate the required values are present

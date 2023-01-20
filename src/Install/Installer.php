@@ -125,7 +125,7 @@ class Installer
      *
      * @param \Gibbon\Contracts\Database\Connection $connection
      *
-     * @return self
+     * @return Connection
      */
     public function getConnection(): Connection
     {
@@ -138,9 +138,7 @@ class Installer
      * @version v23
      * @since   v23
      *
-     * @param \PDO $connection
-     *
-     * @return self
+     * @return \PDO
      *
      * @throws \Exception If internal connection is not set.
      */
@@ -306,7 +304,7 @@ class Installer
      *
      * @return array
      */
-    public function getPasswordPolicies(): array
+    public function getPasswordPolicy(): array
     {
         $policies = [];
 
@@ -450,7 +448,7 @@ class Installer
     {
         // Get internal connection.
         $pdo = $this->getPDO();
-        
+
         // Try to install the demo data, report error but don't stop if any issues
         try {
             $sql = $this->getDemoSql($context);
@@ -465,7 +463,7 @@ class Installer
         } catch (\PDOException $e) {
             return false;
         }
-        
+
         return true;
     }
 

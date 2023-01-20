@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->displayLabel();
 
     // Display application details
-    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable($formBuilder);
+    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable();
     echo $detailsTable->render([$application]);
 
     // Detect existing accounts or sibling applications
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Build forms for other tabs
     $milestonesForm = $container->get(ApplicationMilestonesForm::class)->createForm($urlParams, $application['milestones']);
     $accountForm = $container->get(ApplicationAccountForm::class)->createForm($urlParams, $account['gibbonAdmissionsAccountID']);
-    $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses);
+    $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses, $formData);
 
     // Build tables for other tabs
     $formsTable = DataTable::create('')->withData([]);

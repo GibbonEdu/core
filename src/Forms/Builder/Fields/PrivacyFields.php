@@ -54,6 +54,7 @@ class PrivacyFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         $row = $form->addRow();
 
@@ -67,7 +68,7 @@ class PrivacyFields extends AbstractFieldGroup
                 $options = array_map('trim', explode(',', $privacyOptions));
 
                 $row->addLabel('privacyOptions[]', __($field['label']))->description(__($field['description']));
-                $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg')->required($required);
+                $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg')->required($required)->checked(explode(',', $default));
                 break;
         }
 

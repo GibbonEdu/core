@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_dele
         exit;
     }
 
-    $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->fetchAll();
+    $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->fetchAll();
     $partialFail = false;
 
     // First delete any coverage attached to this absence

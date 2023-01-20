@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -89,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     ->setURL('/modules/Activities/activities_manage_enrolment.php')
                     ->addParams($params);
 			}
-			
+
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
@@ -106,16 +107,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $row->addLabel('programDatesLabel', __('Program Dates'));
                 $row->addTextField('programDates')->readOnly()->setValue(Format::date($values['programStart']).'-'.Format::date($values['programEnd']));
             } else {
-                $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
-                $termList = array_filter(array_map(function ($item) use ($schoolTerms) {
-                    $index = array_search($item, $schoolTerms);
-                    return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                }, explode(',', $values['gibbonSchoolYearTermIDList'])));
-                $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
+                /**
+                 * @var SchoolYearTermGateway
+                 */
+                $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                $termList = $schoolYearTermGateway->getTermNamesByID($values['gibbonSchoolYearTermIDList']);
 
                 $row = $form->addRow();
                 $row->addLabel('termsLabel', __('Terms'));
-                $row->addTextField('terms')->readOnly()->setValue($termList);
+                $row->addTextField('terms')->readOnly()->setValue(!empty($termList)? implode(', ', $termList) : '-');
 	    }
 
             $row = $form->addRow();

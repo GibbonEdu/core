@@ -153,9 +153,35 @@ class RoleGateway extends QueryableGateway
     {
         $data = ['gibbonRoleIDAll' => $gibbonRoleIDAll];
         $sql = "SELECT gibbonRoleID as `0`, name as `1`
-                FROM gibbonRole 
+                FROM gibbonRole
                 WHERE FIND_IN_SET(gibbonRoleID, :gibbonRoleIDAll)";
 
         return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Returns the category of the specified role
+     *
+     * @param int $gibbonRoleID
+     *
+     * @return string|false
+     */
+    public function getRoleCategory($gibbonRoleID)
+    {
+        $sql = 'SELECT category FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+
+        return $this->db()->selectOne($sql, ['gibbonRoleID' => $gibbonRoleID]);
+    }
+
+    public function getAvailableUserRoleByID($gibbonPersonID, $gibbonRoleID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonRoleID' => $gibbonRoleID];
+        $sql = "SELECT gibbonRole.*
+                FROM gibbonPerson 
+                JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                WHERE (gibbonPerson.gibbonPersonID=:gibbonPersonID) 
+                AND gibbonRole.gibbonRoleID=:gibbonRoleID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }

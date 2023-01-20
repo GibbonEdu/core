@@ -23,6 +23,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -60,7 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_declin
 
     // Validate the database relationships exist
     $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
-    $substitute = $substituteGateway->getSubstituteByPerson($coverage['gibbonPersonIDCoverage'] ?? '');
+
+    $internalCoverage = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageInternal');
+    $substitute = $substituteGateway->getSubstituteByPerson($coverage['gibbonPersonIDCoverage'] ?? '', $internalCoverage);
 
     if (empty($coverage) || empty($substitute)) {
         $URL .= '&return=error2';

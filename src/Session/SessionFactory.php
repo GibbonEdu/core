@@ -20,14 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Session;
 
 use SessionHandler;
-use Gibbon\Services\Format;
 use Gibbon\Session\Session;
-use Psr\Container\ContainerInterface;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Session\NativeSessionHandler;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Session\DatabaseSessionHandler;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session as SessionInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * SessionFactory Class
@@ -124,6 +123,25 @@ class SessionFactory
 
         while ($row = $result->fetch()) {
             $session->set('i18n', $row);
+        }
+    }
+
+    public static function setCurrentSchoolYear(Session $session, array $schoolYear)
+    {
+        if (empty($schoolYear['gibbonSchoolYearID']) || empty($schoolYear['name'])) {
+            throw new \Exception();
+        }
+
+        $session->set('gibbonSchoolYearID', $schoolYear['gibbonSchoolYearID']);
+        $session->set('gibbonSchoolYearName', $schoolYear['name']);
+        $session->set('gibbonSchoolYearSequenceNumber', $schoolYear['sequenceNumber']);
+        $session->set('gibbonSchoolYearFirstDay',$schoolYear['firstDay']);
+        $session->set('gibbonSchoolYearLastDay', $schoolYear['lastDay']);
+
+        if (!$session->exists('gibbonSchoolYearIDCurrent')) {
+            $session->set('gibbonSchoolYearIDCurrent', $schoolYear['gibbonSchoolYearID']);
+            $session->set('gibbonSchoolYearNameCurrent', $schoolYear['name']);
+            $session->set('gibbonSchoolYearSequenceNumberCurrent', $schoolYear['sequenceNumber']);
         }
     }
 }

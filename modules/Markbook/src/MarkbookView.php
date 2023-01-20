@@ -97,9 +97,15 @@ class MarkbookView
 
     /**
      * The database ID of the gibbonCourseClass
-     * @var [type]
+     * @var int
      */
     public $gibbonCourseClassID;
+
+    /**
+     * The database ID of the gibbonSchoolYear
+     * @var int
+     */
+    public $gibbonSchoolYearID;
 
     /**
      * @var SettingGateway
@@ -215,8 +221,8 @@ class MarkbookView
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $where = $this->getColumnFilters();
             $sql = 'SELECT count(*) as count FROM gibbonMarkbookColumn WHERE ' . $where;
-            $result = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
+            $result = $this->pdo->select($sql, $data);
+        } catch (\PDOException $e) {
             $this->error($e->getMessage());
         }
 
@@ -251,8 +257,8 @@ class MarkbookView
                 $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
                 $where = $this->getColumnFilters();
                 $sql = 'SELECT min(sequenceNumber) as min FROM (SELECT sequenceNumber FROM gibbonMarkbookColumn WHERE ' . $where . ' LIMIT ' . ($pageNum * $this->columnsPerPage) . ', ' . $this->columnsPerPage . ') as mc';
-                $resultSequence = $this->pdo->executeQuery($data, $sql);
-            } catch (PDOException $e) {
+                $resultSequence = $this->pdo->select($sql, $data);
+            } catch (\PDOException $e) {
                 $this->error($e->getMessage());
             }
 
@@ -268,8 +274,8 @@ class MarkbookView
 
             $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE ' . $where . ' ORDER BY sequenceNumber, date, complete, completeDate LIMIT ' . ($pageNum * $this->columnsPerPage) . ', ' . $this->columnsPerPage;
 
-            $result = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
+            $result = $this->pdo->select($sql, $data);
+        } catch (\PDOException $e) {
             $this->error($e->getMessage());
         }
 
@@ -288,8 +294,8 @@ class MarkbookView
                     try {
                         $dataSub = array("gibbonPlannerEntryID" => $column->getData('gibbonPlannerEntryID'));
                         $sqlSub = "SELECT homeworkDueDateTime, date, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID LIMIT 1";
-                        $resultSub = $this->pdo->executeQuery($dataSub, $sqlSub);
-                    } catch (PDOException $e) {
+                        $resultSub = $this->pdo->select($sqlSub, $dataSub);
+                    } catch (\PDOException $e) {
                         $this->error($e->getMessage());
                     }
 
@@ -323,10 +329,10 @@ class MarkbookView
         foreach ($dataSet as $i => $columnData) {
             if ($column = new MarkbookColumn($columnData, $this->settings['enableEffort'], $this->settings['enableRubrics'])) {
                 $this->columns[$i] = $column;
-				
+
 				// Grab the minimum sequenceNumber for the current page set, to pass to markbook_viewAjax.php
 				$this->minSequenceNumber = min($this->minSequenceNumber, $columnData['sequenceNumber']);
-                
+
 				// Attach planner info to help determine if theres homework submissions for this column
                 if (!empty($columnData['gibbonPlannerEntry'])) {
                     $column->setSubmissionDetails($columnData['gibbonPlannerEntry']);
@@ -368,8 +374,8 @@ class MarkbookView
         try {
             $data = array('gibbonScaleID' => $DAS);
             $sql = 'SELECT `name`, `nameShort`, `numeric` FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-            $result = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
+            $result = $this->pdo->select($sql, $data);
+        } catch (\PDOException $e) {
             $this->error($e->getMessage());
         }
 
@@ -420,8 +426,8 @@ class MarkbookView
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $sql = 'SELECT gibbonPersonIDStudent, value FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
-            $result = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
+            $result = $this->pdo->select($sql, $data);
+        } catch (\PDOException $e) {
             $this->error($e->getMessage());
         }
 
@@ -758,8 +764,8 @@ class MarkbookView
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $sql = 'SELECT type, description, weighting, reportable, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
-            $resultWeights = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
+            $resultWeights = $this->pdo->select($sql, $data);
+        } catch (\PDOException $e) {
             echo "<div class='error'>" . $e->getMessage() . '</div>';
         }
 
@@ -783,16 +789,16 @@ class MarkbookView
             try {
                 $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
                 $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' AND gibbonPersonIDStudent=:gibbonPersonIDStudent ORDER BY gibbonPersonIDStudent, completeDate";
-                $result = $this->pdo->executeQuery($data, $sql);
-            } catch (PDOException $e) {
+                $result = $this->pdo->select($sql, $data);
+            } catch (\PDOException $e) {
                 $this->error($e->getMessage());
             }
         } else {
             try {
                 $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
                 $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
-                $result = $this->pdo->executeQuery($data, $sql);
-            } catch (PDOException $e) {
+                $result = $this->pdo->select($sql, $data);
+            } catch (\PDOException $e) {
                 $this->error($e->getMessage());
             }
         }
@@ -876,8 +882,8 @@ class MarkbookView
             try {
                 $data = array("gibbonSchoolYearID" => $this->gibbonSchoolYearID);
                 $sql = "SELECT gibbonSchoolYearTermID, name, nameShort FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-                $resultTerms = $this->pdo->executeQuery($data, $sql);
-            } catch (PDOException $e) {
+                $resultTerms = $this->pdo->select($sql, $data);
+            } catch (\PDOException $e) {
                 $this->error($e->getMessage());
             }
 
@@ -963,8 +969,8 @@ class MarkbookView
                             AND category=:category $courseWhere
                         ORDER BY name
                         LIMIT 1";
-                    $resultExternalAssessment = $this->pdo->executeQuery($dataExternalAssessment, $sqlExternalAssessment);
-                } catch (PDOException $e) {
+                    $resultExternalAssessment = $this->pdo->select($sqlExternalAssessment, $dataExternalAssessment);
+                } catch (\PDOException $e) {
                     $this->error($e->getMessage());
                 }
 
@@ -1028,8 +1034,8 @@ class MarkbookView
         try {
             $data = array("gibbonSchoolYearTermID" => $gibbonSchoolYearTermID);
             $sql = "SELECT firstDay, lastDay FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID";
-            $resultTerms = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
+            $resultTerms = $this->pdo->select($sql, $data);
+        } catch (\PDOException $e) {
             $this->error($e->getMessage());
         }
 
@@ -1040,52 +1046,6 @@ class MarkbookView
         } else {
             return false;
         }
-    }
-
-    /**
-     * Creates simple SQL statements for options from the Class Selector
-     *
-     * @deprecated v17
-     * @version 7th May 2016
-     * @since   7th May 2016
-     * @param   string $filter
-     * @return  bool   True if the filter was added
-     */
-    public function filterByFormOptions($filter)
-    {
-        if (empty($filter)) {
-            return false;
-        }
-
-        switch ($filter) {
-            case 'marked':
-                return $this->filterByQuery("complete = 'Y'");
-            case 'unmarked':
-                return $this->filterByQuery("complete = 'N'");
-            case 'week':
-                return $this->filterByQuery("WEEKOFYEAR(date)=WEEKOFYEAR(NOW())");
-            case 'month':
-                return $this->filterByQuery("MONTH(date)=MONTH(NOW())");
-        }
-    }
-
-    /**
-     * Add a raw SQL statement to the filters
-     *
-     * @deprecated v17
-     * @version 7th May 2016
-     * @since   7th May 2016
-     * @param   string $query
-     * @return  bool   True if the filter was added
-     */
-    public function filterByQuery($query)
-    {
-        if (empty($query)) {
-            return false;
-        }
-
-        $this->columnFilters[] = $query;
-        return true;
     }
 
     /**
@@ -1114,8 +1074,8 @@ class MarkbookView
      * @since   7th May 2016
      * @param   string $message
      */
-    protected function error($message)
+    protected function error(string $message)
     {
-        echo "<div class='error'>" . $e->getMessage() . '</div>';
+        echo "<div class='error'>" . $message . '</div>';
     }
 }

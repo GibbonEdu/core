@@ -34,6 +34,7 @@ use Gibbon\Module\Staff\Messages\CoverageDeclined;
 use Gibbon\Module\Staff\Messages\IndividualRequest;
 use Gibbon\Module\Staff\Messages\BroadcastRequest;
 use Gibbon\Module\Staff\Messages\NoCoverageAvailable;
+use Gibbon\Module\Staff\Messages\NewCoverageRequest;
 
 /**
  * CoverageNotificationProcess
@@ -49,6 +50,8 @@ class CoverageNotificationProcess extends BackgroundProcess
     protected $groupGateway;
 
     protected $messageSender;
+    protected $urgentNotifications;
+    protected $internalCoverage;
     protected $urgencyThreshold;
     protected $organisationHR;
 
@@ -66,9 +69,46 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->groupGateway = $groupGateway;
         $this->messageSender = $messageSender;
 
+        $this->internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
         $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
         $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
+    }
+
+    public function runNewCoverageRequest($coverageList)
+    {
+        if (empty($coverageList)) return false;
+
+        $dates = $this->getCoverageDates($coverageList);
+
+        $coverage = $this->getCoverageDetailsByID(current($coverageList));
+
+        $recipients = [$this->organisationHR];
+        $message = new NewCoverageRequest($coverage, $dates);
+
+        // Add the absent person, if this coverage request was created by someone else
+        if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus']) {
+            $recipients[] = $coverage['gibbonPersonID'];
+        }
+
+        // Add the notification group members, if selected
+        if (!empty($coverage['gibbonGroupID'])) {
+            $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($coverage['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $recipients = array_merge($recipients, $groupRecipients);
+        }
+
+        if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
+            $data = [
+                'notificationSent' => 'Y',
+                'notificationList' => json_encode($recipients),
+            ];
+            foreach ($coverageList as $gibbonStaffCoverageID) {
+                $this->staffCoverageGateway->update($gibbonStaffCoverageID, $data);
+            }
+            
+        }
+
+        return $sent;
     }
 
     public function runIndividualRequest($gibbonStaffCoverageID)
@@ -100,20 +140,23 @@ class CoverageNotificationProcess extends BackgroundProcess
         $availableSubs = [];
         foreach ($coverageDates as $date) {
             $criteria = $this->substituteGateway
-                ->newQueryCriteria(true)
+                ->newQueryCriteria()
+                ->filterBy('allStaff', $this->internalCoverage == 'Y')
                 ->filterBy('substituteTypes', $coverage['substituteTypes']);
             $availableByDate = $this->substituteGateway->queryAvailableSubsByDate($criteria, $date['date'])->toArray();
             $availableSubs = array_merge($availableSubs, $availableByDate);
         }
         
-        if (count($availableSubs) > 0) {
-            // Send messages to available subs
-            $recipients = array_column($availableSubs, 'gibbonPersonID');
-            $message = new BroadcastRequest($coverage);
-        } else {
-            // Send a message to admin - no coverage
-            $recipients = [$this->organisationHR];
-            $message = new NoCoverageAvailable($coverage);
+        if ($this->internalCoverage == 'N' || $coverage['urgent'] == true) {
+            if (count($availableSubs) > 0) {
+                // Send messages to available subs
+                $recipients = array_column($availableSubs, 'gibbonPersonID');
+                $message = new BroadcastRequest($coverage);
+            } else {
+                // Send a message to admin - no coverage
+                $recipients = [$this->organisationHR];
+                $message = new NoCoverageAvailable($coverage);
+            }
         }
 
         if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
@@ -167,6 +210,10 @@ class CoverageNotificationProcess extends BackgroundProcess
         if (empty($coverage)) return false;
 
         $recipients = [$coverage['gibbonPersonIDStatus']];
+        if ($coverage['requestType'] == 'Assigned') {
+            $recipients[] = $this->organisationHR;
+        }
+
         $message = new CoverageDeclined($coverage);
 
         return $this->messageSender->send($message, $recipients, $coverage['gibbonPersonIDCoverage']);
@@ -177,7 +224,11 @@ class CoverageNotificationProcess extends BackgroundProcess
         $coverage = $this->getCoverageDetailsByID($gibbonStaffCoverageID);
         if (empty($coverage)) return false;
 
-        $recipients = [$coverage['gibbonPersonID'], $coverage['gibbonPersonIDCoverage']];
+        $recipients = [$coverage['gibbonPersonIDStatus'], $coverage['gibbonPersonIDCoverage'], $coverage['gibbonPersonID']];
+        if ($coverage['requestType'] == 'Assigned') {
+            $recipients[] = $this->organisationHR;
+        }
+
         $message = new CoverageCancelled($coverage);
 
         return $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID']);
@@ -195,5 +246,27 @@ class CoverageNotificationProcess extends BackgroundProcess
         }
 
         return $coverage ?? [];
+    }
+
+    private function getCoverageDates($gibbonStaffCoverageID)
+    {
+        $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();
+
+        $coverageByTimetable = count(array_filter($dates->toArray(), function($item) {
+            return !empty($item['foreignTableID']);
+        }));
+
+        if (!$coverageByTimetable) return $dates;
+
+        $dates->transform(function (&$item) {
+            if (empty($item['foreignTableID'])) return;
+
+            $times = $this->staffCoverageDateGateway->getCoverageTimesByForeignTable($item['foreignTable'], $item['foreignTableID'], $item['date']);
+
+            $item['period'] = $times['period'] ?? '';
+            $item['contextName'] = $times['contextName'] ?? '';
+        });
+
+        return $dates;
     }
 }

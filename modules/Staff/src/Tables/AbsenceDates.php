@@ -26,13 +26,14 @@ use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
 /**
  * AbsenceDates
  *
  * Reusable DataTable class for displaying the info and actions available for absence dates.
  *
- * @version v18
+ * @version v25
  * @since   v18
  */
 class AbsenceDates
@@ -41,22 +42,41 @@ class AbsenceDates
     protected $db;
     protected $staffAbsenceGateway;
     protected $staffAbsenceDateGateway;
+    protected $staffCoverageDateGateway;
 
-    public function __construct(Session $session, Connection $db, StaffAbsenceGateway $staffAbsenceGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway)
+    public function __construct(Session $session, Connection $db, StaffAbsenceGateway $staffAbsenceGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway, StaffCoverageDateGateway $staffCoverageDateGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
+        $this->staffCoverageDateGateway = $staffCoverageDateGateway;
     }
 
-    public function create($gibbonStaffAbsenceID, $includeDetails = false)
+    public function create($gibbonStaffAbsenceID, $includeDetails = false, $includeCoverage = true)
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
         $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($gibbonStaffAbsenceID);
-        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->toDataSet();
+        $dates = $includeCoverage 
+            ? $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->toDataSet()
+            : $this->staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->toDataSet();
+
+        $coverageByTimetable = count(array_filter($dates->toArray(), function($item) {
+            return !empty($item['gibbonTTDayRowClassID']);
+        }));
+
+        if ($coverageByTimetable) {
+            $dates->transform(function (&$item) {
+                if (empty($item['gibbonTTDayRowClassID'])) return;
+
+                $times = $this->staffCoverageDateGateway->getCoverageTimesByTimetableClass($item['gibbonTTDayRowClassID']);
+                $item['columnName'] = $times['period'];
+                $item['courseNameShort'] = $times['courseName'];
+                $item['classNameShort'] = $times['className'];
+            });
+        }
 
         $table = DataTable::create('staffAbsenceDates')->withData($dates);
 
@@ -74,10 +94,20 @@ class AbsenceDates
         $table->addColumn('timeStart', $timeLabel)
             ->format([AbsenceFormats::class, 'timeDetails']);
 
-        if (!empty($absence['coverage'])) {
-            $table->addColumn('coverage', __('Coverage'))
-                ->width('30%')
-                ->format([AbsenceFormats::class, 'coverage']);
+        if ($includeCoverage && $coverageByTimetable) {
+            $table->addColumn('columnName', __('Period'));
+            $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+        }
+
+        if ($includeCoverage && !empty($absence['coverage'])) {
+
+            if ($absence['coverage'] != 'Pending') {
+                $table->addColumn('coverage', __('Coverage'))
+                    ->width('30%')
+                    ->format([AbsenceFormats::class, 'coverage']);
+            }
+
+            $table->addColumn('notes', __('Notes'))->format(Format::using('truncate', 'notes', 60));
         }
 
         // ACTIONS

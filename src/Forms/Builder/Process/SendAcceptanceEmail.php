@@ -50,6 +50,14 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 
     public function isEnabled(FormBuilderInterface $builder)
     {
+        if ($builder->getConfig('mode') == 'submit') {
+            return false;
+        }
+
+        if ($builder->getConfig('mode') == 'process' && $builder->getConfig($this->getProcessName().'Enabled') != 'Y') {
+            return false;
+        }
+
         return true;
     }
 

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     $today = date('Y-m-d');
 
     $dateEnd = (isset($_GET['dateEnd']))? Format::dateConvert($_GET['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
+    $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d');
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {
@@ -97,6 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo '<h2>';
         echo __('Report Data');
         echo '</h2>';
+
+        $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
         //Produce array of attendance data
 
@@ -167,6 +170,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             $timestampStart = Format::timestamp($dateStart);
             $timestampEnd = Format::timestamp($dateEnd);
 
+            // Build a list of classes off timetable
+            $offTimetableList = [];
+            foreach ($classes as $row) {
+                for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
+                    $date = $lastNSchoolDays[$i];
+                    $offTimetableList[$row['gibbonCourseClassID']][$date] = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $row['gibbonCourseClassID'], $lastNSchoolDays[$i]);
+                }
+            }
+
             //Loop through each form group
             foreach ($classes as $row) {
 
@@ -176,6 +188,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 //Output row only if not registered on specified date, and timetabled for that day
                 if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false ||
                     count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
+                        
+                    if (!empty($offTimetableList[$row['gibbonCourseClassID']]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonCourseClassID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonCourseClassID']])) == count($lastNSchoolDays))) {
+                        continue;
+                    }
+                    
                     ++$count;
 
                     //COLOR ROW BY STATUS!
@@ -193,18 +210,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
                         $historyCount = 0;
                         for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
+                            $date = $lastNSchoolDays[$i];
+
                             $link = '';
                             if ($i > ( count($lastNSchoolDays) - 1)) {
                                 echo "<td class='highlightNoData'>";
                                 echo '<i>'.__('NA').'</i>';
                                 echo '</td>';
                             } else {
-                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
+                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$date;
+                                $title = '';
 
-                                if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
+                                $offTimetable = $offTimetableList[$row['gibbonCourseClassID']][$date] ?? false;
+
+                                if ($offTimetable) {
+                                    $class = 'bg-stripe-dark';
+                                    $title = __('Off Timetable');
+                                } elseif ( isset($log[$row['gibbonCourseClassID']][$date]) == true ) {
                                     $class = 'highlightPresent';
                                 } else {
-                                    if (isset($tt[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
+                                    if (isset($tt[$row['gibbonCourseClassID']][$date]) == true) {
                                         $class = 'highlightAbsent';
 
                                     } else {
@@ -213,15 +238,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                     }
                                 }
 
-                                echo "<td class='$class' style='padding: 12px !important;'>";
+                                echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
-                                    echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
+                                    echo Format::dateReadable($date, '%d').'<br/>';
+                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
+                                    echo Format::dateReadable($date, '%d').'<br/>';
+                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
                                 }
                                 echo '</td>';
 

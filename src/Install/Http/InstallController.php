@@ -516,8 +516,8 @@ class InstallController
             $row->addTextField('username')->setValue($data['username'] ?? '')->required()->maxLength(20);
 
         try {
-            $message = static::renderPasswordPolicies(
-                $installer->getPasswordPolicies()
+            $message = static::renderPasswordPolicy(
+                $installer->getPasswordPolicy()
             );
             if (!empty($message)) {
                 $form->addRow()->addAlert($message, 'warning');
@@ -559,16 +559,13 @@ class InstallController
 
         $form->addRow()->addHeading('System Settings', __('System Settings'));
 
-        $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-        $port = '';
-        if ($_SERVER['SERVER_PORT'] != '80') {
-            $port = ':'.$_SERVER['SERVER_PORT'];
+        if (empty($absoluteURL)) {
+            $absoluteURL = static::guessAbsoluteUrl();
         }
-        $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
         $setting = $installer->getSetting('absoluteURL', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addURL($setting['name'])->setValue($data[$setting['name']] ?? $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
+            $row->addURL($setting['name'])->setValue($absoluteURL)->maxLength(100)->required();
 
         $setting = $installer->getSetting('absolutePath', 'System', true);
         $row = $form->addRow();
@@ -1091,7 +1088,7 @@ class InstallController
      *
      * @return string HTML list.
      */
-    public static function renderPasswordPolicies(array $policies): string
+    public static function renderPasswordPolicy(array $policies): string
     {
         $html = implode("\n", array_map(function ($policy) {
             return "<li>{$policy}</li>";
@@ -1118,7 +1115,7 @@ class InstallController
         $urlBasePath = substr($baseDir, $prefixLength);
         $host = $_SERVER['HTTP_HOST'];
         $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-        return "{$protocol}://{$host}{$urlBasePath}";
+        return rtrim("{$protocol}://{$host}{$urlBasePath}", '/');
     }
 
     /**

@@ -1,0 +1,99 @@
+{% if duty %}
+<div id="duty" class="dutyContainer overflow-x-auto max-w-4xl font-sans">
+
+    <div style="width:{{ (duty|length * 16.5) }}rem">
+
+    {% for weekdayName, dutyList in duty %}
+        <div class="float-left w-64 mr-2">
+        <h5 class="mt-0 p-0">{{ weekdayName }}</h5>
+
+        {% for dutyItem in dutyList %}
+            <div class="bg-gray-200 p-2 mb-2 rounded-sm" >
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="font-bold text-gray-700">{{ dutyItem.name }}</span>
+                    <span class="text-xs text-gray-500">{{ formatUsing('timeRange', dutyItem.timeStart, dutyItem.timeEnd) }}</span>
+                </div>
+
+                <div class="dutySection" style="min-height: 3.2rem;" data-duty="{{ dutyItem.gibbonStaffDutyID }}" data-weekday="{{ dutyItem.gibbonDaysOfWeekID }}">
+
+                {% for person in dutyItem.roster %}
+                <div class="dutyPerson z-10 flex items-center bg-white shadow rounded-sm mb-2 p-2 text-sm border  {% if canEdit %}hover:bg-blue-100 hover:border-blue-500 cursor-move group{% endif %}" style="width: 15rem;" data-person="{{ person.gibbonStaffDutyPersonID }}">
+                    <div class="rounded-full w-8 h-8 mr-2 overflow-hidden cursor-move" style="background-image: url('{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_75.jpg'); background-size: cover; background-position: 50% 45%;">
+                        {% if person.image_240 is not empty %}
+                        <img src="{{ absoluteURL }}/{{ person.image_240 }}" class="w-full -mt-1">
+                        {% endif %}
+                    </div>
+
+                    {{ formatUsing('name', person.title, person.preferredName, person.surname, 'Staff', false, true) }}<br/>
+
+                    {% if canEdit %}
+                    <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Staff/staff_duty_delete.php&width=650&height=250&gibbonStaffDutyPersonID={{ person.gibbonStaffDutyPersonID }}" class="thickbox flex-1 text-right hidden group-hover:block cursor-pointer">
+                        <img src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/garbage.png" title="{{ __('Delete') }}" class="w-3 h-3 mr-2">
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if canEdit %}
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Staff/staff_duty_add.php&width=800&height=400&gibbonDaysOfWeekID={{ (dutyList|first).gibbonDaysOfWeekID }}" class="thickbox w-full bg-gray-200 p-2 mb-2 rounded-sm text-sm font-bold text-gray-700 opacity-50 hover:opacity-100 flex items-center justify-center">
+            <img src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/page_new.png" class="w-3 h-3 mr-2">
+            {{ __('Add Staff') }}
+        </a>
+        {% endif %}
+        </div>
+    {% endfor %}
+
+    </div>
+</div>
+{% else %}
+    <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
+        {{ include('components/blankSlate.twig.html') }}
+    </div>
+{% endif %}
+
+{% if canEdit %}
+<script>
+
+$('#duty .dutySection').sortable({
+    tolerance: 5,
+    cursor: "move",
+    items: ".dutyPerson",
+    connectWith: ".dutySection",
+    zIndex: 20,
+    containment: "#duty",
+    
+});
+
+$('#duty .dutySection').droppable({
+    accept: '.dutyPerson',
+
+    over: function(event, ui) {
+        },
+        out: function(event, ui) {
+        },
+        deactivate: function(event, ui) {
+        },
+
+        drop: function(event, ui) {
+            $.ajax({
+                url: '{{ absoluteURL }}/modules/Staff/staff_duty_ajaxProcess.php',
+                data: {
+                    gibbonStaffDutyPersonID: $(ui.draggable).data('person'),
+                    gibbonStaffDutyID: $(this).data('duty'),
+                    gibbonDaysOfWeekID: $(this).data('weekday'),
+                },
+                type: 'POST',
+                complete: function (data) {
+
+                },
+                
+            });
+        },
+});
+    
+</script>
+
+{% endif %}

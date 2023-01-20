@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
@@ -149,10 +150,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
             } else {
-                //Check strength of password
-                $passwordMatch = doesPasswordMatchPolicy($connection2, $password);
+                /** @var PasswordPolicy */
+                $passwordPolicies = $container->get(PasswordPolicy::class);
 
-                if ($passwordMatch == false) {
+                //Check strength of password
+                if (!$passwordPolicies->validate($password)) {
                     $URL .= '&return=error7';
                     header("Location: {$URL}");
                 } else {

@@ -24,7 +24,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' => 'RAW']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' => 'RAW', 'text' => 'HTML']);
 
 $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 $gibbonReportTemplateSectionID = $_POST['gibbonReportTemplateSectionID'] ?? '';

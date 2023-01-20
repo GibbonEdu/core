@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_reject.php') == false) {
     // Access denied
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         return;
     }
 
-    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
+    $application = $container->get(AdmissionsApplicationGateway::class)->getApplicationDetailsByID($gibbonAdmissionsApplicationID);
 
     if (empty($application)) {
         $page->addError(__('The specified record cannot be found.'));
@@ -49,6 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $values = json_decode($application['data'], true);
     $name = !empty($values['surname']) ? Format::name('', $values['preferredName'], $values['surname'], 'Student') : $application['owner'];
 
+    // Display application details
+    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable();
+    echo $detailsTable->render([$application]);
+
+    // FORM
     $form = Form::create('application', $session->get('absoluteURL').'/modules/Admissions/applications_manage_rejectProcess.php');
 
     $form->addHiddenValue('address', $session->get('address'));

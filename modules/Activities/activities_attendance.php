@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -40,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $gibbonActivityID = $_GET['gibbonActivityID'];
     }
 
+    $settingGateway = $container->get(SettingGateway::class);
     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 
     $sql = "";
@@ -92,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $students = $studentResult->fetchAll();
 
+    $data = array('gibbonActivityID' => $gibbonActivityID);
+    $sql = 'SELECT gibbonActivityAttendance.date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID';
+    $attendanceResult = $connection2->prepare($sql);
+    $attendanceResult->execute($data);
 
-        $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = 'SELECT gibbonActivityAttendance.date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID';
-        $attendanceResult = $connection2->prepare($sql);
-        $attendanceResult->execute($data);
     // Gather the existing attendance data (by date and not index, should the time slots change)
     $sessionAttendanceData = array();
 
@@ -123,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo __('Activity');
     echo '</h2>';
 
-    echo "<table class='smallIntBorder' style='width: 100%' cellspacing='0'><tbody>";
+    echo "<table class='smallIntBorder' style='width: 100%;' cellspacing='0'><tbody>";
     echo '<tr>';
     echo "<td style='width: 33%; vertical-align: top'>";
     echo "<span class='infoTitle'>".__('Start Date').'</span><br>';
@@ -176,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo '</div>';
     } else {
         $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
-        $form->setClass('blank block max-w-full');
+        $form->setClass('blank block w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
@@ -195,16 +198,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         // Headings as a separate table
         $table = $row->addTable()->setClass('mini w-full m-0 border-0');
         $header = $table->addHeaderRow();
-            $header->addContent(__('Student'))->addClass('w-48 py-8');
+            $header->addContent(__('Student'))->addClass('w-56 py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('emphasis subdued right');
 
-        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-48 border-l-2 border-gray-600 -mt-1')
+        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600 -mt-1')
             ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
 
         $row = $table->addRow();
-            $row->addContent(__('Date'))->addClass('w-48 h-24 absolute left-0 ml-px flex items-center');
+            $row->addContent(__('Date'))->addClass('w-56 h-24 absolute left-0 ml-px flex items-center');
 
         $icon = '<img class="mt-1 inline" title="%1$s" src="./themes/'.$session->get('gibbonThemeName').'/img/%2$s"/>';
 
@@ -242,17 +245,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         // Build an empty array of attendance count data for each session
         $attendanceCount = array_combine(array_keys($activitySessions), array_fill(0, count($activitySessions), 0));
 
+        // Setup attendance information
+        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+        $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
+        $currentDate = date('Y-m-d');
+
         // Display student attendance data per session
         foreach ($students as $index => $student) {
+
+            $result = $attendanceLogGateway->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $currentDate, $countClassAsSchool);
+            $log = $result->rowCount() > 0? $result->fetch() : ['type' => '', 'direction' => '', 'scope' => ''];
+
             $row = $table->addRow()->addData('student', $student['gibbonPersonID']);
+            $col = $row->addColumn()->addClass('w-56 h-8 absolute left-0 ml-px text-left');
 
-            $col = $row->addColumn()->addClass('w-48 h-8 absolute left-0 ml-px text-left');
-
-            $col->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
+            $link = $col->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
                 ->setURl($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php')
                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                 ->setClass('')
                 ->prepend(($index+1).') ');
+
+            if ($log['direction'] == 'Out' && $log['scope'] == 'Offsite') {
+                $link->append(Format::tag(__($log['type']), 'error ml-2 text-xxs absolute whitespace-nowrap inline-block'));
+            } elseif ($log['scope'] == 'Offsite' || $log['scope'] == 'Offsite - Left') {
+                $link->append(Format::tag(__($log['type']), 'message ml-2 text-xxs absolute whitespace-nowrap inline-block'));
+            } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Late') {
+                $link->append(Format::tag(__($log['type']), 'warning ml-2 text-xxs absolute whitespace-nowrap inline-block'));
+            }
 
             $i = 0;
             foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
@@ -261,14 +280,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                     $content = '✓';
                     $attendanceCount[$sessionDate]++;
                 }
-                $row->addContent($content)->setClass("col$i h-8 text-center");
+                $cell = $row->addContent($content)->setClass("col$i h-8 text-center");
+
+                if ($sessionDate == $currentDate && $log['scope'] == 'Offsite' || $log['scope'] == 'Offsite - Left') {
+                    $cell->addClass('unchecked');
+                }
+
                 ++$i;
             }
         }
 
         // Total students per date
         $row = $table->addRow();
-        $row->addContent(__('Total students:'))->addClass('text-right w-48 h-8 absolute left-0 ml-px');
+        $row->addContent(__('Total students:'))->addClass('text-right w-56 h-8 absolute left-0 ml-px');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
@@ -276,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 : '');
         }
 
-        $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full')->addRow();
+        $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full doublescroll-wrapper')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
                 ->wrap('<span class="small emphasis">', '</span>');
             $row->addSubmit();

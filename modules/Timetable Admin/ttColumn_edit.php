@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             $form->addHiddenValue('gibbonTTColumnID', $values['gibbonTTColumnID']);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
                 $row->addTextField('name')->maxLength(30)->required();
 
             $row = $form->addRow();

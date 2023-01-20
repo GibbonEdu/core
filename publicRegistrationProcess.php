@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
@@ -105,10 +106,11 @@ if ($proceed == false) {
         exit;
     }
 
-    // Check strength of password
-    $passwordMatch = doesPasswordMatchPolicy($connection2, $password);
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
 
-    if ($passwordMatch == false) {
+    // Check strength of password
+    if (!$passwordPolicies->validate($password)) {
         header("Location: {$URL->withReturn('error6')}");
         exit;
     }

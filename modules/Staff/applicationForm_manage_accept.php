@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\SettingGateway;
@@ -73,12 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '</h3>';
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
-                
+
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID);
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
-                
+
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
@@ -112,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $form->addRow()->addSubmit(__('Accept'));
 
                 echo $form->getOutput();
-                
+
             } elseif ($step == 2) {
                 echo '<h3>';
                 echo __('Step')." $step";
@@ -140,7 +141,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     $username = $generator->generateByRole($gibbonRoleID);
 
-                    $password = randomPassword(8);
+                    // Generate a random password from site's password policy.
+                    /** @var PasswordPolicy */
+                    $p = $container->get(PasswordPolicy::class);
+                    $password = $p->generate();
                     $salt = getSalt();
                     $passwordStrong = hash('sha256', $salt.$password);
 
@@ -182,7 +186,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         }
                         $body .= __('Job Type').': '.__($values['type'])."<br/>";
                         $body .= __('Job Title').': '.__($values['jobTitle'])."<br/>";
-                        $bodyPlain = emailBodyConvert($body);
 
                         $mail = $container->get(Mailer::class);
                         $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
@@ -217,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         }
                         if ($insertOK == true) {
                             $gibbonPersonID = $connection2->lastInsertID();
-                            
+
                             $failapplicant = false;
 
                             //Populate informApplicant array
@@ -292,7 +295,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     } else {
                                         $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$session->get('systemName').', '.$session->get('organisationNameShort')."'s system for managing school information. You can access the system by going to ".$session->get('absoluteURL').' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$session->get('organisationHRName').",<br/><br/>".$session->get('systemName').' Administrator';
                                     }
-                                    $bodyPlain = emailBodyConvert($body);
 
                                     $mail = $container->get(Mailer::class);
                                     $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));

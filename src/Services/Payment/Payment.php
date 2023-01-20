@@ -169,11 +169,10 @@ class Payment implements PaymentInterface
         } elseif (stripos($response->getMessage(), 'currency') !== false) {
             // Payment not possible
             return self::RETURN_ERROR_CURRENCY;
-        } else {
-            // Payment failed
-            error_log('Payment Gateway Failed: '.$this->paymentGatewaySetting.' - '.$response->getMessage());
-            return self::RETURN_ERROR_CONNECT;
         }
+        // Payment failed
+        error_log('Payment Gateway Failed: '.$this->paymentGatewaySetting.' - '.$response->getMessage());
+        return self::RETURN_ERROR_CONNECT;
     }
 
     public function confirmPayment() : string

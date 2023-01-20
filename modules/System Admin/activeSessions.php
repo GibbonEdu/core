@@ -98,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
         ->format(Format::using('relativeTime', ['timestampCreated', true, false]));
 
     $table->addColumn('timestampActive', __('Last Active'))
+        ->sortable('timestampModified')
         ->format(Format::using('relativeTime', ['timestampModified', true, false]));
 
     $table->addColumn('timestampModified', __('Last Updated'))

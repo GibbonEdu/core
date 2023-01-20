@@ -17,22 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 $_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
 
 require __DIR__.'/../gibbon.php';
-
-// Setup some of the globals
-getSystemSettings($guid, $connection2);
-setCurrentSchoolYear($guid, $connection2);
-Format::setupFromSession($container->get('session'));
 
 //Check for CLI, so this cannot be run through browser
 $settingGateway = $container->get(SettingGateway::class);
@@ -87,8 +82,8 @@ $families = $familyGateway->selectFamiliesWithActiveStudents($gibbonSchoolYearID
 foreach ($families as $gibbonFamilyID => $students) {
     // Get the adults in this family and filter by email settings
     $familyAdults = $familyGateway->selectAdultsByFamily($gibbonFamilyID, true)->fetchAll();
-    $familyAdults = array_filter($familyAdults, function ($adult) {
-        return $adult['contactEmail'] == 'Y';
+    $familyAdults = array_filter($familyAdults, function ($parent) {
+        return $parent['status'] == 'Full' && $parent['contactEmail'] == 'Y' && !empty($parent['email']);
     });
 
     if (empty($familyAdults)) continue;

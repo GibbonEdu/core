@@ -137,11 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $output = '';
                 if (!empty($beahviour['comment'])) {
                     $output .= '<strong>'.__('Incident').'</strong><br/>';
-                    $output .= nl2brr($beahviour['comment']).'<br/>';
+                    $output .= nl2br($beahviour['comment']).'<br/>';
                 }
                 if (!empty($beahviour['followup'])) {
                     $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                    $output .= nl2brr($beahviour['followup']).'<br/>';
+                    $output .= nl2br($beahviour['followup']).'<br/>';
                 }
                 return $output;
             });
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addColumn('student', __('Student'))
             ->description(__('Form Group'))
             ->sortable(['student.surname', 'student.preferredName'])
-            ->width('25%')
+            ->context('primary')
             ->format(function($person) use ($session) {
                 $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
@@ -157,6 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
         $table->addColumn('date', __('Date'))
+            ->context('primary')
             ->format(function($beahviour) {
                 if (substr($beahviour['timestamp'], 0, 10) > $beahviour['date']) {
                     return __('Updated:').' '.Format::date($beahviour['timestamp']).'<br/>'
@@ -167,6 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
         $table->addColumn('type', __('Type'))
+            ->context('secondary')
             ->width('5%')
             ->format(function($beahviour) use ($session) {
                 if ($beahviour['type'] == 'Negative') {
@@ -177,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
         if ($enableDescriptors == 'Y') {
-            $table->addColumn('descriptor', __('Descriptor'));
+            $table->addColumn('descriptor', __('Descriptor'))->context('primary');
         }
 
         if ($enableLevels == 'Y') {
@@ -185,6 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
 
         $table->addColumn('teacher', __('Teacher'))
+            ->context('secondary')
             ->sortable(['preferredNameCreator', 'surnameCreator'])
             ->width('25%')
             ->format(function($person) {

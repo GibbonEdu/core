@@ -24,6 +24,7 @@ use Gibbon\Data\ImportType;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Data\PasswordPolicy;
 
 require __DIR__ . '/moduleFunctions.php';
 
@@ -34,7 +35,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
     $type = $_GET['type'] ?? '';
     $step = isset($_GET['step'])? min(max(1, $_GET['step']), 4) : 1;
 
-    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $pdo);
+    $passwordPolicy = $container->get(PasswordPolicy::class);
+    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $passwordPolicy, $pdo);
 
     $nameParts = array_map('trim', explode('-', $importType->getDetail('name')));
     $name = implode(' - ', array_map('__', $nameParts));
@@ -239,6 +241,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             $form->addHiddenValue('mode', $mode);
             $form->addHiddenValue('fieldDelimiter', urlencode($_POST['fieldDelimiter']));
             $form->addHiddenValue('stringEnclosure', urlencode($_POST['stringEnclosure']));
+            $form->addHiddenValue('filename', $_FILES['file']['name'] ?? '');
             $form->addHiddenValue('ignoreErrors', 0);
 
             // SYNC SETTINGS
@@ -498,6 +501,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 'executionTime'   => $executionTime,
                 'memoryUsage'     => $memoryUsage,
                 'ignoreErrors'    => $ignoreErrors,
+                'filename'        => $_POST['filename'] ?? '',
             );
 
             echo $page->fetchFromTemplate('importer.twig.html', $results);
@@ -514,6 +518,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $form->addHiddenValue('columnText', serialize($columnText));
                 $form->addHiddenValue('fieldDelimiter', urlencode($fieldDelimiter));
                 $form->addHiddenValue('stringEnclosure', urlencode($stringEnclosure));
+                $form->addHiddenValue('filename', $_POST['filename'] ?? '');
 
                 // CSV PREVIEW
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');

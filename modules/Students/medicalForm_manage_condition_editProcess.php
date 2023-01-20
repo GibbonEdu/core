@@ -23,6 +23,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\AlertLevelGateway;
 
 require_once '../../gibbon.php';
 
@@ -98,7 +99,11 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                         exit();
                     }
 
-                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                    /**
+                     * @var AlertLevelGateway
+                     */
+                    $alertLevelGateway = $container->get(AlertLevelGateway::class);
+                    $alert = $alertLevelGateway->getByID($gibbonAlertLevelID);
 
                     // Has the medical condition risk changed?
                     if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['gibbonAlertLevelID'] == '001' || $alert['gibbonAlertLevelID'] == '002')) {

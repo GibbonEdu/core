@@ -73,7 +73,6 @@ $row->addSearchSubmit($gibbon->session);
 
 $page->write($form->getOutput());
 
-
 // define attendance tables, if user is permit to view them
 if ($session->has('username')) {
     // generator of basic attendance table
@@ -450,4 +449,8 @@ if (isset($attendanceByFormGroupTable)) {
 }
 if (isset($attendanceByCourseClassTable)) {
     $page->write($attendanceByCourseClassTable->getOutput());
+}
+
+if (empty($attendanceByFormGroupTable) && empty($attendanceByCourseClassTable)) {
+    echo DataTable::create('blank')->setDescription('<br/>')->withData([])->getOutput();
 }

@@ -43,7 +43,7 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['longTermMedication' => '','longTermMedicationDetails' => '','comment' => '', 'fields' => ''];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -73,8 +73,8 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
 
         $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
         $sql = "SELECT gibbonPersonMedicalCondition.gibbonPersonMedicalID, gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, gibbonAlertLevel.color as alertColor, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name , gibbonMedicalCondition.description
-                FROM gibbonPersonMedicalCondition 
-                JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
+                FROM gibbonPersonMedicalCondition
+                JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID)
                 LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.gibbonMedicalConditionID=gibbonPersonMedicalCondition.name OR gibbonMedicalCondition.name=gibbonPersonMedicalCondition.name)
                 WHERE FIND_IN_SET(gibbonPersonMedicalCondition.gibbonPersonMedicalID, :gibbonPersonMedicalID)
                 ORDER BY gibbonAlertLevel.sequenceNumber DESC, gibbonPersonMedicalCondition.name";
@@ -115,5 +115,22 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
                 WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    /**
+     * Get the risk level of the highest-risk condition for an individual.
+     *
+     * @version  v25
+     * @since    v25
+     *
+     * @param int   $gibbonPersonID  The person ID.
+     *
+     * @return array  An array of fields in the medical alert information of the person,
+     *                or an empty array if none found.
+     */
+    public function getHighestMedicalRisk(int $gibbonPersonID)
+    {
+        $sql = 'SELECT * FROM gibbonPersonMedical JOIN gibbonPersonMedicalCondition ON (gibbonPersonMedical.gibbonPersonMedicalID=gibbonPersonMedicalCondition.gibbonPersonMedicalID) JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonAlertLevel.sequenceNumber DESC';
+        return $this->db()->selectOne($sql, ['gibbonPersonID' => $gibbonPersonID]);
     }
 }

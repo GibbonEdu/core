@@ -51,11 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         header("Location: {$URL}");
         exit;
     } else {
-        //Get current role category
-        $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
-
         $settingGateway = $container->get(SettingGateway::class);
         $activityGateway = $container->get(ActivityGateway::class);
+
+        //Get current role category
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
         //Check access controls
         $access = $settingGateway->getSettingByScope('Activities', 'access');
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                             $gibbonActivityIDBackup = ($backupChoice == 'Y')? $_POST['gibbonActivityIDBackup'] : '';
                             $activityCountByType = $activityGateway->getStudentActivityCountByType($row['type'], $gibbonPersonID);
-                            
+
                             if (!empty($row['access']) && $row['access'] != 'Register') {
                                 $URL .= '&return=error0';
                                 header("Location: {$URL}");

@@ -41,7 +41,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
 } else {
     // Proceed!
     $gibbonReportArchiveEntryID = $_GET['gibbonReportArchiveEntryID'] ?? '';
-    
+
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
@@ -64,7 +64,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
         }
 
     } else {
-        $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
         $highestAction = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_download.php', $connection2);
         if ($highestAction == 'View by Student') {
             $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';

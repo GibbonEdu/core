@@ -33,6 +33,7 @@ class Checkbox extends Input
 
     protected $description;
     protected $checked = array();
+    protected $disabled = array();
     protected $checkall = false;
     protected $inline = false;
     protected $align = 'right';
@@ -98,6 +99,18 @@ class Checkbox extends Input
         } else {
             $this->checked = [trim($values ?? '')];
         }
+
+        return $this;
+    }
+
+    /**
+     * Set a value or array of values that are currently disabled.
+     * @param   string  $disabled
+     * @return  self
+     */
+    public function disabled($disabled = [])
+    {
+        $this->disabled = is_array($disabled) ? $disabled : [$disabled];
 
         return $this;
     }
@@ -189,10 +202,24 @@ class Checkbox extends Input
     protected function getIsChecked($value)
     {
         if (empty($value) || empty($this->checked)) {
-            return '';
+            return false;
         }
 
-        return (in_array($value, $this->checked))? 'checked' : '';
+        return in_array($value, $this->checked);
+    }
+
+    /**
+     * Return true if the passed value has been disabled.
+     * @param   mixed  $value
+     * @return  bool
+     */
+    protected function getIsDisabled($value)
+    {
+        if (empty($value) || empty($this->disabled)) {
+            return false;
+        }
+
+        return in_array($value, $this->disabled);
     }
 
     /**
@@ -217,7 +244,7 @@ class Checkbox extends Input
             $hasMultiple = count($this->options, COUNT_RECURSIVE) > 1;
 
             if ($hasMultiple) {
-                $output .= '<fieldset id="'.$this->getID().'"  style="border: 0px;">';
+                $output .= '<fieldset id="'.$this->getID().'" class="'.($this->inline && $this->align == 'left' ? 'flex text-left items-center' : '').'" style="border: 0px;">';
             }
             
             if (!empty($this->checkall)) {
@@ -252,6 +279,8 @@ class Checkbox extends Input
                     }
                     $this->setName($name);
                     $this->setAttribute('checked', $this->getIsChecked($value));
+                    $this->setAttribute('disabled', $this->getIsDisabled($value));
+
                     if ($value != 'on') $this->setValue($value);
 
                     if ($this->inline) {

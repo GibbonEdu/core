@@ -72,11 +72,11 @@ class AttendanceByCycle extends DataSource
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReport.gibbonYearGroupIDList)
                 AND gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay
                 AND gibbonAttendanceLogPerson.date<=CURDATE()
-                AND gibbonReportingCycle.dateStart<=gibbonReport.accessDate
+                AND (gibbonReport.accessDate IS NULL OR gibbonReportingCycle.dateStart<=gibbonReport.accessDate)
                 GROUP BY gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID
                 ORDER BY gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken";
 
-        $result = $this->db()->executeQuery($data, $sql);
+        $result = $this->db()->select($sql, $data);
 
         $values = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP) : array();
 
@@ -109,12 +109,17 @@ class AttendanceByCycle extends DataSource
                 }, $endOfClasses);
 
                 // Grab the the absent and late count (school-wide)
+                $present = !empty($endOfDay) && ($endOfDay['direction'] == 'In')? 1 : 0;
                 $absent = !empty($endOfDay) && ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite')? 1 : 0;
                 $late = !empty($endOfDay) && ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late')? 1 : 0;
 
                 // Optionally grab the class absent and late counts too
                 if ($this->countClassAsSchool == 'Y') {
                     foreach ($endOfClasses as $classes) {
+                        $present += count(array_filter($classes, function ($log) {
+                            return ($log['direction'] == 'In');
+                        }));
+
                         $absent += count(array_filter($classes, function ($log) {
                             return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
                         }));
@@ -125,15 +130,16 @@ class AttendanceByCycle extends DataSource
                     }
                 }
 
-                return array('absent' => $absent, 'late' => $late);
+                return ['present' => $present, 'absent' => $absent, 'late' => $late];
             }, $attendance);
 
             // Sum up the absences for the term
             $termAttendance[$reportNum] = array_reduce($attendance, function($carry, $item) {
+                $carry['present'] += $item['present'];
                 $carry['absent'] += $item['absent'];
                 $carry['late'] += $item['late'];
                 return $carry;
-            }, array('absent' => 0, 'late' => 0));
+            }, ['present' => 0, 'absent' => 0, 'late' => 0]);
         }
         
         return $termAttendance;

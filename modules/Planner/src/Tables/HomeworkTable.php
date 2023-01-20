@@ -107,6 +107,7 @@ class HomeworkTable
 
         $table->addColumn('class', __('Class'))
             ->sortable(['course', 'class'])
+            ->context('primary')
             ->description(__('Date'))
             ->format(function ($homework) {
                 $output = Format::bold(Format::courseClassName($homework['course'], $homework['class'])).'<br/>'
@@ -120,6 +121,7 @@ class HomeworkTable
 
         $table->addColumn('name', __('Lesson'))
             ->description(__('Unit'))
+            ->context('primary')
             ->format(function ($homework) {
                 return !empty($homework['unit'])
                     ? Format::bold($homework['name']).'<br/>'.Format::small($homework['unit'])
@@ -169,6 +171,7 @@ class HomeworkTable
 
         if ($roleCategory == 'Student' || $roleCategory == 'Parent') {
             $table->addColumn('complete', __('Complete?'))
+                ->context('primary')
                 ->notSortable()
                 ->width('10%')
                 ->format(function ($homework) use ($roleCategory) {
@@ -179,7 +182,7 @@ class HomeworkTable
 
                     if ($roleCategory == 'Student' && $homework['homeworkSubmissionRequired'] != 'Required') {
                         return '<input id="complete'.$homework['gibbonPlannerEntryID'].'" type="checkbox" class="mark-complete" data-id="'.$homework['gibbonPlannerEntryID'].'" data-type="'.$homework['type'].'" '.(!empty($homework['tracker']['homeworkComplete']) ? 'checked' : '').'>';
-                    } else if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
+                    } else if (!empty($homework['tracker']['homeworkComplete']) && ($homework['tracker']['type'] == $homework['type'] || $homework['homeworkSubmissionRequired'] != 'Required')) {
                         return __('Yes');
                     }
 

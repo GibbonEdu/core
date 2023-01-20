@@ -30,13 +30,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     $reportGateway = $container->get(ReportGateway::class);
 
+    // School Year Picker
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+
     // QUERY
     $criteria = $reportGateway->newQueryCriteria(true)
         ->sortBy(['gibbonReportingCycle.sequenceNumber', 'gibbonReport.name'])
         ->filterBy('active', 'Y')
         ->fromPOST();
 
-    $reports = $reportGateway->queryReportsBySchoolYear($criteria, $gibbon->session->get('gibbonSchoolYearID'));
+    $reports = $reportGateway->queryReportsBySchoolYear($criteria, $gibbonSchoolYearID);
     $logs = $reportGateway->getRunningReports();
     $reports->joinColumn('gibbonReportID', 'logs', $logs);
 
@@ -60,6 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     $table->addActionColumn()
         ->addParam('gibbonReportID')
+        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->format(function ($report, $actions) {
             $actions->addAction('go', __('Go'))
                     ->setIcon('page_right')

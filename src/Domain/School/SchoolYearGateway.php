@@ -19,9 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\School;
 
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
  * School Year Gateway
@@ -36,6 +38,16 @@ class SchoolYearGateway extends QueryableGateway
     private static $tableName = 'gibbonSchoolYear';
     private static $primaryKey = 'gibbonSchoolYearID';
 
+    /**
+     * Query for school years.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param QueryCriteria $criteria
+     *
+     * @return DataSet
+     */
     public function querySchoolYears(QueryCriteria $criteria)
     {
         $query = $this
@@ -47,7 +59,18 @@ class SchoolYearGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
-    
+
+    /**
+     * Get a key value array with gibbonSchoolYearID as keys
+     * and the school year name as the values.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param QueryCriteria $criteria
+     *
+     * @return array
+     */
     public function getSchoolYearList($activeOnly = false)
     {
         $sql = "SELECT gibbonSchoolYearID AS value, name FROM gibbonSchoolYear ";
@@ -57,6 +80,18 @@ class SchoolYearGateway extends QueryableGateway
         return $this->db()->select($sql)->fetchKeyPair();
     }
 
+    /**
+     * Get a key value array with gibbonSchoolYearID as keys
+     * and the school year name as the values of the specified
+     * school years.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param array $schoolYearList  An array of school year IDs
+     *
+     * @return array
+     */
     public function getSchoolYearsFromList($schoolYearList = [])
     {
         $data = ['gibbonSchoolYearIDList' => is_array($schoolYearList) ? implode(',', $schoolYearList) : $schoolYearList];
@@ -65,6 +100,16 @@ class SchoolYearGateway extends QueryableGateway
         return $this->db()->select($sql, $data)->fetchKeyPair();
     }
 
+    /**
+     * Get a single school year by its ID.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param int $gibbonSchoolYearID
+     *
+     * @return array|false  The information of the spcified school year, or false if not found.
+     */
     public function getSchoolYearByID($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -73,6 +118,16 @@ class SchoolYearGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    /**
+     * Get the school year next to the specified school year.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param int $gibbonSchoolYearID  The ID of the specified school year.
+     *
+     * @return array|false  The information of the next school year, or false if not found.
+     */
     public function getNextSchoolYearByID($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -81,11 +136,34 @@ class SchoolYearGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    /**
+     * Get the school year previous of the specified school year.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param int $gibbonSchoolYearID  The ID of the specified school year.
+     *
+     * @return array|false  The information of the previous school year, or false if not found.
+     */
     public function getPreviousSchoolYearByID($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT * FROM gibbonSchoolYear WHERE sequenceNumber=(SELECT MAX(sequenceNumber) FROM gibbonSchoolYear WHERE sequenceNumber < (SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID))";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    /**
+     * Get the current school year information.
+     *
+     * @version v25
+     * @since   v25
+
+     * @return array
+     */
+    public function getCurrentSchoolYear()
+    {
+        return $this->db()->selectOne("SELECT * FROM gibbonSchoolYear WHERE status='Current'");
     }
 }

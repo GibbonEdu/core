@@ -183,7 +183,8 @@ class ApplicationBuilder extends FormBuilder
                 $row->addLabel('username', __('Username'))->description(__('System login name.'));
                 $row->addUsername('username')
                     ->readonly($this->getConfig('status') == 'Accepted')
-                    ->addGenerateUsernameButton($form);
+                    ->addGenerateUsernameButton($form)
+                    ->uniqueField('./modules/Admissions/applications_manage_edit_usernameAjax.php', ['fieldName' => 'username', 'gibbonAdmissionsApplicationID' => $this->getConfig('foreignTableID')]);
         }
 
         if (!$this->hasField('studentID')) {

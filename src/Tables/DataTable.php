@@ -33,6 +33,7 @@ use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
 use Gibbon\View\View;
 use Gibbon\Tables\View\DetailsView;
+use Gibbon\Tables\Columns\RadioColumn;
 
 /**
  * DataTable
@@ -262,6 +263,18 @@ class DataTable implements OutputableInterface
     public function addCheckboxColumn($id, $key = '')
     {
         $this->columns[$id] = new CheckboxColumn($id, $key);
+
+        return $this->columns[$id];
+    }
+
+    /**
+     * Add a checkbox column to the table, used for bulk-action tables.
+     *
+     * @return RadioColumn
+     */
+    public function addRadioColumn($id, $key = '')
+    {
+        $this->columns[$id] = new RadioColumn($id, $key);
 
         return $this->columns[$id];
     }

@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->add(__('Send Reports'), 'reports_send.php')
         ->add(__('Select Reports'));
 
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     $familyGateway = $container->get(FamilyGateway::class);
     $reportGateway = $container->get(ReportGateway::class);

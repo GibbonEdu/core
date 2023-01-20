@@ -39,8 +39,54 @@ class HookGateway extends QueryableGateway
     public function selectHooksByType($type)
     {
         $data = ['type' => $type];
-        $sql = "SELECT name, options FROM gibbonHook WHERE type=:type ORDER BY name";
+        $sql = "SELECT gibbonHook.name as groupBy, gibbonHook.* 
+                FROM gibbonHook 
+                JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonHook.gibbonModuleID)
+                WHERE gibbonHook.type=:type 
+                AND gibbonModule.active='Y'
+                ORDER BY gibbonHook.name";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getHookPermission($gibbonHookID, $gibbonRoleIDCurrent, $moduleName, $actionName)
+    {
+        $data = ['gibbonHookID' => $gibbonHookID, 'gibbonRoleIDCurrent' => $gibbonRoleIDCurrent, 'sourceModuleName' => $moduleName, 'sourceModuleAction' => $actionName];
+        $sql = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
+            FROM gibbonHook
+            JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
+            JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+            JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+            WHERE gibbonModule.name=:sourceModuleName
+            AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
+            AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
+            AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
+            AND gibbonHook.gibbonHookID=:gibbonHookID 
+            ORDER BY name";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getAccessibleHooksByType(string $type, string $gibbonRoleIDCurrent)
+    {
+        $hooksAvailable = $this->selectHooksByType($type)->fetchAll();
+        $hooks = [];
+
+        foreach ($hooksAvailable as $hook) {
+            $options = unserialize($hook['options']);
+
+            //Check for permission to hook
+            $hookPermission = $this->getHookPermission($hook['gibbonHookID'], $gibbonRoleIDCurrent, $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
+            if (!empty($options) && !empty($hookPermission)) {
+                $hooks[] = [
+                    'name'                => $hook['name'],
+                    'sourceModuleName'    => $hookPermission['module'],
+                    'sourceModuleInclude' => $options['sourceModuleInclude'],
+                ];
+            }
+        }
+
+        return $hooks;
     }
 }

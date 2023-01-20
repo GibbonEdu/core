@@ -32,20 +32,20 @@ class FormPageGateway extends QueryableGateway
     private static $searchableColumns = ['gibbonFormPage.name'];
     
     /**
-     * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryPagesByForm(QueryCriteria $criteria, $gibbonFormID)
+    public function selectPagesByForm($gibbonFormID)
     {
         $query = $this
-            ->newQuery()
+            ->newSelect()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonFormPage.gibbonFormPageID', 'gibbonFormPage.name', 'gibbonFormPage.sequenceNumber', '(SELECT COUNT(*) FROM gibbonFormField WHERE gibbonFormField.gibbonFormPageID=gibbonFormPage.gibbonFormPageID) as count'])
+            ->cols(['gibbonFormPage.sequenceNumber AS groupBy', 'gibbonFormPage.gibbonFormPageID', 'gibbonFormPage.name', 'gibbonFormPage.sequenceNumber', 'gibbonFormPage.introduction', 'gibbonFormPage.postScript', '(SELECT COUNT(*) FROM gibbonFormField WHERE gibbonFormField.gibbonFormPageID=gibbonFormPage.gibbonFormPageID) as count'])
             ->where('gibbonFormPage.gibbonFormID=:gibbonFormID')
-            ->bindValue('gibbonFormID', $gibbonFormID);
+            ->bindValue('gibbonFormID', $gibbonFormID)
+            ->orderBy(['gibbonFormPage.sequenceNumber']);
 
-        return $this->runQuery($query, $criteria);
+        return $this->runSelect($query);
     }
 
     public function getPageIDByNumber($gibbonFormID, $page)

@@ -207,6 +207,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$form->addHiddenValue('gibbonPersonMedicalID', $values['gibbonPersonMedicalID'] ?? '');
 						$form->addHiddenValue('existing', $values['gibbonPersonMedicalUpdateID'] ?? 'N');
 
+                        $form->addRow()->addHeading('General Information', __('General Information'));
+                        
 						$row = $form->addRow();
 							$row->addLabel('longTermMedication', __('Long-Term Medication?'));
 							$row->addYesNo('longTermMedication')->placeholder();
@@ -217,12 +219,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 							$row->addLabel('longTermMedicationDetails', __('Medication Details'));
 							$row->addTextArea('longTermMedicationDetails')->setRows(5);
 
-                        // CUSTOM FIELDS
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', ['dataUpdater' => 1], $values['fields'] ?? '');
-
                         $row = $form->addRow();
 							$row->addLabel('comment', __('Comment'));
 							$row->addTextArea('comment')->setRows(6);
+
+                        // CUSTOM FIELDS
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', ['dataUpdater' => 1], $values['fields'] ?? '');
+
+                        
 
 						// EXISTING CONDITIONS
 						$count = 0;

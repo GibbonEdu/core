@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 .verticalHeader {
 	overflow: hidden;
-	padding: 4px !important;
+	padding: 0px !important;
 	width: 40px;
 	min-width: 40px;
 	max-width: 40px;

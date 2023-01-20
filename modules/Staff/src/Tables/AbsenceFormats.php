@@ -48,18 +48,29 @@ class AbsenceFormats
 
     public static function substituteDetails($coverage)
     {
-        return $coverage['gibbonPersonIDCoverage']
-            ? Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
-            : '<span class="tag message">'.__('Pending').'</span>';
+        if (empty($coverage['gibbonPersonIDCoverage']) && $coverage['status'] == 'Pending') {
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        }
+
+        $name = !empty($coverage['gibbonPersonIDCoverage'])
+            ? Format::nameLinked($coverage['gibbonPersonIDCoverage'], $coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
+            : Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true);
+        return !empty($coverage['surnameCoverage'])
+            ? $name
+            : Format::tag(__('Pending'), 'message');
     }
 
     public static function dateDetails($absence)
     {
         $output = Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']);
         if ($absence['allDay'] == 'Y' || $absence['days'] > 1) {
-            $output .= $absence['value'] != $absence['days']
-                ? '<br/>'.Format::small(__('{total} Total (across {count} Days)', ['total' => round($absence['value'], 1), 'count' => $absence['days']]))
-                : '<br/>'.Format::small(__n('{count} Day', '{count} Days', $absence['days']));
+            if (!empty($absence['value']) && $absence['value'] != $absence['days']) {
+                $output .= '<br/>'.Format::small(__('{total} Total (across {count} Days)', ['total' => round($absence['value'], 1), 'count' => $absence['days']]));
+            } else if (!empty($absence['foreignTableID'])) {
+                $output .= '<br/>'.Format::small(__n('{count} Period', '{count} Periods', $absence['days']));
+            } else {
+                $output .= '<br/>'.Format::small(__n('{count} Day', '{count} Days', $absence['days']));
+            }
         } else {
             $output .= '<br/>'.Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
         }
@@ -89,9 +100,13 @@ class AbsenceFormats
     }
 
     public static function coverage($absence) {
+        if (empty($absence['gibbonPersonIDCoverage']) && $absence['coverage'] == 'Pending') {
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        }
+
         if ($absence['coverage'] == 'Accepted') {
             return Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
-        } elseif ($absence['coverage'] == 'Requested') {
+        } elseif ($absence['coverage'] == 'Requested' || $absence['coverage'] == 'Pending') {
             return '<span class="tag message">'.__('Pending').'</span>';
         }
         return '';
@@ -99,7 +114,15 @@ class AbsenceFormats
 
     public static function coverageList($absence)
     {
-        if (empty($absence['coverage']) || empty($absence['coverageList'])) {
+        if (empty($absence['gibbonPersonIDCoverage']) && !empty($absence['coverage']) && $absence['coverage'] == 'Pending') {
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        }
+
+        if ($absence['coverageRequired'] == 'N') {
+            return Format::small(__('N/A'));
+        }
+
+        if (empty($absence['coverageList'])) {
             return '';
         }
 
@@ -114,7 +137,7 @@ class AbsenceFormats
             return __($coverage['status']);
         }
 
-        $urgencyThreshold = intval($urgencyThreshold);
+        $urgencyThreshold = max(1, intval($urgencyThreshold));
         $relativeSeconds = strtotime($coverage['dateStart']) - time();
         if ($relativeSeconds <= 0) {
             return '<span class="tag dull">'.__('Overdue').'</span>';

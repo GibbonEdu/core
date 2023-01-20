@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     $messengerGateway = $container->get(MessengerGateway::class);
     $criteria = $messengerGateway->newQueryCriteria(true)
         ->searchBy($messengerGateway->getSearchableColumns(), $search)
+        ->filterBy('confidential', $session->get('gibbonPersonID'))
         ->sortBy(['timestamp'], 'DESC')
         ->fromPOST();
 
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -83,11 +84,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             ->displayLabel()
             ->prepend(' | ');
     }
+
+    $table->modifyRows(function($values, $row) {
+        if ($values['status'] == 'Draft') $row->addClass('dull');
+        return $row;
+    });
     
     $table->addColumn('subject', __('Subject'))
         ->context('primary')
         ->format(function ($values) {
-            return '<b>'.$values['subject'].'</b>';
+            $tag = $values['confidential'] == 'Y' ? Format::tag(__('Confidential'), 'dull ml-2') : '';
+            if ($values['status'] == 'Draft') {
+                $tag .= Format::tag(__('Draft'), 'message ml-2');
+            }
+            return Format::bold($values['subject']).$tag;
         });
 
     $table->addColumn('timestamp', __('Date Sent'))
@@ -124,8 +134,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $data = ['gibbonMessengerID' => $values['gibbonMessengerID']];
             $sql = "SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id";
             $targets = $pdo->select($sql, $data)->fetchAll();
+            $targetTypeCount = [];
+            $targetTypeThreshold = 8;
 
             foreach ($targets as $target) {
+                $targetTypeCount[$target['type']] = ($targetTypeCount[$target['type']] ?? 0) + 1; 
+
+                if ($targetTypeCount[$target['type']] > $targetTypeThreshold) {
+                    continue;
+                }
                 if ($target['type']=='Activity') {
                     $data = ['gibbonActivityID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
@@ -211,25 +228,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 }
             }
 
+            foreach ($targetTypeCount as $targetType => $count) {
+                if ($count > 0 && $count > $targetTypeThreshold) {
+                    $output .= '<b>' . __($targetType) . '</b><i> '.__('{count} more', ['count' => '+ '.($count - $targetTypeThreshold)]) . '</i><br/>';
+                }
+            }
+
             return $output;
         });
 
     $table->addColumn('email', __('Email'))->format(function ($values) use (&$session) {
+        if ($values['status'] == 'Draft') return '';
+
         return $values['email'] == 'Y'
-            ? '<img title="'.__('Sent by email.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
-            : '<img title="'.__('Not sent by email.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+            ? Format::icon('iconTick', __('Sent by email.'))
+            : Format::icon('iconCross', __('Not sent by email.'));
     });
 
     $table->addColumn('messageWall', __('Wall'))->format(function ($values) use (&$session) {
+        if ($values['status'] == 'Draft') return '';
+
         return $values['messageWall'] == 'Y'
-            ? '<img title="'.__('Sent by message wall.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
-            : '<img title="'.__('Not sent by message wall.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+            ? Format::icon('iconTick', __('Sent by message wall.'))
+            : Format::icon('iconCross', __('Not sent by message wall.'));
     });
 
     $table->addColumn('sms', __('SMS'))->format(function ($values) use (&$session) {
+        if ($values['status'] == 'Draft') return '';
+
         return $values['sms'] == 'Y'
-            ? '<img title="'.__('Sent by SMS.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
-            : '<img title="'.__('Not sent by SMS.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+            ? Format::icon('iconTick', __('Sent by SMS.'))
+            : Format::icon('iconCross', __('Not sent by SMS.'));
     });
 
     // ACTIONS
@@ -239,12 +268,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Messenger/messenger_manage_edit.php');
+                ->setURL('/modules/Messenger/messenger_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Messenger/messenger_manage_delete.php');
+                ->setURL('/modules/Messenger/messenger_manage_delete.php');
 
-            if (!is_null($values['emailReceipt'])) {
+            if (!is_null($values['emailReceipt']) && $values['status'] == 'Sent') {
                 $actions->addAction('send', __('View Send Report'))
                         ->setURL('/modules/Messenger/messenger_manage_report.php')
                         ->setIcon('target');

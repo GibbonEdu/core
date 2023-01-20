@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
     if ($highestAction == 'My Activities_viewEditEnrolment') {
-        
+
             $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
             $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
             $result = $connection2->prepare($sql);
@@ -51,13 +52,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'activities_manage.php')
-        ->add(__('Activity Enrolment'));    
+        ->add(__('Activity Enrolment'));
 
     //Check if gibbonActivityID specified
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonActivityID' => $gibbonActivityID);
             $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
@@ -95,23 +96,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $row->addLabel('programDatesLabel', __('Program Dates'));
                 $row->addTextField('programDates')->readOnly()->setValue(Format::date($values['programStart']).'-'.Format::date($values['programEnd']));
             } else {
-                $schoolTerms = getTerms($connection2, $gibbon->session->get('gibbonSchoolYearID'));
-                $termList = array_filter(array_map(function ($item) use ($schoolTerms) {
-                    $index = array_search($item, $schoolTerms);
-                    return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                }, explode(',', $values['gibbonSchoolYearTermIDList'])));
-                $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
+                /**
+                 * @var SchoolYearTermGateway
+                 */
+                $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                $termList = $schoolYearTermGateway->getTermNamesByID($values['gibbonSchoolYearTermIDList']);
 
                 $row = $form->addRow();
                 $row->addLabel('termsLabel', __('Terms'));
-                $row->addTextField('terms')->readOnly()->setValue($termList);
+                $row->addTextField('terms')->readOnly()->setValue(!empty($termList)? implode(', ', $termList) : '-');
             }
             echo $form->getOutput();
 
 
             $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
             $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
-            
+
                 $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
                 $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonFormGroup.nameShort as formGroupNameShort
                         FROM gibbonActivityStudent
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo __($values['status']);
                     echo '</td>';
                     echo '<td>';
-                    echo __('{date} at {time}', 
+                    echo __('{date} at {time}',
                             ['date' => Format::date(substr($values['timestamp'], 0, 10)),
                             'time' => substr($values['timestamp'], 11, 5)]);
                     echo '</td>';

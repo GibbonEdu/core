@@ -48,6 +48,8 @@ jQuery(function($){
 	    	var rows = $(this).parents('table').find("td.col" + column).each(function(){
 	    		
 	    		var checked = ( $(this).html() != "")? "checked" : checkedDefault;
+                if ($(this).hasClass('unchecked')) checked = '';
+                
 		    	$(this).html("<input type='checkbox' name='attendance["+ column +"]["+ $(this).parent().data('student') +"]' "+ checked +">");
 		    	$(this).addClass('highlight');
 		    });

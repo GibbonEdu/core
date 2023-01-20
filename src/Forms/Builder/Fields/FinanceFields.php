@@ -42,6 +42,7 @@ class FinanceFields extends AbstractFieldGroup
                 'label'       => __('Send Future Invoices To'),
                 'required' => 'X',
                 'prefill'  => 'Y',
+                'translate' => 'Y',
             ],
             'companyName' => [
                 'label'       => __('Company Name'),
@@ -104,6 +105,7 @@ class FinanceFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         $row = $form->addRow();
 
@@ -115,7 +117,7 @@ class FinanceFields extends AbstractFieldGroup
                 $row->addLabel('payment', __($field['label']))->description(__($field['description']));
                 $row->addRadio('payment')
                     ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
-                    ->checked('Family')
+                    ->checked($default ?? 'Family')
                     ->inline()
                     ->required($required);
                 break;
@@ -125,37 +127,37 @@ class FinanceFields extends AbstractFieldGroup
             case 'companyName':
                 $row->addClass('paymentCompany');
                 $row->addLabel('companyName', __($field['label']))->description(__($field['description']));
-                $row->addTextField('companyName')->required($required)->maxLength(100);
+                $row->addTextField('companyName')->required($required)->setValue($default)->maxLength(100);
                 break;
 
             case 'companyContact':
                 $row->addClass('paymentCompany');
                 $row->addLabel('companyContact', __($field['label']))->description(__($field['description']));
-                $row->addTextField('companyContact')->required($required)->maxLength(100);
+                $row->addTextField('companyContact')->required($required)->setValue($default)->maxLength(100);
                 break;
 
             case 'companyAddress':
                 $row->addClass('paymentCompany');
                 $row->addLabel('companyAddress', __($field['label']))->description(__($field['description']));
-                $row->addTextField('companyAddress')->required($required)->maxLength(255);
+                $row->addTextField('companyAddress')->required($required)->setValue($default)->maxLength(255);
                 break;
 
             case 'companyEmail':
                 $row->addClass('paymentCompany');
                 $row->addLabel('companyEmail', __($field['label']))->description(__($field['description']));
-                $row->addTextField('companyEmail')->required($required);
+                $row->addTextField('companyEmail')->required($required)->setValue($default);
                 break;
 
             case 'companyCCFamily':
                 $row->addClass('paymentCompany');
                 $row->addLabel('companyCCFamily', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('companyCCFamily')->required($required)->selected('N');
+                $row->addYesNo('companyCCFamily')->required($required)->selected($default);
                 break;
 
             case 'companyPhone':
                 $row->addClass('paymentCompany');
                 $row->addLabel('companyPhone', __($field['label']))->description(__($field['description']));
-                $row->addTextField('companyPhone')->required($required)->maxLength(20);
+                $row->addTextField('companyPhone')->required($required)->setValue($default)->maxLength(20);
                 break;
 
             case 'companyAll':
@@ -167,7 +169,7 @@ class FinanceFields extends AbstractFieldGroup
                 } else {
                     $col = $row->addClass('paymentCompany')->addColumn()->setClass('flex flex-row justify-between');
                         $col->addLabel('companyAll', __($field['label']))->description(__($field['description']));
-                        $col->addRadio('companyAll')->fromArray(['Y' => __('All'), 'N' => __('Selected')])->checked('Y')->inline();
+                        $col->addRadio('companyAll')->fromArray(['Y' => __('All'), 'N' => __('Selected')])->checked($default ?? 'Y')->inline();
                 }
                 break;
 
@@ -178,7 +180,8 @@ class FinanceFields extends AbstractFieldGroup
         
                     $existingFeeCategoryIDList = $formBuilder->getConfig('gibbonFinanceFeeCategoryIDList', '');
                     $existingFeeCategoryIDList = is_array($existingFeeCategoryIDList) ? implode(',', $existingFeeCategoryIDList) : $existingFeeCategoryIDList;
-        
+                    $existingFeeCategoryIDList = !empty($existingFeeCategoryIDList) ? $existingFeeCategoryIDList : $default;
+
                     $col = $row->addClass('paymentCompanyCategories')->addColumn()->setClass('flex flex-row justify-between');
                         $col->addLabel('gibbonFinanceFeeCategoryIDList', __($field['label']))->description(__($field['description']));
                         $col->addCheckbox('gibbonFinanceFeeCategoryIDList')

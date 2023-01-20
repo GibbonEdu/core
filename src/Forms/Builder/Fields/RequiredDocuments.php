@@ -30,8 +30,33 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class RequiredDocuments extends AbstractFieldGroup implements UploadableInterface
 {
+
+    /**
+     * The view instance.
+     *
+     * @var View
+     */
     protected $view;
+
+    /**
+     * The session instance.
+     *
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * The form-upload gateway instance.
+     *
+     * @var FormUploadGateway
+     */
+    protected $formUploadGateway;
+
+    /**
+     * The file uploader instance.
+     *
+     * @var FileUploader
+     */
     protected $fileUploader;
 
     public function __construct(Session $session, FormUploadGateway $formUploadGateway, FileUploader $fileUploader, View $view)
@@ -47,7 +72,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         return __('Documents which must be submitted electronically, either with the form at the time of submission, or afterwards through the form interface.');
     }
 
-    public function getField($fieldName) : array 
+    public function getField($fieldName) : array
     {
         return ['type'  => 'files', 'columns' => 3];
     }
@@ -60,6 +85,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         if (empty($documents)) return $row;
 
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
         $foreignTableID = $formBuilder->getConfig('foreignTableID');
@@ -74,7 +100,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         return $row;
     }
 
-    public function getFieldDataFromPOST(string $fieldName, array $field) 
+    public function getFieldDataFromPOST(string $fieldName, array $field)
     {
         return [];
     }
@@ -89,7 +115,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
         $foreignTableID = $formBuilder->getConfig('foreignTableID');
         if (empty($foreignTableID)) return false;
-        
+
         foreach ($documents as $index => $document) {
             $documentFieldName = $fieldName.$index.'filePath';
 
@@ -136,7 +162,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
     {
         $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
         $foreignTableID = $formBuilder->getConfig('foreignTableID');
-        
+
         if (empty($view) || empty($foreignTableID)) return '';
 
         $uploads = $this->formUploadGateway->selectAllUploadsByContext($formBuilder->getFormID(), $foreignTable, $foreignTableID);

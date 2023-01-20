@@ -21,6 +21,10 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
+if ($session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
+    return;
+}
+
 $mode = $_GET['mode'];
 if ($mode == 'Add') {
     

@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Forms\Input\Editor;
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be masterAdd, masterEdit, workingDeploy, workingEdit, plannerEdit, embed
@@ -155,7 +156,15 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
     				echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Block Contents').'</div>';
                     //Block Contents
                     if ($mode != 'embed') {
-                        echo getEditor($guid, false, "contents$i", $contents, 20, true, false, false, true);
+                        $editor = (new Editor("contents$i"))
+                            ->tinymceInit(false)
+                            ->setValue($contents)
+                            ->setRows(20)
+                            ->showMedia(true)
+                            ->setRequired(false)
+                            ->initiallyHidden(false)
+                            ->allowUpload(true);
+                        echo $editor->getOutput();
                     } else {
                         echo "<div style='max-width: 595px; margin-right: 0!important; padding: 5px!important'><p>$contents</p></div>";
                     }
@@ -163,7 +172,15 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                     //Teacher's Notes
                     if ($mode != 'embed') {
                         echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Teacher\'s Notes').'</div>';
-                        echo getEditor($guid, false, "teachersNotes$i", $teachersNotes, 20, true, false, false, true);
+                        $editor = (new Editor("teachersNotes$i"))
+                            ->tinymceInit(false)
+                            ->setValue($teachersNotes)
+                            ->setRows(20)
+                            ->showMedia(true)
+                            ->setRequired(false)
+                            ->initiallyHidden(false)
+                            ->allowUpload(true);
+                        echo $editor->getOutput();
                     } elseif ($teachersNotes != '') {
                         echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Teacher\'s Notes').'</div>';
                         echo "<div style='max-width: 595px; margin-right: 0!important; padding: 5px!important; background-color: #F6CECB'><p>$teachersNotes</p></div>";
@@ -504,7 +521,15 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 					<td colspan=2 style='vertical-align: top'>
 						<?php
                             if ($allowOutcomeEditing == 'Y') {
-                                echo getEditor($guid, false, $type.'contents'.$i, $contents, 20, false, false, false, true);
+                                $editor = (new Editor($type.'contents'.$i))
+                                    ->tinymceInit(false)
+                                    ->setValue($contents)
+                                    ->setRows(20)
+                                    ->showMedia(false)
+                                    ->setRequired(false)
+                                    ->initiallyHidden(false)
+                                    ->allowUpload(true);
+                                echo $editor->getOutput();
                             } else {
                                 echo "<div style='padding: 5px'>$contents</div>";
                                 echo "<input type='hidden' name='".$type.'contents'.$i."' value='".htmlPrep($contents)."'/>";
@@ -522,10 +547,8 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 
 //Returns all tags, in the specified school year if one is specified
 function getTagList($connection2, $gibbonSchoolYearID = null) {
-    $tags = array();
-    $tagsTemp = array();
+    $tags = [];
 
-    $tagCount = 0 ;
     //Get all tags
     try {
         if (is_null($gibbonSchoolYearID)) {
@@ -544,36 +567,17 @@ function getTagList($connection2, $gibbonSchoolYearID = null) {
     while ($rowList = $resultList->fetch()) {
         $tagsInner = explode(',', $rowList['tags']);
         foreach ($tagsInner AS $tagInner) {
-            $tagInner = mb_strtolower(trim($tagInner));
-            $tagsTemp[$tagCount] = $tagInner ;
-            $tagCount ++;
+            $tags[] = mb_strtolower(trim($tagInner));
         }
     }
-    sort($tagsTemp, SORT_STRING) ;
+    sort($tags, SORT_STRING) ;
 
-    //Second pass through, to remove uniques, calculate counts, etc
-    $tagCount = 0 ;
+    $tagCounts = array_count_values($tags);
+    $tags = array_unique($tags);
 
-    foreach ($tagsTemp AS $tagInner) {
-        $unique = true ;
-        $nonUniqueTagCount = null;
-        foreach ($tags as $tag) {
-            if ($tag[1] == $tagInner) {
-                $unique = false ;
-                $nonUniqueTagCount = $tag[0];
-            }
-        }
-
-        if ($unique) { //If unique so far, then add it
-            $tags[$tagCount][0] = $tagCount;
-            $tags[$tagCount][1] = $tagInner;
-            $tags[$tagCount][2] = 1;
-            $tagCount ++;
-        }
-        else { //If not unique so far, then increment count
-            $tags[$nonUniqueTagCount][2] ++ ;
-        }
-    }
+    $tags = array_map(function($item, $key) use ($tagCounts) {
+        return [$key, $item, $tagCounts[$item] ?? 0];
+    }, $tags, array_keys($tags));
 
     return $tags;
 }

@@ -18,13 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\Validator;
 use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-//Create password
-$password = randomPassword(8);
+// Load site's password policy
+/** @var PasswordPolicy */
+$passwordPolicy = $container->get(PasswordPolicy::class);
+
+// Create password
+$password = $passwordPolicy->generate();
 
 // Sanitize the $_GET and $_POST arrays
 $validator = $container->get(Validator::class);
@@ -82,8 +87,11 @@ else {
         $username = $row['username'];
 
         if ($step == 1) { //This is the request phase
+            // Use password policy to generate random string
+            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+
             //Generate key
-            $key = randomPassword(40);
+            $key = $randStrGenerator->generate();
 
             //Try to delete other recors for this user
 
@@ -175,10 +183,11 @@ else {
                         header("Location: {$URL->withReturn('error7')}");
                         exit();
                     } else {
-                        //Check strength of password
-                        $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
+                        /** @var PasswordPolicy */
+                        $passwordPolicies = $container->get(PasswordPolicy::class);
 
-                        if ($passwordMatch == false) {
+                        //Check strength of password
+                        if (!$passwordPolicies->validate($passwordNew)) {
                             header("Location: {$URL->withReturn('error6')}");
                             exit();
                         } else {

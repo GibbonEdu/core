@@ -24,18 +24,6 @@ use Gibbon\Domain\User\UserStatusLogGateway;
 
 require getcwd().'/../gibbon.php';
 
-getSystemSettings($guid, $connection2);
-
-setCurrentSchoolYear($guid, $connection2);
-
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code'])) {
-    putenv('LC_ALL='.$session->get('i18n')['code']);
-    setlocale(LC_ALL, $session->get('i18n')['code']);
-    bindtextdomain('gibbon', getcwd().'/../i18n');
-    textdomain('gibbon');
-}
-
 //Check for CLI, so this cannot be run through browser
 $remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;

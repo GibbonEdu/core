@@ -89,7 +89,14 @@ if ($gibbon->isInstalled()) {
         }
 
         // Initialize core
-        $gibbon->initializeCore($container);
+        try {
+            $gibbon->initializeCore($container);
+        } catch (\Exception $e) {
+            $message = __('Configuration Error: there is a problem accessing the current Academic Year from the database.');
+            include __DIR__.'/error.php';
+            exit;
+        }
+        
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
@@ -120,7 +127,7 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
         $urlBasePath = substr($baseDir, $prefixLength);
 
         // Construct the full URL to the base URL path.
-        $host = $_SERVER['HTTP_HOST'];
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
         return "{$protocol}://{$host}{$urlBasePath}";
     })();
@@ -131,8 +138,5 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
 if (!empty($session->get('module'))) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $session->get('module'));
     $autoloader->addPsr4('Gibbon\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module').'/src');
-
-    // Temporary backwards-compatibility for external modules (Query Builder)
-    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module'));
     $autoloader->register(true);
 }

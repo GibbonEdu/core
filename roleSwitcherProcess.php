@@ -18,51 +18,43 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\User\RoleGateway;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$role = $_GET['gibbonRoleID'] ?? '';
-$role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);
+$gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
+$gibbonRoleID = str_pad(intval($gibbonRoleID), 3, '0', STR_PAD_LEFT);
 
 $session->set('pageLoads', null);
 
 //Check for parameter
-if (empty(intval($role))) {
+if (empty(intval($gibbonRoleID))) {
     $URL = Url::fromRoute()->withReturn('error0');
     header("Location: {$URL}");
     exit;
 } else {
-    //Check for access to role
-    try {
-        $data = array('username' => $session->get('username'), 'gibbonRoleID' => $role);
-        $sql = 'SELECT gibbonPerson.gibbonPersonID
-                FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
-                WHERE (gibbonPerson.username=:username) AND gibbonRole.gibbonRoleID=:gibbonRoleID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $URL = Url::fromRoute()->withReturn('error2');
+    // Check for access to role
+    $roleGateway = $container->get(RoleGateway::class);
+    $role = $roleGateway->getAvailableUserRoleByID($session->get('gibbonPersonID'), $gibbonRoleID);
+
+    if (empty($role) || empty($role['category'])) {
+        $URL = Url::fromRoute()->withReturn('error0');
         header("Location: {$URL}");
         exit;
     }
 
-    if ($result->rowCount() != 1) {
-        $URL = Url::fromRoute()->withReturn('error1');
-        header("Location: {$URL}");
-        exit;
-    } else {
-        //Make the switch
-        $session->set('gibbonRoleIDCurrent', $role);
+    //Make the switch
+    $session->set('gibbonRoleIDCurrent', $gibbonRoleID);
+    $session->set('gibbonRoleIDCurrentCategory', $role['category']);
 
-        // Clear cached FF actions
-        $session->forget('fastFinderActions');
+    // Clear cached FF actions
+    $session->forget('fastFinderActions');
 
-        // Clear the main menu from session cache
-        $session->forget('menuMainItems');
+    // Clear the main menu from session cache
+    $session->forget('menuMainItems');
 
-        $URL = Url::fromRoute()->withReturn('success0');
-        header("Location: {$URL}");
-        exit;
-    }
+    $URL = Url::fromRoute()->withReturn('success0');
+    header("Location: {$URL}");
+    exit;
 }

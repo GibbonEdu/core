@@ -26,7 +26,7 @@ use Gibbon\Auth\Adapter\AuthenticationAdapter;
 use Gibbon\Domain\User\UserGateway;
 
 /**
- * Default database adapter for Aura/Auth 
+ * Default database adapter for Aura/Auth
  *
  * @version  v23
  * @since    v23
@@ -47,7 +47,7 @@ class DefaultAdapter extends AuthenticationAdapter
     {
         $this->verifier = $verifier;
     }
-    
+
     /**
      * Verifies a set of credentials against the database. Exceptions are thrown
      * if any credentials are not valid.
@@ -60,7 +60,7 @@ class DefaultAdapter extends AuthenticationAdapter
     public function login(array $input)
     {
         $this->userGateway = $this->getContainer()->get(UserGateway::class);
-        
+
         // Validate that the username and password are both present
         $this->checkInput($input);
 
@@ -74,18 +74,17 @@ class DefaultAdapter extends AuthenticationAdapter
     }
 
     /**
-     *
      * Check the credential input for completeness.
      *
      * @param array $input
      *
      * @return bool
-     * 
+     *
      * @throws Aura\Auth\Exception\UsernameMissing
      * @throws Aura\Auth\Exception\PasswordMissing
      *
      */
-    protected function checkInput($input)
+    protected function checkInput($input): bool
     {
         if (empty($input['username'])) {
             throw new AuraException\UsernameMissing;
@@ -94,6 +93,8 @@ class DefaultAdapter extends AuthenticationAdapter
         if (empty($input['password'])) {
             throw new AuraException\PasswordMissing;
         }
+
+        return true;
     }
 
     /**

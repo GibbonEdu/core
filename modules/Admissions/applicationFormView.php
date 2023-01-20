@@ -26,6 +26,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Builder\FormPayment;
+use Gibbon\Domain\User\FamilyGateway;
 
 $accessID = $_GET['acc'] ?? $_GET['accessID'] ?? '';
 $accessToken = $_GET['tok'] ?? $_GET['accessToken'] ?? $session->get('admissionsAccessToken') ?? '';
@@ -76,6 +77,17 @@ if (!$proceed) {
         $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addContent(__('You\'re ready to begin the admissions process. We do not have an admissions account in our system attached to your user. Please click Next to create an account.'))->wrap('<p>', '</p>');
+
+        $families = $container->get(FamilyGateway::class)->selectFamiliesByAdult($session->get('gibbonPersonID'))->fetchAll();
+        if (count($families) == 1) {
+            $family = current($families);
+            $form->addHiddenValue('gibbonFamilyID', $family['gibbonFamilyID'] ?? '');
+        } else if (count($families) > 1) {
+            $row = $form->addRow();
+            $row->addLabel('gibbonFamilyID', __('Family'));
+            $row->addSelect('gibbonFamilyID')->fromArray($families, 'gibbonFamilyID', 'name')->placeholder()->required();
+        }
+
         $form->addRow()->addSubmit(__('Next'));
 
         echo $form->getOutput();

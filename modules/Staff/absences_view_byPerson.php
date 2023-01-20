@@ -27,6 +27,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\AbsenceCalendar;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php') == false) {
     // Access denied
@@ -42,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
+    $settingGateway = $container->get(SettingGateway::class);
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
@@ -75,6 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     $absences = $staffAbsenceDateGateway->selectApprovedAbsenceDatesByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetchGrouped();
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
+    $coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
+
     // CALENDAR VIEW
     $table = AbsenceCalendar::create($absences, $schoolYear['firstDay'], $schoolYear['lastDay']);
     echo $table->getOutput().'<br/>';
@@ -107,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
     // Join a set of coverage data per absence
     $absenceIDs = $absences->getColumn('gibbonStaffAbsenceID');
-    $coverageData = $staffAbsenceDateGateway->selectDatesByAbsence($absenceIDs)->fetchGrouped();
+    $coverageData = $staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($absenceIDs)->fetchGrouped();
     $absences->joinColumn('gibbonStaffAbsenceID', 'coverageList', $coverageData);
 
     // DATA TABLE
@@ -151,9 +155,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     $table->addActionColumn()
         ->addParam('gibbonStaffAbsenceID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($absence, $actions) use ($canManage, $canRequest) {
-            if ($canRequest && $absence['status'] == 'Approved' 
-                && empty($absence['coverage']) && $absence['dateEnd'] >= date('Y-m-d')) {
+        ->format(function ($absence, $actions) use ($canManage, $canRequest, $coverageMode) {
+            $noApprovalRequired = ($coverageMode == 'Requested' && $absence['status'] == 'Approved') || $coverageMode == 'Assigned';
+            if ($canRequest && $noApprovalRequired && $absence['dateEnd'] >= date('Y-m-d')) {
                 $actions->addAction('coverage', __('Request Coverage'))
                     ->setIcon('attendance')
                     ->setURL('/modules/Staff/coverage_request.php');

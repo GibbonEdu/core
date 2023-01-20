@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
     // Access denied
@@ -56,6 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
 
     echo $form->getOutput();
+
+    if (empty($gibbonModuleID) && empty($gibbonRoleID)) {
+        echo Format::alert(__('Select a module or role from the filters above to view and edit user permissions.'), 'message');
+        return;
+    }
 
     try {
         if (!empty($gibbonModuleID)) {

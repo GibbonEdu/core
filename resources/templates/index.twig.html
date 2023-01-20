@@ -35,7 +35,7 @@ TODO: add template variable details.
                             {{ currentUser.name }}
                         </a>
 
-                        <div class="group relative px-4 py-4 -mr-3">
+                        <div class="group relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}">
 
                             <a href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
                             {% if currentUser.image_240 %}
@@ -45,10 +45,10 @@ TODO: add template variable details.
                             {% endif %}
                             </a>
 
-                            <ul class="list-none m-0 bg-gray-800 hidden group-hover:block absolute right-0 w-48 mt-1 p-1 z-50 cursor-pointer">
+                            <ul class="list-none m-0 bg-gray-800 hidden group-hover:block absolute w-48 mt-1 p-1 z-50 cursor-pointer {{ rightToLeft ? 'left-0' : 'right-0' }}">
                                 {% for link in minorLinks|reverse %}
                                 <li class="hover:bg-{{ themeColour }}-700">
-                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-{{ themeColour }}-200 text-left no-underline px-1 py-2 md:py-1 leading-normal" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
+                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-1 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                         {{- link.name|raw -}}
                                     </a>
                                 </li>
@@ -96,7 +96,7 @@ TODO: add template variable details.
                         </div>
 
                     {% if sidebar and (sidebarContents or menuModule) %}
-                        <div id="sidebar" class="w-full lg:w-sidebar lg:max-w-xs {{ sidebarPos == 'left' ? 'lg:mr-6' : 'lg:ml-6' }}">
+                        <div id="sidebar" class="w-full lg:w-sidebar lg:max-w-xs {{ sidebarPos == 'left' and not rightToLeft ? 'lg:mr-6' : 'lg:ml-6' }}">
                             {% block sidebar %}
                             {{ include('navigation.twig.html') }}
                             {% endblock sidebar %}
@@ -107,7 +107,7 @@ TODO: add template variable details.
                         {{ include('navigation.twig.html') }}
                     {% endif %}
 
-                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
+                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} ">
 
                         {% block page %}
 
@@ -125,10 +125,10 @@ TODO: add template variable details.
             </div>
 
             {% block footer %}
-                <div class="relative text-left text-sm text-gray-700 px-6 lg:px-12 mt-6 pt-6 pb-6 leading-normal border-t border-gray-300">
+                <div class="relative text-sm text-gray-700 px-6 lg:px-12 mt-6 pt-6 pb-6 leading-normal border-t border-gray-300 {{ rightToLeft ? 'text-right' : 'text-left' }}">
                     {{ include('footer.twig.html') }}
 
-                    <img class="absolute right-0 top-0 -mt-1 sm:mr-0 md:mr-16 hidden sm:block w-32" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
+                    <img class="absolute top-0 -mt-1 hidden sm:block w-32 {{ rightToLeft ? 'left-0 sm:ml-0 md:ml-16' : 'right-0 sm:mr-0 md:mr-16' }}" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
                 </div>
             {% endblock %}
 

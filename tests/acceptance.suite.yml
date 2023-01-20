@@ -4,15 +4,12 @@
 # Perform tests in browser using the WebDriver or PhpBrowser.
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
-class_name: AcceptanceTester
-params:
-    - env
-    - config/environment.php
+actor: AcceptanceTester
 modules:
     enabled:
         - PhpBrowser:
             url: "%ABSOLUTE_URL%"
-            curl: 
+            curl:
                 CURLOPT_TIMEOUT: 180
         - \Helper\Acceptance
         - Db
@@ -24,7 +21,7 @@ modules:
             dsn: "mysql:host=%DB_HOST%;dbname=%DB_NAME%"
             user: "%DB_USERNAME%"
             password: "%DB_PASSWORD%"
-            dump: 'config/data/dump.sql'
+            dump: '_data/dump.sql'
             populate: true
             cleanup: false
             reconnect: true
@@ -44,3 +41,4 @@ groups:
       - acceptance/School Admin
       - acceptance/Students
       - acceptance/Timetable Admin
+step_decorators: ~

@@ -21,6 +21,7 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Data\PasswordPolicy;
 use ZipArchive;
 
 /**
@@ -295,7 +296,7 @@ class FileUploader
         $size = getimagesize($sourcePath);
         $width = $srcWidth = $size[0];
         $height = $srcHeight = $size[1];
-        $ratio = $height / $width; 
+        $ratio = $height / $width;
         $maxWidth = $maxHeight = $maxSize;
         $srcX = $srcY = $destX = $destY = 0;
 
@@ -329,7 +330,7 @@ class FileUploader
             $destWidth = $srcWidth * $newRatio;
         }
 
-        // Zoom and focal adjustments 
+        // Zoom and focal adjustments
         if ($zoom != 100) {
             $srcWidth = $destWidth / ($zoom / 100.0);
             $srcX = ($width - $srcWidth) * ($focalX / 100.0);
@@ -389,11 +390,14 @@ class FileUploader
         $name = mb_substr($filename, 0, mb_strrpos($filename, '.'));
         $name = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
 
+        // Use password policy to generate random string
+        $randStrGenerator = new PasswordPolicy(true, true, false, 16);
+
         for ($count = 0; $count < 100; $count++) {
             if ($this->fileSuffixType == self::FILE_SUFFIX_INCREMENTAL) {
                 $suffix = ($count > 0)? '_'.$count : '';
             } else {
-                $suffix = '_'.randomPassword(16);
+                $suffix = '_'.$randStrGenerator->generate();
             }
 
             $randomizedFilename = $name.$suffix.'.'.$extension;

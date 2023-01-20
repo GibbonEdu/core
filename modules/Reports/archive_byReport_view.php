@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     $reportIdentifier = $_GET['reportIdentifier'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
-    
+
     if (empty($gibbonReportID) && empty($reportIdentifier)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -75,10 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
 
     echo $form->getOutput();
-    
+
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     $criteria = $reportGateway->newQueryCriteria(true)
         ->sortBy($gibbonFormGroupID ? ['surname', 'preferredName'] : ['sequenceNumber', 'name'])
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
                         ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
                         ->addParam('gibbonReportArchiveEntryID', $report['archive']['gibbonReportArchiveEntryID'] ?? '')
                         ->setURL('/modules/Reports/archive_byStudent_download.php');
-                        
+
                 $actions->addAction('download', __('Download'))
                         ->directLink()
                         ->setIcon('download')

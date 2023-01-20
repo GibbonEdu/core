@@ -76,9 +76,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         $table->addColumn('time', __('Time'))
             ->sortable(['timeStart', 'timeEnd'])
             ->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
-        $table->addColumn('person', __('Person'))
+
+        $table->addColumn('person', __('Booked For'))
             ->sortable(['preferredName', 'surname'])
-            ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
+            ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]))
+            ->formatDetails(function ($values) {
+                return Format::small(Format::truncate($values['reason'], 60));
+            });
 
         $table->addActionColumn()
             ->addParam('gibbonTTSpaceBookingID')

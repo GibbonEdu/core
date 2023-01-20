@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Data\ImportType;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\LogGateway;
@@ -57,7 +58,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
     echo $form->getOutput();
 
     // Get a list of available import options
-    $importTypeList = ImportType::loadImportTypeList($settingGateway, $pdo, false);
+    /** @var PasswordPolicy */
+    $passwordPolicy = $container->get(PasswordPolicy::class);
+    $importTypeList = ImportType::loadImportTypeList($settingGateway, $passwordPolicy, $pdo, false);
 
     // Build an array of combined import type info and log data
     $importTypeGroups = array_reduce($importTypeList, function ($group, $importType) use ($guid, $connection2, $logsByType) {

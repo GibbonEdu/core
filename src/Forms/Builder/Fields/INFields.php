@@ -90,6 +90,7 @@ class INFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
         $customField = $this->fields[$field['fieldName']]['custom'] ?? false;
 
         $row = $form->addRow();
@@ -104,14 +105,14 @@ class INFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'sen':
                 $row->addLabel('sen', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('sen')->required($required)->placeholder();
+                $row->addYesNo('sen')->required($required)->selected($default)->placeholder();
                 break;
 
             case 'senDetails':
                 $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
                 $col = $row->setClass('senDetailsRow')->addColumn();
                     $col->addLabel('senDetails', __($field['label']))->description(__($field['description']));
-                    $col->addTextArea('senDetails')->setRows(5)->required($required)->setClass('w-full');
+                    $col->addTextArea('senDetails')->setRows(5)->required($required)->setValue($default)->setClass('w-full');
                 break;
         }
 

@@ -418,7 +418,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder(__('Please select...'));
+            $row->addYesNo('sen')->required()->placeholder();
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
@@ -876,7 +876,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     } else {
         $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
 
         $row = $form->addRow()->addClass('tellUsMore');
             $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));

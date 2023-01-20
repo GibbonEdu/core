@@ -40,6 +40,8 @@ class Format
         'timeFormatPHP'     => 'H:i',
     ];
 
+    protected static $intlFormatterAvailable = false;
+
     /**
      * Sets the internal formatting options from an array.
      *
@@ -48,6 +50,7 @@ class Format
     public static function setup(array $settings)
     {
         static::$settings = array_replace(static::$settings, $settings);
+        static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
     }
 
     /**
@@ -179,14 +182,36 @@ class Format
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
 
-        if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-            $output = strftime('%b %e, %Y', $startTime);
-        } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%e, %Y', $endTime);
-        } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+        if (static::$intlFormatterAvailable) {
+            $formatter = new \IntlDateFormatter(null, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
+
+            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+                $formatter->setPattern('MMM d, yyyy');
+                $output = $formatter->format($startTime);
+            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+                $formatter->setPattern('MMM d');
+                $output = $formatter->format($startTime) . ' - ';
+                $formatter->setPattern('d, yyyy');
+                $output .= $formatter->format($endTime);
+            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+                $formatter->setPattern('MMM d');
+                $output = $formatter->format($startTime) . ' - ';
+                $formatter->setPattern('MMM d, yyyy');
+                $output .= $formatter->format($endTime);
+            } else {
+                $formatter->setPattern('MMM d, yyyy');
+                $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
+            }
         } else {
-            $output = strftime('%b %e, %Y', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+                $output = $startDate->format('M j, Y', $startTime);
+            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('j, Y', $endTime);
+            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+            } else {
+                $output = $startDate->format('M j, Y', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+            }
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -351,7 +376,7 @@ class Format
     public static function genderName($value, $translate = true)
     {
         if (empty($value)) return '';
-        
+
         $genderNames = [
             'F'           => __('Female'),
             'M'           => __('Male'),
@@ -463,7 +488,7 @@ class Format
             $url = static::$settings['absoluteURL'].substr($url, 1);
         }
 
-        if (stripos($url, static::$settings['absoluteURL']) === false) {
+        if (stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank" rel="noopener noreferrer">'.$text.'</a>';
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
@@ -705,6 +730,8 @@ class Format
     public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
+        if (empty($name)) return __('Unknown');
+
         if ($roleCategory == 'Parent' || $roleCategory == 'Other') {
             $url = Url::fromModuleRoute('User Admin', 'user_manage_edit')
                 ->withAbsoluteUrl()
@@ -763,6 +790,19 @@ class Format
         }, []);
 
         return $listFormatted;
+    }
+
+    /**
+     * Renders an HTML <img> for a theme-based icon, based on the icon name.
+     *
+     * @param string $icon
+     * @param string $title
+     * @return string
+     */
+    public static function icon(string $icon, string $title)
+    {
+        $icon .= stripos($icon, '.') === false ? '.png' : '';
+        return "<img title='{$title}' src='./themes/".static::$settings['gibbonThemeName']."/img/{$icon}'/>";
     }
 
     /**
@@ -858,10 +898,14 @@ class Format
      */
     public static function userBirthdayIcon($dob, $preferredName)
     {
-        // HEY SHORTY IT'S YOUR BIRTHDAY!
-        $daysUntilNextBirthday = daysUntilNextBirthday($dob);
+        if (empty($dob)) {
+            return '';
+        }
 
-        if (empty($dob) || $daysUntilNextBirthday >= 8) {
+        // HEY SHORTY IT'S YOUR BIRTHDAY!
+        $daysUntilNextBirthday = static::daysUntilNextBirthday($dob);
+
+        if ($daysUntilNextBirthday >= 8) {
             return '';
         }
 
@@ -879,6 +923,33 @@ class Format
         }
 
         return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+    }
+
+    /**
+     * Calculate the number of days before next birthday.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @param string $birthday  Accepts birthday in mysql date (YYYY-MM-DD).
+     *
+     * @return int  Number of days before the next birthday. If today is a birthday, returns 0.
+     */
+    protected static function daysUntilNextBirthday(string $birthday): int
+    {
+        // DateTime of 00:00:00 today
+        $today = new \DateTime('today');
+
+        // DateTime of 00:00:00 on this year birthday's date.
+        $nextBirthday = \DateTime::createFromFormat('m-d H:i:s', substr($birthday, 5) . ' 00:00:00');
+
+        // If birthday this year has past, increment for a 1 year period.
+        if ($nextBirthday < $today) {
+            $nextBirthday->add(new \DateInterval('P1Y'));
+        }
+
+        // Return the absolute difference between 2 DateTime formatted as number of days.
+        return (int) $nextBirthday->diff($today, true)->format('%a');
     }
 
     public static function userStatusInfo($person = [])
@@ -938,5 +1009,88 @@ class Format
         return !empty($expectedFormat)
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
+    }
+
+    /**
+     * Format a given datetime / timestamp into localized day of week name.
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function dayOfWeekName($datetime)
+    {
+        if (!static::$intlFormatterAvailable) {
+            return DateTime::createFromFormat('D', $datetime);
+        }
+
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'EEEE'
+            );
+        }
+        return $formatter->format($datetime);
+    }
+
+    /**
+     * Format a given datetime / timestamp into abbrivated localized month name.
+     * (i.e. from Jan to Sep).
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function monthName($datetime)
+    {
+        if (!static::$intlFormatterAvailable) {
+            return DateTime::createFromFormat('M', $datetime);
+        }
+
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MMM'
+            );
+        }
+        return $formatter->format($datetime);
+    }
+
+    /**
+     * Format a given datetime / timestamp into a 2 digits representation
+     * of the month (i.e. from 01 to 12).
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function monthDigits($datetime)
+    {
+        if (!static::$intlFormatterAvailable) {
+            return DateTime::createFromFormat('m', $datetime);
+        }
+
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MM'
+            );
+        }
+        return $formatter->format($datetime);
     }
 }

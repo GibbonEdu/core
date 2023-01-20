@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Rubrics;
 
+use Gibbon\Http\Url;
 use Gibbon\UI\Chart\Chart;
 
 /**
@@ -147,20 +148,30 @@ class Visualise
                 ]
             ];
             if ($image) {
+                $ajaxUrl = $this->absoluteURL . '/modules/Rubrics/rubrics_visualise_saveAjax.php';
                 $options['animation'] = [
                     'duration' => 0,
                     'onComplete' => $chart->addFunction('function(e) {
                         var img = visualisation'.$this->gibbonPersonID.'.toDataURL("image/png");
-                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: \''.$this->gibbonPersonID.'\', path: \''.$path.'\'}, dataType: "html", success: function (data) {
-                            '.( $id ? '$("#'.$id.'").val(data);' : '' ).'
-                        } });
-
+                        $.ajax({
+                            url: ' . json_encode($ajaxUrl) . ',
+                            type: "POST",
+                            data: {
+                                img: img,
+                                gibbonPersonID: '.json_encode($this->gibbonPersonID).',
+                                path: '.json_encode($path).'
+                            },
+                            dataType: "html",
+                            success: function (data) {
+                                '.( $id ? '$("#'.$id.'").val(data);' : '' ).'
+                            }
+                        });
                         this.options.animation.onComplete = null;
                     }'),
                 ];
             }
             $chart->setOptions($options);
-            
+
             // Handle custom colours only if there is one unique colour per row
             $rowColours = array_unique(array_column($this->rows, 'backgroundColor'));
             if (count($rowColours) == count($this->rows)) {

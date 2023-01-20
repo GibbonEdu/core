@@ -1,6 +1,4 @@
-class_name: InstallTester
-params:
-    - env
+actor: InstallTester
 modules:
     enabled:
         - PhpBrowser:

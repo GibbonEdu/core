@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
@@ -32,20 +33,70 @@ use Gibbon\Forms\Builder\Exception\FormProcessException;
 
 class CreateStudent extends AbstractFormProcess implements ViewableProcess
 {
+    /**
+     * An array of required fields.
+     *
+     * @var string[]
+     */
     protected $requiredFields = ['preferredName', 'surname'];
 
+    /**
+     * The UserGateway instance.
+     *
+     * @var UserGateway
+     */
     protected $userGateway;
+
+    /**
+     * The UserStatusLogGateway instance.
+     *
+     * @var UserStatusLogGateway
+     */
+    protected $userStatusLogGateway;
+
+    /**
+     * The UsernameGenerator instance.
+     *
+     * @var UsernameGenerator
+     */
     protected $usernameGenerator;
+
+    /**
+     * The CustomFieldGateway instance.
+     *
+     * @var CustomFieldGateway
+     */
     protected $customFieldGateway;
+
+    /**
+     * The PersonalDocumentGateway instance.
+     *
+     * @var PersonalDocumentGateway
+     */
     protected $personalDocumentGateway;
 
-    public function __construct(UserGateway $userGateway, UserStatusLogGateway $userStatusLogGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
+    /**
+     * The PasswordPolicy instance to generate password with.
+     *
+     * @var PasswordPolicy
+     */
+    protected $passwordPolicy;
+
+    public function __construct(
+        UserGateway $userGateway,
+        UserStatusLogGateway $userStatusLogGateway,
+        UsernameGenerator $usernameGenerator,
+        CustomFieldGateway $customFieldGateway,
+        PersonalDocumentGateway $personalDocumentGateway,
+        PasswordPolicy $passwordPolicy
+    )
     {
         $this->userGateway = $userGateway;
         $this->userStatusLogGateway = $userStatusLogGateway;
         $this->usernameGenerator = $usernameGenerator;
         $this->customFieldGateway = $customFieldGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
+        $this->passwordPolicy = $passwordPolicy;
     }
 
     public function getViewClass() : string
@@ -99,7 +150,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $foreignTableID = $builder->getConfig('foreignTableID');
 
         $this->personalDocumentGateway->updatePersonalDocumentOwnership('gibbonPerson', $formData->get('gibbonPersonIDStudent'), $foreignTable, $foreignTableID);
-        
+
         $formData->set('gibbonPersonIDStudent', null);
     }
 
@@ -133,7 +184,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             'phone2Type'          => $formData->get($prefix.'phone2Type', ''),
             'phone2CountryCode'   => $formData->get($prefix.'phone2CountryCode', ''),
             'phone2'              => $formData->get($prefix.'phone2', ''),
-            'dateStart'           => $formData->get($prefix.'dateStart'),
+            'dateStart'           => $formData->get('dateStart'),
             'privacy'             => $formData->get($prefix.'privacy'),
             'dayType'             => $formData->get($prefix.'dayType'),
             'profession'          => $formData->get($prefix.'profession', ''),
@@ -172,7 +223,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     protected function generatePassword(FormDataInterface $formData, $prefix = '')
     {
         $salt = getSalt();
-        $password = randomPassword(8);
+        $password = $this->passwordPolicy->generate();
 
         $formData->set($prefix.'password', $password);
         $formData->set($prefix.'passwordStrongSalt', $salt);
@@ -186,7 +237,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     protected function setStatus(FormDataInterface $formData, $prefix = '')
     {
-        $checkInform = !empty($prefix) ? $formData->getResult('informParent') : $formData->getResult('informStudent');
+        $checkInform = !empty($prefix) ? $formData->getResult('informParents') : $formData->getResult('informStudent');
         $status = $formData->get('schoolYearStatus') == 'Upcoming' && $checkInform != 'Y' ? 'Expected' : 'Full';
         $formData->set($prefix.'status', $status);
     }
@@ -200,6 +251,10 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     {
         if (!$formData->has($prefix.'firstName')) {
             $formData->set($prefix.'firstName', $formData->get($prefix.'preferredName'));
+        }
+
+        if (!$formData->has($prefix.'preferredName')) {
+            $formData->set($prefix.'preferredName', $formData->get($prefix.'firstName'));
         }
 
         if (!$formData->has($prefix.'officialName')) {

@@ -15,7 +15,7 @@ all stylesheets and scripts with a 'head' context.
 
     {% for field in customFields %}
         {% if fields[field.gibbonCustomFieldID] %}
-        <i>{{ __(field.name) }}:</i> {{ fields[field.gibbonCustomFieldID] ?? '' }}<br/>
+        <i>{{ __(field.name) }}:</i> {{ fields[field.gibbonCustomFieldID] | raw }}<br/>
         {% endif %}
     {% endfor %}
 

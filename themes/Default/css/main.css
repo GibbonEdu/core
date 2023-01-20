@@ -404,6 +404,16 @@ input[type="submit"] {
     font-size: 14px;
 }
 
+.bg-purple[type="submit"] {
+    border: 1px solid #8c60c8;
+    background-color: #8c60c8;
+}
+
+.bg-purple[type="submit"]:hover {
+    border: 1px solid #9d75d9;
+    background-color: #9d75d9;
+}
+
 input[type="reset"] {
     border: 1px solid #222222;
     background-color: #eeeeee;
@@ -1343,4 +1353,12 @@ table.smallIntBorder td.noPadding {
 
 .standardForm:not(.blank) .formRow:not(:last-child)  {
     border-bottom-width: 1px;
+}
+
+.\-bottom-px {
+    bottom: -1px;
+}
+
+.shadow-top {
+    box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.1), 0 -2px 2px -1px rgba(0, 0, 0, 0.1);
 }

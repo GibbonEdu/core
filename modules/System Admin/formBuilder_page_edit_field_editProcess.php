@@ -38,12 +38,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $formFieldGateway = $container->get(FormFieldGateway::class);
 
     $data = [
-        'fieldType'   => $_POST['fieldType'] ?? 'varchar',
-        'label'       => $_POST['label'] ?? '',
-        'description' => $_POST['description'] ?? null,
-        'required'    => $_POST['required'] ?? 'N',
-        'hidden'      => $_POST['hidden'] ?? 'N',
-        'prefill'     => $_POST['prefill'] ?? 'N',
+        'fieldType'    => $_POST['fieldType'] ?? 'varchar',
+        'label'        => $_POST['label'] ?? '',
+        'description'  => $_POST['description'] ?? null,
+        'required'     => $_POST['required'] ?? 'N',
+        'hidden'       => $_POST['hidden'] ?? 'N',
+        'prefill'      => $_POST['prefill'] ?? 'N',
+        'defaultValue' => $_POST['defaultValue'] ?? null,
     ];
 
     if (!empty($_POST['options'])) {

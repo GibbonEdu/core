@@ -82,6 +82,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
         ->description(__('Reason'))
         ->format([AbsenceFormats::class, 'typeAndReason']);
 
+    $table->addColumn('coverageRequired', __('Cover Required'))
+        ->width('12%')
+        ->format(Format::using('yesNo', 'coverageRequired'));
+
     $table->addColumn('timestampCreator', __('Created'))
         ->format([AbsenceFormats::class, 'createdOn']);
 

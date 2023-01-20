@@ -39,7 +39,7 @@ class FinanceUpdateGateway extends QueryableGateway implements ScrubbableGateway
     private static $tableName = 'gibbonFinanceInvoiceeUpdate';
     private static $primaryKey = 'gibbonFinanceInvoiceeUpdateID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['target.surname', 'target.preferredName', 'target.username'];
     
     private static $scrubbableKey = ['gibbonPersonID', 'gibbonFinanceInvoicee', 'gibbonFinanceInvoiceeID'];
     private static $scrubbableColumns = ['companyName' => null,'companyContact' => null,'companyAddress' => null,'companyEmail' => null,'companyCCFamily' => null,'companyPhone' => null,'companyAll' => null];
@@ -54,7 +54,7 @@ class FinanceUpdateGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFinanceInvoiceeUpdateID', 'gibbonFinanceInvoiceeUpdate.status', 'gibbonFinanceInvoiceeUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
+                'gibbonFinanceInvoiceeUpdateID', 'gibbonFinanceInvoiceeUpdate.status', 'gibbonFinanceInvoiceeUpdate.timestamp', 'target.preferredName', 'target.surname', 'target.gibbonPersonID as gibbonPersonIDTarget', 'updater.gibbonPersonID as gibbonPersonIDUpdater', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
             ])
             ->leftJoin('gibbonFinanceInvoicee', 'gibbonFinanceInvoicee.gibbonFinanceInvoiceeID=gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID')
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonFinanceInvoicee.gibbonPersonID')

@@ -78,7 +78,7 @@ class ApplicationAccept extends AbstractFormProcess implements ViewableProcess
         $studentGroup = $formData->has('formGroupName')? $formData->get('formGroupName') : $formData->get('yearGroupName');
 
         // Raise a new notification event for Admissions
-        $event = new NotificationEvent('Students', 'Application Form Accepted');
+        $event = new NotificationEvent('Admissions', 'Application Form Accepted');
         $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $formData->get('schoolYearName'));
         $notificationText .= $formData->hasAll(['gibbonStudentEnrolmentID', 'gibbonFormGroupIDEntry'])
             ? ' '.__('The student has successfully been enrolled in the specified school year, year group and form group.')
@@ -93,7 +93,7 @@ class ApplicationAccept extends AbstractFormProcess implements ViewableProcess
 
         // Raise a new notification event for SEN
         if ($formData->has('senDetails') || $formData->has('medicalInformation')) {
-            $event = new NotificationEvent('Students', 'New Application with SEN/Medical');
+            $event = new NotificationEvent('Admissions', 'New Application with SEN/Medical');
             $event->addScope('gibbonYearGroupID', $formData->get('gibbonYearGroupIDEntry'));
             $event->setNotificationText(__('An application form has been accepted for {name} ({group}) with SEN or Medical needs. Please visit the student profile to review these details.', [
                 'name' => $studentName,

@@ -23,6 +23,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -60,7 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
 
     // Validate the database relationships exist
     $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
-    $substitute = $container->get(SubstituteGateway::class)->getSubstituteByPerson($data['gibbonPersonIDCoverage']);
+
+    $internalCoverage = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageInternal');
+    $substitute = $container->get(SubstituteGateway::class)->getSubstituteByPerson($data['gibbonPersonIDCoverage'], $internalCoverage);
 
     if (empty($coverage) || empty($substitute)) {
         $URL .= '&return=error2';
@@ -98,11 +101,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
 
     $coverageDates = $staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID);
     $uncoveredDates = [];
+    $rerequestDates = [];
 
     // Remove any coverage dates from the coverage request if they were not selected
     foreach ($coverageDates as $date) {
-        if (!in_array($date['date'], $requestDates)) {
+        if (!in_array($date['gibbonStaffCoverageDateID'], $requestDates)) {
             $uncoveredDates[] = $date['date'];
+            $rerequestDates[] = $staffCoverageDateGateway->getByID($date['gibbonStaffCoverageDateID']);
             $partialFail &= !$staffCoverageDateGateway->delete($date['gibbonStaffCoverageDateID']);
         }
     }
@@ -110,6 +115,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
     // Send messages (Mail, SMS) to relevant users
     $process = $container->get(CoverageNotificationProcess::class);
     $process->startCoverageAccepted($gibbonStaffCoverageID, $uncoveredDates);
+
+    // Create a new coverage request for incomplete broadcasts
+    if ($coverage['requestType'] == 'Broadcast' && !empty($rerequestDates)) {
+        $data = $coverage;
+
+        $gibbonStaffCoverageID = $staffCoverageGateway->insert($data);
+
+        // Create new coverage dates for unselected dates/times
+        foreach ($rerequestDates as $data) {
+            $data['gibbonStaffCoverageID'] = $gibbonStaffCoverageID;
+            $partialFail &= !$staffCoverageDateGateway->insert($data);
+        }
+    }
 
 
     $URLSuccess .= $partialFail

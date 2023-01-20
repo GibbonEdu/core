@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Forms\Form;
@@ -35,14 +36,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Set returnTo point for upcoming pages
     $page->breadcrumbs->add(__('Manage Activities'));
 
+    /** @var SettingGateway        $settingGateway */
     $settingGateway = $container->get(SettingGateway::class);
+    /** @var SchoolYearTermGateway $schoolYearTermGateway */
+    $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
 
     $search = $_GET['search'] ?? '';
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
     $enrolmentType = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
-    $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
+    $schoolTerms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
     $yearGroups = getYearGroups($connection2);
 
     $activityGateway = $container->get(ActivityGateway::class);
@@ -169,12 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->format(function($activity) use ($dateType, $schoolTerms) {
             if (empty($schoolTerms)) return '';
             if ($dateType != 'Date') {
-                $dateRange = '';
-                if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
-                    $termList = array_map(function ($item) use ($schoolTerms) {
-                        $index = array_search($item, $schoolTerms);
-                        return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                    }, explode(',', $activity['gibbonSchoolYearTermIDList']));
+                $termList = array_intersect_key($schoolTerms, array_flip(explode(',', $activity['gibbonSchoolYearTermIDList'] ?? '')));
+                if (!empty($termList)) {
                     return implode('<br/>', $termList);
                 }
             } else {

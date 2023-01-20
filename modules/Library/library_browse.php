@@ -56,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $page = 1;
     }
 
-    echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
-    echo "<div style='width: 762px; margin: 0 auto'>";
+    echo "<div class='w-full' style='border: 1px solid #444; margin-bottom: 30px; background-size: contain; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
+    echo "<div class='w-full lg:w-4/5 px-2 lg:px-0' style='margin: 0 auto'>";
     //Display filters
     echo "<table class='noIntBorder borderGrey mb-1' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
     echo '<tr>';
@@ -139,19 +139,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     //Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
     $producer = trim($_REQUEST['producer'] ?? '');
-    $category = trim($_REQUEST['category'] ?? '');
+    $type = trim($_REQUEST['type'] ?? '');
     $collection = trim($_REQUEST['collection'] ?? '');
     $everything = trim($_REQUEST['everything'] ?? '');
 
     $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
 
-    // Build the category/collection arrays
+    // Build the type/collection arrays
     $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $result = $pdo->select($sql);
 
-    $categoryList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
+    $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
     $collections = $collectionsChained = array();
-    $categories = array_reduce($categoryList, function ($group, $item) use (&$collections, &$collectionsChained) {
+    $types = array_reduce($typeList, function ($group, $item) use (&$collections, &$collectionsChained) {
         $group[$item['value']] = __($item['name']);
         foreach (json_decode($item['fields'], true) as $field) {
             if ($field['name'] == 'Collection' and $field['type'] == 'Select') {
@@ -182,18 +182,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('category', __('Category'));
-    $col->addSelect('category')
-        ->fromArray($categories)
+    $col->addLabel('type', __('Type'));
+    $col->addSelect('type')
+        ->fromArray($types)
         ->setClass('fullWidth')
-        ->selected($category)
+        ->selected($type)
         ->placeholder();
 
     $col = $row->addColumn()->setClass('quarterWidth');
     $col->addLabel('collection', __('Collection'));
     $col->addSelect('collection')
         ->fromArray($collections)
-        ->chainedTo('category', $collectionsChained)
+        ->chainedTo('type', $collectionsChained)
         ->setClass('fullWidth')
         ->selected($collection)
         ->placeholder();
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->sortBy('id')
         ->filterBy('name', $name)
         ->filterBy('producer', $producer)
-        ->filterBy('category', $category)
+        ->filterBy('type', $type)
         ->filterBy('collection', $collection)
         ->filterBy('everything', $everything)
         ->fromPOST();

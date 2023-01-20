@@ -32,6 +32,12 @@ use Gibbon\Services\Format;
  */
 class FinanceFormFactory extends DatabaseFormFactory
 {
+
+    public function __construct(Connection $pdo = null)
+    {
+        parent::__construct($pdo);
+    }
+
     /**
      * Create and return an instance of DatabaseFormFactory.
      * @return  object DatabaseFormFactory
@@ -230,9 +236,10 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createSelectMonth($name)
     {
-        $months = array_reduce(range(1,12), function($group, $item){
-            $month = strftime('%m', mktime(0, 0, 0, $item, 1, 0));
-            $group[$month] = $month.' - '.strftime('%B', mktime(0, 0, 0, $item, 1, 0));
+        $months = array_reduce(range(1,12), function($group, $item) {
+            $monthTimestamp = mktime(0, 0, 0, $item, 1, 0);
+            $month = Format::monthDigits($monthTimestamp);
+            $group[$month] = $month.' - '.Format::monthName($monthTimestamp);
             return $group;
         }, array());
 

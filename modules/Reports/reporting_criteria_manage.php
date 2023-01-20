@@ -80,8 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
             ->fromArray($scopesOptions)
             ->selected($urlParams['gibbonReportingScopeID'])
             ->chainedTo('gibbonReportingCycleID', $scopesChained)
-            ->placeholder()
-            ->required();
+            ->placeholder();
 
     if (!empty($urlParams['gibbonReportingScopeID']) && !empty($urlParams['gibbonReportingCycleID'])) {
         $reportingScope = $reportingScopeGateway->getByID($urlParams['gibbonReportingScopeID']);
@@ -121,7 +120,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     echo $form->getOutput();
 
-    if (empty($urlParams['gibbonReportingScopeID']) || empty($urlParams['gibbonReportingCycleID'])) {
+    if (empty($urlParams['gibbonReportingCycleID'])) {
+        return;
+    }
+
+    if (empty($urlParams['gibbonReportingScopeID'])) {
+        $table = DataTable::create('reportScopes')->setTitle(__('Criteria'));
+        $table->addHeaderAction('scopes', __('Manage Scopes & Criteria'))
+            ->setURL('/modules/Reports/reporting_scopes_manage.php')
+            ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
+            ->setIcon('markbook')
+            ->displayLabel();
+
+        echo $table->render([]);
         return;
     }
 

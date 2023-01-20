@@ -5,10 +5,14 @@ use Gibbon\Install\Installer;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
+$requestSuccess = false;
 try {
     $I = new InstallTester($scenario);
     $I->wantTo('install Gibbon');
     $I->amOnPage('/installer/install.php');
+
+    // Mark a success in doing CURL request.
+    $requestSuccess = true;
 
     // INSTALLED: Cancel out now if already installed
     if (file_exists(getcwd().'/../config.php')) {
@@ -70,7 +74,9 @@ try {
     $I->canSeeCurrentUrlMatches('/^(|\/)$/');
 
 } catch (Exception $e) {
-    codecept_debug($I->grabTextFrom('body'));
+    if ($requestSuccess) {
+        codecept_debug($I->grabTextFrom('body'));
+    }
     throw $e;
 }
 

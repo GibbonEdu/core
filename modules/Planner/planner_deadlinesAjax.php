@@ -25,7 +25,7 @@ include '../../gibbon.php';
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) {
     die('error0');
 } else {
-    $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+    $category = $session->get('gibbonRoleIDCurrentCategory');
     if ($category != 'Student') {
         die('error0');
     } else {

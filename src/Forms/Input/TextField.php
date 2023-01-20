@@ -88,6 +88,8 @@ class TextField extends Input
      */
     public function uniqueField($ajaxURL, $data = [])
     {
+        if ($this->getReadonly()) return $this;
+        
         $label = $this->row->getElement('label'.$this->getName());
         $fieldLabel = (!empty($label))? $label->getLabelText() : ucfirst($this->getName());
 

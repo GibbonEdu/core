@@ -52,6 +52,11 @@ table:
         name: "Date Added"
         desc: ""
         args: {filter: date, custom: true }
+    gibbonSchoolYearTermID: 
+        name: "Term Added"
+        desc: ""
+        args: {filter: string, custom: true }
+        relationship: { table: gibbonSchoolYearTerm, key: gibbonSchoolYearTermID, field: nameShort  }
     attainment: 
         name: "Assess Attainment?"
         desc: ""

@@ -114,9 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             $result = $connection2->prepare($sql);
             $result->execute($data);
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('Access denied.');
-            echo '</div>';
+            $page->addMessage(__('There are no records to display.'));
         } else {
             //Get child list
             $count = 0;
@@ -136,9 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             }
 
             if ($count == 0) {
-                echo "<div class='error'>";
-                echo __('Access denied.');
-                echo '</div>';
+                $page->addMessage(__('There are no records to display.'));
             } elseif ($count == 1) {
                 $gibbonPersonID = $gibbonPersonIDArray[0];
             } else {
@@ -228,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         }
     } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
         //Get current role category
-        $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+        $category = $session->get('gibbonRoleIDCurrentCategory');
 
         $page->breadcrumbs
             ->add(__('Planner'), 'planner.php', $params)

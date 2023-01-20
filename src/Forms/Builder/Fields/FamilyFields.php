@@ -77,14 +77,17 @@ class FamilyFields extends AbstractFieldGroup
                 'description' => __('The primary language used in the student\'s home.'),
                 'required'    => 'Y',
                 'prefill'     => 'Y',
+                'translate' => 'Y',
             ],
             'languageHomeSecondary' => [
                 'label'       => __('Home Language - Secondary'),
                 'prefill'     => 'Y',
+                'translate' => 'Y',
             ],
             'familyStatus' => [
                 'label'       => __('Marital Status'),
                 'prefill'     => 'Y',
+                'translate' => 'Y',
             ],
             'headingSiblings' => [
                 'label' => __('Siblings'),
@@ -109,6 +112,7 @@ class FamilyFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
 
         $row = $form->addRow();
 
@@ -164,37 +168,37 @@ class FamilyFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'nameAddress':
                 $row->addLabel('nameAddress', __($field['label']))->description(__($field['description']));
-                $row->addTextField('nameAddress')->required($required);
+                $row->addTextField('nameAddress')->required($required)->setValue($default);
                 break;
 
             case 'homeAddress':
                 $row->addLabel('homeAddress', __($field['label']))->description(__($field['description']));
-                $row->addTextArea('homeAddress')->required($required)->maxLength(255)->setRows(2);
+                $row->addTextArea('homeAddress')->required($required)->setValue($default)->maxLength(255)->setRows(2);
                 break;
 
             case 'homeAddressDistrict':
                 $row->addLabel('homeAddressDistrict', __($field['label']))->description(__($field['description']));
-                $row->addTextFieldDistrict('homeAddressDistrict')->required($required);
+                $row->addTextFieldDistrict('homeAddressDistrict')->required($required)->setValue($default);
                 break;
 
             case 'homeAddressCountry':
                 $row->addLabel('homeAddressCountry', __($field['label']))->description(__($field['description']));
-                $row->addSelectCountry('homeAddressCountry')->required($required);
+                $row->addSelectCountry('homeAddressCountry')->required($required)->selected($default);
                 break;
 
             case 'languageHomePrimary':
                 $row->addLabel('languageHomePrimary', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageHomePrimary')->required($required)->placeholder();
+                $row->addSelectLanguage('languageHomePrimary')->required($required)->selected($default)->placeholder();
                 break;
         
             case 'languageHomeSecondary':
                 $row->addLabel('languageHomeSecondary', __($field['label']))->description(__($field['description']));
-                $row->addSelectLanguage('languageHomeSecondary')->required($required)->placeholder();
+                $row->addSelectLanguage('languageHomeSecondary')->required($required)->selected($default)->placeholder();
                 break;
 
             case 'familyStatus':
                 $row->addLabel('familyStatus', __($field['label']))->description(__($field['description']));
-                $row->addSelectMaritalStatus('familyStatus')->required($required);
+                $row->addSelectMaritalStatus('familyStatus')->required($required)->selected($default);
                 break;
 
             case 'siblings':

@@ -19,413 +19,141 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\Module\Messenger\MessageTargets;
+use Gibbon\Module\Messenger\MessageProcess;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
+use Gibbon\Domain\Messenger\MessengerTargetGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonMessengerID=$_POST["gibbonMessengerID"] ?? '';
-$search=$_GET["search"] ?? '';
-
+$gibbonMessengerID = $_POST['gibbonMessengerID'] ?? '';
+$sendTestEmail = $_POST['sendTestEmail'] ?? '';
+$search = $_GET['search'] ?? '';
 $address = $_POST['address'] ?? '';
-$URL=$session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($address) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
-$time=time() ;
+
+$URL=$session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=$gibbonMessengerID";
+$URLSend = $session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_send.php&sidebar=true&gibbonMessengerID={$gibbonMessengerID}";
+
+$time=time();
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
-    $URL.="&updateReturn=fail0" ;
+    $URL.="&return=error0";
+    header("Location: {$URL}");
+} else {
+    // Proceed!
+    $highestAction=getHighestGroupedAction($guid, $address, $connection2);
+    if ($highestAction == FALSE) {
+        $URL.="&return=error0";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Check for empty POST. This can happen if attachments go horribly wrong.
+    if (empty($_POST)) {
+        $URL.="&return=error5";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Validate Inputs
+    $validator = $container->get(Validator::class);
+    $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
+
+    $messengerGateway = $container->get(MessengerGateway::class);
+    $messengerTargetGateway = $container->get(MessengerTargetGateway::class);
+    $messengerReceiptGateway = $container->get(MessengerReceiptGateway::class);
+    $messageTargets = $container->get(MessageTargets::class);
+
+    $values = $messengerGateway->getByID($gibbonMessengerID);
+    if (empty($values)) {
+        $URL.="&return=error2";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $saveMode = $_POST['saveMode'] ?? 'Preview';
+    $status = $_POST['status'] ?? 'Draft';
+    $data = [
+        'messageWall'       => $_POST['messageWall'] ?? 'N',
+        'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
+        'messageWall_date1' => !empty($_POST['date1']) ? Format::dateConvert($_POST['date1']) : null,
+        'messageWall_date2' => !empty($_POST['date2']) ? Format::dateConvert($_POST['date2']) : null,
+        'messageWall_date3' => !empty($_POST['date3']) ? Format::dateConvert($_POST['date3']) : null,
+        'subject'           => $_POST['subject'] ?? '',
+        'body'              => $_POST['body'] ?? '',
+        'confidential'      => $_POST['confidential'] ?? 'N',
+        'timestamp'         => date('Y-m-d H:i:s'),
+    ];
+
+    if ($status == 'Draft') {
+        $data += [
+            'email'            => $_POST['email'] ?? 'N',
+            'sms'              => $_POST['sms'] ?? 'N',
+            'emailFrom'        => $_POST['emailFrom'] ?? $session->get('email'),
+            'emailReplyTo'     => $_POST['emailReplyTo'] ?? $session->get('email'),
+            'emailReceipt'     => $_POST['emailReceipt'] ?? 'N',
+            'emailReceiptText' => $_POST['emailReceiptText'] ?? '',
+        ];
+    } else {
+        $data['email'] = $values['email'];
+        $data['emailReceipt'] = $values['emailReceipt'];
+    }
+
+    $data['messageWallPin'] = ($data['messageWall'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php', 'Manage Messages_all')) ? $data['messageWallPin'] : 'N';
+
+    // Validate that the required values are present
+    if (empty($data['subject']) || empty($data['body']) || ($status == 'Draft' && $data['email'] == 'Y' && $data['emailFrom'] == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
+        $URL.="&return=error3";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Write to database
+    $updated = $messengerGateway->update($gibbonMessengerID, $data);
+    if (!$updated) {
+        $URL.="&return=error2";
+        header("Location: {$URL}");
+        exit();
+    }
+
+    // Send Draft
+    if ($sendTestEmail == 'Y') {
+        $process = $container->get(MessageProcess::class);
+        $testEmail = $process->runSendDraft($data);
+        
+        $URL .= "&testEmail={$testEmail}";
+        $URLSend .= "&testEmail={$testEmail}";
+    }
+
+    $partialFail = false;
+
+    // Go to preview page?
+    if ($saveMode == 'Preview' && $status == 'Draft' && ($data['email'] == 'Y' || $data['sms'] == 'Y')) {
+        // Clear existing recipients, then add new ones
+        $messengerTargetGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
+        $messengerReceiptGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
+        $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
+
+        if (empty($recipients)) {
+            $URL.="&return=error6";
+            header("Location: {$URL}");
+            exit;
+        }
+
+        header("Location: {$URLSend}");
+        exit;
+    } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {
+        $messengerGateway->update($gibbonMessengerID, ['status' => 'Sent']);
+    }
+
+    // Remove existing targets, then save any edits by creating new targets
+    $messengerTargetGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
+    $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
+
+    $URL .= $partialFail
+        ? "&return=error4"
+        : "&return=success0";
+    
     header("Location: {$URL}");
 }
-else {
-    if (empty($_POST)) {
-        //fail 5
-        $URL.="&updateReturn=fail5" ;
-        header("Location: {$URL}");
-    }
-    else {
-        $highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
-        if ($highestAction==FALSE) {
-            $URL.="&updateReturn=fail0$params" ;
-            header("Location: {$URL}");
-        }
-        else {
-            //Proceed!
-            //Validate Inputs
-            $validator = $container->get(Validator::class);
-            $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
-
-            $messageWall=$_POST["messageWall"] ?? '';
-            $messageWallPin = ($messageWall == "Y" && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all") & !empty($_POST['messageWallPin'])) ? $_POST['messageWallPin'] : 'N' ;
-            $date1=NULL ;
-            if (isset($_POST["date1"])) {
-                if ($_POST["date1"]!="") {
-                    $date1=Format::dateConvert($_POST["date1"]) ;
-                }
-            }
-            $date2=NULL ;
-            if (isset($_POST["date2"])) {
-                if ($_POST["date2"]!="") {
-                    $date2=Format::dateConvert($_POST["date2"]) ;
-                }
-            }
-            $date3=NULL ;
-            if (isset($_POST["date3"])) {
-                if ($_POST["date3"]!="") {
-                    $date3=Format::dateConvert($_POST["date3"]) ;
-                }
-            }
-            $subject = $_POST['subject'] ?? '';
-            $body = $_POST['body'] ?? '';
-
-            if ($subject=="" OR $body=="") {
-                //fail 3
-                $URL.="&updateReturn=fail3" ;
-                header("Location: {$URL}");
-            }
-            else {
-                //Write to database
-                try {
-                    $dataUpdate=array("messageWall"=>$messageWall, "messageWallPin" => $messageWallPin, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "subject"=>$subject, "body"=>$body, "timestamp"=>date("Y-m-d H:i:s"), "gibbonMessengerID"=>$gibbonMessengerID);
-                    $sqlUpdate="UPDATE gibbonMessenger SET messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, subject=:subject, body=:body, timestamp=:timestamp WHERE gibbonMessengerID=:gibbonMessengerID" ;
-                    $resultUpdate=$connection2->prepare($sqlUpdate);
-                    $resultUpdate->execute($dataUpdate);
-                }
-                catch(PDOException $e) {
-                    //fail 2
-                    $URL.="&updateReturn=fail2" ;
-                    header("Location: {$URL}");
-                    exit() ;
-                }
-
-                //TARGETS
-                $partialfail=FALSE ;
-
-                try {
-                    $dataRemove=array("gibbonMessengerID"=>$gibbonMessengerID);
-                    $sqlRemove="DELETE FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID" ;
-                    $resultRemove=$connection2->prepare($sqlRemove);
-                    $resultRemove->execute($dataRemove);
-                }
-                catch(PDOException $e) {
-                    $partialfail=TRUE;
-                }
-
-                //Roles
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
-                    $_POST["role"] ;
-                    if ($_POST["role"]=="Y") {
-                        $choices=$_POST["roles"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Role', id=:t" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                //Role Categories
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
-                    if (!empty($_POST['roleCategory']) && $_POST['roleCategory'] == 'Y') {
-                        $choices=$_POST['roleCategories'] ?? '';
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Role Category', id=:t" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Year Groups
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
-                    if ($_POST["yearGroup"]=="Y") {
-                        $staff=$_POST["yearGroupsStaff"] ;
-                        $students=$_POST["yearGroupsStudents"] ;
-                        $parents="N" ;
-                        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
-                            $parents=$_POST["yearGroupsParents"] ;
-                        }
-                        $choices=$_POST["yearGroups"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Year Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Form Groups
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-                    if ($_POST["formGroup"]=="Y") {
-                        $staff=$_POST["formGroupsStaff"] ;
-                        $students=$_POST["formGroupsStudents"] ;
-                        $parents="N" ;
-                        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-                            $parents=$_POST["formGroupsParents"] ;
-                        }
-                        $choices=$_POST["formGroups"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Form Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Course Groups
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-                    if ($_POST["course"]=="Y") {
-                        $staff=$_POST["coursesStaff"] ;
-                        $students=$_POST["coursesStudents"] ;
-                        $parents="N" ;
-                        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
-                            $parents=$_POST["coursesParents"] ;
-                        }
-                        $choices=$_POST["courses"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Course', id=:id, staff=:staff, students=:students, parents=:parents" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Class Groups
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-                    if ($_POST["class"]=="Y") {
-                        $staff=$_POST["classesStaff"] ;
-                        $students=$_POST["classesStudents"] ;
-                        $parents="N" ;
-                        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
-                            $parents=$_POST["classesParents"] ;
-                        }
-                        $choices=$_POST["classes"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Class', id=:id, staff=:staff, students=:students, parents=:parents" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Activity Groups
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-                    if ($_POST["activity"]=="Y") {
-                        $staff=$_POST["activitiesStaff"] ;
-                        $students=$_POST["activitiesStudents"] ;
-                        $parents="N" ;
-                        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
-                            $parents=$_POST["activitiesParents"] ;
-                        }
-                        $choices=$_POST["activities"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Activity', id=:id, staff=:staff, students=:students, parents=:parents" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Applicants
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
-                    if ($_POST["applicants"]=="Y") {
-                        $choices=$_POST["applicantList"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Houses
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-                    if ($_POST["houses"]=="Y") {
-                        $choices=$_POST["houseList"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Houses', id=:id" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Transport
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
-                  if ($_POST["transport"]=="Y") {
-                              $staff=$_POST["transportStaff"] ;
-                              $students=$_POST["transportStudents"] ;
-                              $parents="N" ;
-                    if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
-                      $parents=$_POST["transportParents"] ;
-                    }
-                    $choices=$_POST["transports"] ;
-                    if ($choices!="") {
-                      foreach ($choices as $t) {
-                        try {
-                          $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents, "staff"=>$staff);
-                          $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Transport', id=:id, students=:students, staff=:staff, parents=:parents" ;
-                          $result=$connection2->prepare($sql);
-                          $result->execute($data);
-                        }
-                        catch(PDOException $e) {
-                          $partialfail=TRUE;
-                        }
-                      }
-                    }
-                  }
-                }
-
-                //Attendance
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-                  if ($_POST["attendance"]=="Y") {
-                    $choices=$_POST["attendanceStatus"];
-                    $students=$_POST["attendanceStudents"];
-                    $parents=$_POST["attendanceParents"];
-                    if ($choices!="") {
-                      foreach ($choices as $t) {
-                        try {
-                          $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents);
-                          $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Attendance', id=:id, students=:students, parents=:parents" ;
-                          $result=$connection2->prepare($sql);
-                          $result->execute($data);
-                        }
-                        catch(PDOException $e) {
-                          $partialfail=TRUE;
-                        }
-                      }
-                    }
-                  }
-                }
-
-                //Groups
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my")) {
-                    if ($_POST["group"] == "Y") {
-                        $staff = $_POST["groupsStaff"] ;
-                        $students = $_POST["groupsStudents"] ;
-                        $parents = "N" ;
-                        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
-                            $parents=$_POST["groupsParents"] ;
-                        }
-                        $choices=$_POST["groups"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //Individuals
-                if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
-                    if ($_POST["individuals"]=="Y") {
-                        $choices=$_POST["individualList"] ;
-                        if ($choices!="") {
-                            foreach ($choices as $t) {
-                                try {
-                                    $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
-                                    $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Individuals', id=:id" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) {
-                                    $partialfail=TRUE;
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                if ($partialfail==TRUE) {
-                    //fail 4
-                    $URL.="&updateReturn=fail4" ;
-                    header("Location: {$URL}");
-                }
-                else {
-                    //Success 0
-                    $URL.="&updateReturn=success0" ;
-                    header("Location: {$URL}") ;
-                }
-            }
-        }
-    }
-}
-?>

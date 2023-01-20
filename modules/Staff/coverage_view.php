@@ -36,10 +36,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
     $gibbonPersonID = $session->get('gibbonPersonID');
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     
+    $settingGateway = $container->get(SettingGateway::class);
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
-    $substitute = $container->get(SubstituteGateway::class)->getSubstituteByPerson($gibbonPersonID);
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+    $substitute = $container->get(SubstituteGateway::class)->getSubstituteByPerson($gibbonPersonID, $internalCoverage);
 
     // QUERY
     $criteria = $staffCoverageGateway->newQueryCriteria()

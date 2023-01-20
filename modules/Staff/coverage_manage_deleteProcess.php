@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 require_once '../../gibbon.php';
 
@@ -37,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_dele
 } else {
     // Proceed!
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
+    $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $values = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
 
@@ -56,6 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_dele
 
     // Then delete the coverage itself
     $partialFail &= $staffCoverageGateway->delete($gibbonStaffCoverageID);
+
+    // Check for other coverage linked to this absence
+    $otherCoverage = $staffCoverageGateway->selectBy(['gibbonStaffAbsenceID' => $values['gibbonStaffAbsenceID']])->fetchAll();
+
+    // Update the original absence to flag it as not requiring coverage
+    if (empty($otherCoverage)) {
+        $staffAbsenceGateway->update($values['gibbonStaffAbsenceID'], ['coverageRequired' => 'N']);
+    }
 
     $URL .= $partialFail
         ? '&return=warning1'

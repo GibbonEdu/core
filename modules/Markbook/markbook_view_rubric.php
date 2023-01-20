@@ -29,6 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     echo '</div>';
 } else {
     //Proceed!
+    $page->scripts->add('chart');
+
     //Check if gibbonCourseClassID and gibbonMarkbookColumnID and gibbonPersonID and gibbonRubricID specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '' or $gibbonPersonID == '' or $gibbonRubricID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $roleCategory = getRoleCategory($session->get('gibbonRoleIDPrimary'), $connection2);
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
         $contextDBTableGibbonRubricIDField = 'gibbonRubricID';
         if ($_GET['type'] == 'attainment') {
             $contextDBTableGibbonRubricIDField = 'gibbonRubricIDAttainment';
@@ -111,11 +113,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         echo "<span style='font-size: 65%; font-style: italic'>".Format::name('', $row4['preferredName'], $row4['surname'], 'Student', true).'</span>';
                         echo '</h2>';
 
-                        $mark = true;
-                        if (isset($_GET['mark'])) {
-                            if ($_GET['mark'] == 'FALSE') {
-                                $mark = false;
-                            }
+                        $mark = $session->get('gibbonRoleIDCurrentCategory') == 'Staff';
+                        if (isset($_GET['mark']) && $_GET['mark'] == 'FALSE') {
+                            $mark = false;
                         }
 
                         echo rubricView($guid, $connection2, $gibbonRubricID, $mark, $row4['gibbonPersonID'], 'gibbonMarkbookColumn', 'gibbonMarkbookColumnID', $gibbonMarkbookColumnID,  $contextDBTableGibbonRubricIDField, 'name', 'completeDate');

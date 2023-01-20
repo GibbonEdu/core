@@ -30,6 +30,16 @@ class FormatTest extends TestCase
             'currencyName'                   => 'HKD',
         ];
 
+        // Set the locale for the tests.
+        setlocale(
+            LC_ALL,
+            $settings['code'].'.utf8',
+            $settings['code'].'.UTF8',
+            $settings['code'].'.utf-8',
+            $settings['code'].'.UTF-8',
+            $settings['code']
+        );
+
         Format::setup($settings);
     }
 

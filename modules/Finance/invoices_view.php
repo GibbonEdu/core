@@ -44,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('Access denied.');
-                echo '</div>';
+                $page->addMessage(__('There are no records to display.'));
             } else {
                 //Get child list
                 $count = 0;
@@ -63,9 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 }
 
                 if (count($options) == 0) {
-                    echo "<div class='error'>";
-                    echo __('Access denied.');
-                    echo '</div>';
+                    $page->addMessage(__('There are no records to display.'));
                 } elseif (count($options) == 1) {
                     $_GET['search'] = key($options);
                 } else {

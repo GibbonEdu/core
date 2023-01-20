@@ -112,6 +112,14 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
     @apply inline-block rounded-sm px-2 text-xs font-medium font-sans leading-loose ;
 }
 
+.bg-stripe {
+    background-image: linear-gradient(45deg, #fafafa 25%, #f4f4f4 25%, #f4f4f4 50%, #fafafa 50%, #fafafa 75%, #f4f4f4 75%, #f4f4f4 100%); background-size: 23.0px 23.0px;
+}
+
+.bg-stripe-dark {
+    background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;
+}
+
 
 /*
  --------------------------------------------------------------------------

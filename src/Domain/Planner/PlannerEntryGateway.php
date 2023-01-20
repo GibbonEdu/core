@@ -380,4 +380,35 @@ class PlannerEntryGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getLatestLessonByClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT * FROM gibbonPlannerEntry 
+                WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID
+                ORDER BY date DESC 
+                LIMIT 1";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectUpcomingPlannerTTByDate($gibbonCourseClassID, $date)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
+        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayDate.date
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
+                JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID)
+                JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date 
+                    AND gibbonSchoolYearSpecialDay.type='School Closure')
+                WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                AND gibbonTTDayDate.date>=:date
+                AND gibbonSchoolYearSpecialDayID IS NULL
+                ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timestart
+                LIMIT 0, 10";
+
+        return $this->db()->select($sql, $data);
+    }
 }

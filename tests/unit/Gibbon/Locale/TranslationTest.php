@@ -64,9 +64,16 @@ class TranslationTest extends TestCase
             ->method('get')
             ->willReturn(null); // always return null
 
+        // Check if the locale has been installed. Skip test if not.
+        $langCode = 'es_ES';
+        if (!is_dir(realpath(__DIR__.'/../../../..') . '/i18n/' . $langCode)) {
+            $this->markTestSkipped("Gibbon i18n files for \"{$langCode}\" are not installed. Unable to proceed.");
+            return;
+        }
+
         // mock locale object
         $locale = new Locale(realpath(__DIR__.'/../../../..'), $mockSession);
-        $locale->setLocale('es_ES');
+        $locale->setLocale($langCode);
         $locale->setSystemTextDomain(realpath(__DIR__.'/../../../..'));
 
         // remember how to restore locale

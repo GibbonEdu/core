@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\School;
 
+use Gibbon\Contracts\Database\Result;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -26,7 +27,7 @@ use Gibbon\Domain\QueryableGateway;
 /**
  * School Year Term Gateway
  *
- * @version v17
+ * @version v25
  * @since   v17
  */
 class SchoolYearTermGateway extends QueryableGateway
@@ -74,12 +75,55 @@ class SchoolYearTermGateway extends QueryableGateway
     public function selectSchoolClosuresByTerm($gibbonSchoolYearTermID)
     {
         $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
-        $sql = "SELECT date, name 
-                FROM gibbonSchoolYearSpecialDay 
-                WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID 
-                AND type='School Closure' 
+        $sql = "SELECT date, name
+                FROM gibbonSchoolYearSpecialDay
+                WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID
+                AND type='School Closure'
                 ORDER BY date";
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getCurrentTermByDate($date)
+    {
+        $data = array('date' => $date);
+        $sql = "SELECT gibbonSchoolYearTermID, gibbonSchoolYearID, name, sequenceNumber, firstDay, lastDay
+                FROM gibbonSchoolYearTerm
+                WHERE firstDay<=:date AND lastDay>=:date
+                LIMIT 0, 1";
+
+        $result = $this->db()->select($sql, $data);
+        return ($result->rowCount() == 1) ? $result->fetch() : false;
+    }
+
+    /**
+     * Select a list of school year term ID and names in the specified school year.
+     *
+     * @param integer $gibbonSchoolYearID  The ID of the school year.
+     *
+     * @return Result
+     */
+    public function selectTermsBySchoolYear(int $gibbonSchoolYearID): Result
+    {
+        $sql = 'SELECT gibbonSchoolYearTermID, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+        return $this->db()->select($sql, [
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        ]);
+    }
+
+    /**
+     * Get a list of school year term names based on an ID or list of IDs.
+     *
+     * @param string|array $gibbonSchoolYearTermID  The IDs of the school year terms.
+     *
+     * @return array
+     */
+    public function getTermNamesByID($gibbonSchoolYearTermID): array
+    {
+        $sql = 'SELECT name FROM gibbonSchoolYearTerm WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList) ORDER BY sequenceNumber';
+        return $this->db()->select($sql, [
+            'gibbonSchoolYearTermIDList' => is_array($gibbonSchoolYearTermID)? implode(',', $gibbonSchoolYearTermID) : $gibbonSchoolYearTermID,
+        ])->fetchAll(\PDO::FETCH_COLUMN, 0);
+    }
+
 }

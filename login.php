@@ -34,17 +34,8 @@ use League\Container\Exception\NotFoundException;
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-setCurrentSchoolYear($guid, $connection2);
-
-// The current/actual school year info, just in case we are working in a different year
-$session->set('gibbonSchoolYearIDCurrent', $session->get('gibbonSchoolYearID'));
-$session->set('gibbonSchoolYearNameCurrent', $session->get('gibbonSchoolYearName'));
-$session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonSchoolYearSequenceNumber'));
-
 $session->forget('pageLoads');
 $URL = Url::fromRoute();
-
-
 
 // Sanitize the whole $_POST array
 $_POST = $container->get(Validator::class)->sanitize($_POST);

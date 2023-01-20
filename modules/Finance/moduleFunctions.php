@@ -46,7 +46,7 @@ function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID)
 
 //Returns log associated with a particular expense
 //If $gibbonPaymentID is not NULL, then only that ID's entry is included
-function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gibbonPaymentID = null)
+function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gibbonPaymentID = null, $feeTotal = null)
 {
     global $session;
 
@@ -147,6 +147,21 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $return .= '<b>'.number_format($paymentTotal, 2, '.', ',').'</b>';
         $return .= '</td>';
         $return .= '</tr>';
+
+        if (!empty($feeTotal) && $paymentTotal < $feeTotal ) {
+            $return .= "<tr style='height: 35px' class='dull'>";
+            $return .= "<td colspan=5 style='text-align: right'>";
+            $return .= '<b>'.__('Outstanding Amount').':</b>';
+            $return .= '</td>';
+            $return .= '<td>';
+            if (substr($session->get('currency'), 4) != '') {
+                $return .= substr($session->get('currency'), 4).' ';
+            }
+            $return .= '<b>'.number_format($feeTotal - $paymentTotal, 2, '.', ',').'</b>';
+            $return .= '</td>';
+            $return .= '</tr>';
+        }
+
         $return .= '</table>';
     }
 

@@ -55,19 +55,20 @@ class ScholarshipFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? 'N';
 
         $row = $form->addRow();
 
         switch ($field['fieldName']) {
             case 'scholarshipInterest':
                 $row->addLabel('scholarshipInterest', __($field['label']))->description(__($field['description']));
-                $row->addYesNoRadio('scholarshipInterest')->checked('N')->inline()->required($required);
+                $row->addYesNoRadio('scholarshipInterest')->inline()->required($required)->checked($default);
                 break;
 
             case 'scholarshipRequired':
 
                 $row->addLabel('scholarshipRequired', __($field['label']))->description(__($field['description']));
-                $row->addYesNoRadio('scholarshipRequired')->checked('N')->inline()->required($required);
+                $row->addYesNoRadio('scholarshipRequired')->inline()->required($required)->checked($default);
                 break;
         }
 

@@ -31,11 +31,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // Proceed!
     $page->breadcrumbs->add(__('Manage Staff Coverage'));
 
+    $settingGateway = $container->get(SettingGateway::class);
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $search = $_GET['search'] ?? '';
 
-    $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
-    $StaffCoverageGateway = $container->get(StaffCoverageGateway::class);
+    $urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold');
+    $coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
+    $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     
     // SEARCH FORM
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
@@ -56,19 +58,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
 
     // QUERY
-    $criteria = $StaffCoverageGateway
+    $criteria = $staffCoverageGateway
         ->newQueryCriteria(true)
-        ->searchBy($StaffCoverageGateway->getSearchableColumns(), $search);
+        ->searchBy($staffCoverageGateway->getSearchableColumns(), $search);
 
     if (!$criteria->hasFilter() && !$criteria->hasSearchText()) {
         $criteria->filterBy('date', 'upcoming')
-                 ->sortBy('status', 'ASC');
+                 ->sortBy('statusSort', 'ASC');
     }
     
-    $criteria->sortBy('date', 'ASC')
+    $criteria->sortBy(['date', 'timeStart'])
              ->fromPOST();
 
-    $coverage = $StaffCoverageGateway->queryCoverageBySchoolYear($criteria, $gibbonSchoolYearID, true);
+    $coverage = $staffCoverageGateway->queryCoverageBySchoolYear($criteria, $gibbonSchoolYearID, true);
 
     // DATA TABLE
     $table = DataTable::createPaginated('staffCoverage', $criteria);
@@ -89,6 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         'date:upcoming'    => __('Upcoming'),
         'date:today'       => __('Today'),
         'date:past'        => __('Past'),
+        'status:pending'   => __('Coverage').': '.__('Pending'),
         'status:requested' => __('Coverage').': '.__('Requested'),
         'status:accepted'  => __('Coverage').': '.__('Accepted'),
         'status:declined'  => __('Coverage').': '.__('Declined'),
@@ -101,15 +104,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         ->format([AbsenceFormats::class, 'personAndTypeDetails']);
 
     $table->addColumn('date', __('Date'))
-        ->width('18%')
+        ->width('12%')
         ->format([AbsenceFormats::class, 'dateDetails']);
+
+    $table->addColumn('period', __('Period'))
+        ->description(__('Cover'))
+        ->formatDetails(function ($coverage) {
+            return Format::small($coverage['contextName']);
+        });
 
     $table->addColumn('coverage', __('Substitute'))
         ->sortable(['surnameCoverage', 'preferredNameCoverage'])
         ->format([AbsenceFormats::class, 'substituteDetails']);
 
     $table->addColumn('status', __('Status'))
-        ->width('15%')
+        ->width('12%')
+        ->sortable('statusSort')
         ->format(function ($coverage) use ($urgencyThreshold) {
             return AbsenceFormats::coverageStatus($coverage, $urgencyThreshold);
         });
@@ -124,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $table->addActionColumn()
         ->addParam('search', $criteria->getSearchText(true))
         ->addParam('gibbonStaffCoverageID')
-        ->format(function ($coverage, $actions) {
+        ->format(function ($coverage, $actions) use ($coverageMode) {
             $actions->addAction('view', __('View Details'))
                 ->addParam('gibbonStaffAbsenceID', $coverage['gibbonStaffAbsenceID'] ?? '')
                 ->isModal(800, 550)

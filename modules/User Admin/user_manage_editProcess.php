@@ -24,6 +24,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\User\RoleGateway;
 
 require_once '../../gibbon.php';
 
@@ -69,8 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $parent = false;
             $other = false;
             $roles = explode(',', $row['gibbonRoleIDAll']);
+
+            /** @var RoleGateway */
+            $roleGateway = $container->get(RoleGateway::class);
+
             foreach ($roles as $role) {
-                $roleCategory = getRoleCategory($role, $connection2);
+                $roleCategory = $roleGateway->getRoleCategory($role);
                 if ($roleCategory == 'Staff') {
                     $staff = true;
                 }
@@ -319,11 +324,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                         }
 
                                         $imagePath =  $path.'/'.$attachment1;
-    
+
                                         // Resampling the image
                                         if (!empty($imageSize) && file_exists($imagePath)) {
                                             $image_p = imagecreatetruecolor($dst_w, $dst_h);
-                                            $image = imagecreatefromjpeg($imagePath);
+                                            $extension = mb_substr(mb_strrchr(strtolower($imagePath), '.'), 1);
+
+                                            switch ($extension) {
+                                                case 'png':     $image = imagecreatefrompng($imagePath); break;
+                                                case 'gif':     $image = imagecreatefromgif($imagePath); break;
+                                                case 'webp':    $image = imagecreatefromwebp($imagePath); break;
+                                                default:        $image = imagecreatefromjpeg($imagePath);
+                                            }
 
                                             imagecopyresampled($image_p, $image,
                                                             $dst_x, $dst_y,
@@ -375,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                         //Deal with change to privacy settings
                         if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {
-                            if ($privacy_old != $privacy) {
+                            if ($privacy_old != $privacy && !(empty($privacy_old) && empty($privacy))) {
 
                                 //Notify tutor
 

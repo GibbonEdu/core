@@ -28,7 +28,7 @@ use Gibbon\Domain\Traits\TableAware;
  *
  * Provides a data access layer for the gibbonNotification table
  *
- * @version v14
+ * @version v25
  * @since   v14
  */
 class NotificationGateway extends QueryableGateway
@@ -160,11 +160,11 @@ class NotificationGateway extends QueryableGateway
     public function selectNotificationListenersByScope($gibbonNotificationEventID, $scopes = array())
     {
         $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID, 'today' => date('Y-m-d'));
-        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonNotificationListener 
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonNotificationListener
                 JOIN gibbonPerson ON (gibbonNotificationListener.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonNotificationEventID=:gibbonNotificationEventID
                 AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) 
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
                 AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)";
 
         if (is_array($scopes) && count($scopes) > 0) {
@@ -191,6 +191,27 @@ class NotificationGateway extends QueryableGateway
         return $this->db()->insert($sql, $data);
     }
 
+    /**
+     * Archives one or more notifications, based on partial match of actionLink
+     * and total match of gibbonPersonID.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @param int     $gibbonPersonID  The Gibbon person ID.
+     * @param string  $actionLinkPart  The partial string in an action link.
+     *
+     * @return bool Whether the database update was successful.
+     */
+    public function archiveNotificationForPersonAction($gibbonPersonID, string $actionLinkPart): bool
+    {
+        $sql = 'UPDATE gibbonNotification SET status="Archived" WHERE gibbonPersonID=:gibbonPersonID AND actionLink LIKE :actionLink AND status="New"';
+        return $this->db()->update($sql, [
+            'gibbonPersonID' => $gibbonPersonID,
+            'actionLink' => '%' . $actionLinkPart . '%',
+        ]);
+    }
+
     public function deleteNotificationListener($gibbonNotificationListenerID)
     {
         $data = array('gibbonNotificationListenerID' => $gibbonNotificationListenerID);
@@ -207,7 +228,7 @@ class NotificationGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
-    
+
     /* NOTIFICATION PREFERENCES */
     public function getNotificationPreference($gibbonPersonID)
     {

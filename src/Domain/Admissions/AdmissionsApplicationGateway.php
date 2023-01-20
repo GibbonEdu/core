@@ -195,9 +195,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
         // Application parents, existing family not attached to account, post-acceptance or pre-existing
-        $query = $this
-            ->newQuery()
-            ->distinct()
+        $this->unionAllWithCriteria($query, $criteria)
             ->cols([
                 'gibbonAdmissionsApplication.gibbonAdmissionsApplicationID',
                 'gibbonPerson.surname',
@@ -357,12 +355,14 @@ class AdmissionsApplicationGateway extends QueryableGateway
         $data = ['gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID];
         $sql = "SELECT gibbonAdmissionsApplication.*, 
                     gibbonForm.name as applicationName,
+                    gibbonSchoolYear.name as schoolYear,
                     JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.surname')) AS studentSurname,
                     JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.preferredName')) AS studentPreferredName,
                     JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.PaySubmissionFeeComplete')) AS submissionFeeComplete,
                     JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.PayProcessingFeeComplete')) AS processingFeeComplete
                 FROM gibbonAdmissionsApplication
                 JOIN gibbonForm ON (gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID)
+                LEFT JOIN gibbonSchoolYear ON (gibbonAdmissionsApplication.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                 WHERE gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID";
 
         return $this->db()->selectOne($sql, $data);

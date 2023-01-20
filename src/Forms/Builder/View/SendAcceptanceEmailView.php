@@ -70,6 +70,23 @@ class SendAcceptanceEmailView extends AbstractFormView
             $row->addSelect('acceptanceEmailParentTemplate')->fromArray($templates)->required()->placeholder();
     }
 
+    public function configureEdit(Form $form, FormDataInterface $data, string $id)
+    {
+        $form->toggleVisibilityByClass('acceptanceEmailOptions')->onCheckbox($id.'[enabled]')->when('Y');
+        $col = $form->addRow()->addClass('acceptanceEmailOptions')->addColumn();
+        $col->addCheckbox($id.'[data][informStudent]')
+            ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
+            ->setValue('Y')
+            ->alignRight()
+            ->setClass('ml-4');
+
+        $col->addCheckbox($id.'[data][informParents]')
+            ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
+            ->setValue('Y')
+            ->alignRight()
+            ->setClass('ml-4');
+    }
+
     public function display(Form $form, FormDataInterface $data)
     {
         if (!$data->exists($this->getResultName())) return;

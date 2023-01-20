@@ -22,7 +22,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 
-$gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']) ?? '';
+$gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
+$gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
 
 $page->breadcrumbs
     ->add(__('Lending & Activity Log'), 'library_lending.php')

@@ -76,7 +76,7 @@ trait FormatResolver
         $params = !is_null($param)? (is_array($param)? $param : array($param)) : false;
 
         return function ($data) use ($callable, $params) {
-            if ($params) {
+            if ($params && is_array($data)) {
                 $args = array_map(function($key) use (&$data) {
                     return is_string($key) && array_key_exists(strval($key), $data)? $data[$key] : $key;
                 }, $params);

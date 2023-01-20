@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
+use Gibbon\Contracts\Database\Result;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -26,18 +27,34 @@ use Gibbon\Domain\QueryableGateway;
 /**
  * Module Gateway
  *
- * @version v16
+ * @version v25
  * @since   v16
  */
 class ModuleGateway extends QueryableGateway
 {
     use TableAware;
 
+    /**
+     * Table name used by TableAware trait.
+     *
+     * @var string
+     */
     private static $tableName = 'gibbonModule';
+
+    /**
+     * Table primary key used by TableAware trait.
+     *
+     * @var string
+     */
     private static $primaryKey = 'gibbonModuleID';
 
+    /**
+     * Searchable columns used by TableAware trait.
+     *
+     * @var string
+     */
     private static $searchableColumns = ['name'];
-    
+
     /**
      * Queries the list for the Manage Modules page.
      *
@@ -73,7 +90,10 @@ class ModuleGateway extends QueryableGateway
     /**
      * Gets an unfiltered list of all modules.
      *
-     * @return array
+     * @version v16
+     * @since   v16
+     *
+     * @return string[]
      */
     public function getAllModuleNames()
     {
@@ -82,24 +102,45 @@ class ModuleGateway extends QueryableGateway
         return $this->db()->select($sql)->fetchAll(\PDO::FETCH_COLUMN);
     }
 
+   /**
+     * The modules by role.
+     *
+     * @version v16
+     * @since   v16
+     *
+     * @param string $gibbonRoleID
+     *
+     * @return Result
+     */
     public function selectModulesByRole($gibbonRoleID)
     {
         $mainMenuCategoryOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='mainMenuCategoryOrder'");
 
         $data = array('gibbonRoleID' => $gibbonRoleID, 'menuOrder' => $mainMenuCategoryOrder);
         $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
-                FROM gibbonModule 
-                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-                WHERE gibbonModule.active='Y' 
-                AND gibbonAction.menuShow='Y' 
-                AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
-                GROUP BY gibbonModule.name 
+                FROM gibbonModule
+                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                WHERE gibbonModule.active='Y'
+                AND gibbonAction.menuShow='Y'
+                AND gibbonPermission.gibbonRoleID=:gibbonRoleID
+                GROUP BY gibbonModule.name
                 ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
 
         return $this->db()->select($sql, $data);
     }
 
+    /**
+     * The module actions by role.
+     *
+     * @version v16
+     * @since   v16
+     *
+     * @param string $gibbonRoleID
+     * @param string $gibbonModuleID
+     *
+     * @return Result
+     */
     public function selectModuleActionsByRole($gibbonRoleID, $gibbonModuleID)
     {
         $data = array('gibbonModuleID' => $gibbonRoleID, 'gibbonRoleID' => $gibbonModuleID);
@@ -115,5 +156,25 @@ class ModuleGateway extends QueryableGateway
                 ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
 
         return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * A list of additional (non-core) modules.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @param string $gibbonRoleID
+     * @param string $gibbonModuleID
+     * @return array
+     */
+    public function getActiveAdditional(): array
+    {
+        $select = $this->newSelect()
+            ->from($this->getTableName())
+            ->cols($this->getSearchableColumns())
+            ->where('active="Y"')
+            ->where('type="Additional"');
+        return $this->runSelect($select)->fetchAll();
     }
 }

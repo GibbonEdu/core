@@ -21,6 +21,9 @@ use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
 
+ini_set('display_errors', 1);
+ini_set('error_reporting', E_ALL);
+
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' => 'RAW']);
@@ -73,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         include $gibbon->session->get('absolutePath').'/modules/System Admin/moduleFunctions.php';
         removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/reports');
     }
-    
+
     $URL .= !$updated
         ? "&return=error2"
         : "&return=success0";

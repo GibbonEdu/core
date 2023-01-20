@@ -15,18 +15,18 @@
             "@test:phpunit"
         ],
         "test:codeception": [
-            "cd tests && codecept run install --env $CI_PLATFORM",
-            "cd tests && codecept run acceptance --env $CI_PLATFORM"
+            "cd tests && codecept run install",
+            "cd tests && codecept run acceptance"
         ],
         "test:codeceptiondebug": [
-            "cd tests && codecept run install --debug --env $CI_PLATFORM",
-            "cd tests && codecept run acceptance --debug --env $CI_PLATFORM"
+            "cd tests && codecept run install --debug",
+            "cd tests && codecept run acceptance --debug"
         ],
         "test:phpunit": [
-            "cd tests && ../vendor/bin/phpunit --verbose --colors=always --configuration phpunit.xml"
+            "cd tests && codecept run unit"
         ],
         "test:phpstan": [
-            "vendor/bin/phpstan analyse --ansi --no-progress --no-interaction -c phpstan.neon"
+            "vendor/bin/phpstan analyse --ansi --no-progress --memory-limit=-1 --no-interaction -c phpstan.neon"
         ],
         "test:codesniffer": [
           "vendor/bin/phpcs --standard=PSR2 modules/Library/"
@@ -40,6 +40,7 @@
     "require": {
         "php" : "^7.3",
         "ext-curl": "*",
+        "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",
         "ext-PDO": "*",
@@ -74,7 +75,7 @@
         "codeception/module-db": "^1.1",
         "codeception/module-filesystem": "^1.0",
         "codeception/module-asserts": "^1.3",
-        "phpstan/phpstan": "^0.12.98"
+        "phpstan/phpstan": "^1.8"
     },
     "replace": {
         "pimple/pimple": "*"

@@ -91,7 +91,8 @@ class AdmissionsFields extends AbstractFieldGroup
             'howDidYouHear' => [
                 'label'       => __('How Did You Hear About Us?'),
                 'prefill'     => 'Y',
-                'acquire'     => ['howDidYouHearMore' => 'varchar']
+                'acquire'     => ['howDidYouHearMore' => 'varchar'],
+                'translate' => 'Y',
             ],
         ];
     }
@@ -104,19 +105,24 @@ class AdmissionsFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $default = $field['defaultValue'] ?? null;
         $accepted = $formBuilder->getConfig('status') == 'Accepted';
         
+        if ($field['fieldName'] == 'howDidYouHear' && ($formBuilder->hasConfig('gibbonPersonID') || $formBuilder->hasConfig('gibbonFamilyID'))) {
+            return new Row($form->getFactory(), 'howDidYouHear');
+        }
+
         $row = $form->addRow();
 
         switch ($field['fieldName']) {
             case 'agreement':
                 $row->addLabel($field['fieldName'], __($field['label']))->description(__($field['description']));
-                $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required);
+                $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required)->checked($default);
                 break;
 
             case 'dateStart':
                 $row->addLabel('dateStart', __($field['label']))->description(__($field['description']));
-                $row->addDate('dateStart')->required($required)->readonly($accepted);
+                $row->addDate('dateStart')->required($required)->readonly($accepted)->setValue($default);
                 break;
 
             case 'gibbonSchoolYearIDEntry':
@@ -125,30 +131,30 @@ class AdmissionsFields extends AbstractFieldGroup
                     : $this->schoolYearGateway->getSchoolYearList(true);
 
                 $row->addLabel('gibbonSchoolYearIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder(__('Please select...'))->readonly($accepted);
+                $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder()->readonly($accepted)->selected($default);
                 break;
 
             case 'gibbonYearGroupIDEntry':
                 $yearGroups = $this->yearGroupGateway->selectYearGroupsByIDs($formBuilder->getDetail('gibbonYearGroupIDList'))->fetchKeyPair();
                 $row->addLabel('gibbonYearGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder(__('Please select...'))->readonly($accepted);
+                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder()->readonly($accepted)->selected($default);
                 break;
                 
             case 'gibbonFormGroupIDEntry':
                 $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ? __('Please select...') : '')->readonly($accepted);
+                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ?  : '')->readonly($accepted)->selected($default);
                 break;
 
             case 'dayType':
                 $dayTypeOptions = $this->settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
                 $row->addLabel('dayType', __($field['label']))->description(__($field['description']));
-                $row->addSelect('dayType')->fromString($dayTypeOptions)->required($required)->readonly($accepted);
+                $row->addSelect('dayType')->fromString($dayTypeOptions)->required($required)->readonly($accepted)->selected($default);
 
                 break;
 
             case 'referenceEmail':
                 $row->addLabel('referenceEmail', __($field['label']))->description(__($field['description']));
-                $row->addEmail('referenceEmail')->required($required);
+                $row->addEmail('referenceEmail')->required($required)->setValue($default);
                 break;
 
             case 'previousSchools':
@@ -187,14 +193,15 @@ class AdmissionsFields extends AbstractFieldGroup
                 if (empty($howDidYouHear)) {
                     $col->addTextField('howDidYouHear')->required()->maxLength(30);
                 } else {
-                    $col->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
+                    $col->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
 
-                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
 
                     $col = $colGroup->addColumn()->setClass('tellUsMore flex flex-row justify-between items-center');
                         $col->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
                         $col->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
                 }
+                
         }
 
         return $row;

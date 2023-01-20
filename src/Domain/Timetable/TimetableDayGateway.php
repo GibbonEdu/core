@@ -24,7 +24,7 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v21
+ * @version v25
  * @since   v16
  */
 class TimetableDayGateway extends QueryableGateway
@@ -59,7 +59,20 @@ class TimetableDayGateway extends QueryableGateway
         $sql = "SELECT gibbonTTDay.*, gibbonTTColumn.name AS columnName
                 FROM gibbonTTDay
                 JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID)
-                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID";
+                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID
+                ORDER BY (gibbonTTDay.name LIKE '%Mon%') DESC, (gibbonTTDay.name LIKE '%Tue%') DESC, (gibbonTTDay.name LIKE '%Wed%') DESC, (gibbonTTDay.name LIKE '%Thu%') DESC, (gibbonTTDay.name LIKE '%Fri%') DESC, (gibbonTTDay.name LIKE '%Sat%') DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTTDaysByTimetable($gibbonTTID)
+    {
+        $data = array('gibbonTTID' => $gibbonTTID);
+        $sql = "SELECT gibbonTTDayID as value, name
+                FROM gibbonTTDay
+                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID
+                ORDER BY gibbonTTDay.name
+        ";
 
         return $this->db()->select($sql, $data);
     }
@@ -92,6 +105,21 @@ class TimetableDayGateway extends QueryableGateway
                 }
                 $sql .= " ORDER BY courseName, className";
 
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTTDayRowClassesByClass($gibbonTTID, $gibbonCourseClassID) {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID];
+        $sql = "SELECT gibbonTTDayRowClassID, gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTColumnRowID, gibbonTTDayRowClass.gibbonSpaceID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                ORDER BY gibbonTTDay.name, gibbonTTColumnRow.name";
+                
         return $this->db()->select($sql, $data);
     }
 
@@ -196,10 +224,48 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->insert($sql, $data);
     }
 
+    public function updateDayRowClass(string $gibbonTTDayRowClassID, array $data)
+    {
+        $data['gibbonTTDayRowClassID'] = $gibbonTTDayRowClassID;
+
+        $sql = "UPDATE gibbonTTDayRowClass SET gibbonTTDayID=:gibbonTTDayID, gibbonTTColumnRowID=:gibbonTTColumnRowID, gibbonCourseClassID=:gibbonCourseClassID, gibbonSpaceID=:gibbonSpaceID WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
+
+        return $this->db()->update($sql, $data);
+    }
+
     public function insertDayRowClassException(array $data)
     {
         $sql = "INSERT INTO gibbonTTDayRowClassException SET gibbonTTDayRowClassID=:gibbonTTDayRowClassID, gibbonPersonID=:gibbonPersonID ON DUPLICATE KEY UPDATE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
 
         return $this->db()->insert($sql, $data);
+    }
+
+    public function deleteTTDayRowClasses($gibbonTTID, $gibbonCourseClassID)
+    {
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID);
+        $sql = "DELETE gibbonTTDayRowClass
+                FROM gibbonTTDayRowClass
+                INNER JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                INNER JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID";
+
+        return $this->db()->delete($sql, $data);
+    }
+
+    public function deleteTTDayRowClassesNotInSet($gibbonTTID, $gibbonCourseClassID, $gibbonTTDayRowClassIDList)
+    {
+        $gibbonTTDayRowClassIDList = is_array($gibbonTTDayRowClassIDList)? implode(',', $gibbonTTDayRowClassIDList) : $gibbonTTDayRowClassIDList;
+
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID, 'gibbonTTDayRowClassIDList' => $gibbonTTDayRowClassIDList];
+        $sql = "DELETE gibbonTTDayRowClass
+                FROM gibbonTTDayRowClass
+                INNER JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                INNER JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                AND NOT FIND_IN_SET(gibbonTTDayRowClass.gibbonTTDayRowClassID, :gibbonTTDayRowClassIDList)";
+
+        return $this->db()->delete($sql, $data);
     }
 }

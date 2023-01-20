@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -46,11 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo __('You do not have access to this action.');
             echo '</div>';
         } else {
-            //Get current role category
-            $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
             $settingGateway = $container->get(SettingGateway::class);
             $activityGateway = $container->get(ActivityGateway::class);
+
+            //Get current role category
+            $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
             //Check access controls
             $access = $settingGateway->getSettingByScope('Activities', 'access');
@@ -107,9 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $result->execute($data);
 
                         if ($result->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('Access denied.');
-                            echo '</div>';
+                            $page->addMessage(__('There are no records to display.'));
                         } else {
                             $countChild = 0;
                             while ($values = $result->fetch()) {
@@ -236,16 +236,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $row->addTextField('name')->readonly();
 
                                         if ($dateType != 'Date') {
-                                            $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
-                                            $termList = array_filter(array_map(function($item) use ($schoolTerms) {
-                                                $index = array_search($item, $schoolTerms);
-                                                return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                                            }, explode(',', $values['gibbonSchoolYearTermIDList'])));
-                                            $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
+                                            /**
+                                             * @var SchoolYearTermGateway
+                                             */
+                                            $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                                            $termList = $schoolYearTermGateway->getTermNamesByID($values['gibbonSchoolYearTermIDList']);
 
                                             $row = $form->addRow();
                                                 $row->addLabel('terms', __('Terms'));
-                                                $row->addTextField('terms')->readonly()->setValue($termList);
+                                                $row->addTextField('terms')->readonly()->setValue(!empty($termList) ? implode(', ', $termList) : '-');
                                         } else {
                                             $row = $form->addRow();
                                                 $row->addLabel('programStartLabel', __('Program Start Date'));

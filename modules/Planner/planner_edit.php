@@ -21,6 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -260,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
 
                 //HOMEWORK
-                $form->addRow()->addHeading($homeworkNameSingular, __($homeworkNameSingular));
+                $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
 
                 $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
                 $row = $form->addRow();
@@ -382,7 +383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addYesNo('viewableParents')->required();
 
                 //Guests
-                $form->addRow()->addHeading('Current Guests', __('Current Guests'));
+                $form->addRow()->addHeading('Guests', __('Current Guests'));
 
                 $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                 $sql = "SELECT title, preferredName, surname, category, gibbonPlannerEntryGuest.* FROM gibbonPlannerEntryGuest JOIN gibbonPerson ON (gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY surname, preferredName";
@@ -433,6 +434,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addSubmit();
 
                 $form->loadAllValuesFrom($values);
+
+                // CUSTOM FIELDS
+                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], $values['fields'] ?? '');
 
                 echo $form->getOutput();
 

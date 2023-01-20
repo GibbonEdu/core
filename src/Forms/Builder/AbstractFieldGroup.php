@@ -99,7 +99,8 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         $row->addLabel($field['fieldName'], __($field['label']))
             ->description(__($field['description']));
         $row->addCustomField($field['fieldName'], $field)
-            ->required($this->getRequired($formBuilder, $field));
+            ->required($this->getRequired($formBuilder, $field))
+            ->setValue($field['defaultValue'] ?? '');
 
         return $row;
     }
@@ -135,6 +136,10 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
             return implode(', ', $fieldValue);
         }
 
+        if (!empty($fieldInfo['translate'])) {
+            $fieldValue = __($fieldValue);
+        }
+
         switch ($fieldType) {
             case 'date':
                 return Format::date($fieldValue);
@@ -146,7 +151,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
                 return Format::yesNo($fieldValue);
 
             case 'radio':
-                return $fieldValue == 'Y' || $fieldValue == 'N' ? Format::yesNo($fieldValue) : $fieldValue;
+                return $fieldValue == 'Y' || $fieldValue == 'N' ? Format::yesNo($fieldValue) : __($fieldValue);
 
             case 'checkbox':
                 return $fieldValue == 'Y' || $fieldValue == 'on' ? __('Yes') : (empty($fieldValue) ? __('No') : __($fieldValue));

@@ -17,6 +17,134 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v25.0.00
+--------
+
+    Headlines
+        Messages can now be saved as a draft and previewed before sending
+        Activities, staff duty and coverage now display on the timetable
+        The new admissions system is turned on by default and is no longer in beta
+        Staff coverage can now be requested for timetabled classes, activities or duty
+        New visual tools have been added to help assign and manage coverage internally
+
+    Significant Changes
+        System: activated the lt_LT Lietuvių Kalba - Lithuanian locale
+        Attendance: added the option to take future attendance for ad hoc groups
+        School Admin: added an Off Timetable option for special days
+        Staff: added a drag-drop interface for creating and managing a duty schedule
+
+    Changes With Important Notices
+        Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
+
+    Tweaks & Additions
+        System: improved the access error message for non-logged in users
+        System: updated Parent Weekly Summary CLI to not send if date is outside school year
+        System: improved right-to-left support in Default theme
+        System: added new hooks for Staff Profile and Lesson Planner
+        System: added Malawian Kwacha, Algerian Dinar, Uganda Shilling, Zimbabwean Dollar as currency options
+        Activities: display current school attendance when taking activity attendance
+        Admissions: added custom field support to Student Enrolment
+        Attendance: enabled taking Future attendance on the current date
+        Data Updater: added a search option to all Manage Update pages
+        Data Updater: updated Family Data Updater History to order parents by contact priority
+        Finance: added Outstanding Amount total to payment log for partial paid invoices
+        Form Groups: removed website column from View Form Groups page
+        Individual Needs: add a notification event for New Investigation
+        Messenger: added the ability to send confidential messages which are not viewable by other users
+        Messenger: updated the Transport target to be able to handle comma-separated transport values
+        Messenger: improved the success message for confirmed read receipts
+        Messenger: added form group name to students in Individual target list
+        Messenger: added the option to determine confirmation type in Send Report
+        Markbook: added Term filter to student view, when Group Columns by Term enabled
+        Markbook: increased maxlength of Name field to 40 characters
+        Planner: improved the error message when unable to access classes in Unit Planner
+        Planner: update Add Lesson Plan to suggest dates based on existing lesson sequence
+        Planner: updated Work Summary by Form Group to account for student start date
+        Planner: updated Manage Resources to clean up unused tags after editing a resource
+        Planner: added a message to homework that was assigned before enrolling in the class
+        Planner: enabled custom fields for Lesson Plans
+        Resources: differentiated the upload button from the sticky submit button
+        Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
+        Reports: added a school year switcher to the Generate Reports page
+        Reports: updated Attendance template to enable displaying present attendance counts
+        School Admin: added an option to cancel activities in Special Days
+        School Admin: added custom field support to Departments
+        Staff: enabled editing the Cover Required field in Manage Absences
+        Staff: improved the visibility of absences requiring coverage in lists
+        Students: added a permission check for Family Adult comments in Student Profile
+        Students: added the ability to search students by first name
+        System Admin: added filename to Import History in Import From File page
+        System Admin: added the option to configure phone number fields in Form Builder
+        System Admin: removed anonymous sessions from the Active Sessions page
+        System Admin: added the option to set default values for Form Builder fields
+        Timetable: enabled View Available Facilities for non-lesson periods
+        Timetable: enabled booking facilities for other users with Manage Facility Bookings_all permission
+        Timetable: added an option to add a reason when booking facilities
+        Timetable: added an Edit Timetable by Class tool to Manage Timetables
+        Timetable: added class teacher names to timetable hover-over information
+        Timetable: added a simple Print option to student and facility timetables
+        User Admin: added last login timestamp and IP address to password troubleshooting page
+        User Admin: added the ability to search users by first name
+        User Admin: updated Manage Permissions to require filtering by either module or role
+
+    Bug Fixes
+        System: improved exception handling for transactions in Connection class
+        System: removed unused medical fields from gibbon.sql
+        System: fixed Form Group link under student photos on Parent Dashboard
+        System: fixed missing translations for module strings in dashboard tabs
+        System: fixed incorrect student count with multiple form groups on Staff Dashboard
+        System: fixed broken View All links in Staff Dashboard Enrolment tab
+        System: fixed My Classes list including Left classes in DatabaseFormFactory
+        System: fixed links opening in new tab when using Url object in Format class
+        System: fixed lesson plans not showing up on Staff Dashboard for multiple classes with a TT exception
+        System: fixed dashboard hooks displaying when modules are inactive
+        Activities: fixed activities not viewable from profile after listing end date
+        Activities: fixed activity attendance tables overlapping the page
+        Admissions: fixed application username check to include other applications
+        Admissions: fixed database error when using Add Application to create a blank application form
+        Admissions: fixed missing Introduction and Post Script on application form
+        Attendance: fixed duplicate entries in Students Not Present and Students Not Onsite
+        Attendance: fixed Students Not Onsite reports not displaying student name on mobile
+        Attendance: fixed Attendance Summary by Date to use end-of-day status for school-wide attendance
+        Attendance: removed print option from Attendance Summary by Date until the form is refactored
+        Attendance: fixed numerical indicator on Student History for days with partial attendance
+        Attendance: fixed non-attendance classes showing up for partial absence in Set Future Absence
+        Data Updater: fixed incorrect top links on Edit Request pages
+        Data Updater: removed parent emails from Family Data Updater History when contact email is No
+        Data Updater: fixed unable to remove all privacy settings via data update
+        Data Updater: fixed Family Data Updates not checking student start and end dates
+        Library: fixed the Get Book Data From Google button in Manage Catalog
+        Library: fixed js issue in QR code scanner on Manage Catalogue
+        Markbook: fixed Left teachers showing up in "Class taught by" list
+        Markbook: fixed View Markbook breadcrumb when class name is blank
+        Planner: fixed selected course resetting when navigating between school years
+        Planner: fixed CLI scripts attempting to users who are Left or have no email address
+        Planner: fixed incorrect homework status when both teacher and student recorded homework are used
+        Planner: fixed homework checkboxes not visible on students mobile view
+        Planner: fixed Concepts & Keywords tag counts in Add Unit and Edit Unit
+        Planner: fixed error message after duplicating a lesson into future year
+        Reports: fixed error when milestones are empty in Manage Reporting Cycles
+        Reports: fixed batch report bulk-action missing the two-sided option
+        Reports: fixed HTML being removed from Rich Text template sections
+        Reports: fixed file upload not working in Template Builder
+        Reports: fixed json_decode error for hooks in Write Reports By Student
+        Reports: fixed unable to re-send acceptance email from Edit Application page
+        School Admin: fixed error in Add Attendance Code when no roles specified
+        School Admin: fixed possible duplicate values using Copy All To Next Year in Manage Form Groups
+        Staff: fixed staff absences not showing up if outside school year dates
+        System Admin: fixed Form Builder submission error when subheading is the first item on a page
+        System Admin: fixed calendar feed cleared when saving Third Party Settings
+        System Admin: fixed untranslated fields in Form Builder when viewing a form
+        Timetable Admin: adjusted column uniqueness interface string
+        Timetable Admin: fixed Copy All To Next Year to copy custom fields and prevent duplicate values
+        Timetable: fixed class student counts in Manage Student Enrolment
+        Timetable: fixed display of room number for short periods
+        Timetable: fixed the position of the Add Lesson Plan tooltip
+        Timetable: fixed long-running periods not displaying information on the timetable
+        Timetable: fixed making facility bookings on another person's behalf
+        Tracking: fixed Data Points export MySQL error
+        User Admin: fixed black user photos when using non-jpg image format
+
 v24.0.00
 --------
 
@@ -79,11 +207,12 @@ v24.0.00
         System: fixed missing password reset link in plain-text copy of emails
         Activities: fixed sidebar disappearing when opening View Details window
         Attendance: fixed the Available to Roles setting in Attendance Codes
+        Attendance: fixed attendance for classes timetabled multiple times on the same day
         Finance: fixed online payment option not available on invoice print page
         Finance: fixed reminder emails not handling comma separated company email addresses
         Library: fixed missing cost field when duplicating library item
         Library: fixed items showing as overdue on the same date as the expected return
-        Messenger: fixed Applicant target excluding Expected parents of edited application forms 
+        Messenger: fixed Applicant target excluding Expected parents of edited application forms
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
         Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
         Reports: fixed missing dropdown selectors on the Write Reports pages

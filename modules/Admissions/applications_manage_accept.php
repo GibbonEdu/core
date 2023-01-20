@@ -26,6 +26,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_accept.php') == false) {
     // Access denied
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     ]);
     
     // Get the application form data and admissions account
-    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
+    $application = $container->get(AdmissionsApplicationGateway::class)->getApplicationDetailsByID($gibbonAdmissionsApplicationID);
     $account = $container->get(AdmissionsAccountGateway::class)->getByID($application['foreignTableID'] ?? '');
     if (empty($application) || empty($account)) {
         $page->addError(__('The selected application does not exist or has already been processed.'));
@@ -118,6 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         }
     }
 
+    // Display application details
+    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable();
+    echo $detailsTable->render([$application]);
+
     // FORM
     $form = Form::create('application', $session->get('absoluteURL').'/modules/Admissions/applications_manage_acceptProcess.php');
 
@@ -173,12 +178,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     //  List manual actions
     $manualActions = [];
 
+    if (!$formData->has('gibbonSchoolYearIDEntry')) {
+        $manualActions[] = __('Enrol the student in the relevant academic year.');
+    }
+
     if (!$formData->has('gibbonFormGroupIDEntry')) {
         $manualActions[] = __('Enrol the student in the selected school year (as the student has not been assigned to a form group).');
     }
 
+    if ($container->get(SettingGateway::class)->getSettingByScope('Timetable Admin', 'autoEnrolCourses') != 'Y') {
+        $manualActions[] = __('Create a timetable for the student.');
+    }
+    
     // $manualActions[] = __('Create a note of the student\'s scholarship information outside of Gibbon.');
-    // $manualActions[] = __('Create a timetable for the student.');
+    // $manualActions[] = __('Inform the student and parents of their Gibbon login details (if this was not done automatically).');
 
     if (!empty($manualActions)) {
         $col = $form->addRow()->addColumn();

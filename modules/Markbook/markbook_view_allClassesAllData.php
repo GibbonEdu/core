@@ -120,7 +120,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
 
-    $page->breadcrumbs->add(__('View {courseClass} Markbook', [
+    $page->breadcrumbs->add(empty($class)? __('View Markbook') : __('View {courseClass} Markbook', [
         'courseClass' => Format::courseClassName($class['course'], $class['class']),
     ]));
 

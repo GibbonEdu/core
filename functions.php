@@ -21,8 +21,14 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\PasswordPolicy;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Forms\Input\Editor;
+use Gibbon\Locale;
 
 function getIPAddress() {
     $return = false;
@@ -43,7 +49,20 @@ function getIPAddress() {
     return $return;
 }
 
-//Convert an HTML email body into a plain text email body
+/**
+ * Convert an HTML email body into a plain text email body.
+ *
+ * Deprecated. Use \Gibbon\Comms\Mailer::renderBody() instead, which internally
+ * handles the HTML and non-HTML rendered messages.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param string $body
+ *
+ * @return string
+ */
 function emailBodyConvert($body)
 {
     $return = $body;
@@ -113,7 +132,10 @@ function __($text, $params=[], $options=[])
         return $text;
     }
 
-    return $gibbon->locale->translate($text, $params, $options);
+    // Fallback to format string if global locale does not exists.
+    return isset($gibbon->locale)
+        ? $gibbon->locale->translate($text, $params, $options)
+        : Locale::formatString($text, $params);
 }
 
 /**
@@ -200,7 +222,20 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     return $return;
 }
 
-//Archives one or more notifications, based on partial match of actionLink and total match of gibbonPersonID
+/**
+ * Archives one or more notifications, based on partial match of actionLink
+ * and total match of gibbonPersonID.
+ *
+ * @deprecated v25
+ *             Should use NotificationGateway::archiveNotificationForPersonAction()
+ *
+ * @param \PDO    $connection2     The PDO instance.
+ * @param string  $guid            The guid of current installation.
+ * @param int     $gibbonPersonID  The Gibbon person ID.
+ * @param string  $actionLinkPart  The partial string in an action link.
+ *
+ * @return bool Whether the database update was successful.
+ */
 function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
 {
     $return = true;
@@ -217,7 +252,20 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
     return $return;
 }
 
-//Accepts birthday in mysql date (YYYY-MM-DD) ;
+/**
+ * Calculate the number of days before next birthday.
+ *
+ * Deprecated because it was only used in \Gibbon\Services\Format.
+ * Replaced by the private method \Gibbon\Services\Format::daysUntilNextBirthday().
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param string $birthday  Accepts birthday in mysql date (YYYY-MM-DD).
+ *
+ * @return int  Number of days before the next birthday. If today is a birthday, returns 0.
+ */
 function daysUntilNextBirthday($birthday)
 {
     $today = date('Y-m-d');
@@ -248,94 +296,72 @@ function daysUntilNextBirthday($birthday)
     return $days;
 }
 
-//This function written by David Walsh, shared under MIT License (http://davidwalsh.name/checking-for-leap-year-using-php)
+/**
+ * This function written by David Walsh, shared under MIT License
+ * (http://davidwalsh.name/checking-for-leap-year-using-php)
+ *
+ * @deprecated v25
+ *
+ * @param int  $year  The year.
+ *
+ * @return bool
+ */
 function is_leap_year($year)
 {
     return (($year % 4) == 0) && ((($year % 100) != 0) || (($year % 400) == 0));
 }
 
+/**
+ * Check if a password matches the password policy in the
+ * settings.
+ *
+ * Deprecated. Use \Gibbon\Data\PasswordPolicy::validate() instead.
+ *
+ * @deprecated v25
+ * @version v25
+ * @since   v12
+ *
+ * @param \PDO   $connection2
+ * @param string $passwordNew
+ *
+ * @return bool
+ */
 function doesPasswordMatchPolicy($connection2, $passwordNew)
 {
     global $container;
-
-    $output = true;
-
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
-    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
-    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
-
-    if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
-        $output = false;
-    } else {
-        if ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-            if ($alpha == 'Y') {
-                if (preg_match('`[A-Z]`', $passwordNew) == false or preg_match('`[a-z]`', $passwordNew) == false) {
-                    $output = false;
-                }
-            }
-            if ($numeric == 'Y') {
-                if (preg_match('`[0-9]`', $passwordNew) == false) {
-                    $output = false;
-                }
-            }
-            if ($punctuation == 'Y') {
-                if (preg_match('/[^a-zA-Z0-9]/', $passwordNew) == false and strpos($passwordNew, ' ') == false) {
-                    $output = false;
-                }
-            }
-            if ($minLength > 0) {
-                if (strLen($passwordNew) < $minLength) {
-                    $output = false;
-                }
-            }
-        }
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
+    try {
+        return $passwordPolicies->validate($passwordNew);
+    } catch (\Exception $e) {
+        return false;
     }
-
-    return $output;
 }
 
+/**
+ * Get an HTML list of all password policies.
+ *
+ * @deprecated v25
+ * @version v25
+ * @since   v12
+ *
+ * @param string $guid
+ * @param \PDO $connection2
+ *
+ * @return string  An unorder HTML list.
+ */
 function getPasswordPolicy($guid, $connection2)
 {
     global $container;
-
-    $output = false;
-
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
-    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
-    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
-
-    if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
-        $output .= __('An error occurred.');
-    } elseif ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-        $output .= __('The password policy stipulates that passwords must:').'<br/>';
-        $output .= '<ul>';
-        if ($alpha == 'Y') {
-            $output .= '<li>'.__('Contain at least one lowercase letter, and one uppercase letter.').'</li>';
-        }
-        if ($numeric == 'Y') {
-            $output .= '<li>'.__('Contain at least one number.').'</li>';
-        }
-        if ($punctuation == 'Y') {
-            $output .= '<li>'.__('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).').'</li>';
-        }
-        if ($minLength >= 0) {
-            $output .= '<li>'.sprintf(__('Must be at least %1$s characters in length.'), $minLength).'</li>';
-        }
-        $output .= '</ul>';
-    }
-
-    return $output;
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
+    return $passwordPolicies->describeHTML();
 }
 
 function getFastFinder($connection2, $guid)
 {
     global $session;
+    
     $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
@@ -357,7 +383,7 @@ function getFastFinder($connection2, $guid)
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
     $templateData = [
-        'roleCategory'        => getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2),
+        'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
         'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
         'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
         'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
@@ -367,6 +393,21 @@ function getFastFinder($connection2, $guid)
     return $templateData;
 }
 
+/**
+ * Get alert of the especified alert level.
+ *
+ * @deprecated v25
+ *             Use AlertLevelGateway::getByID instead.
+ *
+ * @since    v12
+ * @version  v23
+ *
+ * @param string  $guid
+ * @param \PDO    $connection2
+ * @param int     $gibbonAlertLevelID
+ *
+ * @return array|false
+ */
 function getAlert($guid, $connection2, $gibbonAlertLevelID)
 {
     $output = false;
@@ -465,22 +506,40 @@ function getWeekNumber($date, $connection2, $guid)
 }
 
 /**
- * Updated v18 to use a twig template.
+ * Render the editor. Updated v18 to use a twig template.
  *
- * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
+ * @deprecated  Since v25. Will be removed in the future.
+ *              Please use \Gibbon\Forms\Input\Editor directly.
+ * @version v25
+ * @since   v12
+ *
+ * @param string   $guid              Obsoleted parameter.
+ * @param boolean  $tinymceInit
+ * @param string   $id
+ * @param string   $value
+ * @param integer  $rows
+ * @param boolean  $showMedia
+ * @param boolean  $required
+ * @param boolean  $initiallyHidden
+ * @param boolean  $allowUpload
+ * @param string   $initialFilter
+ * @param boolean  $resourceAlphaSort
+ *
+ * @return string
  */
-function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
+function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false): string
 {
-    global $page, $session;
-
-    $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
-
-    $templateData['name'] = $templateData['id'];
-    $templateData['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $templateData['id']);
-
-    $templateData['absoluteURL'] = $session->get('absoluteURL');
-
-    return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
+    $editor = (new Editor($id))
+        ->tinymceInit($tinymceInit)
+        ->setValue($value)
+        ->setRows($rows)
+        ->showMedia($showMedia)
+        ->setRequired($required)
+        ->initiallyHidden($initiallyHidden)
+        ->allowUpload($allowUpload)
+        ->initialFilter($initialFilter)
+        ->resourceAlphaSort($resourceAlphaSort);
+    return $editor->getOutput();
 }
 
 function getYearGroups($connection2)
@@ -564,7 +623,21 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
     return $output;
 }
 
-//Gets terms in the specified school year
+/**
+ * Gets terms in the specified school year
+ *
+ * @deprecated v25
+ *             Use SchoolYearTermGateway::selectTermsBySchoolYear() instead.
+ *
+ * @since   v12
+ * @version v12
+ *
+ * @param \PDO     $connection2
+ * @param int      $gibbonSchoolYearID
+ * @param boolean  $short
+ *
+ * @return string[]
+ */
 function getTerms($connection2, $gibbonSchoolYearID, $short = false)
 {
     $output = false;
@@ -650,7 +723,21 @@ function htmlPrep($str)
     return htmlentities($str, ENT_QUOTES, 'UTF-8');
 }
 
-//Returns the risk level of the highest-risk condition for an individual
+/**
+ * Get the risk level of the highest-risk condition for an individual.
+ *
+ * Deprecated. Use \Gibbon\Domain\Student\MedicalGateway::getHighestMedicalRisk() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ *
+ * @param string  $guid            Obsoleted parameter.
+ * @param int     $gibbonPersonID  The person ID.
+ * @param \PDO    $connection2
+ *
+ * @return array  An array of fields in the medical alert information of the person,
+ *                or an empty array if none found.
+ */
 function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
 {
     $output = false;
@@ -715,7 +802,20 @@ function getHighestGroupedAction($guid, $address, $connection2)
     return $output;
 }
 
-//Returns the category of the specified role
+/**
+ * Returns the category of the specified role.
+ *
+ * Deprecated. Use RoleGateway::getRoleCategory() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int   $gibbonRoleID
+ * @param \PDO  $connection2
+ *
+ * @return string|false
+ */
 function getRoleCategory($gibbonRoleID, $connection2)
 {
     $output = false;
@@ -862,7 +962,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
-            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -904,7 +1008,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         if ($gibbonAlertLevelID != '') {
-            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -918,13 +1026,15 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         // Medical
-        if ($alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)) {
+        /** @var MedicalGateway */
+        $medicalGateway = $container->get(MedicalGateway::class);
+        if ($alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID)) {
             $alerts[] = [
-                'highestLevel'    => $alert[1],
-                'highestColour'   => $alert[3],
-                'highestColourBG' => $alert[4],
+                'highestLevel'    => __($alert['name']),
+                'highestColour'   => $alert['color'],
+                'highestColourBG' => $alert['colorBG'],
                 'tag'             => __('M'),
-                'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
+                'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert['name']),
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                                         ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
             ];
@@ -933,7 +1043,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         // Privacy
         $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
-            if ($alert = getAlert($guid, $connection2, 001)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_HIGH)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -1205,7 +1319,23 @@ function getModuleCategory($address, $connection2)
     return $output;
 }
 
-//GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
+/**
+ * Get the current year and set it as a global variable.
+ * (i.e. global $session instance)
+ *
+ * @deprecated v25
+ *             This happens in SessionFactory::setCurrentSchoolYear instead,
+ *             which is called by Core::initializeCore, so shouldn't need to
+ *             be called manually.
+ *
+ * @version v23
+ * @since   v12
+ *
+ * @param  string $guid
+ * @param  \PDO $connection2
+ *
+ * @return void
+ */
 function setCurrentSchoolYear($guid,  $connection2)
 {
     global $session;
@@ -1232,12 +1362,36 @@ function setCurrentSchoolYear($guid,  $connection2)
     }
 }
 
+/**
+ * Convert linebreaks into <br/> tags.
+ * Deprecated. Use nl2br() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ *
+ * @param string $string
+ *
+ * @return string
+ */
 function nl2brr($string)
 {
     return preg_replace("/\r\n|\n|\r/", '<br/>', $string);
 }
 
-//Take a school year, and return the previous one, or false if none
+/**
+ * Take a school year, and return the previous one, or false if none.
+ *
+ * Please use SchoolYearGateway::getPreviousSchoolYearByID instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonSchoolYearID
+ * @param \PDO $connection2
+ *
+ * @return int|false  The ID of the previous school year, or false if none.
+ */
 function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
 {
     $output = false;
@@ -1263,7 +1417,20 @@ function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
     return $output;
 }
 
-//Take a school year, and return the previous one, or false if none
+/**
+ * Take a school year, and return the previous one, or false if none.
+ *
+ * Please use SchoolYearGateway::getNextSchoolYearByID instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonSchoolYearID
+ * @param \PDO $connection2
+ *
+ * @return int|false  The ID of the next school year, or false if none.
+ */
 function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
 {
     $output = false;
@@ -1289,7 +1456,20 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
     return $output;
 }
 
-//Take a year group, and return the next one, or false if none
+/**
+ * Take a year group, and return the next one, or false if none.
+ * Use YearGroupGateway::getNextYearGroupID instead.
+ *
+ * @deprecated v25
+ *
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonYearGroupID
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getNextYearGroupID($gibbonYearGroupID, $connection2)
 {
     $output = false;
@@ -1314,7 +1494,19 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
     return $output;
 }
 
-//Take a form group, and return the next one, or false if none
+/**
+ * Take a form group, and return the next one, or false if none.
+ * Use FormGroupGateway::getNextFormGroupID instead.
+ *
+ * @deprecated v25
+ * @version v17
+ * @since   v17
+ *
+ * @param int $gibbonFormGroupID
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getNextFormGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;
@@ -1333,7 +1525,19 @@ function getNextFormGroupID($gibbonFormGroupID, $connection2)
     return $output;
 }
 
-//Return the last school year in the school, or false if none
+/**
+ * Return the last school year in the school, or false if none.
+ * Use YearGroupGateway::getLastYearGroupID instead.
+ *
+ * @deprecated v25
+ *
+ * @version v12
+ * @since   v12
+ *
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getLastYearGroupID($connection2)
 {
     $output = false;
@@ -1350,6 +1554,17 @@ function getLastYearGroupID($connection2)
     return $output;
 }
 
+/**
+ * Generate a random password of the specified length.
+ * Deprecated. Use PasswordPolicy::generate() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ *
+ * @param int $length
+ *
+ * @return string
+ */
 function randomPassword($length)
 {
     if (!(is_int($length))) {

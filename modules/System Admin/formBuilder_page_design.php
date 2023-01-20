@@ -88,14 +88,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     
     // FORM FIELDS
     $formFields = MultiPartForm::create('formFields', '');
-    $formFields->setTitle($values['name']);
+    $formFields->setTitle(__($values['name']));
     $formFields->setFactory(DatabaseFormFactory::create($pdo));
 
     $formFields->setMaxPage($formPageGateway->getFinalPageNumber($gibbonFormID));
     $formFields->addData('drag-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_editOrderAjax.php');
     $formFields->addData('drag-data', ['gibbonFormPageID' => $gibbonFormPageID]);
 
-    $formPages = $formPageGateway->queryPagesByForm($criteria, $gibbonFormID)->toArray();
+    $formPages = $formPageGateway->selectPagesByForm($gibbonFormID)->fetchGroupedUnique();
 
     if (count($formPages) > 1) {
         $formFields->setCurrentPage($values['sequenceNumber']);

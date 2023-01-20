@@ -32,6 +32,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <p>{{ form.getDescription|raw }}</p>
     {% endif %}
 
+    {% if introduction %}
+        <p>{{ introduction|raw }}</p>
+    {% endif %}
 
     {% block header %}
         <header class="relative">
@@ -52,7 +55,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and "blank" not in form.getClass ? 'flex' : 'table' %}
 
     {% if form.getRows|length > 0 %}
-        <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
+        <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
 
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
@@ -117,6 +120,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endfor %}
         {% endfor %}
     </div>
+    {% endif %}
+
+    {% if postScript %}
+        <p>{{ postScript|raw }}</p>
     {% endif %}
 
     <script type="text/javascript">

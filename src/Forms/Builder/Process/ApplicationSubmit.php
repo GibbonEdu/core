@@ -84,7 +84,7 @@ class ApplicationSubmit extends AbstractFormProcess implements ViewableProcess
         $studentName = Format::name('', $formData->get('preferredName'), $formData->get('surname'), 'Student');
 
         // Raise a new notification event for Admissions
-        $event = new NotificationEvent('Students', 'New Application Form');
+        $event = new NotificationEvent('Admissions', 'New Application Form');
 
         $event->addScope('gibbonYearGroupID', $formData->get('gibbonYearGroupIDEntry'));
         $event->addRecipient($this->session->get('organisationAdmissions'));

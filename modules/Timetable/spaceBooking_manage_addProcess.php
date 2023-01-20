@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 include '../../gibbon.php';
 
@@ -40,61 +41,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         header("Location: {$URL}");
     } else {
         //Proceed!
-        $foreignKey = $_POST['foreignKey'] ?? '';
-        $foreignKeyID = $_POST['foreignKeyID'] ?? '';
-        $dates = $_POST['dates'] ?? '';
-        $timeStart = $_POST['timeStart'] ?? '';
-        $timeEnd = $_POST['timeEnd'] ?? '';
-        $repeat = $_POST['repeat'] ?? '';
-        $repeatDaily = null;
-        $repeatWeekly = null;
-        if ($repeat == 'Daily') {
-            $repeatDaily = $_POST['repeatDaily'];
-        } elseif ($repeat == 'Weekly') {
-            $repeatWeekly = $_POST['repeatWeekly'];
-        }
+        $bookingGateway = $container->get(FacilityBookingGateway::class);
 
-        //Validate Inputs
-        if ($foreignKey == '' or $foreignKeyID == '' or $timeStart == '' or $timeEnd == '' or $repeat == '' or count($dates) < 1) {
+        $data = [
+            'foreignKey'     => $_POST['foreignKey'] ?? null,
+            'foreignKeyID'   => $_POST['foreignKeyID'] ?? null,
+            'timeStart'      => $_POST['timeStart'] ?? null,
+            'timeEnd'        => $_POST['timeEnd'] ?? null,
+            'reason'         => $_POST['reason'] ?? '',
+            'gibbonPersonID' => $_POST['gibbonPersonID'] ?? $session->get('gibbonPersonID'),
+        ];
+        
+        $dates = $_POST['dates'] ?? '';
+        $repeat = $_POST['repeat'] ?? '';
+        $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;
+        $repeatWeekly = $repeat == 'Weekly' ? $_POST['repeatWeekly'] : null;
+
+        // Validate Inputs
+        if (empty($data['foreignKey']) || empty($data['foreignKeyID']) || empty($data['timeStart']) || empty($data['timeEnd']) || empty($repeat) || count($dates) < 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            //Lock tables
-            try {
-                $sql = 'LOCK TABLE gibbonDaysOfWeek WRITE, gibbonSchoolYear WRITE, gibbonSchoolYearSpecialDay WRITE, gibbonSchoolYearTerm WRITE, gibbonTTColumnRow WRITE, gibbonTTDay WRITE, gibbonTTDayDate WRITE, gibbonTTDayRowClass WRITE, gibbonTTSpaceBooking WRITE, gibbonTTSpaceChange WRITE';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
 
             $failCount = 0;
             $available = '';
             //Scroll through all dates
             foreach ($dates as $date) {
-                $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd);
+                $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd']);
                 if ($available == false) {
                     ++$failCount;
                 } else {
-                    //Write to database
-                    try {
-                        $data = array('foreignKey' => $foreignKey, 'foreignKeyID' => $foreignKeyID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = 'INSERT INTO gibbonTTSpaceBooking SET foreignKey=:foreignKey, foreignKeyID=:foreignKeyID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        ++$failCount;
-                    }
+                    $data['date'] = $date;
+
+                    $gibbonTTSpaceBookingID = $bookingGateway->insert($data);
+                    $failCount += (int)empty($gibbonTTSpaceBookingID);
                 }
             }
 
             $successCount = count($dates) - $failCount;
-
-            //Unlock locked database tables
-
-                $sql = 'UNLOCK TABLES';
-                $result = $connection2->query($sql);
 
             if ($successCount == 0) {
                 $URL .= '&return=error3';
@@ -106,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 // Redirect back to View Timetable by Facility if we started there
                 if (isset($_POST['source']) && $_POST['source'] == 'tt') {
                     $ttDate = Format::date($dates[0]);
-                    $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$foreignKeyID.'&ttDate='.$ttDate;
+                    $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$data['foreignKeyID'].'&ttDate='.$ttDate;
                 }
 
                 $URL .= '&return=success0';

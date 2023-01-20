@@ -59,8 +59,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
             }
 
+            $page->navigator->addHeaderAction('print', __('Print'))
+                ->setURL('/report.php')
+                ->addParam('q', '/modules/Timetable/tt_space_view.php')
+                ->addParam('gibbonSpaceID', $gibbonSpaceID)
+                ->addParam('gibbonTTID', $gibbonTTID)
+                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
+                ->setIcon('print')
+                ->setTarget('_blank')
+                ->directLink()
+                ->displayLabel();
+
             $ttDate = null;
-            if (isset($_REQUEST['ttDate'])) {
+            if (!empty($_REQUEST['ttDate'])) {
                 $date = Format::dateConvert($_REQUEST['ttDate']);
                 $ttDate = strtotime('last Sunday +1 day', strtotime($date));
             }

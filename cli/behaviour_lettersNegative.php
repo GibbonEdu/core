@@ -30,18 +30,6 @@ use Gibbon\Domain\User\UserGateway;
 
 require getcwd().'/../gibbon.php';
 
-getSystemSettings($guid, $connection2);
-
-setCurrentSchoolYear($guid, $connection2);
-
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code'])) {
-    putenv('LC_ALL='.$session->get('i18n')['code']);
-    setlocale(LC_ALL, $session->get('i18n')['code']);
-    bindtextdomain('gibbon', getcwd().'/../i18n');
-    textdomain('gibbon');
-}
-
 //Check for CLI, so this cannot be run through browser
 $remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
@@ -90,7 +78,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                     $dataBehaviour = array('gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                     $sqlBehaviour = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative'";
                     $resultBehaviour = $pdo->select($sqlBehaviour, $dataBehaviour);
-                        
+
                     $behaviourCount = $resultBehaviour->rowCount();
                     if ($behaviourCount > 0) { //Only worry about students with more than zero negative records in the current year
                         //Get most recent letter entry
@@ -182,7 +170,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                             $dataBehaviourRecord = array('gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                             $sqlBehaviourRecord = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' ORDER BY timestamp DESC";
                             $resultBehaviourRecord = $pdo->select($sqlBehaviourRecord, $dataBehaviourRecord);
-                            
+
                             while ($rowBehaviourRecord = $resultBehaviourRecord->fetch()) {
                                 $behaviourRecord .= '<li>';
                                 $behaviourRecord .= Format::date(substr($rowBehaviourRecord['timestamp'], 0, 10));
@@ -251,7 +239,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                                     $dataTeachers = array('gibbonPersonID' => $student['gibbonPersonID']);
                                     $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
                                     $resultTeachers = $pdo->select($sqlTeachers, $dataTeachers);
-                                        
+
                                     while ($rowTeachers = $resultTeachers->fetch()) {
                                         $notificationSender->addNotification($rowTeachers['gibbonPersonID'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
@@ -303,7 +291,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                             $dataMember = array('gibbonPersonID' => $student['gibbonPersonID']);
                             $sqlMember = "SELECT DISTINCT email, preferredName, surname, title FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' AND contactEmail='Y' ORDER BY contactPriority, surname, preferredName";
                             $resultMember = $pdo->select($sqlMember, $dataMember);
-                            
+
                             while ($parent = $resultMember->fetch()) {
                                 ++$emailSendCount;
                                 if ($parent['email'] == '') {
@@ -330,7 +318,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 
                                     // Render the templates for this email
                                     $subject = $template->renderSubject($templateData);
-                                    $body = $template->renderBody($templateData);   
+                                    $body = $template->renderBody($templateData);
 
                                     // Send message
                                     $mail->AddAddress($parent['email'], $parent['surname'].', '.$parent['preferredName']);

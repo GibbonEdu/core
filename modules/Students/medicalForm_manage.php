@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     // COLUMNS
     $table->addExpandableColumn('comment')->format(function($person) {
-        return !empty($person['comment'])? '<b>'.__('Comment').'</b><br/>'.nl2brr($person['comment']) : '';
+        return !empty($person['comment'])? '<b>'.__('Comment').'</b><br/>'.nl2br($person['comment']) : '';
     });
 
     $table->addColumn('student', __('Student'))

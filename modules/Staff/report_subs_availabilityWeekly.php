@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
+use Gibbon\Domain\School\DaysOfWeekGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
@@ -36,12 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->add(__('Substitute Availability'), 'report_subs_availability.php')
         ->add(__('Weekly'));
 
+    $subGateway = $container->get(SubstituteGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
+
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
+    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
-    $subGateway = $container->get(SubstituteGateway::class);
-    
     // DATE SELECTOR
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->setClass('blank fullWidth');
@@ -56,11 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $nextWeek = $dateObject->modify('+1 week')->format($dateFormat);
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
-        $col->addButton(__('Last Week'))->addClass('rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastWeek}'");
-        $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisWeek}'");
-        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextWeek}'");
+        $col->addButton(__('Last Week'))->addClass('rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextWeek}&allStaff={$allStaff}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
+        $col->addCheckbox('allStaff')->description(__('All Staff'))->setValue('Y')->checked($allStaff)->setClass('mr-4');
         $col->addDate('date')->setValue($dateObject->format($dateFormat))->setClass('shortWidth');
         $col->addSubmit(__('Go'));
 
@@ -69,10 +73,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $dateStart = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday this week" : "Sunday last week");
     $dateEnd = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday next week" : "Sunday this week");
 
-    $criteria = $subGateway->newQueryCriteria(true)
+    $criteria = $subGateway->newQueryCriteria()
         ->sortBy('priority', 'DESC')
         ->sortBy(['type', 'surname', 'preferredName'])
         ->filterBy('active', 'Y')
+        ->filterBy('status', 'Full')
+        ->filterBy('allStaff', $allStaff)
         ->fromPOST();
 
     // Get all subs
@@ -86,6 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $availability = $subGateway->selectUnavailableDatesByDateRange($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d'))->fetchAll();
     $subsAvailability = array_reduce($availability, function ($group, $item) {
         $gibbonPersonID = str_pad($item['gibbonPersonID'], 10, '0', STR_PAD_LEFT);
+        if (!isset($group[$gibbonPersonID])) return $group;
+
         $group[$gibbonPersonID]['dates'][$item['date']][] = $item;
         return $group;
     }, $subs);
@@ -122,13 +130,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             } else {
                 $url = '';
             }
-            return Format::link($url, $name).'<br/>'.Format::small($person['type']);
+            return Format::link($url, $name).'<br/>'.Format::small(!empty($person['type']) ? $person['type'] : $person['jobTitle']);
         });
 
     $dateRange = new DatePeriod($dateStart, new DateInterval('P1D'), $dateEnd);
-
+    $daysOfWeekGateway = $container->get(DaysOfWeekGateway::class);
+    
     foreach ($dateRange as $weekday) {
         if (!isSchoolOpen($guid, $weekday->format('Y-m-d'), $connection2)) continue;
+
+        $dayOfWeek = $daysOfWeekGateway->getDayOfWeekByDate($weekday->format('Y-m-d'));
 
         $url = './index.php?q=/modules/Staff/report_subs_availability.php&date='.Format::date($weekday->format('Y-m-d'));
         $columnTitle = Format::link($url, Format::dateReadable($weekday->format('Y-m-d'), '%a, %b %e'));
@@ -137,8 +148,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->context('primary')
             ->notSortable()
             ->description(Format::date($weekday->format('Y-m-d')))
-            ->format(function ($values) use ($weekday) {
-                return CoverageMiniCalendar::renderTimeRange($values['dates'][$weekday->format('Y-m-d')] ?? [], $weekday);
+            ->format(function ($values) use ($weekday, $dayOfWeek) {
+                return CoverageMiniCalendar::renderTimeRange($dayOfWeek, $values['dates'][$weekday->format('Y-m-d')] ?? [], $weekday);
             })
             ->modifyCells(function ($values, $cell) use ($weekday) {
                 if ($weekday->format('Y-m-d') == date('Y-m-d')) $cell->addClass('bg-yellow-100');

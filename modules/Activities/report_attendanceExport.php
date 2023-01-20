@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -148,7 +149,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         // DATE / TERMS
         $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
         if ($dateType != 'Date') {
-            $terms = getTerms($connection2, $activity['gibbonSchoolYearID']);
+            /**
+             * @var SchoolYearTermGateway
+             */
+            $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+            $terms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
             $termList = array();
             for ($i = 0; $i < count($terms); $i = $i + 2) {
                 if (is_numeric(strpos($activity['gibbonSchoolYearTermIDList'], $terms[$i]))) {

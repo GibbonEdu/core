@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -59,10 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                //Check strength of password
-                $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
+                /** @var PasswordPolicy */
+                $passwordPolicies = $container->get(PasswordPolicy::class);
 
-                if ($passwordMatch == false) {
+                //Check strength of password
+                if (!$passwordPolicies->validate($passwordNew)) {
                     $URL .= '&return=error6';
                     header("Location: {$URL}");
                 } else {

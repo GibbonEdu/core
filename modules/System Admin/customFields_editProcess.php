@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     // Proceed!
     $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
     $customFieldGateway = $container->get(CustomFieldGateway::class);
-    
+
     $data = [
         'context'                  => $_POST['context'] ?? '',
         'name'                     => $_POST['name'] ?? '',
@@ -53,6 +53,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     
     if ($data['type'] == 'varchar') $data['options'] = min(max(0, intval($data['options'])), 255);
     if ($data['type'] == 'text') $data['options'] = max(0, intval($data['options']));
+
+    // Prevent rich text and code editors from being used on public forms
+    if ($data['type'] == 'editor' || $data['type'] == 'code') {
+        $data['activeDataUpdater'] = '0';
+        $data['activeApplicationForm'] = '0';
+        $data['activePublicRegistration'] = '0';
+    }
 
     // Handle role category checkboxes
     $roleCategories = $_POST['roleCategories'] ?? [];

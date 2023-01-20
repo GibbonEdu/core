@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $partialFail = false;
 
             $activitySlotGateway = $container->get(ActivitySlotGateway::class);
-            $activitySlotGateway->deleteWhere(['gibbonActivityID' => $gibbonActivityID]);
+            $activitySlots = [];
 
             $timeSlotOrder = $_POST['order'] ?? [];
             foreach ($timeSlotOrder as $order) {
@@ -118,8 +118,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                 unset($slot['location']);
 
-                $activitySlotGateway->insert($slot);
+                if (!empty($slot['gibbonActivitySlotID'])) {
+                    $gibbonActivitySlotID = $slot['gibbonActivitySlotID'];
+                    $activitySlotGateway->update($gibbonActivitySlotID, $slot);
+                } else {
+                    $gibbonActivitySlotID = $activitySlotGateway->insert($slot);
+                }
+
+                $activitySlots[] = str_pad($gibbonActivitySlotID, 10, 0, STR_PAD_LEFT);
             }
+
+            $activitySlotGateway->deleteActivitySlotsNotInList($gibbonActivityID, $activitySlots);
 
             // Scan through staff
             $staff = $_POST['staff'] ?? [];

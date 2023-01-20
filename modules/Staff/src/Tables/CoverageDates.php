@@ -26,6 +26,8 @@ use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 /**
  * CoverageDates
@@ -41,50 +43,115 @@ class CoverageDates
     protected $db;
     protected $staffCoverageGateway;
     protected $staffCoverageDateGateway;
+    protected $staffAbsenceDateGateway;
+    protected $coverageMode;
 
-    public function __construct(Session $session, Connection $db, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway)
+    public function __construct(Session $session, Connection $db, SettingGateway $settingGateway, StaffCoverageGateway $staffCoverageGateway, StaffCoverageDateGateway $staffCoverageDateGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->staffCoverageDateGateway = $staffCoverageDateGateway;
+        $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
+        $this->coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
     }
 
     public function create($gibbonStaffCoverageID)
     {
+        $coverage = $this->staffCoverageGateway->getByID($gibbonStaffCoverageID);
+        $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();
+
+        return $this->createFromDates($coverage['status'], $dates);
+    }
+
+    public function createFromAbsence($gibbonStaffAbsenceID, $status)
+    {
+        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->toDataSet();
+
+        return $this->createFromDates($status, $dates);
+    }
+
+    protected function createFromDates($status, $dates) {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
         $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
 
-        $coverage = $this->staffCoverageGateway->getByID($gibbonStaffCoverageID);
-        $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();
+        $coverageByTimetable = count(array_filter($dates->toArray(), function($item) {
+            return !empty($item['foreignTableID']);
+        }));
+
+        if ($coverageByTimetable) {
+            $dates->transform(function (&$item) {
+                if (empty($item['foreignTableID'])) return;
+
+                $times = $this->staffCoverageDateGateway->getCoverageTimesByForeignTable($item['foreignTable'], $item['foreignTableID'], $item['date']);
+
+                $item['period'] = $times['period'] ?? '';
+                $item['contextName'] = $times['contextName'] ?? '';
+            });
+        }
+
         $table = DataTable::create('staffCoverageDates')->withData($dates);
 
         $table->addColumn('date', __('Date'))
-            ->format(Format::using('dateReadable', 'date'));
+            ->format(Format::using('dateReadable', 'date'))
+            ->formatDetails(function ($coverage) {
+                return Format::small(Format::dateReadable($coverage['date'], '%A'));
+            });
 
-        $table->addColumn('timeStart', __('Time'))
-            ->format([AbsenceFormats::class, 'timeDetails']);
+        if ($coverageByTimetable) {
+            $table->addColumn('period', __('Period'))
+                ->description(__('Time'))
+                ->formatDetails([AbsenceFormats::class, 'timeDetails']);
 
-        if ($canManage) {
+            $table->addColumn('contextName', __('Cover'));
+        } else {
+            $table->addColumn('timeStart', __('Time'))
+                  ->format([AbsenceFormats::class, 'timeDetails']);
+        }
+
+        if ($canManage && $status != 'Pending Approval') {
             $table->addColumn('value', __('Value'));
         }
 
-        if ($coverage['status'] != 'Requested') {
+        if ($status != 'Requested' && $status != 'Pending Approval') {
             $table->addColumn('coverage', __('Coverage'))
-                ->width('30%')
+                ->width('20%')
                 ->format([AbsenceFormats::class, 'coverage']);
         }
+
+        $table->addColumn('notes', __('Notes'))->format(Format::using('truncate', 'notes', 60));
 
         // ACTIONS
         $canDelete = count($dates) > 1;
 
         if ($canManage) {
             $table->addActionColumn()
-                ->addParam('gibbonStaffCoverageID', $gibbonStaffCoverageID)
+                ->addParam('gibbonStaffCoverageID')
                 ->addParam('gibbonStaffCoverageDateID')
-                ->format(function ($coverage, $actions) use ($canManage, $canDelete) {
+                ->addParam('gibbonCourseClassID')
+                ->addParam('date')
+                ->format(function ($coverage, $actions) use ($canDelete) {
+
+                    if ($this->coverageMode == 'Assigned') {
+                        if (empty($coverage['gibbonPersonIDCoverage'])) {
+                            $actions->addAction('assign', __('Assign'))
+                                ->setURL('/modules/Staff/coverage_planner_assign.php')
+                                ->setIcon('attendance')
+                                ->addClass('mr-1 -mt-px')
+                                ->modalWindow(900, 700)
+                                ->append('<img src="themes/Default/img/page_new.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
+                        } else {
+                            $actions->addAction('cancel', __('Unassign'))
+                                ->setURL('/modules/Staff/coverage_planner_unassign.php')
+                                ->setIcon('attendance')
+                                ->addClass('mr-1 -mt-px')
+                                ->modalWindow(650, 250)
+                                ->append('<img src="themes/Default/img/iconCross.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
+                        }
+                    }
+
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_manage_edit_edit.php');
 
@@ -95,6 +162,7 @@ class CoverageDates
                             ->setURL('/modules/Staff/coverage_manage_edit_deleteProcess.php')
                             ->addConfirmation(__('Are you sure you wish to delete this record?'));
                     }
+                
                 });
         }
 

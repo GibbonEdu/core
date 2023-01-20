@@ -364,7 +364,7 @@ if ($proceed == false) {
                 }
 
                 // Raise a new notification event
-                $event = new NotificationEvent('Students', 'New Application Form');
+                $event = new NotificationEvent('Admissions', 'New Application Form');
 
                 $event->addRecipient($session->get('organisationAdmissions'));
                 $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));

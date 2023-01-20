@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -36,20 +37,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         $step = 1;
     }
 
+    /**
+     * @var SchoolYearGateway
+     */
+    $schoolYearGateway = $container->get(SchoolYearGateway::class);
+
     //Step 1
     if ($step == 1) {
         echo '<h3>';
         echo __('Step 1');
         echo '</h3>';
 
-        $nextYear = getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2);
-        if ($nextYear == false) {
+        $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
+        if ($nextYearBySession == false) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
-                $dataNext = array('gibbonSchoolYearID' => $nextYear);
+                $dataNext = array('gibbonSchoolYearID' => $nextYearBySession['gibbonSchoolYearID']);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
@@ -65,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                 $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=2');
 
-                $form->addHiddenValue('nextYear', $nextYear);
+                $form->addHiddenValue('nextYear', $nextYearBySession['gibbonSchoolYearID']);
 
                 $row = $form->addRow();
                     $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$session->get('gibbonSchoolYearName').'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
@@ -81,14 +86,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         echo __('Step 2');
         echo '</h3>';
 
-        $nextYear = $_POST['nextYear'];
-        if ($nextYear == '' or $nextYear != getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2)) {
+        $nextYearID = $_POST['nextYear'];
+        $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
+        if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
-                $dataNext = array('gibbonSchoolYearID' => $nextYear);
+                $dataNext = array('gibbonSchoolYearID' => $nextYearID);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
@@ -113,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $currentCourses = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 
                 // Get the next year's courses/classes
-                $data = array('gibbonSchoolYearID' => $nextYear);
+                $data = array('gibbonSchoolYearID' => $nextYearID);
                 $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
                 $result = $pdo->executeQuery($data, $sql);
                 $nextCourses = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
@@ -134,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
                 $form->setClass('w-full blank');
 
-                $form->addHiddenValue('nextYear', $nextYear);
+                $form->addHiddenValue('nextYear', $nextYearID);
 
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mb-4');
                 $row = $table->addRow();
@@ -175,14 +180,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             }
         }
     } elseif ($step == 3) {
-        $nextYear = $_POST['nextYear'];
-        if ($nextYear == '' or $nextYear != getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2)) {
+        $nextYearID = $_POST['nextYear'];
+        $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
+        if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
-            $dataNext = array('gibbonSchoolYearID' => $nextYear);
+            $dataNext = array('gibbonSchoolYearID' => $nextYearID);
             $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $rowNext = $pdo->selectOne($sqlNext, $dataNext);
 

@@ -54,6 +54,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $data['context'] = $_POST['contextName'];
     }
 
+    // Prevent rich text and code editors from being used on public forms
+    if ($data['type'] == 'editor' || $data['type'] == 'code') {
+        $data['activeDataUpdater'] = '0';
+        $data['activeApplicationForm'] = '0';
+        $data['activePublicRegistration'] = '0';
+    }
+
     if (!empty($data['heading'])) {
         $data['heading'] = strchr($data['heading'], '_', true);
         $data['heading'] = $data['heading'] == 'Custom' ? ($_POST['headingCustom'] ?? '') : $data['heading'];

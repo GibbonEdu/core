@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -89,7 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 ->add(Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type']));
 
             $canEdit = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
-            $roleCategory = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+
+            /** @var RoleGateway */
+            $roleGateway = $container->get(RoleGateway::class);
+
+            $roleCategory = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
 
             // DISPLAY PERSON DATA
             $table = DataTable::createDetails('personal');
@@ -120,6 +125,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     ->prepend((!empty($search)) ? ' | ' : '');;
                 }
 
+                $table->addHeaderAction('print', __('Print'))
+                    ->setURL('/report.php')
+                    ->addParam('q', '/modules/Timetable/tt_view.php')
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonTTID', $gibbonTTID)
+                    ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
+                    ->setIcon('print')
+                    ->setTarget('_blank')
+                    ->directLink()
+                    ->displayLabel();
+
                 if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                     $table->addHeaderAction('export', __('Export'))
                         ->modalWindow()
@@ -137,8 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo $table->render([$row]);
 
             $ttDate = null;
-            if (isset($_POST['ttDate'])) {
-                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+            if (!empty($_REQUEST['ttDate'])) {
+                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
             }
 
             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_view.php', "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");

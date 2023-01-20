@@ -1,4 +1,4 @@
-actor: Tester
+actor_suffix: Tester
 paths:
     # where the tests stored
     tests: ''
@@ -7,13 +7,17 @@ paths:
     log: log
 
     # directory for fixture data
-    data: config/data
+    data: _data
 
     # directory for support code
-    support: config/support
+    support: _support
 
     # directory for environment configuration
-    envs: config/envs
+    envs: _envs
+
+    # output directory
+    output: _output
+
 settings:
     # randomize test order
     shuffle: false
@@ -32,7 +36,7 @@ settings:
 bootstrap: bootstrap.php
 params:
     - env
-    - config/environment.php
+    - _envs/environment.php
 includes:
     - bootstrap.php
 extensions:

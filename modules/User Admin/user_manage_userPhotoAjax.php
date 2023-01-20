@@ -17,16 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Gibbon system-wide include
+use Gibbon\Domain\User\UserGateway;
+
 include '../../gibbon.php';
 
 if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDPrimary'))) {
     die(__('Your request failed because you do not have access to this action.'));
-} elseif (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) != 'Staff') {
+} elseif ($session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     die(__('Your request failed because you do not have access to this action.'));
 } else {
-    $data = array('gibbonPersonID' => $_POST['gibbonPersonID'] ?? '');
-    $sql = "SELECT image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+    $user = $container->get(UserGateway::class)->getByID($_POST['gibbonPersonID'] ?? '', ['image_240']);
 
-    echo $pdo->selectOne($sql, $data);
+    echo $user['image_240'] ?? '';
 }

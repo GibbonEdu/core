@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonPersonID', __('Person'))->description(__('Available only to users with the required permission.'));
-                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->placeholder(__('Please select...'))->required();
+                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->placeholder('Please select...')->required();
 
                 if ($event['scopes'] == 'All') {
                     $form->addHiddenValue('scopeType', 'All');

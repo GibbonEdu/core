@@ -25,6 +25,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
+use Gibbon\Module\Staff\Tables\CoverageDates;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit.php') == false) {
     // Access denied
@@ -118,6 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
             ->isRequired();
 
     $row = $form->addRow();
+        $row->addLabel('coverageRequired', __('Cover Required'));
+        $row->addYesNo('coverageRequired');
+
+    $row = $form->addRow();
         $row->addLabel('comment', __('Comment'));
         $row->addTextArea('comment')->setRows(2);
 
@@ -137,9 +142,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     echo $form->getOutput();
 
     // Absence Dates
-    $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true);
-    $table->setTitle(__('Dates'));
-    echo $table->getOutput();
+    $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true, false);
+    $table->setTitle(__('Absence'));
+    echo  $table->getOutput();
+
+    // Coverage Dates
+    if ($values['coverageRequired'] == 'Y') {
+        $table = $container->get(CoverageDates::class)->createFromAbsence($gibbonStaffAbsenceID, $values['status']);
+        $table->setTitle(__('Coverage'));
+        echo  $table->getOutput();
+    }
+
 
     $form = Form::create('staffAbsenceAdd', $session->get('absoluteURL').'/modules/Staff/absences_manage_edit_addProcess.php');
 

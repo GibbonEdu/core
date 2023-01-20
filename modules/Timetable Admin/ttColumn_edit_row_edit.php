@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     if ($gibbonTTColumnRowID == '' or $gibbonTTColumnID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonTTColumnID' => $gibbonTTColumnID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID);
             $sql = 'SELECT gibbonTTColumnRow.*, gibbonTTColumn.name AS columnName FROM gibbonTTColumn JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE gibbonTTColumnRow.gibbonTTColumnID=:gibbonTTColumnID AND gibbonTTColumnRow.gibbonTTColumnRowID=:gibbonTTColumnRowID';
             $result = $connection2->prepare($sql);
@@ -58,11 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 $row->addTextField('columnName')->maxLength(30)->required()->readonly()->setValue($values['columnName']);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addLabel('name', __('Name'))->description(__('Must be unique for this column.'));
                 $row->addTextField('name')->maxLength(12)->required();
 
             $row = $form->addRow();
-                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this school year.'));
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this column.'));
                 $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();

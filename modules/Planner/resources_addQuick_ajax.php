@@ -73,7 +73,7 @@ $row = $form->addRow();
 
 $row = $form->addRow();
     $row->addContent(getMaxUpload($guid, true));
-    $row->addSubmit(__('Upload'));
+    $row->addSubmit(__('Upload'), 'bg-purple');
 
 $output .= $form->getOutput();
 

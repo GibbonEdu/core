@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     //Student
                     $row = $form->addRow();
                     	$row->addLabel('gibbonPersonIDStudent', __('Student'));
-                    	$row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder(__('Please select...'))->selected($gibbonPersonID)->required()->readonly();
+                    	$row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonID)->required()->readonly();
 
                     //Status
                     $row = $form->addRow();
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 if (!empty($investigations['cognition'])) {
                                     $output .= '<br/><strong>'.__('Cognition').'</strong><br/>';
                                     $output .= '<ul>';
-                                        $output .= '<li>'.nl2brr(__($investigations['cognition'])).'</li>';
+                                        $output .= '<li>'.nl2br(__($investigations['cognition'])).'</li>';
                                     $output .= '</ul>';
                                 }
                                 $fields = getInvestigationCriteriaStrands();
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 if (!empty($investigations['comment'])) {
                                     $output .= '<br/><strong>'.__('Comment').'</strong><br/>';
                                     $output .= '<ul>';
-                                        $output .= '<li>'.nl2brr(__($investigations['comment'])).'</li>';
+                                        $output .= '<li>'.nl2br(__($investigations['comment'])).'</li>';
                                     $output .= '</ul>';
                                 }
                                 return $output;

@@ -53,6 +53,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     protected $pages = [];
     protected $fields = [];
     protected $details = [];
+    protected $urlParams = [];
     protected $config = [];
     protected $type = '';
 
@@ -121,6 +122,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->finalPageNumber;
     }
 
+    public function getCurrentPage() : array
+    {
+        return $this->pages[$this->pageNumber] ?? [];
+    }
+
     public function includeHidden(bool $includeHidden = true)
     {
         $this->includeHidden = $includeHidden;
@@ -131,6 +137,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     public function isFieldHidden(array $field) : bool
     {
         return $this->includeHidden != ($field['hidden'] == 'Y');
+    }
+
+    public function hasHiddenValue(array $field) : bool
+    {
+        return $field['hidden'] == 'Y' && !$this->includeHidden && !empty($field['defaultValue']);
     }
 
     public function getFieldGroup($fieldGroup): FieldGroupInterface
@@ -146,20 +157,19 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             return new NullFieldGroup();
         }
     }
-    
+
     public function populate(string $gibbonFormID, int $pageNumber = 1, array $urlParams = [])
     {
         $this->gibbonFormID = $gibbonFormID;
         $this->pageNumber = $pageNumber;
-        $this->urlParams = $urlParams;        
-        
+        $this->urlParams = $urlParams;
+
         // Load form details
         $this->details = array_merge($this->details, $this->formGateway->getByID($this->gibbonFormID));
         $this->config = json_decode($this->details['config'] ?? '', true);
 
         // Load all page data
-        $criteria = $this->formPageGateway->newQueryCriteria()->sortBy('sequenceNumber', 'ASC');
-        $this->pages = $this->formPageGateway->queryPagesByForm($criteria, $this->gibbonFormID)->toArray();
+        $this->pages = $this->formPageGateway->selectPagesByForm($this->gibbonFormID)->fetchGroupedUnique();
         $this->details['gibbonFormPageID'] = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
 
         // Determine the final page number
@@ -168,7 +178,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
         // Load all field data
         $this->fields = $this->formGateway->selectFieldsByForm($this->gibbonFormID)->fetchGroupedUnique();
-    
+
         return $this;
     }
 
@@ -177,7 +187,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $data = [];
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($this->isFieldHidden($field)) continue;
+            if ($this->isFieldHidden($field) && !$this->hasHiddenValue($field)) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -187,7 +197,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if (!is_null($fieldValue) || (!empty($field['type']) && $field['type'] == 'checkbox')) {
                 $data[$fieldName] = $fieldValue;
             }
-            
+
             if (!empty($fieldInfo['acquire'])) {
                 foreach ($fieldInfo['acquire'] as $subFieldName => $subFieldType) {
                     $fieldValue = $fieldGroup->getFieldDataFromPOST($subFieldName, ['fieldType' => $subFieldType]);
@@ -250,7 +260,10 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $form->addHiddenValue('page', $this->pageNumber);
         $form->addHiddenValue('direction', 'next');
         $form->addHiddenValues($this->urlParams);
-        
+
+        // Get the current page data
+        $currentPage = $this->pages[$this->pageNumber];
+
         // Add pages to the multi-part form
         if (count($this->pages) > 1) {
             $form->setCurrentPage($this->pageNumber);
@@ -263,8 +276,13 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         // Form is not complete, add fields to current page
         if ($this->pageNumber <= $this->finalPageNumber) {
             foreach ($this->fields as $field) {
-                if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
                 if ($field['pageNumber'] != $this->pageNumber) continue;
+                if ($field['hidden'] == 'Y' && !$this->includeHidden) {
+                    if (!empty($field['defaultValue'])) {
+                        $form->addHiddenValue($field['fieldName'], $field['defaultValue']);
+                    }
+                    continue;
+                }
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);
@@ -304,8 +322,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
             foreach ($this->pages as $formPage) {
                 foreach ($this->fields as $field) {
-                    if ($field['hidden'] == 'N') continue;
                     if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+                    if ($field['hidden'] == 'N') continue;
 
                     $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                     $row = $fieldGroup->addFieldToForm($this, $form, $field);
@@ -316,8 +334,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         // Display all non-hidden fields
         foreach ($this->pages as $formPage) {
             foreach ($this->fields as $field) {
-                if ($field['hidden'] == 'Y') continue;
                 if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+                if ($field['hidden'] == 'Y') continue;
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);
@@ -346,6 +364,10 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 return;
             }
 
+            if (empty($col)) {
+                $col = $table->addColumn($formPage['name'], $formPage['name']);
+            }
+
             if ($field['fieldType'] == 'subheading' ) {
                 $border = $col->hasNestedColumns() ? 'border-t' : '';
                 $col->addColumn($field['label'], __($field['label']))->addClass('uppercase bg-gray-300 col-start-0 col-span-3 pt-3 '.$border);
@@ -355,13 +377,9 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if ($field['fieldType'] == 'layout' || $field['fieldName'] == 'secondParent') {
                 return;
             }
-            
+
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
             $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
-
-            if (empty($col)) {
-                $col = $table->addColumn($formPage['name'], $formPage['name']);
-            }
 
             $col->addColumn($field['fieldName'], __($field['label']))
                 ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '')
@@ -389,7 +407,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 $addFieldToTable($field);
             }
         }
-        
+
         return $table;
     }
 
@@ -398,7 +416,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $returnExtra = '';
 
         if ($this->hasConfig('foreignTableID')) {
-            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$this->getConfig('foreignTableID').'</b></u>.';
+            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.str_pad($this->getConfig('foreignTableID'),10,'0', STR_PAD_LEFT).'</b></u>.';
         }
 
         if ($this->session->has('organisationAdmissionsName') && $this->session->has('organisationAdmissionsEmail')) {

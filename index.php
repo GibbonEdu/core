@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Http\Url;
 
@@ -136,7 +137,7 @@ if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, 
 if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
 
     if ($session->has('username')) { // Are we logged in?
-        $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
         // Deal with attendance self-registration redirect
         // Are we a student?
@@ -263,7 +264,7 @@ if ($isLoggedIn) {
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
 $localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
-$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/jquery.ui.datepicker-%1$s.js';
+$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/datepicker-%1$s.js';
 
 $datepickerLocale = 'en-GB';
 if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
@@ -336,7 +337,7 @@ $page->scripts->addMultiple([
 
 //This sets the default for en-US, or changes for none en-US
 if($datepickerLocale !== 'en-US'){
-    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js');
+    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/datepicker-'.$datepickerLocale.'.js');
 }
 
 // Set page scripts: foot - misc
@@ -353,6 +354,7 @@ $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
 $page->scripts->register('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
+$page->scripts->register('instascan', 'lib/instascan/instascan.min.js', ['context' => 'head']);
 
 // Set system analytics code from session cache
 $page->addHeadExtra($session->get('analytics'));
@@ -538,7 +540,8 @@ if ($isLoggedIn && !$upgrade) {
 
     $timeDifference = $messageWallRefreshed - $messageWallLatestPost;
     if (!$session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || (time() - $messageWallRefreshed > 3600)) {
-        $session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
+        $messageGateway = $container->get(MessengerGateway::class);
+        $session->set('messageWallArray', $messageGateway->getMessages('array'));
         $session->set('messageWallRefreshed', time());
     }
 }
@@ -603,8 +606,7 @@ if (!$session->has('address')) {
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on
-        $sql = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
-        $hooks = $pdo->select($sql)->fetchAll();
+        $hooks = $container->get(HookGateway::class)->selectHooksByType('Public Home Page')->fetchAll();
 
         foreach ($hooks as $hook) {
             $options = unserialize(str_replace("'", "\'", $hook['options']));
@@ -652,7 +654,7 @@ if (!$session->has('address')) {
         }
 
         // DASHBOARDS!
-        $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+        $category = $session->get('gibbonRoleIDCurrentCategory');
 
         switch ($category) {
             case 'Parent':

@@ -28,7 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
     // Proceed!
     $page->breadcrumbs->add(__('Form Builder'));
 
-    $page->addMessage('This <b>BETA</b> feature is part of the new flexible application form and admissions system. While we have worked to ensure that this functionality is ready to use, this is part of a very large set of changes that are likely to continue evolving over the next version, so we\'ve marked it as beta for v24. You are welcome to use these features and please do let us know in the support forums if you encounter any issues.');
     $formGateway = $container->get(FormGateway::class);
 
     // QUERY
@@ -53,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('pages', __('Pages'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
     $table->addColumn('public', __('Public'))->format(Format::using('yesNo', 'public'));

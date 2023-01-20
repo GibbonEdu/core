@@ -109,11 +109,11 @@ class CourseEnrolmentGateway extends QueryableGateway
 
     public function selectEnrolableClassesByYearGroup($gibbonSchoolYearID, $gibbonYearGroupID)
     {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID);
-        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class,
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'today' => date('Y-m-d'));
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, enrolmentMin, enrolmentMax,
                     teacher.surname, teacher.preferredName,
                     (SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student')
+                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student' AND (dateEnd IS NULL OR dateEnd>=:today))
                     AS studentCount
                 FROM gibbonCourse
                 JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
@@ -198,16 +198,16 @@ class CourseEnrolmentGateway extends QueryableGateway
             FROM gibbonCourseClassPerson
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
             LEFT JOIN (
-                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID 
-                FROM gibbonTTDayDate 
-                JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID
+                FROM gibbonTTDayDate
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
                 WHERE gibbonTTDayDate.date=:date AND gibbonTTColumnRow.timeStart>=:timeStart AND gibbonTTColumnRow.timeEnd<=:timeEnd) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
             LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
             AND status='Full'
             AND (dateStart IS NULL OR dateStart<=:today)
-            AND (dateEnd IS NULL  OR dateEnd>=:today)
+            AND (dateEnd IS NULL OR dateEnd>=:today)
             AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') AND NOT (role='Teacher' AND reportable='N')
             GROUP BY gibbonCourseClassPerson.gibbonCourseClassPersonID, gibbonPerson.gibbonPersonID
             HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
@@ -219,26 +219,26 @@ class CourseEnrolmentGateway extends QueryableGateway
     public function selectClassesByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $date)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date];
-        $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonCourseClass.attendance, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort 
-            FROM gibbonTT 
-            JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) 
-            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
-            JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) 
-            JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-            JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) 
-            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-            WHERE gibbonPersonID=:gibbonPersonID 
-            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
-            AND gibbonTT.active='Y' 
-            AND gibbonTTDayDate.date=:date 
-            AND gibbonCourseClassPerson.role='Student' 
+        $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonCourseClass.attendance, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort
+            FROM gibbonTT
+            JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+            JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
+            JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            WHERE gibbonPersonID=:gibbonPersonID
+            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonTT.active='Y'
+            AND gibbonTTDayDate.date=:date
+            AND gibbonCourseClassPerson.role='Student'
             ORDER BY gibbonTTColumnRow.timeStart ASC";
 
         return $this->db()->select($sql, $data);
     }
 
-    public function getClassStudentCount($gibbonCourseClassID)
+    public function getClassStudentCount($gibbonCourseClassID, $honourStartDate = true)
     {
         $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d')];
         $sql = "SELECT COUNT(gibbonCourseClassPerson.gibbonCourseClassPersonID)
@@ -246,9 +246,12 @@ class CourseEnrolmentGateway extends QueryableGateway
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
             AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
-            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
             AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)
             AND gibbonCourseClassPerson.role='Student'";
+
+            if ($honourStartDate) {
+                $sql .= " AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)";
+            }
 
         return $this->db()->selectOne($sql, $data);
     }
@@ -276,7 +279,7 @@ class CourseEnrolmentGateway extends QueryableGateway
     public function deleteAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID)
     {
         $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
-        $sql = "DELETE gibbonCourseClassPerson 
+        $sql = "DELETE gibbonCourseClassPerson
                 FROM gibbonCourseClassPerson
                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)

@@ -22,11 +22,6 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-//Check to see if academic year id variables are set, if not set them
-if ($session->exists('gibbonAcademicYearID') == false or $session->exists('gibbonSchoolYearName') == false) {
-    setCurrentSchoolYear($guid, $connection2);
-}
-
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);

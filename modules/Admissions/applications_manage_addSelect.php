@@ -68,6 +68,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $row->addLabel('applicationType', __('Type'));
         $row->addSelect('applicationType')->fromArray($types)->required()->placeholder();
 
+    $form->toggleVisibilityByClass('typeBlank')->onSelect('applicationType')->when('blank');
+        
+    $row = $form->addRow()->addClass('typeBlank');
+        $row->addLabel('email', __('Email Address'));
+        $row->addEmail('email')->required();
+
     // QUERY
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     $criteria = $admissionsAccountGateway->newQueryCriteria()

@@ -25,6 +25,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\User\RoleGateway;
 
 require_once '../../gibbon.php';
 
@@ -88,8 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $parent = false;
                 $other = false;
                 $roles = explode(',', $row2['gibbonRoleIDAll']);
+
+                /** @var RoleGateway */
+                $roleGateway = $container->get(RoleGateway::class);
+
                 foreach ($roles as $role) {
-                    $roleCategory = getRoleCategory($role, $connection2);
+                    $roleCategory = $roleGateway->getRoleCategory($role);
                     if ($roleCategory == 'Staff') {
                         $staff = true;
                     }

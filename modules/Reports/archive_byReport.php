@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php') == false) {
@@ -33,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
 
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
 

@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     ]);
 
     $absoluteURL = $gibbon->session->get('absoluteURL');
+    $settingGateway = $container->get(SettingGateway::class);
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
     $typesRequiringApproval = $staffAbsenceTypeGateway->selectTypesRequiringApproval()->fetchAll(\PDO::FETCH_COLUMN, 0);
 
-    $approverOptions = explode(',', $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceApprovers'));
+    $approverOptions = explode(',', $settingGateway->getSettingByScope('Staff', 'absenceApprovers') ?? '');
     $typesWithReasons = $reasonsOptions = $reasonsChained = [];
 
     $types = array_reduce($types, function ($group, $item) use (&$reasonsOptions, &$reasonsChained, &$typesWithReasons) {
@@ -149,13 +150,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     // APPROVAL
     if (!empty($typesRequiringApproval)) {
-        $form->toggleVisibilityByClass('approvalRequired')->onSelect('gibbonStaffAbsenceTypeID')->when($typesRequiringApproval);
-        $form->toggleVisibilityByClass('approvalNotRequired')->onSelect('gibbonStaffAbsenceTypeID')->whenNot(array_merge($typesRequiringApproval, ['Please select...']));
-
         // Pre-fill the last approver from the one most recently used
         $gibbonPersonIDApproval = $staffAbsenceGateway->getMostRecentApproverByPerson($gibbonPersonID);
 
-        $form->addRow()->addHeading('Requires Approval', __('Requires Approval'))->addClass('approvalRequired');
+        $form->toggleVisibilityByClass('approvalRequired')->onSelect('gibbonStaffAbsenceTypeID')->when($typesRequiringApproval);
+        $form->addRow()->addClass('approvalRequired')->addHeading('Requires Approval', __('Requires Approval'))->addClass('approvalRequired');
 
         $row = $form->addRow()->addClass('approvalRequired');
         $row->addLabel('gibbonPersonIDApproval', __('Approver'));
@@ -178,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     // Get the most recent absence and pre-fill the notification group & list of people
     $recentAbsence = $staffAbsenceGateway->getMostRecentAbsenceByPerson($gibbonPersonID);
 
-    $notificationSetting = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceNotificationGroups');
+    $notificationSetting = $settingGateway->getSettingByScope('Staff', 'absenceNotificationGroups');
     $notificationGroups = $container->get(GroupGateway::class)->selectGroupsByIDList($notificationSetting)->fetchKeyPair();
 
     if (!empty($notificationGroups)) {
@@ -207,23 +206,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->setParameter('resultsLimit', 10)
             ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
 
-    $commentTemplate = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceCommentTemplate');
+    $commentTemplate = $settingGateway->getSettingByScope('Staff', 'absenceCommentTemplate');
     $row = $form->addRow();
         $row->addLabel('comment', __('Comment'))->description(__('This message is shared with the people notified of this absence and users who manage staff absences.'));
         $row->addTextArea('comment')->setRows(5)->setValue($commentTemplate);
 
     // COVERAGE
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
-        $form->addRow()->addHeading('Coverage', __('Coverage'))->addClass('approvalNotRequired');
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php')) {
+        // $form->toggleVisibilityByClass('coverageRequest')->onSelect('gibbonStaffAbsenceTypeID')->whenNot('Please select...');
 
-        $row = $form->addRow()->addClass('approvalNotRequired');
+        $form->addRow()->addClass('coverageRequest')->addHeading(__('Coverage'))->addClass('coverageRequest');
+
+        $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
-            $row->addYesNo('coverageRequired')->isRequired()->selected('N');
+            $row->addYesNo('coverageRequired')->isRequired()->selected('Y');
 
         $form->toggleVisibilityByClass('coverageOptions')->onSelect('coverageRequired')->whenNot('N');
 
-        $row = $form->addRow()->addClass('coverageOptions approvalNotRequired');
-            $row->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
+        if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
+            $col = $form->addRow()->addClass('coverageOptions')->addColumn();
+                $col->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
+        }
     } else {
         $form->addHiddenValue('coverageRequired', 'N');
     }

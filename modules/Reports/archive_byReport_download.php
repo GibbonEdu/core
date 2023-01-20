@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_d
     }
 
     // Check access by role category
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
     $roleAccess = false;
     if ($roleCategory == 'Staff' && $archive['viewableStaff'] == 'Y') {
         $roleAccess = true;
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_d
     } else {
         $filename = basename($archiveEntry['filePath']);
     }
-    
+
     $filepath = realpath($gibbon->session->get('absolutePath') . $archive['path'] .'/'. $archiveEntry['filePath']);
 
     $outputType = ($action == 'view')? 'inline' : 'attachment';

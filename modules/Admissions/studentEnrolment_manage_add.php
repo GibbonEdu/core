@@ -24,6 +24,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
+use Gibbon\Forms\CustomFieldHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolment_manage_add.php') == false) {
     // Access denied
@@ -63,6 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['name']);
         $schoolYearName = $schoolYear['name'] ?? $session->get('gibbonSchoolYearName');
 
+        $row = $form->addRow()->addHeading('Basic Information', __('Basic Information'));
+
         $row = $form->addRow();
             $row->addLabel('yearName', __('School Year'));
             $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($schoolYearName);
@@ -93,6 +96,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
                     ->description(__('Should this student be automatically enrolled in courses for their Form Group?'));
                 $row->addYesNo('autoEnrolStudent')->selected($autoEnrolDefault);
         }
+
+        // Custom Fields
+        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Student Enrolment', []);
 
         $row = $form->addRow();
             $row->addFooter();

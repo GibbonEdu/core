@@ -84,14 +84,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'subView' => $subView,
             ];
-		}
+        }
 
         [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
         ///Check if gibbonPlannerEntryID and gibbonCourseClassID specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? ''; 
+        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -112,7 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             }
 
             if ($result->rowCount() != 1) {
-                $otherYearDuplicateSuccess = false;
+                $page->breadcrumbs
+                    ->add(__('Duplicate Lesson Plan'));
+
+                $otherYearDuplicateSuccess = !empty($_GET['return']) && $_GET['return'] == 'success0';
                 //Deal with duplicate to other year
                 $returns = array();
                 $returns['success0'] = __('Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
@@ -124,16 +127,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 }
             } else {
                 //Let's go!
-				$values = $result->fetch();
+                $values = $result->fetch();
 
-				// target of the planner
-				$target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
+                // target of the planner
+                $target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
 
-				$page->breadcrumbs
-					->add(__('Planner for {classDesc}', [
-						'classDesc' => $target,
-					]), 'planner.php', $params)
-					->add(__('Duplicate Lesson Plan'));
+                $page->breadcrumbs
+                    ->add(__('Planner for {classDesc}', [
+                        'classDesc' => $target,
+                    ]), 'planner.php', $params)
+                    ->add(__('Duplicate Lesson Plan'));
 
                 $step = null;
                 if (isset($_GET['step'])) {
@@ -161,15 +164,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
 
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                        $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID AS chainedTo, gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort,".",gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) ORDER BY gibbonSchoolYear.gibbonSchoolYearID, name';
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'), 'groupBy' => __('My Classes'), 'groupByAll' => __('All Classes'));
+                        $sql = 'SELECT (CASE WHEN gibbonCourseClassPersonID IS NOT NULL THEN :groupBy ELSE :groupByAll END) as groupBy, gibbonSchoolYear.gibbonSchoolYearID AS chainedTo, gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort,".",gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass 
+                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+                        JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                        LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID)
+                        WHERE gibbonSchoolYear.sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) ORDER BY gibbonCourseClassPersonID IS NULL, gibbonSchoolYear.gibbonSchoolYearID, name';
                     } else {
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID AS chainedTo, gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort,".",gibbonCourseClass.nameShort) AS name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) AND gibbonPersonID=:gibbonPersonID ORDER BY name';
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'), 'groupBy' => __('My Classes'));
+                        $sql = 'SELECT :groupBy as groupBy, gibbonSchoolYear.gibbonSchoolYearID AS chainedTo, gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort,".",gibbonCourseClass.nameShort) AS name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) AND gibbonPersonID=:gibbonPersonID ORDER BY name';
                     }
                     $row = $form->addRow();
                         $row->addLabel('gibbonCourseClassID', __('Target Class'));
-                        $row->addSelect('gibbonCourseClassID')->fromQueryChained($pdo, $sql, $data, 'gibbonSchoolYearID')->required()->placeholder();
+                        $row->addSelect('gibbonCourseClassID')->fromQueryChained($pdo, $sql, $data, 'gibbonSchoolYearID', 'groupBy')->required()->placeholder();
 
                     //DUPLICATE MARKBOOK COLUMN?
 
