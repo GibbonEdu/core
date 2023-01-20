@@ -22,19 +22,18 @@ v25.0.00
 
     Headlines
         Messages can now be saved as a draft and previewed before sending
-        Activities will now display on student and staff timetables
-        Staff coverage can now be assigned to specific timetabled classes
-        Added the ability to assign and manage coverage internally
+        Activities, staff duty and coverage now display on the timetable
+        The new admissions system is turned on by default and is no longer in beta
+        Staff coverage can now be requested for timetabled classes, activities or duty
+        New visual tools have been added to help assign and manage coverage internally
 
     Significant Changes
-        Attendance: added the option to take future attendance for ad hoc groups
         System: activated the lt_LT Lietuvių Kalba - Lithuanian locale
+        Attendance: added the option to take future attendance for ad hoc groups
         School Admin: added an Off Timetable option for special days
-        Planner: enabled custom fields for Lesson Plans
         Staff: added a drag-drop interface for creating and managing a duty schedule
 
     Changes With Important Notices
-        Admissions: the new application system is now turned on by default and is no longer in beta
         Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
 
     Tweaks & Additions
@@ -63,6 +62,7 @@ v25.0.00
         Planner: updated Work Summary by Form Group to account for student start date
         Planner: updated Manage Resources to clean up unused tags after editing a resource
         Planner: added a message to homework that was assigned before enrolling in the class
+        Planner: enabled custom fields for Lesson Plans
         Resources: differentiated the upload button from the sticky submit button
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         Reports: added a school year switcher to the Generate Reports page
@@ -78,7 +78,7 @@ v25.0.00
         System Admin: removed anonymous sessions from the Active Sessions page
         System Admin: added the option to set default values for Form Builder fields
         Timetable: enabled View Available Facilities for non-lesson periods
-        Timetable: enabled booking facilities for other users with Manage Facility Bookings_allBookings permission
+        Timetable: enabled booking facilities for other users with Manage Facility Bookings_all permission
         Timetable: added an option to add a reason when booking facilities
         Timetable: added an Edit Timetable by Class tool to Manage Timetables
         Timetable: added class teacher names to timetable hover-over information
