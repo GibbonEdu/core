@@ -99,6 +99,7 @@ v25.0.00
         System: fixed lesson plans not showing up on Staff Dashboard for multiple classes with a TT exception
         System: fixed dashboard hooks displaying when modules are inactive
         Activities: fixed activities not viewable from profile after listing end date
+        Activities: fixed activity attendance tables overlapping the page
         Admissions: fixed application username check to include other applications
         Admissions: fixed database error when using Add Application to create a blank application form
         Admissions: fixed missing Introduction and Post Script on application form

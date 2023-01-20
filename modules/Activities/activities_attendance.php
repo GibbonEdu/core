@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo __('Activity');
     echo '</h2>';
 
-    echo "<table class='smallIntBorder' style='width: 100%' cellspacing='0'><tbody>";
+    echo "<table class='smallIntBorder' style='width: 100%;' cellspacing='0'><tbody>";
     echo '<tr>';
     echo "<td style='width: 33%; vertical-align: top'>";
     echo "<span class='infoTitle'>".__('Start Date').'</span><br>';
@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo '</div>';
     } else {
         $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
-        $form->setClass('blank block max-w-full');
+        $form->setClass('blank block w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
@@ -300,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 : '');
         }
 
-        $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full')->addRow();
+        $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full doublescroll-wrapper')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
                 ->wrap('<span class="small emphasis">', '</span>');
             $row->addSubmit();

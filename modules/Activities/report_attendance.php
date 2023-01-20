@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     echo __('Activity');
     echo '</h2>';
 
-    echo "<table class='smallIntBorder' style='width: 100%' cellspacing='0'><tbody>";
+    echo "<table class='smallIntBorder' style='width: 100%;' cellspacing='0'><tbody>";
     echo '<tr>';
     echo "<td style='width: 33%; vertical-align: top'>";
     echo "<span class='infoTitle'>".__('Start Date').'</span><br>';
@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $columnCount = ($allColumns) ? count($activitySessions) : count($sessionAttendanceData);
 
         echo "<div class='doublescroll-container overflow-x-scroll'>";
-        echo "<table class='mini colorOddEven border-0' cellspacing='0' style='width: ".($columnCount * 56)."px'>";
+        echo "<table class='mini colorOddEven border-0' cellspacing='0' style='width: ".(($columnCount * 56)+175)."px'>";
 
         echo "<tr style='height: 55px'>";
         echo "<td style='vertical-align:top;height:55px;width:175px'>".__('Date').'</td>';
