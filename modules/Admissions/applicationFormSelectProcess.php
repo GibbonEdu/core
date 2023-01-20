@@ -43,23 +43,35 @@ if (empty($email)) {
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     $account = $admissionsAccountGateway->getAccountByEmail($email);
 
-    if (empty($account)) {
+    if (empty($account) && $gibbonFormID != 'existing') {
         // New account
         $accessID = $admissionsAccountGateway->getUniqueAccessID($guid.$email);
+        $accessToken = $admissionsAccountGateway->getUniqueAccessToken($guid.$accessID);
+        $accessExpiry = date('Y-m-d H:i:s', strtotime("+2 days"));
+        
         $gibbonAdmissionsAccountID = $admissionsAccountGateway->insert([
-            'email'     => $email,
-            'accessID'  => $accessID,
-            'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? '',
-            'timestampActive' => date('Y-m-d H:i:s'),
+            'email'                => $email,
+            'accessID'             => $accessID,
+            'accessToken'          => $accessToken,
+            'timestampTokenExpire' => $accessExpiry,
+            'ipAddress'            => $_SERVER['REMOTE_ADDR'] ?? '',
+            'timestampActive'      => date('Y-m-d H:i:s'),
         ]);
         $accountType = 'new';
     } else {   
         // Existing account
-        $accessID = $account['accessID'];
-        $gibbonAdmissionsAccountID = $account['gibbonAdmissionsAccountID'];
+        $accessID = $account['accessID'] ?? '';
+        $gibbonAdmissionsAccountID = $account['gibbonAdmissionsAccountID'] ?? '';
         $accountType = 'existing';
     }
 
+    // Cannot continue if this is a new account - no existing forms
+    if ($gibbonFormID == 'existing' && empty($gibbonAdmissionsAccountID)) {
+        header("Location: {$URL->withReturn('error4')}");
+        exit;
+    }
+
+    // Check that an account exists
     if (empty($gibbonAdmissionsAccountID) || empty($accessID)) {
         header("Location: {$URL->withReturn('error2')}");
         exit;
@@ -75,12 +87,6 @@ if (empty($email)) {
             'accountType'  => $accountType,
         ]);
         header("Location: {$URL}");
-        exit;
-    }
-
-    // Cannot continue if this is a new account - no existing forms
-    if ($accountType != 'existing') {
-        header("Location: {$URL->withReturn('error4')}");
         exit;
     }
 

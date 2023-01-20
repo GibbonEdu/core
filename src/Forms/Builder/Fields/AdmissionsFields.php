@@ -108,6 +108,10 @@ class AdmissionsFields extends AbstractFieldGroup
         $default = $field['defaultValue'] ?? null;
         $accepted = $formBuilder->getConfig('status') == 'Accepted';
         
+        if ($field['fieldName'] == 'howDidYouHear' && ($formBuilder->hasConfig('gibbonPersonID') || $formBuilder->hasConfig('gibbonFamilyID'))) {
+            return new Row($form->getFactory(), 'howDidYouHear');
+        }
+
         $row = $form->addRow();
 
         switch ($field['fieldName']) {
@@ -197,6 +201,7 @@ class AdmissionsFields extends AbstractFieldGroup
                         $col->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
                         $col->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
                 }
+                
         }
 
         return $row;

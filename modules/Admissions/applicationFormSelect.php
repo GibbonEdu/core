@@ -30,7 +30,8 @@ $settingGateway = $container->get(SettingGateway::class);
 
 if (!$session->has('username')) {
     $public = true;
-
+    $session->forget('admissionsAccessToken');
+    
     //Get public access
     $publicApplications = $settingGateway->getSettingByScope('Application Form', 'publicApplications');
     if ($publicApplications == 'Y') {
