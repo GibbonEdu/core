@@ -237,7 +237,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     protected function setStatus(FormDataInterface $formData, $prefix = '')
     {
-        $checkInform = !empty($prefix) ? $formData->getResult('informParent') : $formData->getResult('informStudent');
+        $checkInform = !empty($prefix) ? $formData->getResult('informParents') : $formData->getResult('informStudent');
         $status = $formData->get('schoolYearStatus') == 'Upcoming' && $checkInform != 'Y' ? 'Expected' : 'Full';
         $formData->set($prefix.'status', $status);
     }

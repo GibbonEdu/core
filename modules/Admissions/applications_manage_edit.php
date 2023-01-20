@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->displayLabel();
 
     // Display application details
-    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable($formBuilder);
+    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable();
     echo $detailsTable->render([$application]);
 
     // Detect existing accounts or sibling applications

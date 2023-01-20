@@ -26,6 +26,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_accept.php') == false) {
     // Access denied
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     ]);
     
     // Get the application form data and admissions account
-    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
+    $application = $container->get(AdmissionsApplicationGateway::class)->getApplicationDetailsByID($gibbonAdmissionsApplicationID);
     $account = $container->get(AdmissionsAccountGateway::class)->getByID($application['foreignTableID'] ?? '');
     if (empty($application) || empty($account)) {
         $page->addError(__('The selected application does not exist or has already been processed.'));
@@ -117,6 +118,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             $processListInvalid[] = $view->getDescription();
         }
     }
+
+    // Display application details
+    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable();
+    echo $detailsTable->render([$application]);
 
     // FORM
     $form = Form::create('application', $session->get('absoluteURL').'/modules/Admissions/applications_manage_acceptProcess.php');
