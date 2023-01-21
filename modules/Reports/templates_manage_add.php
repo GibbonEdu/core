@@ -33,19 +33,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID'].'&search='.$search;
+        $editLink = $gibbon->session->get('absoluteURL') . '/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID=' . $_GET['editID'] . '&search=' . $search;
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_addProcess.php');
+    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL') . '/modules/Reports/templates_manage_addProcess.php');
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
     $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
-        $row->addTextField('name')->maxLength(90)->required();
+    $row->addLabel('name', __('Name'))->description(__('Must be unique'));
+    $row->addTextField('name')->maxLength(90)->required();
 
     $contexts = [
         'Reporting Cycle'   => __('Reporting Cycle'),
@@ -53,42 +53,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
         // 'Custom Query' => __('Custom Query'),
     ];
     $row = $form->addRow();
-        $row->addLabel('context', __('Context'));
-        $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
-    
+    $row->addLabel('context', __('Context'));
+    $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
+
     $stylesheets = $container->get(ReportPrototypeSectionGateway::class)->selectPrototypeStylesheets();
     $row = $form->addRow();
-        $row->addLabel('stylesheet', __('Stylesheet'));
-        $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+    $row->addLabel('stylesheet', __('Stylesheet'));
+    $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
 
     $flags = ['000' => __('TCPDF Renderer - Faster, Limited HTML'), '001' => __('mPDF Renderer - Slower, Better HTML Support')];
     $row = $form->addRow();
-        $row->addLabel('flags', __('Renderer'));
-        $row->addSelect('flags')->fromArray($flags)->required();
+    $row->addLabel('flags', __('Renderer'));
+    $row->addSelect('flags')->fromArray($flags)->required();
 
     $form->addRow()->addHeading('Document Setup', __('Document Setup'));
 
     $orientations = ['P' => __('Portrait'), 'L' => __('Landscape')];
     $row = $form->addRow();
-        $row->addLabel('orientation', __('Orientation'));
-        $row->addSelect('orientation')->fromArray($orientations)->required();
+    $row->addLabel('orientation', __('Orientation'));
+    $row->addSelect('orientation')->fromArray($orientations)->required();
 
     $pageSizes = ['A4' => __('A4'), 'letter' => __('US Letter')];
     $row = $form->addRow();
-        $row->addLabel('pageSize', __('Page Size'));
-        $row->addSelect('pageSize')->fromArray($pageSizes)->required();
+    $row->addLabel('pageSize', __('Page Size'));
+    $row->addSelect('pageSize')->fromArray($pageSizes)->required();
 
     $row = $form->addRow();
-        $row->addLabel('margins', __('Margins'));
-        $col = $row->addColumn()->addClass('items-center');
-        $col->addContent('<div class="flex-1 pr-1">X</div>');
-        $col->addNumber('marginX')->decimalPlaces(2)->required()->setValue('10');
-        $col->addContent('<div class="flex-1 pr-1 pl-2">Y</div>');
-        $col->addNumber('marginY')->decimalPlaces(2)->required()->setValue('10');
-        
+    $row->addLabel('margins', __('Margins'));
+    $col = $row->addColumn()->addClass('items-center');
+    $col->addContent('<div class="flex-1 pr-1">X</div>');
+    $col->addNumber('marginX')->decimalPlaces(2)->required()->setValue('10');
+    $col->addContent('<div class="flex-1 pr-1 pl-2">Y</div>');
+    $col->addNumber('marginY')->decimalPlaces(2)->required()->setValue('10');
+
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+    $row->addFooter();
+    $row->addSubmit();
 
     echo $form->getOutput();
 }
