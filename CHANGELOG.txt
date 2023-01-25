@@ -17,6 +17,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v26.0.00
+--------
+
+    Headlines
+
+    Significant Changes
+
+    Changes With Important Notices
+
+    Tweaks & Additions
+
+    Bug Fixes
+
 v25.0.00
 --------
 
