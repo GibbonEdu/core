@@ -14,44 +14,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         /* Safari, Android, iOS */
     }
 
-        {
-        % for fontFamily,
-        fonts in fontList %
-    }
+    {% for fontFamily, fonts in fontList %}
+        {% for fontType, fontPath in fonts %}
+            @font-face {
+                font-family: '{{ fontFamily }}';
+                src: url('{{ fontURL }}/{{ fontPath }}') format('truetype');
 
-        {
-        % for fontType,
-        fontPath in fonts %
-    }
+                font-style: {{'I' in fontType ? 'italic': 'normal'}};
 
-    @font-face {
-        font-family: '{{ fontFamily }}';
-        src: url('{{ fontURL }}/{{ fontPath }}') format('truetype');
-
-        font-style: {
-                {
-                'I' in fontType ? 'italic': 'normal'
+                font-weight: {{'B' in fontType ? '700': 'normal'}};
             }
-        }
-
-        ;
-
-        font-weight: {
-                {
-                'B' in fontType ? '700': 'normal'
-            }
-        }
-
-        ;
-    }
-
-        {
-        % endfor %
-    }
-
-        {
-        % endfor %
-    }
+        {% endfor %}
+    {% endfor %}
 
     body {
         margin: 0;
@@ -79,21 +53,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         left: 0;
         bottom: 0;
 
-        width: calc(100% - ({
-                    {
-                    marginX
-                }
-            }
-
-            mm * 2));
-
-    padding: 0 {
-            {
-            marginX
-        }
-    }
-
-    mm;
+        width: calc(100% - ({{marginX}} mm * 2));
+        padding: 0 {{marginX}} mm;
     }
 </style>
 
@@ -114,23 +75,23 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     {% if pageSize == 'LETTER' %}
-    {% set baseWidth = orientation == 'L' ? '279.4' : '215.9' %}
-    {% set baseHeight = orientation == 'L' ? '215.9' : '279.4' %}
+        {% set baseWidth = orientation == 'L' ? '279.4' : '215.9' %}
+        {% set baseHeight = orientation == 'L' ? '215.9' : '279.4' %}
     {% else %}
-    {% set baseWidth = orientation == 'L' ? '297' : '210' %}
-    {% set baseHeight = orientation == 'L' ? '210' : '297' %}
+        {% set baseWidth = orientation == 'L' ? '297' : '210' %}
+        {% set baseHeight = orientation == 'L' ? '210' : '297' %}
     {% endif%}
 
     {% for page in pages %}
     <div class="relative mx-auto bg-white shadow-lg m-4 mb-8"
-        style="padding: {{ marginY }}mm {{ marginX }}mm; width: calc({{ baseWidth }}mm - ({{ marginX }}mm * 2)); {% if not prototype %}min-height: calc({{ baseHeight }}mm - ({{ marginY }}mm * 2));{% endif %}">
+            style="padding: {{ marginY }}mm {{ marginX }}mm; width: calc({{ baseWidth }}mm - ({{ marginX }}mm * 2)); {% if not prototype %}min-height: calc({{ baseHeight }}mm - ({{ marginY }}mm * 2));{% endif %}">
 
         <div class="absolute top-0 left-0 w-24 h-8 text-xl font-bold text-gray-400 text-right mt-16"
-            style="transform: rotate(-90deg);transform-origin: bottom left;">
+                style="transform: rotate(-90deg);transform-origin: bottom left;">
             {% if prototype %}
-            {{ __('Preview') }}
+                {{ __('Preview') }}
             {% else %}
-            {{ __('Page') }} {{ loop.index }}
+                {{ __('Page') }} {{ loop.index }}
             {% endif %}
         </div>
 
@@ -138,8 +99,5 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
     {% endfor %}
 
-
-
-    <p class="-mt-2 mb-4 text-center text-xxs text-gray-600">{{ __('This HTML preview is for sample purposes and may not
-        be an exact match to the final PDF.') }}</p>
+    <p class="-mt-2 mb-4 text-center text-xxs text-gray-600">{{ __('This HTML preview is for sample purposes and may not be an exact match to the final PDF.') }}</p>
 </div>
