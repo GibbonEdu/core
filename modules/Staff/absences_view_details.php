@@ -38,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_detail
     }
 
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
+    $gibbonStaffAbsenceID = str_pad($gibbonStaffAbsenceID, 14, 0, STR_PAD_LEFT);
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
 
