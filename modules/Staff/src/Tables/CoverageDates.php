@@ -66,7 +66,7 @@ class CoverageDates
 
     public function createFromAbsence($gibbonStaffAbsenceID, $status)
     {
-        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->toDataSet();
+        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID, true)->toDataSet();
 
         return $this->createFromDates($status, $dates);
     }
@@ -93,6 +93,8 @@ class CoverageDates
         }
 
         $table = DataTable::create('staffCoverageDates')->withData($dates);
+
+        $table->addMetaData('blankSlate', __('Coverage is required but has not been requested yet.'));
 
         $table->addColumn('date', __('Date'))
             ->format(Format::using('dateReadable', 'date'))
@@ -134,7 +136,7 @@ class CoverageDates
                 ->addParam('date')
                 ->format(function ($coverage, $actions) use ($canDelete) {
 
-                    if ($this->coverageMode == 'Assigned') {
+                    if ($this->coverageMode == 'Assigned' && $coverage['absenceStatus'] == 'Approved') {
                         if (empty($coverage['gibbonPersonIDCoverage'])) {
                             $actions->addAction('assign', __('Assign'))
                                 ->setURL('/modules/Staff/coverage_planner_assign.php')

@@ -42,9 +42,10 @@ class StaffCoverageDateGateway extends QueryableGateway
     {
         $gibbonStaffCoverageIDList = is_array($gibbonStaffCoverageID)? $gibbonStaffCoverageID : [$gibbonStaffCoverageID];
         $data = ['gibbonStaffCoverageIDList' => implode(',', $gibbonStaffCoverageIDList) ];
-        $sql = "SELECT gibbonStaffCoverageDate.gibbonStaffCoverageID as groupBy,  gibbonStaffCoverageDate.*, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverage.status as coverage, gibbonStaffCoverage.requestType, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverageDate.reason as notes
+        $sql = "SELECT gibbonStaffCoverageDate.gibbonStaffCoverageID as groupBy,  gibbonStaffCoverageDate.*, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffAbsence.status as absenceStatus, gibbonStaffCoverage.status as coverage, gibbonStaffCoverage.requestType, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverageDate.reason as notes
                 FROM gibbonStaffCoverageDate
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID)
+                LEFT JOIN gibbonStaffAbsence ON (gibbonStaffAbsence.gibbonStaffAbsenceID=gibbonStaffCoverage.gibbonStaffAbsenceID)
                 LEFT JOIN gibbonPerson AS coverage ON (gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID)
                 WHERE FIND_IN_SET(gibbonStaffCoverageDate.gibbonStaffCoverageID, :gibbonStaffCoverageIDList)
                 ORDER BY gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.timeStart";
