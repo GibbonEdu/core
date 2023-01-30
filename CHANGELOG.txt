@@ -29,6 +29,7 @@ v26.0.00
     Tweaks & Additions
 
     Bug Fixes
+        Form Groups: fixed Left staff showing in View Form Groups list
 
 v25.0.00
 --------
