@@ -191,7 +191,7 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         $query = $this
             ->newSelect()
-            ->cols(['gibbonTTColumnRow.gibbonTTColumnRowID as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
+            ->cols(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
             ->from('gibbonTT')
             ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
             ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
@@ -204,7 +204,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->bindValue('date', $date);
 
         $query->unionAll()
-            ->cols(['gibbonStaffDuty.gibbonStaffDutyID as groupBy', '"Staff Duty" AS type', 'gibbonStaffDuty.name as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd'])
+            ->cols(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', '"Staff Duty" AS type', '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd'])
             ->from('gibbonStaffDutyPerson')
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonStaffDutyPerson.gibbonDaysOfWeekID')
@@ -213,7 +213,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->groupBy(['gibbonStaffDuty.gibbonStaffDutyID']);
 
         $query->unionAll()
-            ->cols(['gibbonDaysOfWeek.gibbonDaysOfWeekID as groupBy', '"Activity" AS type', '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd'])
+            ->cols(['CONCAT("activity-", gibbonActivitySlot.timeStart, "-", gibbonActivitySlot.timeEnd) as groupBy', '"Activity" AS type', '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd'])
             ->from('gibbonActivitySlot')
             ->innerJoin('gibbonActivity', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID')

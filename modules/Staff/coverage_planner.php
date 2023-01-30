@@ -68,25 +68,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
     // COVERAGE
     $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
-    $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchAll();
+    $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGroupedUnique();
 
     if (empty($times)) {
-        $times = [['groupBy' => '']];
+        $times = ['' => ['groupBy' => '']];
     }
 
     echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
 
-    foreach ($times as $timeSlot) {
+    foreach ($times as $groupBy => $timeSlot) {
 
-        $coverageByTT = $coverage[$timeSlot['groupBy']] ?? [];
+        $coverageByTT = $coverage[$groupBy] ?? [];
 
         // DATA TABLE
         $gridRenderer = new GridView($container->get('twig'));
         
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
-        if (!empty($timeSlot['groupBy'])) {
+        if (!empty($groupBy)) {
             $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' <span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).')</span></h4>');
         }
 

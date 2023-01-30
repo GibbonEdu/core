@@ -143,7 +143,7 @@ class StaffCoverageGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->from('gibbonStaffAbsence')
-            ->cols(array_merge(['gibbonTTColumnRow.gibbonTTColumnRowID as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName','gibbonTTColumnRow.name as period', 'gibbonCourse.gibbonCourseID', 'gibbonCourse.gibbonDepartmentID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonTTDay.gibbonTTDayID'], $cols))
+            ->cols(array_merge(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName','gibbonTTColumnRow.name as period', 'gibbonCourse.gibbonCourseID', 'gibbonCourse.gibbonDepartmentID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonTTDay.gibbonTTDayID'], $cols))
 
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
@@ -173,7 +173,7 @@ class StaffCoverageGateway extends QueryableGateway
 
         $query->unionAll()
             ->from('gibbonStaffAbsence')
-            ->cols(array_merge(['gibbonStaffDuty.gibbonStaffDutyID as groupBy', 'gibbonStaffDuty.name as context', '"Staff Duty" contextName','"Staff Duty" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID'], $cols))
+            ->cols(array_merge(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', 'gibbonStaffDuty.name as context', '"Staff Duty" contextName','"Staff Duty" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID'], $cols))
 
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
@@ -199,7 +199,7 @@ class StaffCoverageGateway extends QueryableGateway
 
         $query->unionAll()
             ->from('gibbonStaffAbsence')
-            ->cols(array_merge(['gibbonActivitySlot.gibbonDaysOfWeekID as groupBy', '"Activity" as context', 'gibbonActivity.name contextName', '"Activity" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID'], $cols))
+            ->cols(array_merge(['CONCAT("activity-", gibbonActivitySlot.timeStart, "-", gibbonActivitySlot.timeEnd) as groupBy', '"Activity" as context', 'gibbonActivity.name contextName', '"Activity" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID'], $cols))
 
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
