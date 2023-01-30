@@ -31,6 +31,7 @@ v25.0.01
     Bug Fixes
         System: fixed date formatting error when Intl extension is not available
         Behaviour: fixed error from missing function in behaviour letter CLI script
+        Form Groups: fixed Left staff showing in View Form Groups list
         Staff: fixed activities outside the current term showing up in New Coverage Request
 
 v25.0.00
