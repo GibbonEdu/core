@@ -33,6 +33,7 @@ v26.0.00
     Bug Fixes
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
+        Staff: fixed activities outside the current term showing up in New Coverage Request
 
 v25.0.00
 --------
