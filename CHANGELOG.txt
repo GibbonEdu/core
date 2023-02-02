@@ -300,6 +300,7 @@ v23.0.01
         System Admin: fixed custom field headings not working for non-english locales
         System Admin: fixed blank User column for logins listed in View Logs
         Students: fixed student ID not working on main page of student profile
+        Reports: fixed error in Scan Asset Directories when asset folder is missing
 
 v23.0.00
 --------
