@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $row = $form->addRow();
                     $row->addLabel('name', __('Name'));
-                    $row->addTextField('name')->required()->maxLength(20);
+                    $row->addTextField('name')->required()->maxLength(40);
 
                 $row = $form->addRow();
                     $row->addLabel('description', __('Description'));
