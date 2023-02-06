@@ -24,19 +24,21 @@ use Gibbon\Services\Format;
 
 class NewAbsenceWithCoverage extends Message
 {
+    protected $absence;
     protected $coverage;
     protected $dates;
     protected $details;
 
-    public function __construct($coverage, $dates)
+    public function __construct($absence, $coverage, $dates)
     {
+        $this->absence = $absence;
         $this->coverage = $coverage;
         $this->dates = $dates;
         $this->details = [
             'name'   => Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true),
-            'date'         => Format::dateRangeReadable($coverage['dateStart'], $coverage['dateEnd']),
-            'time'         => $coverage['allDay'] == 'Y' ? __('All Day') : Format::timeRange($coverage['timeStart'], $coverage['timeEnd']),
-            'type'         => trim($coverage['type'].' '.$coverage['reason']),
+            'date'         => Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']),
+            'time'         => $absence['allDay'] == 'Y' ? __('All Day') : Format::timeRange($absence['timeStart'], $absence['timeEnd']),
+            'type'         => trim($absence['type'].' '.$absence['reason']),
         ];
     }
 

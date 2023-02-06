@@ -36,6 +36,7 @@ use Gibbon\Module\Staff\Messages\BroadcastRequest;
 use Gibbon\Module\Staff\Messages\NoCoverageAvailable;
 use Gibbon\Module\Staff\Messages\NewCoverageRequest;
 use Gibbon\Module\Staff\Messages\NewAbsenceWithCoverage;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 /**
  * CoverageNotificationProcess
@@ -45,6 +46,7 @@ use Gibbon\Module\Staff\Messages\NewAbsenceWithCoverage;
  */
 class CoverageNotificationProcess extends BackgroundProcess
 {
+    protected $staffAbsenceGateway;
     protected $staffCoverageGateway;
     protected $staffCoverageDateGateway;
     protected $substituteGateway;
@@ -57,6 +59,7 @@ class CoverageNotificationProcess extends BackgroundProcess
     protected $organisationHR;
 
     public function __construct(
+        StaffAbsenceGateway $staffAbsenceGateway,
         StaffCoverageGateway $staffCoverageGateway,
         StaffCoverageDateGateway $staffCoverageDateGateway,
         SubstituteGateway $substituteGateway,
@@ -64,6 +67,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         SettingGateway $settingGateway,
         MessageSender $messageSender
     ) {
+        $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->staffCoverageDateGateway = $staffCoverageDateGateway;
         $this->substituteGateway = $substituteGateway;
@@ -119,9 +123,10 @@ class CoverageNotificationProcess extends BackgroundProcess
         $dates = $this->getCoverageDates($coverageList);
 
         $coverage = $this->getCoverageDetailsByID(current($coverageList));
+        $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($coverage['gibbonStaffAbsenceID'] ?? '');
 
         $recipients = [$this->organisationHR];
-        $message = new NewAbsenceWithCoverage($coverage, $dates);
+        $message = new NewAbsenceWithCoverage($absence, $coverage, $dates);
 
         // Add the absent person, if this coverage request was created by someone else
         if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus']) {

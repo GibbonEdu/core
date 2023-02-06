@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Staff\StaffAbsenceGateway;
-use Gibbon\Module\Staff\AbsenceNotificationProcess;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Module\Staff\AbsenceNotificationProcess;
+use Gibbon\Module\Staff\CoverageNotificationProcess;
 
 require_once '../../gibbon.php';
 
@@ -41,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
 } else {
     // Proceed!
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+    $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $absence = $staffAbsenceGateway->getByID($gibbonStaffAbsenceID);
 
     if (empty($absence)) {
@@ -80,7 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
     $process->startAbsenceApproval($gibbonStaffAbsenceID);
 
     if ($status == 'Approved') {
-        $process->startNewAbsence($gibbonStaffAbsenceID);
+        if ($absence['coverageRequired'] == 'Y') {
+            $coverageList = $staffCoverageGateway->selectCoverageByAbsenceID($gibbonStaffAbsenceID)->fetchAll(\PDO::FETCH_COLUMN);
+            $process = $container->get(CoverageNotificationProcess::class);
+            $process->startNewAbsenceWithCoverageRequest($coverageList);
+        } else {
+            $process->startNewAbsence($gibbonStaffAbsenceID);
+        }
     }
 
     $URLSuccess .= '&return=success0';

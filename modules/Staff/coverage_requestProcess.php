@@ -254,7 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     // Let users know about a new coverage request for an existing absence, update the absence
-    if ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N') {
+    if ($absence['status'] == 'Approved' && ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N')) {
         $container->get(StaffAbsenceGateway::class)->update($gibbonStaffAbsenceID, ['coverageRequired' => 'Y']);
 
         $process = $container->get(CoverageNotificationProcess::class);

@@ -68,6 +68,10 @@ class AbsencePendingApproval extends Message
             ? [__('Confidential Comment') => $this->absence['commentConfidential']]
             : [__('Comment') => $this->absence['comment']];
 
+        if (!empty($this->absence['coverageRequired']) && $this->absence['coverageRequired'] == 'Y') {
+            $details[__('Cover Required')] = __('Yes');
+        }
+
         return $details;
     }
 
