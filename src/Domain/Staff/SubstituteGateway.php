@@ -117,7 +117,7 @@ class SubstituteGateway extends QueryableGateway
             ->cols([
                 'gibbonPerson.gibbonPersonID as groupBy', ':date as date', 'gibbonPerson.gibbonPersonID', 'gibbonSubstitute.details', '(CASE WHEN gibbonSubstitute.gibbonSubstituteID IS NOT NULL THEN gibbonSubstitute.type ELSE "Internal Substitute" END) as type', 'gibbonSubstitute.priority', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonStaff.gibbonStaffID', 'gibbonPerson.username', 'gibbonStaff.jobTitle',
                 '(absence.ID IS NULL AND coverage.ID IS NULL AND timetable.ID IS NULL AND duty.ID IS NULL AND activity.ID IS NULL AND unavailable.gibbonStaffCoverageDateID IS NULL) as available',
-                'absence.status as absence', 'coverage.status as coverage', 'timetable.status as timetable', 'unavailable.reason as unavailable',
+                'absence.status as absence', 'coverage.status as coverage', 'timetable.status as timetable', 'timetable.ID as courseClassID', 'duty.ID as duty', 'activity.ID as activity', 'unavailable.reason as unavailable',
             ])
             ->leftJoin('gibbonSubstitute', 'gibbonSubstitute.gibbonPersonID=gibbonPerson.gibbonPersonID');
                 
@@ -174,7 +174,7 @@ class SubstituteGateway extends QueryableGateway
         // Already teaching?
         $query->joinSubSelect(
             'LEFT',
-            "SELECT gibbonTTColumnRow.gibbonTTColumnRowID as ID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as status, gibbonCourseClassPerson.gibbonPersonID, gibbonTTDayDate.date, timeStart, timeEnd, specialDay.name as specialDay
+            "SELECT gibbonTTDayRowClass.gibbonCourseClassID as ID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as status, gibbonCourseClassPerson.gibbonPersonID, gibbonTTDayDate.date, timeStart, timeEnd
                 FROM gibbonCourseClassPerson 
                 JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
@@ -183,14 +183,12 @@ class SubstituteGateway extends QueryableGateway
                     AND gibbonTTDay.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID)
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
                 JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-                JOIN gibbonCourseClassPerson as studentClass ON (studentClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND studentClass.role='Student')
-                LEFT JOIN gibbonPerson as student ON (student.gibbonPersonID=studentClass.gibbonPersonID AND student.status='Full')
-                LEFT JOIN gibbonStudentEnrolment as enrolment ON (enrolment.gibbonPersonID=student.gibbonPersonID AND enrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID)
-                LEFT JOIN gibbonSchoolYearSpecialDay as specialDay ON (specialDay.date=gibbonTTDayDate.date AND specialDay.type='Off Timetable' AND (FIND_IN_SET(enrolment.gibbonYearGroupID, specialDay.gibbonYearGroupIDList) OR FIND_IN_SET(enrolment.gibbonFormGroupID, specialDay.gibbonFormGroupIDList)))
-                WHERE gibbonCourseClassPerson.role = 'Teacher'",
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                WHERE (gibbonCourseClassPerson.role = 'Teacher' OR gibbonCourseClassPerson.role = 'Assistant')
+                AND gibbonTTDayRowClassExceptionID IS NULL",
             'timetable',
             "timetable.gibbonPersonID=gibbonPerson.gibbonPersonID AND timetable.date = :date 
-                AND timetable.timeStart < :timeEnd AND timetable.timeEnd > :timeStart AND timetable.specialDay IS NULL"
+                AND timetable.timeStart < :timeEnd AND timetable.timeEnd > :timeStart"
         );
 
         // Already doing staff duty?
@@ -216,9 +214,9 @@ class SubstituteGateway extends QueryableGateway
             JOIN gibbonSchoolYearTerm as activityTerm ON FIND_IN_SET(activityTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)";
         } else {
             $sql = "SELECT gibbonActivityStaff.gibbonActivityStaffID as ID, gibbonActivity.name as status, gibbonActivityStaff.gibbonPersonID, :date as date, gibbonActivitySlot.timeStart, gibbonActivitySlot.timeEnd, gibbonDaysOfWeek.gibbonDaysOfWeekID, gibbonActivity.programStart as dateStart, gibbonActivity.programEnd as dateEnd
-                FROM gibbonActivityStaff 
-                JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID)
-                JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
+            FROM gibbonActivityStaff 
+            JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID)
+            JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
             JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)";
         }
         $query->joinSubSelect(
@@ -241,16 +239,11 @@ class SubstituteGateway extends QueryableGateway
             $query->where("gibbonSubstitute.active='Y'");
         }
 
-        if ($criteria->hasFilter('showUnavailable', true)) {
+        $showUnavailable = $criteria->hasFilter('showUnavailable', true);
+
+        if ($showUnavailable) {
             $query->groupBy(['gibbonPerson.gibbonPersonID']);
             $query->orderBy(['available DESC', 'priority DESC']);
-        } else {
-            $query->where('absence.ID IS NULL')
-                  ->where('coverage.ID IS NULL')
-                  ->where('timetable.ID IS NULL')
-                  ->where('duty.ID IS NULL')
-                  ->where('activity.ID IS NULL')
-                  ->where('unavailable.gibbonStaffCoverageDateID IS NULL');
         }
 
         $criteria->addFilterRules([
@@ -264,7 +257,31 @@ class SubstituteGateway extends QueryableGateway
             },
         ]);
         
-        return $this->runQuery($query, $criteria);
+        $dataSet = $this->runQuery($query, $criteria);
+
+        // Get any Off Timetable special days for this date
+        $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date =:date AND type='Off Timetable'";
+        $specialDay = $this->db()->select($sql, ['date' => $date])->fetch();
+
+        // Update the results to release teachers from off-timetable classes
+        $dataSet->transform(function (&$item) use (&$specialDay) {
+            $item['available'] = empty($item['absence']) && empty($item['coverage']) && empty($item['timetable']) && empty($item['duty']) && empty($item['activity']) && empty($item['unavailable']);
+
+            if (!empty($specialDay) && !empty($item['courseClassID'])) {
+                if ($this->getIsClassOffTimetableByDate($item['courseClassID'], $specialDay['date'])) {
+                    $item['available'] = empty($item['absence']) && empty($item['coverage']) && empty($item['duty']) && empty($item['activity']) && empty($item['unavailable']);
+                    $item['courseClassID'] = '';
+                    $item['timetable'] = '';
+                }
+            }
+        });
+
+        // Filter the results based on updated availability
+        $dataSet->filter(function ($item) use (&$showUnavailable) {
+            return $item['available'] || $showUnavailable;
+        });
+
+        return $dataSet;
     }
 
     public function selectUnavailableDatesBySub($gibbonPersonID, $gibbonStaffCoverageIDExclude = '')
@@ -353,6 +370,28 @@ class SubstituteGateway extends QueryableGateway
         } else {
             $sql = "SELECT * FROM gibbonSubstitute WHERE gibbonSubstitute.gibbonPersonID=:gibbonPersonID";
         }
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    protected function getIsClassOffTimetableByDate($gibbonCourseClassID, $date)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
+        $sql = "SELECT (CASE WHEN count(*) = 0 THEN 1 ELSE 0 END) as offTimetable 
+            FROM gibbonCourseClassPerson 
+            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) 
+            LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=:date AND gibbonSchoolYearSpecialDay.type='Off Timetable')
+            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID
+            AND gibbonCourseClassPerson.role='Student' 
+            AND student.status='Full' 
+            AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+            AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+            AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
+            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
 
         return $this->db()->selectOne($sql, $data);
     }

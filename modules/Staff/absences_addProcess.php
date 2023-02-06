@@ -161,17 +161,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $process = $container->get(AbsenceNotificationProcess::class);
     if ($type['requiresApproval'] == 'Y') {
         $process->startAbsencePendingApproval($gibbonStaffAbsenceID);
-    } else {
+    } elseif ($data['coverageRequired'] != 'Y') {
         $process->startNewAbsence($gibbonStaffAbsenceID);
     }
 
-    // Redirect to coverage request
+    // Handle coverage request
     $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php');
     if ($data['coverageRequired'] == 'Y' && $canRequestCoverage) {
-        $URL = $session->get('absoluteURL')."/index.php?q=/modules/Staff/coverage_request.php&coverage=Y&gibbonStaffAbsenceID=$gibbonStaffAbsenceID";
-        $URL .= '&return=success1';
-        header("Location: {$URL}");
-        exit;
+        $absenceWithCoverage = $gibbonStaffAbsenceID;
+        require_once __DIR__ . '/coverage_requestProcess.php';
     }
 
     $URLSuccess .= "&gibbonStaffAbsenceID=$gibbonStaffAbsenceID";

@@ -187,6 +187,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         ];
     });
 
+    echo count($subs);
+
     // DATA TABLE
     $row = $form->addRow();
     $table = $row->addDataTable('subsManage')->withData($subs);

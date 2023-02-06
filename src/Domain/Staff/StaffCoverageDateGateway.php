@@ -214,7 +214,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->groupBy(['gibbonStaffDuty.gibbonStaffDutyID']);
 
         $query->unionAll()
-            ->cols(['CONCAT("activity-", gibbonActivitySlot.timeStart, "-", gibbonActivitySlot.timeEnd) as groupBy', '"Activity" AS type', '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd'])
+            ->cols(['"activity" as groupBy', '"Activity" AS type', '"Activity" as period', 'MIN(gibbonActivitySlot.timeStart)', 'MIN(gibbonActivitySlot.timeEnd)'])
             ->from('gibbonActivitySlot')
             ->innerJoin('gibbonActivity', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID')

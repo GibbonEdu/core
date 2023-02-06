@@ -30,7 +30,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
+$gibbonStaffAbsenceID = $gibbonStaffAbsenceID ?? $_POST['gibbonStaffAbsenceID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 $URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
@@ -212,9 +212,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 'foreignTable'             => $absenceDate['foreignTable'] ?? null,
                 'foreignTableID'           => $absenceDate['foreignTableID'] ?? null,
                 'date'                     => $absenceDate['date'],
-                'allDay'                   => $_POST['allDay'] ?? 'N',
-                'timeStart'                => $_POST['timeStart'] ?? $absenceDate['timeStart'],
-                'timeEnd'                  => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
+                'allDay'                   => $absenceDate['allDay'] ?? 'N',
+                'timeStart'                => $absenceDate['timeStart'],
+                'timeEnd'                  => $absenceDate['timeEnd'],
                 'reason'                   => $absenceDate['reason'] ?? '',
             ];
 
@@ -258,7 +258,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $container->get(StaffAbsenceGateway::class)->update($gibbonStaffAbsenceID, ['coverageRequired' => 'Y']);
 
         $process = $container->get(CoverageNotificationProcess::class);
-        $process->startNewCoverageRequest($coverageList);
+        if (!empty($absenceWithCoverage)) {
+            $process->startNewAbsenceWithCoverageRequest($coverageList);
+        } else {
+            $process->startNewCoverageRequest($coverageList);
+        }
+        
     }
     
     $URLSuccess .= $partialFail

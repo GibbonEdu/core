@@ -35,6 +35,7 @@ use Gibbon\Module\Staff\Messages\IndividualRequest;
 use Gibbon\Module\Staff\Messages\BroadcastRequest;
 use Gibbon\Module\Staff\Messages\NoCoverageAvailable;
 use Gibbon\Module\Staff\Messages\NewCoverageRequest;
+use Gibbon\Module\Staff\Messages\NewAbsenceWithCoverage;
 
 /**
  * CoverageNotificationProcess
@@ -85,6 +86,42 @@ class CoverageNotificationProcess extends BackgroundProcess
 
         $recipients = [$this->organisationHR];
         $message = new NewCoverageRequest($coverage, $dates);
+
+        // Add the absent person, if this coverage request was created by someone else
+        if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus']) {
+            $recipients[] = $coverage['gibbonPersonID'];
+        }
+
+        // Add the notification group members, if selected
+        if (!empty($coverage['gibbonGroupID'])) {
+            $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($coverage['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $recipients = array_merge($recipients, $groupRecipients);
+        }
+
+        if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
+            $data = [
+                'notificationSent' => 'Y',
+                'notificationList' => json_encode($recipients),
+            ];
+            foreach ($coverageList as $gibbonStaffCoverageID) {
+                $this->staffCoverageGateway->update($gibbonStaffCoverageID, $data);
+            }
+            
+        }
+
+        return $sent;
+    }
+
+    public function runNewAbsenceWithCoverageRequest($coverageList)
+    {
+        if (empty($coverageList)) return false;
+
+        $dates = $this->getCoverageDates($coverageList);
+
+        $coverage = $this->getCoverageDetailsByID(current($coverageList));
+
+        $recipients = [$this->organisationHR];
+        $message = new NewAbsenceWithCoverage($coverage, $dates);
 
         // Add the absent person, if this coverage request was created by someone else
         if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus']) {

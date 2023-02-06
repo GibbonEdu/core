@@ -29,6 +29,8 @@ v26.0.00
 
     Tweaks & Additions
         Behaviour: added a list of failed email addresses to beahvoiur letter CLI script
+        Staff: combined absence and coverage requests into the same form
+        Staff: improved handling of Off Timetable days when checking staff availability 
 
     Bug Fixes
         Behaviour: fixed error from missing function in behaviour letter CLI script
