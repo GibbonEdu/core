@@ -304,6 +304,29 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Filter a data set by applying a callback to each row.
+     *
+     * @param callable $callable
+     */
+    public function filter(callable $callable)
+    {
+        $this->data = array_filter($this->data, $callable);
+    }
+
+    /**
+     * Merge another data set into this data set by row index.
+     *
+     * @param DataSet $data
+     */
+    public function merge(DataSet $newData)
+    {
+        foreach ($this->data as $index => $row) {
+            $rowData = $newData->getRow($index);
+            $this->data[$index] = array_merge($row, $rowData);
+        }
+    }
+
+    /**
      * Prepare data to be displayed in a table.
      *
      * @param callable $callable
@@ -318,18 +341,5 @@ class DataSet implements \Countable, \IteratorAggregate
                 if (is_string($innerItem)) $innerItem = strip_tags($innerItem, '<br>');
             });
         });
-    }
-
-    /**
-     * Merge another data set into this data set by row index.
-     *
-     * @param DataSet $data
-     */
-    public function merge(DataSet $newData)
-    {
-        foreach ($this->data as $index => $row) {
-            $rowData = $newData->getRow($index);
-            $this->data[$index] = array_merge($row, $rowData);
-        }
     }
 }
