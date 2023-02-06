@@ -70,7 +70,9 @@ class FormTest extends TestCase
     public function testCanOutputToHtml()
     {
         /** @var Form */
-        $form = $this->container->get(Form::class);
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
         $output = $form->getOutput();
 
         $this->assertTrue(stripos($output, '<form') !== false);
