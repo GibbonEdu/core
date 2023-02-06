@@ -90,6 +90,20 @@ class Trigger implements OutputableInterface
     }
 
     /**
+     * Link this trigger to a text input by name.
+     * @param   string  $name
+     * @return  self
+     */
+    public function onInput($name)
+    {
+        $this->elementType = 'text';
+        $this->sourceSelector = 'input[type="text"][name="'.$name.'"]';
+        $this->sourceValueSelector = $this->sourceSelector;
+
+        return $this;
+    }
+
+    /**
      * Set which value the trigger should respond to.
      * @param   string  $value
      * @return  self
