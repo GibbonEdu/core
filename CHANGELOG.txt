@@ -36,6 +36,7 @@ v26.0.00
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: increased Name field length to 40 characters in Add Multiple
+        Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
 

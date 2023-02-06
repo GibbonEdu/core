@@ -675,7 +675,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' as role, homeworkSubmission, homeworkCrowdAssess, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID ORDER BY date DESC, timeStart DESC";
                                 } else {
                                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sql = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID, NULL AS myHomeworkDueDateTime FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, timestart';
+                                    $sql = 'SELECT DISTINCT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, NULL AS myHomeworkDueDateTime FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, timestart';
                                 }
                             } elseif ($highestAction == 'Lesson Planner_viewMyClasses') {
                                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
@@ -850,8 +850,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         $lessons[$count][2] = $rowNext['timeStart'];
                                         $lessons[$count][3] = $rowNext['timeEnd'];
                                         $lessons[$count][4] = $rowNext['period'];
-                                        $lessons[$count][6] = $rowNext['gibbonTTDayRowClassID'];
-                                        $lessons[$count][7] = $rowNext['gibbonTTDayDateID'];
+                                        $lessons[$count][6] = $rowNext['gibbonTTDayRowClassID'] ?? '';
+                                        $lessons[$count][7] = $rowNext['gibbonTTDayDateID'] ?? '';
                                         $lessons[$count][11] = null;
                                         $lessons[$count][12] = null;
                                         $lessons[$count][13] = null;
