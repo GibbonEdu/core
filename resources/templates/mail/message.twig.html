@@ -17,7 +17,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <ul>
             {% for label, value in details %}
             <li style="padding: 3px 0px;">
-                <b>{{ label }}</b>: {{ value }}
+                <b>{{ label }}</b>: {{ value|raw }}
             </li>
             {% endfor %}
         </ul>
