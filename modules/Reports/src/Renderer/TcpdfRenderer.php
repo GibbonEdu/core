@@ -187,7 +187,7 @@ class TcpdfRenderer implements ReportRendererInterface
 
     protected function setupDocument()
     {
-        $this->pdf = new ReportTCPDF($this->template->getData('orientation', 'P'), 'mm', $this->template->getData('pageSize', 'A4'), true, 'UTF-8', false);
+        $this->pdf = new ReportTCPDF($this->template->getData('orientation', 'P'), 'mm', strtoupper($this->template->getData('pageSize', 'A4')), true, 'UTF-8', false);
         $this->pdf->SetLeftMargin($this->template->getData('marginX', '10'));
         $this->pdf->SetRightMargin($this->template->getData('marginX', '10'));
 

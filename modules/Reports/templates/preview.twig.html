@@ -74,7 +74,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </details>
     {% endif %}
 
-    {% if pageSize == 'LETTER' %}
+    {% if pageSize|upper == 'LETTER' %}
         {% set baseWidth = orientation == 'L' ? '279.4' : '215.9' %}
         {% set baseHeight = orientation == 'L' ? '215.9' : '279.4' %}
     {% else %}
