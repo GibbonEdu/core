@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     // FORM
     $form = $container->get(CoverageRequestForm::class)->createForm($gibbonPersonID, $dateStart, $dateEnd, $allDay, $timeStart, $timeEnd);
     $form->setClass('blank standardForm flex-1');
-    $form->setAction('');
+    $form->setAction('ajax');
 
     echo $form->getOutput();
 }

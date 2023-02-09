@@ -6,7 +6,9 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
+{% if form.getAction != 'ajax' %}
 <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+{% endif %}
 
     {% if form.hasPages %}
         <ul class="multiPartForm my-6">
@@ -132,4 +134,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endfor %}
     </script>
 
+{% if form.getAction %}
 </form>
+{% endif %}
