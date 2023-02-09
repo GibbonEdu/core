@@ -35,6 +35,7 @@ v25.0.01
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
+        Timetable: fixed period showing absent in classes with multiple teachers when one is absent
 
 v25.0.00
 --------
