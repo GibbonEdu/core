@@ -1489,7 +1489,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     } catch (PDOException $e) {
                         $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
-                    if ($resultException->rowCount() < 1) {
+                    if ($resultException->rowCount() < 1 || $isCovering) {
                         // Count how many classes are in this period
                         $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
 
