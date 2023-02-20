@@ -32,6 +32,7 @@ v25.0.01
         System: fixed date formatting error when Intl extension is not available
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
+        Markbook: fixed class average row height when there is no data
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
