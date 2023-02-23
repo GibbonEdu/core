@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -24,66 +25,71 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $time = time();
 
-if (empty($_POST) or empty($_FILES)) {
-    echo "<span style='font-weight: bold; color: #ff0000'>";
-    echo __('Your request failed due to an attachment error.');
-    echo '</span>';
+if (!$session->has('gibbonPersonID')) {
+    echo Format::alert(__('You do not have access to this action.'));
     exit();
 } else {
-    //Proceed!
-    $id = $_POST['id'] ?? '';
-    $imagesAsLinks = !empty($_POST['imagesAsLinks']) && $_POST['imagesAsLinks'] == 'Y';
-
-    if ($id == '') {
+    if (empty($_POST) or empty($_FILES)) {
         echo "<span style='font-weight: bold; color: #ff0000'>";
-        echo __('Your request failed because your inputs were invalid.');
+        echo __('Your request failed due to an attachment error.');
         echo '</span>';
         exit();
     } else {
-        //Check if multiple files
-        $multiple = false;
-        $multipleCount = 0;
-        for ($i = 1; $i < 5; ++$i) {
-            if (isset($_FILES[$id.'file'.$i])) {
-                ++$multipleCount;
-            }
-        }
-        if ($multipleCount > 1) {
-            $multiple = true;
-        }
+        //Proceed!
+        $id = $_POST['id'] ?? '';
+        $imagesAsLinks = !empty($_POST['imagesAsLinks']) && $_POST['imagesAsLinks'] == 'Y';
 
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-
-        //Insert files
-        for ($i = 1; $i < 5; ++$i) {
-            $html = '';
-            if (isset($_FILES[$id.'file'.$i])) {
-                $file = $_FILES[$id.'file'.$i];
-
-                // Upload the file, return the /uploads relative path
-                $attachment = $fileUploader->uploadFromPost($file);
-
-                if (empty($attachment)) {
-                    echo "<span style='font-weight: bold; color: #ff0000'>";
-                        echo __('Your request failed due to an attachment error.');
-                        echo ' '.$fileUploader->getLastError();
-                    echo '</span>';
-                    exit();
-                } else {
-                    $extension = strrchr($attachment, '.');
-                    $name = mb_substr(basename($file['name']), 0, mb_strrpos(basename($file['name']), '.'));
-
-                    if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
-                        $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$attachment."'></a>";
-                    } else {
-                        $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'>".$name.'</a>';
-                    }
+        if ($id == '') {
+            echo "<span style='font-weight: bold; color: #ff0000'>";
+            echo __('Your request failed because your inputs were invalid.');
+            echo '</span>';
+            exit();
+        } else {
+            //Check if multiple files
+            $multiple = false;
+            $multipleCount = 0;
+            for ($i = 1; $i < 5; ++$i) {
+                if (isset($_FILES[$id.'file'.$i])) {
+                    ++$multipleCount;
                 }
             }
-            if ($multiple) {
-                echo '<br/>';
+            if ($multipleCount > 1) {
+                $multiple = true;
             }
-            echo $html;
+
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+            //Insert files
+            for ($i = 1; $i < 5; ++$i) {
+                $html = '';
+                if (isset($_FILES[$id.'file'.$i])) {
+                    $file = $_FILES[$id.'file'.$i];
+
+                    // Upload the file, return the /uploads relative path
+                    $attachment = $fileUploader->uploadFromPost($file);
+
+                    if (empty($attachment)) {
+                        echo "<span style='font-weight: bold; color: #ff0000'>";
+                            echo __('Your request failed due to an attachment error.');
+                            echo ' '.$fileUploader->getLastError();
+                        echo '</span>';
+                        exit();
+                    } else {
+                        $extension = strrchr($attachment, '.');
+                        $name = mb_substr(basename($file['name']), 0, mb_strrpos(basename($file['name']), '.'));
+
+                        if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
+                            $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$attachment."'></a>";
+                        } else {
+                            $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'>".$name.'</a>';
+                        }
+                    }
+                }
+                if ($multiple) {
+                    echo '<br/>';
+                }
+                echo $html;
+            }
         }
     }
 }
