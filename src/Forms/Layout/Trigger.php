@@ -153,7 +153,7 @@ class Trigger implements OutputableInterface
         $output .= "$(document).on('change showhide', '{$this->sourceSelector}', function(event){ \n";
             $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
-                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput')) { $(this).prop('disabled', element.disabledState); } });";
+                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput')) { console.log('disabled' + element.disabledState); $(this).prop('disabled', element.disabledState); } });";
             $output .= "} else { \n";
                 $output .= "$('{$this->targetSelector}').hide(); \n";
                 $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
@@ -166,9 +166,8 @@ class Trigger implements OutputableInterface
         // Hide all initial targets if the source value does not equal the trigger value
         $output .= "if ( !({$comparisons}) ) { \n";
         $output .= "$('{$this->targetSelector}').hide(); \n";
-        $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
+        $output .= "$('{$this->targetSelector} :input:not(button):not([type=radio])').prop('disabled', true).change(); \n";
         $output .= "}\n\n";
-        
 
         return $output;
     }
