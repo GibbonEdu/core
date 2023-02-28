@@ -28,7 +28,7 @@ v26.0.00
         System: raised the minimum PHP to 7.4
 
     Tweaks & Additions
-        Behaviour: added a list of failed email addresses to beahvoiur letter CLI script
+        Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Staff: combined absence and coverage requests into the same form
         Staff: improved handling of Off Timetable days when checking staff availability 
 
@@ -38,6 +38,7 @@ v26.0.00
         Markbook: increased Name field length to 40 characters in Add Multiple
         Markbook: fixed class average row height when there is no data
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
+        Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
