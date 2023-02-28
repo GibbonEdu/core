@@ -48,8 +48,12 @@ class AbsenceFormats
 
     public static function substituteDetails($coverage)
     {
-        if (empty($coverage['gibbonPersonIDCoverage']) && $coverage['status'] == 'Pending') {
-            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        if (empty($coverage['gibbonPersonIDCoverage'])) {
+            if ($coverage['status'] == 'Pending') {
+                return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+            } else if ($coverage['status'] == 'Not Required') {
+                return Format::tag(__('Not Required'), 'dull whitespace-nowrap');
+            }
         }
 
         $name = !empty($coverage['gibbonPersonIDCoverage'])

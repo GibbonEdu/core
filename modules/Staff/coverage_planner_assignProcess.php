@@ -28,6 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 $gibbonStaffCoverageDateID = $_POST['gibbonStaffCoverageDateID'] ?? '';
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
+$coverageStatus = $_POST['coverageStatus'] ?? '';
 $date = $_POST['date'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php&sidebar=true&date='.Format::date($date);
@@ -35,7 +36,7 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planne
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
-} elseif (empty($gibbonStaffCoverageID)) {
+} elseif (empty($gibbonStaffCoverageID) && $coverageStatus != 'Not Required') {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit;
@@ -44,19 +45,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
 
-    if (empty($coverage) || empty($gibbonPersonIDCoverage)) {
+    if ($coverageStatus != 'Not Required' && (empty($coverage) || empty($gibbonPersonIDCoverage))) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
-    $data = [
-        'gibbonPersonIDCoverage' => $gibbonPersonIDCoverage,
-        'gibbonPersonIDStatus'   => $gibbon->session->get('gibbonPersonID'),
-        'requestType'            => 'Assigned',
-        'status'                 => 'Accepted',
-        'notificationSent'       => 'N',
-    ];
+    if ($coverageStatus == 'Not Required') {
+        $data = [
+            'gibbonPersonIDCoverage' => null,
+            'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),
+            'requestType'            => 'Assigned',
+            'status'                 => 'Not Required',
+        ];
+    } else {
+        $data = [
+            'gibbonPersonIDCoverage' => $gibbonPersonIDCoverage,
+            'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),
+            'requestType'            => 'Assigned',
+            'status'                 => 'Accepted',
+            'notificationSent'       => 'N',
+        ];
+    }
 
     // Update the coverage
     $updated = $staffCoverageGateway->update($gibbonStaffCoverageID, $data);

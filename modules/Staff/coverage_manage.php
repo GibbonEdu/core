@@ -63,8 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         ->searchBy($staffCoverageGateway->getSearchableColumns(), $search);
 
     if (!$criteria->hasFilter() && !$criteria->hasSearchText()) {
-        $criteria->filterBy('date', 'upcoming')
-                 ->sortBy('statusSort', 'ASC');
+        $criteria->filterBy('date', 'upcoming');
     }
     
     $criteria->sortBy(['date', 'timeStart'])

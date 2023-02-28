@@ -100,6 +100,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
                 $url = './index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$coverage['gibbonSpaceID'].'&ttDate='.Format::date($coverage['date']);
                 return Format::link($url, $coverage['spaceName'] ?? '', ['target' => '_blank']);
             });
+
+        if (!empty($coverage['reason'])) {
+            $table->addColumn('reason', __('Notes'))->setClass('grid-cols-1 md:grid-cols-3');
+        }
     } else {
         $details = [];
     }
@@ -108,9 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria()
+        ->sortBy('available', 'DESC')
         ->sortBy('gibbonSubstitute.priority', 'DESC')
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('allStaff', $internalCoverage == 'Y')
+        ->filterBy('showUnavailable', 'Y')
         ->fromPOST();
 
     // FORM
@@ -123,6 +129,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $form->addHiddenValue('gibbonStaffCoverageID', $coverage['gibbonStaffCoverageID']);
     $form->addHiddenValue('gibbonStaffCoverageDateID', $gibbonStaffCoverageDateID);
     $form->addHiddenValue('date', $coverage['date']);
+
+    $statuses = [
+        'Required' => __('Cover Required'),
+        'Not Required' => __('Not Required'),
+    ];
+
+    $row = $form->addRow()->setClass('border bg-gray-100 rounded mt-6 p-2');
+        $row->addLabel('coverageStatus', __('Status'))->setClass('text-sm font-bold');
+        $row->addSelect('coverageStatus')
+            ->fromArray($statuses)
+            ->setClass('w-48')
+            ->selected($coverage['status'] == 'Not Required' ? 'Not Required' : 'Required' );
+
+    $form->toggleVisibilityByClass('subsList')->onSelect('coverageStatus')->when('Required');
 
     $subs = $subGateway->queryAvailableSubsByDate($criteria, $coverage['date'], $coverage['timeStart'], $coverage['timeEnd']);
     $availability = $subGateway->selectUnavailableDatesByDateRange($coverage['date'], $coverage['date'])->fetchGrouped();
@@ -145,7 +165,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $subs->transform(function (&$sub) use (&$availability) {
         $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
         $sub['availability'] = count($sub['dates']);
-        if (!$sub['available']) unset($sub);
     });
     
     $subList = $subs->toArray();
@@ -177,32 +196,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $subs = new DataSet($subsPrepend + $subList);
 
     $subs->transform(function (&$sub) use (&$coverage) {
-        $isCovering = $sub['gibbonPersonID'] == $coverage['gibbonPersonIDCoverage'];
-        $sub['dates'][] = [
-            'date'      => $coverage['date'],
-            'status'    => $isCovering ? 'Covering' : 'Available',
-            'allDay'    => 'N',
-            'timeStart' => $coverage['timeStart'],
-            'timeEnd'   => $coverage['timeEnd'],
-        ];
+        if ($sub['available']) {
+            $isCovering = $sub['gibbonPersonID'] == $coverage['gibbonPersonIDCoverage'];
+            $sub['dates'][] = [
+                'date'      => $coverage['date'],
+                'status'    => $isCovering ? 'Covering' : 'Available',
+                'allDay'    => 'N',
+                'timeStart' => $coverage['timeStart'],
+                'timeEnd'   => $coverage['timeEnd'],
+            ];
+        }
     });
 
-    echo count($subs);
-
     // DATA TABLE
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('subsList');
     $table = $row->addDataTable('subsManage')->withData($subs);
 
     $table->setTitle(__('Substitute Availability'));
 
     $table->addMetaData('hidePagination', true);
 
-    // $table->addMetaData('filterOptions', [
-    //     'type:teaching' => __('Staff Type').': '.__('Teaching'),
-    //     'type:support'  => __('Staff Type').': '.__('Support'),
-    // ]);
-
     $table->modifyRows(function ($values, $row) use (&$coverage) {
+        if (!$values['available']) $row->addClass('error unavailableSub');
         if ($values['gibbonPersonID'] == $coverage['gibbonPersonIDCoverage']) $row->addClass('selected');
         return $row;
     });
@@ -227,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
                 $url = '';
             }
 
-            return Format::link($url, $name, ['target' => '_blank']).'<br/>'.Format::small($person['type'] ?? $person['jobTitle']);
+            return Format::link($url, $name, ['target' => '_blank']).'<br/>'.Format::small($person['jobTitle'] ?? $person['type']);
         });
 
     $table->addColumn('details', __('Details'))
@@ -246,6 +261,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         });
 
     $table->addRadioColumn('gibbonPersonIDCoverage', 'gibbonPersonID')->checked($coverage['gibbonPersonIDCoverage'] ?? null);
+
+    $row = $form->addRow()->addClass('mb-4');
+        $row->addCheckbox('showUnavailable')->setValue('Y')->checked(false)->description(__('Show Unavailable Staff?'));
+
+    $form->toggleVisibilityByClass('unavailableSub')->onCheckbox('showUnavailable')->when('Y');
 
     $row = $form->addRow();
         $row->addFooter();

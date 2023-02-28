@@ -148,7 +148,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID AND gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"')
-            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
+            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID AND gibbonStaffCoverageDate.date=gibbonStaffAbsenceDate.date')
 
             ->leftJoin('gibbonTTDayDate', 'gibbonTTDayDate.date=:date')
             ->leftJoin('gibbonTTDay', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID')
@@ -178,7 +178,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
-            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
+            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID AND gibbonStaffCoverageDate.date=gibbonStaffAbsenceDate.date')
 
             ->innerJoin('gibbonStaffDutyPerson', 'gibbonStaffDutyPerson.gibbonStaffDutyPersonID=gibbonStaffCoverageDate.foreignTableID')
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
@@ -204,7 +204,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
-            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
+            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID AND gibbonStaffCoverageDate.date=gibbonStaffAbsenceDate.date')
 
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivitySlotID=gibbonStaffCoverageDate.foreignTableID')
             ->innerJoin('gibbonActivity', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')

@@ -57,7 +57,7 @@ class StaffCoverageDateGateway extends QueryableGateway
     {
         $data = ['gibbonStaffCoverageDateID' => $gibbonStaffCoverageDateID];
         $sql = "SELECT gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverage.status, gibbonStaffAbsence.gibbonStaffAbsenceID, gibbonStaffAbsenceType.name as type, gibbonStaffAbsence.reason, gibbonStaffCoverage.substituteTypes,
-                gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.allDay, gibbonStaffCoverageDate.timeStart, gibbonStaffCoverageDate.timeEnd, gibbonStaffCoverage.timestampStatus, gibbonStaffCoverage.timestampCoverage, gibbonStaffCoverage.requestType,
+                gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.allDay, gibbonStaffCoverageDate.timeStart, gibbonStaffCoverageDate.timeEnd, gibbonStaffCoverageDate.reason, gibbonStaffCoverage.timestampStatus, gibbonStaffCoverage.timestampCoverage, gibbonStaffCoverage.requestType,
                 gibbonStaffCoverage.notesCoverage, gibbonStaffCoverage.notesStatus, 0 as urgent, gibbonStaffAbsence.notificationSent, gibbonStaffAbsence.gibbonGroupID, gibbonStaffCoverage.notificationList as notificationListCoverage, gibbonStaffAbsence.notificationList as notificationListAbsence, 
                 gibbonStaffCoverage.gibbonPersonID, absence.title AS titleAbsence, absence.preferredName AS preferredNameAbsence, absence.surname AS surnameAbsence, 
                 gibbonStaffCoverage.gibbonPersonIDStatus, status.title AS titleStatus, status.preferredName AS preferredNameStatus, status.surname AS surnameStatus, 

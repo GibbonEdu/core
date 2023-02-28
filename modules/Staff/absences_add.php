@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     if (!empty($notificationGroups)) {
         $row = $form->addRow();
             $row->addLabel('gibbonGroupID', __('Automatically Notify'));
-            $row->addSelect('gibbonGroupID')->fromArray($notificationGroups)->required()->selected($recentAbsence['gibbonGroupID']);
+            $row->addSelect('gibbonGroupID')->fromArray($notificationGroups)->required()->selected($recentAbsence['gibbonGroupID'] ?? '');
     }
 
     // Format user details into token-friendly list

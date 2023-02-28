@@ -99,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             if ($coverage['absenceStatus'] == 'Pending Approval') return $row->addClass('bg-stripe');
             if ($coverage['status'] == 'Declined') return null;
             if ($coverage['status'] == 'Cancelled') return null;
+            if ($coverage['status'] == 'Not Required') $row->addClass('bg-dull');
             if ($coverage['status'] == 'Accepted') $row->addClass('bg-green-200');
             if ($coverage['status'] == 'Requested') $row->addClass('bg-red-200');
             if ($coverage['status'] == 'Pending') $row->addClass('bg-red-200');
@@ -137,6 +138,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->format(function($coverage) {
                 if ($coverage['absenceStatus'] == 'Pending Approval') {
                     return Format::tag(__('Pending Approval'), 'dull');
+                } elseif ($coverage['status'] == 'Not Required') {
+                    return Format::tag(__('Not Required'), 'dull');
                 } elseif ($coverage['status'] == 'Pending') {
                     return Format::tag(__('Cover Required'), 'bg-red-300 text-red-800');
                 }

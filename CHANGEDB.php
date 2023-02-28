@@ -738,4 +738,6 @@ UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='S
 //v26.0.00
 ++$count;
 $sql[$count][0] = '26.0.00';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+ALTER TABLE `gibbonStaffCoverage` CHANGE `status` `status` ENUM('Requested','Accepted','Declined','Cancelled','Pending','Not Required') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Requested';end
+";
