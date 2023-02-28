@@ -47,6 +47,11 @@ class CoverageMiniCalendar
             $title .= $availability['allDay'] == 'N'
                 ? Format::timeRange($availability['timeStart'], $availability['timeEnd'])
                 : __('All Day');
+
+            if (!empty($availability['reason'])) {
+                $title .= ' ('.$availability['reason'].')';
+            }
+
             $title .= '<br/>';
 
             if (!empty($availability['timeStart']) && $availability['timeStart'] < $timeRangeStart) $timeRangeStart = $availability['timeStart'];
@@ -56,6 +61,11 @@ class CoverageMiniCalendar
         $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
 
         $timeRange = new DatePeriod(new DateTime($timeRangeStart), new DateInterval('PT10M'), new DateTime($timeRangeEnd));
+
+        // Ensure absences have higher priority on the mini-calendar
+        usort($availabilityByDate, function ($a, $b) {
+            return ($a['status'] == 'Absent' || $a['status'] == 'Not Available') && $b['status'] != 'Absent' && $b['status'] != 'Not Available' ? 1 : 0;
+        });
 
         foreach ($timeRange as $time) {
             $class = 'bg-white';

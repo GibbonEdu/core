@@ -165,14 +165,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $subs->transform(function (&$sub) use (&$availability) {
         $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
         $sub['availability'] = count($sub['dates']);
+        $sub['absences'] = count(array_filter($sub['dates'], function ($item) {
+            return $item['status'] == 'Absent' && $item['allDay'] == 'Y';
+        }));
     });
     
+    // Sort by highest availability to lowest availability
     $subList = $subs->toArray();
     usort($subList, function ($a, $b) {
-        if ($a['availability'] == $b['availability']) {
-            return ($a['coverageCounts']['totalCoverage'] ?? 0) <=> ($b['coverageCounts']['totalCoverage'] ?? 0);
+        if ($a['available'] != $b['available']) {
+            return $b['available'] <=> $a['available'];
         }
-        return $a['availability'] <=> $b['availability'];
+
+        if ($a['absences'] != $b['absences']) {
+            return $a['absences'] <=> $b['absences'];
+        }
+
+        if ($a['availability'] != $b['availability']) {
+            return $a['availability'] <=> $b['availability'];
+        }
+
+        return ($a['coverageCounts']['totalCoverage'] ?? 0) <=> ($b['coverageCounts']['totalCoverage'] ?? 0);
     });
 
     $subsPrepend = [];
@@ -262,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     $table->addRadioColumn('gibbonPersonIDCoverage', 'gibbonPersonID')->checked($coverage['gibbonPersonIDCoverage'] ?? null);
 
-    $row = $form->addRow()->addClass('mb-4');
+    $row = $form->addRow()->addClass('subsList mb-4');
         $row->addCheckbox('showUnavailable')->setValue('Y')->checked(false)->description(__('Show Unavailable Staff?'));
 
     $form->toggleVisibilityByClass('unavailableSub')->onCheckbox('showUnavailable')->when('Y');
