@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML']);
 
@@ -32,17 +33,20 @@ $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID";
+$URL = Url::fromModuleRoute('Crowd Assessment', 'crowdAssess_view_discuss')
+    ->withQueryParams([
+        'gibbonPlannerEntryID' => $gibbonPlannerEntryID,
+        'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID,
+        'gibbonPersonID' => $gibbonPersonID,
+    ]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss_post.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
     //Check if gibbonPlannerEntryID, gibbonPlannerEntryHomeworkID, and gibbonPersonID specified
     if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '' or $gibbonPersonID == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
     } else {
         $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
         $sql = getLessons($guid, $connection2, $and);
@@ -50,14 +54,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             $result = $connection2->prepare($sql[1]);
             $result->execute($sql[0]);
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
             exit();
         }
 
         if ($result->rowCount() != 1) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             $row = $result->fetch();
 
@@ -65,8 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             $role = getCARole($guid, $connection2, $row['gibbonCourseClassID']);
 
             if ($role == '' or empty($comment)) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 $sqlList = getStudents($guid, $connection2, $role, $row['gibbonCourseClassID'], $row['homeworkCrowdAssessOtherTeachersRead'], $row['homeworkCrowdAssessOtherParentsRead'], $row['homeworkCrowdAssessSubmitterParentsRead'], $row['homeworkCrowdAssessClassmatesParentsRead'], $row['homeworkCrowdAssessOtherStudentsRead'], $row['homeworkCrowdAssessClassmatesRead'], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID");
 
@@ -75,14 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         $resultList = $connection2->prepare($sqlList[1]);
                         $resultList->execute($sqlList[0]);
                     } catch (PDOException $e) {
-                        $URL .= '&return=erorr2';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error2'));
                         exit();
                     }
 
                     if ($resultList->rowCount() != 1) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error2'));
                     } else {
                         //INSERT
                         $replyTo = !empty($_GET['replyTo']) ? $_GET['replyTo'] : null;
@@ -94,11 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=erorr2';
-                            header("Location: {$URL}");
+                            header('Location: ' . $URL->withReturn('error2'));
                             exit();
                         }
-                        $hash = '#'.$replyTo;
 
 
                         //Work out who we are replying too
@@ -140,8 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                         $notificationSender->sendNotifications();
 
-                        $URL .= "&return=success0$hash";
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('success0')->withFragment($replyTo));
                     }
                 }
             }
