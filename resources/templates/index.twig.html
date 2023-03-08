@@ -120,9 +120,11 @@ TODO: add template variable details.
 
                 </div>
 
-                <div class="text-right mt-2 text-xs pr-1">
-                    <a class='text-purple-800' href='#top'>{{ __('Return to top') }}</a>
-                </div>
+                {% if isLoggedIn %}
+                    <div class="text-right mt-2 text-xs pr-1">
+                        <a class='text-purple-800' href='#top'>{{ __('Return to top') }}</a>
+                    </div>
+                {% endif %}
 
                 {% block afterPage %}
                 {% endblock afterPage %}
