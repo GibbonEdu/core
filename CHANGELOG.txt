@@ -39,6 +39,8 @@ v25.0.01
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
+        Timetable: fixed PHP deprecation issue relating to $roleCategory
+
 
 v25.0.00
 --------

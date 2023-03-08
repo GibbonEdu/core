@@ -1121,7 +1121,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
     return $output;
 }
 
-function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $staffCoverage, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $roleCategory, $edit = false)
+function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $staffCoverage, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $roleCategory = '', $edit = false)
 {
     global $session;
 
