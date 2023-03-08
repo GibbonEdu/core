@@ -28,6 +28,7 @@ v26.0.00
         System: raised the minimum PHP to 7.4
 
     Tweaks & Additions
+        System: added Return to top link to bottom right of each page
         Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Staff: combined absence and coverage requests into the same form
         Staff: improved handling of Off Timetable days when checking staff availability 
