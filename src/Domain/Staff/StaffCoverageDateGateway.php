@@ -237,6 +237,26 @@ class StaffCoverageDateGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
+    public function selectCoveragePeriodsByDate($gibbonSchoolYearID, $date)
+    {
+        $query = $this
+            ->newSelect()
+            ->cols(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
+            ->from('gibbonTT')
+            ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
+            ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
+            ->innerJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID')
+            ->where('gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonTT.active="Y"')
+            ->where('gibbonTTDayDate.date=:date')
+            ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral" || gibbonTTColumnRow.type="Break")')
+            ->bindValue('date', $date)
+            ->orderBy(['timeStart', 'timeEnd']);
+
+        return $this->runSelect($query);
+    }
+
     public function getCoverageTimesByForeignTable($foreignTable, $foreignTableID, $date)
     {
         switch ($foreignTable) {

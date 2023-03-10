@@ -130,4 +130,17 @@ class StaffGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getIsPreferredNameUnique($preferredName)
+    {
+        $data = array('preferredName' => $preferredName);
+        $sql = "SELECT COUNT(*) = 1
+                FROM gibbonStaff 
+                JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                WHERE gibbonPerson.preferredName=:preferredName
+                AND gibbonPerson.status='Full'
+                GROUP BY preferredName";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

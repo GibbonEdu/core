@@ -76,4 +76,23 @@ class StaffDutyPersonGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
+
+    public function selectDutyByWeekday($weekday)
+    {
+        $query = $this
+            ->newSelect()
+            ->cols([
+                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', 'gibbonStaffDuty.name as context', '"Staff Duty" as contextName', 'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.nameShort', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonDaysOfWeek.gibbonDaysOfWeekID', 'gibbonDaysOfWeek.name as dayOfWeek', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.title'
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
+            ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonStaffDutyPerson.gibbonDaysOfWeekID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStaffDutyPerson.gibbonPersonID')
+            ->where('gibbonDaysOfWeek.name=:weekday')
+            ->bindValue('weekday', $weekday)
+            ->where('gibbonPerson.status="Full"')
+            ->orderBy(['gibbonStaffDuty.sequenceNumber']);
+
+        return $this->runSelect($query);
+    }
 }

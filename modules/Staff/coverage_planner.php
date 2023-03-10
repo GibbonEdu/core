@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     // DATE SELECTOR
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php';
 
-    $form = Form::create('action', $link);
+    $form = Form::create('dateNav', $link);
     $form->setClass('blank fullWidth');
     $form->addHiddenValue('address', $session->get('address'));
 
@@ -73,6 +73,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     if (empty($times)) {
         $times = ['' => ['groupBy' => '']];
     }
+
+    $copyURL = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'coverage_planner_copy.php')
+        ->withQueryParams(['date' => $date->format('Y-m-d'), 'width' => 800, 'height' => 600 ]);
+    echo $form->getFactory()->createWebLink(Format::icon('copy', __('Copy')))
+        ->setURL($copyURL)
+        ->addClass('thickbox float-right mt-8')
+        ->getOutput();
 
     echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
@@ -129,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                 $url = $coverage['context'] == 'Class' 
                     ? './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID']
                     : '';
-                return Format::link($url, $coverage['contextName']);
+                return Format::link($url, $coverage['contextName']).'<br/>'.Format::small($coverage['space']);
             });
 
         $table->addColumn('coverage', __('Substitute'))
@@ -182,5 +189,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             });
 
         echo $table->render($coverageByTT);
+
     }
 }

@@ -48,7 +48,7 @@ class StaffDutyGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->cols([
-                'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffDuty.sequenceNumber', 'gibbonStaffDuty.gibbonDaysOfWeekIDList'
+                'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.nameShort', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffDuty.sequenceNumber', 'gibbonStaffDuty.gibbonDaysOfWeekIDList'
             ])
             ->from($this->getTableName());
 

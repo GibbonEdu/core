@@ -48,8 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
         $row = $blockTemplate->addRow();
             $row->addLabel('name', __('Name'));
             $row->addTextField('name')
-                ->addClass('w-3/4 mb-2')
+                ->addClass('mb-2')
                 ->append('<input type="hidden" id="gibbonStaffDutyID" name="gibbonStaffDutyID" value="">');
+
+            $row->addLabel('nameShort', __('Short Name'));
+            $row->addTextField('nameShort')
+                ->addClass('mb-2');
 
         $row = $blockTemplate->addRow();
             $row->addLabel('timeStart', __('Start Time'));

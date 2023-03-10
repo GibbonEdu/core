@@ -135,7 +135,7 @@ class StaffCoverageGateway extends QueryableGateway
     {
         $cols = [
              'gibbonStaffCoverageDate.foreignTableID', 'gibbonStaffCoverageDate.foreignTable', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverageDate.gibbonStaffCoverageDateID', 'gibbonStaffCoverage.status', 'gibbonStaffCoverageDate.date', 'gibbonStaffCoverageDate.allDay', 'gibbonStaffCoverageDate.timeStart', 'gibbonStaffCoverageDate.timeEnd', 'gibbonStaffCoverage.timestampStatus', 'gibbonStaffCoverage.timestampCoverage', 'gibbonStaffCoverage.notesStatus', 'gibbonStaffCoverage.gibbonStaffAbsenceID', 'gibbonStaffAbsence.status as absenceStatus', 'gibbonStaffAbsenceType.name AS type', 'gibbonStaffAbsence.reason',
-            'gibbonStaffAbsence.gibbonPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence',  
+            'gibbonStaffAbsence.gibbonPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence', 'absenceStaff.initials as initialsAbsence',  
             'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage',
             'gibbonStaffCoverage.gibbonPersonIDStatus', 'status.title as titleStatus', 'status.preferredName as preferredNameStatus', 'status.surname as surnameStatus',
         ];
@@ -143,7 +143,7 @@ class StaffCoverageGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->from('gibbonStaffAbsence')
-            ->cols(array_merge(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName','gibbonTTColumnRow.name as period', 'gibbonCourse.gibbonCourseID', 'gibbonCourse.gibbonDepartmentID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonTTDay.gibbonTTDayID'], $cols))
+            ->cols(array_merge(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName','gibbonTTColumnRow.name as period', 'gibbonCourse.gibbonCourseID', 'gibbonCourse.gibbonDepartmentID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonTTDay.gibbonTTDayID', '"" as gibbonStaffDutyID', 'gibbonSpace.name AS space'], $cols))
 
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
@@ -156,6 +156,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->leftJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonStaffCoverageDate.foreignTableID')
             ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID')
             ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID')
             
             ->leftJoin('gibbonPerson AS coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID')
             ->leftJoin('gibbonPerson AS status', 'gibbonStaffCoverage.gibbonPersonIDStatus=status.gibbonPersonID')
@@ -173,7 +174,7 @@ class StaffCoverageGateway extends QueryableGateway
 
         $query->unionAll()
             ->from('gibbonStaffAbsence')
-            ->cols(array_merge(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', 'gibbonStaffDuty.name as context', '"Staff Duty" contextName','"Staff Duty" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID'], $cols))
+            ->cols(array_merge(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', 'gibbonStaffDuty.name as context', '"Staff Duty" contextName', '"Staff Duty" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID', 'gibbonStaffDuty.gibbonStaffDutyID as gibbonStaffDutyID', 'gibbonStaffDuty.nameShort AS space'], $cols))
 
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
@@ -199,7 +200,7 @@ class StaffCoverageGateway extends QueryableGateway
 
         $query->unionAll()
             ->from('gibbonStaffAbsence')
-            ->cols(array_merge(['"activity" as groupBy', '"Activity" as context', 'gibbonActivity.name contextName', '"Activity" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID'], $cols))
+            ->cols(array_merge(['"activity" as groupBy', '"Activity" as context', 'gibbonActivity.name contextName', '"Activity" as period', '"" AS gibbonCourseID', '"" AS gibbonDepartmentID', '"" AS gibbonCourseClassID', '"" AS gibbonTTDayID', '"" as gibbonStaffDutyID', '"" AS space'], $cols))
 
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
@@ -223,6 +224,8 @@ class StaffCoverageGateway extends QueryableGateway
             ->where('gibbonStaffAbsence.coverageRequired <> "N"')
             ->where('gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"')
             ->groupBy(['gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
+
+        $query->orderBy(['timeStart', 'timeEnd']);
 
         return $this->runSelect($query);
     }
