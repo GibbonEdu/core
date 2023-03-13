@@ -292,6 +292,9 @@ if ($proceed == false) {
                 $row->addCheckbox('agreement')->description(__('Yes'))->setValue('on')->required();
         }
 
+        // Honey pot field
+        $form->addRow()->addClass('hidden')->addTextField('emailAddress');
+
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
