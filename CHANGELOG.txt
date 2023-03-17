@@ -41,7 +41,7 @@ v25.0.01
         Staff: fixed substitute availability check not including timetable exclusions
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
-
+        User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
 
 v25.0.00
 --------
