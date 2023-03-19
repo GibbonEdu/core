@@ -42,6 +42,7 @@ v26.0.00
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: increased Name field length to 40 characters in Add Multiple
         Markbook: fixed class average row height when there is no data
+        Markbook: adjusted student view to ensure that cummulative average honours term filter
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source

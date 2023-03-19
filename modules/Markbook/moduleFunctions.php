@@ -236,8 +236,7 @@ function getAlertStyle( $alert, $concern ) {
     }
 }
 
-function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
-
+function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID, $gibbonSchoolYearTermID = '') {
     global $container;
 
     require_once __DIR__ . '/src/MarkbookView.php';
@@ -253,7 +252,7 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCou
 
     // Calculate & get the cumulative average
     $markbook->cacheWeightings($gibbonPersonID);
-    $cumulativeMark = round($markbook->getCumulativeAverage($gibbonPersonID));
+    $cumulativeMark = round($markbook->getCumulativeAverage($gibbonPersonID, $gibbonSchoolYearTermID));
 
     // Only display if there are marks
     if (!empty($cumulativeMark)) {

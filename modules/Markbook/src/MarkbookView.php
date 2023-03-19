@@ -501,10 +501,14 @@ class MarkbookView
      * @param   string $gibbonPersonID
      * @return  int|string
      */
-    public function getCumulativeAverage($gibbonPersonID)
+    public function getCumulativeAverage($gibbonPersonID, $gibbonSchoolYearTermID = '')
     {
         $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
-        return (isset($this->weightedAverages[$gibbonPersonID]['cumulative'])) ? $this->weightedAverages[$gibbonPersonID]['cumulative'] : '';
+        if ($gibbonSchoolYearTermID == '') {
+            return (isset($this->weightedAverages[$gibbonPersonID]['cumulative'])) ? $this->weightedAverages[$gibbonPersonID]['cumulative'] : '';
+        } else {
+            return (isset($this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID])) ? $this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID] : '';
+        }
     }
 
     /**
