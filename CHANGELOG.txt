@@ -26,6 +26,7 @@ v25.0.01
 
     Security
         System: added .lock and .json files to htaccess denied list
+        System: added additional sanitization to GET variables and alerts
 
     Bug Fixes
     
@@ -48,6 +49,7 @@ v25.0.00
 
     Changes With Important Notices
         Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
+        System: added additional sanitization to GET variables and alerts
 
     Tweaks & Additions
         System: improved the access error message for non-logged in users

@@ -140,3 +140,6 @@ if (!empty($session->get('module'))) {
     $autoloader->addPsr4('Gibbon\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module').'/src');
     $autoloader->register(true);
 }
+
+// Sanitize incoming user-supplied GET variables
+$_GET = $container->get(\Gibbon\Data\Validator::class)->sanitizeUrlParams($_GET);

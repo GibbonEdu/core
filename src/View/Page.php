@@ -265,7 +265,7 @@ class Page extends View
      */
     public function addError(string $text)
     {
-        $this->alerts['error'][] = $text;
+        $this->addAlert($text, 'error');
     }
 
     /**
@@ -275,7 +275,7 @@ class Page extends View
      */
     public function addWarning(string $text)
     {
-        $this->alerts['warning'][] = $text;
+        $this->addAlert($text, 'warning');
     }
 
     /**
@@ -285,7 +285,7 @@ class Page extends View
      */
     public function addMessage(string $text)
     {
-        $this->alerts['message'][] = $text;
+        $this->addAlert($text, 'message');
     }
 
     /**
@@ -295,7 +295,7 @@ class Page extends View
      */
     public function addSuccess(string $text)
     {
-        $this->alerts['success'][] = $text;
+        $this->addAlert($text, 'success');
     }
 
     /**
@@ -306,7 +306,7 @@ class Page extends View
      */
     public function addAlert(string $text, string $context = 'message')
     {
-        $this->alerts[$context][] = $text;
+        $this->alerts[$context][] = strip_tags($text, '<a><b><i><u><strong>');
     }
 
     /**

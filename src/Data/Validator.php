@@ -168,6 +168,25 @@ class Validator
     }
 
     /**
+     * Sanitize values used in URL parameters.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizeUrlParams($values)
+    {
+        $values = $this->sanitize($values);
+
+        if (is_array($values)) {
+            array_walk($values, function ($value, $key) { 
+                return mb_substr($key, -2) == 'ID' ? preg_replace('/[^a-zA-Z0-9]/', '', $value) : $value;
+            });
+        }
+
+        return $values;
+    }
+
+    /**
      * Wrapper for strip_tags, accepts an array of tags rather than a string.
      *
      * @param    string  &$value
