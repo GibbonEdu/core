@@ -31,6 +31,7 @@ v26.0.00
         System: added Return to top link to bottom right of each page
         System: added Botswana Pula as currency option
         System: added .lock and .json files to htaccess denied list
+        System: added additional sanitization to GET variables and alerts
         Attendance: added the name of attendance last taken to Form Groups Not Registered
         Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Staff: combined absence and coverage requests into the same form
@@ -70,6 +71,7 @@ v25.0.00
 
     Changes With Important Notices
         Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
+        System: added additional sanitization to GET variables and alerts
 
     Tweaks & Additions
         System: improved the access error message for non-logged in users
