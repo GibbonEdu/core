@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/family_manage.php');
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description(_('Family Name'));
+        $row->addLabel('search', __('Search For'))->description(__('Family Name'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
