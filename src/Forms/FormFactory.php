@@ -315,6 +315,13 @@ class FormFactory implements FormFactoryInterface
         return $this->createSubmit($label)->prepend($cancelLink);
     }
 
+    public function createAdvancedOptionsToggle()
+    {
+        return $this->createContent('<a class="button rounded-sm" onclick="false" data-toggle=".advancedOptions">'.__('Advanced Options').'</a>')
+                ->wrap('<span class="small">', '</span>')
+                ->setClass('left');
+    }
+
     public function createFooter($required = true)
     {
         $content = '';

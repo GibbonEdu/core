@@ -206,6 +206,7 @@ class LibraryGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonLibraryItem.gibbonLibraryItemID',
+                'gibbonLibraryItem.gibbonLibraryItemIDParent',
                 'gibbonLibraryItem.id',
                 'gibbonLibraryItem.name',
                 'gibbonLibraryItem.producer',
@@ -239,6 +240,12 @@ class LibraryGateway extends QueryableGateway
                     ->where('(gibbonLibraryItem.name LIKE :name OR gibbonLibraryItem.producer LIKE :name OR gibbonLibraryItem.id LIKE :name)')
                     ->bindValue('name', '%' . $name . '%');
             },
+            'parent' => function ($query, $parentID) {
+                return $query
+                    ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                    ->where('(gibbonLibraryItem.id = :parentID OR parent.id = :parentID)')
+                    ->bindValue('parentID', $parentID);
+            },
             'type' => function ($query, $type) {
                 return $query
                     ->where('gibbonLibraryItem.gibbonLibraryTypeID = :type')
@@ -265,6 +272,89 @@ class LibraryGateway extends QueryableGateway
                     ->bindValue('typeSpecificFields', '%'.$typeSpecificFields.'%');
             }
         ]);
+
         return $this->runQuery($query, $criteria);
+    }
+
+    public function getLibraryItemDetails($gibbonLibraryItemID)
+    {
+        $data = ['gibbonLibraryItemID' => $gibbonLibraryItemID];
+        $sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.name AS type, parent.id as parentID
+            FROM gibbonLibraryItem 
+            JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) 
+            LEFT JOIN gibbonLibraryItem AS parent ON (parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)
+            WHERE gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getByRecordID($id)
+    {
+        $data = ['id' => $id];
+        $sql = "SELECT * FROM gibbonLibraryItem WHERE id=:id";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getChildRecordCount($gibbonLibraryItemID)
+    {
+        $data = ['gibbonLibraryItemID' => $gibbonLibraryItemID];
+        $sql = "SELECT COUNT(*) FROM gibbonLibraryItem WHERE gibbonLibraryItemIDParent=:gibbonLibraryItemID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectChildRecordIDs($gibbonLibraryItemID)
+    {
+        $data = ['gibbonLibraryItemID' => $gibbonLibraryItemID];
+        $sql = "SELECT gibbonLibraryItemID FROM gibbonLibraryItem WHERE gibbonLibraryItemIDParent=:gibbonLibraryItemID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function updateChildRecords($gibbonLibraryItemIDParent)
+    {
+        $data = ['gibbonLibraryItemIDParent' => $gibbonLibraryItemIDParent];
+
+        $sql = "UPDATE gibbonLibraryItem 
+            JOIN gibbonLibraryItem AS parent ON (parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)
+            SET gibbonLibraryItem.fields=parent.fields, 
+                gibbonLibraryItem.name=parent.name,
+                gibbonLibraryItem.producer=parent.producer,
+                gibbonLibraryItem.vendor=parent.vendor,
+                gibbonLibraryItem.imageType=parent.imageType,
+                gibbonLibraryItem.imageLocation=parent.imageLocation,
+                gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
+                gibbonLibraryItem.locationDetail=parent.locationDetail,
+                gibbonLibraryItem.ownershipType=parent.ownershipType,
+                gibbonLibraryItem.gibbonPersonIDOwnership=parent.gibbonPersonIDOwnership,
+                gibbonLibraryItem.gibbonDepartmentID=parent.gibbonDepartmentID,
+                gibbonLibraryItem.gibbonPersonIDUpdate=parent.gibbonPersonIDUpdate,
+                gibbonLibraryItem.timestampUpdate=parent.timestampUpdate
+            WHERE gibbonLibraryItem.gibbonLibraryItemIDParent=:gibbonLibraryItemIDParent";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function updateFromParentRecord($gibbonLibraryItemID)
+    {
+        $data = ['gibbonLibraryItemID' => $gibbonLibraryItemID];
+
+        $sql = "UPDATE gibbonLibraryItem 
+            JOIN gibbonLibraryItem AS parent ON (parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)
+            SET gibbonLibraryItem.fields=parent.fields, 
+                gibbonLibraryItem.name=parent.name,
+                gibbonLibraryItem.producer=parent.producer,
+                gibbonLibraryItem.vendor=parent.vendor,
+                gibbonLibraryItem.imageType=parent.imageType,
+                gibbonLibraryItem.imageLocation=parent.imageLocation,
+                gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
+                gibbonLibraryItem.locationDetail=parent.locationDetail,
+                gibbonLibraryItem.ownershipType=parent.ownershipType,
+                gibbonLibraryItem.gibbonPersonIDOwnership=parent.gibbonPersonIDOwnership,
+                gibbonLibraryItem.gibbonDepartmentID=parent.gibbonDepartmentID
+            WHERE gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID";
+
+        return $this->db()->update($sql, $data);
     }
 }

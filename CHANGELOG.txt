@@ -23,6 +23,7 @@ v26.0.00
     Headlines
 
     Significant Changes
+        Library: added the option to attach copies of library items to a main record
 
     Changes With Important Notices
         System: raised the minimum PHP to 7.4

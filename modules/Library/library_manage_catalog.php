@@ -32,6 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     //Get current filter values
     $viewMode = $_REQUEST['format'] ?? '';
     $name = $_REQUEST['name'] ?? '';
+    $parentID = $_REQUEST['parentID'] ?? '';
     $gibbonLibraryTypeID = $_REQUEST['gibbonLibraryTypeID'] ?? '';
     $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
     $status = $_REQUEST['status'] ?? '';
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             ->selected($gibbonLibraryTypeID)
             ->placeholder();
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
             $row->addLabel('gibbonSpaceID', __('Location'));
             $row->addSelectSpace('gibbonSpaceID')->selected($gibbonSpaceID)->placeholder();
 
@@ -73,21 +74,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             'Repair' => __('Repair'),
             'Reserved' => __('Reserved')
         );
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
             $row->addLabel('status', __('Status'));
             $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
             $row->addLabel('gibbonPersonIDOwnership', __('Owner/User'));
             $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
         $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
             ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
         $row->addScanner('typeSpecificFields')
             ->setValue($typeSpecificFields);
 
+        $row = $form->addRow()->addClass(empty($parentID) ? 'advancedOptions hidden' : 'advancedOptions');
+            $row->addLabel('parentID', __('Copies Of'));
+            $row->addTextField('parentID')->setValue($parentID);
+
         $row = $form->addRow();
+        $row->addAdvancedOptionsToggle();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
         echo $form->getOutput();
@@ -97,6 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $criteria = $gateway->newQueryCriteria(true)
         ->sortBy('id')
         ->filterBy('name', $name)
+        ->filterBy('parent', $parentID)
         ->filterBy('type', $gibbonLibraryTypeID)
         ->filterBy('location', $gibbonSpaceID)
         ->filterBy('status', $status)
@@ -144,6 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
         ->format(function ($item) use ($gibbon) {
+            if (!empty($item['gibbonLibraryItemIDParent'])) return Format::tag(__('Copy'), 'dull text-xxs');
             if ($item['ownershipType'] == 'School') {
                 return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
