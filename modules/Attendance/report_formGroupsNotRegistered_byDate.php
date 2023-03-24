@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                     $finalLog = current($logAll);
                     $person = $container->get(UserGateway::class)->getByID($finalLog['gibbonPersonIDTaker'], ['preferredName', 'surname']);
 
-                    echo Format::alert(__('The last Form Group attendance recorded was {formGroup}, first taken by {person} at {time}', [
+                    echo Format::alert(__('{formGroup} was the last group to have their initial Form Group attendance taken (by {person} at {time})', [
                         'formGroup' => $finalLog['nameShort'],
                         'person' => Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true),
                         'time' => Format::time($finalLog['timestampTaken']),
