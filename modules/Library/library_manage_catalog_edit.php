@@ -64,11 +64,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $isChildRecord = !empty($values['gibbonLibraryItemIDParent']);
 
     if ($isParentRecord) {
-        $viewURL = Url::fromModuleRoute('Library', 'library_manage_catalog')->withQueryParams(['parentID' => $values['id']]);
-        echo Format::alert(__('This is a main catalog record. Updating it will also update {count} copies of this record.', ['count' => Format::bold($childRecordCount)]).' '.Format::link($viewURL, __('View All')), 'message');
+        echo Format::alert(__('This is a main catalog record. Updating it will also update {count} copies of this record.', ['count' => Format::bold($childRecordCount)]), 'message');
+
+        $page->navigator->addHeaderAction('view', __('View Copies'))
+            ->setURL(Url::fromModuleRoute('Library', 'library_manage_catalog')->withQueryParams(['parentID' => $values['id']]))
+            ->displayLabel();
     } else if ($isChildRecord) {
-        $editURL = Url::fromModuleRoute('Library', 'library_manage_catalog_edit')->withQueryParams(['gibbonLibraryItemID' => $values['gibbonLibraryItemIDParent']]);
-        echo Format::alert(__('This is a copy of catalog record {id}. Certain details can only be changed by editing the main catalog record.', ['id' => Format::bold($values['parentID'])]).' '.Format::link($editURL, __('Edit Record')), 'warning');
+        echo Format::alert(__('This is a copy of catalog record {id}. Certain details can only be changed by editing the main catalog record.', ['id' => Format::bold($values['parentID'])]), 'warning');
+
+        $page->navigator->addHeaderAction('edit', __('Edit Main Record'))
+            ->setURL(Url::fromModuleRoute('Library', 'library_manage_catalog_edit')->withQueryParams(['gibbonLibraryItemID' => $values['gibbonLibraryItemIDParent']]))
+            ->addParams($urlParams)
+            ->displayLabel();
+
+        $page->navigator->addHeaderAction('change', __('Make Main Record'))
+            ->setURL(Url::fromHandlerRoute('modules/Library/library_manage_catalog_changeMainProcess.php')->withQueryParams(['gibbonLibraryItemID' => $values['gibbonLibraryItemID'], 'gibbonLibraryItemIDParent' => $values['gibbonLibraryItemIDParent']]))
+            ->addParams($urlParams)
+            ->setIcon('upload')
+            ->displayLabel()
+            ->isDirect()
+            ->addConfirmation(__('Are you sure you wish to change this copy to the main catalog record? All other copies, including the current main record, will become copies of this record.'));
+
+        $page->navigator->addHeaderAction('view', __('View Copies'))
+            ->setURL(Url::fromModuleRoute('Library', 'library_manage_catalog')->withQueryParams(['parentID' => $values['parentID']]))
+            ->displayLabel();
     }
 
     $form = Form::create('libraryCatalog', $session->get('absoluteURL').'/modules/Library/library_manage_catalog_editProcess.php?'.http_build_query($urlParams));
@@ -107,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow();
         $row->addLabel('vendor', __('Vendor'))->description(__('Who supplied the item?'));
-        $row->addTextField('vendor')->maxLength(100)->readOnly($isChildRecord);
+        $row->addTextField('vendor')->maxLength(100);
 
     $row = $form->addRow();
         $row->addLabel('purchaseDate', __('Purchase Date'));

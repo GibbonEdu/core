@@ -192,9 +192,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                       ->setIcon('attendance');
               $actions->addAction('delete', __('Delete'))
                       ->setURL('/modules/Library/library_manage_catalog_delete.php');
-              $actions->addAction('duplicate', __('Duplicate'))
-                      ->setURL('/modules/Library/library_manage_catalog_duplicate.php')
-                      ->setIcon('copy');
+              if (empty($item['gibbonLibraryItemIDParent'])) {
+                $actions->addAction('duplicate', __('Duplicate'))
+                        ->setURL('/modules/Library/library_manage_catalog_duplicate.php')
+                        ->setIcon('copy');
+              }
           });
 
     echo $table->render($items);

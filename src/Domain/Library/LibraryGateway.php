@@ -321,7 +321,6 @@ class LibraryGateway extends QueryableGateway
             SET gibbonLibraryItem.fields=parent.fields, 
                 gibbonLibraryItem.name=parent.name,
                 gibbonLibraryItem.producer=parent.producer,
-                gibbonLibraryItem.vendor=parent.vendor,
                 gibbonLibraryItem.imageType=parent.imageType,
                 gibbonLibraryItem.imageLocation=parent.imageLocation,
                 gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
@@ -344,9 +343,7 @@ class LibraryGateway extends QueryableGateway
             JOIN gibbonLibraryItem AS parent ON (parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)
             SET gibbonLibraryItem.fields=parent.fields, 
                 gibbonLibraryItem.name=parent.name,
-                gibbonLibraryItem.producer=parent.producer,
-                gibbonLibraryItem.vendor=parent.vendor,
-                gibbonLibraryItem.imageType=parent.imageType,
+                gibbonLibraryItem.producer=parent.producer,                gibbonLibraryItem.imageType=parent.imageType,
                 gibbonLibraryItem.imageLocation=parent.imageLocation,
                 gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
                 gibbonLibraryItem.locationDetail=parent.locationDetail,
