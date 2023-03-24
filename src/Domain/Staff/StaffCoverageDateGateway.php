@@ -250,7 +250,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonTT.active="Y"')
             ->where('gibbonTTDayDate.date=:date')
-            ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral" || gibbonTTColumnRow.type="Break")')
+            ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral" OR gibbonTTColumnRow.type="Break")')
             ->bindValue('date', $date)
             ->orderBy(['timeStart', 'timeEnd']);
 

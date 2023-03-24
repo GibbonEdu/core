@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     }
 
     $times = $staffCoverageDateGateway->selectCoveragePeriodsByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGroupedUnique();
-    
+
     $dutyList = $staffDutyPersonGateway->selectDutyByWeekday($date->format('l'))->fetchAll();
     $coverageList = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchAll();
 
@@ -55,6 +55,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
         return $coverageCount <= 0;
     });
+
+    // Add any missing coverage to the times
+    foreach ($coverageList as $coverage) {
+        $groupBy = 'tt-'.$coverage['timeStart'].'-'.$coverage['timeEnd'];
+        if (empty($times[$groupBy]) && $coverage['context'] == 'Activity') {
+            $times[$groupBy] = [
+                'type'      => 'Activity',
+                'period'    => 'Activities',
+                'timeStart' => $coverage['timeStart'],
+                'timeEnd'   => $coverage['timeEnd'],
+            ];
+        }
+    }
 
     $fullList = array_merge($coverageList, $dutyList);
     $output = '';
@@ -75,35 +88,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         }
 
         foreach ($coverageByTT as $coverage) {
-            if ($coverage['context'] == 'Class' && ($coverage['status'] != 'Accepted' && $coverage['status'] != 'Not Required')) continue;
+            if (($coverage['context'] == 'Class' || $coverage['context'] == 'Activity') && ($coverage['status'] != 'Accepted' && $coverage['status'] != 'Not Required')) continue;
 
             $details = '';
 
-            if ($coverage['context'] == 'Class') {
-                $output .= $coverage['initialsAbsence'].' - ';
-                $output .= $coverage['contextName'].' '.$coverage['space'].' - ';
+            if ($coverage['context'] == 'Class' || $coverage['context'] == 'Activity') {
+                $details .= $coverage['initialsAbsence'].' - ';
+                $details .= $coverage['contextName'].' '.$coverage['space'].' - ';
                 
             } else if ($coverage['contextName'] == 'Staff Duty') {
 
                 if (!empty($lastTimeRange) && $lastTimeRange != $coverage['timeStart'].$coverage['timeEnd']) {
-                    $output .= '<br/>';
+                    $details .= '<br/>';
                 }
                 $lastTimeRange = $coverage['timeStart'].$coverage['timeEnd'];
 
-                $output .= ($coverage['nameShort'] ?? $coverage['space'] ?? $coverage['context']).' - ';
-                $output .= !($coverage['timeStart'] == $timeSlot['timeStart'] && $coverage['timeEnd'] == $timeSlot['timeEnd'])
+                $details .= ($coverage['nameShort'] ?? $coverage['space'] ?? $coverage['context']).' - ';
+                $details .= !($coverage['timeStart'] == $timeSlot['timeStart'] && $coverage['timeEnd'] == $timeSlot['timeEnd'])
                     ? Format::timeRange($coverage['timeStart'], $coverage['timeEnd']).' - '
                     : '';
             }
 
             if ($coverage['context'] == 'Class' && $coverage['status'] == 'Not Required') {
-                $output .= Format::bold('no cover required');
+                $details .= Format::bold('no cover required');
             } else {
                 $preferredName = $coverage['preferredNameCoverage'] ?? $coverage['preferredName'] ?? '';
                 $surname = $coverage['surnameCoverage'] ?? $coverage['surname'] ?? '';
                 $isUnique = $staffGateway->getIsPreferredNameUnique($preferredName);
 
-                $output .= Format::bold(!$isUnique? $preferredName.' '.$surname : $preferredName);
+                $details .= Format::bold(!$isUnique? $preferredName.' '.$surname : $preferredName);
             }
 
             $output .= $details.'<br/>';
