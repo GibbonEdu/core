@@ -290,14 +290,15 @@ class CoverageRequestForm
                 ->description(__('Only available substitutes are listed here.'))
                 ->addClass('individualOptions')
                 ->width('35%')
-                ->format(function ($class) use (&$form, &$coverageByTimetable) {
+                ->format(function ($class) use (&$form, &$coverageByTimetable, &$availableSubs) {
                     if (!empty($class['gibbonStaffCoverageID'])) {
                         return !empty($class['surnameCoverage'])
                             ? Format::name('', $class['preferredNameCoverage'], $class['surnameCoverage'], 'Staff', false, true)
                             : __('Any available substitute');
                     }
 
-                    $availableSubsOptions = array_reduce($class['availability'] ?? [], function ($group, $item) {
+                    $availableSubsList = $coverageByTimetable ? ($class['availability'] ?? []) : $availableSubs;
+                    $availableSubsOptions = array_reduce($availableSubsList, function ($group, $item) {
                         $group[$item['type']][$item['gibbonPersonID']] = Format::name($item['title'], $item['preferredName'], $item['surname'], 'Staff', true, true);
                         return $group;
                     }, []);

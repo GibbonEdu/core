@@ -74,7 +74,7 @@ class NewAbsenceWithCoverage extends Message
             __('Date')       => $this->details['date'],
             __('Time')       => $this->details['time'],
             __('Comment')    => $this->coverage['comment'],
-            __('Coverage')   => Format::listDetails($coverageDetails),
+            __('Coverage')   => !empty($coverageDetails) ? Format::listDetails($coverageDetails) : $this->details['time'],
             __('Notes')      => $this->coverage['notesStatus'],
         ];
     }

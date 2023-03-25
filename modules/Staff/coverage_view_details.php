@@ -47,16 +47,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_detail
     // Coverage View Composer
     $coverageView = $container->get(CoverageView::class);
     $coverageView->setCoverage($gibbonStaffCoverageID)->compose($page);
-
-    // Attachment
-    if (!empty($coverage['attachmentType'])) {
-        $page->writeFromTemplate('statusComment.twig.html', [
-            'name'       => __('Attachment'),
-            'icon'       => 'internalAssessment',
-            'tag'        => 'dull',
-            'status'     => __($coverage['attachmentType']),
-            'attachment' => $coverage['attachmentType'] != 'Text' ? Format::link($coverage['attachmentContent']) : '',
-            'html'       => $coverage['attachmentType'] == 'Text' ? $coverage['attachmentContent'] : '',
-        ]);
-    }
 }

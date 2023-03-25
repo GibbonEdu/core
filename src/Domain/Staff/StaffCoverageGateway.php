@@ -150,10 +150,12 @@ class StaffCoverageGateway extends QueryableGateway
             ->innerJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID AND gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"')
             ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID AND gibbonStaffCoverageDate.date=gibbonStaffAbsenceDate.date')
 
-            ->leftJoin('gibbonTTDayDate', 'gibbonTTDayDate.date=:date')
-            ->leftJoin('gibbonTTDay', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID')
-            ->leftJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID AND (gibbonStaffCoverageDate.timeStart >= gibbonTTColumnRow.timeStart AND gibbonStaffCoverageDate.timeEnd <= gibbonTTColumnRow.timeEnd)')
+            
             ->leftJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonStaffCoverageDate.foreignTableID')
+            ->leftJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID')
+            ->leftJoin('gibbonTTDay', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID')
+            ->leftJoin('gibbonTTDayDate', 'gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID AND gibbonTTDayDate.date=:date')
+
             ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID')
             ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
             ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID')
@@ -289,7 +291,7 @@ class StaffCoverageGateway extends QueryableGateway
             $query->cols(['COUNT(*) as days', 'MIN(gibbonStaffCoverageDate.date) as dateStart', 'MAX(gibbonStaffCoverageDate.date) as dateEnd'])
                   ->groupBy(['gibbonStaffCoverage.gibbonStaffCoverageID']);
         } else {
-            $query->cols(['"" as days', 'gibbonStaffCoverageDate.date as dateStart', 'gibbonStaffCoverageDate.date as dateEnd'])
+            $query->cols(['gibbonStaffCoverageDate.value as days', 'gibbonStaffCoverageDate.date as dateStart', 'gibbonStaffCoverageDate.date as dateEnd'])
                 ->groupBy(['gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
         }
 

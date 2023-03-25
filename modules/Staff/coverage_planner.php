@@ -69,6 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     // COVERAGE
     $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
     $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGroupedUnique();
+    
+    $ttCount = count(array_unique(array_filter(array_column($times, 'ttName'))));
 
     if (empty($times)) {
         $times = ['' => ['groupBy' => '']];
@@ -94,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
         if (!empty($groupBy)) {
-            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' <span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).')</span></h4>');
+            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' <span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).') '.($ttCount > 1 ? $timeSlot['ttName'] : '').'</span></h4>');
         }
 
         $table->addMetaData('gridClass', 'rounded-sm text-sm bg-gray-100 border border-t-0');

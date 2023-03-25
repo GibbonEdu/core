@@ -178,7 +178,7 @@ class StaffCoverageDateGateway extends QueryableGateway
                 $query->leftJoin('gibbonSchoolYearTerm as activityTerm', 'FIND_IN_SET(activityTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)')
                     ->where('(activityTerm.firstDay <= :dateStart AND activityTerm.lastDay >= :dateEnd)');
             } else {
-                $query->where('(activityTerm.programStart <= :dateStart AND activityTerm.programEnd >= :dateEnd)');
+                $query->where('(gibbonActivity.programStart <= :dateStart AND gibbonActivity.programEnd >= :dateEnd)');
             }
 
             $query->orderBy(['date', 'timeStart']);
@@ -192,7 +192,7 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         $query = $this
             ->newSelect()
-            ->cols(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
+            ->cols(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'GROUP_CONCAT(gibbonTT.name SEPARATOR ", ") as ttName'])
             ->from('gibbonTT')
             ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
             ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
@@ -202,10 +202,11 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->where('gibbonTT.active="Y"')
             ->where('gibbonTTDayDate.date=:date')
             ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral")')
-            ->bindValue('date', $date);
+            ->bindValue('date', $date)
+            ->groupBy(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd']);
 
         $query->unionAll()
-            ->cols(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', '"Staff Duty" AS type', '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd'])
+            ->cols(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', '"Staff Duty" AS type', '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', '"" as ttName'])
             ->from('gibbonStaffDutyPerson')
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonStaffDutyPerson.gibbonDaysOfWeekID')
@@ -214,7 +215,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->groupBy(['gibbonStaffDuty.gibbonStaffDutyID']);
 
         $query->unionAll()
-            ->cols(['"activity" as groupBy', '"Activity" AS type', '"Activity" as period', 'MIN(gibbonActivitySlot.timeStart)', 'MIN(gibbonActivitySlot.timeEnd)'])
+            ->cols(['"activity" as groupBy', '"Activity" AS type', '"Activity" as period', 'MIN(gibbonActivitySlot.timeStart)', 'MIN(gibbonActivitySlot.timeEnd)', '"" as ttName'])
             ->from('gibbonActivitySlot')
             ->innerJoin('gibbonActivity', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID')
@@ -229,7 +230,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             $query->leftJoin('gibbonSchoolYearTerm as activityTerm', 'FIND_IN_SET(activityTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)')
                 ->where(':date BETWEEN activityTerm.firstDay AND activityTerm.lastDay');
         } else {
-            $query->where(':date BETWEEN activityTerm.programStart AND activityTerm.programEnd');
+            $query->where(':date BETWEEN gibbonActivity.programStart AND gibbonActivity.programEnd');
         }
 
         $query->orderBy(['timeStart', 'timeEnd']);
