@@ -29,7 +29,7 @@ v25.0.01
         System: added additional sanitization to GET variables and alerts
 
     Bug Fixes
-    
+        System: fixed date formatting error when Intl extension is not available
 
 v25.0.00
 --------
