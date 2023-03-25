@@ -150,7 +150,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             $emailErrors = [];
             $mail= $container->get(Mailer::class);
             $mail->SMTPKeepAlive = true;
-            $mail->SMTPDebug = 1;
+            $mail->SMTPDebug = 0;
             $mail->Debugoutput = 'error_log';
             
             if ($emailReplyTo!="") {
