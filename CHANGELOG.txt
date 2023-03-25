@@ -32,6 +32,7 @@ v26.0.00
         System: added Botswana Pula as currency option
         System: added .lock and .json files to htaccess denied list
         System: added additional sanitization to GET variables and alerts
+        System: added a system log when passwords are manually changed in User Admin
         Attendance: added the name of attendance last taken to Form Groups Not Registered
         Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Staff: combined absence and coverage requests into the same form
