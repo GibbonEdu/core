@@ -39,6 +39,7 @@ v26.0.00
         Staff: added an option to set coverage as Not Required or assign to an unavailable teacher
 
     Bug Fixes
+        System: fixed date formatting error when Intl extension is not available
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: increased Name field length to 40 characters in Add Multiple
