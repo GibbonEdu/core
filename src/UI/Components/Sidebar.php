@@ -369,7 +369,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
 
                                 //Title
-                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment($message['gibbonMessengerID']);
+                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment(strval($message['gibbonMessengerID']));
                                 if (strlen($message['subject']) <= 16) {
                                     echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
                                 } else {
