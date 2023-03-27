@@ -43,6 +43,7 @@ v26.0.00
     Bug Fixes
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
+        Library: fixed empty timestamp field in gibbonLibraryItem that caused errors on update
         Markbook: increased Name field length to 40 characters in Add Multiple
         Markbook: fixed class average row height when there is no data
         Markbook: adjusted student view to ensure that cummulative average honours term filter

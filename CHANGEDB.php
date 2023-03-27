@@ -741,5 +741,8 @@ $sql[$count][0] = '26.0.00';
 $sql[$count][1] = "
 ALTER TABLE `gibbonStaffCoverage` CHANGE `status` `status` ENUM('Requested','Accepted','Declined','Cancelled','Pending','Not Required') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Requested';end
 ALTER TABLE `gibbonStaffDuty` ADD `nameShort` VARCHAR(20) NOT NULL AFTER `name`;end
+UPDATE `gibbonLibraryItem` SET timestampUpdate = CURRENT_TIMESTAMP WHERE UNIX_TIMESTAMP(timestampUpdate) = 0;end
+UPDATE `gibbonLibraryItem` SET timestampStatus = CURRENT_TIMESTAMP WHERE UNIX_TIMESTAMP(timestampStatus) = 0;end
+UPDATE `gibbonLibraryItem` SET timestampCreator = CURRENT_TIMESTAMP WHERE UNIX_TIMESTAMP(timestampCreator) = 0;end
 ALTER TABLE `gibbonLibraryItem` ADD `gibbonLibraryItemIDParent` INT(10) NULL DEFAULT NULL AFTER `gibbonLibraryItemID`;end
 ";
