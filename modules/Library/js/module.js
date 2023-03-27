@@ -33,7 +33,14 @@ $.prototype.loadGoogleBookData = function (settings) {
                     alert(settings.notFound);
                 } else {
                     // SET FIELDS
-                    $("#name").val(obj['items'][0]['volumeInfo']['title']);
+                    if ($("#name").val() != '') {
+                        if (confirm(settings.confirmation) == true) {
+                            $("#name").val(obj['items'][0]['volumeInfo']['title']);
+                        }
+                    } else {
+                        $("#name").val(obj['items'][0]['volumeInfo']['title']);
+                    }
+
                     var authors = '';
                     for (var i = 0; i < obj['items'][0]['volumeInfo']['authors'].length; i++) {
                         authors = authors + obj['items'][0]['volumeInfo']['authors'][i] + ', ';

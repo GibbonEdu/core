@@ -288,6 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $(".gbooks").loadGoogleBookData({
             "notFound": "<?php echo __('The specified record cannot be found.'); ?>",
             "dataRequired": "<?php echo __('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.'); ?>",
+            "confirmation": "<?php echo __('Do you want to update the name of this book? Choose cancel to update all other fields except the name.'); ?>",
         });
 
         var path = '<?php echo $session->get('absoluteURL').'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
