@@ -31,6 +31,7 @@ v25.0.01
 
     Bug Fixes
         System: fixed date formatting error when Intl extension is not available
+        System: fixed PHP value-type error in sidebar message wall posts
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: fixed class average row height when there is no data
