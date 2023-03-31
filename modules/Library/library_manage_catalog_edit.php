@@ -169,29 +169,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row = $form->addRow();
             $row->addLabel('locationDetail', __('Location Detail'))->description(__('Shelf, cabinet, sector, etc'));
             $row->addTextField('locationDetail')->maxLength(255);
+    }
 
-    
-        $row = $form->addRow();
-            $row->addLabel('ownershipType', __('Ownership Type'));
-            $row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->placeholder();
+    $row = $form->addRow();
+        $row->addLabel('ownershipType', __('Ownership Type'));
+        $row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->placeholder();
 
-        $form->toggleVisibilityByClass('ownershipSchool')->onSelect('ownershipType')->when('School');
+    $form->toggleVisibilityByClass('ownershipSchool')->onSelect('ownershipType')->when('School');
 
-        $row = $form->addRow()->addClass('ownershipSchool');
-            $row->addLabel('gibbonPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
-            $row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder()->selected($values['gibbonPersonIDOwnership']);
+    $row = $form->addRow()->addClass('ownershipSchool');
+        $row->addLabel('gibbonPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
+        $row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder()->selected($values['gibbonPersonIDOwnership']);
 
-        $form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
+    $form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
 
-        $row = $form->addRow()->addClass('ownershipIndividual');
-            $row->addLabel('gibbonPersonIDOwnershipIndividual', __('Owner'));
-            $row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder()->selected($values['gibbonPersonIDOwnership']);
+    $row = $form->addRow()->addClass('ownershipIndividual');
+        $row->addLabel('gibbonPersonIDOwnershipIndividual', __('Owner'));
+        $row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder()->selected($values['gibbonPersonIDOwnership']);
 
+    if (!$isChildRecord) {
         $sql = "SELECT gibbonDepartmentID AS value, name FROM gibbonDepartment ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibbonDepartmentID', __('Department'))->description(__('Which department is responsible for the item?'));
             $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, array())->placeholder();
     }
+
     $row = $form->addRow();
         $row->addLabel('bookable', __('Bookable As Facility?'))->description(__('Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.'));
         $row->addYesNo('bookable');

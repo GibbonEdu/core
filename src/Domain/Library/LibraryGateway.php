@@ -325,8 +325,6 @@ class LibraryGateway extends QueryableGateway
                 gibbonLibraryItem.imageLocation=parent.imageLocation,
                 gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
                 gibbonLibraryItem.locationDetail=parent.locationDetail,
-                gibbonLibraryItem.ownershipType=parent.ownershipType,
-                gibbonLibraryItem.gibbonPersonIDOwnership=parent.gibbonPersonIDOwnership,
                 gibbonLibraryItem.gibbonDepartmentID=parent.gibbonDepartmentID,
                 gibbonLibraryItem.gibbonPersonIDUpdate=parent.gibbonPersonIDUpdate,
                 gibbonLibraryItem.timestampUpdate=parent.timestampUpdate
@@ -343,12 +341,11 @@ class LibraryGateway extends QueryableGateway
             JOIN gibbonLibraryItem AS parent ON (parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)
             SET gibbonLibraryItem.fields=parent.fields, 
                 gibbonLibraryItem.name=parent.name,
-                gibbonLibraryItem.producer=parent.producer,                gibbonLibraryItem.imageType=parent.imageType,
+                gibbonLibraryItem.producer=parent.producer,                
+                gibbonLibraryItem.imageType=parent.imageType,
                 gibbonLibraryItem.imageLocation=parent.imageLocation,
                 gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
                 gibbonLibraryItem.locationDetail=parent.locationDetail,
-                gibbonLibraryItem.ownershipType=parent.ownershipType,
-                gibbonLibraryItem.gibbonPersonIDOwnership=parent.gibbonPersonIDOwnership,
                 gibbonLibraryItem.gibbonDepartmentID=parent.gibbonDepartmentID
             WHERE gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID";
 
