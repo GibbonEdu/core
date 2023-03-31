@@ -70,7 +70,13 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
             if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
                 $details[$field['fieldType']] = __($field['label']);
             } else {
-                $details[__($field['label'])]  = $fieldGroup->displayFieldValue($builder, $fieldName, $field, $data);
+                $label = __($field['label']);
+                if (stripos($fieldName, 'parent1') !== false && stripos($field['label'], 'Parent') === false) {
+                    $label = __('Parent/Guardian').' 1 '.$label;
+                } else if (stripos($fieldName, 'parent2') !== false && stripos($field['label'], 'Parent') === false) {
+                    $label = __('Parent/Guardian').' 2 '.$label;
+                }
+                $details[$label]  = $fieldGroup->displayFieldValue($builder, $fieldName, $field, $data);
             }
         }
 
@@ -99,7 +105,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         
         $this->mail->renderBody('mail/message.twig.html', [
             'title'  => $template->renderSubject($templateData),
-            'body'   => $template->renderBody($templateData),
+            'body'   => $template->renderBody(array_merge($data, $templateData)),
             'button' => [
                 'url'  => Url::fromModuleRoute('Admissions', 'applicationFormView')
                     ->withQueryParams(['acc' => $builder->getConfig('accessID', ''), 'tok' => $builder->getConfig('accessToken', '')])
