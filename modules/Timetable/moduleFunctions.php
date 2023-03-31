@@ -1432,7 +1432,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 }
             }
             
-            $periodCount = [];
+            $periodCount = $periodIDs = [];
             foreach ($periods as $rowPeriods) {
                 $rowPeriods['gibbonYearGroupIDList'] = explode(',', $rowPeriods['gibbonYearGroupIDList'] ?? '');
                 $isSlotInTime = false;
@@ -1492,6 +1492,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     if ($resultException->rowCount() < 1 || $isCovering) {
                         // Count how many classes are in this period
                         $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
+                        $periodIDs[$rowPeriods['name']][] = $rowPeriods['gibbonCourseClassID'];
 
                         $effectiveStart = $rowPeriods['timeStart'];
                         $effectiveEnd = $rowPeriods['timeEnd'];
@@ -1614,7 +1615,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                         $classCount = count($periodCount[$rowPeriods['name']] ?? []);
                         if ($classCount > 1) {
-                            $output .= Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
+                            $exceptionID = $periodIDs[$rowPeriods['name']][0] ?? '';
+                            $exceptionEdit = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$exceptionID;
+
+                            $tag = Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
+                            $output .= $edit && !empty($exceptionID)
+                                ? Format::link($exceptionEdit, $tag)
+                                : $tag;
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false) {
