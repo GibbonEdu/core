@@ -33,6 +33,7 @@ v25.0.01
         System: fixed date formatting error when Intl extension is not available
         System: fixed PHP value-type error in sidebar message wall posts
         Admissions: fixed incorrect parent field names in application submission email
+        Admissions: fixed application form prefill logic
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: fixed class average row height when there is no data
