@@ -54,9 +54,15 @@ class FormPrefill
      * @param array $recentApplication
      * @return self
      */
-    public function loadApplicationData(AdmissionsApplicationGateway $admissionsApplicationGateway, string $gibbonFormID, string $gibbonAdmissionsAccountID)
+    public function loadApplicationData(AdmissionsAccountGateway $admissionsAccountGateway, AdmissionsApplicationGateway $admissionsApplicationGateway, string $gibbonFormID, ?string $accessID, ?string $accessToken)
     {
-        $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $gibbonAdmissionsAccountID)->fetch();
+        // Check if this account can prefill application form data
+        $accountCheck = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
+        if (empty($accountCheck)) {
+            return $this;
+        }
+
+        $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $accountCheck['gibbonAdmissionsAccountID'])->fetch();
 
         if (!empty($recentApplication)) {
             $this->prefillable = json_decode($recentApplication['data'] ?? '', true);

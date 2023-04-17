@@ -136,7 +136,7 @@ if ($proceed == false) {
     // Prefill application form values
     if ($incomplete && !empty($account)) {
         $formPrefill = $container->get(FormPrefill::class)
-            ->loadApplicationData($admissionsApplicationGateway, $gibbonFormID, $account['gibbonAdmissionsAccountID'])
+            ->loadApplicationData($admissionsAccountGateway, $admissionsApplicationGateway, $gibbonFormID, $accessID, $accessToken)
             ->loadPersonalData($admissionsAccountGateway, $account['gibbonPersonID'], $accessID, $accessToken)
             ->prefill($formBuilder, $formData, $pageNumber, $values);
 
