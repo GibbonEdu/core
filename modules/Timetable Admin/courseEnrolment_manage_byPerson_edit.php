@@ -182,8 +182,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             );
 
             $bulkActions = array(
-                'Mark as left' => __('Mark as left'),
-                'Delete'       => __('Delete'),
+                'Mark as left'      => __('Mark as left'),
+                'Delete'            => __('Delete'),
+                'Reportable to Yes' => __('Reportable to Yes'),
+                'Reportable to No'  => __('Reportable to No'),
             );
 
             $col = $form->createBulkActionColumn($bulkActions);
