@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder()->required();
+        $row->addSelectUsers('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addFooter();
