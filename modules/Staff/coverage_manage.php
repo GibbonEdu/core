@@ -108,8 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     $table->addColumn('period', __('Period'))
         ->description(__('Cover'))
+        ->format(function ($coverage) {
+            return !empty($coverage['period']) ? $coverage['period'] : $coverage['coverageReason'];
+        })
         ->formatDetails(function ($coverage) {
-            return Format::small($coverage['contextName']);
+            return Format::small($coverage['contextName']) ;
         });
 
     $table->addColumn('coverage', __('Substitute'))

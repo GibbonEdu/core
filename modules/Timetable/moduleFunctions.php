@@ -1490,8 +1490,10 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($resultException->rowCount() < 1 || $isCovering) {
+                        $className = !empty($rowPeriods['gibbonCourseClassID'])? $rowPeriods['course'].'.'.$rowPeriods['class'] : ($rowPeriods['contextName'] ?? '');
+
                         // Count how many classes are in this period
-                        $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
+                        $periodCount[$rowPeriods['name']][] = $className;
                         $periodIDs[$rowPeriods['name']][] = $rowPeriods['gibbonCourseClassID'];
 
                         $effectiveStart = $rowPeriods['timeStart'];
@@ -1624,12 +1626,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 : $tag;
                         }
 
+                        
                         if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false) {
-                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."&currentDate=".Format::date($date)."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
+                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."&currentDate=".Format::date($date)."'>".$className.'</a><br/>';
                         } elseif (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') and $edit == true) {
-                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonSchoolYearID='.$session->get('gibbonSchoolYearID').'&gibbonCourseID='.$rowPeriods['gibbonCourseID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
+                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonSchoolYearID='.$session->get('gibbonSchoolYearID').'&gibbonCourseID='.$rowPeriods['gibbonCourseID']."'>".$className.'</a><br/>';
                         } else {
-                            $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
+                            $output .= "<span style='font-size: 120%'><b>".$className.'</b></span><br/>';
                         }
                         if ($height >= 30) {
                             if ($offTimetableClass) {

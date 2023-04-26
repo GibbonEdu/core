@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     die();
 } else {
     // Proceed!
+    $userGateway = $container->get(UserGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
 
     // DATA TABLE
@@ -59,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         $dates[] = ['date' => $date->format('Y-m-d')];
     }
 
-    if (empty($dates) || empty($substitute)) {
+    if (empty($dates) || empty($person)) {
         die();
     }
 
@@ -67,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
     $table = DataTable::create('staffAbsenceDates');
     $table->setTitle(__('Availability'));
-    $table->setDescription('<strong>'.$fullName.'</strong><br/><br/>'.$substitute['details']);
+    $table->setDescription('<strong>'.$fullName.'</strong><br/><br/>'.($substitute['details'] ?? ''));
     $table->getRenderer()->addData('class', 'bulkActionForm');
 
     $table->modifyRows(function ($values, $row) {

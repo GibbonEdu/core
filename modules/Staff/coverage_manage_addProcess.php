@@ -23,6 +23,7 @@ use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\User\UserGateway;
 
 require_once '../../gibbon.php';
 
@@ -36,9 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     exit;
 } else {
     // Proceed!
+    $settingGateway = $container->get(SettingGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
-    $fullDayThreshold =  floatval($container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageFullDayThreshold'));
+
+    $fullDayThreshold =  floatval($settingGateway->getSettingByScope('Staff', 'coverageFullDayThreshold'));
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
     
     $requestDates = $_POST['requestDates'] ?? [];
 
@@ -62,8 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
     // Validate the database relationships exist
     $substitute = $container->get(SubstituteGateway::class)->selectBy(['gibbonPersonID'=> $data['gibbonPersonIDCoverage']])->fetch();
-
-    if (empty($substitute)) {
+    $person = $container->get(UserGateway::class)->getByID($data['gibbonPersonIDCoverage']);
+    
+    if (($internalCoverage == 'N' && empty($substitute)) || empty($person)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
@@ -93,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
             'allDay'                => $_POST['allDay'] ?? 'N',
             'timeStart'             => $_POST['timeStart'] ?? null,
             'timeEnd'               => $_POST['timeEnd'] ?? null,
+            'reason'                => $_POST['reason'] ?? '',
         ];
 
         if ($dateData['allDay'] == 'Y') {
