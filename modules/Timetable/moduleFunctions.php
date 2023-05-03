@@ -2607,6 +2607,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
         }
 
         $periodCount = [];
+        $periodData = [];
         while ($rowPeriods = $resultPeriods->fetch()) {
             $isSlotInTime = false;
             if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -2654,6 +2655,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
                     // Count how many classes are in this period
                     $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
+                    $periodData[$rowPeriods['name']][] = $rowPeriods;
 
                     $effectiveStart = $rowPeriods['timeStart'];
                     $effectiveEnd = $rowPeriods['timeEnd'];
@@ -2704,9 +2706,20 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                     }
 
+                    $targetDate = date('Y-m-d', ($startDayStamp + (86400 * $count)));
+
                     $classCount = count($periodCount[$rowPeriods['name']] ?? []);
                     if ($classCount > 1) {
-                        $output .= Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
+                        $spaceChangeID = $periodData[$rowPeriods['name']][0]['gibbonCourseClassID'] ?? '';
+                        $spaceChangeTTID = $periodData[$rowPeriods['name']][0]['gibbonTTDayRowClassID'] ?? '';
+                        $spaceChangeTTID = str_pad($spaceChangeTTID, 12, "0", STR_PAD_LEFT);
+
+                        $spaceChangeEdit = $session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$spaceChangeTTID}-{$targetDate}&gibbonCourseClassID={$spaceChangeID}&source={$gibbonSpaceID}";
+
+                        $tag = Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
+                        $output .= $targetDate >= date('Y-m-d') && $canAddChanges && !empty($spaceChangeID)
+                            ? Format::link($spaceChangeEdit, $tag)
+                            : $tag;
                     }
 
                     if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
@@ -2725,7 +2738,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     }
 
                     $gibbonTTDayRowClassID = str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, "0", STR_PAD_LEFT);
-                    $targetDate = date('Y-m-d', ($startDayStamp + (86400 * $count)));
+                    
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
                         $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}&source={$gibbonSpaceID}'><img style='' title='".__('Add Facility Change')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/copyforward.png' width=20 height=20/></a>";
                     }
