@@ -125,6 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
             'milestones' => json_decode($reportingCycle['milestones'], true),
             'proofsTotal' => $proofsTotal,
             'progressColour' => 'green',
+            'partialColour' => 'blue',
             'totalCount' => count($proofReading),
             'progressCount' => $proofsDone,
             'partialCount' => max(0, $proofsTotal - $proofsDone)
