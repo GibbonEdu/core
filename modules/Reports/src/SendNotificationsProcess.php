@@ -52,7 +52,7 @@ class SendNotificationsProcess extends BackgroundProcess implements ContainerAwa
 
         foreach ($edits as $gibbonPersonID => $details) {
             $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
-            $actionLink = '/index.php?q=/modules/Reports/reporting_proofread.php';
+            $actionLink = '/index.php?q=/modules/Reports/reporting_proofread.php&filter=status:Edited';
             $actionText = __($notificationText, ['count' => count($details)]);
             
             $notificationSender->addNotification($gibbonPersonID, $actionText, __('Proof Reading Edits'), $actionLink);
