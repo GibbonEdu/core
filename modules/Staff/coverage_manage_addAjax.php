@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 require_once '../../gibbon.php';
 
@@ -43,12 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     // Proceed!
     $userGateway = $container->get(UserGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
+    $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
     // DATA TABLE
     $substitute = $substituteGateway->selectBy(['gibbonPersonID'=> $gibbonPersonIDCoverage])->fetch();
     $person = $container->get(UserGateway::class)->getByID($gibbonPersonIDCoverage);
     $unavailable = $substituteGateway->selectUnavailableDatesBySub($gibbonPersonIDCoverage)->fetchGrouped();
 
+    
     $start = new DateTime(Format::dateConvert($request['dateStart']).' 00:00:00');
     $end = new DateTime(Format::dateConvert($request['dateEnd']).' 23:00:00');
 
@@ -63,6 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     if (empty($dates) || empty($person)) {
         die();
     }
+
+    // Check for special days
+    $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($start->format('Y-m-d'), $end->format('Y-m-d'))->fetchGroupedUnique();
 
     $fullName = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
 
@@ -81,12 +87,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $table->addCheckboxColumn('requestDates', 'date')
         ->width('15%')
         ->checked(true)
-        ->format(function ($date) use (&$unavailable, &$request) {
+        ->format(function ($date) use (&$unavailable, &$request, &$specialDays, &$specialDayGateway, &$session) {
+            $specialDay = $specialDays[$date['date']] ?? [];
+
             // Is this date unavailable: absent, already booked, or has an availability exception
             if (isset($unavailable[$date['date']])) {
                 $times = $unavailable[$date['date']];
 
                 foreach ($times as $time) {
+
+                    // Free up teachers if their class is off timetable
+                    if ($time['status'] == 'Teaching' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
+                        $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $time['contextID'], $date['date']);
+                        if ($offTimetable) return;
+                    }
                 
                     // Handle full day and partial day unavailability
                     if ($time['allDay'] == 'Y' 
