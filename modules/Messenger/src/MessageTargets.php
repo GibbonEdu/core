@@ -238,12 +238,14 @@ class MessageTargets
         //Applicants
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
             if ($_POST["applicants"]=="Y") {
+                $students = $_POST["applicantsStudents"] ;
+                $parents = $_POST["applicantsParents"] ;
                 $choices=$_POST["applicantList"];
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
-                            $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id";
+                            $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id, students=:students, parents=:parents";
                             $result=$connection2->prepare($sqlTarget);
                             $result->execute($dataTarget);
                         }
@@ -1446,8 +1448,8 @@ class MessageTargets
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
-                            $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
-                            $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id" ;
+                            $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "students" => $students, "parents" => $parents);
+                            $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id, students=:students, parents=:parents" ;
                             $result=$connection2->prepare($sql);
                             $result->execute($data);
                         }

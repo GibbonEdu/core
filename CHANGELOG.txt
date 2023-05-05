@@ -57,6 +57,7 @@ v26.0.00
         Markbook: fixed class average row height when there is no data
         Markbook: adjusted student view to ensure that cummulative average honours term filter
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
+        Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Staff: fixed activities outside the current term showing up in New Coverage Request
