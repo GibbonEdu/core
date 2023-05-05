@@ -60,18 +60,6 @@ class MessengerReceiptGateway extends QueryableGateway
             ->bindValue('gibbonMessengerID', $gibbonMessengerID)
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
-        $this->unionWithCriteria($query, $criteria)
-            ->distinct()
-            ->cols([
-                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.status', '"" AS title', '"" AS surname', '"" AS preferredName', 'gibbonMessengerReceipt.contactDetail as email', '"" AS phone1', '"Applicant" AS role', 'gibbonMessengerReceipt.gibbonMessengerReceiptID', 'gibbonMessengerReceipt.targetType', 'gibbonMessengerReceipt.contactType', 'gibbonMessengerReceipt.contactDetail', '"" AS formGroup', 'gibbonMessengerReceipt.sent'
-            ])
-            ->from($this->getTableName())
-            ->innerJoin('gibbonMessenger', 'gibbonMessenger.gibbonMessengerID=gibbonMessengerReceipt.gibbonMessengerID')
-            ->where('gibbonMessenger.gibbonMessengerID=:gibbonMessengerID')
-            ->where('gibbonMessengerReceipt.targetID=:gibbonSchoolYearID')
-            ->bindValue('gibbonMessengerID', $gibbonMessengerID)
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-
         return $this->runQuery($query, $criteria);
     }
 
