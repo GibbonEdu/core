@@ -228,8 +228,7 @@ class QueryCriteria
      */
     private function applyAdvancedSearchFilters($text)
     {
-        $filters = [];
-        $text = preg_replace_callback('/(\w*\:\w*|(?:"[^"]*"))+/', function ($matches) use (&$filters) {
+        $text = preg_replace_callback('/(\w*\:[\w\-]*|(?:"[^"]*"))+/', function ($matches) {
             $this->filterBy($matches[0]);
             return '';
         }, $text);
