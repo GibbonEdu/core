@@ -66,6 +66,7 @@ v26.0.00
         Reports: fixed html entity decoding in MpdfRenderer
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
+        Staff: fixed error when deleting ad hoc coverage that is not attached to a class
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions

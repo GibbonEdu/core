@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_dele
     $otherCoverage = $staffCoverageGateway->selectBy(['gibbonStaffAbsenceID' => $values['gibbonStaffAbsenceID']])->fetchAll();
 
     // Update the original absence to flag it as not requiring coverage
-    if (empty($otherCoverage)) {
+    if (empty($otherCoverage) && !empty($values['gibbonStaffAbsenceID'])) {
         $staffAbsenceGateway->update($values['gibbonStaffAbsenceID'], ['coverageRequired' => 'N']);
     }
 
