@@ -79,7 +79,10 @@ class CourseCriteria extends DataSource
                     gibbonCourse.name as courseName, 
                     gibbonCourse.nameShort as courseNameShort,
                     gibbonCourseClass.name as className, 
-                    gibbonCourseClass.nameShort as classNameShort
+                    gibbonCourseClass.nameShort as classNameShort,
+                    author.title as authorTitle,
+                    author.preferredName as authorPreferredName,
+                    author.surname as authorSurname
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
@@ -90,6 +93,7 @@ class CourseCriteria extends DataSource
                 LEFT JOIN gibbonReportingValue ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID AND gibbonReportingValue.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingValue.gibbonPersonIDStudent=0))
                 LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
                 LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
+                LEFT JOIN gibbonPerson as author ON (gibbonReportingValue.gibbonPersonIDCreated=author.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonCourse.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID

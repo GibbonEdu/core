@@ -39,6 +39,7 @@ v26.0.00
         Library: added a confirmation step to replace the name of books using Google Book Data
         Library: enabled the borrowing record page to be used with all users
         Reports: added a filter to view Pending Edits on Proof Read page, pre-selected filter in notifications
+        Reports: added the name of who wrote the comment to CourseCriteria data source
         Staff: combined absence and coverage requests into the same form
         Staff: improved handling of Off Timetable days when checking staff availability 
         Staff: added an option to set coverage as Not Required or assign to an unavailable teacher
