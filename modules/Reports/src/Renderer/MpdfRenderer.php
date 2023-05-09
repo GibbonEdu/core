@@ -169,7 +169,7 @@ class MpdfRenderer implements ReportRendererInterface
         
         // Render .twig templates using Twig
         if (stripos($section->template, '.twig') !== false) {
-            return $this->twig->render($section->template, $data);
+            return html_entity_decode($this->twig->render($section->template, $data));
         }
         
         // Render .php templates by including the file, data is shared by scope

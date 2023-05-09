@@ -60,6 +60,7 @@ v26.0.00
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
+        Reports: fixed html entity decoding in MpdfRenderer
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
