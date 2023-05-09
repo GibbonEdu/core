@@ -380,7 +380,7 @@ class SubstituteGateway extends QueryableGateway
     protected function getIsClassOffTimetableByDate($gibbonCourseClassID, $date)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
-        $sql = "SELECT (CASE WHEN count(*) = 0 THEN 1 ELSE 0 END) as offTimetable 
+        $sql = "SELECT COUNT(*) as studentTotal, COUNT(CASE WHEN (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) ) AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList)) THEN student.gibbonPersonID ELSE NULL END) as studentCount 
             FROM gibbonCourseClassPerson 
             JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
             JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
@@ -396,6 +396,9 @@ class SubstituteGateway extends QueryableGateway
             AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
             AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
 
-        return $this->db()->selectOne($sql, $data);
+        $result = $this->db()->selectOne($sql, $data);
+
+        return !empty($result) && ($result['studentTotal'] > 0 && $result['studentCount'] <= 0);
+
     }
 }

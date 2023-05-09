@@ -73,7 +73,7 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
     public function getIsClassOffTimetableByDate($gibbonSchoolYearID, $gibbonCourseClassID, $date)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
-        $sql = "SELECT (CASE WHEN count(*) = 0 THEN 1 ELSE 0 END) as offTimetable 
+        $sql = "SELECT COUNT(*) as studentTotal, COUNT(CASE WHEN (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) ) AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList)) THEN student.gibbonPersonID ELSE NULL END) as studentCount
             FROM gibbonCourseClassPerson 
             JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) 
@@ -83,10 +83,10 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
             AND student.status='Full' 
             AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
             AND (student.dateStart IS NULL OR student.dateStart<=:date) 
-            AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
-            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
-            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
+            AND (student.dateEnd IS NULL OR student.dateEnd>=:date)";
 
-        return $this->db()->selectOne($sql, $data);
+        $result = $this->db()->selectOne($sql, $data);
+
+        return !empty($result) && ($result['studentTotal'] > 0 && $result['studentCount'] <= 0);
     }
 }
