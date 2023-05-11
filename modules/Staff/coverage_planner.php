@@ -76,6 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         $times = ['' => ['groupBy' => '']];
     }
 
+    // AD HOC COVERAGE
+    $adHocCoverage = $staffCoverageGateway->selectAdHocCoverageByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
+    if (!empty($adHocCoverage['Ad Hoc'])) {
+        $times['adHoc'] = [
+            'period' => __('General Coverage'),
+        ];
+        $coverage['adHoc'] = $adHocCoverage['Ad Hoc'];
+    }
+
     $copyURL = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'coverage_planner_copy.php')
         ->withQueryParams(['date' => $date->format('Y-m-d'), 'width' => 800, 'height' => 600 ]);
     echo $form->getFactory()->createWebLink(Format::icon('copy', __('Copy')))
@@ -96,7 +105,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
         if (!empty($groupBy)) {
-            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' <span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).') '.($ttCount > 1 ? $timeSlot['ttName'] : '').'</span></h4>');
+            $description = !empty($timeSlot['timeStart']) ? '<span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).') '.($ttCount > 1 ? $timeSlot['ttName'] : '').'</span>' : '';
+            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' '.$description.'</h4>');
         }
 
         $table->addMetaData('gridClass', 'rounded-sm text-sm bg-gray-100 border border-t-0');
@@ -135,6 +145,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
+                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                    return $coverage['contextName'].'<br/>'.Format::small(Format::timeRange($coverage['timeStart'], $coverage['timeEnd']));
+                };
+
                 $url = $coverage['context'] == 'Class' 
                     ? './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID']
                     : '';
@@ -145,7 +159,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
-                if ($coverage['absenceStatus'] == 'Pending Approval') {
+                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                    return Format::tag(__('Assigned'), 'bg-green-300 text-green-800');
+                } elseif ($coverage['absenceStatus'] == 'Pending Approval') {
                     return Format::tag(__('Pending Approval'), 'dull');
                 } elseif ($coverage['status'] == 'Not Required') {
                     return Format::tag(__('Not Required'), 'dull');
@@ -163,8 +179,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->addParam('date', $date->format('Y-m-d'))
             ->addClass('w-16 justify-end')
             ->format(function ($coverage, $actions) {
-                
-                if ($coverage['absenceStatus'] == 'Pending Approval') {
+                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                    $actions->addAction('view', __('View'))
+                        ->addParam('gibbonStaffCoverageID', $coverage['gibbonStaffCoverageID'] ?? '')
+                        ->isModal(700, 550)
+                        ->setURL('/modules/Staff/coverage_view_details.php');
+                } elseif ($coverage['absenceStatus'] == 'Pending Approval') {
                     $actions->addAction('view', __('View'))
                         ->addParam('gibbonStaffAbsenceID', $coverage['gibbonStaffAbsenceID'] ?? '')
                         ->isModal(700, 550)

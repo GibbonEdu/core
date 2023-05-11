@@ -31,10 +31,12 @@ class AbsenceFormats
 {
     public static function personDetails($absence)
     {
-        $output = Format::name($absence['titleAbsence'], $absence['preferredNameAbsence'], $absence['surnameAbsence'], 'Staff', false, true);
+        $output = !empty($absence['surnameAbsence'])
+            ? Format::name($absence['titleAbsence'], $absence['preferredNameAbsence'], $absence['surnameAbsence'], 'Staff', false, true)
+            : '';
         $gibbonPersonID = $absence['gibbonPersonID'] ?? '';
 
-        if (empty($output)) {
+        if (empty($output) && !empty($absence['surnameStatus'])) {
             $output = Format::name($absence['titleStatus'], $absence['preferredNameStatus'], $absence['surnameStatus'], 'Staff', false, true);
         }
         

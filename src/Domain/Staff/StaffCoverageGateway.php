@@ -236,6 +236,42 @@ class StaffCoverageGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
+    /**
+     * Get ad hoc coverage for a single date.
+     *
+     * @param string $gibbonSchoolYearID
+     * @param string $date
+     * @return Result
+     */
+    public function selectAdHocCoverageByDate($gibbonSchoolYearID, $date)
+    {
+        $query = $this
+            ->newSelect()
+            ->from('gibbonStaffCoverage')
+            ->cols(['"Ad Hoc" as context', 'gibbonStaffCoverageDate.reason as contextName','"Ad Hoc" as period', 'gibbonStaffCoverageDate.foreignTableID', 'gibbonStaffCoverageDate.foreignTable', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverageDate.gibbonStaffCoverageDateID', 'gibbonStaffCoverage.status', 'gibbonStaffCoverageDate.date', 'gibbonStaffCoverageDate.allDay', 'gibbonStaffCoverageDate.timeStart', 'gibbonStaffCoverageDate.timeEnd', 'gibbonStaffCoverage.timestampStatus', 'gibbonStaffCoverage.timestampCoverage', 'gibbonStaffCoverage.notesStatus', 
+            '"" as absenceStatus', '"" as reason', '"" as type',
+            'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage',
+            'gibbonStaffCoverage.gibbonPersonIDStatus', 'status.title as titleStatus', 'status.preferredName as preferredNameStatus', 'status.surname as surnameStatus'])
+
+            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
+
+            ->leftJoin('gibbonPerson AS coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID')
+            ->leftJoin('gibbonPerson AS status', 'gibbonStaffCoverage.gibbonPersonIDCoverage=status.gibbonPersonID')
+            
+            ->where('gibbonStaffCoverageDate.foreignTable IS NULL')
+            ->where('gibbonStaffCoverage.status <> "Cancelled" AND gibbonStaffCoverage.status <> "Declined"')
+            ->where('gibbonStaffCoverage.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonStaffCoverageDate.date = :date')
+            ->bindValue('date', $date)
+            ->groupBy(['gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
+
+        $query->orderBy(['timeStart', 'timeEnd']);
+
+        return $this->runSelect($query);
+
+    }
+
     public function selectCoverageByDateRange($dateStart, $dateEnd = null)
     {
         if (empty($dateEnd)) $dateEnd = $dateStart;
