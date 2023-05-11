@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     }
 
     $people = $subs->getColumn('gibbonPersonID');
-    $coverageCounts = $staffCoverageGateway->selectCoverageCountsByPerson($people)->fetchGroupedUnique();
+    $coverageCounts = $staffCoverageGateway->selectCoverageCountsByPerson($people, $coverage['date'])->fetchGroupedUnique();
     $subs->joinColumn('gibbonPersonID', 'coverageCounts', $coverageCounts);
 
     $subs->transform(function (&$sub) use (&$availability) {
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $subsPrepend = [];
     if (!empty($coverage['gibbonPersonIDCoverage'])) {
         $dates = $availability[intval($coverage['gibbonPersonIDCoverage'])] ?? [];
-        $counts = $staffCoverageGateway->selectCoverageCountsByPerson($coverage['gibbonPersonIDCoverage'])->fetchAll();
+        $counts = $staffCoverageGateway->selectCoverageCountsByPerson($coverage['gibbonPersonIDCoverage'], $coverage['date'])->fetchAll();
 
         $subsPrepend[] = [
             'gibbonPersonID' => $coverage['gibbonPersonIDCoverage'],

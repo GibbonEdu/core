@@ -418,12 +418,12 @@ class StaffCoverageGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectCoverageCountsByPerson($gibbonPersonID)
+    public function selectCoverageCountsByPerson($gibbonPersonID, $date = null)
     {
         $gibbonPersonIDCoverage = is_array($gibbonPersonID)? implode(',', $gibbonPersonID) : $gibbonPersonID;
 
-        $data = ['gibbonPersonIDCoverage' => $gibbonPersonIDCoverage];
-        $sql = "SELECT gibbonStaffCoverage.gibbonPersonIDCoverage, COUNT(DISTINCT gibbonStaffCoverageDate.gibbonStaffCoverageDateID) as totalCoverage, SUM(CASE WHEN gibbonStaffCoverageDate.date BETWEEN DATE_ADD(gibbonStaffCoverageDate.date, INTERVAL(1-DAYOFWEEK(gibbonStaffCoverageDate.date)) DAY) AND DATE_ADD(gibbonStaffCoverageDate.date, INTERVAL(7-DAYOFWEEK(gibbonStaffCoverageDate.date)) DAY) THEN 1 ELSE 0 END) as weekCoverage
+        $data = ['gibbonPersonIDCoverage' => $gibbonPersonIDCoverage, 'today' => $date ?? date('Y-m-d')];
+        $sql = "SELECT gibbonStaffCoverage.gibbonPersonIDCoverage, COUNT(DISTINCT gibbonStaffCoverageDate.gibbonStaffCoverageDateID) as totalCoverage, SUM(CASE WHEN gibbonStaffCoverageDate.date BETWEEN DATE_ADD(:today, INTERVAL(1-DAYOFWEEK(:today)) DAY) AND DATE_ADD(:today, INTERVAL(7-DAYOFWEEK(:today)) DAY) THEN 1 ELSE 0 END) as weekCoverage
                 FROM gibbonStaffCoverage
                 JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
                 JOIN gibbonSchoolYear ON (gibbonStaffCoverage.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
