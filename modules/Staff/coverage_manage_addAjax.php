@@ -95,19 +95,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
                 $times = $unavailable[$date['date']];
 
                 foreach ($times as $time) {
-
-                    // Free up teachers if their class is off timetable
-                    if ($time['status'] == 'Teaching' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
-                        $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $time['contextID'], $date['date']);
-                        if ($offTimetable) return;
-                    }
-                
                     // Handle full day and partial day unavailability
                     if ($time['allDay'] == 'Y' 
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
                         && $time['timeStart'] < $request['timeEnd']
                         && $time['timeEnd'] > $request['timeStart'])) {
+
+                        // Free up teachers if their class is off timetable
+                        if ($time['status'] == 'Teaching' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
+                            $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $time['contextID'], $date['date']);
+                            if ($offTimetable) continue;
+                        }
+
                         return Format::small(__($time['status'] ?? 'Not Available'));
                     }
                 }
