@@ -325,7 +325,9 @@ class Format
      */
     public static function timeRange($timeFrom, $timeTo, $format = false)
     {
-        return static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format);
+        return !empty($timeFrom) && !empty($timeTo)
+            ? static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format)
+            : static::time($timeFrom, $format);
     }
 
     /**

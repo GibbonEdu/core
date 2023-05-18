@@ -42,6 +42,7 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Domain\Students\FirstAidGateway;
 use Gibbon\Domain\User\RoleGateway;
 
 //Module includes for User Admin (for custom fields)
@@ -1275,7 +1276,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             echo $table->render([$condition]);
                         }
+                    } elseif ($subpage == 'First Aid') {
+                        if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
+                            echo Format::alert(__('Your request failed because you do not have access to this action.'));
+                        } else {
+                            
+                            $firstAidGateway = $container->get(FirstAidGateway::class);
+                            $criteria = $firstAidGateway->newQueryCriteria()
+                                ->sortBy(['date', 'timeIn'], 'DESC')
+                                ->fromPOST('firstAid');
 
+                            $firstAidRecords = $firstAidGateway->queryFirstAidByStudent($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
+
+                            // DATA TABLE
+                            $table = DataTable::createPaginated('firstAidRecords', $criteria);
+
+                            $table->addExpandableColumn('details')->format(function($person) use ($firstAidGateway) {
+                                $output = '';
+                                if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2br($person['description']).'<br/><br/>';
+                                if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2br($person['actionTaken']).'<br/><br/>';
+                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
+                                $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
+                                foreach ($resultLog AS $rowLog) {
+                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
+                                }
+
+                                return $output;
+                            });
+
+                            $table->addColumn('firstAider', __('First Aider'))
+                                ->sortable(['surnameFirstAider', 'preferredNameFirstAider'])
+                                ->format(Format::using('name', ['', 'preferredNameFirstAider', 'surnameFirstAider', 'Staff', false, true]));
+
+                            $table->addColumn('date', __('Date'))
+                                ->format(Format::using('date', ['date']));
+
+                            $table->addColumn('time', __('Time'))
+                                ->sortable(['timeIn', 'timeOut'])
+                                ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
+
+                            echo $table->render($firstAidRecords);
+                            
+                        }
 
                     } elseif ($subpage == 'Notes') {
                         if ($enableStudentNotes != 'Y') {
@@ -2418,6 +2460,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $style = "style='font-weight: bold'";
                     }
                      $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
+
+                    if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php')) {
+                        $style = '';
+                        if ($subpage == 'First Aid') {
+                            $style = "style='font-weight: bold'";
+                        }
+                        $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=First Aid'>".__('First Aid').'</a></li>';
+
+                    }
+
                     if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php')) {
                         if ($enableStudentNotes == 'Y') {
                             $style = '';

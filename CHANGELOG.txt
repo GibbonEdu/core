@@ -44,6 +44,7 @@ v26.0.00
         Staff: combined absence and coverage requests into the same form
         Staff: improved handling of Off Timetable days when checking staff availability 
         Staff: added an option to set coverage as Not Required or assign to an unavailable teacher
+        Students: added First Aid as a sub page on the Student Profile
         Timetable: made the +1 indicator for timetable clashes a link to Manage Exceptions
         Timetable Admin: added Reportable Yes/No option to bulk action in Course Enrolment by Person
 
