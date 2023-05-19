@@ -156,6 +156,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 {
     global $pdo, $page, $gibbon, $session;
 
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
+
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
 
@@ -244,6 +246,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
             //Get other uses of this rubric in this context, and store for use in visualisation
             $contexts = array();
+            $containsFutureData = false;
             if ($hasContexts) {
                 $dataContext = array('gibbonPersonID' => $gibbonPersonID);
                 $sqlContext = "SELECT gibbonRubricEntry.*, $contextDBTable.*, gibbonRubricEntry.*, gibbonRubricCell.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class
@@ -263,8 +266,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $currentDate = date('Y-m-d');
                     while ($rowContext = $resultContext->fetch()) {
                         // Skip data for any column that has not met its complete date yet
-                        if (!empty($rowContext['completeDate']) && $currentDate < $rowContext['completeDate']) {
-                            continue;
+                        if (!empty($rowContext[$contextDBTableDateField]) && $currentDate < $rowContext[$contextDBTableDateField]) {
+                            $containsFutureData = true;
+                            if ($roleCategory != 'Staff') {
+                                continue;
+                            }
                         }
 
                         $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.Format::date($rowContext[$contextDBTableDateField]).')';
@@ -275,6 +281,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 }
             }
 
+            
+            
             //Controls for viewing mode
             if ($gibbonPersonID != '') {
                 $output .= "<div class='linkTop'>";
@@ -286,9 +294,13 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $output .= '</div>';
             }
 
+            if ($containsFutureData && $roleCategory == 'Staff') {
+                $output .= Format::alert(__('As a staff member, your view of this rubric accounts for all current records, including those before their complete date. Parents and students will only see the rubric based on completed data.'), 'message historical visualised');
+            }
+
             //Div to contain rubric for current and historicla views
             $output .= "<div id='rubric'>";
-
+            
                 if ($mark == true) {
                     $output .= '<p>';
                     $output .= __('Click on any of the cells below to highlight them. Data is saved automatically after each click.');
@@ -304,6 +316,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 if ($hasContexts) {
                     $form->toggleVisibilityByClass('currentView')->onSelect('rubricTypeSelect')->when('Current');
                     $form->toggleVisibilityByClass('historical')->onSelect('rubricTypeSelect')->when('Historical');
+                    $form->toggleVisibilityByClass('visualised')->onSelect('rubricTypeSelect')->when('Visualise');
                 }
 
                     // Column Headers

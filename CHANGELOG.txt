@@ -41,6 +41,7 @@ v26.0.00
         Library: updated the Library Print Record import to enable connecting copies to parent records
         Reports: added a filter to view Pending Edits on Proof Read page, pre-selected filter in notifications
         Reports: added the name of who wrote the comment to CourseCriteria data source
+        Rubrics: updated visualize and historical data views so teachers can see unpublished results
         Staff: combined absence and coverage requests into the same form
         Staff: improved handling of Off Timetable days when checking staff availability 
         Staff: added an option to set coverage as Not Required or assign to an unavailable teacher
