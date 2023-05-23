@@ -198,4 +198,23 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
 
       return $this->runQuery($query,$criteria);
     }
+
+    public function selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)
+    {
+      $query = $this
+        ->newSelect()
+        ->from('gibbonINPersonDescriptor')
+        ->innerJoin('gibbonAlertLevel','gibbonAlertLevel.gibbonAlertLevelID = gibbonINPersonDescriptor.gibbonAlertLevelID')
+        ->cols([
+          'gibbonINPersonDescriptor.gibbonINPersonDescriptorID',
+          'gibbonINPersonDescriptor.gibbonPersonID',
+          'gibbonINPersonDescriptor.gibbonINDescriptorID',
+          'gibbonINPersonDescriptor.gibbonAlertLevelID',
+          'gibbonAlertLevel.gibbonAlertLevelID'
+        ])
+        ->where('gibbonINPersonDescriptor.gibbonPersonID = :gibbonPersonID')
+        ->bindValue('gibbonPersonID',$gibbonPersonID);
+
+        return $this->runSelect($query);
+    }
 }
