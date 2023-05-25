@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     // DATA TABLE
     $substitute = $substituteGateway->selectBy(['gibbonPersonID'=> $gibbonPersonIDCoverage])->fetch();
     $person = $container->get(UserGateway::class)->getByID($gibbonPersonIDCoverage);
-    $unavailable = $substituteGateway->selectUnavailableDatesBySub($gibbonPersonIDCoverage)->fetchGrouped();
+    
 
     
     $start = new DateTime(Format::dateConvert($request['dateStart']).' 00:00:00');
@@ -66,6 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     if (empty($dates) || empty($person)) {
         die();
     }
+
+    $unavailable = $substituteGateway->selectUnavailableDatesBySub($gibbonPersonIDCoverage, $start->format('Y-m-d'), $end->format('Y-m-d'))->fetchGrouped();
 
     // Check for special days
     $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($start->format('Y-m-d'), $end->format('Y-m-d'))->fetchGroupedUnique();

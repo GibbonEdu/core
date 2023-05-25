@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
 
     // Checkbox options
     $gibbonPersonID = !empty($coverage['gibbonPersonIDCoverage']) ? $coverage['gibbonPersonIDCoverage'] : $session->get('gibbonPersonID');
-    $unavailable = $container->get(SubstituteGateway::class)->selectUnavailableDatesBySub($gibbonPersonID, $gibbonStaffCoverageID)->fetchGrouped();
+    $unavailable = $container->get(SubstituteGateway::class)->selectUnavailableDatesBySub($gibbonPersonID, $coverage['dateStart'], $coverage['dateEnd'], $gibbonStaffCoverageID)->fetchGrouped();
 
     $datesAvailableToRequest = 0;
     $table->addCheckboxColumn('coverageDates', 'gibbonStaffCoverageDateID')
