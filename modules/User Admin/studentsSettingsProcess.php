@@ -45,8 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
             'behaviourAlertLowThreshold',
             'behaviourAlertMediumThreshold',
             'behaviourAlertHighThreshold',
-            'studentAgreementOptions',
             'firstAidDescriptionTemplate',
+        ],
+        'School Admin' => [
+            'studentAgreementOptions',
         ],
         'User Admin' => [
             'dayTypeOptions',
