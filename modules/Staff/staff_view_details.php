@@ -217,6 +217,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $col->addColumn('houseName', __('House'));
                         }
 
+                        
+
                         $col = $table->addColumn('Biography', __('Biography'));
 
                         $col->addColumn('countryOfOrigin', __('Country Of Origin'));
@@ -225,6 +227,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         // Custom Fields
                         $customFieldHandler->addCustomFieldsToTable($table, 'Staff', ['heading' => 'Other Information', 'withHeading' => ['Basic Information', 'Biography']], $row['fieldsStaff']);
+
+                        // Append the first aid details
+                        $headingCol = $table->getColumn('Basic Information');
+                        $headingCol->addColumn('firstAidQualified', __('First Aid Qualified'))
+                            ->addClass('grid')
+                            ->format(Format::using('yesNo', 'firstAidQualified'));
 
                         echo $table->render([$row]);
 
