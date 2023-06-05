@@ -161,7 +161,7 @@ class Action extends WebLink
         $this->external = true;
         $this->urlFragment = $urlFragment;
 
-        $this->setAttribute('target', '_blank');
+        $this->setAttribute('target', mb_stripos($url, '://') !== false ? '_blank' : '');
         $this->setAttribute('download', $downloadable);
 
         return $this;
