@@ -306,7 +306,7 @@ class Page extends View
      */
     public function addAlert(string $text, string $context = 'message')
     {
-        $this->alerts[$context][] = strip_tags($text, '<a><b><i><u><strong>');
+        $this->alerts[$context][] = strip_tags($text, '<a><b><i><u><strong><br>');
     }
 
     /**
