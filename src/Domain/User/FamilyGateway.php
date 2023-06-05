@@ -160,10 +160,11 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
     {
         $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
         $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
-        $sql = "SELECT gibbonFamilyChild.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.*, gibbonFamilyAdult.childDataAccess, gibbonFamilyAdult.contactEmail, gibbonFamilyAdult.contactCall, GROUP_CONCAT(DISTINCT (CASE WHEN gibbonPersonalDocumentType.name IS NOT NULL THEN gibbonPersonalDocument.country END) SEPARATOR ', ') as citizenship
+        $sql = "SELECT gibbonFamilyChild.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.*, gibbonFamilyAdult.childDataAccess, gibbonFamilyAdult.contactEmail, gibbonFamilyAdult.contactCall, GROUP_CONCAT(DISTINCT (CASE WHEN gibbonPersonalDocumentType.name IS NOT NULL THEN gibbonPersonalDocument.country END) SEPARATOR ', ') as citizenship, 'Family' as type, gibbonFamilyRelationship.relationship
             FROM gibbonFamilyChild
             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            LEFT JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID && gibbonFamilyRelationship.gibbonPersonID1=gibbonFamilyAdult.gibbonPersonID && gibbonFamilyRelationship.gibbonPersonID2=gibbonFamilyChild.gibbonPersonID)
             LEFT JOIN gibbonPersonalDocument ON (gibbonPersonalDocument.foreignTable='gibbonPerson' AND gibbonPersonalDocument.foreignTableID=gibbonPerson.gibbonPersonID AND gibbonPersonalDocument.country IS NOT NULL)
             LEFT JOIN gibbonPersonalDocumentType ON (gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID AND gibbonPersonalDocumentType.document='Passport')
             WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :gibbonPersonIDList)";

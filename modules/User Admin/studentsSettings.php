@@ -22,6 +22,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSettings.php') == false) {
     // Access denied
@@ -39,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
 
     $studentNoteGateway = $container->get(StudentNoteGateway::class);
+    $absoluteURL = $gibbon->session->get('absoluteURL');
 
     // QUERY
     $criteria = $studentNoteGateway->newQueryCriteria(true)
@@ -99,6 +102,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($noteCreationNotificationRoles)->selected($setting['value'])->required();
+
+    $form->addRow()->addHeading('Emergency Contacts', __('Emergency Contacts'));
+
+    $setting = $settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup', true);
+
+    $contactsList = !empty($setting['value'])? explode(',', $setting['value']) : [];
+    $contacts = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($contactsList)->fetchGroupedUnique();
+    $contacts = array_map(function ($token) use ($absoluteURL) {
+        return [
+            'id'       => $token['gibbonPersonID'],
+            'name'     => Format::name('', $token['preferredName'], $token['surname'], 'Staff', false, true),
+            'jobTitle' => !empty($token['jobTitle']) ? $token['jobTitle'] : $token['type'],
+            'image'    => $absoluteURL.'/'.$token['image_240'],
+        ];
+    }, $contacts);
+
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addFinder($setting['name'])
+            ->fromAjax($absoluteURL.'/modules/Staff/staff_searchAjax.php')
+            ->selected($contacts)
+            ->setParameter('resultsLimit', 10)
+            ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
 
     $form->addRow()->addHeading('Alerts', __('Alerts'));
 

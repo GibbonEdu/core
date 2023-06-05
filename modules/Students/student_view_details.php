@@ -44,6 +44,7 @@ use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Domain\Students\FirstAidGateway;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\FamilyGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -1178,6 +1179,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
+                        echo '<br/><br/>';
+
+                        // Follow-up Contacts
+                        $contacts = [];
+                        $emergencyFollowUpGroup = $settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup');
+                        
+                        if (!empty($emergencyFollowUpGroup)) {
+                            $contactsList = explode(',', $emergencyFollowUpGroup) ?? [];
+                            $contacts = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($contactsList)->fetchAll();
+                        }
+
+                        $staff = $container->get(StudentGateway::class)->selectAllRelatedUsersByStudent($session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID, false)->fetchAll();
+
+                        $familyAdults = $container->get(FamilyGateway::class)->selectFamilyAdultsByStudent($gibbonPersonID)->fetchAll();
+                        $familyAdults = array_filter($familyAdults, function ($parent) {
+                            return $parent['contactEmail'] == 'Y';
+                        });
+
+                        $table = DataTable::create('followupMedicalContacts');
+                        $table->setTitle(__('Follow-up Contacts'));
+                        $table->setDescription(__('These contacts can be used when following up on an emergency, or for less serious issues, when parents and staff need to be notified by email.'));
+                        
+                        $table->addColumn('fullName', __('Name'))
+                                ->notSortable()
+                                ->format(function ($person) {
+                                    return Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                });
+                        $table->addColumn('email', __('Email'))
+                                ->notSortable()
+                                ->format(function ($person) {
+                                    return htmlPrep('<'.$person['email'].'>');
+                                });
+                        $table->addColumn('context', __('Context'))
+                            ->notSortable()
+                            ->format(function ($person)  {
+                                if ($person['type'] == 'Family') {
+                                    $person['type'] = $person['type'].', '.$person['relationship'];
+                                } elseif ($person['type'] == 'Teaching' || $person['type'] == 'Support') {
+                                    $person['type'] = $person['jobTitle'];
+                                }
+
+                                if (!empty($person['classID'])) {
+                                    return Format::link('./index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$person['classID'], __($person['type']), ['class' => 'unselectable underline']);
+                                } else {
+                                    return '<span class="unselectable">'.__($person['type']).'</span>';
+                                }
+                            });
+
+                        echo $table->render(new DataSet(array_merge($familyAdults, $contacts, $staff)));
+
                     } elseif ($subpage == 'Medical') {
                         /** @var MedicalGateway */
                         $medicalGateway = $container->get(MedicalGateway::class);
@@ -1316,7 +1367,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
 
                             echo $table->render($firstAidRecords);
-                            
                         }
 
                     } elseif ($subpage == 'Notes') {

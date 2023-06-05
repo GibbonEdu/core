@@ -748,4 +748,5 @@ ALTER TABLE `gibbonLibraryItem` ADD `gibbonLibraryItemIDParent` INT(10) NULL DEF
 ALTER TABLE `gibbonMessengerReceipt` CHARACTER SET utf8 COLLATE utf8_general_ci;end
 ALTER TABLE `gibbonMessengerReceipt` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Behaviour Record for IN Student', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'emergencyFollowUpGroup', 'Follow-up Contacts', 'An optional list of staff to include in the follow-up contacts section.', '');end
 ";

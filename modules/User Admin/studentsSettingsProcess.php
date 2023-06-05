@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -29,141 +30,45 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enableStudentNotes = $_POST['enableStudentNotes'] ?? '';
-    $noteCreationNotification = ($_POST['noteCreationNotification'] == 'Tutors & Teachers') ? 'Tutors & Teachers' : 'Tutors';
-    $academicAlertLowThreshold = $_POST['academicAlertLowThreshold'] ?? '';
-    $academicAlertMediumThreshold = $_POST['academicAlertMediumThreshold'] ?? '';
-    $academicAlertHighThreshold = $_POST['academicAlertHighThreshold'] ?? '';
-    $behaviourAlertLowThreshold = $_POST['behaviourAlertLowThreshold'] ?? '';
-    $behaviourAlertMediumThreshold = $_POST['behaviourAlertMediumThreshold'] ?? '';
-    $behaviourAlertHighThreshold = $_POST['behaviourAlertHighThreshold'] ?? '';
-    $studentAgreementOptions = '';
-    foreach (explode(',', $_POST['studentAgreementOptions']) as $agreement) {
-        $studentAgreementOptions .= trim($agreement).',';
-    }
-    $studentAgreementOptions = substr($studentAgreementOptions, 0, -1);
-    $firstAidDescriptionTemplate = $_POST['firstAidDescriptionTemplate'] ?? '';
-    $dayTypeOptions = $_POST['dayTypeOptions'];
-    $dayTypeText = $_POST['dayTypeText'];
+    $partialFail = false;
 
-    //Write to database
-    $fail = false;
+    $settingGateway = $container->get(SettingGateway::class);
 
-    try {
-        $data = array('value' => $enableStudentNotes);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='enableStudentNotes'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
+    $settingsToUpdate = [
+        'Students' => [
+            'enableStudentNotes',
+            'noteCreationNotification',
+            'emergencyFollowUpGroup',
+            'academicAlertLowThreshold',
+            'academicAlertMediumThreshold',
+            'academicAlertHighThreshold',
+            'behaviourAlertLowThreshold',
+            'behaviourAlertMediumThreshold',
+            'behaviourAlertHighThreshold',
+            'studentAgreementOptions',
+            'firstAidDescriptionTemplate',
+        ],
+        'User Admin' => [
+            'dayTypeOptions',
+            'dayTypeText',
+        ]
+    ];
 
-    try {
-        $data = array('value' => $noteCreationNotification);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='noteCreationNotification'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name) {
+            $value = $_POST[$name] ?? '';
 
-    try {
-        $data = array('value' => $academicAlertLowThreshold);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='academicAlertLowThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+            if ($name == 'studentAgreementOptions') {
+                $value = implode(',', array_filter(array_map('trim', explode(',', $value))));
+            }
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
+        }
     }
 
-    try {
-        $data = array('value' => $academicAlertMediumThreshold);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='academicAlertMediumThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $academicAlertHighThreshold);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='academicAlertHighThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $behaviourAlertLowThreshold);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='behaviourAlertLowThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $behaviourAlertMediumThreshold);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='behaviourAlertMediumThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $behaviourAlertHighThreshold);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='behaviourAlertHighThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $studentAgreementOptions);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='studentAgreementOptions'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $firstAidDescriptionTemplate);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='firstAidDescriptionTemplate'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $dayTypeOptions);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeOptions'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $dayTypeText);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeText'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    if ($fail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        //Success 0
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=error2'
+        : '&return=success0';
+    header("Location: {$URL}");
 }
