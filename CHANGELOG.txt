@@ -40,6 +40,7 @@ v26.0.00
         Library: added a confirmation step to replace the name of books using Google Book Data
         Library: enabled the borrowing record page to be used with all users
         Library: updated the Library Print Record import to enable connecting copies to parent records
+        Messenger: updated message copies sent to sender to include an example confirm link
         Reports: added a filter to view Pending Edits on Proof Read page, pre-selected filter in notifications
         Reports: added the name of who wrote the comment to CourseCriteria data source
         Rubrics: updated visualize and historical data views so teachers can see unpublished results

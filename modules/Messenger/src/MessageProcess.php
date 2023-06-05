@@ -183,6 +183,14 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             if ($includeSender) {
                 $emailCount ++;
                 $mail->AddAddress($from);
+
+                if ($message['emailReceipt'] == 'Y') {
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $this->handleFakeReadReceiptLink($body, $emailReceiptText),
+                    ]);
+                }
+                
                 if(!$mail->Send()) {
                     $partialFail = TRUE;
                 }
@@ -202,6 +210,14 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                     $emailCount ++;
                     $mail->ClearAddresses();
                     $mail->AddAddress($session->get('email'));
+
+                    if ($message['emailReceipt'] == 'Y') {
+                        $mail->renderBody('mail/email.twig.html', [
+                            'title'  => $subject,
+                            'body'   => $this->handleFakeReadReceiptLink($body, $emailReceiptText),
+                        ]);
+                    }
+                    
                     if(!$mail->Send()) {
                         $partialFail = TRUE;
                     }
@@ -323,13 +339,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $message['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $message['body']);
 
         if ($message['emailReceipt'] == 'Y') {
-            $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$message['emailReceiptText']."</a>";
-            if (is_numeric(strpos($message['body'], '[confirmLink]'))) {
-                $message['body'] = str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
-            }
-            else {
-                $message['body'] = $message['body'].$bodyReadReceipt;
-            }
+            $message['body'] = $this->handleFakeReadReceiptLink($message['body'], $message['emailReceiptText']);
         }
 
         $mail->renderBody('mail/email.twig.html', [
@@ -338,6 +348,18 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         ]);
 
         return $mail->Send();
+    }
+
+    protected function handleFakeReadReceiptLink($body, $emailReceiptText)
+    {
+        $session = $this->getContainer()->get(Session::class);
+
+        $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$emailReceiptText."</a>";
+        if (is_numeric(strpos($body, '[confirmLink]'))) {
+            return str_replace('[confirmLink]', $bodyReadReceipt, $body);
+        } else {
+            return $body.$bodyReadReceipt;
+        }
     }
 
     protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $subject, $sendResult)
