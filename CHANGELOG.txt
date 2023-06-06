@@ -40,6 +40,7 @@ v26.0.00
         Library: added a confirmation step to replace the name of books using Google Book Data
         Library: enabled the borrowing record page to be used with all users
         Library: updated the Library Print Record import to enable connecting copies to parent records
+        Markbook: added Term filter to parent view, when Group Columns by Term enabled
         Messenger: updated message copies sent to sender to include an example confirm link
         Reports: added a filter to view Pending Edits on Proof Read page, pre-selected filter in notifications
         Reports: added the name of who wrote the comment to CourseCriteria data source
@@ -52,6 +53,7 @@ v26.0.00
         Students: added a Follow Up Contacts section with email addresses under Emergency Contacts
         Students: added a setting for additional Follow Up Contacts under Student Settings
         Students: added a separate view-only permission for First Aid records
+        Students: added Term filter to Markbook view in Student Profile, when Group Columns by Term enabled
         Timetable: made the +1 indicator for timetable clashes a link to Manage Exceptions
         Timetable Admin: added Reportable Yes/No option to bulk action in Course Enrolment by Person
 
@@ -67,6 +69,7 @@ v26.0.00
         Markbook: increased Name field length to 40 characters in Add Multiple
         Markbook: fixed class average row height when there is no data
         Markbook: adjusted student view to ensure that cummulative average honours term filter
+        Markbook: fixed term-related PHP exception in teacher view
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Planner: fixed duplicate lessons in Year Overview for multiple timetables

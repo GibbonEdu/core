@@ -451,7 +451,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
     }
 
     if ($entryCount < 1) {
-        echo "<div class='error'>";
+        echo "<div class='message'>";
         echo __('There are no records to display.');
         echo '</div>';
     }

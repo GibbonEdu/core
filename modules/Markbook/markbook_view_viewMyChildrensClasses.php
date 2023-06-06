@@ -18,9 +18,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 
 $page->breadcrumbs->add(__('View Markbook'));
 
@@ -53,11 +54,10 @@ if ($result->rowCount() < 1) {
     $count = 0;
     $options = array();
     while ($row = $result->fetch()) {
-
-            $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-            $resultChild = $connection2->prepare($sqlChild);
-            $resultChild->execute($dataChild);
+        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+        $resultChild = $connection2->prepare($sqlChild);
+        $resultChild->execute($dataChild);
         while ($rowChild = $resultChild->fetch()) {
             $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
         }
@@ -96,11 +96,10 @@ if ($result->rowCount() < 1) {
 
     if (!empty($gibbonPersonID) and count($options) > 0) {
         //Confirm access to this student
-
-            $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-            $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-            $resultChild = $connection2->prepare($sqlChild);
-            $resultChild->execute($dataChild);
+        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
+        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+        $resultChild = $connection2->prepare($sqlChild);
+        $resultChild->execute($dataChild);
         if ($resultChild->rowCount() < 1) {
             echo "<div class='error'>";
             echo __('The selected record does not exist, or you do not have access to it.');
@@ -119,22 +118,37 @@ if ($result->rowCount() < 1) {
             $dataList = array();
             $dataEntry = array();
 
-            $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $session->get('gibbonSchoolYearID');
-            if ($filter != '*') {
-                $dataList['filter'] = $filter;
-                $and .= ' AND gibbonSchoolYearID=:filter';
+            $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+            if ($gibbonSchoolYearID != '*') {
+                $dataList['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+                $and .= ' AND gibbonSchoolYearID=:gibbonSchoolYearID';
             }
 
-            $filter2 = isset($_REQUEST['filter2'])? $_REQUEST['filter2'] : '*';
-            if ($filter2 != '*') {
-                $dataList['filter2'] = $filter2;
-                $and .= ' AND gibbonDepartmentID=:filter2';
+            $gibbonDepartmentID = isset($_REQUEST['gibbonDepartmentID'])? $_REQUEST['gibbonDepartmentID'] : '*';
+            if ($gibbonDepartmentID != '*') {
+                $dataList['gibbonDepartmentID'] = $gibbonDepartmentID;
+                $and .= ' AND gibbonDepartmentID=:gibbonDepartmentID';
             }
 
-            $filter3 = isset($_REQUEST['filter3'])? $_REQUEST['filter3'] : '';
-            if ($filter3 != '') {
-                $dataEntry['filter3'] = $filter3;
-                $and2 .= ' AND type=:filter3';
+            $type = isset($_REQUEST['type'])? $_REQUEST['type'] : '';
+            if ($type != '') {
+                $dataEntry['type'] = $type;
+                $and2 .= ' AND type=:type';
+            }
+
+            $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+            if ($enableGroupByTerm == "Y") {
+                $termDefault = '';
+                $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                $termCurrent = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+                $termDefault = (is_array($termCurrent) && $termCurrent['gibbonSchoolYearID'] == $gibbonSchoolYearID) ? $termCurrent['gibbonSchoolYearTermID'] : '' ;
+                $gibbonSchoolYearTermID = isset($_REQUEST['gibbonSchoolYearTermID']) ? $_REQUEST['gibbonSchoolYearTermID'] : $termDefault;
+                if (!empty($gibbonSchoolYearTermID)) {
+                    $term = $schoolYearTermGateway->getByID($gibbonSchoolYearTermID);
+                    $dataEntry['firstDay'] = $term['firstDay'];
+                    $dataEntry['lastDay'] = $term['lastDay'];
+                    $and2 .= ' AND completeDate>=:firstDay AND completeDate<=:lastDay';
+                }
             }
 
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php','get');
@@ -145,28 +159,39 @@ if ($result->rowCount() < 1) {
 
             $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
             $rowFilter = $form->addRow();
-                $rowFilter->addLabel('filter2', __('Learning Areas'));
-                $rowFilter->addSelect('filter2')
+                $rowFilter->addLabel('gibbonDepartmentID', __('Learning Areas'));
+                $rowFilter->addSelect('gibbonDepartmentID')
                     ->fromArray(array('*' => __('All Learning Areas')))
                     ->fromQuery($pdo, $sqlSelect)
-                    ->selected($filter2);
+                    ->selected($gibbonDepartmentID);
 
             $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
             $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as value, CONCAT(gibbonSchoolYear.name, ' (', gibbonYearGroup.name, ')') AS name FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber";
             $rowFilter = $form->addRow();
-                $rowFilter->addLabel('filter', __('School Years'));
-                $rowFilter->addSelect('filter')
+                $rowFilter->addLabel('gibbonSchoolYearID', __('School Years'));
+                $rowFilter->addSelect('gibbonSchoolYearID')
                     ->fromArray(array('*' => __('All Years')))
                     ->fromQuery($pdo, $sqlSelect, $dataSelect)
-                    ->selected($filter);
+                    ->selected($gibbonSchoolYearID);
+            
+            if ($enableGroupByTerm == "Y") {
+                $dataSelect = [];
+                $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
+                $rowFilter = $form->addRow();
+                    $rowFilter->addLabel('gibbonSchoolYearTermID', __('Term'));
+                    $rowFilter->addSelect('gibbonSchoolYearTermID')
+                        ->fromQueryChained($pdo, $sqlSelect, $dataSelect, 'gibbonSchoolYearID')
+                        ->placeholder()
+                        ->selected($gibbonSchoolYearTermID);
+            }
 
             $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
             if (!empty($types)) {
                 $rowFilter = $form->addRow();
-                $rowFilter->addLabel('filter3', __('Type'));
-                $rowFilter->addSelect('filter3')
+                $rowFilter->addLabel('type', __('Type'));
+                $rowFilter->addSelect('type')
                     ->fromString($types)
-                    ->selected($filter3)
+                    ->selected($type)
                     ->placeholder();
             }
 
@@ -487,7 +512,7 @@ if ($result->rowCount() < 1) {
                         $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                         if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                            renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID']);
+                            renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
                         }
 
                         echo '</table>';

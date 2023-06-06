@@ -24,27 +24,28 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Students\FirstAidGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
-use Gibbon\Domain\Students\FirstAidGateway;
-use Gibbon\Domain\User\RoleGateway;
-use Gibbon\Domain\User\FamilyGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -1577,23 +1578,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $and2 = '';
                                 $dataList = array();
                                 $dataEntry = array();
-                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $session->get('gibbonSchoolYearID');
+                                $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
 
-                                if ($filter != '*') {
-                                    $dataList['filter'] = $filter;
-                                    $and .= ' AND gibbonSchoolYearID=:filter';
+                                if ($gibbonSchoolYearID != '*') {
+                                    $dataList['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+                                    $and .= ' AND gibbonSchoolYearID=:gibbonSchoolYearID';
                                 }
 
-                                $filter2 = isset($_REQUEST['filter2'])? $_REQUEST['filter2'] : '*';
-                                if ($filter2 != '*') {
-                                    $dataList['filter2'] = $filter2;
-                                    $and .= ' AND gibbonDepartmentID=:filter2';
+                                $gibbonDepartmentID = isset($_REQUEST['gibbonDepartmentID'])? $_REQUEST['gibbonDepartmentID'] : '*';
+                                if ($gibbonDepartmentID != '*') {
+                                    $dataList['gibbonDepartmentID'] = $gibbonDepartmentID;
+                                    $and .= ' AND gibbonDepartmentID=:gibbonDepartmentID';
                                 }
 
-                                $filter3 = isset($_REQUEST['filter3'])? $_REQUEST['filter3'] : '';
-                                if ($filter3 != '') {
-                                    $dataEntry['filter3'] = $filter3;
-                                    $and2 .= ' AND type=:filter3';
+                                $type = isset($_REQUEST['type'])? $_REQUEST['type'] : '';
+                                if ($type != '') {
+                                    $dataEntry['type'] = $type;
+                                    $and2 .= ' AND type=:type';
+                                }
+
+                                $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+                                if ($enableGroupByTerm == "Y") {
+                                    $termDefault = '';
+                                    $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                                    $termCurrent = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+                                    $termDefault = (is_array($termCurrent) && $termCurrent['gibbonSchoolYearID'] == $gibbonSchoolYearID) ? $termCurrent['gibbonSchoolYearTermID'] : '' ;
+                                    $gibbonSchoolYearTermID = isset($_REQUEST['gibbonSchoolYearTermID']) ? $_REQUEST['gibbonSchoolYearTermID'] : $termDefault;
+                                    if (!empty($gibbonSchoolYearTermID)) {
+                                        $term = $schoolYearTermGateway->getByID($gibbonSchoolYearTermID);
+                                        $dataEntry['firstDay'] = $term['firstDay'];
+                                        $dataEntry['lastDay'] = $term['lastDay'];
+                                        $and2 .= ' AND completeDate>=:firstDay AND completeDate<=:lastDay';
+                                    }
                                 }
 
                                 echo '<p>';
@@ -1611,28 +1627,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addLabel('filter2', __('Learning Areas'));
-                                    $rowFilter->addSelect('filter2')
+                                    $rowFilter->addLabel('gibbonDepartmentID', __('Learning Areas'));
+                                    $rowFilter->addSelect('gibbonDepartmentID')
                                         ->fromArray(array('*' => __('All Learning Areas')))
                                         ->fromQuery($pdo, $sqlSelect)
-                                        ->selected($filter2);
+                                        ->selected($gibbonDepartmentID);
 
                                 $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as value, CONCAT(gibbonSchoolYear.name, ' (', gibbonYearGroup.name, ')') AS name FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber";
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addLabel('filter', __('School Years'));
-                                    $rowFilter->addSelect('filter')
+                                    $rowFilter->addLabel('gibbonSchoolYearID', __('School Years'));
+                                    $rowFilter->addSelect('gibbonSchoolYearID')
                                         ->fromArray(array('*' => __('All Years')))
                                         ->fromQuery($pdo, $sqlSelect, $dataSelect)
-                                        ->selected($filter);
+                                        ->selected($gibbonSchoolYearID);
+                                
+                                if ($enableGroupByTerm == "Y") {
+                                    $dataSelect = [];
+                                    $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
+                                    $rowFilter = $form->addRow();
+                                        $rowFilter->addLabel('gibbonSchoolYearTermID', __('Term'));
+                                        $rowFilter->addSelect('gibbonSchoolYearTermID')
+                                            ->fromQueryChained($pdo, $sqlSelect, $dataSelect, 'gibbonSchoolYearID')
+                                            ->placeholder()
+                                            ->selected($gibbonSchoolYearTermID);
+                                }
 
                                 $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
                                 if (!empty($types)) {
                                     $rowFilter = $form->addRow();
-                                    $rowFilter->addLabel('filter3', __('Type'));
-                                    $rowFilter->addSelect('filter3')
+                                    $rowFilter->addLabel('type', __('Type'));
+                                    $rowFilter->addSelect('type')
                                         ->fromString($types)
-                                        ->selected($filter3)
+                                        ->selected($type)
                                         ->placeholder();
                                 }
 
@@ -1933,12 +1960,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     } else {
                                                         echo '<td>';
                                                         $rowSub = $resultSub->fetch();
-
-
-                                                            $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_GET['gibbonPersonID']);
-                                                            $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                            $resultWork = $connection2->prepare($sqlWork);
-                                                            $resultWork->execute($dataWork);
+                                                        $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_GET['gibbonPersonID']);
+                                                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+                                                        $resultWork = $connection2->prepare($sqlWork);
+                                                        $resultWork->execute($dataWork);
                                                         if ($resultWork->rowCount() > 0) {
                                                             $rowWork = $resultWork->fetch();
 
@@ -1998,7 +2023,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                                             if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
                                             }
 
                                             echo '</table>';
@@ -2006,7 +2031,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     }
                                 }
                                 if ($entryCount < 1) {
-                                    echo "<div class='error'>";
+                                    echo "<div class='message'>";
                                     echo __('There are no records to display.');
                                     echo '</div>';
                                 }

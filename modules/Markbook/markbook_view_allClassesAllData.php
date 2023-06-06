@@ -959,7 +959,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         echo '<td class="dataColumn dataDivider">';
                         echo $markbook->getFormattedAverage( $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID) );
                         echo '</td>';
-                        @$totals['termAverage'][$gibbonSchoolYearTermID] += $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID);
+                        @$totals['termAverage'][$gibbonSchoolYearTermID] += floatval($markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID));
                     }
 
                     echo '<td class="dataColumn dataDivider">';
