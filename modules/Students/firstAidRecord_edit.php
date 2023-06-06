@@ -31,6 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction == false) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
+        return;
+    }
+
+    $mode = $highestAction == 'First Aid Record_editAll'? 'edit' : 'view';
+
     //Proceed!
     $page->breadcrumbs
         ->add(__('First Aid Records'), 'firstAidRecord.php')
@@ -90,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             $row = $form->addRow();
                 $row->addLabel('timeOut', __('Time Out'));
-                $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5))->chainedTo('timeIn');
+                $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5))->chainedTo('timeIn')->readonly($mode != 'edit');
 
             $row = $form->addRow();
                 $column = $row->addColumn();
@@ -114,20 +122,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             //Print new-style followup as log
             $firstAidGateway = $container->get(FirstAidGateway::class);
-            $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($gibbonFirstAidID);
-            $count = 0;
-            foreach ($resultLog AS $rowLog) {
-                $row = $form->addRow();
-                    $column = $row->addColumn();
-                    $column->addLabel('followUp'.$count, __("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]));
-                    $column->addContent($rowLog['followUp'])->setClass('fullWidth');
-                $count++;
+            $logs = $firstAidGateway->queryFollowUpByFirstAidID($gibbonFirstAidID)->fetchAll();
+
+            if (!empty($logs)) {
+                $form->addRow()->addContent($page->fetchFromTemplate('ui/discussion.twig.html', [
+                    'discussion' => $logs
+                ]));
             }
 
             //Allow entry of fresh followup
             $row = $form->addRow();
                 $column = $row->addColumn();
-                $column->addLabel('followUp', __('Further Follow Up'));
+                $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')) .' / '.__('Notes'));
                 $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
 
 

@@ -114,16 +114,15 @@ class FirstAidGateway extends QueryableGateway implements ScrubbableGateway
 
     public function queryFollowUpByFirstAidID($gibbonFirstAidID)
     {
-        $dataLog = array('gibbonFirstAidID' => $gibbonFirstAidID);
-        $sqlLog = "SELECT gibbonFirstAidFollowUp.*, surname, preferredName FROM gibbonFirstAidFollowUp JOIN gibbonPerson ON (gibbonFirstAidFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFirstAidID=:gibbonFirstAidID";
-
         $query = $this
             ->newSelect()
             ->from($this->getTableName())
             ->cols([
                 'gibbonFirstAidFollowUp.*',
-                'surname',
-                'preferredName'
+                'gibbonFirstAidFollowUp.followUp as comment',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.image_240'
             ])
             ->innerJoin('gibbonFirstAidFollowUp', 'gibbonFirstAidFollowUp.gibbonFirstAidID=gibbonFirstAid.gibbonFirstAidID')
             ->innerJoin('gibbonPerson', 'gibbonFirstAidFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID')

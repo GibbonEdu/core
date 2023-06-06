@@ -51,6 +51,7 @@ v26.0.00
         Students: added First Aid as a sub page on the Student Profile
         Students: added a Follow Up Contacts section with email addresses under Emergency Contacts
         Students: added a setting for additional Follow Up Contacts under Student Settings
+        Students: added a separate view-only permission for First Aid records
         Timetable: made the +1 indicator for timetable clashes a link to Manage Exceptions
         Timetable Admin: added Reportable Yes/No option to bulk action in Course Enrolment by Person
 

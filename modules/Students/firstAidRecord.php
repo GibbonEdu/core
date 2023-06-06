@@ -90,11 +90,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         // DATA TABLE
         $table = DataTable::createPaginated('firstAidRecords', $criteria);
 
-        $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Students/firstAidRecord_add.php')
-            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-            ->displayLabel();
+        if ($highestAction == 'First Aid Record_editAll') {
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Students/firstAidRecord_add.php')
+                ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+                ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+                ->displayLabel();
+        }
 
         // COLUMNS
         $table->addExpandableColumn('details')->format(function($person) use ($firstAidGateway) {
@@ -114,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->description(__('Form Group'))
             ->sortable(['surnamePatient', 'preferredNamePatient'])
             ->format(function($person) use ($session) {
-                $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
+                $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=First Aid&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
                       .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
@@ -135,9 +137,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('gibbonFirstAidID')
-            ->format(function ($person, $actions) {
-                $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Students/firstAidRecord_edit.php');
+            ->format(function ($person, $actions) use ($highestAction) {
+                if ($highestAction == 'First Aid Record_editAll') {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Students/firstAidRecord_edit.php');
+                } elseif ($highestAction == 'First Aid Record_viewOnlyAddNotes') {
+                    $actions->addAction('view', __('View'))
+                        ->setURL('/modules/Students/firstAidRecord_edit.php');
+                }
             });
 
         echo $table->render($firstAidRecords);

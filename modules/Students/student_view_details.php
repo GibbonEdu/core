@@ -1366,6 +1366,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 ->sortable(['timeIn', 'timeOut'])
                                 ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
 
+                            $highestActionFirstAid = getHighestGroupedAction($guid, '/modules/Students/firstAidRecord.php', $connection2);
+                            $table->addActionColumn()
+                                ->addParam('gibbonPersonID', $gibbonPersonID)
+                                ->addParam('gibbonFormGroupID', $row['gibbonFormGroupID'])
+                                ->addParam('gibbonYearGroupID', $row['gibbonYearGroupID'])
+                                ->addParam('gibbonFirstAidID')
+                                ->format(function ($person, $actions) use ($highestActionFirstAid) {
+                                    if ($highestActionFirstAid == 'First Aid Record_editAll') {
+                                        $actions->addAction('edit', __('Edit'))
+                                            ->setURL('/modules/Students/firstAidRecord_edit.php');
+                                    } elseif ($highestActionFirstAid == 'First Aid Record_viewOnlyAddNotes') {
+                                        $actions->addAction('view', __('View'))
+                                            ->setURL('/modules/Students/firstAidRecord_edit.php');
+                                    }
+                                });
+
                             echo $table->render($firstAidRecords);
                         }
 
