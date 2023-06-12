@@ -21,8 +21,8 @@ v25.0.01
 --------
 
     Changes With Important Notices
-        System: raised the minimum PHP version to 7.4
-        System: raised the minimum MySQL version to 5.7
+        System: raised the minimum PHP version requirement to 7.4
+        System: raised the minimum MySQL version requirement to 5.7
 
     Security
         System: added .lock and .json files to htaccess denied list
