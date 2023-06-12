@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         exit;
     }
 
-    $gibbonPersonID = $row['gibbonPersonIDFirstAider'];
+    $gibbonPersonID = $values['gibbonPersonIDFirstAider'];
     $timeOut = $_POST['timeOut'] ?? null;
     $followUp = $_POST['followUp'] ?? '';
 
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         }
 
         // Update the record
-        $data = ['timeOut' => $timeOut, 'gibbonFirstAidID' => $gibbonFirstAidID, 'fields' => $fields];
+        $data = ['timeOut' => $timeOut, 'fields' => $fields];
         $firstAidGateway->update($gibbonFirstAidID, $data);
     }
 

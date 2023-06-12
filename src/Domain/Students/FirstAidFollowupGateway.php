@@ -36,8 +36,8 @@ class FirstAidFollowupGateway extends QueryableGateway implements ScrubbableGate
     use Scrubbable;
     use ScrubByPerson;
 
-    private static $tableName = 'gibbonFirstAidFollowup';
-    private static $primaryKey = 'gibbonFirstAidFollowupID';
+    private static $tableName = 'gibbonFirstAidFollowUp';
+    private static $primaryKey = 'gibbonFirstAidFollowUpID';
 
     private static $searchableColumns = [''];
     
