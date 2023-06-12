@@ -26,7 +26,8 @@ v26.0.00
         Library: added the option to attach copies of library items to a main record
 
     Changes With Important Notices
-        System: raised the minimum PHP to 7.4
+        System: raised the minimum PHP version requirement to 7.4
+        System: raised the minimum MySQL version requirement to 5.7
 
     Tweaks & Additions
         System: added Return to top link to bottom right of each page
