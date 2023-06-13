@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Markbook\MarkbookView;
-use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
@@ -91,6 +92,15 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $selectTerm = ($session->has('markbookTerm'))? $session->get('markbookTerm') : 0;
         $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
 
+        if (!isset($_GET['gibbonSchoolYearTermID'])) { //Set to current term if not already set
+            $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+            $currentTerm = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+            if (isset($currentTerm['gibbonSchoolYearTermID'])) {
+                $selectTerm = $currentTerm['gibbonSchoolYearTermID'];
+            }
+
+        }
+        
         $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
         $result = $pdo->executeQuery($data, $sql);
