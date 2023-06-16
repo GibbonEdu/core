@@ -194,7 +194,7 @@ jQuery(function($){
     */
     $(document).on('click', '.dataTable .expander', function () {
         $(this).toggleClass('expanded');
-        $(this).parents('tr').next('tr').toggle();
+        $(this).parent().closest('tr').next('tr').toggle();
     });
     
     /**
