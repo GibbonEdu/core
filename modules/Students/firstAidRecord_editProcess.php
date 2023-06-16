@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     }
 
     $gibbonPersonID = $values['gibbonPersonIDFirstAider'];
-    $timeOut = $_POST['timeOut'] ?? null;
+    $timeOut = !empty($_POST['timeOut']) ? $_POST['timeOut'] : null;
     $followUp = $_POST['followUp'] ?? '';
 
     // Only users with edit access can change this record
