@@ -121,7 +121,7 @@ class SubstituteGateway extends QueryableGateway
             ])
             ->leftJoin('gibbonSubstitute', 'gibbonSubstitute.gibbonPersonID=gibbonPerson.gibbonPersonID');
                 
-        if ($criteria->hasFilter('allStaff')) {
+        if ($criteria->hasFilter('allStaff', 'Y')) {
             $query->innerJoin('gibbonStaff', 'gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID')
                   ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary');
         } else {
@@ -233,7 +233,7 @@ class SubstituteGateway extends QueryableGateway
               ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)')
               ->bindValue('date', $date);
 
-        if ($criteria->hasFilter('allStaff')) {
+        if ($criteria->hasFilter('allStaff', 'Y')) {
             $query->where("gibbonRole.category='Staff' AND gibbonStaff.type='Teaching'");
         } else {
             $query->where("gibbonSubstitute.active='Y'");

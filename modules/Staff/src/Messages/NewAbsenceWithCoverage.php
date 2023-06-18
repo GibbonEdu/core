@@ -65,18 +65,27 @@ class NewAbsenceWithCoverage extends Message
 
         foreach ($this->dates as $date) {
             $notes = !empty($date['notes']) ? ' ('.$date['notes'].')' : '';
-            $coverageDetails[$date['period']] = $date['contextName'].$notes;
+            if (!empty($date['period']) && !empty($date['contextName'])) {
+                $coverageDetails[$date['period']] = $date['contextName'].$notes;
+            } else {
+                $coverageDetails[$date['date']] = Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true).$notes;
+            }
         }
 
-        return [
+        $details = [
             __('Staff')      => $this->details['name'],
             __('Type')       => $this->details['type'],
             __('Date')       => $this->details['date'],
             __('Time')       => $this->details['time'],
             __('Comment')    => $this->coverage['comment'],
-            __('Coverage')   => !empty($coverageDetails) ? Format::listDetails($coverageDetails) : $this->details['time'],
-            __('Notes')      => $this->coverage['notesStatus'],
         ];
+
+        if (!empty($coverageDetails)) {
+            $details[__('Coverage')] = Format::listDetails($coverageDetails);
+            $details[__('Notes')] = $this->coverage['notesStatus'];
+        }
+
+        return $details;
     }
 
     public function getModule() : string

@@ -22,7 +22,7 @@ namespace Gibbon\Module\Staff\Messages;
 use Gibbon\Module\Staff\Message;
 use Gibbon\Services\Format;
 
-class AbsenceApproval extends Message
+class NewAbsencePendingApproval extends Message
 {
     protected $absence;
     protected $details;
@@ -31,36 +31,45 @@ class AbsenceApproval extends Message
     {
         $this->absence = $absence;
         $this->details = [
-            'name'     => Format::name($absence['titleApproval'], $absence['preferredNameApproval'], $absence['surnameApproval'], 'Staff', false, true),
-            'date'     => Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']),
-            'type'     => trim($absence['type'].' '.$absence['reason']),
-            'actioned' => strtolower($absence['status']),
+            'name' => Format::name($absence['titleApproval'], $absence['preferredNameApproval'], $absence['surnameApproval'], 'Staff', false, true),
+            'date' => Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']),
+            'time' => $absence['allDay'] == 'Y' ? __('All Day') : Format::timeRange($absence['timeStart'], $absence['timeEnd']),
+            'type' => trim($absence['type'].' '.$absence['reason']),
+            'coverageRequired' => $absence['coverageRequired'] ?? 'N',
         ];
     }
 
     public function via() : array
     {
         return $this->absence['urgent']
-            ? ['database', 'mail', 'sms']
+            ? ['database', 'mail']
             : ['database', 'mail'];
     }
 
     public function getTitle() : string
     {
-        return __('Staff Absence').' '.$this->absence['status'];
+        return __('Staff Absence').' '.__('Pending Approval');
     }
 
     public function getText() : string
     {
-        return __("{name} has {actioned} your {type} absence for {date}.", $this->details);
+        return __("You have submitted a {type} absence for {date}, which is pending approval by {name}.", $this->details);
     }
 
     public function getDetails() : array
     {
-        return [
-            __($this->absence['status'])  => Format::dateTimeReadable($this->absence['timestampApproval']),
-            __('Reply') => $this->absence['notesApproval'],
+        $details = [
+            __('Type')       => $this->details['type'],
+            __('Date')       => $this->details['date'],
+            __('Time')       => $this->details['time'],
+            __('Comment')    => $this->absence['comment'],
         ];
+
+        if (!empty($this->absence['coverageRequired']) && $this->absence['coverageRequired'] == 'Y') {
+            $details[__('Cover Required')] = __('Yes');
+        }
+
+        return $details;
     }
 
     public function getModule() : string

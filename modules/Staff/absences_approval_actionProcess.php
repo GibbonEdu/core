@@ -22,6 +22,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\AbsenceNotificationProcess;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -45,6 +46,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $absence = $staffAbsenceGateway->getByID($gibbonStaffAbsenceID);
+
+    $coverageMode =  $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageMode');
 
     if (empty($absence)) {
         $URL .= '&return=error2';
@@ -83,12 +86,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
     $process->startAbsenceApproval($gibbonStaffAbsenceID);
 
     if ($status == 'Approved') {
-        if ($absence['coverageRequired'] == 'Y') {
-            $coverageList = $staffCoverageGateway->selectCoverageByAbsenceID($gibbonStaffAbsenceID)->fetchAll(\PDO::FETCH_COLUMN);
-            $process = $container->get(CoverageNotificationProcess::class);
-            $process->startNewAbsenceWithCoverageRequest($coverageList);
-        } else {
+        if ($absence['coverageRequired'] == 'N') {
             $process->startNewAbsence($gibbonStaffAbsenceID);
+        } else {
+            $process = $container->get(CoverageNotificationProcess::class);
+            
+            $coverageList = $staffCoverageGateway->selectCoverageByAbsenceID($gibbonStaffAbsenceID)->fetchAll(\PDO::FETCH_COLUMN);
+            $process->startNewAbsenceWithCoverageRequest($coverageList);
+
+            // Notify individuals or broadcast this request
+            if ($coverageMode == 'Requested') {
+                $process->startApprovedRequest($coverageList);
+            }
         }
     }
 
