@@ -80,6 +80,7 @@ v26.0.00
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Reports: fixed html entity decoding in MpdfRenderer
+        Reports: fixed footers on last page during bulk generation with mPDFRenderer
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
         Staff: fixed error when deleting ad hoc coverage that is not attached to a class
