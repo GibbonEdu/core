@@ -68,7 +68,8 @@ class NewAbsenceWithCoverage extends Message
             if (!empty($date['period']) && !empty($date['contextName'])) {
                 $coverageDetails[$date['period']] = $date['contextName'].$notes;
             } else {
-                $coverageDetails[$date['date']] = Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true).$notes;
+                $dateReadable = Format::dateReadable($date['date']);
+                $coverageDetails[$dateReadable] = (!empty($date['surnameCoverage']) ? Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true) : __('Any available substitute')).$notes;
             }
         }
 
