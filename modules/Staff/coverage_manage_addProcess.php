@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
 
     $fullDayThreshold =  floatval($settingGateway->getSettingByScope('Staff', 'coverageFullDayThreshold'));
+    $fullDayThreshold = empty($fullDayThreshold) ? 8.0 : $fullDayThreshold;
     $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
     
     $requestDates = $_POST['requestDates'] ?? [];
@@ -113,7 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
             if ($hoursCovered > $fullDayThreshold) {
                 $dateData['value'] = 1.0;
             } else {
-                $dateData['value'] = 0.5;
+                $timeCalc = round($hoursCovered / $fullDayThreshold, 1);
+                $dateData['value'] = max($timeCalc, 0.1);
             }
         }
 

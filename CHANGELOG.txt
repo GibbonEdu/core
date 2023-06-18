@@ -52,6 +52,7 @@ v26.0.00
         Staff: improved handling of Off Timetable days when checking staff availability 
         Staff: added an option to set coverage as Not Required or assign to an unavailable teacher
         Staff: added First Aid Qualified to the main overview on Staff Profile
+        Staff: improved the coverage time calculation for timetable coverage
         Students: added First Aid as a sub page on the Student Profile
         Students: added a Follow Up Contacts section with email addresses under Emergency Contacts
         Students: added a setting for additional Follow Up Contacts under Student Settings
