@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'emailReplyTo'      => $_POST['emailReplyTo'] ?? $session->get('email'),
         'emailReceipt'      => $_POST['emailReceipt'] ?? 'N',
         'emailReceiptText'  => $_POST['emailReceiptText'] ?? '',
+        'individualNaming'  => $_POST['individualNaming'] ?? 'N',
         'confidential'      => $_POST['confidential'] ?? 'N',
         'gibbonPersonID'    => $session->get('gibbonPersonID'),
         'timestamp'         => date('Y-m-d H:i:s'),

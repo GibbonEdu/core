@@ -752,5 +752,6 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 UPDATE `gibbonAction` SET name='First Aid Record_editAll', precedence=2 WHERE name='First Aid Record' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'First Aid Record_viewOnlyAddNotes', 0, 'Medical', 'Allows user to view first aid records and add incident notes, but not add or edit records.', NULL, 'firstAidRecord.php,firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '856' WHERE `gibbonCountry`.`printable_name` ='Lao People\'s Democratic Republic';end
+ALTER TABLE `gibbonMessenger` ADD `individualNaming` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `emailReceiptText`;end
 
 ";
