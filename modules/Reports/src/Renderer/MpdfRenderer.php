@@ -136,7 +136,6 @@ class MpdfRenderer implements ReportRendererInterface
         $this->setHeader($this->firstPage);
 
         if ($this->firstPage) {
-            $this->setFooter(true);
             $this->pdf->AddPageByArray([
                 'type' => 'ODD',
                 'resetpagenum' => 1,
@@ -316,7 +315,8 @@ class MpdfRenderer implements ReportRendererInterface
                     'odd-footer-name' => '',
                     'even-footer-name' => '',
                 ]);
-                $this->pdf->SetHTMLFooterByName('footer0', 'O');
+                $this->pdf->SetFooter('');
+                $this->pdf->writeHTML('<br/>');
             }
         }
         
