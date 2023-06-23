@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             //Allow entry of fresh followup
             $row = $form->addRow();
                 $column = $row->addColumn();
-                $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')) .' / '.__('Notes'));
+                $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')) .' / '.__('Notes'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what lead up to the incident, what was the incident, what did you do.'));
                 $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
 
 

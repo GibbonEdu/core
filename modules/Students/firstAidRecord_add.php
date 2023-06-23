@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         
         $row = $form->addRow();
             $column = $row->addColumn();
-            $column->addLabel('followUp', __('Follow Up'));
+            $column->addLabel('followUp', __('Follow Up'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what lead up to the incident, what was the incident, what did you do.'));
             $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
 
         // CUSTOM FIELDS
