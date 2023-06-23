@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\RowDependancyInterface;
+use Gibbon\Forms\Layout\Row;
+use Gibbon\Forms\Layout\Column;
 
 /**
  * Label
@@ -43,7 +45,7 @@ class Label extends Element implements RowDependancyInterface
     {
         $this->label = $label;
         $this->setAttribute('for', $for);
-        $this->addClass('font-medium mt-4 sm:my-1 sm:max-w-xs text-sm text-gray-700');
+        $this->addClass('font-medium mt-4 sm:my-1 text-sm text-gray-700');
     }
 
     /**
@@ -53,6 +55,7 @@ class Label extends Element implements RowDependancyInterface
     public function setRow($row)
     {
         $this->row = $row;
+        if (!$row instanceof Column) $this->addClass('sm:max-w-xs');
     }
 
     /**
