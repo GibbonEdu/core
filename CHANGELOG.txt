@@ -45,6 +45,7 @@ v26.0.00
         Markbook: added Term filter to parent view, when Group Columns by Term enabled
         Markbook: adjusted Term filter in teacher view to default to current term
         Messenger: updated message copies sent to sender to include an example confirm link
+        Messenger: added a setting to customise the signature used in messages
         Reports: added a filter to view Pending Edits on Proof Read page, pre-selected filter in notifications
         Reports: added the name of who wrote the comment to CourseCriteria data source
         Rubrics: updated visualize and historical data views so teachers can see unpublished results

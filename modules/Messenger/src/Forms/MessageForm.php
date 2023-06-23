@@ -27,6 +27,7 @@ use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\CannedResponseGateway;
+use Gibbon\View\View;
 
 /**
  * MessageForm
@@ -39,7 +40,7 @@ class MessageForm extends Form
     protected $session;
     protected $db;
 
-    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway)
+    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, View $view)
     {
         $this->session = $session;
         $this->db = $db;
@@ -53,6 +54,9 @@ class MessageForm extends Form
         $this->defaultSendStaff = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
         $this->defaultSendStudents = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
         $this->defaultSendParents = ($this->roleCategory == 'Parent')? 'Y' : 'N';
+
+        $this->signatureTemplate = $this->settingGateway->getSettingByScope('Messenger', 'signatureTemplate');
+        $this->view = $view;
     }
 
     public function createForm($action, $gibbonMessengerID = null)
@@ -66,7 +70,7 @@ class MessageForm extends Form
         $sent = !empty($values) && $values['status'] == 'Sent';
 
         // TODO: refactor this
-        $signature = $this->getSignature($guid, $connection2, $this->session->get('gibbonPersonID'));
+        $signature = $this->getSignature($this->session->get('gibbonPersonID'));
 
         // FORM
         $form = Form::create('messengerMessage', $this->session->get('absoluteURL').'/modules/Messenger/' .$action);
@@ -736,26 +740,24 @@ class MessageForm extends Form
     }
 
     //Build an email signautre for the specified user
-    private function getSignature($guid, $connection2, $gibbonPersonID)
+    public function getSignature($gibbonPersonID)
     {
+        $guid = $this->session->get('guid');
+        $connection2 = $this->db->getConnection();
         $return = false;
 
         $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+        $sql = 'SELECT gibbonStaff.*, surname, firstName, preferredName, email FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
         if ($result->rowCount() == 1) {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
-            $return = '<br /><br />----<br />';
-            $return .= '<span style="font-weight: bold; color: #447caa;">'.Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br />';
-            $return .= '<span style="font-style: italic;">';
-            if ($row['jobTitle'] != '') {
-                $return .= $row['jobTitle'].'<br />';
-            }
-            $return .= $this->session->get('organisationName').'<br />';
-            $return .= '</span>';
+            $signatureData = $values + [
+                'organisationName' => $this->session->get('organisationName'),
+            ];
+            $return = '<p></p>'.$this->view->fetchFromString($this->signatureTemplate, $signatureData);
         }
 
         return $return;

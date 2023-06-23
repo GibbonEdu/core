@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Module\Messenger\Forms\MessageForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
     // Access denied
@@ -44,6 +45,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $row = $form->addRow()->addHeading('Signature', __('Signature'));
+
+    $templateVariables = ['preferredName', 'firstName', 'surname', 'jobTitle', 'email', 'organisationName'];
+    $templateVariables = array_map(function ($item) {
+        return '{{'.$item.'}}';
+    }, $templateVariables);
+
+    $setting = $settingGateway->getSettingByScope('Messenger', 'signatureTemplate', true);
+    $col = $form->addRow()->addClass('certificate')->addColumn();
+        $col->addLabel($setting['name'], __m($setting['nameDisplay']))->description(__m($setting['description']).'<br/>'.__('Available Variables').': '.implode(', ', $templateVariables));
+        $col->addCodeEditor($setting['name'])->setMode('twig')->setValue($setting['value'])->setHeight('200')->required();
+
+        include_once($session->get('absolutePath').'/modules/Messenger/src/Forms/MessageForm.php');
+        $signature = $container->get(MessageForm::class)->getSignature($session->get('gibbonPersonID'));
+
+        $col->addLabel('preview', __('Preview'));
+        $col->addContent($signature.'<br/>');
 
     $row = $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 

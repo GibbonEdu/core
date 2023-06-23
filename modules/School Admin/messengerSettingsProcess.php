@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['signatureTemplate' => 'RAW']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/messengerSettings.php';
 
@@ -29,47 +30,43 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enableHomeScreenWidget = $_POST['enableHomeScreenWidget'] ?? '';
-    $pinnedMessagesOnHome = $_POST['pinnedMessagesOnHome'] ?? 'N';
-    $messageBcc = $_POST['messageBcc'] ?? '';
+    $partialFail = false;
+    $settingGateway = $container->get(SettingGateway::class);
 
-    //Write to database
-    $fail = false;
+    $settingsToUpdate = [
+        'Messenger' => [
+            'enableHomeScreenWidget' => 'required',
+            'signatureTemplate'      => 'required',
+            'messageBcc'             => '',
+            'pinnedMessagesOnHome'   => 'required',
+        ],
 
-    try {
-        $data = array('value' => $enableHomeScreenWidget);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='enableHomeScreenWidget'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    ];
+
+    // Validate required fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
     }
 
-    try {
-        $data = array('value' => $messageBcc);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBcc'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            $value = $_POST[$name] ?? '';
+            if ($property == 'skip-empty' && empty($value)) continue;
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
+        }
     }
 
-    try {
-        $data = array('value' => $pinnedMessagesOnHome);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='pinnedMessagesOnHome'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    if ($fail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        //Success 0
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

@@ -22,6 +22,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Messenger\Forms\MessageForm;
 
 if (!$session->exists("username")) {
     // Access denied
@@ -174,9 +175,18 @@ if (!$session->exists("username")) {
                 $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
         }
 
-
         //TODO: Allow for easy reset of MFA secret, currently would need to disable and then re-enable MFA to do so
 
+        if ($session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
+            $row = $form->addRow()->addHeading('Signature', __('Signature'))->append(__('Your messenger signature can be found below. You can use it as a regular email signature by selecting and copying the following contents into your email settings.'));
+
+            include_once($session->get('absolutePath').'/modules/Messenger/src/Forms/MessageForm.php');
+            $signature = $container->get(MessageForm::class)->getSignature($session->get('gibbonPersonID'));
+        }
+
+        $row = $form->addRow();
+            $row->addContent($signature.'<br/>');
+            
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();

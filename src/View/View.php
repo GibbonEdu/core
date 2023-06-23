@@ -107,6 +107,20 @@ class View implements \ArrayAccess
     }
 
     /**
+     * Render a given string using the template engine + provided data
+     * and returns the result as a string.
+     *
+     * @param string $template
+     * @param array  $data
+     * @return string
+     */
+    public function fetchFromString(string $templateString, array $data = []) : string
+    {
+        $template = $this->templateEngine->createTemplate($templateString);
+        return $template->render($data);
+    }
+
+    /**
      * Render the view with the given template and return the result as a string.
      *
      * @param string $template
