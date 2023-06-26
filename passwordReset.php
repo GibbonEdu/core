@@ -66,7 +66,7 @@ else {
     $_GET = $validator->sanitize($_GET);
 
     //Get URL parameters
-    $input = (!empty($_GET['input']) ? $_GET['input'] : null);
+    $input = $_GET['input'] ?? null;
     $key = (!empty($_GET['key']) ? $_GET['key'] : null);
     $gibbonPersonResetID = (!empty($_GET['gibbonPersonResetID']) ? $_GET['gibbonPersonResetID'] : null);
     $step = 2;

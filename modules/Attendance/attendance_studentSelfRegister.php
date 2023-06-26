@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     $studentSelfRegistrationIPAddresses = $container->get(SettingGateway::class)->getSettingByScope('Attendance', 'studentSelfRegistrationIPAddresses');
     $realIP = getIPAddress();
     if ($studentSelfRegistrationIPAddresses == '' || is_null($studentSelfRegistrationIPAddresses)) {
-        echo "<div class='error'>";
-        echo __('You do not have access to this action.');
-        echo '</div>';
+        $page->addError(__('You do not have access to this action.'));
     } else {
         //Check if school day
         $currentDate = date('Y-m-d');

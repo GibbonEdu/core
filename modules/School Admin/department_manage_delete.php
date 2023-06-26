@@ -24,9 +24,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_delete.php') == false) {
     //Access denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     //Check if gibbonDepartmentID specified

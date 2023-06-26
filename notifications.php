@@ -22,9 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 if (!$session->exists('username')) {
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Notifications'));
 

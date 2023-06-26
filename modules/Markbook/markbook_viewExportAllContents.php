@@ -56,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $class = getClass($pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, $highestAction);
 
     if (empty($class)) {
-        echo '<div class="error">';
-        echo __('You do not have access to this action.');
-        echo '</div>';
+        $page->addError(__('You do not have access to this action.'));
         return;
     }
 

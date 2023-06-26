@@ -28,9 +28,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letters.php') == false) {
     //Access denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('View Behaviour Letters'));
 

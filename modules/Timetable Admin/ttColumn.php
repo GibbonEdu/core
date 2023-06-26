@@ -29,9 +29,7 @@ $page->breadcrumbs->add(__('Manage Columns'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.php') == false) {
     //Acess denied
-    echo '<div class="error">';
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $timetableColumnGateway = $container->get(TimetableColumnGateway::class);

@@ -400,9 +400,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo $table->render($facilities);
                     } elseif ($subpage == 'Emergency Contacts') {
                         if ($highestActionManage != 'Manage Staff_confidential') {
-                            echo "<div class='error'>";
-                            echo __('You do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('You do not have access to this action.'));
                         }
                         else {
                             if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
