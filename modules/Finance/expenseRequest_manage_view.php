@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
     $urlParams = compact('gibbonFinanceBudgetCycleID');
 
@@ -96,9 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $result->execute($data);
 
                     if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The specified record cannot be found.');
-                        echo '</div>';
+                        $page->addError(__('The specified record cannot be found.'));
                     } else {
                         //Let's go!
                         $values = $result->fetch();

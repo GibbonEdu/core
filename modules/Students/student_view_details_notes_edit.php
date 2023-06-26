@@ -71,9 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Check if gibbonStudentNoteID specified
                     $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
                     if ($gibbonStudentNoteID == '') {
-                        echo "<div class='error'>";
-                        echo __('The specified record cannot be found.');
-                        echo '</div>';
+                        $page->addError(__('The specified record cannot be found.'));
                     } else {
                         try {
                             if ($highestAction == "View Student Profile_fullEditAllNotes") {

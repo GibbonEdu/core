@@ -73,9 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                         $result->execute($data);
 
                     if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The specified record cannot be found.');
-                        echo '</div>';
+                        $page->addError(__('The specified record cannot be found.'));
                     } else {
                         $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/units_deleteProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
                         echo $form->getOutput();

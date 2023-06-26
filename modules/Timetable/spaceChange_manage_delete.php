@@ -61,9 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record cannot be found.');
-                echo '</div>';
+                $page->addError(__('The specified record cannot be found.'));
             } else {
                 $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/spaceChange_manage_deleteProcess.php?gibbonTTSpaceChangeID=$gibbonTTSpaceChangeID");
                 echo $form->getOutput();

@@ -57,9 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             $staff = $staffGateway->selectStaffByStaffID($gibbonStaffID);
 
             if ($staff->isEmpty()) {
-                echo "<div class='error'>";
-                echo __('The specified record cannot be found.');
-                echo '</div>';
+                $page->addError(__('The specified record cannot be found.'));
             } else {
                 //Let's go!
                 $values = $staff->fetch();
