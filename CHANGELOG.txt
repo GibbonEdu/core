@@ -17,6 +17,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v25.0.01
+--------
+
+    Changes With Important Notices
+        System: raised the minimum PHP version to 7.4
+        System: raised the minimum MySQL version to 5.7
+
+    Security
+
+    Bug Fixes
+
 v25.0.00
 --------
 

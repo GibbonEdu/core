@@ -730,3 +730,8 @@ UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='S
 UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='Student Withdrawn';end
 
 ";
+
+//v25.0.01
+++$count;
+$sql[$count][0] = '25.0.01';
+$sql[$count][1] = "";
