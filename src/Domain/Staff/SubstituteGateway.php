@@ -206,16 +206,27 @@ class SubstituteGateway extends QueryableGateway
         );
 
         // Already doing activity?
-        $query->joinSubSelect(
-            'LEFT',
-            "SELECT gibbonActivityStaff.gibbonActivityStaffID as ID, gibbonActivity.name as status, gibbonActivityStaff.gibbonPersonID, :date as date, gibbonActivitySlot.timeStart, gibbonActivitySlot.timeEnd, gibbonDaysOfWeek.gibbonDaysOfWeekID
+        $activityDateType = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Activities' AND name='dateType'");
+        if ($activityDateType == 'Term') {
+            $sql = "SELECT gibbonActivityStaff.gibbonActivityStaffID as ID, gibbonActivity.name as status, gibbonActivityStaff.gibbonPersonID, :date as date, gibbonActivitySlot.timeStart, gibbonActivitySlot.timeEnd, gibbonDaysOfWeek.gibbonDaysOfWeekID, activityTerm.firstDay as dateStart, activityTerm.lastDay as dateEnd
+            FROM gibbonActivityStaff 
+            JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID)
+            JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
+            JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)
+            JOIN gibbonSchoolYearTerm as activityTerm ON FIND_IN_SET(activityTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)";
+        } else {
+            $sql = "SELECT gibbonActivityStaff.gibbonActivityStaffID as ID, gibbonActivity.name as status, gibbonActivityStaff.gibbonPersonID, :date as date, gibbonActivitySlot.timeStart, gibbonActivitySlot.timeEnd, gibbonDaysOfWeek.gibbonDaysOfWeekID, gibbonActivity.programStart as dateStart, gibbonActivity.programEnd as dateEnd
                 FROM gibbonActivityStaff 
                 JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID)
                 JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
-                JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)",
+            JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)";
+        }
+        $query->joinSubSelect(
+            'LEFT',
+            $sql,
             'activity',
             "activity.gibbonPersonID=gibbonPerson.gibbonPersonID AND (activity.gibbonDaysOfWeekID-1) = WEEKDAY(:date) 
-                AND activity.timeStart < :timeEnd AND activity.timeEnd > :timeStart"
+                AND activity.timeStart < :timeEnd AND activity.timeEnd > :timeStart AND :date BETWEEN activity.dateStart AND activity.dateEnd"
         );
         
 
@@ -226,11 +237,6 @@ class SubstituteGateway extends QueryableGateway
 
         if ($criteria->hasFilter('allStaff')) {
             $query->where("gibbonRole.category='Staff' AND gibbonStaff.type='Teaching'");
-            // $query->where("(SELECT COUNT(*) FROM gibbonCourseClassPerson 
-            //     INNER JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
-            //     INNER JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-            //     INNER JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID)
-            //     WHERE gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYear.status='Current') > 0");  
         } else {
             $query->where("gibbonSubstitute.active='Y'");
         }
@@ -290,8 +296,10 @@ class SubstituteGateway extends QueryableGateway
                 JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID 
                     AND gibbonTTDay.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID)
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
                 WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
                 AND (gibbonCourseClassPerson.role = 'Teacher' OR gibbonCourseClassPerson.role = 'Assistant')
+                AND gibbonTTDayRowClassExceptionID IS NULL
             )";
 
         return $this->db()->select($sql, $data);
@@ -328,7 +336,10 @@ class SubstituteGateway extends QueryableGateway
                 JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID 
                     AND gibbonTTDay.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID)
-                WHERE gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd AND (gibbonCourseClassPerson.role = 'Teacher' OR gibbonCourseClassPerson.role = 'Assistant')
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                WHERE gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd 
+                AND (gibbonCourseClassPerson.role = 'Teacher' OR gibbonCourseClassPerson.role = 'Assistant')
+                AND gibbonTTDayRowClassExceptionID IS NULL
             ) ORDER BY priority DESC, type DESC, date, timeStart, timeEnd";
 
         return $this->db()->select($sql, $data);
