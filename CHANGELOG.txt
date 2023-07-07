@@ -27,6 +27,7 @@ v25.0.01
     Security
         System: added .lock and .json files to htaccess denied list
         System: added additional sanitization to GET variables and alerts
+        Staff: added honeypot field to Staff application form
 
     Bug Fixes
         System: fixed date formatting error when Intl extension is not available
