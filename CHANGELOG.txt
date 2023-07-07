@@ -26,7 +26,9 @@ v25.0.01
 
     Security
         System: added .lock and .json files to htaccess denied list
-        System: added additional sanitization to GET variables and alerts
+        System: improved the sanitization of URL parameters and alerts
+        System: prevented XSS though GET variables in search forms
+        System: improved illegal address detection for non-php files
         Staff: added honeypot field to Staff application form
 
     Bug Fixes
@@ -35,7 +37,7 @@ v25.0.01
         System: fixed PHP regex error decoding dates from search filter text
         System: fixed collapsable comment show/hide bug in nested data tables
         Admissions: fixed incorrect parent field names in application submission email
-        Admissions: fixed application form prefill logic
+        Admissions: fixed application form prefill logic for continuing users
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: fixed class average row height when there is no data
