@@ -30,6 +30,7 @@ v25.0.01
 
     Bug Fixes
         System: fixed date formatting error when Intl extension is not available
+        Behaviour: fixed error from missing function in behaviour letter CLI script
 
 v25.0.00
 --------
