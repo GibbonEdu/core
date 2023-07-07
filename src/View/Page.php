@@ -424,7 +424,7 @@ class Page extends View
      * @param string $address
      * @return bool
      */
-    public function isAddressValid($address, bool $strictPHP = false) : bool
+    public function isAddressValid($address, bool $strictPHP = true) : bool
     {
         if ($strictPHP && stripos($address, '.php') === false) {
             return false;
