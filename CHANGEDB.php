@@ -734,4 +734,6 @@ UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='S
 //v25.0.01
 ++$count;
 $sql[$count][0] = '25.0.01';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+ALTER TABLE `gibbonMessengerReceipt` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;end
+";

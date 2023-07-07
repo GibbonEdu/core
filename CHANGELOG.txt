@@ -38,6 +38,7 @@ v25.0.01
         Form Groups: fixed Left staff showing in View Form Groups list
         Markbook: fixed class average row height when there is no data
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
+        Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Staff: fixed activities outside the current term showing up in New Coverage Request
