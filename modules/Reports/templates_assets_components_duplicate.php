@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     }
 
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
+    $values['templateFile'] = str_replace('.twig.html', '_copy.twig.html', $values['templateFile']);
 
     $form = Form::create('manageComponents', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_components_duplicateProcess.php');
 
@@ -59,7 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         $row->addTextField('templateFileDestination')
             ->maxLength(255)
             ->required()
-            ->setValue(str_replace('reports/', '', $values['templateFile']));
+            ->setValue(basename($values['templateFile']))
+            ->prepend(dirname($values['templateFile']).'/');
 
     $row = $form->addRow();
         $row->addFooter();
