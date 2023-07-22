@@ -44,6 +44,7 @@ v25.0.01
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
+        Planner: fixed input sanitization of resource quick-add values
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Reports: fixed html entity decoding in MpdfRenderer
         Reports: fixed footers on last page during bulk generation with mPDFRenderer
