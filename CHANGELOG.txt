@@ -84,6 +84,7 @@ v26.0.00
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Reports: fixed html entity decoding in MpdfRenderer
         Reports: fixed footers on last page during bulk generation with mPDFRenderer
+        Reports: fixed validation of duplicated template path in Manage Assets
         Rubrics: fixed input sanitization of visualization images
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
