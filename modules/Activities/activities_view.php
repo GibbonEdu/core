@@ -298,7 +298,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     });
 
                     $table->modifyRows(function ($activity, $row)  {
-                        if (!empty($activity['currentEnrolment'])) $row->addClass('current');
+                        if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] != 'Waiting List') $row->addClass('current');
+                        if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] == 'Waiting List') $row->addClass('warning');
                         else if ($activity['registration'] != 'Y') $row->addClass('dull');
                         else if ($activity['enrolmentFull']) $row->addClass('error');
 
