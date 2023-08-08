@@ -260,7 +260,38 @@ class ActivityGateway extends QueryableGateway
                 AND gibbonActivity.type=:type
                 AND gibbonActivity.active='Y'
                 AND :date BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay";
-        $this->db()->selectOne($sql, $data);
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    function getOverlappingActivityTimeSlot($gibbonActivityID, $gibbonPersonID, $dateType)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT existingActivity.gibbonActivityID as id, existingActivity.name
+                    FROM gibbonActivity as sourceActivity
+                    JOIN gibbonActivitySlot as sourceSlot ON (sourceActivity.gibbonActivityID=sourceSlot.gibbonActivityID)
+                    JOIN gibbonActivity as existingActivity ON (existingActivity.gibbonSchoolYearID=sourceActivity.gibbonSchoolYearID)
+                    LEFT JOIN gibbonActivitySlot as existingSlot ON (existingActivity.gibbonActivityID=existingSlot.gibbonActivityID)
+                    LEFT JOIN gibbonActivityStudent as existingEnrolment ON (existingActivity.gibbonActivityID=existingEnrolment.gibbonActivityID AND existingEnrolment.gibbonPersonID=:gibbonPersonID ) 
+                WHERE sourceActivity.gibbonActivityID=:gibbonActivityID
+                    AND existingEnrolment.status='Accepted' 
+                    AND existingActivity.active='Y'
+                    AND existingSlot.gibbonDaysOfWeekID=sourceSlot.gibbonDaysOfWeekID
+                    AND (
+                        (existingSlot.timeStart >= sourceSlot.timeStart AND existingSlot.timeStart < sourceSlot.timeEnd) OR
+                        (sourceSlot.timeStart >= existingSlot.timeStart AND sourceSlot.timeStart < existingSlot.timeEnd)
+                    )
+                ";
+
+        if ($dateType == 'Date') {
+            $sql .= "AND (
+                (existingActivity.programStart >= sourceActivity.programStart AND existingActivity.programStart < sourceActivity.programEnd) OR
+                (sourceActivity.programStart >= existingActivity.programStart AND sourceActivity.programStart < existingActivity.programEnd)
+            )";
+        } else if ($dateType == 'Term') {
+            $sql .= "AND sourceActivity.gibbonSchoolYearTermIDList LIKE CONCAT('%',existingActivity.gibbonSchoolYearTermIDList,'%')";
+        }
+
+        return $this->db()->select($sql, $data);
     }
 
 }

@@ -22,6 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -200,6 +201,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                                 $proceed = false;
                                             }
                                         }
+                                    }
+
+                                    $overlapCheck = $activityGateway->getOverlappingActivityTimeSlot($gibbonActivityID, $gibbonPersonID, $dateType)->fetchKeyPair();
+
+                                    if (!empty($overlapCheck)) {
+                                        echo Format::alert(__('The timing of this activity conflicts with one or more currently enrolled activities:').' '.Format::bold(implode(',', $overlapCheck)), 'warning');
                                     }
 
                                     $activityCountByType = $activityGateway->getStudentActivityCountByType($values['type'], $gibbonPersonID);
