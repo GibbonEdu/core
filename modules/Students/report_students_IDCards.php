@@ -136,13 +136,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
                 $nameLength = strlen($row['officialName']);
                 switch ($nameLength) {
-                    case $nameLength > 40:  $size = 18; break;
-                    case $nameLength > 30:  $size = 22; break;
-                    case $nameLength > 20:  $size = 26; break;
+                    case $nameLength >= 30:  $size = 16; break;
+                    case $nameLength >= 25:  $size = 20; break;
+                    case $nameLength >= 20:  $size = 24; break;
                     default: $size = 26;
                 }
 
-                echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
+                echo "<div style='font-weight: bold; font-size: ".$size."px !important;'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".Format::date($row['dob']).'</span><br/>';
                 echo '<b>'.$session->get('organisationNameShort').' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
                 echo '<b>'.__('Year/Form')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['form'].'</span><br/>';
