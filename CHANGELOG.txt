@@ -72,6 +72,7 @@ v26.0.00
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic
         Behaviour: fixed error from missing function in behaviour letter CLI script
+        Data Updater: fixed medical updates creating a notification when no data has changed
         Form Groups: fixed Left staff showing in View Form Groups list
         Library: fixed empty timestamp field in gibbonLibraryItem that caused errors on update
         Markbook: increased Name field length to 40 characters in Add Multiple

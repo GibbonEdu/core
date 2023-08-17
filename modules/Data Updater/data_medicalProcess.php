@@ -134,7 +134,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $newFields = json_decode($fields, true);
                 $newFields = is_array($newFields) ? $newFields : []; // make sure this is an array
                 foreach ($newFields as $key => $fieldValue) {
-                    if (!isset($existingFields[$key]) || $existingFields[$key] != $fieldValue) {
+                    if (empty($existingFields[$key]) && empty($fieldValue)) continue; // Nulls, false and empty strings should cause no change
+
+                    if ((empty($existingFields[$key]) && !empty($fieldValue)) || $existingFields[$key] != $fieldValue) {
                         $dataChanged = true;
                     }
                 }
@@ -197,6 +199,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     // Check for values that have changed
                     foreach ($condition as $key => $value) {
                         if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+                        if (empty($data[$key]) && empty($value)) continue; // Nulls, false and empty strings should cause no change
+
                         if ($data[$key] != $value) {
                             $dataChanged = true;
                         }
