@@ -40,6 +40,7 @@ v25.0.01
         Admissions: fixed application form prefill logic for continuing users
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
+        Finance: fixed edge case causing receipts to be sent along with reminders
         Markbook: fixed class average row height when there is no data
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
