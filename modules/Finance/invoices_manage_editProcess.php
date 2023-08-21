@@ -220,7 +220,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 $emailFail = false;
                 //Email Receipt
                 if (isset($_POST['emailReceipt'])) {
-                    if ($_POST['emailReceipt'] == 'Y') {
+                    if ($_POST['emailReceipt'] == 'Y' && stripos($status, 'Paid') !== false) {
                         $from = $_POST['email'] ?? '';
                         if ($partialFail == false and $from != '') {
                             //Send emails
