@@ -166,7 +166,7 @@ class Trigger implements OutputableInterface
         // Hide all initial targets if the source value does not equal the trigger value
         $output .= "if ( !({$comparisons}) ) { \n";
         $output .= "$('{$this->targetSelector}').hide(); \n";
-        $output .= "$('{$this->targetSelector} :input:not(button):not([type=radio])').prop('disabled', true).change(); \n";
+        $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ $(element).prop('disabled', true).change(); });";
         $output .= "}\n\n";
 
         return $output;
