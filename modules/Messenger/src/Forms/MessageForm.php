@@ -19,15 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Messenger\Forms;
 
+use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\CannedResponseGateway;
-use Gibbon\View\View;
 
 /**
  * MessageForm
@@ -40,6 +41,7 @@ class MessageForm extends Form
     protected $session;
     protected $db;
     protected $messengerGateway;
+    protected $sms;
     protected $cannedResponseGateway;
     protected $settingGateway;
     protected $roleGateway;
@@ -50,11 +52,12 @@ class MessageForm extends Form
     protected $signatureTemplate;
     protected $view;
 
-    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, View $view)
+    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, View $view)
     {
         $this->session = $session;
         $this->db = $db;
         $this->messengerGateway = $messengerGateway;
+        $this->smsGateway = $smsGateway;
         $this->cannedResponseGateway = $cannedResponseGateway;
         $this->settingGateway = $settingGateway;
         $this->roleGateway = $roleGateway;
@@ -163,6 +166,11 @@ class MessageForm extends Form
                 } else {
                     $row->addYesNoRadio('sms')->checked('N')->required();
 
+                    if ($smsCredits = $this->smsGateway->getCreditBalance()) {
+                        $row = $form->addRow()->addClass('sms');
+                            $row->addAlert("<b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>", 'message');
+                    }
+                    
                     $this->getSMSSignatureJS($signature);
                 }
             }
