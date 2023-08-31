@@ -691,9 +691,22 @@ function msort($array, $id = 'id', $sort_ascending = true)
     }
 }
 
-//Print out, preformatted indicator of max file upload size
-function getMaxUpload($guid, $multiple = '')
+/**
+ * Returns preformatted HTML indicator of max file upload size
+ *
+ * @since 2013
+ * @version v26
+ *
+ * @param bool $multiple  Whether to show text about multiple files.
+ */
+function getMaxUpload($multiple = false)
 {
+    // For backwards compatibilty
+    global $guid;
+    if ($multiple === $guid) {
+        $multiple = func_get_args()[1] ?? false;
+    }
+
     $output = '';
     $post = substr(ini_get('post_max_size'), 0, (strlen(ini_get('post_max_size')) - 1));
     $file = substr(ini_get('upload_max_filesize'), 0, (strlen(ini_get('upload_max_filesize')) - 1));
