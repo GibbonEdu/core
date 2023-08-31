@@ -473,7 +473,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     // SUBMIT
     $row = $form->addRow();
-        $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
+        $row->addFooter()->append('<small>'.getMaxUpload(true).'</small>');
         $row->addSubmit();
 
     echo $form->getOutput();

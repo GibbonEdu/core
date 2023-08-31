@@ -223,7 +223,7 @@ if ($proceed == false) {
         // CUSTOM FIELDS FOR USER: STAFF
         $params = ['staff' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
         $customFieldHandler->addCustomFieldsToForm($form, 'User', $params);
-        
+
         // REQURIED DOCUMENTS
         $staffApplicationFormRequiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
 
@@ -259,7 +259,7 @@ if ($proceed == false) {
                         ->setMaxUpload(false);
             }
 
-            $row = $form->addRow()->addContent(getMaxUpload($guid));
+            $row = $form->addRow()->addContent(getMaxUpload());
             $form->addHiddenValue('fileCount', count($requiredDocumentsList));
         }
 

@@ -514,7 +514,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $row->addDate('completeDate');
 
                     $row = $form->addRow()->addClass('submitRow sticky -bottom-px bg-gray-100 border-t -mt-px mb-px z-50');
-                        $row->addContent(getMaxUpload($guid, true));
+                        $row->addContent(getMaxUpload(true));
                         $row->addSubmit();
 
                     $form->loadAllValuesFrom($values);

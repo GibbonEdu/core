@@ -561,7 +561,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
             $row = $form->addRow();
-                $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
+                $row->addFooter()->append('<small>'.getMaxUpload(true).'</small>');
                 $row->addSubmit();
 
             $form->loadAllValuesFrom($values);

@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
         $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
         $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
         $result = $connection2->prepare($sql);
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
 
             $form->addRow()->addHeading('Job Related Information', __('Job Related Information'));
-            
+
             $form->addHiddenValue('type', $values['type']);
 
             $row = $form->addRow();
@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row = $form->addRow();
                         $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
 
-                    
+
                         $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $requiredDocumentsList[$i]);
                         $sqlFile = 'SELECT * FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY name';
                         $resultFile = $connection2->prepare($sqlFile);
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     }
                 }
 
-                $row = $form->addRow()->addContent(getMaxUpload($guid));
+                $row = $form->addRow()->addContent(getMaxUpload());
                 $form->addHiddenValue('fileCount', count($requiredDocumentsList));
             }
 
