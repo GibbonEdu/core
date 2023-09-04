@@ -41,7 +41,7 @@ class MessageForm extends Form
     protected $session;
     protected $db;
     protected $messengerGateway;
-    protected $sms;
+    protected $smsGateway;
     protected $cannedResponseGateway;
     protected $settingGateway;
     protected $roleGateway;
