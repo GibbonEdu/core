@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     // COLUMNS
     $table->addColumn('target', __('Target User'))
         ->sortable(['target.surname', 'target.preferredName'])
-        ->format(Format::using('nameLinked', ['gibbonPersonIDTarget', '', 'preferredName', 'surname', 'roleCategory']));
+        ->format(Format::using('nameLinked', ['gibbonPersonIDTarget', '', 'preferredName', 'surname', 'roleCategory', false, true]));
     $table->addColumn('roleCategory', __('Role Category'));
     $table->addColumn('updater', __('Requesting User'))
         ->sortable(['updater.surname', 'updater.preferredName'])
