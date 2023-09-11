@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     if ($highestAction == 'Manage Groups_all') {
         // BULK ACTIONS
         $bulkActions = array(
-            'Duplicate' => __('Duplicate'),
             'DuplicateMembers' => __('Duplicate With Members'),
+            'Duplicate' => __('Duplicate'),
             'Delete' => __('Delete'),
         );
         $col = $form->createBulkActionColumn($bulkActions);
