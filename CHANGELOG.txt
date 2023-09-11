@@ -41,6 +41,7 @@ v26.0.00
         Activities: added a warning message to Activity Registration when a timing conflict would occur
         Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Behaviour: added a notification event for receiving behaviour notifications about IN students
+        Data Updater: made email addresses in Family Data Updater copy-and-pasteable
         Library: added a confirmation step to replace the name of books using Google Book Data
         Library: enabled the borrowing record page to be used with all users
         Library: updated the Library Print Record import to enable connecting copies to parent records

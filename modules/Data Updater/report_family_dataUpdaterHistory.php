@@ -122,12 +122,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $table->addColumn('count', '')
             ->notSortable()
             ->width('5%')
+            ->addClass($hideDetails == 'Y' ? 'unselectable' : '')
             ->format(function ($row) use (&$count) {
                 return $count++;
             });
 
         $table->addColumn('familyName', __('Family'))
             ->width('20%')
+            ->addClass($hideDetails == 'Y' ? 'unselectable' : '')
             ->format(function($row) use ($session) {
                 return '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
             });
