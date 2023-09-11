@@ -101,6 +101,7 @@ v26.0.00
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
+        User Admin: fixed an error in Rollover when duplicate enrolments exist
 
 v25.0.00
 --------
