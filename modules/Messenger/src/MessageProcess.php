@@ -233,12 +233,12 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
                     //Deal with email receipt and body finalisation
                     if ($emailReceipt == 'Y') {
-                        $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry['gibbonPersonID']."&key=".$reportEntry['key']."'>".$emailReceiptText."</a>";
-                        if (is_numeric(strpos($body, '[confirmLink]'))) {
+                        $bodyReadReceipt = "<hr style='border: 1px solid #dddddd;'><a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry['gibbonPersonID']."&key=".$reportEntry['key']."'>".$emailReceiptText."</a><hr style='border: 1px solid #dddddd;'><br/>";
+                        if (strpos($body, '[confirmLink]') !== false) {
                             $bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body);
                         }
                         else {
-                            $bodyOut = $body.$bodyReadReceipt;
+                            $bodyOut = $bodyReadReceipt.$body;
                         }
                     }
                     else {
@@ -354,11 +354,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
     {
         $session = $this->getContainer()->get(Session::class);
 
-        $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$emailReceiptText."</a>";
+        $bodyReadReceipt = "<hr style='border: 1px solid #dddddd;'><a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$emailReceiptText."</a><hr style='border: 1px solid #dddddd;'><br/>";
         if (is_numeric(strpos($body, '[confirmLink]'))) {
             return str_replace('[confirmLink]', $bodyReadReceipt, $body);
         } else {
-            return $body.$bodyReadReceipt;
+            return $bodyReadReceipt.$body;
         }
     }
 
