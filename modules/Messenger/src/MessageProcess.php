@@ -256,9 +256,9 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                             $studentNameList = join(' & ', array_filter(array_merge(array(join(', ', array_slice($nameArray, 0, -1))), array_slice($nameArray, -1)), 'strlen'));
 
                             if (count($nameArray) > 1) {
-                                $studentNames = '<i>'.__('This email relates to the following students: ').$studentNameList.'</i><br/><br/>';
+                                $studentNames = '<i>'.__('This email relates to the following students: ').$studentNameList.'</i><br/>';
                             } else {
-                                $studentNames = '<i>'.__('This email relates to the following student: ').$studentNameList.'</i><br/><br/>';
+                                $studentNames = '<i>'.__('This email relates to the following student: ').$studentNameList.'</i><br/>';
                             }
                         }
                         $bodyOut = $studentNames.$bodyOut;

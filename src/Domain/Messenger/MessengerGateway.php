@@ -693,12 +693,12 @@ class MessengerGateway extends QueryableGateway
         if ($mode == 'result') {
             $resultReturn = array();
             $resultReturn[0] = $dataPosts;
-            $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
+            $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
 
             return serialize($resultReturn);
         } elseif ($mode == 'array') {
             try {
-                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
+                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
                 $resultPosts = $connection2->prepare($sqlPosts);
                 $resultPosts->execute($dataPosts);
             } catch (\PDOException $e) {
@@ -719,7 +719,7 @@ class MessengerGateway extends QueryableGateway
         } else {
             $count = 0;
             try {
-                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
+                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
                 $resultPosts = $connection2->prepare($sqlPosts);
                 $resultPosts->execute($dataPosts);
             } catch (\PDOException $e) {
