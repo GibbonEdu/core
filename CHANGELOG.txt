@@ -39,6 +39,7 @@ v26.0.00
         Attendance: added the name of attendance last taken to Form Groups Not Registered
         Activities: updated View Activities to highlight waiting list registrations in orange
         Activities: added a warning message to Activity Registration when a timing conflict would occur
+        Activities: added student date of birth to the Participants by Activity Report
         Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Behaviour: added a notification event for receiving behaviour notifications about IN students
         Data Updater: made email addresses in Family Data Updater copy-and-pasteable

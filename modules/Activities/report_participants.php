@@ -93,6 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
         });
     $table->addColumn('status', __('Status'))->translatable();
 
+    $table->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
+
     $view = new View($container->get('twig'));
 
     $table->addColumn('contacts', __('Parental Contacts'))

@@ -100,7 +100,7 @@ class ActivityReportGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
-            ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonFormGroup.nameShort AS formGroup'])
+            ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.dob', 'gibbonActivityStudent.status', 'gibbonFormGroup.nameShort AS formGroup'])
             ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
             ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
