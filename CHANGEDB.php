@@ -754,5 +754,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 UPDATE `gibbonCountry` SET `iddCountryCode` = '856' WHERE `gibbonCountry`.`printable_name` ='Lao People\'s Democratic Republic';end
 ALTER TABLE `gibbonMessenger` ADD `individualNaming` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `emailReceiptText`;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Messenger', 'signatureTemplate', 'Signature Template', 'An HTML and Twig template used to add signatures to messages.', '----<br /><span style=\"font-weight: bold; color: #447caa;\">{{ preferredName }} {{ surname }}</span><br />{% if jobTitle is not empty %}<span style=\"font-style: italic;\">{{ jobTitle }}</span><br />{% endif %}{{ organisationName }}<br /></span>');end
+ALTER TABLE `gibbonFormUpload` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 
 ";
