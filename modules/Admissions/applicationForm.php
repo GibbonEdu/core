@@ -121,6 +121,9 @@ if ($proceed == false) {
 
     // Load values from the form data storage
     $values = $formData->getData();
+    $values['secondParent'] = $formData->get('secondParent') ?? ($formData->has('parent2surname') ? 'Yes' : 'No');
+
+    // Is the current application incomplete?
     $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
     // Display form fee info

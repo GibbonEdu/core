@@ -39,6 +39,7 @@ v25.0.01
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic for continuing users
         Admissions: fixed Required Documents not displaying in Documents view of Edit Application
+        Admissions: fixed Second Parent checkbox showing the wrong state in Edit Application
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Form Groups: fixed Left staff showing in View Form Groups list
         Finance: fixed edge case causing receipts to be sent along with reminders
