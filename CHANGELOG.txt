@@ -78,6 +78,7 @@ v26.0.00
         System: fixed the fix for disabled status in toggle visibility for radios
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic
+        Admissions: fixed Second Parent not being created on application acceptance
         Admissions: fixed Required Documents not displaying in Documents view of Edit Application
         Admissions: fixed Second Parent checkbox showing the wrong state in Edit Application
         Behaviour: fixed error from missing function in behaviour letter CLI script

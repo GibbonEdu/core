@@ -72,7 +72,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         // Create Parent 1
-        if (!$formData->has('gibbonPersonIDParent1') && $formData->hasAll(['parent1surname', 'parent1preferredName'])) {
+        if (!$formData->has('gibbonPersonIDParent1') && $formData->has('parent1surname') && $formData->hasAny(['parent1preferredName','parent1firstName'])) {
             $this->createParentAccount($builder, $formData, '1');
         }
 
@@ -84,7 +84,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
         }
 
         // Create Parent 2
-        if (!$formData->has('gibbonPersonIDParent1') && !$formData->has('gibbonPersonIDParent2') && $formData->hasAll(['parent2surname', 'parent2preferredName'])) {
+        if (!$formData->has('gibbonPersonIDParent2') && $formData->has('parent2surname')&& $formData->hasAny(['parent2preferredName','parent2firstName'])) {
             $this->createParentAccount($builder, $formData, '2');
         }
 
