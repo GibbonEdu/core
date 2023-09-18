@@ -157,6 +157,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
     global $pdo, $page, $gibbon, $session;
 
     $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
+    $schoolYearFirstDay = $session->get('gibbonSchoolYearFirstDay');
 
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
@@ -265,6 +266,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 if ($resultContext->rowCount() > 0) {
                     $currentDate = date('Y-m-d');
                     while ($rowContext = $resultContext->fetch()) {
+                        // Skip data before the current school year
+                        if (!empty($schoolYearFirstDay) && $rowContext[$contextDBTableDateField] < $schoolYearFirstDay) {
+                            continue;
+                        }
+
                         // Skip data for any column that has not met its complete date yet
                         if (!empty($rowContext[$contextDBTableDateField]) && $currentDate < $rowContext[$contextDBTableDateField]) {
                             $containsFutureData = true;

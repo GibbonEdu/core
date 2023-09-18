@@ -97,6 +97,7 @@ v26.0.00
         Reports: fixed footers on last page during bulk generation with mPDFRenderer
         Reports: fixed validation of duplicated template path in Manage Assets
         Rubrics: fixed input sanitization of visualization images
+        Rubrics: fixed previous years data showing up in Historical data
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
         Staff: fixed error when deleting ad hoc coverage that is not attached to a class
