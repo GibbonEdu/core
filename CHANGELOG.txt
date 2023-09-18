@@ -26,6 +26,7 @@ v26.0.00
         Library: added the option to attach copies of library items to a main record
 
     Changes With Important Notices
+        System: domains used in iFrames must now be approved via Security & Privacy Settings
         System: raised the minimum PHP version requirement to 7.4
         System: raised the minimum MySQL version requirement to 5.7
 

@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
             'passwordPolicyNumeric' => 'required',
             'passwordPolicyNonAlphaNumeric' => 'required',
             'sessionDuration' => 'required',
+            'allowableIframeSources' => 'required',
         ],
         'System Admin' => [
             'cookieConsentEnabled' => 'required',
