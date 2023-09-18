@@ -114,6 +114,9 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
             case 'date': 
                 $fieldValue = !empty($fieldValue) ? Format::dateConvert($fieldValue) : null;
                 break;
+            case 'checkbox': 
+                $fieldValue = isset($_POST[$fieldName]) ? $_POST[$fieldName] : ($fieldInfo['default'] ?? '');
+                break;
             case 'checkboxes': 
                 $fieldValue = !empty($fieldValue) ? implode(',', $fieldValue) : ($fieldInfo['default'] ?? '');
                 break;

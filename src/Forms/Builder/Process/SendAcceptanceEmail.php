@@ -122,6 +122,6 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 
         // Send the email
         $sent = $this->mail->Send();
-        $formData->setResult($type.'Sent', $sent);
+        $formData->setResult($type.$prefix.'Sent', $sent);
     }
 }
