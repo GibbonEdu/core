@@ -21,6 +21,7 @@ v25.0.01
 --------
 
     Changes With Important Notices
+        System: domains used in iFrames must now be approved via Security & Privacy Settings
         System: raised the minimum PHP version requirement to 7.4
         System: raised the minimum MySQL version requirement to 5.7
 
@@ -29,6 +30,7 @@ v25.0.01
         System: improved the sanitization of URL parameters and alerts
         System: prevented XSS though GET variables in search forms
         System: improved illegal address detection for non-php files
+        System: added an iFrame allowlist for filtering safe domains
         Staff: added honeypot field to Staff application form
 
     Bug Fixes

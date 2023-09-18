@@ -69,6 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->required();
 
+    $setting = $settingGateway->getSettingByScope('System', 'allowableIframeSources', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
+
     $setting = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

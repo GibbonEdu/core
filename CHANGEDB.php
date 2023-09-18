@@ -737,5 +737,6 @@ $sql[$count][0] = '25.0.01';
 $sql[$count][1] = "
 ALTER TABLE `gibbonMessengerReceipt` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;end
 ALTER TABLE `gibbonFormUpload` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'allowableIframeSources', 'Allowable iFrame Sources', 'A comma separated list of domains that are allowed in embedded iFrames. All others will be removed from HTML content.', 'youtube.com,youtu.be,m.youtube.com,google.com,docs.google.com,drive.google.com,vimeo.com,player.vimeo.com');end
 
 ";
