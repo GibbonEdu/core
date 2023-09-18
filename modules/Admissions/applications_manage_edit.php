@@ -101,6 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $values = $formData->getData();
     $values['username'] = $formData->get('username') ?? $formData->getResult('username');
     $values['studentID'] = $formData->get('studentID') ?? $formData->getResult('studentID');
+    $values['secondParent'] = $formData->get('secondParent') ?? ($formData->has('parent2surname') ? 'Yes' : 'No');
 
     $incomplete = empty($application['status']) || $application['status'] == 'Incomplete';
 

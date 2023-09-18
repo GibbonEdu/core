@@ -79,6 +79,7 @@ v26.0.00
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic
         Admissions: fixed Required Documents not displaying in Documents view of Edit Application
+        Admissions: fixed Second Parent checkbox showing the wrong state in Edit Application
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Data Updater: fixed medical updates creating a notification when no data has changed
         Form Groups: fixed Left staff showing in View Form Groups list
