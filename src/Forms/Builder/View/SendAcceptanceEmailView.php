@@ -95,27 +95,42 @@ class SendAcceptanceEmailView extends AbstractFormView
         $col->addSubheading($this->getName());
 
         // Student email result
-        if (!empty($data->getAny('email'))) {
-            $studentName = Format::name('', $data->get('preferredName'), $data->get('surname'), 'Student');
-            if ($data->hasResult('acceptanceEmailStudentSent')) {
-                $col->addContent(Format::alert(__('A welcome email was successfully sent to').' '.$studentName, 'success'));
+        if ($data->getResult('informStudent') == 'Y') {
+            if (!empty($data->getAny('email'))) {
+                $studentName = Format::name('', $data->get('preferredName'), $data->get('surname'), 'Student');
+                if ($data->hasResult('acceptanceEmailStudentSent')) {
+                    $col->addContent(Format::alert(__('A welcome email was successfully sent to').' '.$studentName, 'success'));
+                } else {
+                    $col->addContent(Format::alert(__('A welcome email could not be sent to').' '.$studentName, 'error'));
+                }
             } else {
-                $col->addContent(Format::alert(__('A welcome email could not be sent to').' '.$studentName, 'error'));
+                $col->addContent(Format::alert(__('There are no student email addresses to send to.'), 'warning'));
             }
-        } else {
-            $col->addContent(Format::alert(__('There are no student email addresses to send to.'), 'warning'));
         }
        
         // Parent email result
-        if (!empty($data->getAny('parent1email'))) {
-            $parent1Name = Format::name('', $data->get('parent1preferredName'), $data->get('parent1surname'), 'Parent');
-            if ($data->hasResult('acceptanceEmailParentSent')) {
-                $col->addContent(Format::alert(__('A welcome email was successfully sent to').' '.$parent1Name, 'success'));
-            } else {
-                $col->addContent(Format::alert(__('A welcome email could not be sent to').' '.$parent1Name, 'error'));
+        if ($data->getResult('informParents') == 'Y') {
+            if (!empty($data->getAny('parent1email'))) {
+                $parent1Name = Format::name('', $data->get('parent1preferredName'), $data->get('parent1surname'), 'Parent');
+                if ($data->hasResult('acceptanceEmailParentSent') || $data->hasResult('acceptanceEmailParentparent1Sent')) {
+                    $col->addContent(Format::alert(__('A welcome email was successfully sent to').' '.$parent1Name, 'success'));
+                } else {
+                    $col->addContent(Format::alert(__('A welcome email could not be sent to').' '.$parent1Name, 'error'));
+                }
             }
-        } else {
-            $col->addContent(Format::alert(__('There are no parent email addresses to send to.'), 'warning'));
+
+            if (!empty($data->getAny('parent2email'))) {
+                $parent2Name = Format::name('', $data->get('parent2preferredName'), $data->get('parent2surname'), 'Parent');
+                if ($data->hasResult('acceptanceEmailParentSent') || $data->hasResult('acceptanceEmailParentparent2Sent')) {
+                    $col->addContent(Format::alert(__('A welcome email was successfully sent to').' '.$parent2Name, 'success'));
+                } else {
+                    $col->addContent(Format::alert(__('A welcome email could not be sent to').' '.$parent2Name, 'error'));
+                }
+            }
+            
+            if (empty($data->getAny('parent1email')) && empty($data->getAny('parent2email'))) {
+                $col->addContent(Format::alert(__('There are no parent email addresses to send to.'), 'warning'));
+            }
         }
     }
 }

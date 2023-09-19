@@ -56,7 +56,7 @@ class YearGroupGateway extends QueryableGateway
             ->cols([
                 'gibbonYearGroupID', 'name', 'nameShort', 'sequenceNumber', 'gibbonPersonIDHOY', 'preferredName', 'surname'
             ])
-            ->leftJoin('gibbonPerson', 'gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID');
+            ->leftJoin('gibbonPerson', 'gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID AND gibbonPerson.status="Full"');
 
         return $this->runQuery($query, $criteria);
     }

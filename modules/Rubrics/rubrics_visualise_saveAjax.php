@@ -16,13 +16,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+use Gibbon\Data\Validator;
 
-require_once "../../../gibbon.php";
+require_once "../../gibbon.php";
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $img = $_POST['img'] ?? null;
-$imgPath = $_POST['path'] ?? null;
 $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? str_pad($_POST['gibbonPersonID'], 10, '0', STR_PAD_LEFT) : null;
-$absolutePath = $gibbon->session->get('absolutePath');
+$gibbonPersonID = preg_replace('/[^a-zA-Z0-9]/', '', $gibbonPersonID);
+
+$absolutePath = $session->get('absolutePath');
+
+if (!$session->has('gibbonPersonID')) {
+    return;
+}
 
 if (empty($img) || empty($gibbonPersonID) || empty($absolutePath)) {
     return;
@@ -33,11 +41,24 @@ list($type, $img) = explode(';', $img);
 list(, $img)      = explode(',', $img);
 $img = base64_decode($img);
 
+if ($img === false || mb_stripos($type, 'image/png') === false) {
+    return;
+}
+
+// Strip directory off of the path, only use sanitized filename
+$imgPath = !empty($_POST['path']) ? basename($_POST['path']) : '';
+$imgPath = mb_substr($imgPath, 0, mb_strrpos($imgPath, '.'));
+$imgPath = preg_replace('/[^a-zA-Z0-9\-\_]/', '', $imgPath);
+
 // Create an uploads path if one isn't supplied
 if (empty($imgPath)) {
-    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-    $imgPath = $fileUploader->getUploadsFolderByDate().'/rubric_visualisation_'.$gibbonPersonID.'.png';
+    $imgPath = 'rubric_visualisation_'.$gibbonPersonID.'.png';
+} else {
+    $imgPath .= '.png';
 }
+
+$fileUploader = new Gibbon\FileUploader($pdo, $session);
+$imgPath = $fileUploader->getUploadsFolderByDate().'/'.$imgPath;
 
 // Ensure destination folder exists
 $destinationFolder = $absolutePath.'/'.dirname($imgPath);

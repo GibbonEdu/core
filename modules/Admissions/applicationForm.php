@@ -121,6 +121,9 @@ if ($proceed == false) {
 
     // Load values from the form data storage
     $values = $formData->getData();
+    $values['secondParent'] = $formData->get('secondParent') ?? ($formData->has('parent2surname') ? 'Yes' : 'No');
+
+    // Is the current application incomplete?
     $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
     // Display form fee info
@@ -136,7 +139,7 @@ if ($proceed == false) {
     // Prefill application form values
     if ($incomplete && !empty($account)) {
         $formPrefill = $container->get(FormPrefill::class)
-            ->loadApplicationData($admissionsApplicationGateway, $gibbonFormID, $account['gibbonAdmissionsAccountID'])
+            ->loadApplicationData($admissionsAccountGateway, $admissionsApplicationGateway, $gibbonFormID, $accessID, $accessToken)
             ->loadPersonalData($admissionsAccountGateway, $account['gibbonPersonID'], $accessID, $accessToken)
             ->prefill($formBuilder, $formData, $pageNumber, $values);
 

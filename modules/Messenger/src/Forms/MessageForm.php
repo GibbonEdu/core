@@ -38,6 +38,16 @@ class MessageForm extends Form
 {
     protected $session;
     protected $db;
+    protected $messengerGateway;
+    protected $cannedResponseGateway;
+    protected $settingGateway;
+    protected $roleGateway;
+    protected $roleCategory;
+    protected $defaultSendStaff;
+    protected $defaultSendStudents;
+    protected $defaultSendParents;
+    protected $signatureTemplate;
+    protected $view;
 
     public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway)
     {

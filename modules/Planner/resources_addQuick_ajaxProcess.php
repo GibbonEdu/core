@@ -24,6 +24,10 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $time = time();
 
+if (!$session->has('gibbonPersonID')) {
+    return;
+}
+
 if (empty($_POST) or empty($_FILES)) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
     echo __('Your request failed due to an attachment error.');
@@ -72,6 +76,7 @@ if (empty($_POST) or empty($_FILES)) {
                 } else {
                     $extension = strrchr($attachment, '.');
                     $name = mb_substr(basename($file['name']), 0, mb_strrpos(basename($file['name']), '.'));
+                    $name = preg_replace('/[^a-zA-Z0-9\-\_ ]/', '', $name);
 
                     if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
                         $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$attachment."'></a>";

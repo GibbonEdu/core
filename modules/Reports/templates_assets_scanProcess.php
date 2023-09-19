@@ -53,6 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         $directoryPath = trim($directoryPath, '/');
         if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
 
+        if (!is_dir($directoryPath)) {
+            mkdir($directoryPath, 0755);
+        }
+
         $directoryFiles = [];
 
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directoryPath, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
@@ -94,6 +98,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         $directoryPath = trim($directoryPath, '/');
         if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
 
+        if (!is_dir($directoryPath)) {
+            mkdir($directoryPath, 0755);
+        }
+        
         $directoryFiles = [];
 
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directoryPath, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);

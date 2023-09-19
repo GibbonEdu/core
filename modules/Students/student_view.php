@@ -110,7 +110,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $row = $form->addRow();
                 $row->addLabel('search', __('Search For'))
-                    ->setClass('mediumWidth')
                     ->description($searchDescription);
                 $row->addTextField('search')->setValue($criteria->getSearchText());
 

@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         ]);
 
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
+    $gibbonStaffCoverageID = str_pad($gibbonStaffCoverageID, 14, 0, STR_PAD_LEFT);
 
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 

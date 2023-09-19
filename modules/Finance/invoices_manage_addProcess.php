@@ -61,6 +61,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             $invoiceFeeFailCount = 0;
             $feeFail = false;
 
+            // Use password policy to generate random strings
+            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+
             //PROCESS FEES
             $fees = array();
             foreach ($order as $fee) {
@@ -168,9 +171,6 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 //Let's go! Create key, send the invite
                                 $continue = false;
                                 $count = 0;
-
-                                // Use password policy to generate random string
-                                $randStrGenerator = new PasswordPolicy(true, true, false, 40);
 
                                 while ($continue == false and $count < 100) {
                                     $key = $randStrGenerator->generate();

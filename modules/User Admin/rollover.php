@@ -925,7 +925,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                     if ($result->rowCount() != 1 and $result->rowCount() != 0) {
                                         $reenrolled = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                        echo "<div class='warning'>".__('Potential duplicate enrolment found for user ID {user}', ['user' => $gibbonPersonID]).'</div>';
                                     } elseif ($result->rowCount() == 1) {
                                         try {
                                             $data2 = array('gibbonSchoolYearID' => $nextYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonFormGroupID' => $gibbonFormGroupID);

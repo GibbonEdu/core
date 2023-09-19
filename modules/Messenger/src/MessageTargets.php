@@ -238,12 +238,14 @@ class MessageTargets
         //Applicants
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
             if ($_POST["applicants"]=="Y") {
+                $students = $_POST["applicantsStudents"] ;
+                $parents = $_POST["applicantsParents"] ;
                 $choices=$_POST["applicantList"];
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
-                            $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id";
+                            $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id, students=:students, parents=:parents";
                             $result=$connection2->prepare($sqlTarget);
                             $result->execute($dataTarget);
                         }
@@ -1440,14 +1442,14 @@ class MessageTargets
                 $staff="N" ;
                 $students = $_POST["applicantsStudents"] ;
                 $parents = $_POST["applicantsParents"] ;
-                $applicantsWhere = "AND NOT status IN ('Waiting List', 'Rejected', 'Withdrawn', 'Pending')";
+                $applicantsWhere = "AND NOT gibbonApplicationForm.status IN ('Waiting List', 'Rejected', 'Withdrawn', 'Pending')";
 
                 $choices=$_POST["applicantList"] ;
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
-                            $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
-                            $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id" ;
+                            $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "students" => $students, "parents" => $parents);
+                            $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Applicants', id=:id, students=:students, parents=:parents" ;
                             $result=$connection2->prepare($sql);
                             $result->execute($data);
                         }
@@ -1471,29 +1473,29 @@ class MessageTargets
                             }
 
                             if ($parents == "Y") {
-                                //Get parent 1 emails
-                                try {
-                                    $dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-                                    $sqlEmail="SELECT DISTINCT parent1email FROM gibbonApplicationForm WHERE NOT parent1email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
-                                    $resultEmail=$connection2->prepare($sqlEmail);
-                                    $resultEmail->execute($dataEmail);
-                                }
-                                catch(\PDOException $e) { }
-                                while ($rowEmail=$resultEmail->fetch()) {
-                                    $this->reportAdd($emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["parent1email"]);
-                                }
+                                // //Get parent 1 emails
+                                // try {
+                                //     $dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
+                                //     $sqlEmail="SELECT DISTINCT parent1email FROM gibbonApplicationForm WHERE NOT parent1email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
+                                //     $resultEmail=$connection2->prepare($sqlEmail);
+                                //     $resultEmail->execute($dataEmail);
+                                // }
+                                // catch(\PDOException $e) { }
+                                // while ($rowEmail=$resultEmail->fetch()) {
+                                //     $this->reportAdd($emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["parent1email"]);
+                                // }
 
-                                //Get parent 2 emails
-                                try {
-                                    $dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-                                    $sqlEmail="SELECT DISTINCT parent2email FROM gibbonApplicationForm WHERE NOT parent2email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
-                                    $resultEmail=$connection2->prepare($sqlEmail);
-                                    $resultEmail->execute($dataEmail);
-                                }
-                                catch(\PDOException $e) { }
-                                while ($rowEmail=$resultEmail->fetch()) {
-                                    $this->reportAdd($emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["parent2email"]);
-                                }
+                                // //Get parent 2 emails
+                                // try {
+                                //     $dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
+                                //     $sqlEmail="SELECT DISTINCT parent2email FROM gibbonApplicationForm WHERE NOT parent2email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
+                                //     $resultEmail=$connection2->prepare($sqlEmail);
+                                //     $resultEmail->execute($dataEmail);
+                                // }
+                                // catch(\PDOException $e) { }
+                                // while ($rowEmail=$resultEmail->fetch()) {
+                                //     $this->reportAdd($emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["parent2email"]);
+                                // }
 
                                 //Get parent ID emails (when no family in system, but user is in system)
                                 try {
@@ -1504,7 +1506,7 @@ class MessageTargets
                                 }
                                 catch(\PDOException $e) { }
                                 while ($rowEmail=$resultEmail->fetch()) {
-                                    $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Applicant', $t, 'Email', $rowEmail["email"]);
+                                    $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Applicants', $t, 'Email', $rowEmail["email"]);
                                 }
 
                                 //Get family emails
@@ -1524,7 +1526,7 @@ class MessageTargets
                                     }
                                     catch(\PDOException $e) { }
                                     while ($rowEmail2=$resultEmail2->fetch()) {
-                                        $this->reportAdd($emailReceipt, $rowEmail2['gibbonPersonID'], 'Applicant', $t, 'Email', $rowEmail2["email"]);
+                                        $this->reportAdd($emailReceipt, $rowEmail2['gibbonPersonID'], 'Applicants', $t, 'Email', $rowEmail2["email"]);
                                     }
                                 }
                             }

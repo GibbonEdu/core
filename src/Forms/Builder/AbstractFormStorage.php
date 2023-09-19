@@ -80,6 +80,15 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         return true;
     }
 
+    public function hasAny(array $fieldNames) : bool
+    {
+        foreach ($fieldNames as $fieldName) {
+            if ($this->has($fieldName)) return true;
+        }
+
+        return false;
+    }
+
     public function hasData(string $fieldName) : bool
     {
         return !empty($this->data[$fieldName]);

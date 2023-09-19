@@ -1234,7 +1234,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= __($row['status']);
         } else {
             $paymentFail = false;
-            if (is_numeric($receiptNumber) == false) {
+            if (is_numeric($receiptNumber) == false || $receiptNumber < 0) {
                 $paymentFail = true;
             } else {
                 try {

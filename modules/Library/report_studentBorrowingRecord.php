@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
                 $detailTable = "<table>";
                 $fields = json_decode($item['fields'], true);
                 foreach (json_decode($item['typeFields'], true) as $typeField) {
-                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($typeField['name']), $fields[$typeField['name']]);
+                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($typeField['name']), $fields[$typeField['name']] ?? '');
                 }
                 $detailTable .= '</table>';
                 return $detailTable;

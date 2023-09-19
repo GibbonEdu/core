@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Prefill application form values
     if ($incomplete && !empty($account)) {
         $formPrefill = $container->get(FormPrefill::class)
-            ->loadApplicationData($admissionsApplicationGateway, $gibbonFormID, $account['gibbonAdmissionsAccountID'])
+            ->loadApplicationData($admissionsAccountGateway, $admissionsApplicationGateway, $gibbonFormID, $accessID, $account['accessToken'])
             ->loadPersonalData($admissionsAccountGateway, $account['gibbonPersonID'], $accessID, $account['accessToken'])
             ->prefill($formBuilder, $formData, $pageNumber, $values);
 

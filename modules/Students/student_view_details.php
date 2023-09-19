@@ -721,7 +721,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
                         $col->addColumn('departureReason', __('Departure Reason'));
 
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields']);
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields'] ?? '');
                         
                         $col = $table->addColumn('Background Information', __('Background Information'));
                         $country = $gibbon->session->get('country');

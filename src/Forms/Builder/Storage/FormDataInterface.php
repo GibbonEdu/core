@@ -27,6 +27,8 @@ interface FormDataInterface
 
     public function hasAll(array $fieldNames) : bool;
 
+    public function hasAny(array $fieldNames) : bool;
+
     public function get(string $fieldName, $default = null);
 
     public function getAny(string $fieldName, $default = null);

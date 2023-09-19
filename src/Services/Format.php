@@ -204,13 +204,13 @@ class Format
             }
         } else {
             if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $output = $startDate->format('M j, Y', $startTime);
+                $output = $startDate->format('M j, Y');
             } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('j, Y', $endTime);
+                $output = $startDate->format('M j').' - '.$endDate->format('j, Y');
             } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+                $output = $startDate->format('M j').' - '.$endDate->format('M j, Y');
             } else {
-                $output = $startDate->format('M j, Y', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+                $output = $startDate->format('M j, Y').' - '.$endDate->format('M j, Y');
             }
         }
 

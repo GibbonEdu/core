@@ -92,11 +92,13 @@ class MpdfRenderer implements ReportRendererInterface
 
         $this->setupDocument();
         
-        foreach ($reports as $reportData) {
+        foreach ($reports as $index => $reportData) {
+            $lastReport = $index == count($reports)-1;
+
             if ($reportData instanceof ReportData) {
                 $this->setupReport($reportData);
                 $this->renderReport($reportData);
-                $this->finishReport($reportData);
+                $this->finishReport($reportData, $lastReport);
             }
         }
 
@@ -129,12 +131,11 @@ class MpdfRenderer implements ReportRendererInterface
             }
         }
 
-        $this->lastPage = $section->lastPage || $this->lastPage;
+        $this->lastPage = $section->hasFlag(ReportSection::IS_LAST_PAGE) || $this->lastPage;
 
         $this->setHeader($this->firstPage);
 
         if ($this->firstPage) {
-            $this->setFooter(true);
             $this->pdf->AddPageByArray([
                 'type' => 'ODD',
                 'resetpagenum' => 1,
@@ -169,7 +170,7 @@ class MpdfRenderer implements ReportRendererInterface
         
         // Render .twig templates using Twig
         if (stripos($section->template, '.twig') !== false) {
-            return $this->twig->render($section->template, $data);
+            return html_entity_decode($this->twig->render($section->template, $data));
         }
         
         // Render .php templates by including the file, data is shared by scope
@@ -285,7 +286,7 @@ class MpdfRenderer implements ReportRendererInterface
         }
     }
 
-    protected function finishReport(ReportData &$reportData)
+    protected function finishReport(ReportData &$reportData, $lastReport = false)
     {
         $this->template->addData(['lastPage' => true]);
         $this->lastPage = true;
@@ -302,8 +303,9 @@ class MpdfRenderer implements ReportRendererInterface
         // Add a page with odd-numbered reports for two-sided printing
         if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
             if ($this->getPageNumber() % 2 != 0) {
+                $this->setFooter(true);
                 $this->pdf->SetHTMLHeaderByName('header0', 'O');
-                $this->pdf->SetHTMLFooterByName('footer0', 'O');
+                
                 $this->pdf->AddPageByArray([
                     'type' => 'NEXT-ODD',
                     'resetpagenum' => 1,
@@ -313,13 +315,15 @@ class MpdfRenderer implements ReportRendererInterface
                     'odd-footer-name' => '',
                     'even-footer-name' => '',
                 ]);
+                $this->pdf->SetFooter('');
+                $this->pdf->writeHTML('<br/>');
             }
         }
         
         // Continue the current document after a report for continuous output
         if ($this->hasMode(self::OUTPUT_CONTINUOUS)) {
             $this->firstPage = true;
-            $this->lastPage = false;
+            $this->lastPage = $lastReport ? true : false;
         } else {
             $outputPath = $this->getFilePath($reportData);
             $this->finishDocument($outputPath);

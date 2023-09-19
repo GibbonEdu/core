@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $fullDayThreshold =  floatval($container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageFullDayThreshold'));
+    $fullDayThreshold = empty($fullDayThreshold) ? 8.0 : $fullDayThreshold;
     
     $requestDates = $_POST['requestDates'] ?? [];
 

@@ -34,8 +34,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
 } else {
     // Proceed!
     $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? '';
-    $templateFileDestination = $_POST['templateFileDestination'] ?? '';
-    $templateFileDestination = trim($templateFileDestination, '/ ');
+
+    // Get filename and remove all potential path traversal information
+    $templateFileDestination = trim(basename($_POST['templateFileDestination'] ?? ''), '/ ');
+    $templateFileDestination = preg_replace('/[^a-zA-Z0-9\-\_.]/', '', $templateFileDestination);
+
+    // Check for required file extension
+    if (strtolower(mb_substr($templateFileDestination, -10, 10)) != '.twig.html' || stripos($templateFileDestination, './') !== false) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
 
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
 
@@ -53,7 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         ? $absolutePath.'/modules/Reports/templates/'.$data['templateFile']
         : $absolutePath.$customAssetPath.'/templates/'.$data['templateFile'];
 
-    $destinationPath = $absolutePath.$customAssetPath.'/templates/'.$templateFileDestination;
+    $sourceDir = str_replace('reports/', '', dirname($data['templateFile']));
+
+    $destinationPath = $absolutePath.$customAssetPath.'/templates/'.$sourceDir.'/'.$templateFileDestination;
 
     if (!is_dir(dirname($destinationPath))) {
         mkdir(dirname($destinationPath), 0755, true);
@@ -62,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     if (copy($sourcePath, $destinationPath)) {
         chmod($destinationPath, 0755);
         $data['type'] = 'Additional';
-        $data['templateFile'] = $templateFileDestination;
+        $data['templateFile'] = $sourceDir.'/'.$templateFileDestination;
         $duplicated = $prototypeGateway->insert($data);
     } else {
         $duplicated = false;

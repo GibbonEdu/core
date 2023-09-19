@@ -60,7 +60,7 @@ class FormUploadGateway extends QueryableGateway
                     $query->cols(["'Required Documents' AS type", "'Student' as target", ":option{$i} as name", 'gibbonFormUpload.gibbonFormUploadID AS id', 'gibbonFormUpload.path', 'gibbonFormField.required', 'gibbonFormUpload.timestamp'])
                         ->from('gibbonFormField')
                         ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
-                        ->leftJoin('gibbonFormUpload', "gibbonFormUpload.gibbonFormFieldID=gibbonFormField.gibbonFormFieldID AND gibbonFormUpload.name=:option{$i} AND gibbonFormUpload.foreignTable=:foreignTable AND gibbonFormUpload.foreignTableID=:foreignTableID")
+                        ->leftJoin('gibbonFormUpload', "gibbonFormUpload.gibbonFormFieldID=gibbonFormField.gibbonFormFieldID AND gibbonFormUpload.foreignTable=:foreignTable AND gibbonFormUpload.foreignTableID=:foreignTableID AND (gibbonFormUpload.name=:option{$i} OR gibbonFormUpload.name=SUBSTRING(:option{$i},1,90))")
                         ->where('gibbonFormField.fieldGroup="RequiredDocuments"')
                         ->where('gibbonFormPage.gibbonFormID=:gibbonFormID', ['gibbonFormID' => $gibbonFormID])
                         ->bindValue('foreignTable', $foreignTable)
@@ -69,6 +69,18 @@ class FormUploadGateway extends QueryableGateway
                 }
             }
         }
+
+        // Check for orphaned documents if a document type is deleted
+        $query = empty($query)? $this->newQuery() : $this->unionAllWithCriteria($query, $criteria);
+        $query->distinct()
+            ->from('gibbonFormUpload')
+            ->cols(["'Unknown' AS type", "'Student' as target", "gibbonFormUpload.name", 'gibbonFormUpload.gibbonFormUploadID AS id', 'gibbonFormUpload.path', '"N" as required', 'gibbonFormUpload.timestamp'])
+            ->leftJoin('gibbonFormField', "gibbonFormUpload.gibbonFormFieldID=gibbonFormField.gibbonFormFieldID AND  gibbonFormUpload.foreignTable=:foreignTable AND gibbonFormUpload.foreignTableID=:foreignTableID")
+            ->where('(gibbonFormField.gibbonFormFieldID IS NULL OR gibbonFormField.options NOT LIKE CONCAT("%",gibbonFormUpload.name,"%"))')
+            ->where('gibbonFormUpload.foreignTable=:foreignTable')
+            ->where('gibbonFormUpload.foreignTableID=:foreignTableID')
+            ->bindValue('foreignTable', $foreignTable)
+            ->bindValue('foreignTableID', $foreignTableID);
 
         if ($status == 'Accepted') {
 

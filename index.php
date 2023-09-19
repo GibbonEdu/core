@@ -681,7 +681,7 @@ if (!$session->has('address')) {
 } else {
     $address = trim($page->getAddress(), ' /');
 
-    if ($page->isAddressValid($address) == false) {
+    if ($page->isAddressValid($address, true) == false) {
         $page->addError(__('Illegal address detected: access denied.'));
     } else {
         // Pass these globals into the script of the included file, for backwards compatibility.

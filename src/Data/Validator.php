@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
-use Gibbon\Contracts\Services\Session;
 
 /**
  * Validaton & Sanitization Class
@@ -31,16 +30,23 @@ class Validator
 {
     protected $allowableHTML;
     protected $allowableHTMLString;
+    protected $allowableIframeSources;
 
-    public function __construct(string $allowableHTMLString)
+    public function __construct(string $allowableHTMLString, string $allowableIframeSources = '')
     {
         $this->allowableHTMLString = $allowableHTMLString;
         $this->allowableHTML = $this->parseTagsFromString($this->allowableHTMLString);
+        $this->allowableIframeSources = explode(',', mb_strtolower($allowableIframeSources));
     }
 
     public function getAllowableHTML()
     {
         return $this->allowableHTML;
+    }
+
+    public function getAllowableIframeSources()
+    {
+        return $this->allowableIframeSources;
     }
 
     /**
@@ -168,6 +174,27 @@ class Validator
     }
 
     /**
+     * Sanitize values used in URL parameters.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizeUrlParams($values)
+    {
+        $values = $this->sanitize($values);
+
+        if (is_array($values)) {
+            array_walk($values, function (&$value, $key) { 
+                $value = mb_substr($key, -2) == 'ID' 
+                    ? preg_replace('/[^a-zA-Z0-9]/', '', $value) 
+                    : preg_replace('/[\<\>\'\"\;]/', '', $value);
+            });
+        }
+
+        return $values;
+    }
+
+    /**
      * Wrapper for strip_tags, accepts an array of tags rather than a string.
      *
      * @param    string  &$value
@@ -205,7 +232,11 @@ class Validator
 
         if ($dom->loadHTML('<body>'.$value.'</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
             // Iterate over the DOM and remove attributes not in the whitelist
-            foreach ($dom->getElementsByTagName('*') as $node) {
+            $nodeList = $dom->getElementsByTagName('*');
+            $length = $nodeList->length;
+
+            for ($n = $length-1; $n >= 0; $n--) {
+                $node = $nodeList->item($n);
                 if (isset($allowableTags[$node->nodeName])) {
                     for ($i = $node->attributes->length-1; $i >= 0; $i--){
                         $attribute = $node->attributes->item($i);
@@ -215,8 +246,20 @@ class Validator
                         if (mb_stripos($attribute->value, 'javascript:') !== false) {
                             $node->removeAttributeNode($attribute);
                         }
+
+                        // Handle iframes with an allowlist of src domains
+                        if ($node->nodeName == 'iframe' && $attribute->name == 'src' && !empty($attribute->value)) {
+                            $host = parse_url(mb_strtolower($attribute->value), \PHP_URL_HOST);
+                            $host = str_replace('www.', '', $host);
+
+                            if (empty($host) || !in_array($host, $this->getAllowableIframeSources())) {
+                                $node->parentNode->appendChild(new \DOMComment('iFrame removed due to security policy'));
+                                $node->parentNode->removeChild($node);
+                            }
+                        }
                     }
                 }
+                
             }
 
             // Unwrap the body element, required because libxml needs an outer element (otherwise it adds one)

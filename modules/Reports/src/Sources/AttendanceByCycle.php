@@ -80,7 +80,7 @@ class AttendanceByCycle extends DataSource
 
         $values = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP) : array();
 
-        $termAttendance = array();
+        $termAttendance = [];
 
         foreach ($values as $reportNum => $attendanceLogs) {
             // Group by date
@@ -91,7 +91,7 @@ class AttendanceByCycle extends DataSource
 
             $attendance = array_map(function ($logs) {
                 $nonClassLogs = array_filter($logs, function ($log) {
-                    return $log['context'] != 'Class';
+                    return $log['context'] != 'Class' || $this->countClassAsSchool == 'Y';
                 });
                 $endOfDay = end($nonClassLogs);
 
@@ -114,32 +114,28 @@ class AttendanceByCycle extends DataSource
                 $late = !empty($endOfDay) && ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late')? 1 : 0;
 
                 // Optionally grab the class absent and late counts too
+                $presentClass = $absentClass = $lateClass = 0;
                 if ($this->countClassAsSchool == 'Y') {
-                    foreach ($endOfClasses as $classes) {
-                        $present += count(array_filter($classes, function ($log) {
-                            return ($log['direction'] == 'In');
-                        }));
-
-                        $absent += count(array_filter($classes, function ($log) {
-                            return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
-                        }));
-
-                        $late += count(array_filter($classes, function ($log) {
-                            return ($log['scope'] == 'Onsite - Late');
-                        }));
+                    foreach ($endOfClasses as $log) {
+                        $presentClass += !empty($log) && ($log['direction'] == 'In')? 1 : 0;
+                        $absentClass += !empty($log) && ($log['direction'] == 'Out' && $log['scope'] == 'Offsite')? 1 : 0;
+                        $lateClass += !empty($log) && ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Late')? 1 : 0;
                     }
                 }
 
-                return ['present' => $present, 'absent' => $absent, 'late' => $late];
+                return ['present' => $present, 'absent' => $absent, 'late' => $late, 'presentClass' => $presentClass, 'absentClass' => $absentClass, 'lateClass' => $lateClass];
             }, $attendance);
 
             // Sum up the absences for the term
             $termAttendance[$reportNum] = array_reduce($attendance, function($carry, $item) {
-                $carry['present'] += $item['present'];
-                $carry['absent'] += $item['absent'];
-                $carry['late'] += $item['late'];
+                $carry['present'] += $item['present'] ?? 0;
+                $carry['absent'] += $item['absent'] ?? 0;
+                $carry['late'] += $item['late'] ?? 0;
+                $carry['presentClass'] += $item['presentClass'] ?? 0;
+                $carry['absentClass'] += $item['absentClass'] ?? 0;
+                $carry['lateClass'] += $item['lateClass'] ?? 0;
                 return $carry;
-            }, ['present' => 0, 'absent' => 0, 'late' => 0]);
+            }, ['present' => 0, 'absent' => 0, 'late' => 0, 'presentClass' => 0, 'absentClass' => 0, 'lateClass' => 0]);
         }
         
         return $termAttendance;

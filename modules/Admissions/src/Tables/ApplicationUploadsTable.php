@@ -78,7 +78,13 @@ class ApplicationUploadsTable extends DataTable
                 return $output;
             });
         $table->addColumn('target', __('Person'))->translatable();
-        $table->addColumn('type', __('Type'))->translatable();
+        $table->addColumn('type', __('Type'))
+            ->translatable()
+            ->format(function ($values) {
+                return empty($values['type']) || $values['type'] == 'Unknown'
+                    ? Format::tag($values['type'], 'warning')
+                    : $values['type'];
+            });
         $table->addColumn('timestamp', __('When'))
             ->format(function ($values) {
                 return !empty($values['path'])

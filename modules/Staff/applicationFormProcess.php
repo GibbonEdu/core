@@ -62,6 +62,13 @@ if ($proceed == false) {
 } else {
     //Proceed!
 
+    // Check the honey pot field, it should always be empty
+    if (!empty($_POST['emailAddress'])) {
+        $URL .= '&return=warning1';
+        header("Location: {$URL}");
+        exit;
+    }
+
     $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'] ?? '';
     $questions = $_POST['questions'] ?? '';
     $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : null;

@@ -49,8 +49,8 @@ class CoverageMiniCalendar
                 : __('All Day');
             $title .= '<br/>';
 
-            if ($availability['timeStart'] < $timeRangeStart) $timeRangeStart = $availability['timeStart'];
-            if ($availability['timeEnd'] > $timeRangeEnd) $timeRangeEnd = $availability['timeEnd'];
+            if (!empty($availability['timeStart']) && $availability['timeStart'] < $timeRangeStart) $timeRangeStart = $availability['timeStart'];
+            if (!empty($availability['timeEnd']) && $availability['timeEnd'] > $timeRangeEnd) $timeRangeEnd = $availability['timeEnd'];
         }
 
         $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
