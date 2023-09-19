@@ -26,8 +26,8 @@ $version = '25.0.01';
  * System Requirements
  */
 $systemRequirements = [
-    'php'        => '7.4.0',
-    'mysql'      => '5.7',
+    'php'        => '7.3.0',
+    'mysql'      => '5.6',
     'apache'     => ['mod_rewrite'],
     'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd', 'intl'],
     'settings'   => [

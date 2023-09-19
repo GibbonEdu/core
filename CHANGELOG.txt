@@ -22,8 +22,6 @@ v25.0.01
 
     Changes With Important Notices
         System: domains used in iFrames must now be approved via Security & Privacy Settings
-        System: raised the minimum PHP version requirement to 7.4
-        System: raised the minimum MySQL version requirement to 5.7
 
     Security
         System: added .lock and .json files to htaccess denied list
