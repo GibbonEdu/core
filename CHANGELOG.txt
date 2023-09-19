@@ -48,8 +48,8 @@ v25.0.01
         Finance: fixed edge case causing receipts to be sent along with reminders
         Markbook: fixed class average row height when there is no data
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
-        Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
-        Planner: fixed duplicate lessons in Year Overview for multiple timetables
+        Messenger: fixed Applicants target bug impacting parents without an existing user 
+        Planner: fixed display of duplicate lessons in Year Overview for multiple timetables
         Planner: fixed input sanitization of resource quick-add values
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Reports: fixed html entity decoding in MpdfRenderer
@@ -59,6 +59,7 @@ v25.0.01
         Staff: fixed activities outside the current term showing up in New Coverage Request
         Staff: fixed substitute availability check not including timetable exclusions
         Staff: fixed error when deleting ad hoc coverage that is not attached to a class
+        Staff: fixed potential division by zero error when adding ad hoc staff coverage
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
