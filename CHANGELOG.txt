@@ -37,6 +37,7 @@ v26.0.00
         System: added .lock and .json files to htaccess denied list
         System: added additional sanitization to GET variables and alerts
         System: added a system log when passwords are manually changed in User Admin
+        System: added output sanitization to message wall and planner discussion
         Attendance: added the name of attendance last taken to Form Groups Not Registered
         Activities: updated View Activities to highlight waiting list registrations in orange
         Activities: added a warning message to Activity Registration when a timing conflict would occur

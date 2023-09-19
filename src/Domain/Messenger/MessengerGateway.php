@@ -27,6 +27,7 @@ use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Data\Validator;
 
 /**
  * MessengerGateway
@@ -53,15 +54,22 @@ class MessengerGateway extends QueryableGateway
      */
     private $roleGateway;
 
+    /**
+     * @var Validator
+     */
+    private $validator;
+
     public function __construct(
         Connection $db,
         Session $session,
+        Validator $validator,
         RoleGateway $roleGateway
     )
     {
         parent::__construct($db);
         $this->session = $session;
         $this->roleGateway = $roleGateway;
+        $this->validator = $validator;
     }
 
     /**
@@ -785,11 +793,11 @@ class MessengerGateway extends QueryableGateway
                     ->addClass('align-top')
                     ->format(function ($message) {
                         $output = '<h3 style="margin-top: 3px">';
-                        $output .= $message['subject'];
+                        $output .= $this->validator->sanitizePlainText($message['subject']);
                         $output .= '</h3>';
 
                         $output .= '</p>';
-                        $output .= $message['details'];
+                        $output .= $this->validator->sanitizeRichText($message['details']);
                         $output .= '</p>';
 
                         return $output;
