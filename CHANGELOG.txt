@@ -31,6 +31,7 @@ v25.0.01
         System: prevented XSS though GET variables in search forms
         System: improved illegal address detection for non-php files
         System: added an iFrame allowlist for filtering safe domains
+        System: added output sanitization to message wall and planner discussion
         Staff: added honeypot field to Staff application form
 
     Bug Fixes
