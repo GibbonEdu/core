@@ -30,17 +30,17 @@ v25.0.01
         System: improved illegal address detection for non-php files
         System: added an iFrame allowlist for filtering safe domains
         System: added output sanitization to message wall and planner discussion
-        Staff: added honeypot field to Staff application form
 
     Bug Fixes
         System: fixed date formatting error when Intl extension is not available
         System: fixed PHP value-type error in sidebar message wall posts
         System: fixed PHP regex error decoding dates from search filter text
-        System: fixed collapsable comment show/hide bug in nested data tables
+        System: fixed collapsible comment show/hide bug in nested data tables
+        System: fixed DOMDocument sanitization loop in Validator class
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic for continuing users
-        Admissions: fixed Second Parent not being created on application acceptance
-        Admissions: fixed Second Parent checkbox showing the wrong state in Edit Application
+        Admissions: fixed second parent not being created on application acceptance
+        Admissions: fixed second parent checkbox showing the wrong state in Edit Application
         Admissions: fixed Required Documents not displaying in Documents view of Edit Application
         Admissions: fixed orphaned Required Documents when document name is changed
         Behaviour: fixed error from missing function in behaviour letter CLI script
@@ -60,6 +60,7 @@ v25.0.01
         Staff: fixed substitute availability check not including timetable exclusions
         Staff: fixed error when deleting ad hoc coverage that is not attached to a class
         Staff: fixed potential division by zero error when adding ad hoc staff coverage
+        Staff: added honeypot field to Staff application form
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
