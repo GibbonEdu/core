@@ -253,7 +253,7 @@ class Validator
                             $host = str_replace('www.', '', $host);
 
                             if (empty($host) || !in_array($host, $this->getAllowableIframeSources())) {
-                                $node->parentNode->appendChild(new \DOMComment('iFrame removed due to security policy'));
+                                $node->parentNode->appendChild(new \DOMComment(__('iFrame removed due to security policy')));
                                 $node->parentNode->removeChild($node);
                             }
                         }
