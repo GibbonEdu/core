@@ -113,6 +113,54 @@ v26.0.00
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
         User Admin: fixed an error in Rollover when duplicate enrolments exist
 
+v25.0.01
+--------
+
+    Changes With Important Notices
+        System: domains used in iFrames must now be approved via Security & Privacy Settings
+
+    Security
+        System: added .lock and .json files to htaccess denied list
+        System: improved the sanitization of URL parameters and alerts
+        System: prevented XSS though GET variables in search forms
+        System: improved illegal address detection for non-php files
+        System: added an iFrame allowlist for filtering safe domains
+        System: added output sanitization to message wall and planner discussion
+        Staff: added honeypot field to Staff application form
+
+    Bug Fixes
+        System: fixed date formatting error when Intl extension is not available
+        System: fixed PHP value-type error in sidebar message wall posts
+        System: fixed PHP regex error decoding dates from search filter text
+        System: fixed collapsable comment show/hide bug in nested data tables
+        Admissions: fixed incorrect parent field names in application submission email
+        Admissions: fixed application form prefill logic for continuing users
+        Admissions: fixed Second Parent not being created on application acceptance
+        Admissions: fixed Second Parent checkbox showing the wrong state in Edit Application
+        Admissions: fixed Required Documents not displaying in Documents view of Edit Application
+        Admissions: fixed orphaned Required Documents when document name is changed
+        Behaviour: fixed error from missing function in behaviour letter CLI script
+        Form Groups: fixed Left staff showing in View Form Groups list
+        Finance: fixed edge case causing receipts to be sent along with reminders
+        Markbook: fixed class average row height when there is no data
+        Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
+        Messenger: fixed Applicants target bug impacting parents without an existing user 
+        Planner: fixed display of duplicate lessons in Year Overview for multiple timetables
+        Planner: fixed input sanitization of resource quick-add values
+        Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
+        Reports: fixed html entity decoding in MpdfRenderer
+        Reports: fixed footers on last page during bulk generation with mPDFRenderer
+        Reports: fixed validation of duplicated template path in Manage Assets
+        Rubrics: fixed input sanitization of visualization images
+        Staff: fixed activities outside the current term showing up in New Coverage Request
+        Staff: fixed substitute availability check not including timetable exclusions
+        Staff: fixed error when deleting ad hoc coverage that is not attached to a class
+        Staff: fixed potential division by zero error when adding ad hoc staff coverage
+        Timetable: fixed period showing absent in classes with multiple teachers when one is absent
+        Timetable: fixed PHP deprecation issue relating to $roleCategory
+        User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
+        User Admin: fixed an error in Rollover when duplicate enrolments exist
+        
 v25.0.00
 --------
 
