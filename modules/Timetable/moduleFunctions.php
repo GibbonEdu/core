@@ -777,7 +777,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$absence['gibbonStaffAbsenceID']
                         : '';
 
-                    $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, $absence['allDay'], $url, $absence['coverageList']];
+                    $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, $absence['allDay'], $url, $absence['coverageList'], $absence['timeStart'], $absence['timeEnd']];
                 }
             }
 
@@ -1433,7 +1433,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     $periods[] = $coverage;
                 }
             }
-            
+
             $periodCount = $periodIDs = [];
             foreach ($periods as $rowPeriods) {
                 $rowPeriods['gibbonYearGroupIDList'] = explode(',', $rowPeriods['gibbonYearGroupIDList'] ?? '');
@@ -1448,6 +1448,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                 $isCovering = !empty($rowPeriods['coveragePerson']);
                 $isCoveredBy = !empty($rowPeriods['coverageStatus']) && !empty($eventsPersonal);
+                $isAbsent = false;
 
                 if ($isSlotInTime == true) {
 
@@ -1516,6 +1517,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60);
                         $top = (ceil((strtotime($effectiveStart) - strtotime($dayTimeStart)) / 60 + ($startPad / 60))).'px';
                         $title = "title='";
+
+                        foreach ($eventsPersonal as $event) {
+                            if (!empty($event[0]) && $event[0] == __('Absent') && date('Y-m-d', $event[2]) == $date) {
+                                if ($event[4] == 'Y' 
+                                    || ($event[7] >= $effectiveStart && $event[7] < $effectiveEnd) 
+                                    || ($effectiveStart >= $event[7] && $effectiveStart < $event[8])) {
+                                    $isAbsent = true;
+                                }
+                            }
+                        }
 
                         if ($isCovering) {
                             $title .= $rowPeriods['gibbonPersonIDCoverage'] != $gibbonPersonID 
@@ -1593,7 +1604,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $class2 = 'border bg-stripe-dark';
                             $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;';
                         }
-                        else if ($isCoveredBy) {
+                        else if ($isCoveredBy || $isAbsent) {
                             $bg = 'background-image: linear-gradient(45deg, #84acd9 25%, #96beea 25%, #96beea 50%, #84acd9 50%, #84acd9 75%, #96beea 75%, #96beea 100%); background-size: 23.0px 23.0px;';
                         }
                         else if ($isCovering) {
