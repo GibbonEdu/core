@@ -824,14 +824,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     $teacherViewOnlyAccess = $highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses";
                                     if ($teacher || $teacherViewOnlyAccess) {
+
                                         //List submissions
-                                        $dataClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'today' => date('Y-m-d'), 'gibbonTTDayRowClassID' => $ttPeriod['gibbonTTDayRowClassID'] ?? '');
-                                        $sqlClass = "SELECT * FROM gibbonCourseClassPerson 
+                                        $dataClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'today' => date('Y-m-d'), 'gibbonTTDayRowClassID' => ($ttPeriod['gibbonTTDayRowClassID'] ?? ''));
+                                        $sqlClass = "SELECT gibbonCourseClassPerson.*, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.dateStart, gibbonPerson.dateEnd FROM gibbonCourseClassPerson 
                                         INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
-                                        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonTTDayRowClassException.gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
-                                        WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND role='Student' 
+                                        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonTTDayRowClassException.gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
+                                        WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                        AND gibbonPerson.status='Full' 
+                                        AND (dateStart IS NULL OR dateStart<=:today) 
+                                        AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                                        AND gibbonCourseClassPerson.role='Student' 
                                         AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
-                                        ORDER BY role DESC, surname, preferredName";
+                                        ORDER BY gibbonCourseClassPerson.role DESC, gibbonPerson.surname, gibbonPerson.preferredName";
                                         $resultClass = $connection2->prepare($sqlClass);
                                         $resultClass->execute($dataClass);
                                         $count = 0;
