@@ -406,11 +406,12 @@ class FormFactory implements FormFactoryInterface
     public function createSelectMaritalStatus($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'Married'         => __('Married'),
-            'Separated'         => __('Separated'),
-            'Divorced'      => __('Divorced'),
-            'De Facto'         => __('De Facto'),
-            'Other'          => __('Other')
+            'Married'   => __('Married'),
+            'Separated' => __('Separated'),
+            'Divorced'  => __('Divorced'),
+            'De Facto'  => __('De Facto'),
+            'Single'    => __('Single'),
+            'Other'     => __('Other'),
         ))->placeholder();
     }
 
