@@ -769,5 +769,7 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonFormUpload` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'allowableIframeSources', 'Allowable iFrame Sources', 'A comma separated list of domains that are allowed in embedded iFrames. All others will be removed from HTML content.', 'youtube.com,youtu.be,m.youtube.com,google.com,docs.google.com,drive.google.com,vimeo.com,player.vimeo.com');end
 ALTER TABLE `gibbonFamily` CHANGE `status` `status` ENUM('Married','Separated','Divorced','De Facto','Other','Single') NOT NULL;end
+UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='Manage Facility Bookings_myBookings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
+UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='View Timetable by Facility' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
 
 ";
