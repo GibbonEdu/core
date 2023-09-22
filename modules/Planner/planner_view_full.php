@@ -467,6 +467,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $sqlBlocks = "SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber";
                         $blocks = $pdo->select($sqlBlocks, $dataBlocks)->fetchAll();
 
+                        // Get TT information
+                        $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
+
                         // LESSON CONTENTS
                         $form = Form::create('smartBlockCompletion', $gibbon->session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
                         $form->setClass('blank');
@@ -820,8 +823,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $teacherViewOnlyAccess = $highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses";
                                     if ($teacher || $teacherViewOnlyAccess) {
                                         //List submissions
-                                        $dataClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID']);
-                                        $sqlClass = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND role='Student' ORDER BY role DESC, surname, preferredName";
+                                        $dataClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'today' => date('Y-m-d'), 'gibbonTTDayRowClassID' => $ttPeriod['gibbonTTDayRowClassID'] ?? '');
+                                        $sqlClass = "SELECT * FROM gibbonCourseClassPerson 
+                                        INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                                        LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonTTDayRowClassException.gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
+                                        WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND role='Student' 
+                                        AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
+                                        ORDER BY role DESC, surname, preferredName";
                                         $resultClass = $connection2->prepare($sqlClass);
                                         $resultClass->execute($dataClass);
                                         $count = 0;
@@ -1234,7 +1242,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
                             // Try to determine the timetable period for this lesson
-                            $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
                             $form->addHiddenValue('gibbonTTDayRowClassID', $ttPeriod['gibbonTTDayRowClassID'] ?? '');
 
                             $classLogs = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceLogsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
