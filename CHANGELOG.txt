@@ -90,6 +90,7 @@ v26.0.00
         Admissions: fixed Second Parent checkbox showing the wrong state in Edit Application
         Admissions: fixed Required Documents not displaying in Documents view of Edit Application
         Admissions: fixed orphaned Required Documents when document name is changed
+        Attendance: fixed incorrect class count in the Daily Incomplete Attendance by Class admin summary email
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Data Updater: fixed medical updates creating a notification when no data has changed
         Form Groups: fixed Left staff showing in View Form Groups list
