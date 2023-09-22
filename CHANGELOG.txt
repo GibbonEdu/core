@@ -56,6 +56,7 @@ v26.0.00
         Messenger: made Duplicate With Members the top bulk action in Manage Groups
         Messenger: moved Read Receipt links to the top of messages by default
         Messenger: updated Message Wall to show most recent posts first
+        Planner: enabled users with viewAll permission to see the online submissions list
         Reports: added a filter to view Pending Edits on Proof Read page, pre-selected filter in notifications
         Reports: added the name of who wrote the comment to CourseCriteria data source
         Rubrics: updated visualize and historical data views so teachers can see unpublished results

@@ -730,7 +730,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         }
                                     }
                                 } elseif ($values['role'] == 'Student' and $highestAction == 'Lesson Planner_viewMyChildrensClasses') {
-                                    echo "<span style='font-size: 115%; font-weight: bold'>Online Submission</span><br/>";
+                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission')."</span><br/>";
                                     echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
                                     if (date('Y-m-d') < $values['homeworkSubmissionDateOpen']) {
                                         echo '<i>Submission opens on '.Format::date($values['homeworkSubmissionDateOpen']).'</i>';
@@ -817,7 +817,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission').'</span><br/>';
                                     echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
 
-                                    if ($teacher == true) {
+                                    $teacherViewOnlyAccess = $highestAction == 'Lesson Planner_viewAllEditMyClasses' || $highestAction == "Lesson Planner_viewEditAllClasses";
+                                    if ($teacher || $teacherViewOnlyAccess) {
                                         //List submissions
                                         $dataClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID']);
                                         $sqlClass = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND role='Student' ORDER BY role DESC, surname, preferredName";
@@ -844,9 +845,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													<th>
 														<?php echo __('View') ?><br/>
 													</th>
+                                                    <?php if ($teacher) { ?>
 													<th>
 														<?php echo __('Action') ?><br/>
 													</th>
+                                                    <?php } ?>
 												</tr>
 												<?php
 												while ($rowClass = $resultClass->fetch()) {
@@ -889,14 +892,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																		}
 																	}
 																}
-														    ?>
-															</td>
-															<td>
-																<?php
+                                                            echo '</td>';
+
+                                                            if ($teacher) {
+                                                                echo '<td>';
 																echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID.'&gibbonPersonID='.$rowClass['gibbonPersonID']."&submission=false'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-														    ?>
-															</td>
-															<?php
+                                                                echo '</td>';
+                                                            }
 
 													} else {
 														$rowVersion = $resultVersion->fetch();
@@ -932,25 +934,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														} else {
 															echo "<a target='_blank' href='".$rowVersion['location']."'>".$locationPrint.'</a>';
 														}
-														?>
-															</td>
-															<td>
-																<?php
+
+                                                        echo '</td>';
+
+                                                                if ($teacher) {
+                                                                    echo '<td>';
 																echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=".$gibbonPersonID.'&gibbonPlannerEntryHomeworkID='.$rowVersion['gibbonPlannerEntryHomeworkID']."&submission=true'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
 														echo "<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL')."/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>";
-														?>
-															</td>
-															<?php
-
+														echo '</td>';
+                                                    }
+															
 													}
-													?>
-													</tr>
-													<?php
+													echo '</tr>';
 
 												}
-                                            	?>
-											</table>
-											<?php
+                                            	echo '</table>';
                                         }
                                     }
                                 }
