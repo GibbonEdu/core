@@ -44,9 +44,9 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 }
 
 $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['status', 'lastDay']);
+$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['status', 'lastDay', 'firstDay']);
 
-if (empty($schoolYear) || date('Y-m-d') > $schoolYear['lastDay']) {
+if (empty($schoolYear) || date('Y-m-d') > $schoolYear['lastDay'] || date('Y-m-d') < $schoolYear['firstDay']) {
     echo __('School is not open, so no emails will be sent.');
     return;
 }
