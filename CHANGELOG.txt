@@ -110,6 +110,7 @@ v26.0.00
         Staff: fixed approved absence with user-selected coverage not re-broadcasting substitute requests
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
+        Timetable: fixed staff absence display issue on timetable with multiple teachers in a class
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
         User Admin: fixed an error in Rollover when duplicate enrolments exist
 

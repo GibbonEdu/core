@@ -727,8 +727,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
                 $criteria = $staffCoverageGateway->newQueryCriteria()
-                    ->filterBy('startDate', date('Y-m-d', $startDayStamp))
-                    ->filterBy('endDate', date('Y-m-d', $endDayStamp))
+                    ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
+                    ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
                     ->filterBy('status', 'Accepted');
                 $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
                 $staffCoverage = [];
@@ -1414,7 +1414,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.foreignTable='gibbonTTDayRowClass' AND gibbonStaffCoverageDate.date=:date)
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
                 
-                WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
+                WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' 
+                GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID 
+                ORDER BY timeStart, timeEnd";
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
