@@ -1518,12 +1518,14 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $top = (ceil((strtotime($effectiveStart) - strtotime($dayTimeStart)) / 60 + ($startPad / 60))).'px';
                         $title = "title='";
 
-                        foreach ($eventsPersonal as $event) {
-                            if (!empty($event[0]) && $event[0] == __('Absent') && date('Y-m-d', $event[2]) == $date) {
-                                if ($event[4] == 'Y' 
-                                    || ($event[7] >= $effectiveStart && $event[7] < $effectiveEnd) 
-                                    || ($effectiveStart >= $event[7] && $effectiveStart < $event[8])) {
-                                    $isAbsent = true;
+                        if (!empty($eventsPersonal)) {
+                            foreach ($eventsPersonal as $event) {
+                                if (!empty($event[0]) && $event[0] == __('Absent') && date('Y-m-d', $event[2]) == $date) {
+                                    if ($event[4] == 'Y' 
+                                        || ($event[7] >= $effectiveStart && $event[7] < $effectiveEnd) 
+                                        || ($effectiveStart >= $event[7] && $effectiveStart < $event[8])) {
+                                        $isAbsent = true;
+                                    }
                                 }
                             }
                         }
