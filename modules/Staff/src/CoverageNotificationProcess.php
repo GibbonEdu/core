@@ -143,6 +143,7 @@ class CoverageNotificationProcess extends BackgroundProcess
 
         if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
             $data = [
+                'status' => 'Requested',
                 'notificationSent' => 'Y',
                 'notificationList' => json_encode($recipients),
             ];

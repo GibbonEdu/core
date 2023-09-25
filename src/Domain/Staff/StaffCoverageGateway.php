@@ -301,7 +301,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status',  'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'gibbonStaffCoverageDate.date',  'gibbonStaffCoverageDate.allDay', 'gibbonStaffCoverageDate.timeStart', 'gibbonStaffCoverageDate.timeEnd', 'timestampStatus', 'timestampCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverage.gibbonPersonID', 
+                'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status',  'gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'gibbonStaffAbsence.coverageRequired', 'gibbonStaffAbsence.status as absenceStatus', 'gibbonStaffCoverageDate.date',  'gibbonStaffCoverageDate.allDay', 'gibbonStaffCoverageDate.timeStart', 'gibbonStaffCoverageDate.timeEnd', 'timestampStatus', 'timestampCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverage.gibbonPersonID', 
                 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage', 'gibbonStaffCoverage.notesStatus', 'gibbonStaffCoverage.notesCoverage', 'gibbonTTDayRowClass.gibbonTTDayRowClassID',  'gibbonStaffCoverageDate.foreignTable', 'gibbonStaffCoverageDate.foreignTableID',
                 'gibbonCourse.gibbonCourseID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.gibbonDepartmentID',
 

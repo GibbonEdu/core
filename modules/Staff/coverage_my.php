@@ -157,7 +157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
-            ->format(function ($coverage, $actions) {
+            ->addParam('gibbonStaffAbsenceID')
+            ->format(function ($coverage, $actions) use ($guid, $connection2) {
                 $actions->addAction('view', __('View Details'))
                     ->isModal(800, 550)
                     ->setURL('/modules/Staff/coverage_view_details.php');
@@ -171,6 +172,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_cancel.php');
+                }
+
+                $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && (($coverage['coverageMode'] == 'Requested' && $coverage['absenceStatus'] == 'Approved') || ($coverage['coverageMode'] == 'Assigned' && $coverage['absenceStatus'] != 'Declined'));
+
+                if ($canRequestCoverage && !empty($coverage['gibbonStaffAbsenceID']) && $coverage['status'] == 'Declined') {
+                    $actions->addAction('coverage', __('Request Coverage'))
+                        ->setIcon('attendance')
+                        ->setURL('/modules/Staff/coverage_request.php');
                 }
             });
 
