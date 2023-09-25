@@ -32,7 +32,7 @@ $_POST['address'] = '/modules/Reports/archive_byStudent_download.php';
 require_once '../../gibbon.php';
 
 $accessToken = $_GET['token'] ?? '';
-$gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $gibbon->session->get('gibbonPersonID');
+$gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $session->get('gibbonPersonID');
 
 $returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonPersonID='.($_GET['gibbonPersonID'] ?? '');
 
@@ -49,7 +49,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
 
     // Check for access to this archive
     if (!empty($accessToken)) {
-        $returnPath = $gibbon->session->get('absoluteURL').'/index.php?q=';
+        $returnPath = $session->get('absoluteURL').'/index.php?q=';
         $roleCategory = 'Parent';
 
         // Archive ID must exist
@@ -73,14 +73,14 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
         } else if ($highestAction == 'View Reports_myChildren') {
             $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             $children = $container->get(StudentGateway::class)
-                ->selectActiveStudentsByFamilyAdult($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'))
+                ->selectAnyStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
                 ->fetchGroupedUnique();
 
             if (empty($children[$gibbonPersonID])) {
                 $gibbonPersonID = null;
             }
         } else if ($highestAction == 'View Reports_mine') {
-            $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+            $gibbonPersonID = $session->get('gibbonPersonID');
         }
 
         // Archive ID must exist
@@ -152,7 +152,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
         $filename = basename($archiveEntry['filePath']);
     }
 
-    $filepath = realpath($gibbon->session->get('absolutePath') . $archive['path'] .'/'. $archiveEntry['filePath']);
+    $filepath = realpath($session->get('absolutePath') . $archive['path'] .'/'. $archiveEntry['filePath']);
     $outputType = ($action == 'view')? 'inline' : 'attachment';
 
     // Stream the file
