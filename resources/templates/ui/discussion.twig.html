@@ -57,6 +57,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% if item.attachmentLocation %}
                     <a class="tag block px-0 break-all mt-2 sm:mt-0" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}" target="{{ item.attachmentTarget ? item.attachmentTarget : '_blank' }}">{{ item.attachmentText ? item.attachmentText : __('View Attachment') }}</a>
                 {% endif %}
+
+                {% if item.extra %}
+                    <div class="">
+                        {{ item.extra|raw }}
+                    </div>
+                {% endif %}
             </div>
 
             {% if item.comment %}
@@ -75,3 +81,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 </div>
 
 {% endfor %}
+
+{% if discussion is empty and blankSlate %}
+    <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
+        {% block blankslate %}
+        {{ include('components/blankSlate.twig.html') }}
+        {% endblock blankslate %}
+    </div>
+{% endif %}

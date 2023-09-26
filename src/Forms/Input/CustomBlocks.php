@@ -42,6 +42,7 @@ class CustomBlocks implements OutputableInterface
     protected $name;
     protected $settings;
     protected $placeholder;
+    protected $compact;
 
     protected $blockTemplate;
     protected $toolsTable;
@@ -78,9 +79,10 @@ class CustomBlocks implements OutputableInterface
      * @param OutputableInterface $block
      * @return void
      */
-    public function fromTemplate(OutputableInterface $block)
+    public function fromTemplate(OutputableInterface $block, $compact = false)
     {
         $this->blockTemplate = $block->addClass('blank w-full');
+        $this->compact = $compact;
         return $this;
     }
 
@@ -113,7 +115,7 @@ class CustomBlocks implements OutputableInterface
      */
     public function addToolInput(OutputableInterface $input)
     {
-        $this->toolsTable->addRow()->addElement($input)->addClass('floatNone');
+        $this->toolsTable->addRow()->addElement($input)->addClass('');
         return $this;
     }
 
@@ -181,13 +183,13 @@ class CustomBlocks implements OutputableInterface
     {
         $output = '';
 
-        $output .= '<div class="customBlocks" id="' . $this->name. '">';
+        $output .= '<div class="customBlocks '.($this->compact ? 'compact' : '').'" id="' . $this->name. '">';
 
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
             $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
    
-            $output .= '<div class="blockTemplate relative" style="display: none;">';
-                $output .= '<div class="blockInputs flex py-2 pr-4">';
+            $output .= '<div class="blockTemplate relative '.($this->compact ? 'compact h-min' : '').'" style="display: none;">';
+                $output .= '<div class="blockInputs flex py-2 pr-10">';
                 $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';
 

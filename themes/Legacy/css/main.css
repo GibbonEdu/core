@@ -1057,6 +1057,10 @@ table.smallIntBorder td.noPadding {
     color: #444444;
 }
 
+.customBlocks.compact .sortHighlight {
+    min-height: 56px !important;
+}
+
 .customBlocks .sortHandle {
     width: 2px;
     height: 64px;
@@ -1065,6 +1069,10 @@ table.smallIntBorder td.noPadding {
     border-style: dotted;
     border-width: 0px 3px 0px 3px;
     cursor: move;
+}
+
+.customBlocks .compact .sortHandle {
+    height: 44px !important;
 }
 
 .blockPlaceholder {
