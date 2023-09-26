@@ -184,11 +184,11 @@ if (!$session->exists("username")) {
 
             include_once($session->get('absolutePath').'/modules/Messenger/src/Forms/MessageForm.php');
             $signature = $container->get(MessageForm::class)->getSignature($session->get('gibbonPersonID'));
+
+            $row = $form->addRow();
+                $row->addContent($signature.'<br/>');
         }
 
-        $row = $form->addRow();
-            $row->addContent($signature.'<br/>');
-            
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
