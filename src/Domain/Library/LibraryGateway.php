@@ -207,16 +207,36 @@ class LibraryGateway extends QueryableGateway
             ->cols([
                 'gibbonLibraryItem.gibbonLibraryItemID',
                 'gibbonLibraryItem.gibbonLibraryItemIDParent',
+                'gibbonLibraryItem.gibbonLibraryTypeID',
                 'gibbonLibraryItem.id',
                 'gibbonLibraryItem.name',
                 'gibbonLibraryItem.producer',
+                'gibbonLibraryItem.fields',
                 'gibbonLibraryItem.vendor',
+                'gibbonLibraryItem.purchaseDate',
+                'gibbonLibraryItem.invoiceNumber',
+                'gibbonLibraryItem.imageType',
+                'gibbonLibraryItem.imageLocation',
+                'gibbonLibraryItem.comment',
+                'gibbonLibraryItem.gibbonSpaceID',
                 'gibbonSpace.name as spaceName',
                 'gibbonLibraryItem.locationDetail',
                 'gibbonLibraryItem.ownershipType',
                 'gibbonLibraryItem.gibbonPersonIDOwnership',
+                'gibbonLibraryItem.physicalCondition',
+                'gibbonLibraryItem.bookable',
                 'gibbonLibraryItem.borrowable',
                 'gibbonLibraryItem.status',
+                'gibbonLibraryItem.gibbonPersonIDStatusResponsible',
+                'gibbonLibraryItem.gibbonPersonIDStatusRecorder',
+                'gibbonLibraryItem.timestampStatus',
+                'gibbonLibraryItem.returnExpected',
+                'gibbonLibraryItem.returnAction',
+                'gibbonLibraryItem.gibbonPersonIDReturnAction',
+                'gibbonLibraryItem.gibbonPersonIDCreator',
+                'gibbonLibraryItem.timestampCreator',
+                'gibbonLibraryItem.gibbonPersonIDUpdate',
+                'gibbonLibraryItem.timestampUpdate',
                 'gibbonPerson.title as title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
@@ -256,6 +276,11 @@ class LibraryGateway extends QueryableGateway
                     ->where('gibbonLibraryItem.gibbonSpaceID = :location')
                     ->bindValue('location', $location);
             },
+            'locationDetail' => function ($query, $locationDetail) {
+                return $query
+                    ->where('gibbonLibraryItem.locationDetail LIKE :locationDetail')
+                    ->bindValue('locationDetail', '%'.$locationDetail.'%');
+            },
             'status' => function ($query, $status) {
                 return $query
                     ->where('gibbonLibraryItem.status = :status')
@@ -270,6 +295,16 @@ class LibraryGateway extends QueryableGateway
                 return $query
                     ->where('gibbonLibraryItem.fields LIKE :typeSpecificFields')
                     ->bindValue('typeSpecificFields', '%'.$typeSpecificFields.'%');
+            },
+            'everything' => function ($query, $needle) {
+                $globalSearch = "(";
+                foreach ($query->getCols() as $col) {
+                    $globalSearch .= $col . " LIKE :needle OR ";
+                }
+                $globalSearch = preg_replace("/ OR $/", ")", $globalSearch);
+                return $query
+                    ->where($globalSearch)
+                    ->bindValue('needle', '%' . $needle . '%');
             }
         ]);
 
