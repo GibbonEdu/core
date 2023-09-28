@@ -75,6 +75,7 @@ if (empty($address)) {
             'date'                           => Format::date(date('Y-m-d')),
             'rightToLeft'                    => $session->get('i18n')['rtl'] == 'Y',
             'orientation'                    => $_GET['orientation'] ?? 'P',
+            'hideHeader'                     => $_GET['hideHeader'] ?? false,
         ]);
     } else {
         $page->writeFromTemplate('error.twig.html');
