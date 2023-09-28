@@ -130,6 +130,19 @@ class LibraryReportGateway extends QueryableGateway
             $query->where("gibbonPerson.status='Full'");
         }
 
+        $criteria->addFilterRules([
+            'type' => function ($query, $gibbonLibraryTypeID) {
+                return $query
+                    ->where('gibbonLibraryItem.gibbonLibraryTypeID = :gibbonLibraryTypeID')
+                    ->bindValue('gibbonLibraryTypeID', $gibbonLibraryTypeID);
+            },
+            'department' => function ($query, $gibbonDepartmentID) {
+                return $query
+                    ->where('gibbonLibraryItem.gibbonDepartmentID = :gibbonDepartmentID')
+                    ->bindValue('gibbonDepartmentID', $gibbonDepartmentID);
+            },
+        ]);
+
         return $this->runQuery($query, $criteria);
     }
 }

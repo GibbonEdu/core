@@ -36,6 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
     $ignoreStatus = $_GET['ignoreStatus'] ?? '';
+    $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
+    $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
     $today = date('Y-m-d');
 
     if (empty($viewMode)) {
@@ -48,19 +50,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_viewOverdueItems.php");
 
+        $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+        $row = $form->addRow();
+        $row->addLabel('gibbonLibraryTypeID', __('Type'));
+        $row->addSelect('gibbonLibraryTypeID')
+            ->fromQuery($pdo, $sql)
+            ->selected($gibbonLibraryTypeID)
+            ->placeholder();
+
+        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+        $row = $form->addRow();
+            $row->addLabel('gibbonDepartmentID', __('Department'));
+            $row->addSelect('gibbonDepartmentID')
+                ->fromQuery($pdo, $sql)
+                ->selected($gibbonDepartmentID)
+                ->placeholder();
+
         $row = $form->addRow();
             $row->addLabel('ignoreStatus', __('Ignore Status'))->description(__('Include all users, regardless of status and current enrolment.'));
             $row->addCheckbox('ignoreStatus')->checked($ignoreStatus);
 
         $row = $form->addRow();
             $row->addFooter(false);
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
 
     $reportGateway = $container->get(LibraryReportGateway::class);
-    $criteria = $reportGateway->newQueryCriteria(true)->fromPOST();
+    $criteria = $reportGateway->newQueryCriteria(true)
+        ->filterBy('type', $gibbonLibraryTypeID)
+        ->filterBy('department', $gibbonDepartmentID)
+        ->fromPOST();
 
     $items = $reportGateway->queryOverdueItems($criteria, $session->get('gibbonSchoolYearID'), $ignoreStatus);
 
