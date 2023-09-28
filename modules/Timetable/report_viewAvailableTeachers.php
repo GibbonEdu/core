@@ -49,7 +49,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     $row = $form->addRow();
         $row->addLabel('gibbonTTID', __('Timetable'));
-        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder()->selected($gibbonTTID);
+        $select = $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder()->selected($gibbonTTID);
+
+    if ($select->getOptionCount() == 1) {
+        $option = $select->getOptions();
+        $select->selected(key($option));
+        $gibbonTTID = key($option);
+    }
 
     $row = $form->addRow();
         $row->addLabel('viewBy', __('View'));
