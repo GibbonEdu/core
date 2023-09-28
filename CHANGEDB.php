@@ -771,5 +771,6 @@ INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description
 ALTER TABLE `gibbonFamily` CHANGE `status` `status` ENUM('Married','Separated','Divorced','De Facto','Other','Single') NOT NULL;end
 UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='Manage Facility Bookings_myBookings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
 UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='View Timetable by Facility' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
+ALTER TABLE `gibbonFirstAid` ADD `gibbonPersonIDFollowUp` INT(10) UNSIGNED ZEROFILL NULL AFTER `gibbonPersonIDFirstAider`;end
 
 ";

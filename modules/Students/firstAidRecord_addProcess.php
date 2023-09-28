@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Data\Validator;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\Students\FirstAidGateway;
 
 include '../../gibbon.php';
 
@@ -33,49 +36,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     $URL .= '&return=error0&step=1';
     header("Location: {$URL}");
 } else {
-    $gibbonFirstAidID = null;
-    if (isset($_POST['gibbonFirstAidID'])) {
-        $gibbonFirstAidID = $_POST['gibbonFirstAidID'];
-    }
-
     //Proceed!
-    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-    $gibbonPersonIDFirstAider = $session->get('gibbonPersonID');
-    $date = $_POST['date'] ?? '';
-    $timeIn = $_POST['timeIn'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $actionTaken = $_POST['actionTaken'] ?? '';
-    $followUp = $_POST['followUp'] ?? '';
+    $data = [
+        'gibbonPersonIDPatient'    => $_POST['gibbonPersonID'] ?? '',
+        'gibbonPersonIDFirstAider' => $session->get('gibbonPersonID'),
+        'gibbonPersonIDFollowUp'   => $_POST['gibbonPersonIDFollowUp'] ?? null,
+        'date'                     => !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : '',
+        'timeIn'                   => $_POST['timeIn'] ?? '',
+        'description'              => $_POST['description'] ?? '',
+        'actionTaken'              => $_POST['actionTaken'] ?? '',
+        'followUp'                 => $_POST['followUp'] ?? '',
+        'gibbonSchoolYearID'       => $session->get('gibbonSchoolYearID'),
+    ];
 
-    if ($gibbonPersonID == '' or $gibbonPersonIDFirstAider == '' or $date == '' or $timeIn == '') {
+    $firstAidGateway = $container->get(FirstAidGateway::class);
+    $student = $container->get(UserGateway::class)->getByID($data['gibbonPersonIDPatient'], ['preferredName', 'surname']);
+
+    if ($data['gibbonPersonIDPatient'] == '' || $data['gibbonPersonIDFirstAider'] == '' || $data['date'] == '' || $data['timeIn'] == '' || empty($student)) {
         $URL .= '&return=error1&step=1';
         header("Location: {$URL}");
-    } else {
-        $customRequireFail = false;
-        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('First Aid', [], $customRequireFail);
-
-        if ($customRequireFail) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-            exit;
-        }
-
-        //Write to database
-        try {
-            $data = array('gibbonPersonIDPatient' => $gibbonPersonID, 'gibbonPersonIDFirstAider' => $gibbonPersonIDFirstAider, 'date' => Format::dateConvert($date), 'timeIn' => $timeIn, 'description' => $description, 'actionTaken' => $actionTaken, 'followUp' => $followUp, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'fields' => $fields);
-            $sql = 'INSERT INTO gibbonFirstAid SET gibbonPersonIDPatient=:gibbonPersonIDPatient, gibbonPersonIDFirstAider=:gibbonPersonIDFirstAider, date=:date, timeIn=:timeIn, description=:description, actionTaken=:actionTaken, followUp=:followUp, gibbonSchoolYearID=:gibbonSchoolYearID, fields=:fields';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=erorr2&step=1';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        //Last insert ID
-        $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
-
-        $URL .= "&return=success0&editID=$AI";
-        header("Location: {$URL}");
+        exit;
     }
+
+    $customRequireFail = false;
+    $data['fields'] = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('First Aid', [], $customRequireFail);
+
+    if ($customRequireFail) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $gibbonFirstAidID = $firstAidGateway->insert($data);
+    $gibbonFirstAidID = str_pad($gibbonFirstAidID, 12, '0', STR_PAD_LEFT);
+
+    // Send a notification to the requested user
+    if (!empty($data['gibbonPersonIDFollowUp'])) {
+        $notificationSender = $container->get(NotificationSender::class);
+
+        $text = __('A first aid record has been created for {name} at {time}. Your follow-up has been requested. Please click below to view and enter details.', ['name' => Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'time' => $data['timeIn']]);
+        $actionLink = '/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$gibbonFirstAidID;
+
+        $notificationSender->addNotification($data['gibbonPersonIDFollowUp'], $text, 'First Aid', $actionLink);
+        $notificationSender->sendNotifications();
+    }
+
+    $URL .= "&return=success0&editID=$gibbonFirstAidID";
+    header("Location: {$URL}");
+
 }

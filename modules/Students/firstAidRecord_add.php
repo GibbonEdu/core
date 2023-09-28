@@ -93,6 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
         
         $row = $form->addRow();
+            $row->addLabel('gibbonPersonIDFollowUp', __('Follow up Request'))->description(__('If selected, this user will be notified to enter follow up details about the first aid incident.'));
+            $row->addSelectStaff('gibbonPersonIDFollowUp')->photo(true, 'small')->placeholder();
+
+        $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('followUp', __('Follow Up'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what lead up to the incident, what was the incident, what did you do.'));
             $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');

@@ -114,6 +114,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
+            if (!empty($values['gibbonPersonIDFollowUp']) && $highestAction == 'First Aid Record_editAll') {
+                $row = $form->addRow();
+                $row->addLabel('gibbonPersonIDFollowUpLabel', __('Follow up Request'))->description(__('A follow up request was sent to the selected user.'));
+                $row->addSelectStaff('gibbonPersonIDFollowUp')->photo(true, 'small')->selected($values['gibbonPersonIDFollowUp'])->readOnly();
+            }
+
             //Print old-style followup as first log entry
             if (!empty($values['followUp'])) {
                 $row = $form->addRow();
