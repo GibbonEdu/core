@@ -39,6 +39,7 @@ v26.0.00
         System: added IDD country code for Laos
         System: added .lock and .json files to htaccess denied list
         System: added additional sanitization to GET variables and alerts
+        System: added module name to notification email subject line
         System: added a system log when passwords are manually changed in User Admin
         System: added output sanitization to message wall and planner discussion
         Attendance: added the name of attendance last taken to Form Groups Not Registered
