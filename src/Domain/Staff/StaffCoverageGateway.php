@@ -436,14 +436,16 @@ class StaffCoverageGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectCoverageByAbsenceID($gibbonStaffAbsenceID)
+    public function selectCoverageByAbsenceID($gibbonStaffAbsenceID, $grouped = false)
     {
         $data = ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID];
         $sql = "SELECT gibbonStaffCoverageID
                 FROM gibbonStaffCoverage
-                WHERE gibbonStaffCoverage.gibbonStaffAbsenceID = :gibbonStaffAbsenceID
-                GROUP BY gibbonStaffCoverage.gibbonStaffAbsenceID
-                ORDER BY gibbonStaffCoverage.timestampStatus ASC";
+                WHERE gibbonStaffCoverage.gibbonStaffAbsenceID = :gibbonStaffAbsenceID ";
+        if ($grouped) {
+            $sql .= " GROUP BY gibbonStaffCoverage.gibbonStaffAbsenceID ";
+        }
+        $sql .= " ORDER BY gibbonStaffCoverage.timestampStatus ASC";
 
         return $this->db()->select($sql, $data);
     }
