@@ -59,6 +59,7 @@ class CoverageNotificationProcess extends BackgroundProcess
     protected $internalCoverage;
     protected $urgencyThreshold;
     protected $organisationHR;
+    protected $coverageMode;
 
     public function __construct(
         StaffAbsenceGateway $staffAbsenceGateway,
@@ -80,6 +81,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
         $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
+        $this->coverageMode =  $settingGateway->getSettingByScope('Staff', 'coverageMode');
     }
 
     public function runNewCoverageRequest($coverageList)
@@ -127,8 +129,10 @@ class CoverageNotificationProcess extends BackgroundProcess
         $coverage = $this->getCoverageDetailsByID(current($coverageList));
         $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($coverage['gibbonStaffAbsenceID'] ?? '');
 
-        $recipients = [$this->organisationHR];
         $message = new NewAbsenceWithCoverage($absence, $coverage, $dates);
+
+        $recipients = !empty($coverage['notificationListAbsence']) ? json_decode($coverage['notificationListAbsence']) : [];
+        $recipients[] = $this->organisationHR;
 
         // Add the absent person, if this coverage request was created by someone else
         if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus'] || $coverage['notificationSent'] == 'N') {
@@ -143,7 +147,7 @@ class CoverageNotificationProcess extends BackgroundProcess
 
         if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
             $data = [
-                'status' => 'Requested',
+                'status' => $this->coverageMode == 'Requested' ? 'Requested' : 'Accepted',
                 'notificationSent' => 'Y',
                 'notificationList' => json_encode($recipients),
             ];

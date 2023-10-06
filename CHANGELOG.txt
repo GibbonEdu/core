@@ -126,6 +126,7 @@ v26.0.00
         Staff: fixed error when deleting ad hoc coverage that is not attached to a class
         Staff: fixed approved absence with user-selected coverage not re-broadcasting substitute requests
         Staff: fixed requested coverage not actionable by substitute after approval
+        Staff: fixed approved absences with coverage not notifying custom recipients
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         Timetable: fixed staff absence display issue on timetable with multiple teachers in a class
