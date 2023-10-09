@@ -114,6 +114,7 @@ v26.0.00
         Planner: fixed input sanitization of resource quick-add values
         Planner: fixed students with timetable exceptions showing up in submission list
         Planner: fixed Parent Weekly Planner CLI sending between school years
+        Planner: removed Left users from lesson plan Guest select 
         Reports: fixed handling of class vs school attendance in AttendanceByCycle data source
         Reports: fixed html entity decoding in MpdfRenderer
         Reports: fixed footers on last page during bulk generation with mPDFRenderer

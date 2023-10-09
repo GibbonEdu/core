@@ -370,7 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $row = $form->addRow()->addClass('advanced');
                 $row->addLabel('guests', __('Guest List'));
-                $row->addSelectUsers('guests')->selectMultiple();
+                $row->addSelectUsers('guests', $session->get('gibbonSchoolYearID'))->selectMultiple();
 
             $roles = array(
                 'Guest Student' => __('Guest Student'),
