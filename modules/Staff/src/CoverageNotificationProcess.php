@@ -135,7 +135,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         $recipients[] = $this->organisationHR;
 
         // Add the absent person, if this coverage request was created by someone else
-        if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus']) {
+        if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus'] || empty($coverage['gibbonPersonIDApproval'])) {
             $recipients[] = $coverage['gibbonPersonID'];
         }
 
