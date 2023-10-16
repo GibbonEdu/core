@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Messenger\Forms\MessageForm;
+use Gibbon\Module\Messenger\Signature;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
     // Access denied
@@ -60,8 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
         $col->addLabel($setting['name'], __m($setting['nameDisplay']))->description(__m($setting['description']).'<br/>'.__('Available Variables').': '.implode(', ', $templateVariables));
         $col->addCodeEditor($setting['name'])->setMode('twig')->setValue($setting['value'])->setHeight('200')->required();
 
-        include_once($session->get('absolutePath').'/modules/Messenger/src/Forms/MessageForm.php');
-        $signature = $container->get(MessageForm::class)->getSignature($session->get('gibbonPersonID'));
+        include_once($session->get('absolutePath').'/modules/Messenger/src/Signature.php');
+        $signature = $container->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
 
         $col->addLabel('preview', __('Preview'));
         $col->addContent($signature.'<br/>');
