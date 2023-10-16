@@ -772,5 +772,6 @@ ALTER TABLE `gibbonFamily` CHANGE `status` `status` ENUM('Married','Separated','
 UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='Manage Facility Bookings_myBookings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
 UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='View Timetable by Facility' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
 ALTER TABLE `gibbonFirstAid` ADD `gibbonPersonIDFollowUp` INT(10) UNSIGNED ZEROFILL NULL AFTER `gibbonPersonIDFirstAider`;end
+ALTER TABLE `gibbonMessenger` ADD `includeSignature` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `individualNaming`;end
 
 ";

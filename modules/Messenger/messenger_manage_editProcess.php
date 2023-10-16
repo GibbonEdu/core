@@ -85,6 +85,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
         'confidential'      => $_POST['confidential'] ?? 'N',
+        'includeSignature'  => $_POST['includeSignature'] ?? 'N',
         'timestamp'         => date('Y-m-d H:i:s'),
     ];
 

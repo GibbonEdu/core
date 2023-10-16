@@ -58,6 +58,7 @@ v26.0.00
         Markbook: adjusted Term filter in teacher view to default to current term
         Messenger: updated message copies sent to sender to include an example confirm link
         Messenger: added a setting to customise the signature used in messages
+        Messenger: moved message signatures to a checkbox rather than in the message body
         Messenger: restored SMS credit balance to New Message screen
         Messenger: made Duplicate With Members the top bulk action in Manage Groups
         Messenger: moved Read Receipt links to the top of messages by default
@@ -110,6 +111,7 @@ v26.0.00
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Messenger: fixed Individual Naming option not adding student names to new messages
+        Messenger: fixed signature removal from SMS messages
         Planner: fixed duplicate lessons in Year Overview for multiple timetables
         Planner: fixed input sanitization of resource quick-add values
         Planner: fixed students with timetable exceptions showing up in submission list

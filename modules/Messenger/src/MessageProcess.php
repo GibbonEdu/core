@@ -38,6 +38,7 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
+use Gibbon\Module\Messenger\Signature;
 
 /**
  * MessageProcess
@@ -103,6 +104,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $emailReceipt = $message['emailReceipt'] ?? 'N';
         $emailReceiptText = $message['emailReceiptText'] ?? '';
         $individualNaming = $message['individualNaming'] ?? 'N';
+        $includeSignature = $message['includeSignature'] ?? 'N';
         $confidential = $message['confidential'] ?? 'N';
 
         // SMS Credit notification
@@ -166,6 +168,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             
             // Turn copy-pasted div breaks into paragraph breaks
             $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
+
+            if ($includeSignature == 'Y') {
+                $signature = $container->get(Signature::class)->getSignature($gibbonPersonID);
+                $body .= $signature;
+            }
 
             $mail->Subject = $subject;
             $mail->renderBody('mail/email.twig.html', [
@@ -342,6 +349,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         if ($message['emailReceipt'] == 'Y') {
             $message['body'] = $this->handleFakeReadReceiptLink($message['body'], $message['emailReceiptText']);
+        }
+
+        if ($message['includeSignature'] == 'Y') {
+            $signature = $this->getContainer()->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
+            $message['body'] .= $signature;
         }
 
         $mail->renderBody('mail/email.twig.html', [

@@ -51,10 +51,8 @@ class MessageForm extends Form
     protected $defaultSendStaff;
     protected $defaultSendStudents;
     protected $defaultSendParents;
-    protected $signatureTemplate;
-    protected $view;
 
-    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, View $view)
+    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway)
     {
         $this->session = $session;
         $this->db = $db;
@@ -69,9 +67,6 @@ class MessageForm extends Form
         $this->defaultSendStaff = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
         $this->defaultSendStudents = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
         $this->defaultSendParents = ($this->roleCategory == 'Parent')? 'Y' : 'N';
-
-        $this->signatureTemplate = $this->settingGateway->getSettingByScope('Messenger', 'signatureTemplate');
-        $this->view = $view;
     }
 
     public function createForm($action, $gibbonMessengerID = null)
@@ -83,9 +78,6 @@ class MessageForm extends Form
         // Get the existing message data, if any
         $values = !empty($gibbonMessengerID) ? $this->messengerGateway->getByID($gibbonMessengerID) : [];
         $sent = !empty($values) && $values['status'] == 'Sent';
-
-        // TODO: refactor this
-        $signature = $this->getSignature($this->session->get('gibbonPersonID'));
 
         // FORM
         $form = Form::create('messengerMessage', $this->session->get('absoluteURL').'/modules/Messenger/' .$action);
@@ -172,8 +164,6 @@ class MessageForm extends Form
                         $row = $form->addRow()->addClass('sms');
                             $row->addAlert("<b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>", 'message');
                     }
-                    
-                    $this->getSMSSignatureJS($signature);
                 }
             }
         }
@@ -194,7 +184,7 @@ class MessageForm extends Form
             $cannedResponses = $this->cannedResponseGateway->selectCannedResponses()->fetchAll();
 
             if (!empty($cannedResponses)) {
-                $this->getCannedResponseJS($cannedResponses, $signature);
+                $this->getCannedResponseJS($cannedResponses);
                 $cans = array_combine(array_column($cannedResponses, 'gibbonMessengerCannedResponseID'), array_column($cannedResponses, 'subject'));
 
                 $row = $form->addRow();
@@ -215,7 +205,8 @@ class MessageForm extends Form
         $row = $form->addRow();
             $col = $row->addColumn('body');
             $col->addLabel('body', __('Body'));
-            $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($values['body'] ?? $signature);
+            $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($values['body'] ?? '');
+            $col->addCheckbox('includeSignature')->description(__('Include Signature? (email only)'))->setValue('Y')->checked($values['includeSignature'] ?? 'Y');
 
         // READ RECEIPTS
         if (!isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_readReceipts')) {
@@ -759,57 +750,7 @@ class MessageForm extends Form
         }, []);
     }
 
-    //Build an email signautre for the specified user
-    public function getSignature($gibbonPersonID)
-    {
-        $guid = $this->session->get('guid');
-        $connection2 = $this->db->getConnection();
-        $return = false;
-
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = 'SELECT gibbonStaff.*, surname, firstName, preferredName, email FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-        if ($result->rowCount() == 1) {
-            $values = $result->fetch();
-
-            $signatureData = $values + [
-                'organisationName' => $this->session->get('organisationName'),
-            ];
-            $return = '<p></p>'.$this->view->fetchFromString($this->signatureTemplate, $signatureData);
-        }
-
-        return $return;
-    }
-
-    private function getSMSSignatureJS($signature)
-    {
-        echo "<script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var smsRadio = document.querySelectorAll('input[name=\"sms\"]');
-            if (smsRadio == undefined || smsRadio.length == 0) return;
-
-            smsRadio.forEach(function (element) {
-                element.addEventListener('click', function(event) {
-                    tinymce.triggerSave();
-
-                    if (element.value == 'Y') {
-                        alert('".__('SMS sending has been enabled. Your signature has automatically been removed from the message body. Please note that the subject line is not included in SMS messages.')."');
-                        var contents = $('#body').val().replace('" . addSlashes($signature) . "', ' ');
-                    } else {
-                        var contents = $('#body').val() + '" . addSlashes($signature) . "';
-                    }
-
-                    tinymce.get('body').execCommand('mceSetContent', false, contents) ;
-                });
-            });
-          }, false);
-        </script>";
-    }
-
-    private function getCannedResponseJS(array $cannedResponses = [], string $signature = '')
+    private function getCannedResponseJS(array $cannedResponses = [])
     {
         // Set up JS to deal with canned response selection
         echo "<script type=\"text/javascript\">" ;
@@ -819,7 +760,7 @@ class MessageForm extends Form
                     echo "if ($('#cannedResponse').val()==\"\" ) {" ;
                         echo "$('#subject').val('');" ;
                         echo "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-                        echo "$('#body').val('" . addSlashes($signature) . "');" ;
+                        echo "$('#body').val('');" ;
                         echo "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
                     echo "}" ;
                     foreach ($cannedResponses AS $rowSelect) {
@@ -829,7 +770,7 @@ class MessageForm extends Form
                             echo "
                                 $.get('./modules/Messenger/messenger_post_ajax.php?gibbonMessengerCannedResponseID=" . $rowSelect["gibbonMessengerCannedResponseID"] . "', function(response) {
                                      var result = response;
-                                    $('#body').val(result + '" . addSlashes($signature) . "');
+                                    $('#body').val(result);
                                     tinyMCE.execCommand('mceAddEditor', false, 'body') ;
                                 });
                             " ;

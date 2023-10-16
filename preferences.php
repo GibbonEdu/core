@@ -24,7 +24,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Module\Messenger\Forms\MessageForm;
+use Gibbon\Module\Messenger\Signature;
 
 if (!$session->exists("username")) {
     // Access denied
@@ -182,8 +182,8 @@ if (!$session->exists("username")) {
         if ($session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
             $row = $form->addRow()->addHeading('Signature', __('Signature'))->append(__('Your messenger signature can be found below. You can use it as a regular email signature by selecting and copying the following contents into your email settings.'));
 
-            include_once($session->get('absolutePath').'/modules/Messenger/src/Forms/MessageForm.php');
-            $signature = $container->get(MessageForm::class)->getSignature($session->get('gibbonPersonID'));
+            include_once($session->get('absolutePath').'/modules/Messenger/src/Signature.php');
+            $signature = $container->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
 
             $row = $form->addRow();
                 $row->addContent($signature.'<br/>');
