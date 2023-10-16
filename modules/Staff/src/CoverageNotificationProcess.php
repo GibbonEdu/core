@@ -147,7 +147,7 @@ class CoverageNotificationProcess extends BackgroundProcess
 
         if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
             $data = [
-                'status' => $this->coverageMode == 'Requested' ? 'Requested' : 'Accepted',
+                'status' => $this->coverageMode == 'Assigned' && !empty($coverage['gibbonPersonIDCoverage'])? 'Accepted' : 'Requested',
                 'notificationSent' => 'Y',
                 'notificationList' => json_encode($recipients),
             ];

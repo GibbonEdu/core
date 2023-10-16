@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                     return Format::tag(__('Pending Approval'), 'dull');
                 } elseif ($coverage['status'] == 'Not Required') {
                     return Format::tag(__('Not Required'), 'dull');
-                } elseif ($coverage['status'] == 'Pending') {
+                } elseif ($coverage['status'] == 'Pending' || $coverage['status'] == 'Requested') {
                     return Format::tag(__('Cover Required'), 'bg-red-300 text-red-800');
                 }
                 return AbsenceFormats::substituteDetails($coverage);
