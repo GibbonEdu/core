@@ -155,8 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             // COLUMNS
             $table->addColumn('student', __('Student'))
                 ->sortable(['surname', 'preferredName'])
-                ->format(function ($person) {
-                    return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                ->format(function ($person) use ($canViewFullProfile) {
+                    $output = Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/>';
+                    if ($canViewFullProfile) {
+                        $output .= '<small><i>'.Format::userStatusInfo($person).'</i></small>';
+                    }
+                    return $output;
                 });
             $table->addColumn('yearGroup', __('Year Group'));
             $table->addColumn('formGroup', __('Form Group'));
