@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $row->addDate('completeDate');
 
                     $row = $form->addRow();
-                        $row->addContent(getMaxUpload($guid, true));
+                        $row->addContent(getMaxUpload(true));
                         $row->addSubmit();
 
                     $form->loadAllValuesFrom($values);

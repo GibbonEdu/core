@@ -849,7 +849,7 @@ if ($proceed == false) {
                     ->setMaxUpload(false);
         }
 
-        $row = $form->addRow()->addContent(getMaxUpload($guid));
+        $row = $form->addRow()->addContent(getMaxUpload());
         $form->addHiddenValue('fileCount', count($requiredDocumentsList));
     }
 
@@ -893,7 +893,7 @@ if ($proceed == false) {
 
     // Honey pot field
     $form->addRow()->addClass('hidden')->addTextField('emailAddress');
-    
+
     // AGREEMENT
     $agreement = $settingGateway->getSettingByScope('Application Form', 'agreement');
     if (!empty($agreement)) {

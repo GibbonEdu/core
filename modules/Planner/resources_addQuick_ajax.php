@@ -79,7 +79,7 @@ if (!$session->has('gibbonPersonID')) {
         $row->addSelect('imagesAsLinks')->fromArray(array('N' => __('Image'), 'Y' => __('Link')))->required();
 
     $row = $form->addRow();
-        $row->addContent(getMaxUpload($guid, true));
+        $row->addContent(getMaxUpload(true));
         $row->addSubmit(__('Upload'), 'bg-purple');
 
     $output .= $form->getOutput();
