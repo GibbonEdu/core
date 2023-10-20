@@ -104,12 +104,12 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
     						$mail->AddAddress($rowRecipt['contactDetail']);
     						//Deal with email receipt and body finalisation
     						if ($values['emailReceipt'] == 'Y') {
-    							$bodyReadReceipt = '<a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$values['emailReceiptText'].'</a>';
-    							if (is_numeric(strpos($values['body'], '[confirmLink]'))) {
+    							$bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$values['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
+    							if (strpos($bodyReminder, '[confirmLink]') !== false) {
     								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $values['body']);
     							}
     							else {
-    								$bodyOut = $bodyReminder.$values['body'].$bodyReadReceipt;
+    								$bodyOut = $bodyReminder.$bodyReadReceipt.$values['body'];
     							}
     						}
     						else {
