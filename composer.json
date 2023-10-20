@@ -38,7 +38,7 @@
         "test:codesniffer": "Check code complies with PSR-2 standards"
     },
     "require": {
-        "php" : "^7.3",
+        "php" : "^7.4",
         "ext-curl": "*",
         "ext-intl": "*",
         "ext-mbstring": "*",
@@ -82,7 +82,10 @@
     },
     "config": {
         "platform": {
-            "php": "7.3"
+            "php": "7.4"
+        },
+        "allow-plugins": {
+            "php-http/discovery": true
         }
     },
     "autoload": {
