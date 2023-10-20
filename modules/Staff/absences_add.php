@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Person'));
-            $row->addSelectStaff('gibbonPersonID')->placeholder()->isRequired()->selected($gibbonPersonID);
+            $row->addSelectStaff('gibbonPersonID')->addClass('coverageField')->placeholder()->required()->selected($gibbonPersonID);
     } elseif ($highestAction == 'New Absence_mine') {
         $gibbonPersonID = $session->get('gibbonPersonID');
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -96,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row->addSelect('gibbonStaffAbsenceTypeID')
             ->fromArray($types)
             ->placeholder()
-            ->isRequired();
+            ->required();
 
     $form->toggleVisibilityByClass('reasonOptions')->onSelect('gibbonStaffAbsenceTypeID')->when($typesWithReasons);
 
@@ -106,24 +108,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->fromArray($reasonsOptions)
             ->chainedTo('gibbonStaffAbsenceTypeID', $reasonsChained)
             ->placeholder()
-            ->isRequired();
+            ->required();
 
     // DATES
     $date = $_GET['date'] ?? '';
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->chainedTo('dateEnd')->isRequired()->setValue($date);
+        $row->addDate('dateStart')->addClass('coverageField')->chainedTo('dateEnd')->required()->setValue($date);
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->chainedFrom('dateStart')->isRequired()->setValue($date);
+        $row->addDate('dateEnd')->addClass('coverageField')->chainedFrom('dateStart')->required()->setValue($date);
 
     $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
         $row->addCheckbox('allDay')
             ->description(__('All Day'))
             ->inline()
-            ->setClass()
+            ->setClass('coverageField')
             ->setValue('Y')
             ->checked('Y')
             ->wrap('<div class="standardWidth floatRight">', '</div>');
@@ -134,12 +136,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row->addLabel('timeStart', __('Time'));
         $col = $row->addColumn('timeStart')->addClass('right inline');
         $col->addTime('timeStart')
-            ->setClass('shortWidth')
-            ->isRequired();
+            ->setClass('coverageField shortWidth')
+            ->required();
         $col->addTime('timeEnd')
             ->chainedTo('timeStart')
-            ->setClass('shortWidth')
-            ->isRequired();
+            ->setClass('coverageField shortWidth')
+            ->required();
 
     $col = $form->addRow()->addClass('schoolClosedOverride hidden')->addColumn();
         $col->addAlert(__('One or more selected dates are not a school day. Check here to confirm if you would like to include these dates.'), 'warning');
@@ -160,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row->addLabel('gibbonPersonIDApproval', __('Approver'));
         $row->addSelectUsersFromList('gibbonPersonIDApproval', $approverOptions)
             ->placeholder()
-            ->isRequired()
+            ->required()
             ->selected($gibbonPersonIDApproval ?? '');
 
         $row = $form->addRow()->addClass('approvalRequired');
@@ -183,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     if (!empty($notificationGroups)) {
         $row = $form->addRow();
             $row->addLabel('gibbonGroupID', __('Automatically Notify'));
-            $row->addSelect('gibbonGroupID')->fromArray($notificationGroups)->isRequired()->selected($recentAbsence['gibbonGroupID']);
+            $row->addSelect('gibbonGroupID')->fromArray($notificationGroups)->required()->selected($recentAbsence['gibbonGroupID'] ?? '');
     }
 
     // Format user details into token-friendly list
@@ -212,21 +214,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row->addTextArea('comment')->setRows(5)->setValue($commentTemplate);
 
     // COVERAGE
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php')) {
-        // $form->toggleVisibilityByClass('coverageRequest')->onSelect('gibbonStaffAbsenceTypeID')->whenNot('Please select...');
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
+        $form->toggleVisibilityByClass('coverageRequest')->onInput('dateStart')->whenNot('');
 
         $form->addRow()->addClass('coverageRequest')->addHeading(__('Coverage'))->addClass('coverageRequest');
 
         $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
-            $row->addYesNo('coverageRequired')->isRequired()->selected('Y');
+            $row->addYesNo('coverageRequired')->required()->placeholder();
 
-        $form->toggleVisibilityByClass('coverageOptions')->onSelect('coverageRequired')->whenNot('N');
+        $form->addRow()->setClass('hidden coverageRequestForm p-0');
 
-        if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
-            $col = $form->addRow()->addClass('coverageOptions')->addColumn();
-                $col->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
-        }
+        // $form->toggleVisibilityByClass('coverageOptions')->onSelect('coverageRequired')->whenNot('N');
+
+        // if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
+        //     $col = $form->addRow()->addClass('coverageOptions')->addColumn();
+        //         $col->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
+        // }
     } else {
         $form->addHiddenValue('coverageRequired', 'N');
     }
@@ -240,7 +244,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 ?>
 
 <script>
+
 $(document).ready(function() {
+    // ABSENCE
     $('#dateStart, #dateEnd').on('change', function() {
         $.ajax({
             url: "./modules/Staff/absences_addAjax.php",
@@ -259,6 +265,46 @@ $(document).ready(function() {
                 }
             }
         });
+    });
+
+    // COVERAGE
+    $('#coverageRequired, .coverageField').on('change', function() {
+        if ($('#coverageRequired').val() == 'Y') {
+            $('.coverageRequestForm').removeClass('hidden').html('<div class="w-full flex items-center justify-center h-32"><img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif"></div>');
+            $('.coverageRequestForm').load('./modules/Staff/coverage_requestAjax.php', {
+                'gibbonStaffAbsenceTypeID': $('#gibbonStaffAbsenceTypeID').val(),
+                'gibbonPersonID': $('#gibbonPersonID').val() ?? "<?php echo $gibbonPersonID; ?>",
+                'dateStart': $('#dateStart').val(),
+                'dateEnd': $('#dateEnd').val(),
+                'allDay': $('input[name=allDay]:checked').val(),
+                'timeStart': $('#timeStart').val(),
+                'timeEnd': $('#timeEnd').val(),
+            }, function(result) {
+                console.log('loaded');
+                $('input[name="timetableClasses[]"]').trigger('change');
+                $('input[name="requestDates[]"]').trigger('change');
+            });
+        } else {
+            $('.coverageRequestForm').addClass('hidden').html('');
+        }
+    });
+
+    $(document).on('change', 'input[name="timetableClasses[]"],input[name="requestDates[]"]', function() {
+        var checkbox = this;
+        $(this).parents('tr').find('.individualOptions.personSelect').each(function() {
+            $(this).toggle($(checkbox).prop("checked"));
+        });
+
+        $(this).parents('tr').find('.coverageNotes').each(function() {
+            $(this).toggle($(checkbox).prop("checked"));
+        });
+
+    });
+
+    $('input[name="timetableClasses[]"],input[name="requestDates[]"]').trigger('change');
+
+    $(document).on('change', '#requestType', function() {
+        $('input[name="timetableClasses[]"],input[name="requestDates[]"]').trigger('change');
     });
 }) ;
 </script>

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +24,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Messenger\Signature;
 
 if (!$session->exists("username")) {
     // Access denied
@@ -174,8 +177,17 @@ if (!$session->exists("username")) {
                 $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
         }
 
-
         //TODO: Allow for easy reset of MFA secret, currently would need to disable and then re-enable MFA to do so
+
+        if ($session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
+            $row = $form->addRow()->addHeading('Signature', __('Signature'))->append(__('Your messenger signature can be found below. You can use it as a regular email signature by selecting and copying the following contents into your email settings.'));
+
+            include_once($session->get('absolutePath').'/modules/Messenger/src/Signature.php');
+            $signature = $container->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
+
+            $row = $form->addRow();
+                $row->addContent($signature.'<br/>');
+        }
 
         $row = $form->addRow();
             $row->addFooter();

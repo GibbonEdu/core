@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -265,7 +267,7 @@ class Page extends View
      */
     public function addError(string $text)
     {
-        $this->alerts['error'][] = $text;
+        $this->addAlert($text, 'error');
     }
 
     /**
@@ -275,7 +277,7 @@ class Page extends View
      */
     public function addWarning(string $text)
     {
-        $this->alerts['warning'][] = $text;
+        $this->addAlert($text, 'warning');
     }
 
     /**
@@ -285,7 +287,7 @@ class Page extends View
      */
     public function addMessage(string $text)
     {
-        $this->alerts['message'][] = $text;
+        $this->addAlert($text, 'message');
     }
 
     /**
@@ -295,7 +297,7 @@ class Page extends View
      */
     public function addSuccess(string $text)
     {
-        $this->alerts['success'][] = $text;
+        $this->addAlert($text, 'success');
     }
 
     /**
@@ -306,7 +308,7 @@ class Page extends View
      */
     public function addAlert(string $text, string $context = 'message')
     {
-        $this->alerts[$context][] = $text;
+        $this->alerts[$context][] = strip_tags($text, '<a><b><i><u><strong><br><ul><ol><li>');
     }
 
     /**
@@ -424,7 +426,7 @@ class Page extends View
      * @param string $address
      * @return bool
      */
-    public function isAddressValid($address, bool $strictPHP = false) : bool
+    public function isAddressValid($address, bool $strictPHP = true) : bool
     {
         if ($strictPHP && stripos($address, '.php') === false) {
             return false;

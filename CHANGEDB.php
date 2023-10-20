@@ -1,8 +1,10 @@
 <?php
 
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -671,6 +673,11 @@ UPDATE `gibbonAction` SET URLList='formBuilder.php,formBuilder_preview.php,formB
 DELETE FROM `gibbonPermission` WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Manage Other Forms');end
 ";
 
+//v24.0.01
+++$count;
+$sql[$count][0] = '24.0.01';
+$sql[$count][1] = "";
+
 //v25.0.00
 ++$count;
 $sql[$count][0] = '25.0.00';
@@ -728,5 +735,43 @@ UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='S
 UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='New Application with SEN/Medical';end
 UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='Application Form Accepted';end
 UPDATE `gibbonNotificationEvent` SET moduleName='Admissions' WHERE moduleName='Students' AND event='Student Withdrawn';end
+";
+
+//v25.0.01
+++$count;
+$sql[$count][0] = '25.0.01';
+$sql[$count][1] = "
+ALTER TABLE `gibbonMessengerReceipt` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;end
+ALTER TABLE `gibbonFormUpload` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'allowableIframeSources', 'Allowable iFrame Sources', 'A comma separated list of domains that are allowed in embedded iFrames. All others will be removed from HTML content.', 'youtube.com,youtu.be,m.youtube.com,google.com,docs.google.com,drive.google.com,vimeo.com,player.vimeo.com');end
+
+";
+
+//v26.0.00
+++$count;
+$sql[$count][0] = '26.0.00';
+$sql[$count][1] = "
+ALTER TABLE `gibbonStaffCoverage` CHANGE `status` `status` ENUM('Requested','Accepted','Declined','Cancelled','Pending','Not Required') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Requested';end
+ALTER TABLE `gibbonStaffDuty` ADD `nameShort` VARCHAR(20) NOT NULL AFTER `name`;end
+UPDATE `gibbonLibraryItem` SET timestampUpdate = CURRENT_TIMESTAMP WHERE UNIX_TIMESTAMP(timestampUpdate) = 0;end
+UPDATE `gibbonLibraryItem` SET timestampStatus = CURRENT_TIMESTAMP WHERE UNIX_TIMESTAMP(timestampStatus) = 0;end
+UPDATE `gibbonLibraryItem` SET timestampCreator = CURRENT_TIMESTAMP WHERE UNIX_TIMESTAMP(timestampCreator) = 0;end
+ALTER TABLE `gibbonLibraryItem` ADD `gibbonLibraryItemIDParent` INT(10) NULL DEFAULT NULL AFTER `gibbonLibraryItemID`;end
+ALTER TABLE `gibbonMessengerReceipt` CHARACTER SET utf8 COLLATE utf8_general_ci;end
+ALTER TABLE `gibbonMessengerReceipt` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Behaviour Record for IN Student', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'emergencyFollowUpGroup', 'Follow-up Contacts', 'An optional list of staff to include in the follow-up contacts section.', '');end
+UPDATE `gibbonAction` SET name='First Aid Record_editAll', precedence=2 WHERE name='First Aid Record' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'First Aid Record_viewOnlyAddNotes', 0, 'Medical', 'Allows user to view first aid records and add incident notes, but not add or edit records.', NULL, 'firstAidRecord.php,firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '856' WHERE `gibbonCountry`.`printable_name` ='Lao People\'s Democratic Republic';end
+ALTER TABLE `gibbonMessenger` ADD `individualNaming` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `emailReceiptText`;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Messenger', 'signatureTemplate', 'Signature Template', 'An HTML and Twig template used to add signatures to messages.', '----<br /><span style=\"font-weight: bold; color: #447caa;\">{{ preferredName }} {{ surname }}</span><br />{% if jobTitle is not empty %}<span style=\"font-style: italic;\">{{ jobTitle }}</span><br />{% endif %}{{ organisationName }}<br /></span>');end
+ALTER TABLE `gibbonFormUpload` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+INSERT IGNORE INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'allowableIframeSources', 'Allowable iFrame Sources', 'A comma separated list of domains that are allowed in embedded iFrames. All others will be removed from HTML content.', 'youtube.com,youtu.be,m.youtube.com,google.com,docs.google.com,drive.google.com,vimeo.com,player.vimeo.com');end
+ALTER TABLE `gibbonFamily` CHANGE `status` `status` ENUM('Married','Separated','Divorced','De Facto','Other','Single') NOT NULL;end
+UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='Manage Facility Bookings_myBookings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
+UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='View Timetable by Facility' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
+ALTER TABLE `gibbonFirstAid` ADD `gibbonPersonIDFollowUp` INT(10) UNSIGNED ZEROFILL NULL AFTER `gibbonPersonIDFirstAider`;end
+ALTER TABLE `gibbonMessenger` ADD `includeSignature` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `individualNaming`;end
 
 ";

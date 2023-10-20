@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -17,6 +19,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             }
         </style>
         <div id="wrap-report" class="mx-auto {{ orientation == 'L' ? 'max-w-6xl' : 'max-w-3xl' }}">
+            {% if not hideHeader %}
             <div id="header-report" class="flex items-center w-full my-6">
                 
                 <div id="header-logo" class="leading-none">
@@ -27,6 +30,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {{  __('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.')|format(organisationName, organisationAdministratorName, organisationAdministratorEmail) }}
                 </div>
             </div>
+            {% else %}
+                <br/>
+            {% endif %}
 
             <div id="content-wrap-report" class="w-full max-w-full">
 

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,6 +26,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Forms\Input\Editor;
+use Gibbon\Data\Validator;
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be masterAdd, masterEdit, workingDeploy, workingEdit, plannerEdit, embed
@@ -198,7 +201,9 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 
 function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links = true, $narrow = false)
 {
-    global $session;
+    global $session, $container;
+
+    $validator = $container->get(Validator::class);
 
     $output = '';
 
@@ -244,7 +249,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
             $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";
             $output .= "</tr>";
             $output .= "<tr>";
-            $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2>".$rowDiscuss['comment'].'</td>';
+            $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2>".$validator->sanitizeRichText($rowDiscuss['comment']).'</td>';
             $output .= "</tr>";
             $output .= "<tr>";
             if ($links == true) {

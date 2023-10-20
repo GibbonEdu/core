@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,8 +33,9 @@ class ValidatorTest extends TestCase
     public function setUp(): void
     {
         $allowableHTML = "br[style],strong[style],b[style],em[style],span[style],p[style],address[style],pre[style|class],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[class|style],sup[style],sub[style],code[style|class],details[style|class],summary[style|class]";
+        $allowableIframes = 'youtube.com';
         
-        $this->validator = new Validator($allowableHTML);
+        $this->validator = new Validator($allowableHTML, $allowableIframes);
     }
 
     public function testCanRemoveDisallowedTags()
@@ -55,6 +58,22 @@ class ValidatorTest extends TestCase
     {
         $input = ['value' => "<img src=\"javascript:alert('123')\"><img src=javascript:alert('123')><img src=j&#X41vascript:alert('123')><IMG SRC=javascript:alert(&quot;XSS&quot;)>"];
         $expected =  ['value' => '<img><img><img><img>'];
+
+        $this->assertEquals($expected, $this->validator->sanitize($input, ['value' => 'HTML']));
+    }
+
+    public function testCanRemoveDisallowedIframes()
+    {
+        $input = ['value' => '<iframe src="https://codeception.com">this should be removed</iframe><iframe>but not this</iframe>'];
+        $expected =  ['value' => '<iframe>but not this</iframe><!--iFrame removed due to security policy-->'];
+
+        $this->assertEquals($expected, $this->validator->sanitize($input, ['value' => 'HTML']));
+    }
+
+    public function testCanKeepAllowedIframes()
+    {
+        $input = ['value' => '<iframe src="https://www.youtube.com/watch?v=idVB0SEwUfw">this should be allowed</iframe><iframe src="https://codeception.com">this should be removed</iframe><iframe>but not this</iframe>'];
+        $expected =  ['value' => '<iframe src="https://www.youtube.com/watch?v=idVB0SEwUfw">this should be allowed</iframe><iframe>but not this</iframe><!--iFrame removed due to security policy-->'];
 
         $this->assertEquals($expected, $this->validator->sanitize($input, ['value' => 'HTML']));
     }

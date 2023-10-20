@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,6 +28,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 
 include '../../gibbon.php';
 
@@ -150,6 +153,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                     $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
                                 }
                             }
+                        }
+
+                        // Check if this is an IN student
+                        $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
+                        if (!empty($studentIN)) {
+                            // Raise a notification event for IN students
+                            $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
+                            
+                            $eventIN->setNotificationText(sprintf(__('Someone has created a negative behaviour record for %1$s.'), $studentName));
+                            $eventIN->setActionLink($actionLink);
+    
+                            $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                            $eventIN->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+
+                            // Add event listeners to the notification sender
+                            $eventIN->pushNotifications($notificationGateway, $notificationSender);
                         }
 
                         // Send all notifications

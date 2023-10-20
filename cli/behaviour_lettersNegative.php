@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,6 +33,7 @@ use Gibbon\Domain\User\UserGateway;
 require getcwd().'/../gibbon.php';
 
 //Check for CLI, so this cannot be run through browser
+$settingGateway = $container->get(SettingGateway::class);
 $remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
 if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
@@ -38,13 +41,13 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 } else {
     $emailSendCount = 0;
     $emailFailCount = 0;
+    $emailFailList = [];
 
     // Prep for email sending later
     $mail = $container->get(Mailer::class);
     $mail->SMTPKeepAlive = true;
 
     // Initialize the notification sender & gateway objects
-    $settingGateway = $container->get(SettingGateway::class);
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $session);
 
@@ -296,6 +299,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                                 ++$emailSendCount;
                                 if ($parent['email'] == '') {
                                     ++$emailFailCount;
+                                    $emailFailList[] = $parent['surname'].', '.$parent['preferredName'].' (no email)';
                                 } else {
                                     $recipientList .= $parent['email'].', ';
 
@@ -338,6 +342,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                                         $behaviourLetterGateway->update($gibbonBehaviourLetterID, ['body' => $body]);
                                     } else {
                                         ++$emailFailCount;
+                                        $emailFailList[] = $parent['surname'].', '.$parent['preferredName'].' ('.$parent['email'].')';
                                     }
 
                                     // Clear addresses
@@ -370,7 +375,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     if (empty($email)) {
         $event->setNotificationText(__('The Behaviour Letter CLI script has run: no emails were sent.'));
     } else {
-        $event->setNotificationText(sprintf(__('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount));
+        $event->setNotificationText(sprintf(__('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount).'<br/><br/>'.Format::list($emailFailList));
     }
 
     $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_letters.php');
@@ -383,5 +388,5 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     $sendReport = $notificationSender->sendNotifications();
 
     // Output the result to terminal
-    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
+    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $emailSendCount, $emailFailCount)."\n";
 }

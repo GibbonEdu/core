@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -102,12 +104,12 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
     						$mail->AddAddress($rowRecipt['contactDetail']);
     						//Deal with email receipt and body finalisation
     						if ($values['emailReceipt'] == 'Y') {
-    							$bodyReadReceipt = '<a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$values['emailReceiptText'].'</a>';
-    							if (is_numeric(strpos($values['body'], '[confirmLink]'))) {
+    							$bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$values['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
+    							if (strpos($bodyReminder, '[confirmLink]') !== false) {
     								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $values['body']);
     							}
     							else {
-    								$bodyOut = $bodyReminder.$values['body'].$bodyReadReceipt;
+    								$bodyOut = $bodyReminder.$bodyReadReceipt.$values['body'];
     							}
     						}
     						else {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.php') == false) {
     // Access denied
@@ -37,6 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $page->return->setEditLink($editLink);
 
     $substituteGateway = $container->get(SubstituteGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
+    $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     $criteria = $substituteGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
@@ -77,7 +82,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
             ->inline()
             ->setClass()
             ->setValue('Y')
-            ->checked('Y')
             ->wrap('<div class="standardWidth floatRight">', '</div>');
 
     $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
@@ -95,10 +99,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDCoverage', __('Substitute'));
-        $row->addSelectPerson('gibbonPersonIDCoverage')
-            ->fromArray($availableSubs)
+        if ($internalCoverage == 'Y') {
+            $row->addSelectStaff('gibbonPersonIDCoverage')
             ->placeholder()
             ->isRequired();
+        } else {
+            $row->addSelectPerson('gibbonPersonIDCoverage')
+                ->fromArray($availableSubs)
+                ->placeholder()
+                ->isRequired();
+        }
+        
 
     // Loaded via AJAX
     $row = $form->addRow();
@@ -114,12 +125,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
             ->isRequired();
 
     $statusOptions = [
-        'Requested' => __('Request'),
         'Accepted'  => __('Assign'),
+        'Requested' => __('Request'),
     ];
     $row = $form->addRow()->addClass('subSelected');
         $row->addLabel('status', __('Type'));
         $row->addSelect('status')->fromArray($statusOptions)->isRequired();
+
+    $row = $form->addRow()->addClass('subSelected');
+        $row->addLabel('reason', __('Reason'));
+        $row->addTextField('reason')->maxLength(30);
 
     $row = $form->addRow()->addClass('subSelected');
         $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
@@ -134,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
 <script>
 $(document).ready(function() {
-    $('#gibbonPersonIDCoverage, #dateStart, #dateEnd').on('change', function() {
+    $('#gibbonPersonIDCoverage, #dateStart, #dateEnd, #allDay, #timeStart, #timeEnd').on('change', function() {
         $('.datesTable').load('./modules/Staff/coverage_manage_addAjax.php', {
             'allDay': $('input[name=allDay]:checked').val(),
             'dateStart': $('#dateStart').val(),

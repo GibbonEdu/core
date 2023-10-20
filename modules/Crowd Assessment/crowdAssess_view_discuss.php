@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 use Gibbon\Domain\CrowdAssessment\CrowdAssessDiscussGateway;
+use Gibbon\Data\Validator;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -42,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
     $plannerHomeworkGateway = $container->get(PlannerEntryHomeworkGateway::class);
     $crowdDiscussionGateway = $container->get(CrowdAssessDiscussGateway::class);
+    $validator = $container->get(Validator::class);
 
     // Check required values
     if (empty($gibbonPersonID) || empty($gibbonPlannerEntryID) || empty($gibbonPlannerEntryHomeworkID)) {
@@ -116,11 +120,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
    
     // DISCUSSION - recursive
-    $getDiscussion = function ($gibbonPlannerEntryHomeworkID, $urlParams, $parent = null, $level = null) use (&$getDiscussion, &$crowdDiscussionGateway) {
+    $getDiscussion = function ($gibbonPlannerEntryHomeworkID, $urlParams, $parent = null, $level = null) use (&$getDiscussion, &$crowdDiscussionGateway, &$validator) {
         $discussion = [];
         $items = $crowdDiscussionGateway->selectDiscussionByHomeworkID($gibbonPlannerEntryHomeworkID, $parent)->fetchAll();
         foreach ($items as $item) {
             $item['replies'] = $getDiscussion($gibbonPlannerEntryHomeworkID, $urlParams, $item['gibbonCrowdAssessDiscussID'], $level + 1);
+            $item['comment'] = $validator->sanitizeRichText($item['comment']);
 
             if ($level < 3) {
                 $item['attachmentLocation'] = "index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss_post.php&".http_build_query($urlParams)."&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=".$item['gibbonCrowdAssessDiscussID'];

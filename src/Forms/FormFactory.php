@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -315,6 +317,13 @@ class FormFactory implements FormFactoryInterface
         return $this->createSubmit($label)->prepend($cancelLink);
     }
 
+    public function createAdvancedOptionsToggle()
+    {
+        return $this->createContent('<a class="button rounded-sm" onclick="false" data-toggle=".advancedOptions">'.__('Advanced Options').'</a>')
+                ->wrap('<span class="small">', '</span>')
+                ->setClass('left');
+    }
+
     public function createFooter($required = true)
     {
         $content = '';
@@ -399,11 +408,12 @@ class FormFactory implements FormFactoryInterface
     public function createSelectMaritalStatus($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'Married'         => __('Married'),
-            'Separated'         => __('Separated'),
-            'Divorced'      => __('Divorced'),
-            'De Facto'         => __('De Facto'),
-            'Other'          => __('Other')
+            'Married'   => __('Married'),
+            'Separated' => __('Separated'),
+            'Divorced'  => __('Divorced'),
+            'De Facto'  => __('De Facto'),
+            'Single'    => __('Single'),
+            'Other'     => __('Other'),
         ))->placeholder();
     }
 
@@ -472,6 +482,7 @@ class FormFactory implements FormFactoryInterface
                 'DZD دج' => 'Algerian Dinar (دج)',
                 'BDT ó' => 'Bangladeshi Taka (ó)',
                 'BTC' => 'Bitcoin',
+                'BWP P' => 'Botswana Pula (P)',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
                 'CNY ¥' => 'Chinese Renminbi (¥)',

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,6 +29,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Module\Staff\Messages\NewAbsence;
 use Gibbon\Module\Staff\Messages\AbsenceApproval;
 use Gibbon\Module\Staff\Messages\AbsencePendingApproval;
+use Gibbon\Module\Staff\Messages\NewAbsencePendingApproval;
 
 /**
  * AbsenceNotificationProcess
@@ -40,6 +43,7 @@ class AbsenceNotificationProcess extends BackgroundProcess
     protected $groupGateway;
 
     protected $messageSender;
+    protected $urgentNotifications;
     protected $urgencyThreshold;
 
     public function __construct(StaffAbsenceGateway $staffAbsenceGateway, GroupGateway $groupGateway, SettingGateway $settingGateway, MessageSender $messageSender)
@@ -105,7 +109,7 @@ class AbsenceNotificationProcess extends BackgroundProcess
     }
 
     /**
-     * Sends a message to the selected approval to notify them of a new absence neeing approval.
+     * Sends a message to the selected approval to notify them of a new absence needing approval.
      *
      * @param string $gibbonStaffAbsenceID
      * @return array
@@ -118,7 +122,12 @@ class AbsenceNotificationProcess extends BackgroundProcess
         $message = new AbsencePendingApproval($absence);
         $recipients = [$absence['gibbonPersonIDApproval']];
 
-        return $this->messageSender->send($message, $recipients, $absence['gibbonPersonID']);
+        $sent = $this->messageSender->send($message, $recipients, $absence['gibbonPersonID']);
+
+        $message = new NewAbsencePendingApproval($absence);
+        $this->messageSender->send($message, [$absence['gibbonPersonID']]);
+
+        return $sent;
     }
 
     /**

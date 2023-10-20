@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -60,6 +62,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             $invoiceFailCount = 0;
             $invoiceFeeFailCount = 0;
             $feeFail = false;
+
+            // Use password policy to generate random strings
+            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
 
             //PROCESS FEES
             $fees = array();
@@ -168,9 +173,6 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 //Let's go! Create key, send the invite
                                 $continue = false;
                                 $count = 0;
-
-                                // Use password policy to generate random string
-                                $randStrGenerator = new PasswordPolicy(true, true, false, 40);
 
                                 while ($continue == false and $count < 100) {
                                     $key = $randStrGenerator->generate();

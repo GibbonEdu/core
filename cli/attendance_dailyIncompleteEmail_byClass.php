@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,7 +45,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         $partialFail = false;
 
         $userReport = array();
-        $adminReport = array( 'classes' => array() );
+        $adminReport = array( 'classes' => array(), 'classCount' => 0 );
 
         $enabledByClass = $settingGateway->getSettingByScope('Attendance', 'attendanceCLINotifyByClass');
         $additionalUsersList = $settingGateway->getSettingByScope('Attendance', 'attendanceCLIAdditionalUsers');
@@ -147,13 +149,14 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                         $reportInner .= '<b>' . $teacherName;
                         $reportInner .= (count($classes) > 1)? ' ('.count($classes).')</b><br/>' : '</b><br/>';
                         foreach ($classes as $className) {
+                            $adminReport['classCount']++;
                             $reportInner .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $className .'<br/>';
                         }
                         $reportInner .= '<br>';
                     }
 
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__('%1$s classes have not been registered today (%2$s).'), count($adminReport['classes']), Format::date($currentDate)).'<br/><br/>'.$reportInner;
+                    $report .= sprintf(__('%1$s classes have not been registered today (%2$s).'), $adminReport['classCount'], Format::date($currentDate)).'<br/><br/>'.$reportInner;
                 } else {
                     $report .= '<br/><br/>';
                     $report .= sprintf(__('All classes have been registered today (%1$s).'), Format::date($currentDate));

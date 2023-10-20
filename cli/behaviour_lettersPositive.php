@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,6 +42,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 } else {
     $emailSendCount = 0;
     $emailFailCount = 0;
+    $emailFailList = [];
 
     // Prep for email sending later
     $mail = $container->get(Mailer::class);
@@ -74,8 +77,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                     WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) 
                     AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
-                    AND (gibbonYearGroup.nameShort = 'G7' OR gibbonYearGroup.nameShort = 'G8' OR gibbonYearGroup.nameShort = 'G9' 
-                        OR gibbonYearGroup.nameShort = 'G10' OR gibbonYearGroup.nameShort = 'G11' OR gibbonYearGroup.nameShort = 'G12')
+                    
                     ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
                     $result = $pdo->select($sql, $data);
 
@@ -252,6 +254,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                 ++$emailSendCount;
                                 if ($parent['email'] == '') {
                                     ++$emailFailCount;
+                                    $emailFailList[] = $parent['surname'].', '.$parent['preferredName'].' (no email)';
                                 } else {
                                     $recipientList .= $parent['email'].', ';
 
@@ -294,6 +297,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                         $behaviourLetterGateway->update($gibbonBehaviourLetterID, ['body' => $body]);
                                     } else {
                                         ++$emailFailCount;
+                                        $emailFailList[] = $parent['surname'].', '.$parent['preferredName'].' ('.$parent['email'].')';
                                     }
 
                                     // Clear addresses
@@ -326,7 +330,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     if ($emailSendCount == 0 && $emailFailCount == 0) {
         $event->setNotificationText(__('The Behaviour Letter CLI script has run: no emails were sent.'));
     } else {
-        $event->setNotificationText(sprintf(__('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount));
+        $event->setNotificationText(sprintf(__('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount).'<br/><br/>'.Format::list($emailFailList));
     }
 
     $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_letters.php');
@@ -339,5 +343,5 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $sendReport = $notificationSender->sendNotifications();
 
     // Output the result to terminal
-    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
+    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $emailSendCount, $emailFailCount)."\n";
 }

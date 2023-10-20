@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,9 +44,10 @@ class StaffCoverageDateGateway extends QueryableGateway
     {
         $gibbonStaffCoverageIDList = is_array($gibbonStaffCoverageID)? $gibbonStaffCoverageID : [$gibbonStaffCoverageID];
         $data = ['gibbonStaffCoverageIDList' => implode(',', $gibbonStaffCoverageIDList) ];
-        $sql = "SELECT gibbonStaffCoverageDate.gibbonStaffCoverageID as groupBy,  gibbonStaffCoverageDate.*, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverage.status as coverage, gibbonStaffCoverage.requestType, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverageDate.reason as notes
+        $sql = "SELECT gibbonStaffCoverageDate.gibbonStaffCoverageID as groupBy,  gibbonStaffCoverageDate.*, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffAbsence.status as absenceStatus, gibbonStaffCoverage.status as coverage, gibbonStaffCoverage.requestType, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverageDate.reason as notes
                 FROM gibbonStaffCoverageDate
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID)
+                LEFT JOIN gibbonStaffAbsence ON (gibbonStaffAbsence.gibbonStaffAbsenceID=gibbonStaffCoverage.gibbonStaffAbsenceID)
                 LEFT JOIN gibbonPerson AS coverage ON (gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID)
                 WHERE FIND_IN_SET(gibbonStaffCoverageDate.gibbonStaffCoverageID, :gibbonStaffCoverageIDList)
                 ORDER BY gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.timeStart";
@@ -56,7 +59,7 @@ class StaffCoverageDateGateway extends QueryableGateway
     {
         $data = ['gibbonStaffCoverageDateID' => $gibbonStaffCoverageDateID];
         $sql = "SELECT gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverage.status, gibbonStaffAbsence.gibbonStaffAbsenceID, gibbonStaffAbsenceType.name as type, gibbonStaffAbsence.reason, gibbonStaffCoverage.substituteTypes,
-                gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.allDay, gibbonStaffCoverageDate.timeStart, gibbonStaffCoverageDate.timeEnd, gibbonStaffCoverage.timestampStatus, gibbonStaffCoverage.timestampCoverage, gibbonStaffCoverage.requestType,
+                gibbonStaffCoverageDate.date, gibbonStaffCoverageDate.allDay, gibbonStaffCoverageDate.timeStart, gibbonStaffCoverageDate.timeEnd, gibbonStaffCoverageDate.reason, gibbonStaffCoverage.timestampStatus, gibbonStaffCoverage.timestampCoverage, gibbonStaffCoverage.requestType,
                 gibbonStaffCoverage.notesCoverage, gibbonStaffCoverage.notesStatus, 0 as urgent, gibbonStaffAbsence.notificationSent, gibbonStaffAbsence.gibbonGroupID, gibbonStaffCoverage.notificationList as notificationListCoverage, gibbonStaffAbsence.notificationList as notificationListAbsence, 
                 gibbonStaffCoverage.gibbonPersonID, absence.title AS titleAbsence, absence.preferredName AS preferredNameAbsence, absence.surname AS surnameAbsence, 
                 gibbonStaffCoverage.gibbonPersonIDStatus, status.title AS titleStatus, status.preferredName AS preferredNameStatus, status.surname AS surnameStatus, 
@@ -103,6 +106,8 @@ class StaffCoverageDateGateway extends QueryableGateway
 
     public function selectPotentialCoverageByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $dateStart, $dateEnd)
     {
+        $activityDateType = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Activities' AND name='dateType'");
+
         $query = $this
             ->newSelect()
             ->cols(['gibbonTT.gibbonTTID as groupBy', '"Class" as context', 'CONCAT(gibbonCourse.nameShort, ".", gibbonCourseClass.nameShort) as contextName', 'gibbonCourseClass.gibbonCourseClassID as contextID', '"gibbonTTDayRowClass" as foreignTable', 'gibbonTTDayRowClass.gibbonTTDayRowClassID as foreignTableID', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage', 'coverage.preferredName as preferredNameCoverage' ])
@@ -157,7 +162,7 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
-
+            
             ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.foreignTable="gibbonActivitySlot" AND gibbonStaffCoverageDate.foreignTableID=gibbonActivitySlot.gibbonActivitySlotID AND gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
             ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
             ->leftJoin('gibbonPerson as coverage', 'coverage.gibbonPersonID=gibbonStaffCoverage.gibbonPersonIDCoverage')
@@ -171,6 +176,13 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->where('(gibbonDaysOfWeek.gibbonDaysOfWeekID-1) BETWEEN WEEKDAY(:dateStart) AND WEEKDAY(:dateEnd)')
             ->bindValues(['dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
 
+            if ($activityDateType == 'Term') {
+                $query->leftJoin('gibbonSchoolYearTerm as activityTerm', 'FIND_IN_SET(activityTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)')
+                    ->where('(activityTerm.firstDay <= :dateStart AND activityTerm.lastDay >= :dateEnd)');
+            } else {
+                $query->where('(gibbonActivity.programStart <= :dateStart AND gibbonActivity.programEnd >= :dateEnd)');
+            }
+
             $query->orderBy(['date', 'timeStart']);
 
         return $this->runSelect($query);
@@ -178,9 +190,11 @@ class StaffCoverageDateGateway extends QueryableGateway
 
     public function selectCoverageTimesByDate($gibbonSchoolYearID, $date)
     {
+        $activityDateType = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Activities' AND name='dateType'");
+
         $query = $this
             ->newSelect()
-            ->cols(['gibbonTTColumnRow.gibbonTTColumnRowID as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
+            ->cols(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'GROUP_CONCAT(gibbonTT.name SEPARATOR ", ") as ttName'])
             ->from('gibbonTT')
             ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
             ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
@@ -190,10 +204,11 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->where('gibbonTT.active="Y"')
             ->where('gibbonTTDayDate.date=:date')
             ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral")')
-            ->bindValue('date', $date);
+            ->bindValue('date', $date)
+            ->groupBy(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd']);
 
         $query->unionAll()
-            ->cols(['gibbonStaffDuty.gibbonStaffDutyID as groupBy', '"Staff Duty" AS type', 'gibbonStaffDuty.name as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd'])
+            ->cols(['CONCAT("duty-", gibbonStaffDuty.timeStart, "-", gibbonStaffDuty.timeEnd) as groupBy', '"Staff Duty" AS type', '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', '"" as ttName'])
             ->from('gibbonStaffDutyPerson')
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonStaffDutyPerson.gibbonDaysOfWeekID')
@@ -202,15 +217,45 @@ class StaffCoverageDateGateway extends QueryableGateway
             ->groupBy(['gibbonStaffDuty.gibbonStaffDutyID']);
 
         $query->unionAll()
-            ->cols(['gibbonDaysOfWeek.gibbonDaysOfWeekID as groupBy', '"Activity" AS type', '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd'])
+            ->cols(['"activity" as groupBy', '"Activity" AS type', '"Activity" as period', 'MIN(gibbonActivitySlot.timeStart)', 'MIN(gibbonActivitySlot.timeEnd)', '"" as ttName'])
             ->from('gibbonActivitySlot')
             ->innerJoin('gibbonActivity', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID')
             ->where('(gibbonDaysOfWeek.gibbonDaysOfWeekID-1) = WEEKDAY(:date)')
             ->bindValue('date', $date)
+            ->where('gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivity.active="Y"')
             ->groupBy(['gibbonDaysOfWeek.gibbonDaysOfWeekID']);
 
+        if ($activityDateType == 'Term') {
+            $query->leftJoin('gibbonSchoolYearTerm as activityTerm', 'FIND_IN_SET(activityTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)')
+                ->where(':date BETWEEN activityTerm.firstDay AND activityTerm.lastDay');
+        } else {
+            $query->where(':date BETWEEN gibbonActivity.programStart AND gibbonActivity.programEnd');
+        }
+
         $query->orderBy(['timeStart', 'timeEnd']);
+
+        return $this->runSelect($query);
+    }
+
+    public function selectCoveragePeriodsByDate($gibbonSchoolYearID, $date)
+    {
+        $query = $this
+            ->newSelect()
+            ->cols(['CONCAT("tt-", gibbonTTColumnRow.timeStart, "-", gibbonTTColumnRow.timeEnd) as groupBy', 'gibbonTTColumnRow.type', 'gibbonTTColumnRow.name as period', 'gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd'])
+            ->from('gibbonTT')
+            ->innerJoin('gibbonTTDay', 'gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID') 
+            ->innerJoin('gibbonTTDayDate', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID') 
+            ->innerJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID')
+            ->where('gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonTT.active="Y"')
+            ->where('gibbonTTDayDate.date=:date')
+            ->where('(gibbonTTColumnRow.type="Lesson" OR gibbonTTColumnRow.type="Pastoral" OR gibbonTTColumnRow.type="Break")')
+            ->bindValue('date', $date)
+            ->orderBy(['timeStart', 'timeEnd']);
 
         return $this->runSelect($query);
     }

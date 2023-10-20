@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -217,6 +219,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $col->addColumn('houseName', __('House'));
                         }
 
+                        
+
                         $col = $table->addColumn('Biography', __('Biography'));
 
                         $col->addColumn('countryOfOrigin', __('Country Of Origin'));
@@ -225,6 +229,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         // Custom Fields
                         $customFieldHandler->addCustomFieldsToTable($table, 'Staff', ['heading' => 'Other Information', 'withHeading' => ['Basic Information', 'Biography']], $row['fieldsStaff']);
+
+                        // Append the first aid details
+                        $headingCol = $table->getColumn('Basic Information');
+                        $headingCol->addColumn('firstAidQualified', __('First Aid Qualified'))
+                            ->addClass('grid')
+                            ->format(Format::using('yesNo', 'firstAidQualified'));
 
                         echo $table->render([$row]);
 
@@ -392,9 +402,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo $table->render($facilities);
                     } elseif ($subpage == 'Emergency Contacts') {
                         if ($highestActionManage != 'Manage Staff_confidential') {
-                            echo "<div class='error'>";
-                            echo __('You do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('You do not have access to this action.'));
                         }
                         else {
                             if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {

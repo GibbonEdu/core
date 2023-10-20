@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,9 +56,15 @@ class FormPrefill
      * @param array $recentApplication
      * @return self
      */
-    public function loadApplicationData(AdmissionsApplicationGateway $admissionsApplicationGateway, string $gibbonFormID, string $gibbonAdmissionsAccountID)
+    public function loadApplicationData(AdmissionsAccountGateway $admissionsAccountGateway, AdmissionsApplicationGateway $admissionsApplicationGateway, string $gibbonFormID, ?string $accessID, ?string $accessToken)
     {
-        $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $gibbonAdmissionsAccountID)->fetch();
+        // Check if this account can prefill application form data
+        $accountCheck = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
+        if (empty($accountCheck)) {
+            return $this;
+        }
+
+        $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $accountCheck['gibbonAdmissionsAccountID'])->fetch();
 
         if (!empty($recentApplication)) {
             $this->prefillable = json_decode($recentApplication['data'] ?? '', true);

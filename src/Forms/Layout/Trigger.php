@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -90,6 +92,20 @@ class Trigger implements OutputableInterface
     }
 
     /**
+     * Link this trigger to a text input by name.
+     * @param   string  $name
+     * @return  self
+     */
+    public function onInput($name)
+    {
+        $this->elementType = 'text';
+        $this->sourceSelector = 'input[type="text"][name="'.$name.'"]';
+        $this->sourceValueSelector = $this->sourceSelector;
+
+        return $this;
+    }
+
+    /**
      * Set which value the trigger should respond to.
      * @param   string  $value
      * @return  self
@@ -139,7 +155,7 @@ class Trigger implements OutputableInterface
         $output .= "$(document).on('change showhide', '{$this->sourceSelector}', function(event){ \n";
             $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
-                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput')) { $(this).prop('disabled', element.disabledState); } });";
+                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce, .finderInput')) { $(this).prop('disabled', element.disabledState !== undefined ? element.disabledState : false); } });";
             $output .= "} else { \n";
                 $output .= "$('{$this->targetSelector}').hide(); \n";
                 $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
@@ -147,14 +163,13 @@ class Trigger implements OutputableInterface
         $output .= "}); \n";
 
         // Save the initial disabled state for all inputs targeted by this trigger
-        $output .= "$('{$this->targetSelector} :input').each(function(index, element){ element.disabledState = $(this).prop('disabled'); });";
+        $output .= "$('{$this->targetSelector} :input').each(function(index, element){ if (element.disabledState === undefined) element.disabledState = $(this).prop('disabled') ?? false; });";
 
         // Hide all initial targets if the source value does not equal the trigger value
         $output .= "if ( !({$comparisons}) ) { \n";
         $output .= "$('{$this->targetSelector}').hide(); \n";
-        $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
+        $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ $(element).prop('disabled', true).change(); });";
         $output .= "}\n\n";
-        
 
         return $output;
     }

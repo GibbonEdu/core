@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +32,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
+$gibbonStaffAbsenceID = $gibbonStaffAbsenceID ?? $_POST['gibbonStaffAbsenceID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 $URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
@@ -46,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
     $fullDayThreshold =  floatval($settingGateway->getSettingByScope('Staff', 'coverageFullDayThreshold'));
+    $fullDayThreshold = empty($fullDayThreshold) ? 8.0 : $fullDayThreshold;
     $coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
     $internalCoverage = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
@@ -212,9 +215,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 'foreignTable'             => $absenceDate['foreignTable'] ?? null,
                 'foreignTableID'           => $absenceDate['foreignTableID'] ?? null,
                 'date'                     => $absenceDate['date'],
-                'allDay'                   => $_POST['allDay'] ?? 'N',
-                'timeStart'                => $_POST['timeStart'] ?? $absenceDate['timeStart'],
-                'timeEnd'                  => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
+                'allDay'                   => $absenceDate['allDay'] ?? 'N',
+                'timeStart'                => $absenceDate['timeStart'],
+                'timeEnd'                  => $absenceDate['timeEnd'],
                 'reason'                   => $absenceDate['reason'] ?? '',
             ];
 
@@ -231,7 +234,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                 if ($hoursCovered > $fullDayThreshold) {
                     $dateData['value'] = 1.0;
                 } else {
-                    $dateData['value'] = 0.5;
+                    $timeCalc = round($hoursCovered / $fullDayThreshold, 1);
+                    $dateData['value'] = max($timeCalc, 0.1);
                 }
             }
 
@@ -254,11 +258,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     // Let users know about a new coverage request for an existing absence, update the absence
-    if ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N') {
+    if ($absence['status'] == 'Approved' && ($coverageMode == 'Assigned' || $absence['notificationSent'] == 'N')) {
         $container->get(StaffAbsenceGateway::class)->update($gibbonStaffAbsenceID, ['coverageRequired' => 'Y']);
 
         $process = $container->get(CoverageNotificationProcess::class);
-        $process->startNewCoverageRequest($coverageList);
+        if (!empty($absenceWithCoverage)) {
+            $process->startNewAbsenceWithCoverageRequest($coverageList);
+        } else {
+            $process->startNewCoverageRequest($coverageList);
+        }
+        
     }
     
     $URLSuccess .= $partialFail

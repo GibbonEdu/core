@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -21,16 +23,17 @@ The Gibbon Team
 
 -->#}
 
-<span class="inline-block">
-    {{ __('Powered by') }} <a class="text-{{ themeColour }}-800" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
-<span class="inline-block">|  &#169; <a class="text-{{ themeColour }}-800" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
+<span class="inline-block font-bold">
+    {{ __('Powered by') }} <a class="text-{{ themeColour }}-800" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}<br/>
+</span> 
 <br/>
-
 <span class="text-xs">
-    {{ __('Created under the') }} <a class="text-{{ themeColour }}-800" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
-    at <a class="text-{{ themeColour }}-800" target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
+    {{ __('Founded by Ross Parker at ICHK Secondary') }} | {{ __('Built by Ross Parker, Sandra Kuipers and the Gibbon community') }}<br/>
+    Copyright © <a class="text-{{ themeColour }}-800" target='_blank' href='http://gibbonedu.org'>Gibbon Foundation</a> 2010-{{ 'now'|date('Y') }} | Gibbon™ of Gibbon Education Ltd. (Hong Kong)<br/>
+    {{ __('Created under the') }} <a class="text-{{ themeColour }}-800" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> |
     <a class="text-{{ themeColour }}-800" target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
-    <a class="text-{{ themeColour }}-800" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
+    <a class="text-{{ themeColour }}-800" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a> | 
+    <a class="text-{{ themeColour }}-800" target='_blank' href='https://gibbonedu.org/support/'>{{ __('Support') }}</a>
     <br/>
     {{ footerThemeAuthor }}<br/>
 </span>

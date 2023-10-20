@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
+use Gibbon\Domain\User\UserGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -104,19 +107,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         //Produce array of attendance data
 
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-            $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+            $sql = 'SELECT date, nameShort, gibbonAttendanceLogFormGroup.gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) as timestamp, timestampTaken, gibbonPersonIDTaker FROM gibbonAttendanceLogFormGroup JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        $log = array();
+        $log = [];
+        $logAll = [];
         while ($row = $result->fetch()) {
             $log[$row['gibbonFormGroupID']][$row['date']] = true;
+            $logAll[$row['gibbonFormGroupID']][] = $row;
         }
 
-
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+        $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
@@ -256,6 +260,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                 echo __('All form groups have been registered.');
                 echo '</td>';
                 echo '</tr>';
+
+                // Check which form group attendance was taken last, and when
+                if (!empty($logAll)) {
+                    foreach ($logAll as $index => $logPerForm) {
+                        usort($logPerForm, function ($a, $b) {
+                            return $a['timestamp'] <=> $b['timestamp'];
+                        });
+                        $logAll[$index] = current($logPerForm);
+                    }
+            
+                    usort($logAll, function ($a, $b) {
+                        return $b['timestamp'] <=> $a['timestamp'];
+                    });
+            
+                    $finalLog = current($logAll);
+                    $person = $container->get(UserGateway::class)->getByID($finalLog['gibbonPersonIDTaker'], ['preferredName', 'surname']);
+
+                    echo Format::alert(__('{formGroup} was the last group to have their initial Form Group attendance taken (by {person} at {time})', [
+                        'formGroup' => $finalLog['nameShort'],
+                        'person' => Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true),
+                        'time' => Format::time($finalLog['timestampTaken']),
+                    ]), 'message');
+                }
+                
             }
             echo '</table>';
 

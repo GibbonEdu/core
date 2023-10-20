@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,6 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $content = $_POST[$id.'link'] ?? '';
         }
         $name = $_POST[$id.'name'] ?? '';
+        $name = preg_replace('/[^a-zA-Z0-9\-\_ ]/', '', $name);
+
         $category = $_POST[$id.'category'] ?? '';
         $purpose = $_POST[$id.'purpose'] ?? '';
         $tags = strtolower($_POST[$id.'tags'] ?? '');
@@ -78,26 +82,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 }
             }
 
-            //Deal with tags
-            try {
-                $sql = 'LOCK TABLES gibbonResourceTag WRITE';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                echo "<span style='font-weight: bold; color: #ff0000'>";
-                echo __('Your request failed due to a database error.');
-                echo '</span>';
-                exit();
-            }
-
             //Update tag counts
             $partialFail = false;
             $tags = explode(',', $_POST[$id.'tags'] ?? '');
-            $tagList = '';
+            $tagList = [];
             foreach ($tags as $tag) {
-                if (trim($tag) != '') {
-                    $tagList .= trim($tag).",";
+                $tag = trim(preg_replace('/[^a-zA-Z0-9\-\_ ]/', '', $tag));
+                if (!empty($tag)) {
+                    $tagList[] = $tag;
                     try {
-                        $dataTags = array('tag' => trim($tag));
+                        $dataTags = array('tag' => $tag);
                         $sqlTags = 'SELECT * FROM gibbonResourceTag WHERE tag=:tag';
                         $resultTags = $connection2->prepare($sqlTags);
                         $resultTags->execute($dataTags);
@@ -107,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                     if ($resultTags->rowCount() == 1) {
                         $rowTags = $resultTags->fetch();
                         try {
-                            $dataTag = array('count' => ($rowTags['count'] + 1), 'tag' => trim($tag));
+                            $dataTag = array('count' => ($rowTags['count'] + 1), 'tag' => $tag);
                             $sqlTag = 'UPDATE gibbonResourceTag SET count=:count WHERE tag=:tag';
                             $resultTag = $connection2->prepare($sqlTag);
                             $resultTag->execute($dataTag);
@@ -116,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                         }
                     } elseif ($resultTags->rowCount() == 0) {
                         try {
-                            $dataTag = array('tag' => trim($tag));
+                            $dataTag = array('tag' => $tag);
                             $sqlTag = 'INSERT INTO gibbonResourceTag SET tag=:tag, count=1';
                             $resultTag = $connection2->prepare($sqlTag);
                             $resultTag->execute($dataTag);
@@ -128,20 +122,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                     }
                 }
             }
-            //Unlock table
-            try {
-                $sql = 'UNLOCK TABLES';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                echo "<span style='font-weight: bold; color: #ff0000'>";
-                echo __('Your request failed due to a database error.');
-                echo '</span>';
-                exit();
-            }
 
             //Write to database
             try {
-                $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => substr($tagList, 0, -1), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s', $time));
+                $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => implode(',', $tagList), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s', $time));
                 $sql = 'INSERT INTO gibbonResource SET type=:type, content=:content, name=:name, category=:category, purpose=:purpose, tags=:tags, gibbonYearGroupIDList=:gibbonYearGroupIDList, description=:description, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

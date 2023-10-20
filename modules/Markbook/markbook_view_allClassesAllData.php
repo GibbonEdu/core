@@ -1,8 +1,10 @@
 <?php
 
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -959,7 +961,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         echo '<td class="dataColumn dataDivider">';
                         echo $markbook->getFormattedAverage( $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID) );
                         echo '</td>';
-                        @$totals['termAverage'][$gibbonSchoolYearTermID] += $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID);
+                        @$totals['termAverage'][$gibbonSchoolYearTermID] += floatval($markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID));
                     }
 
                     echo '<td class="dataColumn dataDivider">';
@@ -996,7 +998,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
         // Class Average
         if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
-            echo '<tr>';
+            echo '<tr style="height: 25px;">';
             echo '<td class="firstColumn right dataDividerTop">'.__('Class Average').':</td>';
 
             if ($markbook->hasExternalAssessments()) {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -161,17 +163,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $process = $container->get(AbsenceNotificationProcess::class);
     if ($type['requiresApproval'] == 'Y') {
         $process->startAbsencePendingApproval($gibbonStaffAbsenceID);
-    } else {
+    } elseif ($data['coverageRequired'] != 'Y') {
         $process->startNewAbsence($gibbonStaffAbsenceID);
     }
 
-    // Redirect to coverage request
+    // Handle coverage request
     $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php');
     if ($data['coverageRequired'] == 'Y' && $canRequestCoverage) {
-        $URL = $session->get('absoluteURL')."/index.php?q=/modules/Staff/coverage_request.php&coverage=Y&gibbonStaffAbsenceID=$gibbonStaffAbsenceID";
-        $URL .= '&return=success1';
-        header("Location: {$URL}");
-        exit;
+        $absenceWithCoverage = $gibbonStaffAbsenceID;
+        require_once __DIR__ . '/coverage_requestProcess.php';
     }
 
     $URLSuccess .= "&gibbonStaffAbsenceID=$gibbonStaffAbsenceID";

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,7 +68,7 @@ class CoverageDates
 
     public function createFromAbsence($gibbonStaffAbsenceID, $status)
     {
-        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->toDataSet();
+        $dates = $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID, true)->toDataSet();
 
         return $this->createFromDates($status, $dates);
     }
@@ -93,6 +95,8 @@ class CoverageDates
         }
 
         $table = DataTable::create('staffCoverageDates')->withData($dates);
+
+        $table->addMetaData('blankSlate', __('Coverage is required but has not been requested yet.'));
 
         $table->addColumn('date', __('Date'))
             ->format(Format::using('dateReadable', 'date'))
@@ -134,7 +138,7 @@ class CoverageDates
                 ->addParam('date')
                 ->format(function ($coverage, $actions) use ($canDelete) {
 
-                    if ($this->coverageMode == 'Assigned') {
+                    if ($this->coverageMode == 'Assigned' && $coverage['absenceStatus'] == 'Approved') {
                         if (empty($coverage['gibbonPersonIDCoverage'])) {
                             $actions->addAction('assign', __('Assign'))
                                 ->setURL('/modules/Staff/coverage_planner_assign.php')

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,17 +63,18 @@ class NewCoverageRequest extends Message
 
     public function getDetails() : array
     {
-        $details = [
-            __('Staff')      => $this->details['nameAbsent'],
-            __('Comment')      => $this->coverage['notesStatus'],
-        ];
+        $coverageDetails = [];
 
         foreach ($this->dates as $date) {
             $notes = !empty($date['notes']) ? ' ('.$date['notes'].')' : '';
-            $details[$date['period']] = $date['contextName'].$notes;
+            $coverageDetails[$date['period']] = $date['contextName'].$notes;
         }
 
-        return $details;
+        return [
+            __('Staff')      => $this->details['nameAbsent'],
+            __('Coverage')   => Format::listDetails($coverageDetails),
+            __('Notes')      => $this->coverage['notesStatus'],
+        ];
     }
 
     public function getModule() : string

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -83,6 +85,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
         'confidential'      => $_POST['confidential'] ?? 'N',
+        'includeSignature'  => $_POST['includeSignature'] ?? 'N',
         'timestamp'         => date('Y-m-d H:i:s'),
     ];
 
@@ -103,7 +106,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $data['messageWallPin'] = ($data['messageWall'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php', 'Manage Messages_all')) ? $data['messageWallPin'] : 'N';
 
     // Validate that the required values are present
-    if (empty($data['subject']) || empty($data['body']) || ($status == 'Draft' && $data['email'] == 'Y' && $data['emailFrom'] == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
+    if (empty($data['subject']) || empty($data['body']) || ($status == 'Draft' && $data['email'] == 'Y' && $data['emailFrom'] == '') || ($status == 'Draft' && $data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
         $URL.="&return=error3";
         header("Location: {$URL}");
         exit;

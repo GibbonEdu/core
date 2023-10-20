@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -369,7 +371,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
 
                                 //Title
-                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment($message['gibbonMessengerID']);
+                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment(strval($message['gibbonMessengerID']));
                                 if (strlen($message['subject']) <= 16) {
                                     echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
                                 } else {

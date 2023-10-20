@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -55,11 +57,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     $partialFail == true;
                 }
             }
-        } else {
+        } else if ($action == 'Mark as left') {
             foreach ($classes as $gibbonCourseClassID) {
                 try {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID, 'dateUnenrolled' => date('Y-m-d'));
                     $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left'), dateUnenrolled=:dateUnenrolled WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail == true;
+                }
+            }
+        } else if ($action == 'Reportable to Yes') {
+            foreach ($classes as $gibbonCourseClassID) {
+                try {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
+                    $sql = "UPDATE gibbonCourseClassPerson SET reportable='Y' WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail == true;
+                }
+            }
+        } else if ($action == 'Reportable to No') {
+            foreach ($classes as $gibbonCourseClassID) {
+                try {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
+                    $sql = "UPDATE gibbonCourseClassPerson SET reportable='N' WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

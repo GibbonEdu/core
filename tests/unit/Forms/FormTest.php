@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
@@ -70,7 +72,9 @@ class FormTest extends TestCase
     public function testCanOutputToHtml()
     {
         /** @var Form */
-        $form = $this->container->get(Form::class);
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
         $output = $form->getOutput();
 
         $this->assertTrue(stripos($output, '<form') !== false);

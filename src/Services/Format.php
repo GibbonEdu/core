@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -204,13 +206,13 @@ class Format
             }
         } else {
             if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $output = $startDate->format('M j, Y', $startTime);
+                $output = $startDate->format('M j, Y');
             } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('j, Y', $endTime);
+                $output = $startDate->format('M j').' - '.$endDate->format('j, Y');
             } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $output = $startDate->format('M j', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+                $output = $startDate->format('M j').' - '.$endDate->format('M j, Y');
             } else {
-                $output = $startDate->format('M j, Y', $startTime).' - '.$endDate->format('M j, Y', $endTime);
+                $output = $startDate->format('M j, Y').' - '.$endDate->format('M j, Y');
             }
         }
 
@@ -325,7 +327,9 @@ class Format
      */
     public static function timeRange($timeFrom, $timeTo, $format = false)
     {
-        return static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format);
+        return !empty($timeFrom) && !empty($timeTo)
+            ? static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format)
+            : static::time($timeFrom, $format);
     }
 
     /**

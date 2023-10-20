@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -925,7 +927,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                     if ($result->rowCount() != 1 and $result->rowCount() != 0) {
                                         $reenrolled = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                        echo "<div class='warning'>".__('Potential duplicate enrolment found for user ID {user}', ['user' => $gibbonPersonID]).'</div>';
                                     } elseif ($result->rowCount() == 1) {
                                         try {
                                             $data2 = array('gibbonSchoolYearID' => $nextYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonFormGroupID' => $gibbonFormGroupID);

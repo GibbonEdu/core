@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -110,7 +112,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $row = $form->addRow();
                 $row->addLabel('search', __('Search For'))
-                    ->setClass('mediumWidth')
                     ->description($searchDescription);
                 $row->addTextField('search')->setValue($criteria->getSearchText());
 
@@ -154,8 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             // COLUMNS
             $table->addColumn('student', __('Student'))
                 ->sortable(['surname', 'preferredName'])
-                ->format(function ($person) {
-                    return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                ->format(function ($person) use ($canViewFullProfile) {
+                    $output = Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/>';
+                    if ($canViewFullProfile) {
+                        $output .= '<small><i>'.Format::userStatusInfo($person).'</i></small>';
+                    }
+                    return $output;
                 });
             $table->addColumn('yearGroup', __('Year Group'));
             $table->addColumn('formGroup', __('Form Group'));

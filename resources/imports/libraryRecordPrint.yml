@@ -25,6 +25,11 @@ table:
         name: "ID"
         desc: "Must be unique, or will lead to update not insert."
         args: { filter: string, required: true }
+    gibbonLibraryItemIDParent: 
+        name: "Parent Record"
+        desc: "Must relate to an ID of an existing record, or be left blank."
+        args: { filter: string, required: false }
+        relationship: { table: gibbonLibraryItem, key: gibbonLibraryItemID, field: id  }
     producer: 
         name: "Author/Brand"
         desc: "Who created the item?"
@@ -131,6 +136,10 @@ table:
     fieldSubjects: 
         name: "Subjects"
         desc: "Comma separated list of subjects."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldSearchTerms: 
+        name: "Search Terms"
+        desc: "Comma separated list of search terms."
         args: { filter: string, custom: true, readonly: true, serialize: fields  }
     fieldCollection: 
         name: "Collection"

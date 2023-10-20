@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,6 +29,7 @@ use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Data\Validator;
 
 /**
  * MessengerGateway
@@ -53,15 +56,22 @@ class MessengerGateway extends QueryableGateway
      */
     private $roleGateway;
 
+    /**
+     * @var Validator
+     */
+    private $validator;
+
     public function __construct(
         Connection $db,
         Session $session,
+        Validator $validator,
         RoleGateway $roleGateway
     )
     {
         parent::__construct($db);
         $this->session = $session;
         $this->roleGateway = $roleGateway;
+        $this->validator = $validator;
     }
 
     /**
@@ -693,12 +703,12 @@ class MessengerGateway extends QueryableGateway
         if ($mode == 'result') {
             $resultReturn = array();
             $resultReturn[0] = $dataPosts;
-            $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
+            $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
 
             return serialize($resultReturn);
         } elseif ($mode == 'array') {
             try {
-                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
+                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
                 $resultPosts = $connection2->prepare($sqlPosts);
                 $resultPosts->execute($dataPosts);
             } catch (\PDOException $e) {
@@ -719,7 +729,7 @@ class MessengerGateway extends QueryableGateway
         } else {
             $count = 0;
             try {
-                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
+                $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp DESC, gibbonMessengerID, source';
                 $resultPosts = $connection2->prepare($sqlPosts);
                 $resultPosts->execute($dataPosts);
             } catch (\PDOException $e) {
@@ -785,11 +795,11 @@ class MessengerGateway extends QueryableGateway
                     ->addClass('align-top')
                     ->format(function ($message) {
                         $output = '<h3 style="margin-top: 3px">';
-                        $output .= $message['subject'];
+                        $output .= $this->validator->sanitizePlainText($message['subject']);
                         $output .= '</h3>';
 
                         $output .= '</p>';
-                        $output .= $message['details'];
+                        $output .= $this->validator->sanitizeRichText($message['details']);
                         $output .= '</p>';
 
                         return $output;
