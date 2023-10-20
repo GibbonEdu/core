@@ -82,16 +82,16 @@ class TcpdfRenderer implements ReportRendererInterface
         $this->absoluteURL = $template->getData('absoluteURL');
         $this->customAssetPath = $template->getData('customAssetPath');
 
-        $customTemplatePath = $this->absolutePath.$this->customAssetPath.'/templates';
+        $customTemplatePath = $this->absolutePath . $this->customAssetPath . '/templates';
         if (is_dir($customTemplatePath)) {
             $this->twig->getLoader()->prependPath($customTemplatePath);
         }
 
-        $reports = (is_array($input))? $input : array($input);
+        $reports = (is_array($input)) ? $input : array($input);
         $this->filename = $output;
 
         $this->setupDocument();
-        
+
         foreach ($reports as $reportData) {
             if ($reportData instanceof ReportData) {
                 $this->setupReport($reportData);
@@ -139,7 +139,7 @@ class TcpdfRenderer implements ReportRendererInterface
         if ($footer = $this->template->getFooter($this->pdf->getPageNumber(), $this->pdf->isLastPage())) {
             $this->pdf->SetAutoPageBreak(1, $footer->height + $footer->y);
         }
-        
+
         if ($section->y != null) {
             $signed = substr($section->y, 0, 1);
             if ($signed === "+" || $signed === "-") {
@@ -157,7 +157,7 @@ class TcpdfRenderer implements ReportRendererInterface
                 $this->pdf->setX(floatval($section->x));
             }
         }
-    
+
         $html = $this->renderSectionToHTML($section, $reportData);
         $this->pdf->writeHTMLTransaction($html, $section->hasFlag(ReportSection::NO_PAGE_WRAP));
 
@@ -172,16 +172,16 @@ class TcpdfRenderer implements ReportRendererInterface
     {
         $data = $reportData->getData(array_keys($section->sources));
         $data = array_merge($data, $this->template->getData(), $section->getData());
-        
+
         // Render .twig templates using Twig
         if (stripos($section->template, '.twig') !== false) {
             return $this->twig->render($section->template, $data);
         }
-        
+
         // Render .php templates by including the file, data is shared by scope
         if (stripos($section->template, '.php') !== false) {
             $pdf = $this->pdf;
-            return include 'templates/'.$section->template;
+            return include 'templates/' . $section->template;
         }
 
         return '';
@@ -189,13 +189,13 @@ class TcpdfRenderer implements ReportRendererInterface
 
     protected function setupDocument()
     {
-        $this->pdf = new ReportTCPDF($this->template->getData('orientation', 'P'), 'mm', $this->template->getData('pageSize', 'a4'), true, 'UTF-8', false);
+        $this->pdf = new ReportTCPDF($this->template->getData('orientation', 'P'), 'mm', strtoupper($this->template->getData('pageSize', 'A4')), true, 'UTF-8', false);
         $this->pdf->SetLeftMargin($this->template->getData('marginX', '10'));
         $this->pdf->SetRightMargin($this->template->getData('marginX', '10'));
 
         $this->template->addData([
             'basePath' => $this->absolutePath,
-            'assetPath' => $this->absolutePath.$this->customAssetPath,
+            'assetPath' => $this->absolutePath . $this->customAssetPath,
             'isDraft' => $this->template->getIsDraft(),
         ]);
     }
@@ -263,7 +263,7 @@ class TcpdfRenderer implements ReportRendererInterface
                 $pdf->writeHTML($html);
             }
 
-            if ($header = $this->template->getHeader($pdf->getPageNumber()+1, $pdf->isLastPage())) {
+            if ($header = $this->template->getHeader($pdf->getPageNumber() + 1, $pdf->isLastPage())) {
                 $pdf->SetTopMargin($this->template->getData('marginY', '10') + $header->y + $header->height);
             }
         });
@@ -287,14 +287,14 @@ class TcpdfRenderer implements ReportRendererInterface
     {
         $this->pdf->trimOverflow();
         $this->pdf->setLastPage(true);
-        
+
         // Determine the footer before writing the section? For last pages ...
         if ($footer = $this->template->getFooter($this->pdf->getPageNumber(), $this->pdf->isLastPage())) {
             $this->pdf->SetAutoPageBreak(1, $footer->height + $footer->y);
         }
 
         $this->pdf->endPage();
-        
+
         $this->runPostProcess($reportData);
 
         // Add a page with odd-numbered reports for two-sided printing
@@ -304,9 +304,9 @@ class TcpdfRenderer implements ReportRendererInterface
                 $this->pdf->setLastPage(false);
             }
         }
-        
+
         // Finish the current page after a report for non-continuous output
-        if ($this->hasMode(self::OUTPUT_CONTINUOUS) == false){
+        if ($this->hasMode(self::OUTPUT_CONTINUOUS) == false) {
             $outputPath = $this->getFilePath($reportData);
             $this->finishDocument($outputPath);
         }
@@ -320,7 +320,7 @@ class TcpdfRenderer implements ReportRendererInterface
             try {
                 call_user_func($callable, $reportData);
             } catch (\Exception $e) {
-                echo 'Error calling pre-process '.$name;
+                echo 'Error calling pre-process ' . $name;
                 return;
             }
         }
@@ -335,7 +335,7 @@ class TcpdfRenderer implements ReportRendererInterface
                 $outputPath = $this->getFilePath($reportData);
                 call_user_func($callable, $reportData, $outputPath);
             } catch (\Exception $e) {
-                echo 'Error calling post-process '.$name;
+                echo 'Error calling post-process ' . $name;
                 return;
             }
         }

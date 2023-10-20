@@ -76,7 +76,7 @@ class MpdfRenderer implements ReportRendererInterface
         }
     }
 
-    public function render(ReportTemplate $template, array $input, string $output = '') 
+    public function render(ReportTemplate $template, array $input, string $output = '')
     {
         $this->template = $template;
         $this->absolutePath = $template->getData('absolutePath');
@@ -84,16 +84,16 @@ class MpdfRenderer implements ReportRendererInterface
         $this->firstPage = true;
         $this->lastPage = false;
 
-        $customTemplatePath = $this->absolutePath.$this->customAssetPath.'/templates';
+        $customTemplatePath = $this->absolutePath . $this->customAssetPath . '/templates';
         if (is_dir($customTemplatePath)) {
             $this->twig->getLoader()->prependPath($customTemplatePath);
         }
 
-        $reports = (is_array($input))? $input : array($input);
+        $reports = (is_array($input)) ? $input : array($input);
         $this->filename = $output;
 
         $this->setupDocument();
-        
+
         foreach ($reports as $index => $reportData) {
             $lastReport = $index == count($reports)-1;
 
@@ -146,7 +146,7 @@ class MpdfRenderer implements ReportRendererInterface
         } elseif ($section->hasFlag(ReportSection::PAGE_BREAK_BEFORE)) {
             $this->pdf->AddPageByArray(['suppress' => 'off']);
         }
-        
+
         $this->setHeader();
         $this->setFooter();
 
@@ -169,16 +169,16 @@ class MpdfRenderer implements ReportRendererInterface
     {
         $data = $reportData->getData(array_keys($section->sources));
         $data = array_merge($data, $this->template->getData(), $section->getData(), ['stylesheet' => '']);
-        
+
         // Render .twig templates using Twig
         if (stripos($section->template, '.twig') !== false) {
             return html_entity_decode($this->twig->render($section->template, $data));
         }
-        
+
         // Render .php templates by including the file, data is shared by scope
         if (stripos($section->template, '.php') !== false) {
             $pdf = $this->pdf;
-            return include 'templates/'.$section->template;
+            return include 'templates/' . $section->template;
         }
 
         return '';
@@ -194,11 +194,11 @@ class MpdfRenderer implements ReportRendererInterface
 
         $config = [
             'mode' => 'utf-8',
-            'format' => $this->template->getData('pageSize', 'A4') == 'letter' ? [215.9, 279.4] : [210, 297],
+            'format' => strtoupper($this->template->getData('pageSize', 'A4')) == 'LETTER' ? [215.9, 279.4] : [210, 297],
             'orientation' => $this->template->getData('orientation', 'P'),
             'useOddEven' => '0',
             'mirrorMargins' => $this->hasMode(self::OUTPUT_MIRROR) ? '1' : '0',
-            
+
             'margin_top' => $this->template->getData('marginY', '10'),
             'margin_bottom' => $this->template->getData('marginY', '10'),
             'margin_left' => $this->template->getData('marginLeft', $this->template->getData('marginX', '10')),
@@ -210,21 +210,21 @@ class MpdfRenderer implements ReportRendererInterface
 
             'shrink_tables_to_fit' => 0,
             'defaultPagebreakType' => 'cloneall',
-            
-            'tempDir' =>  $this->absolutePath.'/uploads/reports/temp',
+
+            'tempDir' =>  $this->absolutePath . '/uploads/reports/temp',
             'fontDir' => array_merge($fontDirs, [
-                $this->absolutePath.$this->customAssetPath.'/fonts',
+                $this->absolutePath . $this->customAssetPath . '/fonts',
             ]),
 
             'fontdata' => $fontData + $this->template->getData('fonts', []),
             'default_font' => 'sans-serif',
         ];
 
-        $stylesheetPath = $this->absolutePath.'/modules/Reports/templates/'.$this->template->getData('stylesheet');
+        $stylesheetPath = $this->absolutePath . '/modules/Reports/templates/' . $this->template->getData('stylesheet');
         if (is_file($stylesheetPath)) {
             $config['defaultCssFile'] = $stylesheetPath;
         } else {
-            $stylesheetPath = $this->absolutePath.$this->customAssetPath.'/templates/'.$this->template->getData('stylesheet');
+            $stylesheetPath = $this->absolutePath . $this->customAssetPath . '/templates/' . $this->template->getData('stylesheet');
             if (is_file($stylesheetPath)) {
                 $config['defaultCssFile'] = $stylesheetPath;
             }
@@ -234,7 +234,7 @@ class MpdfRenderer implements ReportRendererInterface
 
         $this->template->addData([
             'basePath' => $this->absolutePath,
-            'assetPath' => $this->absolutePath.$this->customAssetPath,
+            'assetPath' => $this->absolutePath . $this->customAssetPath,
             'isDraft' => $this->template->getIsDraft(),
         ]);
     }
@@ -249,12 +249,12 @@ class MpdfRenderer implements ReportRendererInterface
 
         // Define Headers
         $this->headers = $this->template->getHeaders();
-        
+
         foreach ($this->headers as $index => $header) {
             $data = $reportData->getData(array_keys($header->sources));
             $data = array_merge($data, $this->template->getData(), $header->getData(), ['stylesheet' => '']);
 
-            $this->pdf->DefHTMLHeaderByName('header'.$index, $this->twig->render($header->template, $data));
+            $this->pdf->DefHTMLHeaderByName('header' . $index, $this->twig->render($header->template, $data));
         }
 
         // Define Footers
@@ -264,7 +264,7 @@ class MpdfRenderer implements ReportRendererInterface
             $data = $reportData->getData(array_keys($footer->sources));
             $data = array_merge($data, $this->template->getData(), $footer->getData(), ['stylesheet' => '']);
 
-            $this->pdf->DefHTMLFooterByName('footer'.$index, $this->twig->render($footer->template, $data));
+            $this->pdf->DefHTMLFooterByName('footer' . $index, $this->twig->render($footer->template, $data));
         }
 
         // Watermark
@@ -321,7 +321,7 @@ class MpdfRenderer implements ReportRendererInterface
                 $this->pdf->writeHTML('<br/>');
             }
         }
-        
+
         // Continue the current document after a report for continuous output
         if ($this->hasMode(self::OUTPUT_CONTINUOUS)) {
             $this->firstPage = true;
@@ -339,8 +339,8 @@ class MpdfRenderer implements ReportRendererInterface
         $docPageNum = $forceFirst ? 0 : $this->getPageNumber();
         $pageNum = $this->lastPage && !($docPageNum == 1) ? -1 : $docPageNum + 1;
 
-        $defaultHeader = isset($this->headers[0])? 'header0' : false;
-        $headerName = isset($this->headers[$pageNum])? 'header'.$pageNum : $defaultHeader;
+        $defaultHeader = isset($this->headers[0]) ? 'header0' : false;
+        $headerName = isset($this->headers[$pageNum]) ? 'header' . $pageNum : $defaultHeader;
 
         $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
         $this->pdf->SetHTMLHeaderByName($headerName, 'E', $this->lastPage);
@@ -352,8 +352,8 @@ class MpdfRenderer implements ReportRendererInterface
 
         $docPageNum = max($this->getPageNumber(), 1);
         $pageNum = $this->lastPage || $forceLast ? -1 : $docPageNum;
-        $defaultFooter = isset($this->footers[0])? 'footer0' : false;
-        $footerName = isset($this->footers[$pageNum])? 'footer'.$pageNum : $defaultFooter;
+        $defaultFooter = isset($this->footers[0]) ? 'footer0' : false;
+        $footerName = isset($this->footers[$pageNum]) ? 'footer' . $pageNum : $defaultFooter;
 
         $this->pdf->SetHTMLFooterByName($footerName, 'O');
         $this->pdf->SetHTMLFooterByName($footerName, 'E');
@@ -367,7 +367,7 @@ class MpdfRenderer implements ReportRendererInterface
             try {
                 call_user_func($callable, $reportData);
             } catch (\Exception $e) {
-                echo 'Error calling pre-process '.$name;
+                echo 'Error calling pre-process ' . $name;
                 return;
             }
         }
@@ -382,7 +382,7 @@ class MpdfRenderer implements ReportRendererInterface
                 $outputPath = $this->getFilePath($reportData);
                 call_user_func($callable, $reportData, $outputPath);
             } catch (\Exception $e) {
-                echo 'Error calling post-process '.$name;
+                echo 'Error calling post-process ' . $name;
                 return;
             }
         }
