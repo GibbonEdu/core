@@ -69,9 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
         }
 
         if ($viewBy == 'date') {
-            echo "<div class='error'>";
-            echo __('You do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('You do not have access to this action.'));
         } else {
             list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
             $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);

@@ -108,9 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $highestAction = 'View Student Profile_brief';
                 } else {
                     //Acess denied
-                    echo "<div class='error'>";
-                    echo __('You do not have access to this action.');
-                    echo '</div>';
+                    $page->addError(__('You do not have access to this action.'));
                     return;
                 }
             }
@@ -232,9 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } else {
                         //Acess denied
-                        echo "<div class='error'>";
-                        echo __('You do not have access to this action.');
-                        echo '</div>';
+                        $page->addError(__('You do not have access to this action.'));
                         return;
                     }
                     $result = $connection2->prepare($sql);
@@ -1390,9 +1386,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     } elseif ($subpage == 'Notes') {
                         if ($enableStudentNotes != 'Y') {
-                            echo "<div class='error'>";
-                            echo __('You do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('You do not have access to this action.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
                                 echo "<div class='error'>";

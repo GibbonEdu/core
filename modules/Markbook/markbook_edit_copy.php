@@ -80,9 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
                 if ($canEditThisClass == false) {
                     //Acess denied
-                    echo "<div class='error'>";
-                    echo __('You do not have access to this action.');
-                    echo '</div>';
+                    $page->addError(__('You do not have access to this action.'));
                 } else {
                     $page->breadcrumbs
                         ->add(

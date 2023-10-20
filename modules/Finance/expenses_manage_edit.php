@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all') == false) {
-        echo "<div class='error'>";
-        echo __('You do not have access to this action.');
-        echo '</div>';
+        $page->addError(__('You do not have access to this action.'));
     } else {
         //Proceed!
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';

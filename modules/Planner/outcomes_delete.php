@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
         echo '</div>';
     } else {
         if ($highestAction != 'Manage Outcomes_viewEditAll' and $highestAction != 'Manage Outcomes_viewAllEditLearningArea') {
-            echo "<div class='error'>";
-            echo __('You do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('You do not have access to this action.'));
         } else {
             //Proceed!
             $filter2 = '';

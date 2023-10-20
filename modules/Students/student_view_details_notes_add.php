@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
     $enableStudentNotes = $container->get(SettingGateway::class)->getSettingByScope('Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
-        echo "<div class='error'>";
-        echo __('You do not have access to this action.');
-        echo '</div>';
+        $page->addError(__('You do not have access to this action.'));
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $subpage = $_GET['subpage'] ?? '';
