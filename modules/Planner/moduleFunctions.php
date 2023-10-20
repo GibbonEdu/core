@@ -674,7 +674,8 @@ function getResourcesTagCloud($guid, $connection2, $tagCount = 50) {
             ++$count;
         }
 
-        $tags = msort($tags, 0, true);
+        // Sort tags by the value of their tag name (i.e. key=0) asecendingly.
+        usort($tags, fn($a, $b) => $a[0] <=> $b[0]);
 
         $min_font_size = 16;
         $max_font_size = 30;

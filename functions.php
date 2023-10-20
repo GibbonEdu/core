@@ -666,7 +666,15 @@ function getTerms($connection2, $gibbonSchoolYearID, $short = false)
     return $output;
 }
 
-//Array sort for multidimensional arrays
+/**
+ * Array sort for multidimensional arrays.
+ *
+ * Deprecated in favor of native usort.
+ *
+ * @since 2013
+ * @version v12.0.00
+ * @deprecated v26.0.00
+ */
 function msort($array, $id = 'id', $sort_ascending = true)
 {
     $temp_array = array();

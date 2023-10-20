@@ -795,7 +795,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $eventsCombined = $eventsPersonal;
                 }
 
-                $eventsCombined = msort($eventsCombined, 2, true);
+                // Sort $eventsCombined by the value of their start timestamp (key = 2) ascendingly.
+                // See getCalendarEvents() for field details of each events.
+                usort($eventsCombined, fn($a, $b) => $a[2] <=> $b[2]);
 
                 $currentAllDays = 0;
                 $lastDate = '';
