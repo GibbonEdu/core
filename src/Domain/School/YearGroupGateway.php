@@ -118,7 +118,7 @@ class YearGroupGateway extends QueryableGateway
      */
     public function getNextYearGroupID(int $gibbonYearGroupID)
     {
-        $sql = "SELECT * FROM gibbonYearGroup WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonYearGroup WHERE sequenceNumber > (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID))";
+        $sql = "SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonYearGroup WHERE sequenceNumber > (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID))";
 
         return $this->db()->selectOne($sql, [
             'gibbonYearGroupID' => $gibbonYearGroupID,
