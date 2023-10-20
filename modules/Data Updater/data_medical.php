@@ -164,9 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     $result->execute($data);
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record cannot be found.');
-                    echo '</div>';
+                    $page->addError(__('The specified record cannot be found.'));
                 } else {
                     //Check if there is already a pending form for this user
                     $existing = false;

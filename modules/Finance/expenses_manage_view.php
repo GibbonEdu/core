@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
         echo '</div>';
     } else {
         //Proceed!
-        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
         $urlParams = compact('gibbonFinanceBudgetCycleID');
 
@@ -132,9 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                         }
 
                         if ($result->rowCount() != 1) {
-                            echo "<div class='error'>";
-                            echo __('The specified record cannot be found.');
-                            echo '</div>';
+                            $page->addError(__('The specified record cannot be found.'));
                         } else {
                             //Let's go!
                             $row = $result->fetch();

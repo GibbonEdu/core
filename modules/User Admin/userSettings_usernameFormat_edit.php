@@ -42,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $result = $pdo->executeQuery($data, $sql);
 
     if ($result->rowCount() == 0) {
-        echo "<div class='error'>";
-        echo __('The specified record cannot be found.');
-        echo '</div>';
+        $page->addError(__('The specified record cannot be found.'));
         return;
     }
 

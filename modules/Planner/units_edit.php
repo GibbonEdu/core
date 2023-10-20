@@ -98,9 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The specified record cannot be found.');
-                        echo '</div>';
+                        $page->addError(__('The specified record cannot be found.'));
                     } else {
                         //Let's go!
                         $values = $result->fetch();

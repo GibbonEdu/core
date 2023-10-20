@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
     $urlParams = compact('gibbonFinanceBudgetCycleID');
 
@@ -42,9 +42,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         ->add(__('Request Reimbursement'));
 
     //Check if params are specified
-    $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
-    $status2 = $_GET['status2'];
-    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+    $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'] ?? '';
+    $status2 = $_GET['status2'] ?? '';
+    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -86,9 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $result->execute($data);
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record cannot be found.');
-                    echo '</div>';
+                    $page->addError(__('The specified record cannot be found.'));
                 } else {
                     //Let's go!
                     $values = $result->fetch();

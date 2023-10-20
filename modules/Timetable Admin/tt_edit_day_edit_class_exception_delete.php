@@ -48,9 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $values = $timetableDayGateway->getTTDayRowClassExceptionByID($gibbonTTDayRowClassExceptionID);
 
             if (empty($values)) {
-                echo "<div class='error'>";
-                echo __('The specified record cannot be found.');
-                echo '</div>';
+                $page->addError(__('The specified record cannot be found.'));
             } else {
                 $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID");
                 echo $form->getOutput();

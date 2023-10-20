@@ -91,9 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                             $result->execute($data);
 
                         if ($result->rowCount() != 1) {
-                            echo "<div class='error'>";
-                            echo __('The specified record cannot be found.');
-                            echo '</div>';
+                            $page->addError(__('The specified record cannot be found.'));
                         } else {
                             //Let's go!
                             $values = $result->fetch();
