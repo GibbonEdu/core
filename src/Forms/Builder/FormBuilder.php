@@ -235,14 +235,24 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     public function validate(array $data)
     {
         $invalid = [];
+
         foreach ($this->fields as $fieldName => $field) {
             if ($this->isFieldHidden($field)) continue;
+            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldInfo = $fieldGroup->getField($fieldName);
+            
             if (!$fieldGroup->shouldValidate($this, $data, $fieldName)) continue;
 
             $fieldValue = &$data[$fieldName];
+
+            if (empty($fieldValue) && !empty($fieldInfo['acquire']) && is_array($fieldInfo['acquire'])) {
+                $subFieldKey = key($fieldInfo['acquire']);
+                $fieldValue = &$data[$subFieldKey] ?? null;
+            }
+
             if ($field['required'] != 'N' && (is_null($fieldValue) || $fieldValue == '' || $fieldValue == 'Please select...')) {
                 $invalid[] = $fieldName;
             }
