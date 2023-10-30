@@ -35,6 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     
     $form->addHiddenValue('address', $session->get('address'));
 
+    // SYSTEM SETTINGS
+    $form->addRow()->addHeading('System Settings', __('Interface'));
+
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('System', 'organisationLogo', true);
     $row = $form->addRow();
@@ -62,7 +65,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
+
+    $form->addRow()->addHeading('System Settings', __('Notifications'));
+
+    $setting = $settingGateway->getSettingByScope('System', 'notificationIntervalStaff', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->required()->minimum(10000)->maximum(1000000)->maxLength(7);
     
+    $setting = $settingGateway->getSettingByScope('System', 'notificationIntervalOther', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->required()->minimum(10000)->maximum(1000000)->maxLength(7);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

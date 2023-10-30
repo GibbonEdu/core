@@ -42,8 +42,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
             'themeColour'            => '',
             'organisationLogo'       => 'requiredFile',
             'organisationBackground' => '',
-           
-        ],
+            'notificationIntervalStaff'  => 'required',
+            'notificationIntervalOther'  => 'required',
+        ]
     ];
 
     // Validate required fields

@@ -773,5 +773,6 @@ UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermission
 UPDATE `gibbonAction` SET `categoryPermissionStudent` = 'Y', `categoryPermissionOther` = 'Y' WHERE name='View Timetable by Facility' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
 ALTER TABLE `gibbonFirstAid` ADD `gibbonPersonIDFollowUp` INT(10) UNSIGNED ZEROFILL NULL AFTER `gibbonPersonIDFirstAider`;end
 ALTER TABLE `gibbonMessenger` ADD `includeSignature` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `individualNaming`;end
-
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'notificationIntervalStaff', 'Staff Notification Interval', 'Frequency of notification icon update in status tray, for staff users. In thousands of a second.', '10000');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'notificationIntervalOther', 'Other Notification Interval', 'Frequency of notification icon update in status tray, for all non-staff users. In thousands of a second.', '60000');end
 ";

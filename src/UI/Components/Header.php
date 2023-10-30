@@ -73,10 +73,16 @@ class Header
         $criteria = $this->notificationGateway->newQueryCriteria();
         $notifications = $this->notificationGateway->queryNotificationsByPerson($criteria, $this->session->get('gibbonPersonID'), 'New');
 
+        $intervalStaff = $this->settingGateway->getSettingByScope('System', 'notificationIntervalStaff');
+        $intervalStaff = (is_numeric($intervalStaff) and $intervalStaff >= 10000 and $intervalStaff <= 1000000) ? $intervalStaff : 10000 ;
+
+        $intervalOther = $this->settingGateway->getSettingByScope('System', 'notificationIntervalOther');
+        $intervalOther = (is_numeric($intervalOther) and $intervalOther >= 10000 and $intervalOther <= 1000000) ? $intervalOther : 60000 ;
+
         $tray['notifications'] = [
             'url'      => Url::fromRoute('notifications')->withQueryParam('sidebar', 'false'),
             'count'    => $notifications->count(),
-            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? 10000 : 60000,
+            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? $intervalStaff : $intervalOther,
         ];
 
         // Alarm

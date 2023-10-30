@@ -79,6 +79,7 @@ v26.0.00
         Students: added a separate view-only permission for First Aid records
         Students: added Term filter to Markbook view in Student Profile, when Group Columns by Term enabled
         Students: updated First Aid records to be listed by school year
+        System Admin: added settings for notification interval for staff and other users
         Timetable: made the +1 indicator for timetable clashes a link to Manage Exceptions
         Timetable: highlighted absent non-covered classes on the timetable in a different colour
         Timetable: set timetable to preselect in View Available Teachers and View Available Facilities, when only one timetable exists
