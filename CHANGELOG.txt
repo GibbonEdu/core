@@ -111,6 +111,7 @@ v26.0.00
         Markbook: fixed class average row height when there is no data
         Markbook: adjusted student view to ensure that cummulative average honours term filter
         Markbook: fixed term-related PHP exception in teacher view
+        Markbook: fixed the Term Added field to connect to the correct term in the Markbook Column importer
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Messenger: fixed Individual Naming option not adding student names to new messages
