@@ -30,13 +30,9 @@ $_POST['address'] = '/modules/'.($argv[3] ?? 'System Admin').'/index.php';
 require __DIR__.'/../gibbon.php';
 
 //Check for CLI, so this cannot be run through browser
-$settingGateway = $container->get(SettingGateway::class);
-$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
-$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
-if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+if (!isCommandLineInterface()) {
     echo __('This script cannot be run from a browser, only via CLI.');
 } else {
-
     // Override the ini to keep this process alive
     ini_set('memory_limit', '2048M');
     ini_set('max_execution_time', 1800);
