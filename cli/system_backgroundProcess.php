@@ -20,32 +20,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Services\BackgroundProcessor;
 use Gibbon\Session\SessionFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Services\BackgroundProcessor;
 use Gibbon\Domain\School\SchoolYearGateway;
 
 $_POST['address'] = '/modules/'.($argv[3] ?? 'System Admin').'/index.php';
 
 require __DIR__.'/../gibbon.php';
 
-// Cancel out now if we're not running via CLI
-if (!isCommandLineInterface()) {
-    die(__('This script cannot be run from a browser, only via CLI.'));
+//Check for CLI, so this cannot be run through browser
+$settingGateway = $container->get(SettingGateway::class);
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+    echo __('This script cannot be run from a browser, only via CLI.');
+} else {
+
+    // Override the ini to keep this process alive
+    ini_set('memory_limit', '2048M');
+    ini_set('max_execution_time', 1800);
+    set_time_limit(1800);
+
+    ini_set('display_errors', 0);
+    ini_set('log_errors', 1);
+    ini_set('error_reporting', E_ALL & ~E_DEPRECATED);
+    ini_set('error_log', '/var/log/php-error.log');
+
+    // Incoming variables from command line
+    $processID = $argv[1] ?? '';
+    $processKey = $argv[2] ?? '';
+
+    // Run the process
+    $container->get(BackgroundProcessor::class)->runProcess($processID, $processKey);
 }
-
-// Override the ini to keep this process alive
-ini_set('memory_limit', '2048M');
-ini_set('max_execution_time', 1800);
-set_time_limit(1800);
-
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_reporting', E_ALL & ~E_DEPRECATED);
-ini_set('error_log', '/var/log/php-error.log');
-
-// Incoming variables from command line
-$processID = $argv[1] ?? '';
-$processKey = $argv[2] ?? '';
-
-// Run the process
-$container->get(BackgroundProcessor::class)->runProcess($processID, $processKey);

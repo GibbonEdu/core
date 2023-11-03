@@ -20,15 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\EmailTemplate;
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -38,7 +38,11 @@ ini_set('memory_limit','1024M');
 set_time_limit(1200);
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
+$settingGateway = $container->get(SettingGateway::class);
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+    echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $emailSendCount = 0;
     $emailFailCount = 0;
@@ -49,7 +53,6 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $mail->SMTPKeepAlive = true;
 
     // Initialize the notification sender & gateway objects
-    $settingGateway = $container->get(SettingGateway::class);
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
