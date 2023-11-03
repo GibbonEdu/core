@@ -775,4 +775,5 @@ ALTER TABLE `gibbonFirstAid` ADD `gibbonPersonIDFollowUp` INT(10) UNSIGNED ZEROF
 ALTER TABLE `gibbonMessenger` ADD `includeSignature` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `individualNaming`;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'notificationIntervalStaff', 'Staff Notification Interval', 'Frequency of notification icon update in status tray, for staff users. In thousands of a second.', '10000');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'notificationIntervalOther', 'Other Notification Interval', 'Frequency of notification icon update in status tray, for all non-staff users. In thousands of a second.', '60000');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Remove Stale Notifications', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y');end
 ";
