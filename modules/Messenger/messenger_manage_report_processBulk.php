@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\ActionGateway;
 
 include '../../gibbon.php';
 
@@ -39,7 +40,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
         header("Location: {$URL}");
         exit;
     } else {
-        $highestAction=getHighestGroupedAction($guid, '/modules/Messenger/messenger_manage_report.php', $connection2) ;
+        $highestAction=$container->get(ActionGateway::class)->getHighestGrouped('/modules/Messenger/messenger_manage_report.php') ;
         if ($highestAction==FALSE) {
             $URL.="&return=error0" ;
             header("Location: {$URL}");

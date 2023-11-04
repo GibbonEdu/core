@@ -24,6 +24,7 @@ namespace Gibbon\Tables\Prefab;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
@@ -40,14 +41,33 @@ class FormGroupTable extends DataTable
 {
     protected $db;
     protected $session;
+
+    /**
+     * Student Gateway
+     *
+     * @var StudentGateway
+     */
     protected $studentGateway;
 
-    public function __construct(GridView $renderer, StudentGateway $studentGateway, Connection $db, Session $session)
-    {
+    /**
+     * Action Gateway
+     *
+     * @var ActionGateway
+     */
+    protected $actionGateway;
+
+    public function __construct(
+        GridView $renderer,
+        StudentGateway $studentGateway,
+        ActionGateway $actionGateway,
+        Connection $db,
+        Session $session
+    ) {
         parent::__construct($renderer);
 
         $this->db = $db;
         $this->session = $session;
+        $this->actionGateway = $actionGateway;
         $this->studentGateway = $studentGateway;
     }
 
@@ -56,7 +76,7 @@ class FormGroupTable extends DataTable
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
-        $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+        $highestAction = $this->actionGateway->getHighestGrouped('/modules/Students/student_view_details.php');
 
         $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
 

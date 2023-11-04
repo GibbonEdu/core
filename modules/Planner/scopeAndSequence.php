@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     $form->setClass('noIntBorder fullWidth');
 
     $options = array();
-    
+
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND map='Y' ORDER BY department, gibbonCourse.nameShort";
         $result = $connection2->prepare($sql);
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
 
     if (count($gibbonCourseIDs) > 0) {
         //Set up for edit access
-        $highestAction = getHighestGroupedAction($guid, '/modules/Planner/units.php', $connection2);
+        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Planner/units.php');
         $departments = array();
         if ($highestAction == 'Unit Planner_learningAreas') {
             $departmentCount = 1 ;
@@ -141,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 echo $row['name'].' - '.$row['nameShort'];
                 echo '</h2>';
 
-                
+
                     $dataUnit = array('gibbonCourseID' => $gibbonCourseID);
                     $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' AND gibbonCourse.map=\'Y\' AND gibbonUnit.map=\'Y\' ORDER BY ordering, name';
                     $resultUnit = $connection2->prepare($sqlUnit);

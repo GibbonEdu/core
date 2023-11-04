@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Prefab\BulkActionForm;
 
@@ -38,13 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         ->sortBy(['schoolYear', 'name'])
         ->fromPOST();
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Messenger/groups_manage.php');
     if ($highestAction == 'Manage Groups_all') {
         $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'));
     } else {
         $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
     }
-    
+
     // FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/groups_manageProcessBulk.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

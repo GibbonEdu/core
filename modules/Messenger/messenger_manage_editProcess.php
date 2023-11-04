@@ -26,6 +26,7 @@ use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use Gibbon\Domain\Messenger\MessengerTargetGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     header("Location: {$URL}");
 } else {
     // Proceed!
-    $highestAction=getHighestGroupedAction($guid, $address, $connection2);
+    $highestAction=$container->get(ActionGateway::class)->getHighestGrouped($address);
     if ($highestAction == FALSE) {
         $URL.="&return=error0";
         header("Location: {$URL}");
@@ -124,7 +125,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     if ($sendTestEmail == 'Y') {
         $process = $container->get(MessageProcess::class);
         $testEmail = $process->runSendDraft($data);
-        
+
         $URL .= "&testEmail={$testEmail}";
         $URLSend .= "&testEmail={$testEmail}";
     }
@@ -157,6 +158,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $URL .= $partialFail
         ? "&return=error4"
         : "&return=success0";
-    
+
     header("Location: {$URL}");
 }

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
-                
+
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
                     $result = $connection2->prepare($sql);
@@ -99,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $form = Form::create('notes', $session->get('absoluteURL').'/modules/'.$session->get('module')."/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=".$search."&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$category."&allStudents=$allStudents");
 
                             $form->addHiddenValue('address', $session->get('address'));
-                            
+
                             if ($search != '') {
                                 $params = [
                                     "search" => $search,

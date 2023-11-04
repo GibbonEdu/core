@@ -26,6 +26,7 @@ use Gibbon\Domain\Planner\UnitGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\UnitBlockGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 
 // Module includes
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precedence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -74,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
     $values = $result->fetch();
 
     // Get the unit details
@@ -210,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $form->setFactory(PlannerFormFactory::create($pdo));
         $form->setTitle(__('Step 2 - Distribute Blocks'));
         $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
-        
+
         $form->addHiddenValue('address', $gibbon->session->get('address'));
 
         $deployIndex = 0;
@@ -227,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $form->addHiddenValue('date'.$index, $lesson['date']);
             $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
             $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-            
+
             $col->addColumn()
                 ->setClass('-mt-4')
                 ->addSelect('blockAdd')
@@ -317,5 +318,5 @@ $('.blockAdd').change(function () {
     $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
 });
-    
+
 </script>

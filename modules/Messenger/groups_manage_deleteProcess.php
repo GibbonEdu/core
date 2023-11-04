@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 include '../../gibbon.php';
 
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
     //Proceed!
     $groupGateway = $container->get(GroupGateway::class);
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Messenger/groups_manage.php');
     if ($highestAction == 'Manage Groups_all') {
         $values = $groupGateway->selectGroupByID($gibbonGroupID);
     } else {

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -41,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -62,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 ];
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Rubrics', 'rubrics.php')->withQueryParams($params));
             }
-            
+
             $scopes = array(
                 'School' => __('School'),
                 'Learning Area' => __('Learning Area'),
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             $form->addRow()->addHeading('Rubric Basics', __('Rubric Basics'));
 
             $row = $form->addRow();
@@ -135,11 +136,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             $row = $form->addRow();
                 $row->addLabel('columns', __('Initial Columns'))->description(__('Columns store assessment levels.'));
                 $row->addSelect('columns')->fromArray(range(1, 10))->required();
-            
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-            
+
             echo $form->getOutput();
         }
     }

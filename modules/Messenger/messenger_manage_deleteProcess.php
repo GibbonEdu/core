@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
+
 include '../../gibbon.php';
 
 $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
@@ -32,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($address);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");

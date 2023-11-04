@@ -23,6 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Gibbon system-wide includes
 require __DIR__ . '/../../gibbon.php';
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Attendance/attendance_take_byFormGroup.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Attendance/attendance_take_byFormGroup.php');
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');

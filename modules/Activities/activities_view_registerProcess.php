@@ -25,6 +25,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -47,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     header("Location: {$URL}");
     exit;
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_view_register.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Activities/activities_view_register.php');
     if ($highestAction == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
@@ -32,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));
         return;

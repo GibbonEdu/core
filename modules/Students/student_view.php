@@ -23,13 +23,14 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
@@ -44,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
 
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
-            
+
             if ($highestAction == 'View Student Profile_myChildren') {
-                $title = __('My Children');                
+                $title = __('My Children');
                 $result = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
             } else if ($highestAction == 'View Student Profile_my') {
                 $title = __('View Student Profile');
@@ -75,13 +76,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo $table->render($result->toDataSet());
             }
         }
-      
+
         if ($canViewBriefProfile || $canViewFullProfile) {
             //Proceed!
             $search = $_GET['search'] ?? '';
             $sort = $_GET['sort'] ?? 'surname,preferredName';
             $allStudents = $_GET['allStudents'] ?? '';
-            
+
             $studentGateway = $container->get(StudentGateway::class);
 
             $searchColumns = $canViewFullProfile
@@ -105,9 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             $form->setTitle(__('Filter'));
             $form->setClass('noIntBorder fullWidth');
             $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/student_view.php');
-        
-            $searchDescription = $canViewFullProfile 
-                ? __('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.') 
+
+            $searchDescription = $canViewFullProfile
+                ? __('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.')
                 : __('Preferred, surname, username.');
 
             $row = $form->addRow();
@@ -127,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $row = $form->addRow();
                 $row->addSearchSubmit($gibbon->session, __('Clear Search'));
-            
+
             echo $form->getOutput();
 
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID, $canViewFullProfile);
@@ -141,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addMetaData('filterOptions', [
                     'all:on'        => __('All Students')
                 ]);
-        
+
                 if ($criteria->hasFilter('all')) {
                     $table->addMetaData('filterOptions', [
                         'status:full'     => __('Status').': '.__('Full'),
@@ -151,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     ]);
                 }
             }
-    
+
             // COLUMNS
             $table->addColumn('student', __('Student'))
                 ->sortable(['surname', 'preferredName'])
@@ -164,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 });
             $table->addColumn('yearGroup', __('Year Group'));
             $table->addColumn('formGroup', __('Form Group'));
-    
+
             $table->addActionColumn()
                 ->addParam('gibbonPersonID')
                 ->addParam('search', $criteria->getSearchText(true))
@@ -174,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     $actions->addAction('view', __('View Details'))
                         ->setURL('/modules/Students/student_view_details.php');
                 });
-    
+
             echo $table->render($students);
         }
     }

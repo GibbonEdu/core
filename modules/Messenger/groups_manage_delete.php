@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_delete.php') == false) {
     // Access denied
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
     } else {
         $groupGateway = $container->get(GroupGateway::class);
 
-        $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Messenger/groups_manage.php');
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($gibbonGroupID);
         } else {

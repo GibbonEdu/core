@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -37,8 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $page->scripts->add('chart');
 
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
+    $highestAction2 = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Markbook/markbook_edit.php');
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');

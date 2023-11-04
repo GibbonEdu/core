@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Check existence of and access to this class.
-    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Markbook/markbook_view.php');
     $class = getClass($pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, $highestAction);
 
     if (empty($class)) {

@@ -25,6 +25,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     }
 
     // Get action with highest precedence
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0";
         header("Location: {$URL}");

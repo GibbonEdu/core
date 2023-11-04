@@ -27,6 +27,7 @@ use Gibbon\Domain\Planner\UnitGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -50,18 +51,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precedence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     }
-    
+
     // Proceed!
     // Check if course & school year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $courseGateway = $container->get(CourseGateway::class);
 
@@ -75,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
 
     $values = $result->fetch();
 
@@ -89,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $table->addColumn('schoolYear', __('School Year'));
     $table->addColumn('course', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
     $table->addColumn('unit', __('Unit'));
-    
+
     echo $table->render([$values]);
 
     $plannerEntryGateway = $container->get(PlannerEntryGateway::class);

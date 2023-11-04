@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
                 $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
-            
+
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");

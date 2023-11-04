@@ -34,6 +34,7 @@ use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 /**
  * Sidebar View Composer
@@ -63,17 +64,26 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
      */
     protected $schoolYearGateway;
 
+    /**
+     * Action gateway.
+     *
+     * @var ActionGateway
+     */
+    protected $actionGateway;
+
     public function __construct(
         Connection $db,
         Session $session,
         SettingGateway $settingGateway,
-        SchoolYearGateway $schoolYearGateway
+        SchoolYearGateway $schoolYearGateway,
+        ActionGateway $actionGateway
     ) {
         $this->db = $db;
         $this->session = $session;
         $this->category = $this->session->get('gibbonRoleIDCurrentCategory');
         $this->settingGateway = $settingGateway;
         $this->schoolYearGateway = $schoolYearGateway;
+        $this->actionGateway = $actionGateway;
     }
 
     public function getOutput()
@@ -459,7 +469,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         //Show upcoming deadlines
         if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
-            $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
+            $highestAction = $this->actionGateway->getHighestGrouped('/modules/Planner/planner.php');
             if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
 
                 $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
@@ -490,7 +500,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         //Show recent results
         if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php')) {
-            $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+            $highestAction = $this->actionGateway->getHighestGrouped('/modules/Markbook/markbook_view.php');
             if ($highestAction == 'View Markbook_myMarks') {
                 try {
                     $dataEntry = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID'));
@@ -546,7 +556,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     echo __('Plan');
                     echo '</th>';
                 }
-                if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
+                if ($this->actionGateway->getHighestGrouped('/modules/Markbook/markbook_view.php') == 'View Markbook_allClassesAllData') {
                     echo "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>";
                     echo __('Mark');
                     echo '</th>';
@@ -581,7 +591,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         echo "<a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParams(['gibbonCourseClassID' => $row['gibbonCourseClassID'], 'viewBy' => 'class'])."' title='".__('View Planner')."'><img style='margin-top: 3px' alt='".__('View Planner')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/planner.png'/></a> ";
                         echo '</td>';
                     }
-                    if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
+                    if ($this->actionGateway->getHighestGrouped('/modules/Markbook/markbook_view.php') == 'View Markbook_allClassesAllData') {
                         echo "<td style='text-align: center'>";
                         echo "<a href='".Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."' title='".__('View Markbook')."'><img style='margin-top: 3px' alt='".__('View Markbook')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
                         echo '</td>';

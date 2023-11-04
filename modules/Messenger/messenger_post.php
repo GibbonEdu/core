@@ -19,12 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Contracts\Comms\SMS;
-use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\RoleGateway;
-use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Messenger\Forms\MessageForm;
 
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $page->addError(__('You do not have access to this action.'));
 }
 else {
-    $highestAction = getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET["q"]) ;
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -64,7 +60,7 @@ else {
     }
 
     $page->addWarning(sprintf(__('Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $session->get('organisationNameShort')));
-    
+
     $form = $container->get(MessageForm::class)->createForm('messenger_postProcess.php');
     echo $form->getOutput();
 }

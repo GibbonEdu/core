@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+
+use Gibbon\Domain\System\ActionGateway;
+
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_print.php') == false) {
@@ -27,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');

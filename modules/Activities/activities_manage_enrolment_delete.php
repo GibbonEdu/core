@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_delete.php') == false) {
@@ -28,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Proceed!
     $gibbonActivityID = (isset($_GET['gibbonActivityID']))? $_GET['gibbonActivityID'] : null;
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Activities/activities_manage_enrolment.php');
     if ($highestAction == 'My Activities_viewEditEnrolment') {
 
 

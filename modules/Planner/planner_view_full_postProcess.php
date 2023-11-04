@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
 require_once '../../gibbon.php';
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 //INSERT
                 $replyTo = !empty($_POST['replyTo']) ? $_POST['replyTo'] : null;
                 $comment = $_POST['comment'] ?? '';
-                
+
                 try {
                     $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
                     $sqlInsert = 'INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo';

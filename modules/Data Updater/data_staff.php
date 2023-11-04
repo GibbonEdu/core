@@ -25,6 +25,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,11 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         Format::alert(__('The highest grouped action cannot be determined.'));
         return;
-    } 
+    }
     // Proceed!
     $page->breadcrumbs->add(__('Update Staff Data'));
 
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     } else {
         $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
     }
-    
+
     if (!empty($gibbonPersonID)) {
 
         $gibbonStaffID = $staffGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonStaffID'])->fetchColumn(0);
@@ -116,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $proceed = false;
 
         $staffUpdate = $staffUpdateGateway->selectBy(['gibbonStaffID' => $gibbonStaffID, 'gibbonPersonIDUpdater' => $gibbon->session->get('gibbonPersonID'), 'status' => 'Pending']);
-            
+
         if ($staffUpdate->rowCount() > 1) {
             echo Format::alert(__('Your request failed due to a database error.'), 'error');
             return;
@@ -124,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
             echo Format::alert(__('You have already submitted a form, which is awaiting processing by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been processed.'), 'warning');
             $values = $staffUpdate->fetch();
         }
-               
+
         // Let's go
         $required = ($highestAction != 'Update Staff Data_any');
 

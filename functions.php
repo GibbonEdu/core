@@ -25,6 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -362,8 +363,7 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    global $session;
-    
+    global $session, $container;
     $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
@@ -382,7 +382,7 @@ function getFastFinder($connection2, $guid)
             ->addValidation('Validate.Presence', 'failureMessage: " "')
             ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
 
-    $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
+    $highestActionClass = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Planner/planner.php');
 
     $templateData = [
         'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
@@ -784,7 +784,22 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
     return $output;
 }
 
-//Looks at the grouped actions accessible to the user in the current module and returns the highest
+/**
+ * Looks at the grouped actions accessible to the user in the current
+ * module and returns the highest.
+ *
+ * @deprecated v25
+ *             Use ActionGateway::getHighestGrouped instead.
+ *
+ * @since    v12
+ * @version  v23
+ *
+ * @param string  $guid
+ * @param string  $address
+ * @param \PDO    $connection2
+ *
+ * @return string|false
+ */
 function getHighestGroupedAction($guid, $address, $connection2)
 {
     global $session;
@@ -925,7 +940,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
     $target = ($target == "_blank") ? "_blank" : "_self";
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+    /** @var string|false */
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Students/student_view_details.php');
     if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
         // Individual Needs
         $dataAlert = array('gibbonPersonID' => $gibbonPersonID);

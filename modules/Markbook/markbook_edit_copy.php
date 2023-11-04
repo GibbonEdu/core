@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -29,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
             echo '</div>';
         } else {
 
-        	$highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
+        	$highestAction2 = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Markbook/markbook_edit.php');
 
             try {
                 if ($highestAction == 'Edit Markbook_everything') {

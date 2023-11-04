@@ -26,6 +26,7 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use Gibbon\Http\Url;
 use Gibbon\Contracts\Comms\SMS;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_send.p
         ->add(__('Edit Message'), 'messenger_manage_edit.php', ['gibbonMessengerID' => $gibbonMessengerID, 'sidebar' => true])
         ->add(__('Preview & Send'));
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/messenger_send.php', $connection2) ;
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Messenger/messenger_post.php') ;
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;

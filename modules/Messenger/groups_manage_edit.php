@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 $page->breadcrumbs
     ->add(__('Manage Groups'), 'groups_manage.php')
@@ -41,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $groupGateway = $container->get(GroupGateway::class);
-        
-        $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+
+        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Messenger/groups_manage.php');
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($gibbonGroupID);
         } else {
@@ -59,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
 			$form->addHiddenValue('address', $session->get('address'));
-			
+
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
                 $row->addTextField('name')->required()->maxLength(60);
@@ -70,13 +71,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                     $col->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
                         ->required()
                         ->mergeGroupings();
-            	
+
 			$row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-                
+
             $form->loadAllValuesFrom($values);
-				
+
             echo $form->getOutput();
 
             echo '<h2>';

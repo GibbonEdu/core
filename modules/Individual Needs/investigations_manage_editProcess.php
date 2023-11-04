@@ -25,6 +25,7 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     header("Location: {$URL}");
     exit;
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Individual Needs/investigations_manage.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Individual Needs/investigations_manage.php');
     if ($highestAction == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");

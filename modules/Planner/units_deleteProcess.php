@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");

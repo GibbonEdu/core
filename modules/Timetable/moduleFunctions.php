@@ -30,6 +30,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
@@ -340,13 +341,13 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 //$narrow can be "full", "narrow", or "trim" (between narrow and full)
 function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '', $narrow = 'full', $edit = false)
 {
-    global $session;
+    global $session, $container;
 
     $zCount = 0;
     $output = '';
     $proceed = false;
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Timetable/tt.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Timetable/tt.php');
 
     if ($highestAction == 'View Timetable by Person_allYears') {
         $proceed = true;
@@ -701,7 +702,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $staffDutyGateway = $container->get(StaffDutyPersonGateway::class);
                 $staffDutyList = $staffDutyGateway->selectDutyByPerson($gibbonPersonID)->fetchAll();
                 $staffDuty = [];
-                
+
                 foreach ($dateRange as $dateObject) {
                     $date = $dateObject->format('Y-m-d');
                     $weekday = $dateObject->format('l');
@@ -736,7 +737,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $staffCoverage = [];
 
                 foreach ($coverageList as $coverage) {
-                    $fullName = !empty($coverage['surnameAbsence']) 
+                    $fullName = !empty($coverage['surnameAbsence'])
                         ? Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true)
                         : Format::name($coverage['titleStatus'], $coverage['preferredNameStatus'], $coverage['surnameStatus'], 'Staff', false, true);
 
@@ -771,7 +772,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
                     return $group;
                 }, []);
-                
+
                 foreach ($absenceList as $absence) {
                     $summary = __('Absent');
                     $allDay = true;
@@ -877,7 +878,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
                 }
             };
-            
+
             if (!empty($eventsSchool) && $self == true) $maxDiffEvents($eventsSchool);
             if (!empty($eventsPersonal) && $self == true) $maxDiffEvents($eventsPersonal);
             if (!empty($eventsSpaceBooking) && $self == true) $maxDiffEvents($eventsSpaceBooking);
@@ -1087,7 +1088,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
 
                         $specialDay = $specialDays[$dateCheck] ?? [];
-                        
+
 
                         if (!empty($specialDay)) {
                             $specialDay['gibbonYearGroupIDList'] = explode(',', $specialDay['gibbonYearGroupIDList'] ?? '');
@@ -1409,17 +1410,17 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
             try {
                 $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonPersonID' => $gibbonPersonID, 'date' => $date);
                 $sqlPeriods = "SELECT gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonTTColumnRow.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, phoneInternal, gibbonSpace.name AS roomName, (CASE WHEN gibbonStaffCoverage.gibbonPersonID=:gibbonPersonID THEN 1 ELSE 0 END) as coverageStatus
-                FROM gibbonCourse 
-                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
-                JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
-                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
-                LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
+                FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
+                LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
                 LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.foreignTableID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.foreignTable='gibbonTTDayRowClass' AND gibbonStaffCoverageDate.date=:date)
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID)
-                
-                WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' 
-                GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID 
+
+                WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left'
+                GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID
                 ORDER BY timeStart, timeEnd";
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
@@ -1463,21 +1464,21 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         try {
                             $dataClassCheck = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonFormGroupIDList' => implode(',', $specialDay['gibbonFormGroupIDList']), 'gibbonYearGroupIDList' => implode(',', $specialDay['gibbonYearGroupIDList']), 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count)))];
                             $sqlClassCheck = "SELECT count(CASE WHEN NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :gibbonFormGroupIDList) AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList) THEN student.gibbonPersonID ELSE NULL END) as studentCount, count(*) as studentTotal, MAX(gibbonCourseClassMap.gibbonCourseClassMapID) as classMap
-                                FROM gibbonCourseClassPerson 
-                                JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
-                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) 
+                                FROM gibbonCourseClassPerson
+                                JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID)
+                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                                 LEFT JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND FIND_IN_SET(gibbonCourseClassMap.gibbonFormGroupID, :gibbonFormGroupIDList))
-                                WHERE role='Student' AND student.status='Full' 
-                                AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
-                                AND (student.dateStart IS NULL OR student.dateStart<=:date) 
-                                AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+                                WHERE role='Student' AND student.status='Full'
+                                AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                                AND (student.dateStart IS NULL OR student.dateStart<=:date)
+                                AND (student.dateEnd IS NULL OR student.dateEnd>=:date)
                                 ";
                             $resultClassCheck = $connection2->prepare($sqlClassCheck);
                             $resultClassCheck->execute($dataClassCheck);
                         } catch (PDOException $e) {
                             $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
-                        
+
                         // See if there are no students left in the class after year groups and form groups are checked
                         $classCheck = $resultClassCheck->fetch();
                         if (!empty($classCheck) && (($classCheck['studentTotal'] > 0 && $classCheck['studentCount'] <= 0) || !empty($classCheck['classMap']))) {
@@ -1525,8 +1526,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         if (!empty($eventsPersonal)) {
                             foreach ($eventsPersonal as $event) {
                                 if (!empty($event[0]) && $event[0] == __('Absent') && date('Y-m-d', $event[2]) == $date) {
-                                    if ($event[4] == 'Y' 
-                                        || ($event[7] >= $effectiveStart && $event[7] < $effectiveEnd) 
+                                    if ($event[4] == 'Y'
+                                        || ($event[7] >= $effectiveStart && $event[7] < $effectiveEnd)
                                         || ($effectiveStart >= $event[7] && $effectiveStart < $event[8])) {
                                         $isAbsent = true;
                                     }
@@ -1535,8 +1536,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         if ($isCovering) {
-                            $title .= $rowPeriods['gibbonPersonIDCoverage'] != $gibbonPersonID 
-                                ? __('Covering for {name}', ['name' => $rowPeriods['coveragePerson']]).'<br/>' 
+                            $title .= $rowPeriods['gibbonPersonIDCoverage'] != $gibbonPersonID
+                                ? __('Covering for {name}', ['name' => $rowPeriods['coveragePerson']]).'<br/>'
                                 : __('Covering').' '.$className.'<br/>';
                         } elseif ($isCoveredBy) {
                             foreach ($eventsPersonal as $event) {
@@ -1552,11 +1553,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         } else {
                             try {
                                 $dataTeacher = ['gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonTTDayRowClassID' => $rowPeriods['gibbonTTDayRowClassID']];
-                                $sqlTeacher = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title 
-                                    FROM gibbonPerson 
-                                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID ) 
+                                $sqlTeacher = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title
+                                    FROM gibbonPerson
+                                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID )
                                     LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
-                                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
                                     AND gibbonCourseClassPerson.role='Teacher'
                                     AND gibbonCourseClassPerson.reportable='Y'
                                     AND gibbonPerson.status='Full'
@@ -1645,7 +1646,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 : $tag;
                         }
 
-                        
+
                         if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false && !empty($rowPeriods['gibbonCourseClassID'])) {
                             $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."&currentDate=".Format::date($date)."'>".$className.'</a><br/>';
                         } elseif (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') and $edit == true && !empty($rowPeriods['gibbonCourseClassID'])) {
@@ -1705,7 +1706,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                             }
                                             $output .= '</div>';
                                             ++$zCount;
-                                            
+
                                         }
                                     }
                                     //Add planner link icons for any one else's TT
@@ -1823,7 +1824,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                         $class = 'ttStaffDuty ttPeriod';
                         $bg = 'background: #FDE68A !important;';
-                        
+
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
                         $output .= "<div class='{$class}' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
                         if ($height >= 26) {
@@ -1959,8 +1960,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                     if ($height > 56) {
                         $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
-                    } 
-                    
+                    }
+
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                     $output .= $label;
                     $output .= '</div>';
@@ -2658,21 +2659,21 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         try {
                             $dataClassCheck = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'gibbonFormGroupIDList' => $specialDay['gibbonFormGroupIDList'], 'gibbonYearGroupIDList' => $specialDay['gibbonYearGroupIDList'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count)))];
                             $sqlClassCheck = "SELECT count(CASE WHEN NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :gibbonFormGroupIDList) AND NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList) THEN student.gibbonPersonID ELSE NULL END) as studentCount, count(*) as studentTotal, MAX(gibbonCourseClassMap.gibbonCourseClassMapID) as classMap
-                                FROM gibbonCourseClassPerson 
-                                JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
-                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID) 
+                                FROM gibbonCourseClassPerson
+                                JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID)
+                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                                 LEFT JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND FIND_IN_SET(gibbonCourseClassMap.gibbonFormGroupID, :gibbonFormGroupIDList))
-                                WHERE role='Student' AND student.status='Full' 
-                                AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
-                                AND (student.dateStart IS NULL OR student.dateStart<=:date) 
-                                AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
+                                WHERE role='Student' AND student.status='Full'
+                                AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                                AND (student.dateStart IS NULL OR student.dateStart<=:date)
+                                AND (student.dateEnd IS NULL OR student.dateEnd>=:date)
                                 ";
                             $resultClassCheck = $connection2->prepare($sqlClassCheck);
                             $resultClassCheck->execute($dataClassCheck);
                         } catch (PDOException $e) {
                             $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
-                        
+
                         // See if there are no students left in the class after year groups and form groups are checked
                         $classCheck = $resultClassCheck->fetch();
                         if (!empty($classCheck) && (($classCheck['studentTotal'] > 0 && $classCheck['studentCount'] <= 0) || !empty($classCheck['classMap']))) {
@@ -2765,7 +2766,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     }
 
                     $gibbonTTDayRowClassID = str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, "0", STR_PAD_LEFT);
-                    
+
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
                         $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}&source={$gibbonSpaceID}'><img style='' title='".__('Add Facility Change')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/copyforward.png' width=20 height=20/></a>";
                     }
@@ -2799,7 +2800,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
                     if ($height > 56) {
                         $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
-                    } 
+                    }
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                     $output .= $label;
                     $output .= '</div>';

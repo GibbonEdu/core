@@ -32,6 +32,7 @@ use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -41,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    $highestActionManage = getHighestGroupedAction($guid, "/modules/Staff/staff_manage.php", $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
+    $highestActionManage = $container->get(ActionGateway::class)->getHighestGrouped("/modules/Staff/staff_manage.php");
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -501,7 +502,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     } elseif ($subpage == 'Activities') {
 
-                        $highestActionActivities = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+                        $highestActionActivities = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Activities/activities_attendance.php');
                         $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
 
                         // CRITERIA

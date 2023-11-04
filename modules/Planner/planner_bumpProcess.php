@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");

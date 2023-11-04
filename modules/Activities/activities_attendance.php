@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo __('Choose Activity');
     echo '</h2>';
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Activities/activities_attendance.php');
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
         $gibbonActivityID = $_GET['gibbonActivityID'];
@@ -185,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
-        
+
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             $form->addHeaderAction('download', __('Export to Excel'))
                 ->setURL('/modules/Activities/report_attendanceExport.php')

@@ -25,10 +25,11 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 {
-    global $session;
+    global $session, $container;
 
     $output = '';
 
@@ -138,7 +139,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 });
 
             if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
-                $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
+                $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Behaviour/behaviour_manage.php');
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonID)

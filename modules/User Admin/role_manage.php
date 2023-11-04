@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\RoleGateway;
 
@@ -29,14 +30,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     //Proceed!
     $page->breadcrumbs->add(__('Manage Roles'));
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/User Admin/role_manage.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/User Admin/role_manage.php');
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
 
     $roleGateway = $container->get(RoleGateway::class);
-    
+
     // QUERY
     $criteria = $roleGateway->newQueryCriteria(true)
         ->sortBy(['type', 'name'])

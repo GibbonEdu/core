@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         exit;
     }
 
-    $highestAction = getHighestGroupedAction($guid, $_POST['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['q']);
     if ($highestAction == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");

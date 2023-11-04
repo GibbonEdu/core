@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\CustomFieldHandler;
 
 require_once '../../gibbon.php';
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -144,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             } else {
                                 $homeworkSubmissionDateOpen = date('Y-m-d');
                             }
-                            
+
                             $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
                             $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
                             $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
@@ -282,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 //Write to database
                                 $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
                                 $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
-                                
+
                                 $updated = $pdo->update($sql, $data);
                                 $partialFail &= !$updated;
 

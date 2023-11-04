@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -218,7 +219,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 
 function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage')
 {
-    global $session;
+    global $session, $container;
 
     $output = '';
 
@@ -238,7 +239,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
         }
     }
 
-    if ($mode == 'manage' or ($mode == 'write' and getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_write_data.php', $connection2) == 'Write Internal Assessments_all')) {
+    if ($mode == 'manage' or ($mode == 'write' and $container->get(ActionGateway::class)->getHighestGrouped('/modules/Formal Assessment/internalAssessment_write_data.php') == 'Write Internal Assessments_all')) {
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
         $result = $connection2->prepare($sql);

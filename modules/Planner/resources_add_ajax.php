@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -64,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
     $output .= __('Your request failed because you do not have access to this action.');
     $output .= '</div>';
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Planner/resources_manage.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Planner/resources_manage.php');
     if ($highestAction == false) {
         $output .= "<div class='error'>";
         $output .= __('The highest grouped action cannot be determined.');

@@ -43,6 +43,7 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
@@ -62,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $roleGateway = $container->get(RoleGateway::class);
 
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -723,7 +724,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('departureReason', __('Departure Reason'));
 
                         $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields'] ?? '');
-                        
+
                         $col = $table->addColumn('Background Information', __('Background Information'));
                         $country = $gibbon->session->get('country');
 
@@ -1183,7 +1184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         // Follow-up Contacts
                         $contacts = [];
                         $emergencyFollowUpGroup = $settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup');
-                        
+
                         if (!empty($emergencyFollowUpGroup)) {
                             $contactsList = explode(',', $emergencyFollowUpGroup) ?? [];
                             $contacts = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($contactsList)->fetchAll();
@@ -1199,7 +1200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table = DataTable::create('followupMedicalContacts');
                         $table->setTitle(__('Follow-up Contacts'));
                         $table->setDescription(__('These contacts can be used when following up on an emergency, or for less serious issues, when parents and staff need to be notified by email.'));
-                        
+
                         $table->addColumn('fullName', __('Name'))
                                 ->notSortable()
                                 ->format(function ($person) {
@@ -1330,7 +1331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
                             echo Format::alert(__('Your request failed because you do not have access to this action.'));
                         } else {
-                            
+
                             $firstAidGateway = $container->get(FirstAidGateway::class);
                             $criteria = $firstAidGateway->newQueryCriteria()
                                 ->sortBy(['date', 'timeIn'], 'DESC')
@@ -1537,7 +1538,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             // Register scripts available to the core, but not included by default
                             $page->scripts->add('chart');
 
-                            $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+                            $highestAction2 = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Markbook/markbook_view.php');
                             if ($highestAction2 == false) {
                                 echo "<div class='error'>";
                                 echo __('The highest grouped action cannot be determined.');
@@ -1637,7 +1638,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->fromArray(array('*' => __('All Years')))
                                         ->fromQuery($pdo, $sqlSelect, $dataSelect)
                                         ->selected($gibbonSchoolYearID);
-                                
+
                                 if ($enableGroupByTerm == "Y") {
                                     $dataSelect = [];
                                     $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
@@ -2039,7 +2040,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $highestAction2 = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_view.php', $connection2);
+                            $highestAction2 = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Formal Assessment/internalAssessment_view.php');
                             if ($highestAction2 == false) {
                                 echo "<div class='error'>";
                                 echo __('The highest grouped action cannot be determined.');
@@ -2079,7 +2080,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $highestActionReports = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_view.php', $connection2);
+                            $highestActionReports = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Reports/archive_byStudent_view.php');
                             $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
                             if ($highestActionReports == 'View by Student') {

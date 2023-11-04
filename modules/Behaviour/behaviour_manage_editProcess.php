@@ -28,6 +28,7 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -154,12 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         $event->sendNotificationsAsBcc($pdo, $gibbon->session);
 
-                        // Check if this is an IN student 
+                        // Check if this is an IN student
                         $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
                         if (!empty($studentIN)) {
                             // Raise a notification event for IN students
                             $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
-                            
+
                             $eventIN->setNotificationText(sprintf(__('A %1$s behaviour record for %2$s has been updated by %3$s.'), strtolower($type), $studentName, $editorName));
                             $eventIN->setActionLink($actionLink);
 

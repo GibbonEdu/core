@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_delete.php') == false) {
     // Access denied
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         return;
     }
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     if ($highestAction == "View Student Profile_fullEditAllNotes") {
         $note = $noteGateway->getByID($gibbonStudentNoteID);
     }
-    
+
     if (empty($note)) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;

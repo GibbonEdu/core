@@ -27,6 +27,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') == false) {
     // Access denied
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     // Proceed!
     $page->breadcrumbs->add(__('New Absence'));
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));
         return;

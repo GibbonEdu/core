@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
@@ -31,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precedence
-    $highestAction = getHighestGroupedAction($guid, $_GET["q"], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET["q"]);
     if ($highestAction==FALSE) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         if ($values['status'] == 'Draft') $row->addClass('dull');
         return $row;
     });
-    
+
     $table->addColumn('subject', __('Subject'))
         ->context('primary')
         ->format(function ($values) {
@@ -148,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 if ($target['type']=='Activity') {
                     $data = ['gibbonActivityID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
                     }
@@ -156,31 +157,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 elseif ($target['type']=='Class') {
                     $data = ['gibbonCourseClassID'=>$target['id']];
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['course'] . '.' . $targetData['class'] . '<br/>';
                     }
                 } elseif ($target['type']=='Course') {
                     $data = ['gibbonCourseID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
                     }
                 } elseif ($target['type']=='Role') {
                     $data = ['gibbonRoleID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . __($targetData['name']) . '<br/>';
                     }
                 } elseif ($target['type']=='Role Category') {
                     $output .= '<b>' . __($target['type']) . '</b> - ' . __($target['id']) . '<br/>';
                 } elseif ($target['type']=='Form Group') {
-                   
+
                     $data = ['gibbonFormGroupID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID";
-                
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
                     }
@@ -188,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
                     $data = ['gibbonYearGroupID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . __($targetData['name']) . '<br/>';
                     }
@@ -196,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
                     $data = ['gibbonSchoolYearID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
                     }
@@ -204,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
                     $data = ['gibbonHouseID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
                     }
@@ -213,10 +214,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 } elseif ($target['type']=='Attendance') {
                     $output .= '<b>' . __($target['type']) . '</b> - ' . __($target['id']) . '<br/>';
                 } elseif ($target['type']=='Individuals') {
-                    
+
                     $data = ['gibbonPersonID'=>$target['id']];
                     $sql = "SELECT preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
-                    
+
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . Format::name('', $targetData['preferredName'], $targetData['surname'], 'Student', true) . '<br/>';
                     }
