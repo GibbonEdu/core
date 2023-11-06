@@ -242,7 +242,6 @@ class NotificationGateway extends QueryableGateway
 
     public function deleteStaleNotifications()
     {
-        $data = array('moduleName' => $moduleName);
         $sql = 'DELETE FROM gibbonNotification WHERE timestamp <= NOW() - INTERVAL 3 MONTH';
 
         return $this->db()->delete($sql, $data);
