@@ -1283,6 +1283,41 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 }
             }
         }
+
+        //Draw space bookings and staff coverage
+        if ($eventsSpaceBooking != false) {
+            $dayTimeStart = $gridTimeStart;
+            $startPad = 0;
+            $output .= "<div style='position: relative'>";
+
+            $height = 0;
+            $width = (ceil(690 / $daysInWeek) - 20).'px';
+            
+            $top = 0;
+            foreach ($eventsSpaceBooking as $event) {
+                if ($event[9] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    $height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60);
+                    $top = (ceil((strtotime($event[9].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
+                    if ($height < 45) {
+                        $label = $event[1];
+                        $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.$event[6]."'";
+                    } else {
+                        $label = $event[1]."<br/><span style='font-weight: normal'>".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).'<br/>'.$event[6].'</span>';
+                        $title = '';
+                    }
+
+                    if ($height > 56) {
+                        $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
+                    } 
+                    
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= $label;
+                    $output .= '</div>';
+                    ++$zCount;
+                }
+            }
+            $output .= '</div>';
+        }
         $output .= '</div>';
         $output .= '</td>';
     } else {
@@ -2511,7 +2546,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
     }
 
     $dayDiffTime = strtotime($dayTimeEnd) - strtotime($dayTimeStart);
-    $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
+    $startPad = !empty($dayTimeStart) ? strtotime($dayTimeStart) - strtotime($gridTimeStart) : 0;
+
+    $width = (ceil(690 / $daysInWeek) - 20).'px';
+    $zCount = 0;
 
     $canAddBookings = isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php');
     $canAddChanges = isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage_add.php');
@@ -2780,36 +2818,45 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             }
         }
 
-        //Draw space bookings
-        if ($eventsSpaceBooking != false) {
-            $height = 0;
-            $top = 0;
-
-            foreach ($eventsSpaceBooking as $event) {
-                if ($event[9] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-                    $height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60);
-                    $top = (ceil((strtotime($event[9].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
-                    if ($height < 45) {
-                        $label = $event[1];
-                        $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
-                    } else {
-                        $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
-                        $title = '';
-                    }
-
-                    if ($height > 56) {
-                        $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
-                    } 
-                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                    $output .= $label;
-                    $output .= '</div>';
-                    ++$zCount;
-                }
-            }
-        }
+        
 
         $output .= '</div>';
     }
+
+    //Draw space bookings
+    if ($eventsSpaceBooking != false) {
+        $height = 0;
+        $top = 0;
+        
+        if (empty($dayTimeStart)) {
+            $dayTimeStart = $gridTimeStart;
+        }
+
+        $output .= '<div class="relative">';
+        foreach ($eventsSpaceBooking as $event) {
+            if ($event[9] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                $height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60);
+                $top = (ceil((strtotime($event[9].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
+                if ($height < 45) {
+                    $label = $event[1];
+                    $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
+                } else {
+                    $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
+                    $title = '';
+                }
+
+                if ($height > 56) {
+                    $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
+                } 
+                $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                $output .= $label;
+                $output .= '</div>';
+                ++$zCount;
+            }
+        }
+        $output .= '</div>';
+    }
+
     $output .= '</td>';
 
     return $output;

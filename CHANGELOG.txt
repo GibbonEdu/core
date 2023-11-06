@@ -85,6 +85,7 @@ v26.0.00
         Timetable: made the +1 indicator for timetable clashes a link to Manage Exceptions
         Timetable: highlighted absent non-covered classes on the timetable in a different colour
         Timetable: set timetable to preselect in View Available Teachers and View Available Facilities, when only one timetable exists
+        Timetable: updated facility bookings to display even on Off Timetable days
         Timetable Admin: added Reportable Yes/No option to bulk action in Course Enrolment by Person
         User Admin: added Single to marital status options in Manage Family
         User Admin: enabled Student role category access to facility bookings (off by default)
