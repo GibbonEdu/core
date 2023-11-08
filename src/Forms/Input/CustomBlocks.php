@@ -55,7 +55,7 @@ class CustomBlocks implements OutputableInterface
      * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, Session $session)
+    public function __construct(FormFactoryInterface &$factory, $name, Session $session, bool $canDelete = true)
     {
         $this->factory = $factory;
         $this->session = $session;
@@ -63,14 +63,17 @@ class CustomBlocks implements OutputableInterface
 
         $this->toolsTable = $factory->createTable()->setClass('inputTools w-full');
         $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank w-full');
-        $this->addBlockButton('delete', __('Delete'), 'garbage.png');
 
-        $this->settings = array(
+        $this->settings = [
             'placeholder'      => __('Blocks will appear here...'),
             'deleteMessage'    => __('Are you sure you want to delete this record?'),
             'duplicateMessage' => __('This element has already been selected!'),
-            'currentBlocks'    => array(),
-        );
+            'currentBlocks'    => [],
+        ];
+
+        if ($canDelete) {
+            $this->addBlockButton('delete', __('Delete'), 'garbage.png');
+        }
     }
 
     /**
@@ -147,6 +150,11 @@ class CustomBlocks implements OutputableInterface
 
         $this->blockButtons->addCell()->addElement($button);
         return $this;
+    }
+
+    public function removeBlockButton($name)
+    {
+
     }
 
     /**

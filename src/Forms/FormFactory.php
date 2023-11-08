@@ -258,9 +258,9 @@ class FormFactory implements FormFactoryInterface
         return $button;
     }
 
-    public function createCustomBlocks($name, Session $session)
+    public function createCustomBlocks($name, Session $session, bool $canDelete = true)
     {
-        return new Input\CustomBlocks($this, $name, $session);
+        return new Input\CustomBlocks($this, $name, $session, $canDelete);
     }
 
     public function createDocuments($name, $documents, $view, $absoluteURL, $mode = '')
