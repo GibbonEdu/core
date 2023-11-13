@@ -351,9 +351,9 @@ class Format
      * @param bool $includeName
      * @return string
      */
-    public static function currency($value, $includeName = false)
+    public static function currency($value, $includeName = false, $decimals = 2)
     {
-        return static::$settings['currencySymbol'] . number_format($value, 2) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
+        return static::$settings['currencySymbol'] . number_format($value, $decimals) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
     /**
@@ -478,7 +478,7 @@ class Format
         if (empty($url)) {
             return $text;
         }
-        if (!$text) {
+        if ($text === '') {
             $text = $url;
         }
         if (!is_array($attr)) {
