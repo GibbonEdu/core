@@ -51,12 +51,21 @@ class DatabaseFormFactory extends FormFactory
     protected $cachedQueries = array();
 
     /**
+     * Is the Collator class available through the intl library?
+     *
+     * @var bool
+     */
+    protected static $intlCollatorAvailable = false;
+
+    /**
      * Create a factory with access to the provided a database connection.
      * @param  Connection  $pdo
      */
     public function __construct(Connection $pdo)
     {
         $this->pdo = $pdo;
+
+        static::$intlCollatorAvailable = class_exists('Collator');
     }
 
     /**
@@ -126,9 +135,10 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectHouse($name)
     {
         $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse;";
-        $results = $this->pdo->select($sql);
+        $results = $this->pdo->select($sql)->fetchKeyPair();
+        $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectCourseByYearGroup($name, $gibbonSchoolYearID, $gibbonYearGroupIDList = '')
@@ -312,17 +322,19 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectLanguage($name)
     {
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
-        $results = $this->pdo->select($sql);
+        $results = $this->pdo->select($sql)->fetchKeyPair();
+        $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectCountry($name)
     {
         $sql = "SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name";
-        $results = $this->pdo->select($sql);
+        $results = $this->pdo->select($sql)->fetchKeyPair();
+        $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectRole($name)
@@ -765,5 +777,20 @@ class DatabaseFormFactory extends FormFactory
     protected function setCachedQuery($name, $results)
     {
         $this->cachedQueries[$name] = $results;
+    }
+
+    protected function localeFriendlySort($values)
+    {
+        $values = array_map('__', $values);
+    
+        if (static::$intlCollatorAvailable) {
+            $locale = \Locale::getDefault();
+            $collator = new \Collator($locale);
+            $collator->sort($values);
+        } else {
+            usort($values, 'strcoll');
+        }
+
+        return $values;
     }
 }

@@ -97,6 +97,7 @@ v26.0.00
         System: fixed collapsable comment show/hide bug in nested data tables
         System: fixed the fix for disabled status in toggle visibility for radios
         System: fixed missing line breaks in code error alerts
+        System: fixed Language and Country selects to sort based on locale
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic
         Admissions: fixed Second Parent not being created on application acceptance
