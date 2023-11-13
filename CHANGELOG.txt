@@ -116,6 +116,8 @@ v26.0.00
         Markbook: adjusted student view to ensure that cummulative average honours term filter
         Markbook: fixed term-related PHP exception in teacher view
         Markbook: fixed the Term Added field to connect to the correct term in the Markbook Column importer
+        Markbook: fixed no columns showing up when using the All Term selector
+        Markbook: fixed weighted column average errors when adding non string values
         Messenger: fixed invalid input error when editing a wall message that also contains an email receipt
         Messenger: fixed Applicants target bug impacting parents not already in gibbonUser 
         Messenger: fixed Individual Naming option not adding student names to new messages

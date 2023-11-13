@@ -54,7 +54,7 @@ class MarkbookColumnGateway extends QueryableGateway
 
         $criteria->addFilterRules([
             'term' => function ($query, $gibbonSchoolYearTermID) {
-                if ($gibbonSchoolYearTermID <= 0) return $query;
+                if (intval($gibbonSchoolYearTermID) <= 0) return $query;
 
                 return $query
                     ->innerJoin('gibbonSchoolYearTerm', 'gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonMarkbookColumn.gibbonSchoolYearTermID 

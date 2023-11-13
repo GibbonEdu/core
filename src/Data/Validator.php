@@ -188,7 +188,7 @@ class Validator
         if (is_array($values)) {
             array_walk($values, function (&$value, $key) { 
                 $value = mb_substr($key, -2) == 'ID' 
-                    ? preg_replace('/[^a-zA-Z0-9]/', '', $value) 
+                    ? preg_replace('/[^a-zA-Z0-9-_]/', '', $value) 
                     : preg_replace('/[\<\>\'\"\;]/', '', $value);
             });
         }
