@@ -51,8 +51,8 @@ if ($gibbonCourseID == '' or $gibbonCourseClassID == '') { echo 'Fatal error loa
         } else {
             //Run through each of the selected participants.
             $update = true;
-            $choices = $_POST['Members'];
-            $role = $_POST['role'];
+            $choices = $_POST['Members'] ?? [];
+            $role = $_POST['role'] ?? '';
 
             if (count($choices) < 1 or $role == '') {
                 $URL .= '&return=error1';

@@ -40,7 +40,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID =
         //Proceed!
         //Run through each of the selected participants.
         $update = true;
-        $choices = $_POST['Members'] ?? '';
+        $choices = $_POST['Members'] ?? [];
         $role = $_POST['role'] ?? '';
 
         if (count($choices) < 1 or $role == '') {

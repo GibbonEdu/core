@@ -141,6 +141,7 @@ v26.0.00
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         Timetable: fixed staff absence display issue on timetable with multiple teachers in a class
+        Timetable Admin: fixed null coalesce array error when managing enrolment
         User Admin: fixed disallowed permissions not showing as disabled in Manage Permissions
         User Admin: fixed an error in Rollover when duplicate enrolments exist
         User Admin: fixed Rollover not pre-selecting correct next year group for existing students

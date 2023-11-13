@@ -62,7 +62,7 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
             } else {
                 //Run through each of the selected participants.
                 $update = true;
-                $choices = $_POST['Members'];
+                $choices = $_POST['Members'] ?? [];
 
                 if (count($choices) < 1) {
                     $URL .= '&return=error1';
