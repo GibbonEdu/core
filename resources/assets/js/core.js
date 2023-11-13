@@ -527,13 +527,13 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']:not([type='file']):not([type='radio'])", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file']):not([type='radio']):not([type='checkbox'])", block).val(data[key]);
         $("input:radio[name='"+key+"']", block).each(function () {
             if ($(this).val() == data[key]) {
                 $(this).attr("checked", true);
             }
         });
-        $("input:checkbox[name='"+key+"[]']", block).each(function () {
+        $("input:checkbox[name='"+key+"'],input:checkbox[name='"+key+"[]']", block).each(function () {
             var options = Array.isArray(data[key]) ? data[key] : data[key].split(',');
             if (options.includes($(this).val())) {
                 $(this).attr("checked", true);
