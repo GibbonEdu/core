@@ -776,4 +776,5 @@ ALTER TABLE `gibbonMessenger` ADD `includeSignature` ENUM('N','Y') NOT NULL DEFA
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'notificationIntervalStaff', 'Staff Notification Interval', 'Frequency of notification icon update in status tray, for staff users. In thousands of a second.', '10000');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'notificationIntervalOther', 'Other Notification Interval', 'Frequency of notification icon update in status tray, for all non-staff users. In thousands of a second.', '60000');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Remove Stale Notifications', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y');end
+ALTER TABLE `gibbonLibraryItem` CHANGE `status` `status` ENUM('Available','In Use','Decommissioned','Lost','On Loan','Repair','Reserved','On Order') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Available' COMMENT 'The current status of the item.';end
 ";

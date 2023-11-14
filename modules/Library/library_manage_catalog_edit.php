@@ -211,6 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $statuses = array(
         'Available' => __('Available'),
         'In Use' => __('In Use'),
+        'On Order' => __('On Order'),
         'Reserved' => __('Reserved'),
         'Decommissioned' => __('Decommissioned'),
         'Lost' => __('Lost'),

@@ -57,6 +57,7 @@ v26.0.00
         Library: updated the Library Print Record import to enable connecting copies to parent records
         Library: added an option to search location detail and all fields in Manage Catalog
         Library: added department and type filters to View Overdue Items report
+        Library: added an On Order status for books that are not yet borrowable
         Markbook: added Term filter to parent view, when Group Columns by Term enabled
         Markbook: adjusted Term filter in teacher view to default to current term
         Messenger: updated message copies sent to sender to include an example confirm link
