@@ -44,6 +44,7 @@ v26.0.00
         System: added output sanitization to message wall and planner discussion
         System: improved consistency of remote CLI execution
         System: added new Remove Stale Notifications CLI script to remove notifications over 3 months old
+        System: added index to gibbonNotification table to improve performance
         Attendance: added the name of attendance last taken to Form Groups Not Registered
         Activities: updated View Activities to highlight waiting list registrations in orange
         Activities: added a warning message to Activity Registration when a timing conflict would occur
