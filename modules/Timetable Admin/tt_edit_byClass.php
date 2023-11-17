@@ -58,9 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
     $form->addHiddenValue('gibbonSchoolYearID', $timetable['gibbonSchoolYearID']);
     $form->addHiddenValue('gibbonTTID', $gibbonTTID);
 
+    $classResults = $timetableGateway->selectClassesByTimetable($gibbonTTID);
+
     $row = $form->addRow();
         $row->addLabel('gibbonCourseClassID', __('Class'));
-        $row->addSelectClass('gibbonCourseClassID', $timetable['gibbonSchoolYearID'])
+        $row->addSelect('gibbonCourseClassID')
+            ->fromResults($classResults)
             ->required()
             ->placeholder()
             ->selected($gibbonCourseClassID);
