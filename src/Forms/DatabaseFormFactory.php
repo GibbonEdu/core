@@ -408,7 +408,7 @@ class DatabaseFormFactory extends FormFactory
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
 
             if (!empty($gibbonSchoolYearID)) {
-                $sql .= " WHERE gibbonPerson.status='Full'";
+                $sql .= " WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
             }
             $sql .= " ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
@@ -431,7 +431,7 @@ class DatabaseFormFactory extends FormFactory
 
             if (!empty($gibbonSchoolYearID)) {
                 $sql .= "WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                        AND gibbonPerson.status='Full'
+                        AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                         AND (dateStart IS NULL OR dateStart<=:date)
                         AND (dateEnd IS NULL OR dateEnd>=:date)";
             }
@@ -453,7 +453,7 @@ class DatabaseFormFactory extends FormFactory
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) ";
 
         if (!empty($gibbonSchoolYearID)) {
-            $sql .= " WHERE status='Full' OR status='Expected' ";
+            $sql .= " WHERE (status='Full' OR status='Expected') ";
         }
 
         $sql .= " ORDER BY surname, preferredName";

@@ -145,6 +145,7 @@ v26.0.00
         Staff: fixed approved absence with user-selected coverage not re-broadcasting substitute requests
         Staff: fixed requested coverage not actionable by substitute after approval
         Staff: fixed approved absences with coverage not notifying custom recipients
+        Staff: fixed Add Staff user select to only include Full and Expected users
         Students: fixed visibility of student status details on View Student Profiles
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
