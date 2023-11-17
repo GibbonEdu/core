@@ -281,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
                 $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
+                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required();
 
             $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
             $row = $form->addRow()->addClass('homework');
