@@ -374,7 +374,7 @@ class InstallController
             $row->addTextField('databaseServer')->setValue($data['databaseServer'] ?? '')->required()->maxLength(255);
 
         $row = $form->addRow();
-            $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be utf8_general_ci.'));
+            $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be {collation}', ['collation' => 'utf8_general_ci or utf8mb3_general_ci']));
             $row->addTextField('databaseName')->setValue($data['databaseName'] ?? '')->required()->maxLength(50);
 
         $row = $form->addRow();

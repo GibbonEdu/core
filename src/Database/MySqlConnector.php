@@ -66,7 +66,7 @@ class MySqlConnector
     {
         $databaseName = "`" . str_replace("`", "``", $databaseName) . "`";
 
-        $querySuccess = $connection->statement("CREATE DATABASE IF NOT EXISTS {$databaseName} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci");
+        $querySuccess = $connection->statement("CREATE DATABASE IF NOT EXISTS {$databaseName} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8mb3_general_ci");
 
         if ($querySuccess) {
             $connection->statement("USE {$databaseName}");

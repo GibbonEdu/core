@@ -87,9 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $row->addContent((version_compare($mysqlVersion, $mysqlRequirement, '>='))? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
-        $row->addLabel('mysqlCollationLabel', __('MySQL Collation'))->description(sprintf( __('Database collation should be set to %s'), 'utf8_general_ci'));
+        $row->addLabel('mysqlCollationLabel', __('MySQL Collation'))->description(sprintf( __('Database collation should be set to %s'), 'utf8_general_ci or utf8mb3_general_ci'));
         $row->addTextField('mysqlCollation')->setValue($mysqlCollation)->readonly();
-        $row->addContent(($mysqlCollation == 'utf8_general_ci')? $trueIcon : $falseIcon);
+        $row->addContent(($mysqlCollation == 'utf8_general_ci' || $mysqlCollation == 'utf8mb3_general_ci')? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
