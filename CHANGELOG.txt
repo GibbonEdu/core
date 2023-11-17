@@ -102,6 +102,7 @@ v26.0.00
         System: fixed missing line breaks in code error alerts
         System: fixed Language and Country selects to sort based on locale
         System: fixed checkboxes in Custom Blocks not preloading data correctly
+        System: fixed strftime deprecation in Format class, implemented intl formatter
         Admissions: fixed incorrect parent field names in application submission email
         Admissions: fixed application form prefill logic
         Admissions: fixed Second Parent not being created on application acceptance
