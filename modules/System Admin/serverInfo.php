@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/serverInfo.ph
 
             $row = $form->addRow();
             $row->addLabel('', $name);
-            $row->addContent($value)->wrap('<div class="text-left w-full">', '</div>');
+            $row->addContent($value)->wrap('<div class="text-left w-full break-all">', '</div>');
         }
     }
     

@@ -147,6 +147,7 @@ v26.0.00
         Staff: fixed approved absences with coverage not notifying custom recipients
         Staff: fixed Add Staff user select to only include Full and Expected users
         Students: fixed visibility of student status details on View Student Profiles
+        System Admin: fixed line break on long values in Server Info
         Timetable: fixed period showing absent in classes with multiple teachers when one is absent
         Timetable: fixed PHP deprecation issue relating to $roleCategory
         Timetable: fixed staff absence display issue on timetable with multiple teachers in a class
