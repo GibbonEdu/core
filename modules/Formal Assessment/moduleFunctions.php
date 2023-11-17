@@ -120,7 +120,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         $output .= __('Unmarked').'<br/>';
                     }
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$rowInternalAssessment['attachment'])) {
-                        $output .= " | <a title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
+                        $output .= " | <a target='_blank' title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
                     $output .= '</span>';
                     $output .= '</td>';
@@ -196,7 +196,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $output .= $rowInternalAssessment['comment'].'<br/>';
                         }
                         if ($rowInternalAssessment['response'] != '') {
-                            $output .= "<a title='".__('Uploaded Response')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
+                            $output .= "<a target='_blank' title='".__('Uploaded Response')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
                         }
                         $output .= '</td>';
                     }
