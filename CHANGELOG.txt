@@ -111,6 +111,7 @@ v26.0.00
         Admissions: fixed phone number in application form causing validation error when required
         Behaviour: fixed error from missing function in behaviour letter CLI script
         Behaviour: fixed Add Multiple form submittable without selecting students
+        Crowd Assessment: fixed profile access checking for student name link
         Data Updater: fixed medical updates creating a notification when no data has changed
         Form Groups: fixed Left staff showing in View Form Groups list
         Finance: fixed edge case causing receipts to be sent along with reminders

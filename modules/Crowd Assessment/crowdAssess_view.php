@@ -85,8 +85,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $table = DataTable::create('crowdAssessmentStudents');
     $table->addMetaData('blankSlate', __('There is currently no work to assess.'));
 
+    $highestStudentAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+    $canViewProfile = !empty($highestStudentAction) && ($highestStudentAction == 'View Student Profile_brief' || stripos($highestStudentAction, 'full') !== false);
+
     $table->addColumn('name', __('Student'))
-        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, true]));
+        ->format(function ($values)  use ($canViewProfile) {
+            return $canViewProfile
+                ? Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], 'Student', true, true)
+                : Format::name('', $values['preferredName'], $values['surname'], 'Student', true, true);
+        });
+        
     $table->addColumn('read', __('Read'))
         ->format(function($student) {
             $homework = $student['homework'];
