@@ -88,7 +88,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
             $multiSelect = $col->addMultiSelect('gibbonPersonIDMulti')
-                ->addSortableAttribute('Form', $students['form']);
+                ->addSortableAttribute('Form', $students['form'])
+                ->required();
 
             $multiSelect->source()->fromArray($students['students']);
 
