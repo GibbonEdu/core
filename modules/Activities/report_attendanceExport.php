@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $terms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
             $termList = array();
             for ($i = 0; $i < count($terms); $i = $i + 2) {
-                if (is_numeric(strpos($activity['gibbonSchoolYearTermIDList'], $terms[$i]))) {
+                if (isset($terms[$i]) && is_numeric(strpos($activity['gibbonSchoolYearTermIDList'] ?? '', $terms[$i]))) {
                     $termList[] = $terms[($i + 1)];
                 }
             }
