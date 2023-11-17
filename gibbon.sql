@@ -5105,9 +5105,10 @@ CREATE TABLE `gibbonSchoolYear` (
 -- Dumping data for table `gibbonSchoolYear`
 --
 
-INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`) VALUES
-(025, '2022-2023', 'Current', 3, '2022-06-13', '2023-06-29'),
-(026, '2023-2024', 'Upcoming', 4, '2023-08-14', '2024-06-29');
+INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`) 
+VALUES
+    (025,'2023-2024','Current',3,'2023-06-12','2024-06-29'),
+    (026,'2024-2025','Upcoming',4,'2024-08-13','2025-06-29');
 
 -- --------------------------------------------------------
 
@@ -5153,12 +5154,12 @@ CREATE TABLE `gibbonSchoolYearTerm` (
 --
 
 INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearID`, `sequenceNumber`, `name`, `nameShort`, `firstDay`, `lastDay`) VALUES
-(00034, 025, 31, 'Term 1', 'T1', '2022-06-13', '2022-12-18'),
-(00035, 025, 32, 'Term 2', 'T2', '2023-01-09', '2023-04-02'),
-(00036, 025, 33, 'Term 3', 'T3', '2023-04-17', '2023-06-29'),
-(00037, 026, 34, 'Term 1', 'T1', '2023-08-14', '2023-12-17'),
-(00038, 026, 35, 'Term 2', 'T2', '2024-01-08', '2024-03-25'),
-(00039, 026, 36, 'Term 3', 'T3', '2024-04-16', '2024-06-29');
+    (00034,025,31,'Term 1','T1','2023-06-12','2023-12-24'),
+    (00035,025,32,'Term 2','T2','2024-01-08','2024-04-08'),
+    (00036,025,33,'Term 3','T3','2024-04-16','2024-06-29'),
+    (00037,026,34,'Term 1','T1','2024-08-13','2024-12-23'),
+    (00038,026,35,'Term 2','T2','2025-01-07','2025-03-30'),
+    (00039,026,36,'Term 3','T3','2025-04-14','2025-06-29');
 
 -- --------------------------------------------------------
 
