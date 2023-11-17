@@ -405,7 +405,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 echo '<td>';
                                                 if (!(is_null($row['date']))) {
                                                     echo '<b>'.Format::date($row['date']).'</b><br/>';
-                                                    echo Format::dateReadable($row['date'], '%A');
+                                                    echo Format::dayOfWeekName($row['date']);
                                                 }
                                                 echo '</td>';
                                                 echo '<td>';
@@ -769,7 +769,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo '<td>';
                                         if (!(is_null($row['date']))) {
                                             echo '<b>'.Format::date($row['date']).'</b><br/>';
-                                            echo Format::dateReadable($row['date'], '%A');
+                                            echo Format::dayOfWeekName(strtotime($row['date']));
                                         }
                                         echo '</td>';
                                         echo '<td>';
@@ -1042,8 +1042,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo "</td>";
                                             echo "<td $style>";
                                             echo '<b>'.Format::date($lesson['1']).'</b><br/>';
-                                            echo Format::dateReadable($lesson['1'], '%A').'<br/>';
-                                            echo Format::dateReadable($lesson['1'], '%B').'<br/>';
+                                            echo Format::dayOfWeekName(strtotime($lesson['1']), '%A').'<br/>';
+                                            echo Format::monthName(strtotime($lesson['1']), '%B').'<br/>';
                                             if ($lesson[8] == 'Timing Change') {
                                                 echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
                                             }

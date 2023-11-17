@@ -685,7 +685,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $activitiesOutput .= $row['name'];
                             $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
-                            $activitiesOutput .= trim($row['type']);
+                            $activitiesOutput .= trim($row['type'] ?? '');
                             $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
                             if ($dateType != 'Date') {

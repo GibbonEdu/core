@@ -144,7 +144,11 @@ class AbsenceFormats
             return '';
         }
 
-        $names = array_unique(array_map(['self', 'coverage'], $absence['coverageList'] ?? []));
+        $names = [];
+        foreach ($absence['coverageList'] as $absence) {
+            $names[] = static::coverage($absence);
+        }
+        $names = array_unique($names);
 
         return implode('<br/>', $names);
     }

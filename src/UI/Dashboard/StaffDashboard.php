@@ -407,10 +407,10 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                         }
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= trim($rowBehaviour['descriptor']);
+                        $formGroups[$count][3] .= trim($rowBehaviour['descriptor'] ?? '');
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= trim($rowBehaviour['level']);
+                        $formGroups[$count][3] .= trim($rowBehaviour['level'] ?? '');
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= '<td>';
                         $formGroups[$count][3] .= Format::name($rowBehaviour['title'], $rowBehaviour['preferredNameCreator'], $rowBehaviour['surnameCreator'], 'Staff', false).'<br/>';
