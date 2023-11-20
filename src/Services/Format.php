@@ -42,8 +42,6 @@ class Format
         'timeFormatPHP'     => 'H:i',
     ];
 
-    protected static $formatter;
-
     protected static $intlFormatterAvailable = false;
 
     /**
@@ -130,13 +128,13 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function dateReadable($dateString, $format = 'MMM d, YYYY', $fallbackFormat = 'F j, Y')
+    public static function dateReadable($dateString, $format = '%b %e, %Y')
     {
         if (empty($dateString)) {
             return '';
         }
         $date = static::createDateTime($dateString);
-        return mb_convert_case(static::formatDateIntl($date->format('U'), $format, $fallbackFormat), MB_CASE_TITLE);
+        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
 
     /**
@@ -145,13 +143,13 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function dateTimeReadable($dateString, $format = 'MMM d, YYYY hh:mm a', $fallbackFormat = 'F j, Y H:i')
+    public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
     {
         if (empty($dateString)) {
             return '';
         }
         $date = static::createDateTime($dateString);
-        return mb_convert_case(static::formatDateIntl($date->format('U'), $format, $fallbackFormat), MB_CASE_TITLE);
+        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
 
     /**
@@ -1017,29 +1015,6 @@ class Format
             : new DateTime($dateOriginal, $timezone);
     }
 
-    public static function getIntlFormatter()
-    {
-        if (!isset(static::$formatter)) {
-            static::$formatter = new \IntlDateFormatter(
-                static::$settings['code'] ?? null,
-                \IntlDateFormatter::MEDIUM,
-                \IntlDateFormatter::MEDIUM
-            );
-        }
-
-        return static::$formatter;
-    }
-
-    public static function formatDateIntl($datetime, string $intlPattern, string $fallbackPattern)
-    {
-        if (!static::$intlFormatterAvailable) {
-            DateTime::createFromFormat($fallbackPattern, $datetime);
-        }
-
-        static::getIntlFormatter()->setPattern($intlPattern);
-        return static::getIntlFormatter()->format($datetime);
-    }
-
     /**
      * Format a given datetime / timestamp into localized day of week name.
      *
@@ -1053,8 +1028,18 @@ class Format
             return DateTime::createFromFormat('D', $datetime);
         }
 
-        static::getIntlFormatter()->setPattern('EEEE');
-        return static::getIntlFormatter()->format($datetime);
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'EEEE'
+            );
+        }
+        return $formatter->format($datetime);
     }
 
     /**
@@ -1071,8 +1056,18 @@ class Format
             return DateTime::createFromFormat('M', $datetime);
         }
 
-        static::getIntlFormatter()->setPattern('MMM');
-        return static::getIntlFormatter()->format($datetime);
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MMM'
+            );
+        }
+        return $formatter->format($datetime);
     }
 
     /**
@@ -1089,7 +1084,17 @@ class Format
             return DateTime::createFromFormat('m', $datetime);
         }
 
-        static::getIntlFormatter()->setPattern('MM');
-        return static::getIntlFormatter()->format($datetime);
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MM'
+            );
+        }
+        return $formatter->format($datetime);
     }
 }
