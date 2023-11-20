@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jan 20, 2023 at 01:13 PM
--- Server version: 5.7.34
--- PHP Version: 7.4.21
+-- Generation Time: Nov 20, 2023 at 05:05 AM
+-- Server version: 5.7.39
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -153,7 +153,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000630, 0121, 'Manage Messages_all', 1, 'Manage Messages', 'Edit all messages', NULL, 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'Y', 'N'),
 (0000631, 0003, 'Update', 0, 'Extend & Update', 'Update Gibbon to a new version', NULL, 'update.php', 'update.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000632, 0121, 'New Message_fromSchool', 0, 'Manage Messages', 'Bulk email from the school\'s email address', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
-(0000655, 0014, 'View Timetable by Facility', 0, 'View Timetables', 'View space usage according to the timetable', NULL, 'tt_space.php,tt_space_view.php', 'tt_space.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000655, 0014, 'View Timetable by Facility', 0, 'View Timetables', 'View space usage according to the timetable', NULL, 'tt_space.php,tt_space_view.php', 'tt_space.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'N', 'Y'),
 (0000656, 0013, 'Course Enrolment by Person', 0, 'Courses & Classes', 'Manage course enrolment for a single user', NULL, 'courseEnrolment_manage_byPerson.php, courseEnrolment_manage_byPerson_edit.php, courseEnrolment_manage_byPerson_edit_edit.php, courseEnrolment_manage_byPerson_edit_delete.php', 'courseEnrolment_manage_byPerson.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000657, 0121, 'New Message_applicants', 12, 'Manage Messages', 'Bulk email to applicants by intended school year of entry', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'Y', 'N'),
 (0000658, 0121, 'New Message_individuals', 13, 'Manage Messages', 'Bulk email to indvidual users', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
@@ -232,7 +232,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000812, 0014, 'Manage Facility Changes_allClasses', 2, 'Facilities', 'Allows a user to create and manage one-off location changes for all classes within the timetable.', NULL, 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000813, 0014, 'Manage Facility Changes_myClasses', 0, 'Facilities', 'Allows a user to create and manage one-off location changes for their own classes within the timetable.', NULL, 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000814, 0014, 'Manage Facility Bookings_allBookings', 0, 'Facilities', 'Allows a user to book a room for on-off use, and manage bookings made by all other users.', NULL, 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000815, 0014, 'Manage Facility Bookings_myBookings', 0, 'Facilities', 'Allows a user to book a room for on-off use, and manage their own bookings.', NULL, 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000815, 0014, 'Manage Facility Bookings_myBookings', 0, 'Facilities', 'Allows a user to book a room for on-off use, and manage their own bookings.', NULL, 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'N', 'Y'),
 (0000817, 0009, 'Outcomes By Course', 0, 'Outcomes', 'This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.', NULL, 'curriculumMapping_outcomesByCourse.php', 'curriculumMapping_outcomesByCourse.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000818, 0121, 'New Quick Wall Message', 0, 'Manage Messages', 'Allows for the quick posting of a Message Wall message to all users.', NULL, 'messenger_postQuickWall.php', 'messenger_postQuickWall.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N'),
 (0000820, 0121, 'New Message_transport_any', 0, 'Manage Messages', 'Send messages users by transport field.', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N'),
@@ -296,7 +296,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000881, 0006, 'Attendance Trends', 0, 'Reports', 'Display a graph of student attendance types over time', NULL, 'report_graph_byType.php', 'report_graph_byType.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y'),
 (0000882, 0121, 'New Message_cannedResponse', 0, 'Manage Messages', 'Allows user to use pre-defined Canned Responses.', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000883, 0121, 'New Message_readReceipts', 0, 'Manage Messages', 'Allows users to include read receipts in emails.', 'teachers/other/messenger/#getting-started', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000884, 0005, 'First Aid Record', 0, 'Medical', 'Allows user to record first aid visits and actions.', NULL, 'firstAidRecord.php, firstAidRecord_add.php, firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
+(0000884, 0005, 'First Aid Record_editAll', 2, 'Medical', 'Allows user to record first aid visits and actions.', NULL, 'firstAidRecord.php, firstAidRecord_add.php, firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000885, 0005, 'View Student Profile_fullNoNotes', 2, 'Profiles', 'View full profile of any student in the school, without access to Notes.', 'teachers/people/student-profiles/', 'student_view.php,student_view_details.php', 'student_view.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000886, 0003, 'System Check', 0, 'System', 'Check system versions and extensions installed.', NULL, 'systemCheck.php', 'systemCheck.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000887, 0006, 'Student Self Registration', 0, 'Take Attendance', 'Allows students to self register as Present, provided they are within a certain range of IP addresses.', NULL, 'attendance_studentSelfRegister.php', 'attendance_studentSelfRegister.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N'),
@@ -406,7 +406,8 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000992, 0013, 'Timetable Settings', 0, 'Settings', 'Manage settings to control timetable functionality.', NULL, 'ttSettings.php', 'ttSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000993, 0136, 'Duty Schedule_edit', 0, 'Reports', 'Manage the staff duty schedule.', NULL, 'staff_duty.php,staff_duty_edit.php', 'staff_duty.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000994, 0136, 'Duty Schedule_view', 0, 'Reports', 'View the staff duty schedule.', NULL, 'staff_duty.php', 'staff_duty.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000995, 0136, 'Daily Coverage Planner', 0, 'Coverage', '', NULL, 'coverage_planner.php,coverage_planner_assign.php,coverage_planner_unassign.php', 'coverage_planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000995, 0136, 'Daily Coverage Planner', 0, 'Coverage', '', NULL, 'coverage_planner.php,coverage_planner_assign.php,coverage_planner_unassign.php', 'coverage_planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000996, 0005, 'First Aid Record_viewOnlyAddNotes', 0, 'Medical', 'Allows user to view first aid records and add incident notes, but not add or edit records.', NULL, 'firstAidRecord.php,firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -1046,7 +1047,7 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 ('Korea, Republic of', ''),
 ('Kuwait', '965'),
 ('Kyrgyzstan', '996'),
-('Lao People\'s Democratic Republic', ''),
+('Lao People\'s Democratic Republic', '856'),
 ('Latvia', '371'),
 ('Lebanon', '961'),
 ('Lesotho', '266'),
@@ -1658,7 +1659,7 @@ CREATE TABLE `gibbonFamily` (
   `homeAddress` mediumtext NOT NULL,
   `homeAddressDistrict` varchar(255) NOT NULL,
   `homeAddressCountry` varchar(255) NOT NULL,
-  `status` enum('Married','Separated','Divorced','De Facto','Other') NOT NULL,
+  `status` enum('Married','Separated','Divorced','De Facto','Other','Single') NOT NULL,
   `languageHomePrimary` varchar(30) NOT NULL,
   `languageHomeSecondary` varchar(30) DEFAULT NULL,
   `familySync` varchar(50) DEFAULT NULL
@@ -2088,6 +2089,7 @@ CREATE TABLE `gibbonFirstAid` (
   `gibbonPersonIDPatient` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonIDFirstAider` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDFollowUp` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `description` text NOT NULL,
   `actionTaken` text NOT NULL,
@@ -2353,7 +2355,7 @@ CREATE TABLE `gibbonFormUpload` (
   `gibbonFormFieldID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `foreignTable` varchar(60) DEFAULT NULL,
   `foreignTableID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
-  `name` varchar(90) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `path` varchar(255) DEFAULT NULL,
   `confirmed` enum('Y','N') NOT NULL DEFAULT 'N',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -2764,6 +2766,7 @@ INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES
 
 CREATE TABLE `gibbonLibraryItem` (
   `gibbonLibraryItemID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonLibraryItemIDParent` int(10) DEFAULT NULL,
   `gibbonLibraryTypeID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL COMMENT 'Name for book, model for computer, etc.',
@@ -2787,7 +2790,7 @@ CREATE TABLE `gibbonLibraryItem` (
   `physicalCondition` enum('','As New','Lightly Worn','Moderately Worn','Damaged','Unusable') NOT NULL,
   `bookable` enum('N','Y') NOT NULL DEFAULT 'N',
   `borrowable` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `status` enum('Available','In Use','Decommissioned','Lost','On Loan','Repair','Reserved') NOT NULL DEFAULT 'Available' COMMENT 'The current status of the item.',
+  `status` enum('Available','In Use','Decommissioned','Lost','On Loan','Repair','Reserved','On Order') NOT NULL DEFAULT 'Available' COMMENT 'The current status of the item.',
   `gibbonPersonIDStatusResponsible` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'The person who is responsible for the current status.',
   `gibbonPersonIDStatusRecorder` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'The person who recored the current status.',
   `timestampStatus` datetime DEFAULT NULL COMMENT 'The time the status was recorded',
@@ -3027,6 +3030,8 @@ CREATE TABLE `gibbonMessenger` (
   `emailReport` text NOT NULL,
   `emailReceipt` enum('N','Y') DEFAULT NULL,
   `emailReceiptText` text,
+  `individualNaming` enum('N','Y') NOT NULL DEFAULT 'N',
+  `includeSignature` enum('N','Y') NOT NULL DEFAULT 'N',
   `smsReport` text NOT NULL,
   `confidential` enum('N','Y') NOT NULL DEFAULT 'N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -3055,17 +3060,17 @@ CREATE TABLE `gibbonMessengerReceipt` (
   `gibbonMessengerReceiptID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
-  `sent` enum('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
-  `targetType` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') COLLATE utf8_unicode_ci NOT NULL,
-  `targetID` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `contactType` enum('Email','SMS') COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contactDetail` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `key` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `confirmed` enum('N','Y') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sent` enum('N','Y') NOT NULL DEFAULT 'N',
+  `targetType` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') NOT NULL,
+  `targetID` varchar(30) NOT NULL,
+  `contactType` enum('Email','SMS') DEFAULT NULL,
+  `contactDetail` varchar(255) DEFAULT NULL,
+  `key` varchar(40) DEFAULT NULL,
+  `confirmed` enum('N','Y') DEFAULT NULL,
   `confirmedTimestamp` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDListStudent` text COLLATE utf8_unicode_ci,
-  `nameListStudent` text COLLATE utf8_unicode_ci
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `gibbonPersonIDListStudent` text,
+  `nameListStudent` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3218,7 +3223,9 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 (000032, 'New Application with SEN/Medical', 'Admissions', 'Manage Applications', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
 (000033, 'Staff Data Updates', 'Data Updater', 'Staff Data Updates', 'Core', 'All', 'Y'),
 (000034, 'Updated Timetable Subscriber', 'Timetable', 'View Timetable by Person', 'Core', 'All', 'Y'),
-(000035, 'New Investigation', 'Individual Needs', 'Manage Investigations', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');
+(000035, 'New Investigation', 'Individual Needs', 'Manage Investigations', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
+(000036, 'Behaviour Record for IN Student', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
+(000037, 'Remove Stale Notifications', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y');
 
 -- --------------------------------------------------------
 
@@ -5105,10 +5112,9 @@ CREATE TABLE `gibbonSchoolYear` (
 -- Dumping data for table `gibbonSchoolYear`
 --
 
-INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`) 
-VALUES
-    (025,'2023-2024','Current',3,'2023-06-12','2024-06-29'),
-    (026,'2024-2025','Upcoming',4,'2024-08-13','2025-06-29');
+INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`) VALUES
+(025, '2023-2024', 'Current', 3, '2023-06-12', '2024-06-29'),
+(026, '2024-2025', 'Upcoming', 4, '2024-08-13', '2025-06-29');
 
 -- --------------------------------------------------------
 
@@ -5154,12 +5160,12 @@ CREATE TABLE `gibbonSchoolYearTerm` (
 --
 
 INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearID`, `sequenceNumber`, `name`, `nameShort`, `firstDay`, `lastDay`) VALUES
-    (00034,025,31,'Term 1','T1','2023-06-12','2023-12-24'),
-    (00035,025,32,'Term 2','T2','2024-01-08','2024-04-08'),
-    (00036,025,33,'Term 3','T3','2024-04-16','2024-06-29'),
-    (00037,026,34,'Term 1','T1','2024-08-13','2024-12-23'),
-    (00038,026,35,'Term 2','T2','2025-01-07','2025-03-30'),
-    (00039,026,36,'Term 3','T3','2025-04-14','2025-06-29');
+(00034, 025, 31, 'Term 1', 'T1', '2023-06-12', '2023-12-24'),
+(00035, 025, 32, 'Term 2', 'T2', '2024-01-08', '2024-04-08'),
+(00036, 025, 33, 'Term 3', 'T3', '2024-04-16', '2024-06-29'),
+(00037, 026, 34, 'Term 1', 'T1', '2024-08-13', '2024-12-23'),
+(00038, 026, 35, 'Term 2', 'T2', '2025-01-07', '2025-03-30'),
+(00039, 026, 36, 'Term 3', 'T3', '2025-04-14', '2025-06-29');
 
 -- --------------------------------------------------------
 
@@ -5510,7 +5516,12 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00348, 'Timetable Admin', 'enrolmentMinDefault', 'Minimum Enrolment Default', 'The default value for minimum class enrolment.', ''),
 (00349, 'Timetable Admin', 'enrolmentMaxDefault', 'Maximum Enrolment Default', 'The default value for maximum class enrolment.', ''),
 (00350, 'Staff', 'coverageMode', 'Coverage Mode', 'Should teachers send coverage requests directly to substitutes, or will it be assigned for them?', 'Requested'),
-(00351, 'Staff', 'coverageInternal', 'Internal Coverage', 'If Yes, teachers can be assigned to cover each other. Otherwise, only users added through Manage Substitutes will be available for coverage.', 'N');
+(00351, 'Staff', 'coverageInternal', 'Internal Coverage', 'If Yes, teachers can be assigned to cover each other. Otherwise, only users added through Manage Substitutes will be available for coverage.', 'N'),
+(00352, 'Students', 'emergencyFollowUpGroup', 'Follow-up Contacts', 'An optional list of staff to include in the follow-up contacts section.', ''),
+(00353, 'Messenger', 'signatureTemplate', 'Signature Template', 'An HTML and Twig template used to add signatures to messages.', '----<br /><span style=\"font-weight: bold; color: #447caa;\">{{ preferredName }} {{ surname }}</span><br />{% if jobTitle is not empty %}<span style=\"font-style: italic;\">{{ jobTitle }}</span><br />{% endif %}{{ organisationName }}<br /></span>'),
+(00354, 'System', 'allowableIframeSources', 'Allowable iFrame Sources', 'A comma separated list of domains that are allowed in embedded iFrames. All others will be removed from HTML content.', 'youtube.com,youtu.be,m.youtube.com,google.com,docs.google.com,drive.google.com,vimeo.com,player.vimeo.com'),
+(00355, 'System', 'notificationIntervalStaff', 'Staff Notification Interval', 'Frequency of notification icon update in status tray, for staff users. In thousands of a second.', '10000'),
+(00356, 'System', 'notificationIntervalOther', 'Other Notification Interval', 'Frequency of notification icon update in status tray, for all non-staff users. In thousands of a second.', '60000');
 
 -- --------------------------------------------------------
 
@@ -5741,7 +5752,7 @@ CREATE TABLE `gibbonStaffCoverage` (
   `gibbonStaffAbsenceID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `status` enum('Requested','Accepted','Declined','Cancelled','Pending') DEFAULT 'Requested',
+  `status` enum('Requested','Accepted','Declined','Cancelled','Pending','Not Required') DEFAULT 'Requested',
   `requestType` enum('Individual','Broadcast','Assigned') DEFAULT 'Broadcast',
   `substituteTypes` varchar(255) DEFAULT NULL,
   `gibbonPersonIDStatus` int(10) UNSIGNED ZEROFILL NOT NULL,
@@ -5787,6 +5798,7 @@ CREATE TABLE `gibbonStaffDuty` (
   `gibbonStaffDutyID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `gibbonDaysOfWeekIDList` varchar(30) DEFAULT NULL,
   `name` varchar(90) NOT NULL,
+  `nameShort` varchar(20) NOT NULL,
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL,
   `sequenceNumber` int(6) NOT NULL
@@ -6902,7 +6914,8 @@ ALTER TABLE `gibbonModule`
 -- Indexes for table `gibbonNotification`
 --
 ALTER TABLE `gibbonNotification`
-  ADD PRIMARY KEY (`gibbonNotificationID`);
+  ADD PRIMARY KEY (`gibbonNotificationID`),
+  ADD KEY `gibbonPersonID` (`gibbonPersonID`);
 
 --
 -- Indexes for table `gibbonNotificationEvent`
@@ -7517,7 +7530,7 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=996;
+  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=997;
 
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
@@ -8111,7 +8124,7 @@ ALTER TABLE `gibbonNotification`
 -- AUTO_INCREMENT for table `gibbonNotificationEvent`
 --
 ALTER TABLE `gibbonNotificationEvent`
-  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `gibbonNotificationListener`
@@ -8417,7 +8430,7 @@ ALTER TABLE `gibbonSchoolYearTerm`
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=352;
+  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=357;
 
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
