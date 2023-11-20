@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -664,7 +666,15 @@ function getTerms($connection2, $gibbonSchoolYearID, $short = false)
     return $output;
 }
 
-//Array sort for multidimensional arrays
+/**
+ * Array sort for multidimensional arrays.
+ *
+ * Deprecated in favor of native usort.
+ *
+ * @since 2013
+ * @version v12.0.00
+ * @deprecated v26.0.00
+ */
 function msort($array, $id = 'id', $sort_ascending = true)
 {
     $temp_array = array();
@@ -691,9 +701,22 @@ function msort($array, $id = 'id', $sort_ascending = true)
     }
 }
 
-//Print out, preformatted indicator of max file upload size
-function getMaxUpload($guid, $multiple = '')
+/**
+ * Returns preformatted HTML indicator of max file upload size
+ *
+ * @since 2013
+ * @version v26
+ *
+ * @param bool $multiple  Whether to show text about multiple files.
+ */
+function getMaxUpload($multiple = false)
 {
+    // For backwards compatibilty
+    global $guid;
+    if ($multiple === $guid) {
+        $multiple = func_get_args()[1] ?? false;
+    }
+
     $output = '';
     $post = substr(ini_get('post_max_size'), 0, (strlen(ini_get('post_max_size')) - 1));
     $file = substr(ini_get('upload_max_filesize'), 0, (strlen(ini_get('upload_max_filesize')) - 1));

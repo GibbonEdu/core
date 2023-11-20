@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -186,7 +188,7 @@ class Validator
         if (is_array($values)) {
             array_walk($values, function (&$value, $key) { 
                 $value = mb_substr($key, -2) == 'ID' 
-                    ? preg_replace('/[^a-zA-Z0-9]/', '', $value) 
+                    ? preg_replace('/[^a-zA-Z0-9-_]/', '', $value) 
                     : preg_replace('/[\<\>\'\"\;]/', '', $value);
             });
         }
@@ -253,7 +255,7 @@ class Validator
                             $host = str_replace('www.', '', $host);
 
                             if (empty($host) || !in_array($host, $this->getAllowableIframeSources())) {
-                                $node->parentNode->appendChild(new \DOMComment('iFrame removed due to security policy'));
+                                $node->parentNode->appendChild(new \DOMComment(__('iFrame removed due to security policy')));
                                 $node->parentNode->removeChild($node);
                             }
                         }

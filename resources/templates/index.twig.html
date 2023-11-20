@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -16,7 +18,7 @@ TODO: add template variable details.
         {% endblock head %}
     </head>
     <body class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;' : '' }}">
-
+        <a id="top"></a>
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
 
         <div class="px-4 sm:px-6 lg:px-12 pb-24">
@@ -120,12 +122,20 @@ TODO: add template variable details.
 
                 </div>
 
+                {% if isLoggedIn %}
+                    <div class="text-right mt-2 text-xs pr-1">
+                        <a class='text-{{ themeColour }}-800' href='#top'>{{ __('Return to top') }}</a>
+                    </div>
+                {% endif %}
+
                 {% block afterPage %}
                 {% endblock afterPage %}
             </div>
 
+            
+
             {% block footer %}
-                <div class="relative text-sm text-gray-700 px-6 lg:px-12 mt-6 pt-6 pb-6 leading-normal border-t border-gray-300 {{ rightToLeft ? 'text-right' : 'text-left' }}">
+                <div class="relative text-sm text-gray-700 px-6 lg:px-12 mt-4 pt-2 pb-6 leading-normal border-t border-gray-300 {{ rightToLeft ? 'text-right' : 'text-left' }}">
                     {{ include('footer.twig.html') }}
 
                     <img class="absolute top-0 -mt-1 hidden sm:block w-32 {{ rightToLeft ? 'left-0 sm:ml-0 md:ml-16' : 'right-0 sm:mr-0 md:mr-16' }}" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>

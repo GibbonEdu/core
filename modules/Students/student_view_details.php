@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,25 +26,28 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Students\FirstAidGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -103,9 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $highestAction = 'View Student Profile_brief';
                 } else {
                     //Acess denied
-                    echo "<div class='error'>";
-                    echo __('You do not have access to this action.');
-                    echo '</div>';
+                    $page->addError(__('You do not have access to this action.'));
                     return;
                 }
             }
@@ -227,9 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } else {
                         //Acess denied
-                        echo "<div class='error'>";
-                        echo __('You do not have access to this action.');
-                        echo '</div>';
+                        $page->addError(__('You do not have access to this action.'));
                         return;
                     }
                     $result = $connection2->prepare($sql);
@@ -1177,6 +1178,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
+                        echo '<br/><br/>';
+
+                        // Follow-up Contacts
+                        $contacts = [];
+                        $emergencyFollowUpGroup = $settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup');
+                        
+                        if (!empty($emergencyFollowUpGroup)) {
+                            $contactsList = explode(',', $emergencyFollowUpGroup) ?? [];
+                            $contacts = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($contactsList)->fetchAll();
+                        }
+
+                        $staff = $container->get(StudentGateway::class)->selectAllRelatedUsersByStudent($session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID, false)->fetchAll();
+
+                        $familyAdults = $container->get(FamilyGateway::class)->selectFamilyAdultsByStudent($gibbonPersonID)->fetchAll();
+                        $familyAdults = array_filter($familyAdults, function ($parent) {
+                            return $parent['contactEmail'] == 'Y';
+                        });
+
+                        $table = DataTable::create('followupMedicalContacts');
+                        $table->setTitle(__('Follow-up Contacts'));
+                        $table->setDescription(__('These contacts can be used when following up on an emergency, or for less serious issues, when parents and staff need to be notified by email.'));
+                        
+                        $table->addColumn('fullName', __('Name'))
+                                ->notSortable()
+                                ->format(function ($person) {
+                                    return Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                });
+                        $table->addColumn('email', __('Email'))
+                                ->notSortable()
+                                ->format(function ($person) {
+                                    return htmlPrep('<'.$person['email'].'>');
+                                });
+                        $table->addColumn('context', __('Context'))
+                            ->notSortable()
+                            ->format(function ($person)  {
+                                if ($person['type'] == 'Family') {
+                                    $person['type'] = $person['type'].', '.$person['relationship'];
+                                } elseif ($person['type'] == 'Teaching' || $person['type'] == 'Support') {
+                                    $person['type'] = $person['jobTitle'];
+                                }
+
+                                if (!empty($person['classID'])) {
+                                    return Format::link('./index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$person['classID'], __($person['type']), ['class' => 'unselectable underline']);
+                                } else {
+                                    return '<span class="unselectable">'.__($person['type']).'</span>';
+                                }
+                            });
+
+                        echo $table->render(new DataSet(array_merge($familyAdults, $contacts, $staff)));
+
                     } elseif ($subpage == 'Medical') {
                         /** @var MedicalGateway */
                         $medicalGateway = $container->get(MedicalGateway::class);
@@ -1275,13 +1326,67 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             echo $table->render([$condition]);
                         }
+                    } elseif ($subpage == 'First Aid') {
+                        if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
+                            echo Format::alert(__('Your request failed because you do not have access to this action.'));
+                        } else {
+                            
+                            $firstAidGateway = $container->get(FirstAidGateway::class);
+                            $criteria = $firstAidGateway->newQueryCriteria()
+                                ->sortBy(['date', 'timeIn'], 'DESC')
+                                ->fromPOST('firstAid');
 
+                            $firstAidRecords = $firstAidGateway->queryFirstAidByStudent($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
+
+                            // DATA TABLE
+                            $table = DataTable::createPaginated('firstAidRecords', $criteria);
+
+                            $table->addExpandableColumn('details')->format(function($person) use ($firstAidGateway) {
+                                $output = '';
+                                if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2br($person['description']).'<br/><br/>';
+                                if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2br($person['actionTaken']).'<br/><br/>';
+                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
+                                $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
+                                foreach ($resultLog AS $rowLog) {
+                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
+                                }
+
+                                return $output;
+                            });
+
+                            $table->addColumn('firstAider', __('First Aider'))
+                                ->sortable(['surnameFirstAider', 'preferredNameFirstAider'])
+                                ->format(Format::using('name', ['', 'preferredNameFirstAider', 'surnameFirstAider', 'Staff', false, true]));
+
+                            $table->addColumn('date', __('Date'))
+                                ->format(Format::using('date', ['date']));
+
+                            $table->addColumn('time', __('Time'))
+                                ->sortable(['timeIn', 'timeOut'])
+                                ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
+
+                            $highestActionFirstAid = getHighestGroupedAction($guid, '/modules/Students/firstAidRecord.php', $connection2);
+                            $table->addActionColumn()
+                                ->addParam('gibbonPersonID', $gibbonPersonID)
+                                ->addParam('gibbonFormGroupID', $row['gibbonFormGroupID'])
+                                ->addParam('gibbonYearGroupID', $row['gibbonYearGroupID'])
+                                ->addParam('gibbonFirstAidID')
+                                ->format(function ($person, $actions) use ($highestActionFirstAid) {
+                                    if ($highestActionFirstAid == 'First Aid Record_editAll') {
+                                        $actions->addAction('edit', __('Edit'))
+                                            ->setURL('/modules/Students/firstAidRecord_edit.php');
+                                    } elseif ($highestActionFirstAid == 'First Aid Record_viewOnlyAddNotes') {
+                                        $actions->addAction('view', __('View'))
+                                            ->setURL('/modules/Students/firstAidRecord_edit.php');
+                                    }
+                                });
+
+                            echo $table->render($firstAidRecords);
+                        }
 
                     } elseif ($subpage == 'Notes') {
                         if ($enableStudentNotes != 'Y') {
-                            echo "<div class='error'>";
-                            echo __('You do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('You do not have access to this action.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
                                 echo "<div class='error'>";
@@ -1469,23 +1574,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $and2 = '';
                                 $dataList = array();
                                 $dataEntry = array();
-                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $session->get('gibbonSchoolYearID');
+                                $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
 
-                                if ($filter != '*') {
-                                    $dataList['filter'] = $filter;
-                                    $and .= ' AND gibbonSchoolYearID=:filter';
+                                if ($gibbonSchoolYearID != '*') {
+                                    $dataList['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+                                    $and .= ' AND gibbonSchoolYearID=:gibbonSchoolYearID';
                                 }
 
-                                $filter2 = isset($_REQUEST['filter2'])? $_REQUEST['filter2'] : '*';
-                                if ($filter2 != '*') {
-                                    $dataList['filter2'] = $filter2;
-                                    $and .= ' AND gibbonDepartmentID=:filter2';
+                                $gibbonDepartmentID = isset($_REQUEST['gibbonDepartmentID'])? $_REQUEST['gibbonDepartmentID'] : '*';
+                                if ($gibbonDepartmentID != '*') {
+                                    $dataList['gibbonDepartmentID'] = $gibbonDepartmentID;
+                                    $and .= ' AND gibbonDepartmentID=:gibbonDepartmentID';
                                 }
 
-                                $filter3 = isset($_REQUEST['filter3'])? $_REQUEST['filter3'] : '';
-                                if ($filter3 != '') {
-                                    $dataEntry['filter3'] = $filter3;
-                                    $and2 .= ' AND type=:filter3';
+                                $type = isset($_REQUEST['type'])? $_REQUEST['type'] : '';
+                                if ($type != '') {
+                                    $dataEntry['type'] = $type;
+                                    $and2 .= ' AND type=:type';
+                                }
+
+                                $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+                                if ($enableGroupByTerm == "Y") {
+                                    $termDefault = '';
+                                    $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                                    $termCurrent = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+                                    $termDefault = (is_array($termCurrent) && $termCurrent['gibbonSchoolYearID'] == $gibbonSchoolYearID) ? $termCurrent['gibbonSchoolYearTermID'] : '' ;
+                                    $gibbonSchoolYearTermID = isset($_REQUEST['gibbonSchoolYearTermID']) ? $_REQUEST['gibbonSchoolYearTermID'] : $termDefault;
+                                    if (!empty($gibbonSchoolYearTermID)) {
+                                        $term = $schoolYearTermGateway->getByID($gibbonSchoolYearTermID);
+                                        $dataEntry['firstDay'] = $term['firstDay'];
+                                        $dataEntry['lastDay'] = $term['lastDay'];
+                                        $and2 .= ' AND completeDate>=:firstDay AND completeDate<=:lastDay';
+                                    }
                                 }
 
                                 echo '<p>';
@@ -1503,28 +1623,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addLabel('filter2', __('Learning Areas'));
-                                    $rowFilter->addSelect('filter2')
+                                    $rowFilter->addLabel('gibbonDepartmentID', __('Learning Areas'));
+                                    $rowFilter->addSelect('gibbonDepartmentID')
                                         ->fromArray(array('*' => __('All Learning Areas')))
                                         ->fromQuery($pdo, $sqlSelect)
-                                        ->selected($filter2);
+                                        ->selected($gibbonDepartmentID);
 
                                 $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as value, CONCAT(gibbonSchoolYear.name, ' (', gibbonYearGroup.name, ')') AS name FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber";
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addLabel('filter', __('School Years'));
-                                    $rowFilter->addSelect('filter')
+                                    $rowFilter->addLabel('gibbonSchoolYearID', __('School Years'));
+                                    $rowFilter->addSelect('gibbonSchoolYearID')
                                         ->fromArray(array('*' => __('All Years')))
                                         ->fromQuery($pdo, $sqlSelect, $dataSelect)
-                                        ->selected($filter);
+                                        ->selected($gibbonSchoolYearID);
+                                
+                                if ($enableGroupByTerm == "Y") {
+                                    $dataSelect = [];
+                                    $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
+                                    $rowFilter = $form->addRow();
+                                        $rowFilter->addLabel('gibbonSchoolYearTermID', __('Term'));
+                                        $rowFilter->addSelect('gibbonSchoolYearTermID')
+                                            ->fromQueryChained($pdo, $sqlSelect, $dataSelect, 'gibbonSchoolYearID')
+                                            ->placeholder()
+                                            ->selected($gibbonSchoolYearTermID);
+                                }
 
                                 $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
                                 if (!empty($types)) {
                                     $rowFilter = $form->addRow();
-                                    $rowFilter->addLabel('filter3', __('Type'));
-                                    $rowFilter->addSelect('filter3')
+                                    $rowFilter->addLabel('type', __('Type'));
+                                    $rowFilter->addSelect('type')
                                         ->fromString($types)
-                                        ->selected($filter3)
+                                        ->selected($type)
                                         ->placeholder();
                                 }
 
@@ -1825,12 +1956,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     } else {
                                                         echo '<td>';
                                                         $rowSub = $resultSub->fetch();
-
-
-                                                            $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_GET['gibbonPersonID']);
-                                                            $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                            $resultWork = $connection2->prepare($sqlWork);
-                                                            $resultWork->execute($dataWork);
+                                                        $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_GET['gibbonPersonID']);
+                                                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+                                                        $resultWork = $connection2->prepare($sqlWork);
+                                                        $resultWork->execute($dataWork);
                                                         if ($resultWork->rowCount() > 0) {
                                                             $rowWork = $resultWork->fetch();
 
@@ -1890,7 +2019,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                                             if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
                                             }
 
                                             echo '</table>';
@@ -1898,7 +2027,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     }
                                 }
                                 if ($entryCount < 1) {
-                                    echo "<div class='error'>";
+                                    echo "<div class='message'>";
                                     echo __('There are no records to display.');
                                     echo '</div>';
                                 }
@@ -2418,6 +2547,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $style = "style='font-weight: bold'";
                     }
                      $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
+
+                    if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php')) {
+                        $style = '';
+                        if ($subpage == 'First Aid') {
+                            $style = "style='font-weight: bold'";
+                        }
+                        $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=First Aid'>".__('First Aid').'</a></li>';
+
+                    }
+
                     if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php')) {
                         if ($enableStudentNotes == 'Y') {
                             $style = '';

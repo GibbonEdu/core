@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -155,7 +157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
-            ->format(function ($coverage, $actions) {
+            ->addParam('gibbonStaffAbsenceID')
+            ->format(function ($coverage, $actions) use ($guid, $connection2) {
                 $actions->addAction('view', __('View Details'))
                     ->isModal(800, 550)
                     ->setURL('/modules/Staff/coverage_view_details.php');
@@ -169,6 +172,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_cancel.php');
+                }
+
+                $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && (($coverage['coverageMode'] == 'Requested' && $coverage['absenceStatus'] == 'Approved') || ($coverage['coverageMode'] == 'Assigned' && $coverage['absenceStatus'] != 'Declined'));
+
+                if ($canRequestCoverage && !empty($coverage['gibbonStaffAbsenceID']) && $coverage['status'] == 'Declined') {
+                    $actions->addAction('coverage', __('Request Coverage'))
+                        ->setIcon('attendance')
+                        ->setURL('/modules/Staff/coverage_request.php');
                 }
             });
 

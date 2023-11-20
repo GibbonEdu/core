@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,22 +56,27 @@ class StaffAbsenceDateGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)
+    public function selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID, $coverageOnly = false)
     {
         $gibbonStaffAbsenceIDList = is_array($gibbonStaffAbsenceID)? $gibbonStaffAbsenceID : [$gibbonStaffAbsenceID];
         $data = ['gibbonStaffAbsenceIDList' => implode(',', $gibbonStaffAbsenceIDList) ];
         $sql = "SELECT gibbonStaffAbsenceDate.gibbonStaffAbsenceID as groupBy, gibbonStaffAbsenceDate.*, 
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.allDay ELSE gibbonStaffAbsenceDate.allDay END) as allDay, 
         (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeStart ELSE gibbonStaffAbsenceDate.timeStart END) as timeStart,
-        (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeEnd ELSE gibbonStaffAbsenceDate.timeEnd END) as timeEnd, gibbonStaffCoverage.requestType,
+        (CASE WHEN gibbonStaffCoverageDateID IS NOT NULL THEN gibbonStaffCoverageDate.timeEnd ELSE gibbonStaffAbsenceDate.timeEnd END) as timeEnd, gibbonStaffCoverage.requestType, gibbonStaffAbsence.status as absenceStatus,
         gibbonStaffCoverage.status as coverage, coverage.title as titleCoverage, coverage.preferredName as preferredNameCoverage, coverage.surname as surnameCoverage, coverage.gibbonPersonID as gibbonPersonIDCoverage, gibbonStaffCoverage.gibbonStaffCoverageID, gibbonStaffCoverageDate.reason as notes, gibbonStaffCoverageDate.gibbonStaffCoverageDateID, gibbonStaffCoverageDate.foreignTable, gibbonStaffCoverageDate.foreignTableID
                 FROM gibbonStaffAbsenceDate
+                LEFT JOIN gibbonStaffAbsence ON (gibbonStaffAbsence.gibbonStaffAbsenceID=gibbonStaffAbsenceDate.gibbonStaffAbsenceID)
                 LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID)
                 LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.status <> 'Cancelled' AND gibbonStaffCoverage.status <> 'Declined')
                 LEFT JOIN gibbonPerson AS coverage ON (gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID)
-                WHERE FIND_IN_SET(gibbonStaffAbsenceDate.gibbonStaffAbsenceID, :gibbonStaffAbsenceIDList)
-                
-                ORDER BY gibbonStaffAbsenceDate.date, gibbonStaffAbsenceDate.timeStart, gibbonStaffCoverageDate.timeStart";
+                WHERE FIND_IN_SET(gibbonStaffAbsenceDate.gibbonStaffAbsenceID, :gibbonStaffAbsenceIDList) ";
+               
+        if ($coverageOnly) {
+            $sql .= " AND gibbonStaffCoverage.gibbonStaffCoverageID IS NOT NULL";
+        }
+               
+        $sql .= " ORDER BY gibbonStaffAbsenceDate.date, gibbonStaffAbsenceDate.timeStart, gibbonStaffCoverageDate.timeStart";
 
         return $this->db()->select($sql, $data);
     }

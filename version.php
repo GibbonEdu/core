@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,16 +22,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information.
  */
-$version = '25.0.01';
+$version = '26.0.00';
 
 /**
  * System Requirements
  */
 $systemRequirements = [
-    'php'        => '7.3.0',
-    'mysql'      => '5.6',
+    'php'        => '7.4.0',
+    'mysql'      => '5.7',
     'apache'     => ['mod_rewrite'],
-    'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd'],
+    'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd', 'intl'],
     'settings'   => [
         ['max_input_vars', '>=', 5000],
         ['max_file_uploads', '>=', 20],

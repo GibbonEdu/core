@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -129,5 +131,18 @@ class StaffGateway extends QueryableGateway
         $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getIsPreferredNameUnique($preferredName)
+    {
+        $data = array('preferredName' => $preferredName);
+        $sql = "SELECT COUNT(*) = 1
+                FROM gibbonStaff 
+                JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                WHERE gibbonPerson.preferredName=:preferredName
+                AND gibbonPerson.status='Full'
+                GROUP BY preferredName";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }

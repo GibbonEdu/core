@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,11 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     //Get current filter values
     $viewMode = $_REQUEST['format'] ?? '';
     $name = $_REQUEST['name'] ?? '';
+    $parentID = $_REQUEST['parentID'] ?? '';
     $gibbonLibraryTypeID = $_REQUEST['gibbonLibraryTypeID'] ?? '';
     $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
     $status = $_REQUEST['status'] ?? '';
     $gibbonPersonIDOwnership = $_REQUEST['gibbonPersonIDOwnership'] ?? '';
     $typeSpecificFields = $_REQUEST['typeSpecificFields'] ?? '';
+    $locationDetail = trim($_REQUEST['locationDetail'] ?? '');
+    $everything = trim($_REQUEST['everything'] ?? '');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Manage Catalog'));
@@ -60,12 +65,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             ->selected($gibbonLibraryTypeID)
             ->placeholder();
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
             $row->addLabel('gibbonSpaceID', __('Location'));
             $row->addSelectSpace('gibbonSpaceID')->selected($gibbonSpaceID)->placeholder();
 
+        $row = $form->addRow()->addClass('advancedOptions hidden');
+            $row->addLabel('locationDetail', __('Location Detail'));
+            $row->addTextField('locationDetail')->setValue($locationDetail)->placeholder();
+
         $statuses = array(
             'Available' => __('Available'),
+            'On Order' => __('On Order'),
             'Decommissioned' => __('Decommissioned'),
             'In Use' => __('In Use'),
             'Lost' => __('Lost'),
@@ -73,21 +83,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             'Repair' => __('Repair'),
             'Reserved' => __('Reserved')
         );
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
             $row->addLabel('status', __('Status'));
             $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
             $row->addLabel('gibbonPersonIDOwnership', __('Owner/User'));
             $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('advancedOptions hidden');
         $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
             ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
         $row->addScanner('typeSpecificFields')
             ->setValue($typeSpecificFields);
 
+        $row = $form->addRow()->addClass(empty($parentID) ? 'advancedOptions hidden' : 'advancedOptions');
+            $row->addLabel('parentID', __('Copies Of'));
+            $row->addTextField('parentID')->setValue($parentID);
+
+        $col = $form->addRow()->setClass('advancedOptions hidden')->addColumn();
+            $col->addLabel('everything', __('All Fields'));
+            $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
+
         $row = $form->addRow();
+        $row->addAdvancedOptionsToggle();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
         echo $form->getOutput();
@@ -97,11 +116,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $criteria = $gateway->newQueryCriteria(true)
         ->sortBy('id')
         ->filterBy('name', $name)
+        ->filterBy('parent', $parentID)
         ->filterBy('type', $gibbonLibraryTypeID)
         ->filterBy('location', $gibbonSpaceID)
+        ->filterBy('locationDetail', $locationDetail)
         ->filterBy('status', $status)
         ->filterBy('owner', $gibbonPersonIDOwnership)
         ->filterBy('typeSpecificFields', $typeSpecificFields)
+        ->filterBy('everything', $everything)
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
     $items = $gateway->queryCatalog($criteria, $session->get('gibbonSchoolYearID'));
@@ -144,6 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
         ->format(function ($item) use ($gibbon) {
+            if (!empty($item['gibbonLibraryItemIDParent'])) return Format::tag(__('Copy'), 'dull text-xxs');
             if ($item['ownershipType'] == 'School') {
                 return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
@@ -184,9 +207,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                       ->setIcon('attendance');
               $actions->addAction('delete', __('Delete'))
                       ->setURL('/modules/Library/library_manage_catalog_delete.php');
-              $actions->addAction('duplicate', __('Duplicate'))
-                      ->setURL('/modules/Library/library_manage_catalog_duplicate.php')
-                      ->setIcon('copy');
+              if (empty($item['gibbonLibraryItemIDParent'])) {
+                $actions->addAction('duplicate', __('Duplicate'))
+                        ->setURL('/modules/Library/library_manage_catalog_duplicate.php')
+                        ->setIcon('copy');
+              }
           });
 
     echo $table->render($items);

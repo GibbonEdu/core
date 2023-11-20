@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     // DATE SELECTOR
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php';
 
-    $form = Form::create('action', $link);
+    $form = Form::create('dateNav', $link);
     $form->setClass('blank fullWidth');
     $form->addHiddenValue('address', $session->get('address'));
 
@@ -68,26 +70,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
     // COVERAGE
     $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
-    $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchAll();
+    $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGroupedUnique();
+    
+    $ttCount = count(array_unique(array_filter(array_column($times, 'ttName'))));
 
     if (empty($times)) {
-        $times = [['groupBy' => '']];
+        $times = ['' => ['groupBy' => '']];
     }
+
+    // AD HOC COVERAGE
+    $adHocCoverage = $staffCoverageGateway->selectAdHocCoverageByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
+    if (!empty($adHocCoverage['Ad Hoc'])) {
+        $times['adHoc'] = [
+            'period' => __('General Coverage'),
+        ];
+        $coverage['adHoc'] = $adHocCoverage['Ad Hoc'];
+    }
+
+    $copyURL = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'coverage_planner_copy.php')
+        ->withQueryParams(['date' => $date->format('Y-m-d'), 'width' => 800, 'height' => 600 ]);
+    echo $form->getFactory()->createWebLink(Format::icon('copy', __('Copy')))
+        ->setURL($copyURL)
+        ->addClass('thickbox float-right mt-8')
+        ->getOutput();
 
     echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
 
-    foreach ($times as $timeSlot) {
+    foreach ($times as $groupBy => $timeSlot) {
 
-        $coverageByTT = $coverage[$timeSlot['groupBy']] ?? [];
+        $coverageByTT = $coverage[$groupBy] ?? [];
 
         // DATA TABLE
         $gridRenderer = new GridView($container->get('twig'));
         
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
-        if (!empty($timeSlot['groupBy'])) {
-            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' <span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).')</span></h4>');
+        if (!empty($groupBy)) {
+            $description = !empty($timeSlot['timeStart']) ? '<span class="text-xs font-normal">('.Format::timeRange($timeSlot['timeStart'], $timeSlot['timeEnd']).') '.($ttCount > 1 ? $timeSlot['ttName'] : '').'</span>' : '';
+            $table->setDescription('<h4 class="-mb-3">'.__($timeSlot['period']).' '.$description.'</h4>');
         }
 
         $table->addMetaData('gridClass', 'rounded-sm text-sm bg-gray-100 border border-t-0');
@@ -99,6 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             if ($coverage['absenceStatus'] == 'Pending Approval') return $row->addClass('bg-stripe');
             if ($coverage['status'] == 'Declined') return null;
             if ($coverage['status'] == 'Cancelled') return null;
+            if ($coverage['status'] == 'Not Required') $row->addClass('bg-dull');
             if ($coverage['status'] == 'Accepted') $row->addClass('bg-green-200');
             if ($coverage['status'] == 'Requested') $row->addClass('bg-red-200');
             if ($coverage['status'] == 'Pending') $row->addClass('bg-red-200');
@@ -125,19 +147,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
+                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                    return $coverage['contextName'].'<br/>'.Format::small(Format::timeRange($coverage['timeStart'], $coverage['timeEnd']));
+                };
+
                 $url = $coverage['context'] == 'Class' 
                     ? './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID']
                     : '';
-                return Format::link($url, $coverage['contextName']);
+                return Format::link($url, $coverage['contextName']).'<br/>'.Format::small($coverage['space']);
             });
 
         $table->addColumn('coverage', __('Substitute'))
             ->setClass('flex-1')
             ->sortable(['surnameCoverage', 'preferredNameCoverage'])
             ->format(function($coverage) {
-                if ($coverage['absenceStatus'] == 'Pending Approval') {
+                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                    return Format::tag(__('Assigned'), 'bg-green-300 text-green-800');
+                } elseif ($coverage['absenceStatus'] == 'Pending Approval') {
                     return Format::tag(__('Pending Approval'), 'dull');
-                } elseif ($coverage['status'] == 'Pending') {
+                } elseif ($coverage['status'] == 'Not Required') {
+                    return Format::tag(__('Not Required'), 'dull');
+                } elseif ($coverage['status'] == 'Pending' || $coverage['status'] == 'Requested') {
                     return Format::tag(__('Cover Required'), 'bg-red-300 text-red-800');
                 }
                 return AbsenceFormats::substituteDetails($coverage);
@@ -151,8 +181,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             ->addParam('date', $date->format('Y-m-d'))
             ->addClass('w-16 justify-end')
             ->format(function ($coverage, $actions) {
-                
-                if ($coverage['absenceStatus'] == 'Pending Approval') {
+                if (empty($coverage['gibbonStaffAbsenceID'])) {
+                    $actions->addAction('view', __('View'))
+                        ->addParam('gibbonStaffCoverageID', $coverage['gibbonStaffCoverageID'] ?? '')
+                        ->isModal(700, 550)
+                        ->setURL('/modules/Staff/coverage_view_details.php');
+                } elseif ($coverage['absenceStatus'] == 'Pending Approval') {
                     $actions->addAction('view', __('View'))
                         ->addParam('gibbonStaffAbsenceID', $coverage['gibbonStaffAbsenceID'] ?? '')
                         ->isModal(700, 550)
@@ -179,5 +213,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
             });
 
         echo $table->render($coverageByTT);
+
     }
 }

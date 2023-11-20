@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,6 +29,7 @@ use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 /**
  * AbsenceDates
@@ -43,14 +46,16 @@ class AbsenceDates
     protected $staffAbsenceGateway;
     protected $staffAbsenceDateGateway;
     protected $staffCoverageDateGateway;
+    protected $coverageMode;
 
-    public function __construct(Session $session, Connection $db, StaffAbsenceGateway $staffAbsenceGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway, StaffCoverageDateGateway $staffCoverageDateGateway)
+    public function __construct(Session $session, Connection $db, SettingGateway $settingGateway, StaffAbsenceGateway $staffAbsenceGateway, StaffAbsenceDateGateway $staffAbsenceDateGateway, StaffCoverageDateGateway $staffCoverageDateGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->staffAbsenceDateGateway = $staffAbsenceDateGateway;
         $this->staffCoverageDateGateway = $staffCoverageDateGateway;
+        $this->coverageMode = $settingGateway->getSettingByScope('Staff', 'coverageMode');
     }
 
     public function create($gibbonStaffAbsenceID, $includeDetails = false, $includeCoverage = true)
@@ -111,7 +116,7 @@ class AbsenceDates
         }
 
         // ACTIONS
-        $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && $absence['status'] == 'Approved';
+        $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && (($this->coverageMode == 'Requested' && $absence['status'] == 'Approved') || ($this->coverageMode == 'Assigned' && $absence['status'] != 'Declined'));
         $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php');
         $canDelete = count($dates) > 1;
 

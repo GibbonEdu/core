@@ -1,8 +1,10 @@
 <?php
 
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -934,7 +936,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                     echo '<td class="dataColumn">';
                                         echo $markbook->getFormattedAverage( $markbook->getTypeAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID, $type) );
                                     echo '</td>';
-                                    @$totals['typeAverage'][$type] += $markbook->getTypeAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID, $type);
+                                    @$totals['typeAverage'][$type] += floatval($markbook->getTypeAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID, $type));
                                 }
                             }
                         } else if (count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID > 0) {
@@ -950,7 +952,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                 echo '<td class="dataColumn">';
                                     echo $markbook->getFormattedAverage( $markbook->getTermAverage($rowStudents['gibbonPersonID'], $term['gibbonSchoolYearTermID']) );
                                 echo '</td>';
-                                @$totals['termAverage'][$term['gibbonSchoolYearTermID']] += $markbook->getTermAverage($rowStudents['gibbonPersonID'], $term['gibbonSchoolYearTermID']);
+                                @$totals['termAverage'][$term['gibbonSchoolYearTermID']] += floatval($markbook->getTermAverage($rowStudents['gibbonPersonID'], $term['gibbonSchoolYearTermID']));
                             }
                         }
                     }
@@ -959,14 +961,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         echo '<td class="dataColumn dataDivider">';
                         echo $markbook->getFormattedAverage( $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID) );
                         echo '</td>';
-                        @$totals['termAverage'][$gibbonSchoolYearTermID] += $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID);
+                        @$totals['termAverage'][$gibbonSchoolYearTermID] += floatval($markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID));
                     }
 
                     echo '<td class="dataColumn dataDivider">';
                     echo $markbook->getFormattedAverage( $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) );
                     echo '</td>';
                     if ($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) != '') {
-                        @$totals['cumulativeAverage'] += $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
+                        @$totals['cumulativeAverage'] += floatval($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']));
                         @$totals['count'] += 1;
                     }
 
@@ -977,14 +979,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                 echo '<td class="dataColumn">';
                                     echo $markbook->getFormattedAverage( $markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type) );
                                 echo '</td>';
-                                @$totals[$type] += $markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type);
+                                @$totals[$type] += floatval($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type));
                             }
                         }
 
                         echo '<td class="dataColumn">';
                         echo $markbook->getFormattedAverage($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']));
                         echo '</td>';
-                        @$totals['finalGrade'] += $markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']);
+                        @$totals['finalGrade'] += floatval($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']));
                     }
                 }
 

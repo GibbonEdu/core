@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -43,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
         if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register') == false) {
             //Acess denied
-            echo "<div class='error'>";
-            echo __('You do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('You do not have access to this action.'));
         } else {
 
             $settingGateway = $container->get(SettingGateway::class);
@@ -200,6 +201,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                                 $proceed = false;
                                             }
                                         }
+                                    }
+
+                                    $overlapCheck = $activityGateway->getOverlappingActivityTimeSlot($gibbonActivityID, $gibbonPersonID, $dateType)->fetchKeyPair();
+
+                                    if (!empty($overlapCheck)) {
+                                        echo Format::alert(__('The timing of this activity conflicts with one or more currently enrolled activities:').' '.Format::bold(implode(',', $overlapCheck)), 'warning');
                                     }
 
                                     $activityCountByType = $activityGateway->getStudentActivityCountByType($values['type'], $gibbonPersonID);

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,6 +45,22 @@ class TimetableGateway extends QueryableGateway
                 WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID 
                 GROUP BY gibbonTT.gibbonTTID
                 ORDER BY gibbonTT.name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectClassesByTimetable($gibbonTTID)
+    {
+        $data = ['gibbonTTID' => $gibbonTTID];
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name 
+                FROM gibbonTT
+                JOIN gibbonCourse ON (gibbonCourse.gibbonSchoolYearID=gibbonTT.gibbonSchoolYearID)
+                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList))
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonTT.gibbonYearGroupIDList)
+                GROUP BY gibbonCourseClass.gibbonCourseClassID
+                ORDER BY name";
 
         return $this->db()->select($sql, $data);
     }

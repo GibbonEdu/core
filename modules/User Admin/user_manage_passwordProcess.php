@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\LogGateway;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -52,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            $person = $result->fetch();
             $passwordNew = $_POST['passwordNew'] ?? '';
             $passwordConfirm = $_POST['passwordConfirm'] ?? '';
             $passwordForceReset = $_POST['passwordForceReset'] ?? '';
@@ -88,6 +93,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                             header("Location: {$URL}");
                             exit();
                         }
+
+                        // Log this password change
+                        $details = [
+                            'gibbonPersonID' => $gibbonPersonID,
+                            'name' => Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true),
+                            'changedByID' => $session->get('gibbonPersonID'),
+                            'changedBy' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
+                        ];
+                        $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), $gibbonModuleID, $session->get('gibbonPersonID'), 'User - Password Manually Changed', $details, $_SERVER['REMOTE_ADDR']);
 
                         $URL .= '&return=success0';
                         header("Location: {$URL}");

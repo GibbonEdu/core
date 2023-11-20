@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -49,12 +51,21 @@ class DatabaseFormFactory extends FormFactory
     protected $cachedQueries = array();
 
     /**
+     * Is the Collator class available through the intl library?
+     *
+     * @var bool
+     */
+    protected static $intlCollatorAvailable = false;
+
+    /**
      * Create a factory with access to the provided a database connection.
      * @param  Connection  $pdo
      */
     public function __construct(Connection $pdo)
     {
         $this->pdo = $pdo;
+
+        static::$intlCollatorAvailable = class_exists('Collator');
     }
 
     /**
@@ -124,9 +135,10 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectHouse($name)
     {
         $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse;";
-        $results = $this->pdo->select($sql);
+        $results = $this->pdo->select($sql)->fetchKeyPair();
+        $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectCourseByYearGroup($name, $gibbonSchoolYearID, $gibbonYearGroupIDList = '')
@@ -310,17 +322,19 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectLanguage($name)
     {
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
-        $results = $this->pdo->select($sql);
+        $results = $this->pdo->select($sql)->fetchKeyPair();
+        $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectCountry($name)
     {
         $sql = "SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name";
-        $results = $this->pdo->select($sql);
+        $results = $this->pdo->select($sql)->fetchKeyPair();
+        $results = $this->localeFriendlySort($results);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        return $this->createSelect($name)->fromArray($results)->placeholder();
     }
 
     public function createSelectRole($name)
@@ -394,7 +408,7 @@ class DatabaseFormFactory extends FormFactory
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
 
             if (!empty($gibbonSchoolYearID)) {
-                $sql .= " WHERE gibbonPerson.status='Full'";
+                $sql .= " WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
             }
             $sql .= " ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
@@ -417,7 +431,7 @@ class DatabaseFormFactory extends FormFactory
 
             if (!empty($gibbonSchoolYearID)) {
                 $sql .= "WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                        AND gibbonPerson.status='Full'
+                        AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                         AND (dateStart IS NULL OR dateStart<=:date)
                         AND (dateEnd IS NULL OR dateEnd>=:date)";
             }
@@ -439,7 +453,7 @@ class DatabaseFormFactory extends FormFactory
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) ";
 
         if (!empty($gibbonSchoolYearID)) {
-            $sql .= " WHERE status='Full' OR status='Expected' ";
+            $sql .= " WHERE (status='Full' OR status='Expected') ";
         }
 
         $sql .= " ORDER BY surname, preferredName";
@@ -763,5 +777,20 @@ class DatabaseFormFactory extends FormFactory
     protected function setCachedQuery($name, $results)
     {
         $this->cachedQueries[$name] = $results;
+    }
+
+    protected function localeFriendlySort($values)
+    {
+        $values = array_map('__', $values);
+    
+        if (static::$intlCollatorAvailable) {
+            $locale = \Locale::getDefault();
+            $collator = new \Collator($locale);
+            $collator->sort($values);
+        } else {
+            usort($values, 'strcoll');
+        }
+
+        return $values;
     }
 }

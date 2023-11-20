@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,9 +46,9 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 }
 
 $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['status', 'lastDay']);
+$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['status', 'lastDay', 'firstDay']);
 
-if (empty($schoolYear) || date('Y-m-d') > $schoolYear['lastDay']) {
+if (empty($schoolYear) || date('Y-m-d') > $schoolYear['lastDay'] || date('Y-m-d') < $schoolYear['firstDay']) {
     echo __('School is not open, so no emails will be sent.');
     return;
 }

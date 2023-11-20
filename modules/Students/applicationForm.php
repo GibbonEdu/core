@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -847,7 +849,7 @@ if ($proceed == false) {
                     ->setMaxUpload(false);
         }
 
-        $row = $form->addRow()->addContent(getMaxUpload($guid));
+        $row = $form->addRow()->addContent(getMaxUpload());
         $form->addHiddenValue('fileCount', count($requiredDocumentsList));
     }
 
@@ -891,7 +893,7 @@ if ($proceed == false) {
 
     // Honey pot field
     $form->addRow()->addClass('hidden')->addTextField('emailAddress');
-    
+
     // AGREEMENT
     $agreement = $settingGateway->getSettingByScope('Application Form', 'agreement');
     if (!empty($agreement)) {

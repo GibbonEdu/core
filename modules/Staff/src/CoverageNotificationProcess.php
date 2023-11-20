@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,6 +37,8 @@ use Gibbon\Module\Staff\Messages\IndividualRequest;
 use Gibbon\Module\Staff\Messages\BroadcastRequest;
 use Gibbon\Module\Staff\Messages\NoCoverageAvailable;
 use Gibbon\Module\Staff\Messages\NewCoverageRequest;
+use Gibbon\Module\Staff\Messages\NewAbsenceWithCoverage;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 /**
  * CoverageNotificationProcess
@@ -44,6 +48,7 @@ use Gibbon\Module\Staff\Messages\NewCoverageRequest;
  */
 class CoverageNotificationProcess extends BackgroundProcess
 {
+    protected $staffAbsenceGateway;
     protected $staffCoverageGateway;
     protected $staffCoverageDateGateway;
     protected $substituteGateway;
@@ -54,8 +59,10 @@ class CoverageNotificationProcess extends BackgroundProcess
     protected $internalCoverage;
     protected $urgencyThreshold;
     protected $organisationHR;
+    protected $coverageMode;
 
     public function __construct(
+        StaffAbsenceGateway $staffAbsenceGateway,
         StaffCoverageGateway $staffCoverageGateway,
         StaffCoverageDateGateway $staffCoverageDateGateway,
         SubstituteGateway $substituteGateway,
@@ -63,6 +70,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         SettingGateway $settingGateway,
         MessageSender $messageSender
     ) {
+        $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->staffCoverageDateGateway = $staffCoverageDateGateway;
         $this->substituteGateway = $substituteGateway;
@@ -73,6 +81,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
         $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
+        $this->coverageMode =  $settingGateway->getSettingByScope('Staff', 'coverageMode');
     }
 
     public function runNewCoverageRequest($coverageList)
@@ -106,6 +115,65 @@ class CoverageNotificationProcess extends BackgroundProcess
                 $this->staffCoverageGateway->update($gibbonStaffCoverageID, $data);
             }
             
+        }
+
+        return $sent;
+    }
+
+    public function runNewAbsenceWithCoverageRequest($coverageList)
+    {
+        if (empty($coverageList)) return false;
+
+        $dates = $this->getCoverageDates($coverageList);
+
+        $coverage = $this->getCoverageDetailsByID(current($coverageList));
+        $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($coverage['gibbonStaffAbsenceID'] ?? '');
+
+        $message = new NewAbsenceWithCoverage($absence, $coverage, $dates);
+
+        $recipients = !empty($coverage['notificationListAbsence']) ? json_decode($coverage['notificationListAbsence']) : [];
+        $recipients[] = $this->organisationHR;
+
+        // Add the absent person, if this coverage request was created by someone else
+        if ($coverage['gibbonPersonID'] != $coverage['gibbonPersonIDStatus'] || empty($coverage['gibbonPersonIDApproval'])) {
+            $recipients[] = $coverage['gibbonPersonID'];
+        }
+
+        // Add the notification group members, if selected
+        if (!empty($coverage['gibbonGroupID'])) {
+            $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($coverage['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $recipients = array_merge($recipients, $groupRecipients);
+        }
+
+        if ($sent = $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID'])) {
+            $data = [
+                'status' => $this->coverageMode == 'Assigned' && !empty($coverage['gibbonPersonIDCoverage'])? 'Accepted' : 'Requested',
+                'notificationSent' => 'Y',
+                'notificationList' => json_encode($recipients),
+            ];
+            foreach ($coverageList as $gibbonStaffCoverageID) {
+                $this->staffCoverageGateway->update($gibbonStaffCoverageID, $data);
+            }
+
+            $this->staffAbsenceGateway->update($coverage['gibbonStaffAbsenceID'], [
+                'notificationSent' => 'Y',
+            ]);
+        }
+
+        return $sent;
+    }
+
+    public function runApprovedRequest($coverageList)
+    {
+        if (empty($coverageList)) return false;
+        $sent = [];
+
+        foreach ($coverageList as $gibbonStaffCoverageID) {
+            $coverage = $this->getCoverageDetailsByID($gibbonStaffCoverageID);
+
+            $sent = $coverage['requestType'] == 'Broadcast'
+                ? $this->runBroadcastRequest($gibbonStaffCoverageID)
+                : $this->runIndividualRequest($gibbonStaffCoverageID);
         }
 
         return $sent;

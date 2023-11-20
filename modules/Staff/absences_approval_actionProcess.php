@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,9 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Staff\StaffAbsenceGateway;
-use Gibbon\Module\Staff\AbsenceNotificationProcess;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Module\Staff\AbsenceNotificationProcess;
+use Gibbon\Module\Staff\CoverageNotificationProcess;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -41,7 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
 } else {
     // Proceed!
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+    $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $absence = $staffAbsenceGateway->getByID($gibbonStaffAbsenceID);
+
+    $coverageMode =  $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageMode');
 
     if (empty($absence)) {
         $URL .= '&return=error2';
@@ -80,7 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
     $process->startAbsenceApproval($gibbonStaffAbsenceID);
 
     if ($status == 'Approved') {
-        $process->startNewAbsence($gibbonStaffAbsenceID);
+        if ($absence['coverageRequired'] == 'N') {
+            $process->startNewAbsence($gibbonStaffAbsenceID);
+        } else {
+            $process = $container->get(CoverageNotificationProcess::class);
+            
+            $coverageList = $staffCoverageGateway->selectCoverageByAbsenceID($gibbonStaffAbsenceID)->fetchAll(\PDO::FETCH_COLUMN);
+            $process->startNewAbsenceWithCoverageRequest($coverageList);
+
+            // Notify individuals or broadcast this request
+            if ($coverageMode == 'Requested') {
+                $process->startApprovedRequest($coverageList);
+            }
+        }
     }
 
     $URLSuccess .= '&return=success0';

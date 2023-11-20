@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -178,10 +180,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }
 
     $filters = [
-        // 'status:Edited' => __('Status').': '.__('Edited'),
-        // 'status:Accepted' => __('Status').': '.__('Accepted'),
-        // 'status:Done' => __('Status').': '.__('Done'),
-        // 'status:None' => __('Status').': '.__('None'),
+        'status:Edited' => __('Status').': '.__('Pending Edits'),
+        'status:Any' => __('Status').': '.__('Show All'),
         'target:Per Group' => __('Target').': '.__('Per Group'),
         'target:Per Student' => __('Target').': '.__('Per Student'),
     ];
@@ -201,18 +201,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     //     return $group;
     // }, []));
 
-    $filterOptions = $form->getFactory()->createSelect('filter')
-        ->fromArray($filters)
-        ->setClass('auto-submit filters float-none w-48 pl-2 border leading-none h-full sm:h-8 rounded')
-        ->placeholder(__('Filters'))
-        ->selected($filter)
-        ->getOutput();
+    if ($gibbonPersonID == $session->get('gibbonPersonID')) {
+        $filterOptions = $form->getFactory()->createSelect('filter')
+            ->fromArray($filters)
+            ->setClass('auto-submit filters float-none w-48 pl-2 border leading-none h-full sm:h-8 rounded')
+            ->placeholder(__('Filters'))
+            ->selected($filter)
+            ->getOutput();
+    } else {
+        $filterOptions= '';
+    }
 
     $ids = array_column($proofsTotal ?? [], 'gibbonReportingValueID');
     $proofs = $reportingProofGateway->selectProofsByValueID($ids)->fetchGroupedUnique();
     $proofsDone = array_reduce($proofs, function ($total, $item) {
         return $item['status'] == 'Done' || $item['status'] == 'Accepted' ? $total+1 : $total;
     }, 0);
+
+    // Enable filtering proofs by status, even though this cannot be done through the criteria
+    if ($filter == 'status:Edited') {
+        $proofReading = array_reduce($proofsTotal, function ($group, $item) use (&$proofs) {
+            $proofData = $proofs[$item['gibbonReportingValueID']] ?? [];
+            if (!empty($proofData) && $proofData['status'] == 'Edited') {
+                $group[] = $item;
+            }
+            return $group;
+        }, []);
+
+        $proofsPaginated->setResultCount(count($proofReading), count($proofsTotal))->setPagination(1);
+    }
 
     echo $page->fetchFromTemplate('ui/writingListHeader.twig.html', [
         'canWriteReport' => true,
@@ -221,6 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         'progressCount' => $proofsDone,
         'partialCount' => max(0, count($proofs) - $proofsDone),
         'progressColour' => 'green',
+        'partialColour' => 'blue',
     ]);
 
     $form = Form::createTable('reportingProof', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');

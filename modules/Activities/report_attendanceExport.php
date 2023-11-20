@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -156,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $terms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
             $termList = array();
             for ($i = 0; $i < count($terms); $i = $i + 2) {
-                if (is_numeric(strpos($activity['gibbonSchoolYearTermIDList'], $terms[$i]))) {
+                if (isset($terms[$i]) && is_numeric(strpos($activity['gibbonSchoolYearTermIDList'] ?? '', $terms[$i]))) {
                     $termList[] = $terms[($i + 1)];
                 }
             }

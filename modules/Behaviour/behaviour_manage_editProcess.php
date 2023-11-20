@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,6 +27,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 
 require_once '../../gibbon.php';
 
@@ -115,8 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     // Send behaviour notifications
                     $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
                     if (!empty($student)) {
-                        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
-                        $editorName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false);
+                        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
+                        $editorName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
                         $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
                         // Raise a new notification event
@@ -150,6 +153,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         }
 
                         $event->sendNotificationsAsBcc($pdo, $gibbon->session);
+
+                        // Check if this is an IN student 
+                        $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
+                        if (!empty($studentIN)) {
+                            // Raise a notification event for IN students
+                            $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
+                            
+                            $eventIN->setNotificationText(sprintf(__('A %1$s behaviour record for %2$s has been updated by %3$s.'), strtolower($type), $studentName, $editorName));
+                            $eventIN->setActionLink($actionLink);
+
+                            $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                            $eventIN->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+                            $eventIN->sendNotificationsAsBcc($pdo, $gibbon->session);
+                        }
                     }
 
                     $URL .= '&return=success0';

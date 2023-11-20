@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -134,7 +136,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $newFields = json_decode($fields, true);
                 $newFields = is_array($newFields) ? $newFields : []; // make sure this is an array
                 foreach ($newFields as $key => $fieldValue) {
-                    if (!isset($existingFields[$key]) || $existingFields[$key] != $fieldValue) {
+                    if (empty($existingFields[$key]) && empty($fieldValue)) continue; // Nulls, false and empty strings should cause no change
+
+                    if ((empty($existingFields[$key]) && !empty($fieldValue)) || $existingFields[$key] != $fieldValue) {
                         $dataChanged = true;
                     }
                 }
@@ -197,6 +201,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     // Check for values that have changed
                     foreach ($condition as $key => $value) {
                         if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+                        if (empty($data[$key]) && empty($value)) continue; // Nulls, false and empty strings should cause no change
+
                         if ($data[$key] != $value) {
                             $dataChanged = true;
                         }

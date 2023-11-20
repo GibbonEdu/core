@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -501,10 +503,14 @@ class MarkbookView
      * @param   string $gibbonPersonID
      * @return  int|string
      */
-    public function getCumulativeAverage($gibbonPersonID)
+    public function getCumulativeAverage($gibbonPersonID, $gibbonSchoolYearTermID = '')
     {
         $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
-        return (isset($this->weightedAverages[$gibbonPersonID]['cumulative'])) ? $this->weightedAverages[$gibbonPersonID]['cumulative'] : '';
+        if ($gibbonSchoolYearTermID == '') {
+            return (isset($this->weightedAverages[$gibbonPersonID]['cumulative'])) ? $this->weightedAverages[$gibbonPersonID]['cumulative'] : '';
+        } else {
+            return (isset($this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID])) ? $this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID] : '';
+        }
     }
 
     /**

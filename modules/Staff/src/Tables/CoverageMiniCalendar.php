@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,6 +49,11 @@ class CoverageMiniCalendar
             $title .= $availability['allDay'] == 'N'
                 ? Format::timeRange($availability['timeStart'], $availability['timeEnd'])
                 : __('All Day');
+
+            if (!empty($availability['reason'])) {
+                $title .= ' ('.$availability['reason'].')';
+            }
+
             $title .= '<br/>';
 
             if (!empty($availability['timeStart']) && $availability['timeStart'] < $timeRangeStart) $timeRangeStart = $availability['timeStart'];
@@ -56,6 +63,11 @@ class CoverageMiniCalendar
         $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
 
         $timeRange = new DatePeriod(new DateTime($timeRangeStart), new DateInterval('PT10M'), new DateTime($timeRangeEnd));
+
+        // Ensure absences have higher priority on the mini-calendar
+        usort($availabilityByDate, function ($a, $b) {
+            return ($a['status'] == 'Absent' || $a['status'] == 'Not Available') && $b['status'] != 'Absent' && $b['status'] != 'Not Available' ? 1 : 0;
+        });
 
         foreach ($timeRange as $time) {
             $class = 'bg-white';

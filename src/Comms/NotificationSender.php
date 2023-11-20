@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -139,6 +141,9 @@ class NotificationSender
                     ],
                 ]);
 
+                // Set the subject line
+                $mail->Subject = $this->getNotificationSubject($notification['moduleName']);
+
                 // Add the recipients
                 if ($bccMode == true) {
                     $mail->AddBcc($emailPreference['email']);
@@ -197,7 +202,6 @@ class NotificationSender
         $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
 
         $mail->SetFrom($fromEmail, $organisationName);
-        $mail->Subject = $this->getNotificationSubject();
 
         return $mail;
     }
@@ -206,9 +210,15 @@ class NotificationSender
      * Formatted notification subject.
      * @return  string
      */
-    protected function getNotificationSubject()
+    protected function getNotificationSubject($topic)
     {
-        return sprintf(__('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $this->session->get('systemName'), $this->session->get('organisationNameShort'), date('H:i'), Format::date(date('Y-m-d')));
+        return __('You have received a {topic} notification from {systemName} at {organisation} ({time} {date})', [
+            'topic'        => $topic,
+            'systemName'   => $this->session->get('systemName'),
+            'organisation' => $this->session->get('organisationNameShort'),
+            'time'         => date('H:i'),
+            'date'         => Format::date(date('Y-m-d')),
+        ]);
     }
 
     /**

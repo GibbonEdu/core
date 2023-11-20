@@ -1,6 +1,8 @@
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -525,13 +527,13 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']:not([type='file']):not([type='radio'])", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file']):not([type='radio']):not([type='checkbox'])", block).val(data[key]);
         $("input:radio[name='"+key+"']", block).each(function () {
             if ($(this).val() == data[key]) {
                 $(this).attr("checked", true);
             }
         });
-        $("input:checkbox[name='"+key+"[]']", block).each(function () {
+        $("input:checkbox[name='"+key+"'],input:checkbox[name='"+key+"[]']", block).each(function () {
             var options = Array.isArray(data[key]) ? data[key] : data[key].split(',');
             if (options.includes($(this).val())) {
                 $(this).attr("checked", true);

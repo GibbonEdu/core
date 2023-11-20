@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -304,6 +306,29 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Filter a data set by applying a callback to each row.
+     *
+     * @param callable $callable
+     */
+    public function filter(callable $callable)
+    {
+        $this->data = array_filter($this->data, $callable);
+    }
+
+    /**
+     * Merge another data set into this data set by row index.
+     *
+     * @param DataSet $data
+     */
+    public function merge(DataSet $newData)
+    {
+        foreach ($this->data as $index => $row) {
+            $rowData = $newData->getRow($index);
+            $this->data[$index] = array_merge($row, $rowData);
+        }
+    }
+
+    /**
      * Prepare data to be displayed in a table.
      *
      * @param callable $callable
@@ -318,18 +343,5 @@ class DataSet implements \Countable, \IteratorAggregate
                 if (is_string($innerItem)) $innerItem = strip_tags($innerItem, '<br>');
             });
         });
-    }
-
-    /**
-     * Merge another data set into this data set by row index.
-     *
-     * @param DataSet $data
-     */
-    public function merge(DataSet $newData)
-    {
-        foreach ($this->data as $index => $row) {
-            $rowData = $newData->getRow($index);
-            $this->data[$index] = array_merge($row, $rowData);
-        }
     }
 }

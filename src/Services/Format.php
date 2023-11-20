@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -325,7 +327,9 @@ class Format
      */
     public static function timeRange($timeFrom, $timeTo, $format = false)
     {
-        return static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format);
+        return !empty($timeFrom) && !empty($timeTo)
+            ? static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format)
+            : static::time($timeFrom, $format);
     }
 
     /**
@@ -347,9 +351,9 @@ class Format
      * @param bool $includeName
      * @return string
      */
-    public static function currency($value, $includeName = false)
+    public static function currency($value, $includeName = false, $decimals = 2)
     {
-        return static::$settings['currencySymbol'] . number_format($value, 2) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
+        return static::$settings['currencySymbol'] . number_format($value, $decimals) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
     /**
@@ -474,7 +478,7 @@ class Format
         if (empty($url)) {
             return $text;
         }
-        if (!$text) {
+        if ($text === '') {
             $text = $url;
         }
         if (!is_array($attr)) {
