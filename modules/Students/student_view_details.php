@@ -712,7 +712,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('departureReason', __('Departure Reason'));
 
                         $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields'] ?? '');
-                        
+
                         $col = $table->addColumn('Background Information', __('Background Information'));
                         $country = $session->get('country');
 
@@ -1168,7 +1168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         // Follow-up Contacts
                         $contacts = [];
                         $emergencyFollowUpGroup = $settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup');
-                        
+
                         if (!empty($emergencyFollowUpGroup)) {
                             $contactsList = explode(',', $emergencyFollowUpGroup) ?? [];
                             $contacts = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($contactsList)->fetchAll();
@@ -1184,7 +1184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table = DataTable::create('followupMedicalContacts');
                         $table->setTitle(__('Follow-up Contacts'));
                         $table->setDescription(__('These contacts can be used when following up on an emergency, or for less serious issues, when parents and staff need to be notified by email.'));
-                        
+
                         $table->addColumn('fullName', __('Name'))
                                 ->notSortable()
                                 ->format(function ($person) {
@@ -1315,7 +1315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
                             echo Format::alert(__('Your request failed because you do not have access to this action.'));
                         } else {
-                            
+
                             $firstAidGateway = $container->get(FirstAidGateway::class);
                             $criteria = $firstAidGateway->newQueryCriteria()
                                 ->sortBy(['date', 'timeIn'], 'DESC')
@@ -1330,10 +1330,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $output = '';
                                 if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2br($person['description']).'<br/><br/>';
                                 if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2br($person['actionTaken']).'<br/><br/>';
-                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
+                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeIntlReadable($person['timestamp'], 'HH:mm, MMM dd yyyy')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
                                 $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
                                 foreach ($resultLog AS $rowLog) {
-                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
+                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeIntlReadable($rowLog['timestamp'], 'HH:mm, MMM dd yyyy')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
                                 }
 
                                 return $output;
@@ -1613,7 +1613,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->fromArray(array('*' => __('All Years')))
                                         ->fromQuery($pdo, $sqlSelect, $dataSelect)
                                         ->selected($gibbonSchoolYearID);
-                                
+
                                 if ($enableGroupByTerm == "Y") {
                                     $dataSelect = [];
                                     $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
@@ -2114,7 +2114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {
-                                        $output = Format::dateReadable($report['timestampModified']);
+                                        $output = Format::dateIntlReadable($report['timestampModified']);
                                         if ($report['status'] == 'Draft') {
                                             $output .= '<span class="tag ml-2 dull">'.__($report['status']).'</span>';
                                         }

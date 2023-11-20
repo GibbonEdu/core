@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
     $values = $result->fetch();
 
     // Get the unit details
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         foreach ($lessons as $index => $lesson) {
 
-            $form->addRow()->addHeading(($index+1).'. '.Format::dateReadable($lesson['date'], '%a %e %b, %Y'))
+            $form->addRow()->addHeading(($index+1).'. '.Format::dateIntlReadable($lesson['date'], 'E d MMM, yyyy'))
                 ->append(Format::small($lesson['period'].' ('.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']).')'));
 
             $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
@@ -227,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $form->addHiddenValue('date'.$index, $lesson['date']);
             $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
             $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-            
+
             $col->addColumn()
                 ->setClass('-mt-4')
                 ->addSelect('blockAdd')
@@ -317,5 +317,5 @@ $('.blockAdd').change(function () {
     $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
 });
-    
+
 </script>
