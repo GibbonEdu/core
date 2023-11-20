@@ -779,3 +779,9 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 ALTER TABLE `gibbonLibraryItem` CHANGE `status` `status` ENUM('Available','In Use','Decommissioned','Lost','On Loan','Repair','Reserved','On Order') CHARACTER SET utf8 NOT NULL DEFAULT 'Available' COMMENT 'The current status of the item.';end
 CREATE INDEX `gibbonPersonID` ON gibbonNotification(gibbonPersonID);end
 ";
+
+//v27.0.00
+++$count;
+$sql[$count][0] = '27.0.00';
+$sql[$count][1] = "
+";
