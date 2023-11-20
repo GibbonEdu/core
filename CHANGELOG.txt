@@ -25,11 +25,7 @@ v26.0.00
     Headlines
         System: transferred copyright from Ross Parker to the Gibbon Foundation
 
-    Significant Changes
-        Library: added the option to attach copies of library items to a main record
-
     Changes With Important Notices
-        System: domains used in iFrames must now be approved via Security & Privacy Settings
         System: raised the minimum PHP version requirement to 7.4
         System: raised the minimum MySQL version requirement to 5.7
         System: added the PHP intl extension to the System Check list
@@ -54,6 +50,7 @@ v26.0.00
         Behaviour: added a list of failed email addresses to behaviour letter CLI script
         Behaviour: added a notification event for receiving behaviour notifications about IN students
         Data Updater: made email addresses in Family Data Updater copy-and-pasteable
+        Library: added the option to attach copies of library items to a main record
         Library: added a confirmation step to replace the name of books using Google Book Data
         Library: enabled the borrowing record page to be used with all users
         Library: updated the Library Print Record import to enable connecting copies to parent records
