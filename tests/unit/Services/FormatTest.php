@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers Format
  */
-class FormatTest extends TestCase
+class x extends TestCase
 {
     public function setUp(): void
     {
@@ -79,6 +79,9 @@ class FormatTest extends TestCase
     public function testFormatsReadableDates()
     {
         $this->assertEquals('May 18, 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('May 18, 2018', Format::dateIntlReadable('2018-05-18'));
+        $this->assertEquals('May 18, 2018 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
+        $this->assertEquals('May 18, 2018 13:24', Format::dateTimeIntlReadable('2018-05-18 13:24'));
     }
 
     public function testFormatsDateRanges()

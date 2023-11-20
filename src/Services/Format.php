@@ -125,6 +125,41 @@ class Format
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
+     * @param DateTime|string $dateString  The date string to format.
+     * @param string          $pattern     (Optional) The pattern string for Unicode formatting suppored by
+     *                                     IntlDateFormatter::setPattern().
+     *
+     *                                     See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+     *                                     Default: 'MMM d, Y'
+     *
+     * @return string  The formatted date string.
+     */
+    public static function dateIntlReadable($dateString, $pattern = 'MMM d, yyyy'): string
+    {
+        if (empty($dateString)) {
+            return '';
+        }
+        if (!static::$intlFormatterAvailable) {
+            throw new \Exception('IntlDateFormatter not available.');
+        }
+        $formatter = new \IntlDateFormatter(
+            static::$settings['code'],
+            \IntlDateFormatter::FULL,
+            \IntlDateFormatter::FULL,
+            null,
+            null,
+            $pattern,
+        );
+        return mb_convert_case(
+            $formatter->format(static::createDateTime($dateString)),
+            MB_CASE_TITLE,
+        );
+    }
+
+    /**
+     * Formats a YYYY-MM-DD date as a readable string with month names.
+     *
+     * @deprecated v27.0.00 Use dateIntlReadable() instead.
      * @param DateTime|string $dateString
      * @return string
      */
@@ -140,6 +175,24 @@ class Format
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names and times.
      *
+     * @param DateTime|string $dateString  The date string to format.
+     * @param string          $pattern     (Optional) The pattern string for Unicode formatting suppored by
+     *                                     IntlDateFormatter::setPattern().
+     *
+     *                                     See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+     *                                     Default: 'MMM d, Y'
+     *
+     * @return string  The formatted date string.
+     */
+    public static function dateTimeIntlReadable($dateString, $pattern = 'MMM d, yyyy HH:mm'): string
+    {
+        return static::dateIntlReadable($dateString, $pattern);
+    }
+
+    /**
+     * Formats a YYYY-MM-DD date as a readable string with month names and times.
+     *
+     * @deprecated v27.0.00 Use dateTimeIntlReadable() instead.
      * @param DateTime|string $dateString
      * @return string
      */
