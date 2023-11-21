@@ -100,6 +100,27 @@ class x extends TestCase
         // modules/Students/student_view_details.php
         $this->assertEquals('13:24, Feb 03 2018', Format::dateReadable($dateString, '%H:%M, %b %d %Y'));
         $this->assertEquals('13:24, Feb 03 2018', Format::dateIntlReadable($dateString, 'HH:mm, MMM dd yyyy'));
+
+        // modules/Attendance/attendance.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
+        // modules/Attendance/src/AttendanceView.php
+        $this->assertEquals('03', Format::dateReadable($dateString, '%d'));
+        $this->assertEquals('03', Format::dateIntlReadable($dateString, 'dd'));
+
+        // modules/Attendance/attendance.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
+        // modules/Attendance/src/AttendanceView.php
+        $this->assertEquals('Feb', Format::dateReadable($dateString, '%b'));
+        $this->assertEquals('Feb', Format::dateIntlReadable($dateString, 'MMM'));
+
+        // modules/Attendance/attendance_future_byPerson.php
+        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
+        $this->assertEquals('February  3, 2018', Format::dateReadable($dateString, '%B %e, %Y'));
+        $this->assertEquals('February 3, 2018', Format::dateIntlReadable($dateString, 'MMMM d, yyyy'));
     }
 
     public function testFormatsDateRanges()
