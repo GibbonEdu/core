@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
     // Translated array of months in the current school year
     foreach ($dateRange as $monthDate) {
-        $months[$monthDate->format('Y-m-d')] = Format::dateReadable($monthDate->format('Y-m-d'), '%B %Y');
+        $months[$monthDate->format('Y-m-d')] = Format::dateIntlReadable($monthDate->format('Y-m-d'), 'MMMM yyyy');
     }
 
     // Setup the date range used for this report
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
             }
 
             $calendar[] = [
-                'name'  => Format::dateReadable($monthDate->format('Y-m-d'), '%b'),
+                'name'  => Format::dateIntlReadable($monthDate->format('Y-m-d'), 'MMM'),
                 'days'  => $days,
             ];
         }
@@ -173,8 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
                     if (empty($day)) return '';
                     $dateText = $day['date']->format($dateFormat);
                     $url = $baseURL.'&dateStart='.$dateText.'&dateEnd='.$dateText.'&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
-                    $title =  Format::dateReadable($day['date'], '%A');
-                    $title .= '<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
+                    $title =  Format::dateIntlReadable($day['date'], 'EEEE');
+                    $title .= '<br/>'.Format::dateIntlReadable($day['date'], 'MMM d, yyyy');
                     if ($day['count'] > 0) {
                         $title .= '<br/>'.__n('{count} Absence', '{count} Absences', $day['count']);
                     }
