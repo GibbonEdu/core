@@ -116,6 +116,7 @@ class x extends TestCase
         // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
         // modules/Attendance/report_formGroupsNotRegistered_byDate.php
         // modules/Attendance/src/AttendanceView.php
+        // modules/Staff/src/Tables/AbsenceCalendar.php
         $this->assertEquals('Feb', Format::dateReadable($dateString, '%b'));
         $this->assertEquals('Feb', Format::dateIntlReadable($dateString, 'MMM'));
 
@@ -142,6 +143,7 @@ class x extends TestCase
 
         // modules/Staff/src/Forms/CoverageRequestForm.php
         // modules/Staff/src/Tables/AbsenceCalendar.php
+        // modules/Staff/src/Tables/CoverageDates.php
         $this->assertEquals('Saturday', Format::dateReadable($dateString, '%A'));
         $this->assertEquals('Saturday', Format::dateIntlReadable($dateString, 'EEEE'));
 
