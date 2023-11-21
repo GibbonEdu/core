@@ -147,6 +147,7 @@ class x extends TestCase
         // modules/Staff/src/Tables/AbsenceCalendar.php
         // modules/Staff/src/Tables/CoverageDates.php
         // modules/Staff/src/Tables/CoverageCalendar.php
+        // modules/Staff/coverage_my.php
         $this->assertEquals('Saturday', Format::dateReadable($dateString, '%A'));
         $this->assertEquals('Saturday', Format::dateIntlReadable($dateString, 'EEEE'));
 
