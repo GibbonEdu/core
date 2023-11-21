@@ -43,6 +43,9 @@ class FormatTest extends TestCase
         );
 
         Format::setup($settings);
+
+        // Verify test environment has correct locale setup.
+       $this->assertStringStartsWith($settings['code'], setlocale(LC_TIME, 0), 'Test environment has correct locale setup');
     }
 
     public function testFormatsDates()
