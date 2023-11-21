@@ -133,6 +133,7 @@ class x extends TestCase
         // modules/Reports/reporting_my.php
         // modules/Activities/report_attendance.php
         // modules/Activities/activities_attendance.php
+        // modules/Staff/src/Messages/CoveragePartial.php
         // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
         $this->assertEquals('Feb  3', Format::dateReadable($dateString, '%b %e'));
         $this->assertEquals('Feb 3', Format::dateIntlReadable($dateString, 'MMM d'));
@@ -152,6 +153,11 @@ class x extends TestCase
         // modules/Staff/src/Tables/AbsenceCalendar.php
         $this->assertEquals('Feb  3, 2018', Format::dateReadable($dateString, '%b %e, %Y'));
         $this->assertEquals('Feb 3, 2018', Format::dateIntlReadable($dateString, 'MMM d, yyyy'));
+
+        // modules/Staff/report_subs_availability.php
+        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
+        $this->assertEquals('Saturday, Feb  3', Format::dateReadable($dateString, '%A, %b %e'));
+        $this->assertEquals('Saturday, Feb 3', Format::dateIntlReadable($dateString, 'EEEE, MMM d'));
     }
 
     public function testFormatsDateRanges()
