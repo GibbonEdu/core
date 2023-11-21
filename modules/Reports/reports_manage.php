@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
     if (!empty($gibbonSchoolYearID)) {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
-    
+
     $reportGateway = $container->get(ReportGateway::class);
 
     // QUERY
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
         });
 
     $table->addColumn('accessDate', __('Go Live'))
-        ->format(Format::using('dateTimeReadable', 'accessDate'));
+        ->format(Format::using('dateTimeIntlReadable', 'accessDate'));
 
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)

@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('lastTimestampLabel', __('Last Login: Time'));
-                $row->addTextField('lastTimestamp')->setValue(Format::dateTimeReadable($values['lastTimestamp']))->setClass('w-64')->readonly();
+                $row->addTextField('lastTimestamp')->setValue(Format::dateTimeIntlReadable($values['lastTimestamp']))->setClass('w-64')->readonly();
                 $row->addContent(!empty($values['lastTimestamp'])? $trueIcon : $falseIcon);
 
             $row = $form->addRow();
