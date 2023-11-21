@@ -137,6 +137,10 @@ class x extends TestCase
         // modules/Activities/report_attendance.php
         $this->assertEquals('Sat', Format::dateReadable($dateString, '%a'));
         $this->assertEquals('Sat', Format::dateIntlReadable($dateString, 'EEE'));
+
+        // modules/Staff/src/Forms/CoverageRequestForm.php
+        $this->assertEquals('Saturday', Format::dateReadable($dateString, '%A'));
+        $this->assertEquals('Saturday', Format::dateIntlReadable($dateString, 'EEEE'));
     }
 
     public function testFormatsDateRanges()
