@@ -217,10 +217,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                             echo "<td style='vertical-align:top; width: 50px;  white-space: nowrap;'>";
                         }
 
-                printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], Format::dateReadable($sessionDate, '%a <br /> %b %e'));
+                printf("<span title='%s'>%s <br/> %s</span><br/>&nbsp;<br/>",
+                    $sessionAttendanceData[$sessionDate]['info'],
+                    Format::dateIntlReadable($sessionDate, 'EEE'),
+                    Format::dateIntlReadable($sessionDate, 'MMM d')
+                );
             } else {
                 echo "<td style='color: #bbb; vertical-align:top; width: 50px; white-space: nowrap;'>";
-                echo Format::dateReadable($sessionDate, '%a <br /> %b %e').'<br/>&nbsp;<br/>';
+                echo Format::dateIntlReadable($sessionDate, 'EEE').' <br/> '.
+                    Format::dateIntlReadable($sessionDate, 'MMM d').'<br/>&nbsp;<br/>';
             }
             echo '</td>';
         }
