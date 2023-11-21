@@ -184,6 +184,21 @@ class x extends TestCase
         // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
         $this->assertEquals('Sat  3 Feb, 2018', Format::dateReadable($dateString, '%a %e %b, %Y'));
         $this->assertEquals('Sat 3 Feb, 2018', Format::dateIntlReadable($dateString, 'EEE d MMM, yyyy'));
+
+        // modules/Attendance/attendance_future_byPerson.php
+        // modules/Attendance/attendance_take_byPerson.php
+        $this->assertEquals('13:24, Feb 03', Format::dateTimeReadable($dateString, '%R, %b %d'));
+        $this->assertEquals('13:24, Feb 03', Format::dateTimeReadable($dateString, '%H:%M, %b %d'));
+        $this->assertEquals('13:24, Feb 03', Format::dateIntlReadable($dateString, 'HH:mm, MMM dd'));
+
+        // modules/Students/firstAidRecord_edit.php
+        // modules/Students/firstAidRecord.php
+        $this->assertEquals('13:24, Feb 03 2018', Format::dateTimeReadable($dateString, '%H:%M, %b %d %Y'));
+        $this->assertEquals('13:24, Feb 03 2018', Format::dateIntlReadable($dateString, 'HH:mm, MMM dd yyyy'));
+
+        // modules/Attendance/attendance_take_byPerson.php
+        $this->assertEquals('13:24', Format::dateTimeReadable($dateString, '%H:%M'));
+        $this->assertEquals('13:24', Format::dateIntlReadable($dateString, 'HH:mm'));
     }
 
     public function testFormatsDateRanges()

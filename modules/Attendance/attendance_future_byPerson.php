@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     }
                 });
                 $table->addColumn('staff', __('Recorded By'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
-                $table->addColumn('timestamp', __('On'))->format(Format::using('dateTimeReadable', 'timestampTaken', '%R, %b %d'));
+                $table->addColumn('timestamp', __('On'))->format(Format::using('dateIntlReadable', 'timestampTaken', 'HH:mm, MMM dd'));
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonIDList[0] ?? '')
