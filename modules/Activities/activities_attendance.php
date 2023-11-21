@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
-        
+
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             $form->addHeaderAction('download', __('Export to Excel'))
                 ->setURL('/modules/Activities/report_attendanceExport.php')
@@ -213,7 +213,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
-            $dateLabel = $col->addContent(Format::dateReadable($sessionDate, '%a<br>%b %e'))->addClass('w-10 mx-auto whitespace-nowrap');
+            $dateLabel = $col->addContent(
+                Format::dateIntlReadable($sessionDate, 'EEE') . '<br>' .
+                Format::dateIntlReadable($sessionDate, 'MMM d')
+            )->addClass('w-10 mx-auto whitespace-nowrap');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
