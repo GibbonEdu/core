@@ -103,6 +103,7 @@ class x extends TestCase
 
         // modules/Attendance/attendance.php
         // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
         // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
         // modules/Attendance/report_formGroupsNotRegistered_byDate.php
         // modules/Attendance/src/AttendanceView.php
@@ -111,6 +112,7 @@ class x extends TestCase
 
         // modules/Attendance/attendance.php
         // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
         // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
         // modules/Attendance/report_formGroupsNotRegistered_byDate.php
         // modules/Attendance/src/AttendanceView.php
