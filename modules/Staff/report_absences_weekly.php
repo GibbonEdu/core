@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     // SETUP DAYS OF WEEK
     $sql = "SELECT name, nameShort FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
     $result = $pdo->select($sql)->fetchAll();
-    
+
     $currentWeekday = $date->format('l');
     $weekdays = array_map(function ($weekday) use ($date, $currentWeekday) {
         $weekday['date'] = $currentWeekday == 'Sunday'
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
             ],
         ],
     ];
-    
+
     // QUERY
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->sortBy('date')
@@ -149,17 +149,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         }
 
         if (!isSchoolOpen($guid, $date->format('Y-m-d'), $connection2)) {
-            echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
+            echo '<h2>'.__(Format::dateIntlReadable($date->format('Y-m-d'), 'EEEE')).'</h2>';
             echo Format::alert(__('School is closed on the specified day.'));
             continue;
         }
 
         $table = DataTable::create('staffAbsences'.$date->format('D'));
-        $table->setTitle(__(Format::dateReadable($date->format('Y-m-d'), '%A')));
-        $table->setDescription(Format::dateReadable($date->format('Y-m-d')));
+        $table->setTitle(__(Format::dateIntlReadable($date->format('Y-m-d'), 'EEEE')));
+        $table->setDescription(Format::dateIntlReadable($date->format('Y-m-d')));
 
         $canView = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any');
-        
+
         // COLUMNS
         $table->addColumn('fullName', __('Name'))
             ->width('30%')
