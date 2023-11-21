@@ -149,6 +149,7 @@ class x extends TestCase
         // modules/Staff/src/Tables/CoverageDates.php
         // modules/Staff/src/Tables/CoverageCalendar.php
         // modules/Staff/coverage_my.php
+        // modules/Staff/coverage_planner.php
         $this->assertEquals('Saturday', Format::dateReadable($dateString, '%A'));
         $this->assertEquals('Saturday', Format::dateIntlReadable($dateString, 'EEEE'));
 
@@ -162,8 +163,8 @@ class x extends TestCase
         $this->assertEquals('Saturday, Feb 3', Format::dateIntlReadable($dateString, 'EEEE, MMM d'));
 
         // modules/Staff/report_coverage_summary.php
-        $this->assertEquals('Saturday, Feb  3', Format::dateReadable($dateString, '%B %Y'));
-        $this->assertEquals('Saturday, Feb 3', Format::dateIntlReadable($dateString, 'MMMM yyyy'));
+        $this->assertEquals('February 2018', Format::dateReadable($dateString, '%B %Y'));
+        $this->assertEquals('February 2018', Format::dateIntlReadable($dateString, 'MMMM yyyy'));
     }
 
     public function testFormatsDateRanges()
