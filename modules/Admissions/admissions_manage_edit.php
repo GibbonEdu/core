@@ -68,14 +68,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
             $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')->withAbsoluteUrl();
 
             return !empty($family)
-                ? Format::link($url->withQueryParams(['gibbonFamilyID' => $family['gibbonFamilyID']]), $family['name']) 
+                ? Format::link($url->withQueryParams(['gibbonFamilyID' => $family['gibbonFamilyID']]), $family['name'])
                 : __('This account is not linked to a family.');
         });
 
-    $table->addColumn('created', __('Created'))->format(Format::using('dateReadable', 'timestampCreated'));
+    $table->addColumn('created', __('Created'))->format(Format::using('dateIntlReadable', 'timestampCreated'));
 
     $table->addColumn('active', __('Last Active'))->format(Format::using('relativeTime', 'timestampActive'));
-    
+
     $table->addColumn('ipAddress', __('IP Address'));
 
     echo $table->render([$values]);
@@ -84,10 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     // FORM
     $form = Form::create('admissionsManage', $session->get('absoluteURL').'/modules/Admissions/admissions_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonAdmissionsAccountID', $gibbonAdmissionsAccountID);
-    
+
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
         $row->addEmail('email')

@@ -221,7 +221,7 @@ class CoverageRequestForm
         });
 
         $table->addColumn('dateLabel', __('Date'))
-            ->format(Format::using('dateReadable', 'date'))
+            ->format(Format::using('dateIntlReadable', 'date'))
             ->formatDetails(function ($coverage) {
                 return Format::small(Format::dateIntlReadable($coverage['date'], 'EEEE'));
             });

@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         ->fromPOST();
 
     $dates = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
-    
+
     $bulkActions = array(
         'Delete' => __('Delete'),
     );
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $table->addMetaData('bulkActions', $col);
 
     $table->addColumn('date', __('Date'))
-        ->format(Format::using('dateReadable', 'date'));
+        ->format(Format::using('dateIntlReadable', 'date'));
 
     $table->addColumn('timeStart', __('Time'))->format(function ($date) {
         if ($date['allDay'] == 'N') {
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
 
     echo $form->getOutput();
 
-    
+
     $form = Form::create('staffAvailability', $session->get('absoluteURL').'/modules/Staff/coverage_availability_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
