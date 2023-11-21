@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
-    
+
     // COVERAGE DATA
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
     // Translated array of months in the current school year
     foreach ($dateRange as $monthDate) {
-        $months[$monthDate->format('Y-m-d')] = Format::dateReadable($monthDate->format('Y-m-d'), '%B %Y');
+        $months[$monthDate->format('Y-m-d')] = Format::dateIntlReadable($monthDate->format('Y-m-d'), 'MMMM yyyy');
     }
 
     // Setup the date range used for this report
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     } else {
         $dateStart = new DateTime($schoolYear['firstDay']);
     }
-    
+
     // Get all substitutes
     $status = $_GET['status'] ?? 'Full';
     $criteria = $substituteGateway->newQueryCriteria()
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $subsByID = array_map(function ($sub) {
             return $sub['gibbonPersonID'];
         }, $substitutes->toArray());
-        
+
         $row = $form->addRow()->addClass('substitutes');
             $row->addLabel('gibbonPersonID', __('Substitute'));
             $row->addSelectUsersFromList('gibbonPersonID', $subsByID)
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         echo $form->getOutput();
     }
-    
+
 
     if (!empty($gibbonPersonID)) {
         // COVERAGE SUMMARY BY SUBSTITUTE
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             ->width('20%')
             ->sortable(['absence.surname', 'absence.preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         $count = 0;
         foreach ($dateRange as $monthDate) {
-            $table->addColumn('month'.$count, Format::dateReadable($monthDate, '%b'))->description(Format::dateReadable($monthDate, '%Y'))
+            $table->addColumn('month'.$count, Format::dateIntlReadable($monthDate, 'MMM'))->description(Format::dateIntlReadable($monthDate, 'yyyy'))
                 ->notSortable()
                 ->format(function ($sub) use ($monthDate) {
                     $sum =  array_sum($sub['coverage'][$monthDate->format('Y-m')] ?? []);
