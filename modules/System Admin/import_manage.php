@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
             ->width('25%')
             ->format(function ($importType) use ($session) {
                 if ($log = $importType['log']) {
-                    $text = Format::dateReadable($log['timestamp']);
+                    $text = Format::dateIntlReadable($log['timestamp']);
                     $url = $session->get('absoluteURL').'/fullscreen.php?q=/modules/System Admin/import_history_view.php&gibbonLogID='.$log['gibbonLogID'].'&width=800&height=550';
                     $title = Format::dateTime($log['timestamp']).' - '.Format::nameList([$log]);
                     return Format::link($url, $text, ['title' => $title, 'class' => 'thickbox']);

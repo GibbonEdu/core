@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $date = $_GET['date'] ?? '';
     $period = $_GET['period'] ?? '';
     $gibbonPersonIDList = $_GET['ids'] ?? [];
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     // DATA TABLE
     $table = DataTable::create('teacherList');
-    $table->setTitle(Format::dateReadable($date). ' - '. $period);
+    $table->setTitle(Format::dateIntlReadable($date). ' - '. $period);
     $table->setDescription(__('View Available Teachers'));
 
     // COLUMNS
