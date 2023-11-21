@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $timeStart = $_GET['timeStart'] ?? null;
     $timeEnd = $_GET['timeEnd'] ?? null;
     $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
-    
+
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
         $row->addSelect('allDay')->fromArray($allDayOptions)->selected($allDay);
-    
+
     $form->toggleVisibilityByClass('timeOptions')->onSelect('allDay')->when('N');
 
     $row = $form->addRow()->addClass('timeOptions');
@@ -117,11 +117,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     });
 
     $dayOfWeek = $container->get(DaysOfWeekGateway::class)->getDayOfWeekByDate($date);
-    
+
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
     $table->setTitle(__('Substitute Availability'));
-    $table->setDescription(Format::dateReadable($dateObject->format('Y-m-d'), '%A, %b %e'));
+    $table->setDescription(Format::dateIntlReadable($dateObject->format('Y-m-d'), 'EEEE, MMM d'));
 
     $table->addHeaderAction('calendar', __('Weekly').' '.__('View'))
         ->setIcon('planner')
@@ -189,9 +189,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
                 $output .= '<br/>';
                 $output .= CoverageMiniCalendar::renderTimeRange($dayOfWeek, $person['dates'] ?? [], $dateObject);
             }
-            
-            
-            
+
+
+
             return $output;
         });
 
