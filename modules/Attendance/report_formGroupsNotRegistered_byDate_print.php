@@ -144,12 +144,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                             echo "<td class='$class' style='padding: 12px !important;'>";
                             if ($link != '') {
                                 echo "<a href='$link'>";
-                                echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
-                                echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
+                                echo Format::dateIntlReadable($lastNSchoolDays[$i], 'dd').'<br/>';
+                                echo "<span>".Format::dateIntlReadable($lastNSchoolDays[$i], 'MMM').'</span>';
                                 echo '</a>';
                             } else {
-                                echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
-                                echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
+                                echo Format::dateIntlReadable($lastNSchoolDays[$i], 'dd').'<br/>';
+                                echo "<span>".Format::dateIntlReadable($lastNSchoolDays[$i], 'MMM').'</span>';
                             }
                             echo '</td>';
                         }

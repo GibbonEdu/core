@@ -186,11 +186,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 //Output row only if not registered on specified date, and timetabled for that day
                 if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false ||
                     count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
-                        
+
                     if (!empty($offTimetableList[$row['gibbonCourseClassID']]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonCourseClassID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonCourseClassID']])) == count($lastNSchoolDays))) {
                         continue;
                     }
-                    
+
                     ++$count;
 
                     //COLOR ROW BY STATUS!
@@ -239,12 +239,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
-                                    echo Format::dateReadable($date, '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
+                                    echo Format::dateIntlReadable($date, 'dd').'<br/>';
+                                    echo "<span>".Format::dateIntlReadable($date, 'MMM').'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo Format::dateReadable($date, '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
+                                    echo Format::dateIntlReadable($date, 'dd').'<br/>';
+                                    echo "<span>".Format::dateIntlReadable($date, 'MMM').'</span>';
                                 }
                                 echo '</td>';
 

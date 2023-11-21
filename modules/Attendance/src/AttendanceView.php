@@ -250,8 +250,8 @@ class AttendanceView
 
                 $output .= '<td class="' . $class . '">';
                 $output .= '<a href="' . $link . '" title="' . $linkTitle . '">';
-                $output .= Format::dateReadable($currentDay, '%d') . '<br/>';
-                $output .= '<span>' . Format::dateReadable($currentDay, '%b') . '</span>';
+                $output .= Format::dateIntlReadable($currentDay, 'dd') . '<br/>';
+                $output .= '<span>' . Format::dateIntlReadable($currentDay, 'MMM') . '</span>';
                 $output .= '</a>';
                 $output .= '</td>';
             }
@@ -270,7 +270,7 @@ class AttendanceView
 
         foreach ($attendanceTypes as $attendanceType) {
             $attendanceType['restricted'] = 'N';
-            
+
             // Check if a role is restricted - blank for unrestricted use
             if (!empty($attendanceType['gibbonRoleIDAll'])) {
                 $allowAttendanceType = false;
@@ -286,7 +286,7 @@ class AttendanceView
                 }
             }
 
-            $this->attendanceTypes[$attendanceType['name']] = $attendanceType; 
+            $this->attendanceTypes[$attendanceType['name']] = $attendanceType;
         }
     }
 }

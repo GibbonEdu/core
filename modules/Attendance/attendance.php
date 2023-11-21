@@ -117,8 +117,8 @@ if ($session->has('username')) {
                                 'currentDate' => $day['currentDate'],
                             ]);
                             $content =
-                                '<div class="day text-xs">' . Format::dateReadable($day['currentDate'], '%d') . '</div>' .
-                                '<div class="month text-xxs mt-px">' . Format::dateReadable($day['currentDate'], '%b') . '</div>';
+                                '<div class="day text-xs">' . Format::dateIntlReadable($day['currentDate'], 'dd') . '</div>' .
+                                '<div class="month text-xxs mt-px">' . Format::dateIntlReadable($day['currentDate'], 'MMM') . '</div>';
                         }
 
                         // determine how to display link and content
