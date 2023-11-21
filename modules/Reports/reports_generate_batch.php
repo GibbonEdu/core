@@ -37,12 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
 
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    
+
     $report = $reportGateway->getByID($gibbonReportID);
-    
+
     if (empty($gibbonReportID) || empty($report)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
             if ($archive) {
                 $tag = '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
                 $url = './modules/Reports/archive_byReport_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'];
-                $title = Format::dateTimeReadable($archive['timestampModified']);
+                $title = Format::dateTimeIntlReadable($archive['timestampModified']);
                 return Format::link($url, $title).$tag;
             }
 
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->addParam('gibbonReportID', $gibbonReportID)
         ->format(function ($report, $actions) use (&$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
-            
+
             if (count($reportLogs) == 0) {
                 $actions->addAction('run', __('Run'))
                         ->setIcon('run')

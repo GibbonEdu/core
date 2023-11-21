@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->format(function ($report) {
 
             $tag = '<span class="tag ml-2 '.($report['status'] == 'Final' ? 'success' : 'dull').'">'.__($report['status']).'</span>';
-            $title = Format::dateTimeReadable($report['timestampModified']);
+            $title = Format::dateTimeIntlReadable($report['timestampModified']);
             $url = './modules/Reports/archive_byStudent_download.php?gibbonReportArchiveEntryID='.$report['gibbonReportArchiveEntryID'].'&gibbonPersonID='.$report['gibbonPersonID'];
             return Format::link($url, $title).$tag;
         });
