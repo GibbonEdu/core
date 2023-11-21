@@ -121,6 +121,10 @@ class x extends TestCase
         // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
         $this->assertEquals('February  3, 2018', Format::dateReadable($dateString, '%B %e, %Y'));
         $this->assertEquals('February 3, 2018', Format::dateIntlReadable($dateString, 'MMMM d, yyyy'));
+
+        // modules/Attendance/report_graph_byType.php
+        $this->assertEquals('Feb 03', Format::dateReadable($dateString, '%b %d'));
+        $this->assertEquals('Feb 03', Format::dateIntlReadable($dateString, 'MMM dd'));
     }
 
     public function testFormatsDateRanges()
