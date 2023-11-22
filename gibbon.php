@@ -64,31 +64,28 @@ $gibbon->locale = $container->get('locale');
 $guid = $gibbon->getConfig('guid');
 $caching = $gibbon->getConfig('caching');
 $version = $gibbon->getConfig('version');
+$session = $container->get('session');
+$gibbon->session = $session;
+
+// Setup global absoluteURL for all urls.
+Url::setBaseURL($container->get('absoluteURL'));
 
 // Handle Gibbon installation redirect
 if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
-    define('SESSION_TABLE_AVAILABLE', false);
     header("Location: ./installer/install.php");
     exit;
 }
 
 // Initialize the database connection
 if ($gibbon->isInstalled()) {
-    $mysqlConnector = new Gibbon\Database\MySqlConnector();
 
     // Display a static error message for database connections after install.
-    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
-        // Add the database to the container
-        $connection2 = $pdo->getConnection();
-        $container->add('db', $pdo);
-        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+    if ($container->has('db')) {
+        $pdo = $container->get('db');
 
-        // Add a feature flag here to prevent errors before updating
-        // TODO: this can likely be removed in v24+
-        if (!defined('SESSION_TABLE_AVAILABLE')) {
-            $hasSessionTable = $pdo->selectOne("SHOW TABLES LIKE 'gibbonSession'");
-            define('SESSION_TABLE_AVAILABLE', !empty($hasSessionTable));
-        }
+        // For legacy modules / functions compatibility.
+        // TODO: remove this.
+        $connection2 = $pdo->getConnection();
 
         // Initialize core
         try {
@@ -98,7 +95,7 @@ if ($gibbon->isInstalled()) {
             include __DIR__.'/error.php';
             exit;
         }
-        
+
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
@@ -106,34 +103,6 @@ if ($gibbon->isInstalled()) {
             exit;
         }
     }
-}
-
-if (!defined('SESSION_TABLE_AVAILABLE')) {
-    define('SESSION_TABLE_AVAILABLE', false);
-}
-
-// Globals for backwards compatibility
-$session = $container->get('session');
-$gibbon->session = $session;
-$container->share(\Gibbon\Contracts\Services\Session::class, $session);
-
-// Setup global absoluteURL for all urls.
-if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
-    Url::setBaseUrl($session->get('absoluteURL'));
-} else {
-    // TODO: put this absoluteURL detection somewhere?
-    $absoluteURL = (function () {
-        // Find out the base installation URL path.
-        $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
-        $baseDir = realpath(__DIR__) . '/';
-        $urlBasePath = substr($baseDir, $prefixLength);
-
-        // Construct the full URL to the base URL path.
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-        return "{$protocol}://{$host}{$urlBasePath}";
-    })();
-    Url::setBaseUrl($absoluteURL);
 }
 
 // Autoload the current module namespace

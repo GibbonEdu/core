@@ -28,7 +28,6 @@ use Gibbon\View\Page;
 use Gibbon\View\View;
 use Gibbon\Comms\Mailer;
 use Gibbon\Data\Validator;
-use Gibbon\Session\Session;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
 use Gibbon\Session\SessionFactory;
@@ -36,9 +35,11 @@ use Gibbon\Services\Payment\Payment;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Payment as PaymentInterface;
 use Gibbon\Contracts\Services\Session as SessionInterface;
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\Database\MySqlConnector;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -73,9 +74,11 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'page',
         'module',
         'theme',
+        'sessionTableHasSetup',
         PaymentInterface::class,
         MailerInterface::class,
         SMSInterface::class,
+        SessionInterface::class,
         'gibbon_logger',
         'mysql_logger',
         Validator::class,
@@ -97,8 +100,89 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     {
         $container = $this->getLeagueContainer();
 
-        $container->share('config', new Core($this->absolutePath));
-        $container->share('locale', new Locale($this->absolutePath));
+        $core = new Core($this->absolutePath);
+
+        // TODO: decouple config file reading logics from Core to prevent cyclic
+        //       reference in building 'config' (Core) object.
+        // TODO: migrate Core object setup to this provider
+        //       (i.e. $gibbon->locale and $gibbon->session).
+        $container->share('config', $core);
+
+        // If configuration exists, create and share the database connection.
+        $config = $core->getConfig();
+        if (!empty($config['databaseUsername']) && isset($config['databasePassword'])) {
+
+            // Tell others that we provide db.
+            array_push($this->provides, 'db', Connection::class);
+
+            // Recipe of creating db.
+            $container->share('db', function () {
+                return $this->getContainer()->get(Connection::class);
+            });
+            $container->share(Connection::class, function () use ($config) {
+                // Create connector to connect database.
+                return (new MySqlConnector())->connect($config);
+            });
+        }
+
+        // Define internal variable.
+        $container->add('sessionTableHasSetup', function () {
+            $container = $this->getContainer();
+            if (!$container->has(Connection::class)) {
+                return false;
+            }
+            $connection = $container->get(Connection::class);
+            $hasSessionTable = $connection->selectOne("SHOW TABLES LIKE 'gibbonSession'");
+            return !empty($hasSessionTable);
+        }, false);
+
+        // Define how session can be created.
+        $container->share('session', function () {
+            return $this->getContainer()->get(SessionInterface::class);
+        });
+        $container->share(SessionInterface::class, function () {
+            $container = $this->getContainer();
+            $sessionTableHasSetup = $container->has('sessionTableHasSetup') && $container->get('sessionTableHasSetup');
+            return SessionFactory::create($this->getContainer(), $sessionTableHasSetup);
+        });
+
+        // Define locale object.
+        $container->share('locale', function () {
+            // Get dependencies.
+            $container = $this->getContainer();
+            $session = $container->get(SessionInterface::class);
+
+            // Create locale instance.
+            $locale = new Locale($this->absolutePath);
+            $locale->setLocale($session->get(array('i18n', 'code')));
+            $locale->setTimezone($session->get('timezone', 'UTC'));
+
+            // If database is configured, setup the text domain and string replacement.
+            if ($container->has('db')) {
+                $db = $container->get(Connection::class);
+                $locale->setTextDomain($db);
+                $locale->setStringReplacementList($session, $db);
+            }
+            return $locale;
+        });
+
+        // Setup global absoluteURL of all URLs.
+        $container->share('absoluteURL', function () use ($core) {
+            $session = $this->getContainer()->get(SessionInterface::class);
+            if ($core->isInstalled() && $session->has('absoluteURL')) {
+                return $session->get('absoluteURL');
+            }
+
+            // Find out the base installation URL path.
+            $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
+            $baseDir = realpath(__DIR__ . '/../../') . '/';
+            $urlBasePath = substr($baseDir, $prefixLength);
+
+            // Construct the full URL to the base URL path.
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+            return "{$protocol}://{$host}{$urlBasePath}";
+        });
     }
 
     /**
@@ -125,10 +209,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         // });
 
         // $pdo->setLogger($container->get('mysql_logger'));
-
-        $container->share('session', function () {
-            return SessionFactory::create($this->getContainer());
-        });
 
         $container->share('twig', function () use ($absolutePath) {
             $session = $this->getLeagueContainer()->get('session');

@@ -102,13 +102,10 @@ class Core
             ini_set('display_errors', 0);
         }
 
-        $this->locale->setLocale($this->session->get(array('i18n', 'code')));
-        $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
-        $this->locale->setTextDomain($db);
-        $this->locale->setStringReplacementList($this->session, $db);
+        $sessionTableHasSetup = $container->has('sessionTableHasSetup') && $container->get('sessionTableHasSetup');
 
         // Update the information for this session (except in ajax scripts)
-        if (\SESSION_TABLE_AVAILABLE && stripos($this->session->get('action'), 'ajax') === false) {
+        if ($sessionTableHasSetup && stripos($this->session->get('action'), 'ajax') === false) {
             $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('module'), $this->session->get('gibbonPersonID'));
         }
 
