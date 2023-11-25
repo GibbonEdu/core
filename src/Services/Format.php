@@ -869,17 +869,22 @@ class Format
             case 240:
             case 'lg':
                 $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto';
-                        $imageSize = 240;
+                $imageSize = 240;
                 break;
             case 75:
             case 'md':
                 $class .= 'w-20 lg:w-24 p-1';
-                        $imageSize = 75;
+                $imageSize = 75;
                 break;
 
             case 'sm':
                 $class .= 'w-12 sm:w-20 p-px sm:p-1';
-                        $imageSize = 75;
+                $imageSize = 75;
+                break;
+
+            case 'xs':
+                $class .= 'w-8 sm:w-12 p-px sm:p-1';
+                $imageSize = 75;
                 break;
 
             default:
