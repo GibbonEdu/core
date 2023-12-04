@@ -27,10 +27,10 @@ RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-g
     ca-certificates \
     libapache2-mod-php7.2 \
     && a2enmod php7.2 && a2enmod rewrite && \
-    sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php/7.2/apache2/php.ini && \
-    sed -i 's/magic_quotes_gpc = On/magic_quotes_gpc = Off/g' /etc/php/7.2/apache2/php.ini && \
-    sed -i "s/^allow_url_fopen.*$/allow_url_fopen = On/" /etc/php/7.2/apache2/php.ini && \
-    sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/7.2/apache2/php.ini && \
+    sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php/8.0/apache2/php.ini && \
+    sed -i 's/magic_quotes_gpc = On/magic_quotes_gpc = Off/g' /etc/php/8.0/apache2/php.ini && \
+    sed -i "s/^allow_url_fopen.*$/allow_url_fopen = On/" /etc/php/8.0/apache2/php.ini && \
+    sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/8.0/apache2/php.ini && \
     wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
     tar -xzf v${VERSION}.tar.gz && \
     cp -af core-${VERSION}/. ./ && \
