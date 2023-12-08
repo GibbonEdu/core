@@ -31,10 +31,11 @@ $I->amOnModulePage('User Admin', 'userSettings.php');
 $originalUserSettings = $I->grabAllFormValues();
 
 $newUserSettings = array_replace($originalUserSettings, array(
-    'nationality'        => 'Nationality 1, Nationality 2, Nationality 3',
+    'nationality'        => 'Nationality 1,Nationality 2,Nationality 3',
     'privacy'            => 'Y',
     'privacyBlurb'       => 'Privacy Blurb Test',
-    'privacyOptions'     => 'Privacy 1, Privacy 2, Privacy 3',
+    'privacyOptions'     => 'Privacy 1,Privacy 2,Privacy 3',
+    'privacyOptionVisibility' => 'Y',
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');

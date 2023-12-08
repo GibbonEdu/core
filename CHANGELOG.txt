@@ -27,6 +27,7 @@ v27.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        User Admin: added an option to disable the display of privacy options, so they can be managed internally
 
     Bug Fixes
 
