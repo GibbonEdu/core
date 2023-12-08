@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     ];
 
                     $inserted = $activityStudentGateway->insert($data);
-                    $student = $userGateway->getUserDetails($gibbonPersonID);
+                    $student = $userGateway->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
                     if (!empty($inserted) && !empty($student)) {
                         $added[] = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].') '.$status;
@@ -95,9 +95,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             if (!empty($added)) {
                 // Raise a new notification event
-                $event = new NotificationEvent('Activities', 'Activity Student Added');
+                $event = new NotificationEvent('Activities', 'Activity Enrolment Added');
 
-                $notificationText = __('One or more students have been added to the activity {name}', ['name' => $activity['name']]).'<br/>'.Format::list($added);
+                $notificationText = __('The following participants have been added to the activity {name}', ['name' => $activity['name']]).':<br/>'.Format::list($added);
 
                 $event->setNotificationText($notificationText);
                 $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');

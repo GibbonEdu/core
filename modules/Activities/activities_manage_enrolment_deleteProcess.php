@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         exit;
     }
     
-    $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID);
+    $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
     if (empty($student)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
@@ -73,10 +73,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $activityStudentGateway->delete($activityStudent['gibbonActivityStudentID']);
 
     // Raise a new notification event
-    $event = new NotificationEvent('Activities', 'Activity Student Removed');
+    $event = new NotificationEvent('Activities', 'Activity Enrolment Removed');
     $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].')';
     
-    $notificationText = __('{student} has been removed from the activity {name}', ['name' => $activity['name'], 'student' => $studentName ]);
+    $notificationText = __('The following participants have been removed from the activity {name}', ['name' => $activity['name']]).':<br/>'.Format::list([$studentName]);
     
     $event->setNotificationText($notificationText);
     $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     
     // Set log
     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
+    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', ['gibbonPersonIDStudent' => $gibbonPersonID]);
 
     $URLDelete = $URLDelete.'&return=success0';
     header("Location: {$URLDelete}");

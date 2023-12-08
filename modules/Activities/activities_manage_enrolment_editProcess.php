@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         exit;
     } 
 
-    $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID);
+    $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
     if (empty($student)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $event = new NotificationEvent('Activities', 'Activity Status Changed');
         $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].')';
         
-        $notificationText = __('The activity status for {student} has been set to {status} in {name}', ['name' => $activity['name'], 'student' => $studentName, 'status' => $status ]);
+        $notificationText = __('The following participants have been set to {status} in {name}', ['name' => $activity['name'], 'status' => __($status) ]).':<br/>'.Format::list([$studentName]);
         
         $event->setNotificationText($notificationText);
         $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');

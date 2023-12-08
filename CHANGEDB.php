@@ -784,8 +784,8 @@ CREATE INDEX `gibbonPersonID` ON gibbonNotification(gibbonPersonID);end
 ++$count;
 $sql[$count][0] = '27.0.00';
 $sql[$count][1] = "
-INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Activity Student Added', 'Activities', 'View Activities', 'Core', 'All', 'Y');end
-INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Activity Student Removed', 'Activities', 'View Activities', 'Core', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Activity Enrolment Added', 'Activities', 'View Activities', 'Core', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Activity Enrolment Removed', 'Activities', 'View Activities', 'Core', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Activity Status Changed', 'Activities', 'View Activities', 'Core', 'All', 'Y');end
 ALTER TABLE `gibbonActivityStudent` CHANGE `status` `status` ENUM('Accepted','Pending','Waiting List','Not Accepted','Left') NOT NULL DEFAULT 'Pending';end
 ";

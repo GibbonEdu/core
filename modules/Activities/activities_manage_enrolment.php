@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     $params = [
         'search' => $_GET['search'] ?? '',
-        'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID'] ?? null
+        'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID'] ?? ''
     ];
 
     if (empty($gibbonActivityID)) {
@@ -76,7 +76,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Let's go!
     $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
     if (!empty($params['search']) || !empty($params['gibbonSchoolYearTermID'])) {
-        
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Activities', 'activities_manage.php')->withQueryParams($params));
     }
 
@@ -109,44 +108,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $enrolmentType = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
     $enrolmentType = !empty($activity['enrolmentType'])? $activity['enrolmentType'] : $enrolmentType;
 
-    // FORM
-    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_manageProcessBulk.php');
-    $form->addHiddenValue('search', $search);
 
-    $table = $form->addRow()->addDataTable('activities', $criteria)->withData($enrolment);
+    // QUERY
+    $criteria = $activityStudentGateway->newQueryCriteria()
+        ->sortBy(['sortOrder', 'surname', 'preferredName'])
+        ->fromPOST();
+
+    $enrolment = $activityStudentGateway->queryActivityEnrolment($criteria, $gibbonActivityID);
+
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Activities/activities_manage_enrolmentProcessBulk.php');
+    $form->addHiddenValue('gibbonSchoolYearTermID', $params['gibbonSchoolYearTermID']);
+    $form->addHiddenValue('search', $criteria->getSearchText());
+    $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
+
+    $col = $form->createBulkActionColumn([
+        'Mark as Accepted' => __('Mark as Accepted'),
+        'Mark as Left' => __('Mark as Left'),
+        'Delete' => __('Delete'),
+    ]);
+    $col->addSubmit(__('Go'));
 
     // DATA TABLE
-    $table = DataTable::create('enrolment');
+    $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
     $table->setTitle(__('Participants'));
+
+    $table->addMetaData('bulkActions', $col);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Activities/activities_manage_enrolment_add.php')
         ->addParam('gibbonActivityID', $gibbonActivityID)
-        ->addParam('search', $params['search'])
+        ->addParam('search', $criteria->getSearchText())
         ->addParam('gibbonSchoolYearTermID', $params['gibbonSchoolYearTermID'])
         ->displayLabel();
 
     $table->modifyRows(function ($values, $row) {
+        if ($values['status'] == 'Pending') $row->addClass('warning');
+        if ($values['status'] == 'Waiting List') $row->addClass('warning');
+        if ($values['status'] == 'Not Accepted') $row->addClass('error');
         if ($values['status'] == 'Left') $row->addClass('error');
         return $row;
     });
 
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($person)  {
-            return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true);
-        });
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false, ['subpage' => 'Activities']]));
 
     $table->addColumn('formGroup', __('Form Group'));
 
-    $table->addColumn('status', __('Status'));
+    $table->addColumn('status', __('Status'))->sortable('sortOrder');
 
-    $table->addColumn('timestamp', __('Timestamp'))->format(Format::using('timestamp', 'timestamp'));
-
+    $table->addColumn('timestamp', __('Timestamp'))->format(Format::using('dateTime', 'timestamp'));
 
     // ACTIONS
     $table->addActionColumn()
-        ->addParam('gibbonActivityID')
+        ->addParam('search',$criteria->getSearchText())
+        ->addParam('gibbonSchoolYearTermID', $params['gibbonSchoolYearTermID'])
+        ->addParam('gibbonActivityStudentID')
+        ->addParam('gibbonActivityID', $gibbonActivityID)
         ->addParam('gibbonPersonID')
         ->format(function ($activity, $actions) {
             $actions->addAction('edit', __('Edit'))
@@ -159,92 +178,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $table->addCheckboxColumn('gibbonActivityStudentID');
 
     echo $form->getOutput();
-
-
-    return;
-
-        $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
-        $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonFormGroup.nameShort as formGroupNameShort
-                FROM gibbonActivityStudent
-                JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
-                LEFT JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
-                WHERE gibbonActivityID=:gibbonActivityID
-                AND NOT gibbonActivityStudent.status=:statusCheck
-                AND gibbonPerson.status='Full'
-                AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-                ORDER BY gibbonActivityStudent.status, timestamp";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-    echo "<div class='linkTop'>";
-    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-    echo '</div>';
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Student');
-        echo '</th>';
-        echo '<th>';
-        echo __('Form Group');
-        echo '</th>';
-        echo '<th>';
-        echo __('Status');
-        echo '</th>';
-        echo '<th>';
-        echo __('Timestamp');
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $canViewStudentDetails = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php');
-
-        $count = 0;
-        $rowNum = 'odd';
-        while ($activity = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            $studentName = Format::name('', $activity['preferredName'], $activity['surname'], 'Student', true);
-            if ($canViewStudentDetails) {
-                echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$activity['gibbonPersonID'].'&subpage=Activities');
-            } else {
-                echo $studentName;
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $activity['formGroupNameShort'];
-            echo '</td>';
-            echo '<td>';
-            echo __($activity['status']);
-            echo '</td>';
-            echo '<td>';
-            echo __('{date} at {time}',
-                    ['date' => Format::date(substr($activity['timestamp'], 0, 10)),
-                    'time' => substr($activity['timestamp'], 11, 5)]);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/activities_manage_enrolment_edit.php&gibbonActivityID='.$activity['gibbonActivityID'].'&gibbonPersonID='.$activity['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/activities_manage_enrolment_delete.php&gibbonActivityID='.$activity['gibbonActivityID'].'&gibbonPersonID='.$activity['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
-
 }

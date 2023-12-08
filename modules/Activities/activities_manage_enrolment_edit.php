@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         }
     }
 
-    $urlParams = ['gibbonActivityID' => $_GET['gibbonActivityID'], 'search' => $_GET['search'], 'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID']];
+    $urlParams = ['gibbonActivityID' => $_GET['gibbonActivityID'], 'search' => $_GET['search'] ?? '', 'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID'] ?? ''];
 
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'activities_manage.php')
