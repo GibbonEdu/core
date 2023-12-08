@@ -27,6 +27,7 @@ v27.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        System: automatically hyperlink any urls included in Custom Field descriptions
 
     Bug Fixes
 
