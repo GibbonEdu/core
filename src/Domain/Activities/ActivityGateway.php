@@ -250,6 +250,14 @@ class ActivityGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getActivityDetailsByID($gibbonActivityID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     function getStudentActivityCountByType($type, $gibbonPersonID)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'date' => date('Y-m-d'));

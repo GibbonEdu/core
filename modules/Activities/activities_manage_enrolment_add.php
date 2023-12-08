@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
             $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
 
-			$statuses = array('Accepted' => __('Accepted'));
+			$statuses = ['Accepted' => __('Accepted')];
 			if ($enrolment == 'Competitive') {
                 if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
                     $statuses['Waiting List'] = __('Waiting List');
@@ -162,6 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			} else {
 				$statuses['Pending'] = __('Pending');
 			}
+            $statuses['Left'] = __('Left');
 
 			$row = $form->addRow();
                 $row->addLabel('status', __('Status'));

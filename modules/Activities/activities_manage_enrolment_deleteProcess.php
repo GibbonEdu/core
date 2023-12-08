@@ -20,6 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 include '../../gibbon.php';
 
@@ -30,49 +36,62 @@ $logGateway = $container->get(LogGateway::class);
 $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".($_GET['gibbonSchoolYearTermID'] ?? '');
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".($_GET['gibbonSchoolYearTermID'] ?? '');
+
+if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_delete.php') == false) { 
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
-    $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
-
-    if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_delete.php') == false) {
-        $URL .= '&return=error0';
+    //Proceed!
+    if (empty($gibbonActivityID) || empty($gibbonPersonID)) {
+        $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        //Proceed!
-        try {
-            $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-            $sql = 'SELECT gibbonActivity.*, gibbonActivityStudent.*, surname, preferredName FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //Write to database
-            try {
-                $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-                $sql = 'DELETE FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            //Set log
-            $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
-
-            $URLDelete = $URLDelete.'&return=success0';
-            header("Location: {$URLDelete}");
-        }
+        exit;
     }
+    
+    $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID);
+    if (empty($student)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $activityStudentGateway = $container->get(ActivityStudentGateway::class);
+    $activityStaffGateway = $container->get(ActivityStaffGateway::class);
+
+    $activity = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
+    $activityStudent = $activityStudentGateway->selectBy(['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID])->fetch();
+
+    if (empty($activity) || empty($activityStudent)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Write to database
+    $activityStudentGateway->delete($activityStudent['gibbonActivityStudentID']);
+
+    // Raise a new notification event
+    $event = new NotificationEvent('Activities', 'Activity Student Removed');
+    $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].')';
+    
+    $notificationText = __('{student} has been removed from the activity {name}', ['name' => $activity['name'], 'student' => $studentName ]);
+    
+    $event->setNotificationText($notificationText);
+    $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');
+
+    $activityStaff = $activityStaffGateway->selectActivityStaff($gibbonActivityID)->fetchAll();
+    foreach ($activityStaff as $staff) {
+        $event->addRecipient($staff['gibbonPersonID']);
+    }
+
+    $event->sendNotifications($pdo, $session);
+    
+    // Set log
+    $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
+
+    $URLDelete = $URLDelete.'&return=success0';
+    header("Location: {$URLDelete}");
 }

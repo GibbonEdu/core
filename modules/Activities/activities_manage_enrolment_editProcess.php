@@ -21,6 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -34,58 +40,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
+    //Proceed!
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_edit.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
     if ($gibbonActivityID == '' or $gibbonPersonID == '') {
         $URL .= '&return=error0';
         header("Location: {$URL}");
-    } else {
-        //Proceed!
-        //Check if status specified
-        $status = $_POST['status'] ?? '';
-        if ($status == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-        } else {
-            try {
-                $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT gibbonActivity.*, gibbonActivityStudent.*, surname, preferredName FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+        exit;
+    } 
 
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-            } else {
-                $row = $result->fetch();
-                $statusOld = $row['status'];
-
-                //Write to database
-                try {
-                    $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID, 'status' => $status);
-                    $sql = 'UPDATE gibbonActivityStudent SET status=:status WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                //Set log
-                if ($statusOld != $status) {
-                    $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
-                }
-
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-            }
-        }
+    $student = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID);
+    if (empty($student)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
     }
+    
+    // Check if status specified
+    $status = $_POST['status'] ?? '';
+    if (empty($status)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $activityStudentGateway = $container->get(ActivityStudentGateway::class);
+    $activityStaffGateway = $container->get(ActivityStaffGateway::class);
+
+    $activity = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
+    $activityStudent = $activityStudentGateway->selectBy(['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID])->fetch();
+
+    if (empty($activity) || empty($activityStudent)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+    
+    $statusOld = $activity['status'];
+
+    // Write to database
+    $data = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID, 'status' => $status];
+    $activityStudentGateway->update($activityStudent['gibbonActivityStudentID'], $data);
+
+    
+    if ($statusOld != $status) {
+        // Raise a new notification event
+        $event = new NotificationEvent('Activities', 'Activity Status Changed');
+        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].')';
+        
+        $notificationText = __('The activity status for {student} has been set to {status} in {name}', ['name' => $activity['name'], 'student' => $studentName, 'status' => $status ]);
+        
+        $event->setNotificationText($notificationText);
+        $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');
+
+        $activityStaff = $activityStaffGateway->selectActivityStaff($gibbonActivityID)->fetchAll();
+        foreach ($activityStaff as $staff) {
+            $event->addRecipient($staff['gibbonPersonID']);
+        }
+
+        $event->sendNotifications($pdo, $session);
+        
+        // Set log
+        $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
+    }
+
+    $URL .= '&return=success0';
+    header("Location: {$URL}");
 }
