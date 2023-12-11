@@ -21,6 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 include '../../gibbon.php';
 
@@ -54,30 +60,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            foreach ($choices as $t) {
-                //Check to see if student is already registered in this activity
+            $activity = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
 
-                    $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID);
-                    $sql = 'SELECT * FROM gibbonActivityStudent WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+            $activityStudentGateway = $container->get(ActivityStudentGateway::class);
+            $activityStaffGateway = $container->get(ActivityStaffGateway::class);
+            $userGateway = $container->get(UserGateway::class);
+            $added = [];
 
-                //If student not in activity, add them
-                if ($result->rowCount() == 0) {
-                    try {
-                        $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID, 'status' => $status, 'timestamp' => date('Y-m-d H:i:s', time()));
-                        $sql = 'INSERT INTO gibbonActivityStudent SET gibbonPersonID=:gibbonPersonID, gibbonActivityID=:gibbonActivityID, status=:status, timestamp=:timestamp';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $update = false;
+            foreach ($choices as $gibbonPersonID) {
+                // Check to see if student is already registered in this activity
+                $activityStudent = $activityStudentGateway->selectBy(['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID])->fetch();
+
+                // If student not in activity, add them
+                if (empty($activityStudent)) {
+                    $data = [
+                        'gibbonPersonID' => $gibbonPersonID,
+                        'gibbonActivityID' => $gibbonActivityID,
+                        'status' => $status,
+                        'timestamp' => date('Y-m-d H:i:s', time()),
+                    ];
+
+                    $inserted = $activityStudentGateway->insert($data);
+                    $student = $userGateway->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
+
+                    if (!empty($inserted) && !empty($student)) {
+                        $added[] = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, false).' ('.$student['formGroup'].') '.$status;
                     }
 
-                    //Set log
+                    // Set log
                     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Added', array('gibbonPersonIDStudent' => $t));
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Added', ['gibbonPersonIDStudent' => $gibbonPersonID]);
                 }
             }
+
+            if (!empty($added)) {
+                // Raise a new notification event
+                $event = new NotificationEvent('Activities', 'Activity Enrolment Added');
+
+                $notificationText = __('The following participants have been added to the activity {name}', ['name' => $activity['name']]).':<br/>'.Format::list($added);
+
+                $event->setNotificationText($notificationText);
+                $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');
+
+                $activityStaff = $activityStaffGateway->selectActivityStaff($gibbonActivityID)->fetchAll();
+                foreach ($activityStaff as $staff) {
+                    $event->addRecipient($staff['gibbonPersonID']);
+                }
+
+                $event->sendNotifications($pdo, $session);
+            }
+
             //Write to database
             if ($update == false) {
                 $URL .= '&return=error2';

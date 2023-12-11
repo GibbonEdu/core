@@ -41,31 +41,38 @@ class ActivityStaffGateway extends QueryableGateway
     private static $searchableColumns = [];
 
     public function selectActivityStaff($gibbonActivityID) {
-    	$select = $this
-    		->newSelect()
-    		->cols(['preferredName, surname, gibbonActivityStaff.*'])
-    		->from($this->getTableName())
-    		->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
-    		->where('gibbonActivityStaff.gibbonActivityID = :gibbonActivityID')
-    		->bindValue('gibbonActivityID', $gibbonActivityID)
-    		->where('gibbonPerson.status="Full"')
-    		->orderBy(['surname', 'preferredName']);
+        $select = $this
+            ->newSelect()
+            ->cols(['preferredName, surname, gibbonActivityStaff.*'])
+            ->from($this->getTableName())
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
+            ->where('gibbonActivityStaff.gibbonActivityID = :gibbonActivityID')
+            ->bindValue('gibbonActivityID', $gibbonActivityID)
+            ->where('gibbonPerson.status="Full"')
+            ->orderBy(['surname', 'preferredName']);
 
-    	return $this->runSelect($select);
+        return $this->runSelect($select);
+    }
+
+    public function selectActivityOrganiserByPerson($gibbonActivityID, $gibbonPersonID) {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND active='Y' ORDER BY name";
+
+        return $this->db()->select($sql, $data);
     }
 
     public function selectActivityStaffByID($gibbonActivityID, $gibbonPersonID) {
-    	return $this->selectBy([
-    		'gibbonPersonID' 	=> $gibbonPersonID,
-    		'gibbonActivityID' 	=> $gibbonActivityID
-    	]);
+        return $this->selectBy([
+            'gibbonPersonID' 	=> $gibbonPersonID,
+            'gibbonActivityID' 	=> $gibbonActivityID
+        ]);
     }
 
     public function insertActivityStaff($gibbonActivityID, $gibbonPersonID, $role) {
-    	return $this->insert([
-    		'gibbonPersonID' 	=> $gibbonPersonID,
-    		'gibbonActivityID' 	=> $gibbonActivityID,
-    		'role'				=> $role
-    	]);
+        return $this->insert([
+            'gibbonPersonID' 	=> $gibbonPersonID,
+            'gibbonActivityID' 	=> $gibbonActivityID,
+            'role'				=> $role
+        ]);
     }
 }
