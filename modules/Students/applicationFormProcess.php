@@ -229,7 +229,13 @@ if ($proceed == false) {
         $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
 
         $agreement = isset($_POST['agreement']) ? ($_POST['agreement'] == 'on' ? 'Y' : 'N') : null;
-        $privacy = isset($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
+
+        $privacyOptionVisibility = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility');
+        if ($privacyOptionVisibility == 'Y') {
+            $privacy = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
+        } else {
+            $privacy = null;
+        }
 
         //VALIDATE INPUTS
         $familyFail = false;

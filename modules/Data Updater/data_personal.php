@@ -571,17 +571,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
                         $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
                         $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
+                        $privacyOptionVisibility = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility');
 
                         if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
-                            $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+                            if (!empty($privacyBlurb) || $privacyOptionVisibility == 'Y') {
+                                $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+                            }
 
-                            $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
-                            $values['privacyOptions'] = $values['privacy'];
+                            if ($privacyOptionVisibility == 'Y') {
+                                $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+                                $values['privacyOptions'] = $values['privacy'];
 
-                            $row = $form->addRow();
-                                $row->addLabel('privacyOptions[]', __('Privacy Options'));
-                                $row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values)->addClass('md:max-w-lg');
+                                $row = $form->addRow();
+                                    $row->addLabel('privacyOptions[]', __('Privacy Options'));
+                                    $row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values)->addClass('md:max-w-lg');
+                            }
                         }
                     }
 
