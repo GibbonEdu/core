@@ -35,9 +35,7 @@ $page->breadcrumbs->add(__('Take Attendance by Class'));
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __("You do not have access to this action.");
-    echo "</div>";
+    $page->addError(__("You do not have access to this action."));
 } else {
     //Proceed!
     $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);

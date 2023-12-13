@@ -41,9 +41,7 @@ $id = $_POST['gibbonTTID'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     //Acess denied
-    $output .= "<div class='error'>";
-    $output .= __('Your request failed because you do not have access to this action.');
-    $output .= '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';

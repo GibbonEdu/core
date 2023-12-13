@@ -57,9 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 			$resultPerson->execute($dataPerson);
 
 	    if ($resultPerson->rowCount() != 1) {
-	    	echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
+	    	$page->addError(__('The specified record does not exist.'));
 	    } else {
             $values = $resultPerson->fetch();
             $currentDate = Format::date($values['date']);
