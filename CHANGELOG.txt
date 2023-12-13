@@ -31,6 +31,7 @@ v27.0.00
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment
         Activities: added bulk actions to the activity enrolment page
+        Staff: added anchor links for job openings page
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
 
     Bug Fixes
