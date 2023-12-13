@@ -81,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                     }
 
                     if ($result->rowCount() < 1) {
@@ -114,7 +113,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                         if ($result->rowCount() != 1) {
@@ -275,7 +273,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 													$resultCheck = $connection2->prepare($sqlCheck);
 													$resultCheck->execute($dataCheck);
 												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
 													$budgetAllocationFail = true;
 												}
 												if ($resultCheck->rowCount() != 1) {
@@ -321,7 +318,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 													$resultCheck = $connection2->prepare($sqlCheck);
 													$resultCheck->execute($dataCheck);
 												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
 													$budgetAllocatedFail = true;
 												}
 												if ($budgetAllocatedFail == false) {

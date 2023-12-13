@@ -134,7 +134,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
         $resultCodes = $pdo->select($sqlCodes, $dataCodes);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     $attendanceCodes = $resultCodes->fetchGrouped();
@@ -208,7 +207,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
         if ($result->rowCount() < 1) {

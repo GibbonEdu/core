@@ -83,7 +83,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
                 $resultPermissions->execute($dataPermissions);
             } catch (PDOException $e) {
                 $partialFail = true;
-                echo $e->getMessage();
             }
 
             while ($rowPermissions = $resultPermissions->fetch()) {

@@ -73,7 +73,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2'.$e->getMessage();
+                    $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
                 }

@@ -144,7 +144,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                     exit();
                     $partialFail = true;
                 }

@@ -112,7 +112,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                 }
             }
 

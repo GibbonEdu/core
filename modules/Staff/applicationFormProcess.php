@@ -181,7 +181,6 @@ if ($proceed == false) {
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                         exit();
                         $partialFail = true;
                         $thisFail = true;

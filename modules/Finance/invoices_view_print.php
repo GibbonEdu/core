@@ -58,7 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";

@@ -236,7 +236,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                     return;
                 }
 
@@ -1443,7 +1442,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
                                 $notes = $pdo->select($sql, $data);
@@ -1740,7 +1738,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $resultEntry = $connection2->prepare($sqlEntry);
                                             $resultEntry->execute($dataEntry);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
 
                                         if ($resultEntry->rowCount() > 0) {
@@ -2408,7 +2405,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $result->execute($data);
                                         $resultData = $result->fetchAll();
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                         exit;
                                     }
 

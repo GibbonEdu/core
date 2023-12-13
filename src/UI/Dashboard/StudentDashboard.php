@@ -115,7 +115,6 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (\PDOException $e) {
-                $planner .= "<div class='error'>".$e->getMessage().'</div>';
             }
             $planner .= '<h2>';
             $planner .= __("Today's Lessons");

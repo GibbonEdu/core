@@ -218,7 +218,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                                 $importFail = true;
                                 $proceed = false;
                             }
@@ -835,7 +834,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
                                 } catch (PDOException $e) {
-                                    echo $e->getMessage();
                                     $ttSyncFail = true;
                                     $proceed = false;
                                     $addFail = true;

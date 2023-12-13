@@ -218,7 +218,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $insertOK = false;
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($insertOK == true) {
                             $gibbonPersonID = $connection2->lastInsertID();
@@ -265,7 +264,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $enrolmentOK = false;
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                         //Report back
@@ -334,7 +332,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $enrolmentCheckFail = true;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($result->rowCount() == 1) {
                         $alreadyEnrolled = true;
@@ -357,7 +354,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $enrolmentOK = false;
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                         //Report back
@@ -382,7 +378,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $result->execute($data);
                 } catch (PDOException $e) {
                     $failStatus = true;
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($failStatus == true) {

@@ -85,7 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                         if ($result->rowCount() != 1) {

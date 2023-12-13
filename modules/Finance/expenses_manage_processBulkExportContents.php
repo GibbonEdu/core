@@ -60,7 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
 

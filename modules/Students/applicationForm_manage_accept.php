@@ -404,7 +404,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $insertOK = false;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                         $partialFailures[] = 'insertOK';
                     }
                     if ($insertOK == true) {
@@ -480,7 +479,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $result->execute($data);
                             } catch (PDOException $e) {
                                 $enrolmentOK = false;
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
                         } else {
                             $enrolmentOK = false;
@@ -556,7 +554,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $paymentOK = false;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                         $partialFailures[] = 'paymentOK';
                     }
 
@@ -592,7 +589,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     $result->execute($data);
                                 } catch (PDOException $e) {
                                     $insertFail == true;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                     $partialFailures[] = 'failFamily1';
                                 }
                                 if ($insertFail == false) {
@@ -612,7 +608,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $sqlParent = 'SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND surname=:parentSurname AND preferredName=:parentPreferredName';
                                         $resultParent = $pdo->executeQuery($dataParent, $sqlParent);
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
 
                                     if (isset($resultParent) && $resultParent->rowCount() == 1) {
@@ -625,7 +620,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $sqlParent = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                             $resultParentRelationship = $pdo->executeQuery($dataParent, $sqlParent);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
                                     }
                                 }
@@ -678,7 +672,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $result->execute($data);
                                     }
                                 } else {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                             }
                         }
@@ -730,7 +723,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $insertOK = false;
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                             $partialFailures[] = 'failFamily3';
                         }
 
@@ -775,7 +767,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $result->execute($data);
                                         } catch (PDOException $e) {
                                             $insertOK = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                             $partialFailures[] = 'failFamily4';
                                         }
                                         if ($insertOK == true) {
@@ -829,7 +820,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                 $result->execute($data);
                                             } catch (PDOException $e) {
                                                 $insertOK = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
                                             }
                                             if ($insertOK == true) {
                                                 $failFamily = false;
@@ -877,7 +867,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $insertOK = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($insertOK == true) {
                                         $failParent1 = false;
@@ -934,7 +923,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {
                                                     $insertOK = false;
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
                                                 if ($insertOK == true) {
                                                     $failFamily = false;
@@ -988,7 +976,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $insertOK = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($insertOK == true) {
                                         $failParent2 = false;
@@ -1045,7 +1032,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {
                                                     $insertOK = false;
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
                                                 if ($insertOK == true) {
                                                     $failFamily = false;
@@ -1208,7 +1194,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $failStatus = true;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                         $partialFailures[] = 'failStatus';
                     }
 

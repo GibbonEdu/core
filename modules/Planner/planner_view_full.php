@@ -267,7 +267,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $resultPrevious = $connection2->prepare($sqlPrevious);
                                 $resultPrevious->execute($dataPrevious);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
                             if ($resultPrevious->rowCount() > 0) {
                                 $rowPrevious = $resultPrevious->fetch();
@@ -294,7 +293,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $resultNext = $connection2->prepare($sqlNext);
                                 $resultNext->execute($dataNext);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
                             if ($resultNext->rowCount() > 0) {
                                 $rowNext = $resultNext->fetch();

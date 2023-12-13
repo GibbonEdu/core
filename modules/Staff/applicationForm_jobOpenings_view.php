@@ -55,9 +55,6 @@ if ($proceed == false) {
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo "<div class='error'>";
-        echo __('Your request failed due to a database error.');
-        echo '</div>';
     }
 
     if ($result->rowCount() < 1) {

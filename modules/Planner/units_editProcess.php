@@ -197,7 +197,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             $resultBlock = $connection2->prepare($sqlBlock);
                                             $resultBlock->execute($dataBlock);
                                         } catch (PDOException $e) {
-                                            echo $e->getMessage();
                                             $partialFail = true;
                                         }
                                         $dataRemove["gibbonUnitBlockID$sequenceNumber"] = $connection2->lastInsertId();
@@ -217,7 +216,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $resultRemove = $connection2->prepare($sqlRemove);
                                 $resultRemove->execute($dataRemove);
                             } catch (PDOException $e) {
-                                echo $e->getMessage();
                                 $partialFail = true;
                             }
                         }

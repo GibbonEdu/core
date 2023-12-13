@@ -505,7 +505,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
                     //Only show add if user has edit rights
@@ -686,7 +685,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                         //Only show add if user has edit rights

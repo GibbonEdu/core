@@ -169,7 +169,6 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                $page->addError($e->getMessage());
                             }
 
                             if ($result->rowCount() == 0) {

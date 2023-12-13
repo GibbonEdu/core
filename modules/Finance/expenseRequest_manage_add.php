@@ -80,7 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                 }
 
                 if ($result->rowCount() < 1) {
