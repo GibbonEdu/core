@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs
             ->add(__('View Activities'), 'activities_view.php')
@@ -69,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 //Check if gibbonActivityID specified
                 $gibbonActivityID = $_GET['gibbonActivityID'];
                 if ($gibbonActivityID == 'Y') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
                     $mode = $_GET['mode'];
 
@@ -136,9 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($mode == 'register') {
                         if ($continue == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed due to a database error.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed due to a database error.'));
                         } else {
                             $today = date('Y-m-d');
 
@@ -163,9 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
 
                             if ($result->rowCount() != 1) {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             } else {
                                 $values = $result->fetch();
 
@@ -306,9 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
                     } elseif ($mode = 'unregister') {
                         if ($continue == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed due to a database error.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed due to a database error.'));
                         } else {
                             $today = date('Y-m-d');
 
@@ -330,9 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
 
                             if ($result->rowCount() != 1) {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             } else {
                                 $values = $result->fetch();
 

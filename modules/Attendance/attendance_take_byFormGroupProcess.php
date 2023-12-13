@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 } else {
     $highestAction = getHighestGroupedAction($guid, '/modules/Attendance/attendance_take_byFormGroup.php', $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         //Check if gibbonFormGroupID and currentDate specified

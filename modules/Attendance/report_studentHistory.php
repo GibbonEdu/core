@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $viewMode = $_REQUEST['viewMode'] ?? '';
         $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
@@ -79,9 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record does not exist.');
-                    echo '</div>';
+                    $page->addError(__('The specified record does not exist.'));
                 } else {
                     $row = $result->fetch();
 
@@ -189,9 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                         @$resultChild->execute($dataChild);
 
                     if ($resultChild->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $rowChild = $resultChild->fetch();
 
@@ -203,9 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                             if ($result->rowCount() != 1) {
-                                echo "<div class='error'>";
-                                echo __('The specified record does not exist.');
-                                echo '</div>';
+                                $page->addError(__('The specified record does not exist.'));
                             } else {
                                 $row = $result->fetch();
 
@@ -234,9 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             $result = $connection2->prepare($sql);
             $result->execute($data);
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record does not exist.');
-                echo '</div>';
+                $page->addError(__('The specified record does not exist.'));
             } else {
                 $row = $result->fetch();
 
