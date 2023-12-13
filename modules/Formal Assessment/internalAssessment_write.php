@@ -88,7 +88,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($result->rowCount() != 1) {
                 $page->breadcrumbs->add(__('Write Internal Assessments'));
@@ -209,7 +208,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $resultExternalAssessment = $connection2->prepare($sqlExternalAssessment);
                                         $resultExternalAssessment->execute($dataExternalAssessment);
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($resultExternalAssessment->rowCount() >= 1) {
                                         $rowExternalAssessment = $resultExternalAssessment->fetch();

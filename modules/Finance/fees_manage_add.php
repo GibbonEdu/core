@@ -63,9 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
             $sqlYear = 'SELECT name AS schoolYear FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $resultYear = $connection2->prepare($sqlYear);
             $resultYear->execute($dataYear);
-        } catch (PDOException $e) {
-            $form->addRow()->addAlert($e->getMessage(), 'error');
-        }
+        } catch (PDOException $e) {}
         if ($resultYear->rowCount() == 1) {
             $values = $resultYear->fetch();
             $row = $form->addRow();

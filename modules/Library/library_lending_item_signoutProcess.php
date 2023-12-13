@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2'.$e->getMessage();
+                $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
             }

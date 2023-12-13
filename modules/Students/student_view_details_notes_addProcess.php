@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     								WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
-                            } catch (PDOException $e) { print $e->getMessage(); }
+                            } catch (PDOException $e) {}
                             while ($rowTutors = $result->fetch()) {
                                 $event->addRecipient($rowTutors['gibbonPersonID']);
                             }

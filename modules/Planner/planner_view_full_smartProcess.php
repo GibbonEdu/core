@@ -85,7 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $result->execute($data);
                             } catch (PDOException $e) {
                                 echo 'Here';
-                                echo $e->getMessage();
                                 $partialFail = true;
                             }
                         }

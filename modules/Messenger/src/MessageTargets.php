@@ -544,7 +544,7 @@ class MessageTargets
                                     $resultEmail=$connection2->prepare($sqlEmail);
                                     $resultEmail->execute($dataEmail);
                                 }
-                                catch(\PDOException $e) { print $e->getMessage() ;}
+                                catch(\PDOException $e) {}
                                 while ($rowEmail=$resultEmail->fetch()) {
                                     $countryCodeTemp = $countryCode;
                                     if ($rowEmail["countryCode"]=="")
@@ -1422,7 +1422,7 @@ class MessageTargets
                                             $resultEmail=$connection2->prepare($sqlEmail);
                                             $resultEmail->execute($dataEmail);
                                         }
-                                        catch(\PDOException $e) { print $e->getMessage() ;}
+                                        catch(\PDOException $e) {}
                                         while ($rowEmail=$resultEmail->fetch()) {
                                             $countryCodeTemp = $countryCode;
                                             if ($rowEmail["countryCode"]=="")
@@ -1909,7 +1909,7 @@ class MessageTargets
                                 $resultEmail=$connection2->prepare($sqlEmail);
                                 $resultEmail->execute($dataEmail);
                             }
-                            catch(\PDOException $e) { echo $e->getMessage();}
+                            catch(\PDOException $e) {}
 
                             while ($rowEmail=$resultEmail->fetch()) { //Add emails to list of receivers
                                 $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Attendance', $t, 'Email', $rowEmail["email"], $rowEmail['gibbonPersonIDStudent'], Format::name('', $rowEmail['preferredName'], $rowEmail['surname'], 'Student'));
@@ -2096,7 +2096,7 @@ class MessageTargets
                                     $resultEmail=$connection2->prepare($sqlEmail);
                                     $resultEmail->execute($dataEmail);
                                 }
-                                catch(\PDOException $e) { echo $e->getMessage(); }
+                                catch(\PDOException $e) { }
                                 while ($rowEmail=$resultEmail->fetch()) {
                                     $countryCodeTemp = $countryCode;
                                     if ($rowEmail["countryCode"]=="")

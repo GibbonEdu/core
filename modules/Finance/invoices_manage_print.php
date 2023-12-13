@@ -168,7 +168,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $return .= "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                     if ($result->rowCount() < 1) {

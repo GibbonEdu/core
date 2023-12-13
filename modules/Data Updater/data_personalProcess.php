@@ -81,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                 }
                 while ($rowCheck = $resultCheck->fetch()) {
 

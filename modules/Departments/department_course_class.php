@@ -184,7 +184,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                     $resultCourse = $connection2->prepare($sqlCourse);
                     $resultCourse->execute($dataCourse);
                 } catch (PDOException $e) {
-                    $sidebarExtra .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultCourse->rowCount() > 0) {

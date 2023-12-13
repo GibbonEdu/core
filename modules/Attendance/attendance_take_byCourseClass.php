@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>" . $e->getMessage() . "</div>";
         }
 
         if ($result->rowCount() > 0) {
@@ -139,7 +138,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>" . $e->getMessage() . "</div>";
                 }
 
                 if ($result->rowCount() == 0) {
@@ -175,7 +173,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $resultLog = $connection2->prepare($sqlLog);
                         $resultLog->execute($dataLog);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>" . $e->getMessage() . "</div>";
                     }
                     if ($resultLog->rowCount() < 1) {
                         echo "<div class='error'>";

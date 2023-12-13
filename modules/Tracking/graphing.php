@@ -162,7 +162,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                     $resultDepartments = $connection2->prepare($sqlDepartments);
                     $resultDepartments->execute($dataDepartments);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowDepartments = $resultDepartments->fetch()) {
                     $departments[$departmentCount]['department'] = $rowDepartments['department'];
@@ -226,7 +225,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                     $resultGrades = $connection2->prepare($sqlGrades);
                     $resultGrades->execute($dataGrades);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultGrades->rowCount() < 1) {

@@ -110,7 +110,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($result->rowCount() != 1) {
@@ -233,7 +232,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $resultSelect = $connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
-                            echo $e->getMEssage();
                         }
                         if ($resultSelect->rowCount() == 1) {
                             $rowSelect = $resultSelect->fetch();

@@ -28,6 +28,7 @@ v27.0.00
 
     Tweaks & Additions
         System: automatically hyperlink any urls included in Custom Field descriptions
+        System: removed raw exception message output from the interface
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment
         Activities: added bulk actions to the activity enrolment page

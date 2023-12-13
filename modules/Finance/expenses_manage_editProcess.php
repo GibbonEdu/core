@@ -71,7 +71,6 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                     }
 
                     if ($result->rowCount() < 1) {

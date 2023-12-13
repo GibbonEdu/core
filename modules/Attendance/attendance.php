@@ -208,7 +208,6 @@ if ($session->has('username')) {
                 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
             ]);
         } catch (PDOException $e) {
-            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() > 0) {
@@ -223,7 +222,6 @@ if ($session->has('username')) {
                         'dateEnd' => $lastNSchoolDays[0],
                     ]);
                 } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
                 }
                 $logHistory = array();
                 while ($rowAttendance = $resultAttendance->fetch()) {
@@ -248,7 +246,6 @@ if ($session->has('username')) {
                         'date' => $currentDate . '%'
                     ]);
                 } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
                 }
 
                 $log = $resultLog->fetch();
@@ -309,7 +306,6 @@ if ($session->has('username')) {
                 'dateEnd' => $lastNSchoolDays[0],
             ]);
         } catch (PDOException $e) {
-            $page->addError($e->getMessage());
         }
         $logHistory = array();
         while ($row = $result->fetch()) {
@@ -324,7 +320,6 @@ if ($session->has('username')) {
                 'dateEnd' => $lastNSchoolDays[0],
             ]);
         } catch (PDOException $e) {
-            $page->addError($e->getMessage());
         }
         $ttHistory = array();
         while ($row = $result->fetch()) {
@@ -377,7 +372,6 @@ if ($session->has('username')) {
                         'date' => $currentDate . '%',
                     ]);
                 } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
                 }
 
                 $log = $resultLog->fetch();

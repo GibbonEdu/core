@@ -58,7 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
         if ($result->rowCount() != 1) {
@@ -174,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             $sqlCopy = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='GCSE/iGCSE' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
                             $resultCopy = $connection2->prepare($sqlCopy);
                             $resultCopy->execute($dataCopy);
-                        } catch (PDOException $e) { echo $e->getMessage();
+                        } catch (PDOException $e) {
                         }
 
                         if ($resultCopy->rowCount() > 0) {
@@ -189,7 +188,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                 $resultCopy2 = $connection2->prepare($sqlCopy2);
                                 $resultCopy2->execute($dataCopy2);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
                             while ($rowCopy2 = $resultCopy2->fetch()) {
                                 //Conert grade to numeric value

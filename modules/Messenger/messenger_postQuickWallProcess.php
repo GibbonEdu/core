@@ -84,7 +84,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo $e->getMessage();
                 exit();
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

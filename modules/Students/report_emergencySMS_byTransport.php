@@ -102,7 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";

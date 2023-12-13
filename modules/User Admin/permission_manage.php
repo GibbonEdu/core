@@ -77,7 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     try {
@@ -91,7 +90,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $resultRoles = $connection2->prepare($sqlRoles);
         $resultRoles->execute($dataRoles);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     

@@ -38,7 +38,6 @@ if (!isset($_GET['gibbonNotificationID'])) {
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo $e->getMessage();
         header("Location: {$URL->withReturn('error2')}");
         exit();
     }
