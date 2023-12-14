@@ -44,7 +44,6 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
                 $resultIndex->execute($dataIndex);
             }
         } catch (PDOException $e) {
-            echo $e->getMessage();
             exit();
             $return = false;
         }
@@ -89,7 +88,6 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
                 $resultDOTW = $connection2->prepare($sqlDOTW);
                 $resultDOTW->execute($dataDOTW);
             } catch (PDOException $e) {
-                echo $e->getMessage();
                 exit();
                 $return = false;
             }
@@ -102,7 +100,6 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
             $resultIndex = $connection2->prepare($sqlIndex);
             $resultIndex->execute($dataIndex);
         } catch (PDOException $e) {
-            echo $e->getMessage();
             exit();
             $return = false;
         }

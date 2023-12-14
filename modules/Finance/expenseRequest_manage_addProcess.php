@@ -94,7 +94,6 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo $e->getMessage();
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();

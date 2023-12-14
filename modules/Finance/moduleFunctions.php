@@ -59,7 +59,6 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $return .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($result->rowCount() < 1) {
@@ -541,7 +540,6 @@ function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetI
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo $e->getMessage();
     }
 
     $count = 0;
@@ -569,7 +567,6 @@ function getBudgets($connection2)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo $e->getMessage();
     }
 
     $count = 0;
@@ -842,7 +839,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultParents = $connection2->prepare($sqlParents);
                 $resultParents->execute($dataParents);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultParents->rowCount() < 1) {
                 $return .= "<div class='warning'>".__('There are no family members available to send this receipt to.').'</div>';
@@ -909,7 +905,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultSched = $connection2->prepare($sqlSched);
                 $resultSched->execute($dataSched);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultSched->rowCount() == 1) {
                 $rowSched = $resultSched->fetch();
@@ -967,7 +962,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $resultFees = $connection2->prepare($sqlFees);
             $resultFees->execute($dataFees);
         } catch (PDOException $e) {
-            $return .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";
@@ -1178,7 +1172,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultParents = $connection2->prepare($sqlParents);
                 $resultParents->execute($dataParents);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultParents->rowCount() < 1) {
                 $return .= "<div class='warning'>".__('There are no family members available to send this receipt to.').'</div>';
@@ -1246,7 +1239,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $resultPayment->execute($dataPayment);
                 } catch (PDOException $e) {
                     $paymentFail = true;
-                    $return .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultPayment->rowCount() != 1) {
@@ -1272,7 +1264,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultSched = $connection2->prepare($sqlSched);
                 $resultSched->execute($dataSched);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultSched->rowCount() == 1) {
                 $rowSched = $resultSched->fetch();
@@ -1326,7 +1317,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $resultFees = $connection2->prepare($sqlFees);
             $resultFees->execute($dataFees);
         } catch (PDOException $e) {
-            $return .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";

@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 $sqlSelect = "SELECT gibbonDepartment.gibbonDepartmentID FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonDepartment.name";
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) { echo $e->getMessage(); }
+            } catch (PDOException $e) { }
             while ($rowSelect = $resultSelect->fetch()) {
                 $departments[$departmentCount] = $rowSelect['gibbonDepartmentID'];
                 $departmentCount ++;
@@ -116,7 +116,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($result->rowCount() == 1) {

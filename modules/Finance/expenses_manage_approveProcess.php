@@ -91,7 +91,6 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            echo $e->getMessage();
                         }
 
                         if ($result->rowCount() < 1) {

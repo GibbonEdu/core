@@ -74,7 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($result->rowCount() > 0) {
             $row = $result->fetch();
@@ -137,7 +136,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($result->rowCount() < 1) {

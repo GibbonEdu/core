@@ -100,22 +100,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $form->toggleVisibilityByClass('privacy')->onSelect($setting['name'])->when('Y');
 
-    $setting = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb', true);
-    $row = $form->addRow()->addClass('privacy');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
-
     $setting = $settingGateway->getSettingByScope('User Admin', 'privacyOptions', true);
     $row = $form->addRow()->addClass('privacy');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $setting = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility', true);
+    $row = $form->addRow()->addClass('privacy');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $setting = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb', true);
+    $col = $form->addRow()->addClass('privacy')->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setRows(6)->showMedia(false)->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading('User Data Options', __('User Data Options'));
 
     $setting = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value']);
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading('User Interface Options', __('User Interface Options'));
 

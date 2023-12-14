@@ -35,9 +35,7 @@ $page->breadcrumbs->add(__('Take Attendance by Class'));
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __("You do not have access to this action.");
-    echo "</div>";
+    $page->addError(__("You do not have access to this action."));
 } else {
     //Proceed!
     $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
@@ -66,7 +64,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>" . $e->getMessage() . "</div>";
         }
 
         if ($result->rowCount() > 0) {
@@ -139,7 +136,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>" . $e->getMessage() . "</div>";
                 }
 
                 if ($result->rowCount() == 0) {
@@ -175,7 +171,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $resultLog = $connection2->prepare($sqlLog);
                         $resultLog->execute($dataLog);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>" . $e->getMessage() . "</div>";
                     }
                     if ($resultLog->rowCount() < 1) {
                         echo "<div class='error'>";

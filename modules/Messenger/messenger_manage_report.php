@@ -90,7 +90,7 @@ else {
             $confirmationIndicator = function($recipient, $emailReceipt = false) use ($icon) {
                 if ($emailReceipt == 'N') return '';
                 if (empty($recipient['key'])) return __('N/A');
-                return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png');
+                return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png').' '.Format::small(Format::yesNo($recipient['confirmed']));
             };
 
             $sender = false;

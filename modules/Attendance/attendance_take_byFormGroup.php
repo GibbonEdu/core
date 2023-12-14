@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);

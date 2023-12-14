@@ -395,7 +395,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $resultDisplay = $connection2->prepare($sqlDisplay);
                     $resultDisplay->execute($dataDisplay);
                 } catch (PDOException $e) {
-                    $output .= "<div class='error'>".$e->getMessage().'</div>';
                 }
             }
         } else {
@@ -420,7 +419,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
 
         //If I am not involved in any timetables display all within the year
@@ -431,7 +429,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
         }
 
@@ -557,7 +554,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $resultDays = $connection2->prepare($sqlDays);
                 $resultDays->execute($dataDays);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
             $days = $resultDays->fetchAll();
             $daysInWeek = $resultDays->rowCount();
@@ -583,7 +579,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
                     $resultDays = $connection2->prepare($sqlDays);
                     $resultDays->execute($dataDays);
-                } catch (PDOException $e) { echo $e->getMessage(); }
+                } catch (PDOException $e) { }
                 if ($resultDays->rowCount() == 1) {
                     $homeSunday = false ;
                 }
@@ -826,7 +822,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $resultDiff = $connection2->prepare($sqlDiff);
                 $resultDiff->execute($dataDiff);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowDiff = $resultDiff->fetch()) {
                 try {
@@ -835,7 +830,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $resultDiffDay = $connection2->prepare($sqlDiffDay);
                     $resultDiffDay->execute($dataDiffDay);
                 } catch (PDOException $e) {
-                    $output .= "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowDiffDay = $resultDiffDay->fetch()) {
                     if ($rowDiffDay['timeStart'] < $timeStart) {
@@ -1069,7 +1063,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $resultTerm = $connection2->prepare($sqlTerm);
                         $resultTerm->execute($dataTerm);
                     } catch (PDOException $e) {
-                        $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     while ($rowTerm = $resultTerm->fetch()) {
                         if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
@@ -1343,7 +1336,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
             $resultDiff = $connection2->prepare($sqlDiff);
             $resultDiff->execute($dataDiff);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
         while ($rowDiff = $resultDiff->fetch()) {
             if ($dayTimeStart == '') {
@@ -1385,7 +1377,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowPeriods = $resultPeriods->fetch()) {
                 $isSlotInTime = false;
@@ -1459,7 +1450,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
 
             $periods = $resultPeriods->rowCount() > 0 ? $resultPeriods->fetchAll() : [];
@@ -1510,7 +1500,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $resultClassCheck = $connection2->prepare($sqlClassCheck);
                             $resultClassCheck->execute($dataClassCheck);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         
                         // See if there are no students left in the class after year groups and form groups are checked
@@ -1527,7 +1516,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $resultException = $connection2->prepare($sqlException);
                         $resultException->execute($dataException);
                     } catch (PDOException $e) {
-                        $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($resultException->rowCount() < 1 || $isCovering) {
                         $className = !empty($rowPeriods['gibbonCourseClassID'])? $rowPeriods['course'].'.'.$rowPeriods['class'] : ($rowPeriods['contextName'] ?? '');
@@ -1726,7 +1714,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                                     $resultPlan = $connection2->prepare($sqlPlan);
                                                     $resultPlan->execute($dataPlan);
                                                 } catch (PDOException $e) {
-                                                    $output .= "<div class='error'>".$e->getMessage().'</div>';
                                                 }
 
                                                 if ($resultPlan->rowCount() == 1) {
@@ -1756,7 +1743,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                                 $resultPlan = $connection2->prepare($sqlPlan);
                                                 $resultPlan->execute($dataPlan);
                                             } catch (PDOException $e) {
-                                                $output .= "<div class='error'>".$e->getMessage().'</div>';
                                             }
                                             if ($resultPlan->rowCount() == 1) {
                                                 $rowPlan = $resultPlan->fetch();
@@ -2032,7 +2018,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     //If I am not involved in any timetables display all within the year
@@ -2043,7 +2028,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
     }
 
@@ -2175,7 +2159,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $resultDays = $connection2->prepare($sqlDays);
             $resultDays->execute($dataDays);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
         $days = $resultDays->fetchAll();
         $daysInWeek = $resultDays->rowCount();
@@ -2215,7 +2198,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $resultDiff = $connection2->prepare($sqlDiff);
             $resultDiff->execute($dataDiff);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
         while ($rowDiff = $resultDiff->fetch()) {
             try {
@@ -2224,7 +2206,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                 $resultDiffDay = $connection2->prepare($sqlDiffDay);
                 $resultDiffDay->execute($dataDiffDay);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowDiffDay = $resultDiffDay->fetch()) {
                 if ($rowDiffDay['timeStart'] < $timeStart) {
@@ -2243,7 +2224,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $resultDiff = $connection2->prepare($sqlDiff);
             $resultDiff->execute($dataDiff);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
 
         while ($rowDiff = $resultDiff->fetch()) {
@@ -2349,7 +2329,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $resultSpecial = $connection2->prepare($sqlSpecial);
                         $resultSpecial->execute($dataSpecial);
                     } catch (PDOException $e) {
-                        $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($resultSpecial->rowcount() == 1) {
                         $rowSpecial = $resultSpecial->fetch();
@@ -2391,7 +2370,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                 $resultTerm = $connection2->prepare($sqlTerm);
                 $resultTerm->execute($dataTerm);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
             $weekStart = date('Y-m-d', ($startDayStamp + (86400 * 0)));
             $weekEnd = date('Y-m-d', ($startDayStamp + (86400 * 6)));
@@ -2422,7 +2400,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $resultTerm = $connection2->prepare($sqlTerm);
                         $resultTerm->execute($dataTerm);
                     } catch (PDOException $e) {
-                        $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     while ($rowTerm = $resultTerm->fetch()) {
                         if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
@@ -2438,7 +2415,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             $resultClosure = $connection2->prepare($sqlClosure);
                             $resultClosure->execute($dataClosure);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultClosure->rowCount() == 1) {
 
@@ -2522,7 +2498,6 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
         $resultDiff = $connection2->prepare($sqlDiff);
         $resultDiff->execute($dataDiff);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
     while ($rowDiff = $resultDiff->fetch()) {
         if ($dayTimeStart == '') {
@@ -2564,7 +2539,6 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
         $resultDay = $connection2->prepare($sqlDay);
         $resultDay->execute($dataDay);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($resultDay->rowCount() == 1) {
@@ -2579,7 +2553,6 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             $resultPeriods = $connection2->prepare($sqlPeriods);
             $resultPeriods->execute($dataPeriods);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
         while ($rowPeriods = $resultPeriods->fetch()) {
             $isSlotInTime = false;
@@ -2670,7 +2643,6 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             $resultPeriods = $connection2->prepare($sqlPeriods);
             $resultPeriods->execute($dataPeriods);
         } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
         }
 
         $periodCount = [];
@@ -2708,7 +2680,6 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                             $resultClassCheck = $connection2->prepare($sqlClassCheck);
                             $resultClassCheck->execute($dataClassCheck);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         
                         // See if there are no students left in the class after year groups and form groups are checked

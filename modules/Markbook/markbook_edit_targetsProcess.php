@@ -79,7 +79,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                         $partialFail = true;
                     }
                 } else {

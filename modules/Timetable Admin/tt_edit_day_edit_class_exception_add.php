@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                     ORDER BY surname, preferredName";
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) { echo $e->getMessage();}
+            } catch (PDOException $e) {}
             while ($rowSelect = $resultSelect->fetch()) {
                 $participants[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.__($rowSelect['role'].')');
             }

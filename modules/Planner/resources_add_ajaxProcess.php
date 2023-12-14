@@ -131,7 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 $result->execute($data);
             } catch (PDOException $e) {
                 echo "<span style='font-weight: bold; color: #ff0000'>";
-                echo $e->getMessage();
                 echo '</span>';
                 exit();
             }

@@ -297,7 +297,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();

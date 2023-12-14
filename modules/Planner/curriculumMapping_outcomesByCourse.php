@@ -153,7 +153,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 } catch (PDOException $e) {
                     echo '<tr>';
                     echo '<td colspan='.(($classCount * 2) + 2).'>';
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -231,7 +230,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 					} catch (PDOException $e) {
 						echo '<tr>';
 						echo '<td colspan='.(($classCount * 2) + 2).'>';
-						echo "<div class='error'>".$e->getMessage().'</div>';
 						echo '</td>';
 						echo '</tr>';
 					}

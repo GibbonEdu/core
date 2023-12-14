@@ -652,7 +652,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             $resultStudents = $connection2->prepare($sqlStudents);
             $resultStudents->execute($dataStudents);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
         $count = 0;

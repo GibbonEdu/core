@@ -236,7 +236,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                     return;
                 }
 
@@ -1443,7 +1442,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
                                 $notes = $pdo->select($sql, $data);
@@ -1740,7 +1738,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $resultEntry = $connection2->prepare($sqlEntry);
                                             $resultEntry->execute($dataEntry);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
 
                                         if ($resultEntry->rowCount() > 0) {
@@ -2403,17 +2400,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonSchoolYearTerm ON (FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivity.name";
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonSchoolYearTerm ON (FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStudent.status <> 'Not Accepted' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivityStudent.status, gibbonActivity.name";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                         $resultData = $result->fetchAll();
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                         exit;
                                     }
 
                                     $table = DataTable::create('activities');
                                     $table->setTitle($rowYears['name']);
+
+                                    $table->modifyRows(function ($values, $row) {
+                                        if ($values['status'] == 'Pending') $row->addClass('warning');
+                                        if ($values['status'] == 'Waiting List') $row->addClass('warning');
+                                        if ($values['status'] == 'Not Accepted') $row->addClass('dull');
+                                        if ($values['status'] == 'Left') $row->addClass('dull');
+                                        return $row;
+                                    });
+
                                     $table->addColumn('name', __('Activity'));
                                     $table->addColumn('type', __('Type'));
                                     $table->addColumn('date', $dateType == "Date" ? __('Dates') : __('Term'))

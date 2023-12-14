@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         }
     }
 
-    $urlParams = ['gibbonActivityID' => $_GET['gibbonActivityID'], 'search' => $_GET['search'], 'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID']];
+    $urlParams = ['gibbonActivityID' => $_GET['gibbonActivityID'], 'search' => $_GET['search'] ?? '', 'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID'] ?? ''];
 
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'activities_manage.php')
@@ -66,9 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
+            $page->addError(__('The specified record does not exist.'));
         } else {
             $values = $result->fetch();
 
@@ -154,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
             $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
 
-			$statuses = array('Accepted' => __('Accepted'));
+			$statuses = ['Accepted' => __('Accepted')];
 			if ($enrolment == 'Competitive') {
                 if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
                     $statuses['Waiting List'] = __('Waiting List');
@@ -162,6 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			} else {
 				$statuses['Pending'] = __('Pending');
 			}
+            $statuses['Left'] = __('Left');
 
 			$row = $form->addRow();
                 $row->addLabel('status', __('Status'));

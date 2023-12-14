@@ -241,7 +241,6 @@ if ($result->rowCount() < 1) {
                         $resultEntry = $connection2->prepare($sqlEntry);
                         $resultEntry->execute($dataEntry);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".print_r($dataEntry).'<br/>'.$e->getMessage().'</div>';
                     }
                     if ($resultEntry->rowCount() > 0) {
                         echo '<h4>'.$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';

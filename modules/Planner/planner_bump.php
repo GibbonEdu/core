@@ -94,7 +94,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($result->rowCount() != 1) {

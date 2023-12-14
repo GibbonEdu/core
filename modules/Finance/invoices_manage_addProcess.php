@@ -203,7 +203,6 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                         $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
                                         $resultInvoiceAdd->execute($dataInvoiceAdd);
                                     } catch (PDOException $e) {
-                                        echo $e->getMessage();
                                         ++$invoiceFailCount;
                                         $thisInvoiceFailed = true;
                                     }
@@ -334,7 +333,6 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                         $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
                                         $resultInvoiceAdd->execute($dataInvoiceAdd);
                                     } catch (PDOException $e) {
-                                        echo $e->getMessage();
                                         ++$invoiceFailCount;
                                         $thisInvoiceFailed = true;
                                     }

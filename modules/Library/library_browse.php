@@ -72,7 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $resultTop = $connection2->prepare($sqlTop);
         $resultTop->execute($dataTop);
     } catch (PDOException $e) {
-        echo "<div class='error'>" . $e->getMessage() . '</div>';
     }
     if ($resultTop->rowCount() < 1) {
         echo "<div class='warning'>";
@@ -107,7 +106,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $resultTop = $connection2->prepare($sqlTop);
         $resultTop->execute($dataTop);
     } catch (PDOException $e) {
-        echo "<div class='error'>" . $e->getMessage() . '</div>';
     }
     if ($resultTop->rowCount() < 1) {
         echo "<div class='warning'>";

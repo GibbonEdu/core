@@ -301,7 +301,7 @@ class CustomFieldHandler
                     $row = $row->addColumn();
                 }
 
-                $row->addLabel($name, $field['name'])->description($field['description']);
+                $row->addLabel($name, $field['name'])->description(Format::hyperlinkAll($field['description']));
                 $row->addCustomField($name, $field)->setValue($fieldValue)->readonly($params['readonly'] ?? false);
             }
         }

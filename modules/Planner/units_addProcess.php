@@ -97,8 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo $e->getMessage();exit;
+                    } catch (PDOException $e) {exit;
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();

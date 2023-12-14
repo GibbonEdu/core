@@ -259,7 +259,6 @@ class MessengerGateway extends QueryableGateway
             $resultRoleCategory = $connection2->prepare($sqlRoleCategory);
             $resultRoleCategory->execute($dataRoleCategory);
         } catch (\PDOException $e) {
-            echo $e->getMessage();
         }
         $sqlWhere = '(';
         if ($resultRoleCategory->rowCount() > 0) {
@@ -712,7 +711,6 @@ class MessengerGateway extends QueryableGateway
                 $resultPosts = $connection2->prepare($sqlPosts);
                 $resultPosts->execute($dataPosts);
             } catch (\PDOException $e) {
-                echo $e->getMessage();
             }
 
             $arrayPosts = $resultPosts->rowCount() > 0 ? $resultPosts->fetchAll() : [];
@@ -733,7 +731,6 @@ class MessengerGateway extends QueryableGateway
                 $resultPosts = $connection2->prepare($sqlPosts);
                 $resultPosts->execute($dataPosts);
             } catch (\PDOException $e) {
-                echo $e->getMessage();
             }
 
             if ($resultPosts->rowCount() < 1) {

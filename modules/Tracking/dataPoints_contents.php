@@ -93,7 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo $e->getMessage();
             }
             while ($row = $result->fetch()) {
                 $externalIndex = $row['assessment'].'-'.$row['category'].'-'.$row['field'].'-'.$row['gibbonPersonID'];

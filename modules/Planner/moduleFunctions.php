@@ -218,7 +218,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
         $resultDiscuss = $connection2->prepare($sqlDiscuss);
         $resultDiscuss->execute($dataDiscuss);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($level == 0 and $resultDiscuss->rowCount() == 0) {
@@ -271,7 +270,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
                 $resultReplies->execute($dataReplies);
             } catch (PDOException $e) {
                 $replies = false;
-                $output .= print "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($replies) {

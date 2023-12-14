@@ -42,7 +42,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
         $resultYears = $connection2->prepare($sqlYears);
         $resultYears->execute($dataYears);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($resultYears->rowCount() < 1) {
@@ -65,7 +64,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                 $resultInternalAssessment = $connection2->prepare($sqlInternalAssessment);
                 $resultInternalAssessment->execute($dataInternalAssessment);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($resultInternalAssessment->rowCount() > 0) {
@@ -140,7 +138,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $resultAttainment = $connection2->prepare($sqlAttainment);
                             $resultAttainment->execute($dataAttainment);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultAttainment->rowCount() == 1) {
                             $rowAttainment = $resultAttainment->fetch();
@@ -167,7 +164,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $resultEffort = $connection2->prepare($sqlEffort);
                             $resultEffort->execute($dataEffort);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultEffort->rowCount() == 1) {
                             $rowEffort = $resultEffort->fetch();

@@ -453,7 +453,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                         $sqlDiscuss = 'SELECT gibbonPlannerEntryDiscuss.*, title, surname, preferredName, category FROM gibbonPlannerEntryDiscuss JOIN gibbonPerson ON (gibbonPlannerEntryDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY timestamp';
                                         $resultDiscuss = $connection2->prepare($sqlDiscuss);
                                         $resultDiscuss->execute($dataDiscuss);
-                                    } catch (PDOException $e) { print $e->getMessage();}
+                                    } catch (PDOException $e) {}
 
                                     if ($resultDiscuss->rowCount() > 0) {
                                         echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';

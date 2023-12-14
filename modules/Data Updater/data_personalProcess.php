@@ -26,6 +26,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -59,6 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $checkCount = 0;
             $self = false;
 
+            $settingGateway = $container->get(SettingGateway::class);
+
             if ($highestAction == 'Update Personal Data_any') {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_personal.php&gibbonPersonID='.$gibbonPersonID;
 
@@ -78,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                 }
                 while ($rowCheck = $resultCheck->fetch()) {
 
@@ -207,9 +209,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // Student privacy settings
-                    $data['privacy'] = !empty($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
-                        ? implode(',', $_POST['privacyOptions'])
-                        : '';
+                    $privacyOptionVisibility = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility');
+                    if ($privacyOptionVisibility == 'Y') {
+                        $data['privacy'] = !empty($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
+                            ? implode(',', $_POST['privacyOptions'])
+                            : '';
+                    } else {
+                        $data['privacy'] = $values['privacy'];
+                    }
 
                     // COMPARE VALUES: Has the data changed?
                     $dataChanged = $matchAddressCount > 0 ? true : false;

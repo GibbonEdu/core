@@ -83,9 +83,7 @@ else {
         $result->execute($data);
 
     if ($result->rowCount() != 1) {
-        echo "<div class='error'>";
-        echo __('Your reset request is invalid: you may not proceed.');
-        echo '</div>';
+        $page->addError(__('Your reset request is invalid: you may not proceed.'));
     } else {
         echo "<div class='success'>";
         echo __('Your reset request is valid: you may proceed.');

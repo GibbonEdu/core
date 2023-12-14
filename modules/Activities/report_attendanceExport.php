@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $activityResult = $connection2->prepare($sql);
             $activityResult->execute($data);
         } catch (PDOException $e) {
-            echo $e->getMessage();
         }
         $activity = $activityResult->fetch();
 
@@ -77,7 +76,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $studentResult = $connection2->prepare($sql);
             $studentResult->execute($data);
         } catch (PDOException $e) {
-            echo $e->getMessage();
         }
         $students = $studentResult->fetchAll();
 
@@ -88,7 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $resultAttendance = $connection2->prepare($sql);
             $resultAttendance->execute($data);
         } catch (PDOException $e) {
-            echo $e->getMessage();
         }
         $sessions = $resultAttendance->fetchAll();
 
@@ -99,7 +96,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $resultSlots = $connection2->prepare($sql);
             $resultSlots->execute($data);
         } catch (PDOException $e) {
-            echo $e->getMessage();
         }
 
         // Get the activity staff members
@@ -108,9 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
             $resultStaff = $connection2->prepare($sqlStaff);
             $resultStaff->execute($dataStaff);
-        } catch (PDOException $e) {
-            $e->getMessage();
-        }
+        } catch (PDOException $e) {}
 
         $columnStart = 1;
         $columnEnd = count($students) + 1;

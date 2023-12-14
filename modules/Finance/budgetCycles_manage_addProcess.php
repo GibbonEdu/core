@@ -68,7 +68,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo $e->getMessage();
                 exit();
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

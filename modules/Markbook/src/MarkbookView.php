@@ -772,7 +772,6 @@ class MarkbookView
             $sql = 'SELECT type, description, weighting, reportable, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
             $resultWeights = $this->pdo->select($sql, $data);
         } catch (\PDOException $e) {
-            echo "<div class='error'>" . $e->getMessage() . '</div>';
         }
 
         if ($resultWeights->rowCount() > 0) {
