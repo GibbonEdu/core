@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers Format
  */
-class x extends TestCase
+class FormatTest extends TestCase
 {
     public function setUp(): void
     {
