@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
         $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
@@ -60,9 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             } catch (PDOException $e) {
             }
             if ($resultChild->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $rowChild = $resultChild->fetch();
 
@@ -92,9 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         echo '</h2>';
                         $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, false);
                         if ($invoiceContents == false) {
-                            echo "<div class='error'>";
-                            echo __('An error occurred.');
-                            echo '</div>';
+                            $page->addError(__('An error occurred.'));
                         } else {
                             echo $invoiceContents;
                         }
@@ -117,8 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         $receiptNumber = ($resultReceiptNumber->rowCount()-1) ;
                         $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $receiptNumber);
                         if ($receiptContents == false) {
-                            echo "<div class='error'>";
-                            echo __('An error occurred.');
+                            $page->addError(__('An error occurred.'));
                             echo '</div>';
                         } else {
                             echo $receiptContents;

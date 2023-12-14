@@ -54,9 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
         $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
-            echo "<div class='error'>";
-            echo __('An error has occurred with your expense and budget settings.');
-            echo '</div>';
+            $page->addError(__('An error has occurred with your expense and budget settings.'));
         } else {
             //Check if there are approvers
             try {
@@ -68,9 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
             }
 
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('An error has occurred with your expense and budget settings.');
-                echo '</div>';
+                $page->addError(__('An error has occurred with your expense and budget settings.'));
             } else {
                 //Ready to go! Just check record exists and we have access, and load it ready to use...
 

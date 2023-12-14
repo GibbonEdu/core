@@ -107,13 +107,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         //Get class chooser
         echo classChooser($guid, $pdo, $gibbonCourseClassID);
 
-        echo "<div class='error'>";
         if ($multiAdd == true) {
-            echo __('The specified record does not exist.');
+            $page->addError(__('The specified record does not exist.'));
         } else {
-            echo __('Your request failed because you do not have access to this action.');
+            $page->addError(__('Your request failed because you do not have access to this action.'));
         }
-        echo '</div>';
 
         return;
     }

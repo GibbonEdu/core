@@ -35,16 +35,12 @@ $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'ef
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php') == false) {
     //Access denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         /**
          * @var AlertLevelGateway
@@ -91,9 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
             if ($result->rowCount() != 1) {
                 $page->breadcrumbs->add(__('Write Internal Assessments'));
-                echo "<div class='error'>";
-                echo __('The specified record does not exist or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The specified record does not exist or you do not have access to it.'));
             } else {
                 $row = $result->fetch();
                 $courseName = $row['courseName'] ?? '';

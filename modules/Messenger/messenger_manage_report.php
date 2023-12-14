@@ -26,17 +26,13 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
     //Acess denied
-    print "<div class='error'>" ;
-        print __("You do not have access to this action.") ;
-    print "</div>" ;
+    $page->addError(__("You do not have access to this action."));
 }
 else {
     //Get action with highest precendence
     $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
     if ($highestAction==FALSE) {
-        print "<div class='error'>" ;
-        print __("The highest grouped action cannot be determined.") ;
-        print "</div>" ;
+        $page->addError(__("The highest grouped action cannot be determined."));
     }
     else {
         $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? null;

@@ -49,9 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Check if gibbonCourseClassID and gibbonInternalAssessmentColumnID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -75,9 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
                     $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
@@ -90,9 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $result2->execute($data2);
 
                 if ($result2->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo 'The selected column does not exist, or you do not have access to it.';
-                    echo '</div>';
+                    $page->addError(__('The selected column does not exist, or you do not have access to it.'));
                 } else {
                     //Let's go!
                     $class = $result->fetch();

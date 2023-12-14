@@ -103,9 +103,7 @@ if ($result->rowCount() < 1) {
         $resultChild = $connection2->prepare($sqlChild);
         $resultChild->execute($dataChild);
         if ($resultChild->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $rowChild = $resultChild->fetch();
 
@@ -528,7 +526,7 @@ if ($result->rowCount() < 1) {
                             $session->set('sidebarExtra', $session->get('sidebarExtra').__('Recent Marks'));
                             $session->set('sidebarExtra', $session->get('sidebarExtra').'</h2>');
 
-                            $session-set('sidebarExtra', $session->get('sidebarExtra').'<ol>');
+                            $session->set('sidebarExtra', $session->get('sidebarExtra').'<ol>');
                             $count = 0;
 
                             while ($rowEntry2 = $resultEntry2->fetch() and $count < 5) {

@@ -29,9 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     // Register scripts available to the core, but not included by default
     $page->scripts->add('chart');
@@ -40,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $enableModifiedAssessment = $container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableModifiedAssessment');
 

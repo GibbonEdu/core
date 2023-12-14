@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->breadcrumbs->add(__('Manage Expenses'));
@@ -76,18 +74,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         }
 
         if ($budgetsAccess == false) {
-            echo "<div class='error'>";
-            echo __('You do not have Full or Write access to any budgets.');
-            echo '</div>';
+            $page->addError(__('You do not have Full or Write access to any budgets.'));
         } else {
             //Get and check settings
             $settingGateway = $container->get(SettingGateway::class);
             $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
             $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
-                echo "<div class='error'>";
-                echo __('An error has occurred with your expense and budget settings.');
-                echo '</div>';
+                $page->addError(__('An error has occurred with your expense and budget settings.'));
             } else {
                 //Check if there are approvers
                 try {
@@ -99,9 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                 }
 
                 if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('An error has occurred with your expense and budget settings.');
-                    echo '</div>';
+                    $page->addError(__('An error has occurred with your expense and budget settings.'));
                 } else {
                     //Ready to go!
                     $gibbonFinanceBudgetCycleID = '';

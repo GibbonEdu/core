@@ -93,9 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
             if ($resultChild->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $rowChild = $resultChild->fetch();
 

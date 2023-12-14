@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
@@ -74,9 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
             }
 
             if ($budgetsAccess == false) {
-                echo "<div class='error'>";
-                echo __('You do not have Full or Write access to any budgets.');
-                echo '</div>';
+                $page->addError(__('You do not have Full or Write access to any budgets.'));
             } else {
                 //Get and check settings
                 $settingGateway = $container->get(SettingGateway::class);
@@ -84,9 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                 $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
                 $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
-                    echo "<div class='error'>";
-                    echo __('An error has occurred with your expense and budget settings.');
-                    echo '</div>';
+                    $page->addError(__('An error has occurred with your expense and budget settings.'));
                 } else {
                     //Check if there are approvers
                     try {
@@ -98,9 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                     }
 
                     if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('An error has occurred with your expense and budget settings.');
-                        echo '</div>';
+                        $page->addError(__('An error has occurred with your expense and budget settings.'));
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
                         try {

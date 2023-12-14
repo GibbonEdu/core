@@ -29,16 +29,12 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         if ($highestAction == 'View Internal Assessments_all') { //ALL STUDENTS
             $page->breadcrumbs->add(__('View All Internal Assessments'));
@@ -80,9 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 					$resultCheck->execute($dataCheck);
 
 				if ($resultCheck->rowCount() != 1) {
-					echo "<div class='error'>";
-					echo __('The selected record does not exist, or you do not have access to it.');
-					echo '</div>';
+					$page->addError(__('The selected record does not exist, or you do not have access to it.'));
 				} else {
 					echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
 				}
@@ -151,9 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     if ($resultChild->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                    	$page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $rowChild = $resultChild->fetch();
                         echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, 'parent');

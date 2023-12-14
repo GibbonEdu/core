@@ -26,9 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage.php') == false) {
     //Access denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get class variable
     $gibbonCourseClassID = null;
@@ -65,9 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '<h1>';
             echo __('Manage Internal Assessment');
             echo '</h1>';
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
             $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
