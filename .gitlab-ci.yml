@@ -61,6 +61,8 @@
     - |
       # setup system locale for test
       cat <<- EOF | tee -a /etc/locale.gen >/dev/null
+      en_US.UTF-8 UTF-8
+      en_GB.UTF-8 UTF-8
       es_ES.UTF-8 UTF-8
       fr_FR.UTF-8 UTF-8
       zh_TW.UTF-8 UTF-8
