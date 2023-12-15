@@ -34,6 +34,7 @@ v27.0.00
         Activities: added bulk actions to the activity enrolment page
         Staff: added anchor links for job openings page
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
+        Fast Finder: added facilities as one of the searchable options with the fast finder.
 
     Bug Fixes
 
