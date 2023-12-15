@@ -42,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $values = $result->fetch();
 
@@ -64,9 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 ->add(__('Edit Course'));
 
             if ($role != 'Coordinator' and $role != 'Assistant Coordinator' and $role != 'Teacher (Curriculum)') {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
                 $form = Form::create('courseEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/department_course_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID.'&gibbonCourseID='.$gibbonCourseID);

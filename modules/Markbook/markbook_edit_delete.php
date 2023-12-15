@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Check if gibbonCourseClassID and gibbonMarkbookColumnID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -68,9 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
                     $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
@@ -79,9 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                     $result2->execute($data2);
 
                 if ($result2->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     //Let's go!
                     $row = $result->fetch();

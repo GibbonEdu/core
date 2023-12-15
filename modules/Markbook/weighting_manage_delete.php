@@ -28,22 +28,16 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_delete.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
 
         if ($container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableColumnWeighting') != 'Y') {
             //Acess denied
-            echo "<div class='error'>";
-            echo __('Your request failed because you do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('Your request failed because you do not have access to this action.'));
         }
 
         //Get class variable
@@ -78,9 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                 echo '<h1>';
                 echo __('Delete Markbook Weighting');
                 echo '</h1>';
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $gibbonMarkbookWeightID = (isset($_GET['gibbonMarkbookWeightID']))? $_GET['gibbonMarkbookWeightID'] : null;
 
@@ -93,9 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     echo '<h1>';
                     echo __('Delete Markbook Weighting');
                     echo '</h1>';
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
                     $row2 = $result2->fetch();

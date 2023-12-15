@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
             $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $values = $result->fetch();
 
@@ -58,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
             $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
 
             if ($role != 'Coordinator' and $role != 'Assistant Coordinator' and $role != 'Teacher (Curriculum)' and $role != 'Director' and $role != 'Manager') {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
 				$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/department_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID);

@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Check if gibbonCourseClassID and gibbonMarkbookCopyClassID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -64,9 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                 echo '<h1>';
                 echo __('Copy Columns');
                 echo '</h1>';
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $course = $result->fetch();
 

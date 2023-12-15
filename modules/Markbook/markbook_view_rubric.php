@@ -26,9 +26,7 @@ require_once __DIR__ . '/../Rubrics/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Proceed!
     $page->scripts->add('chart');
@@ -66,9 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
 
                 $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
@@ -77,9 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 $result2->execute($data2);
 
             if ($result2->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
                     $data3 = array('gibbonRubricID' => $gibbonRubricID);
@@ -88,9 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                     $result3->execute($data3);
 
                 if ($result3->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record does not exist.');
-                    echo '</div>';
+                    $page->addError(__('The specified record does not exist.'));
                 } else {
 
                         $data4 = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -99,9 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         $result4->execute($data4);
 
                     if ($result4->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         //Let's go!
                         $row = $result->fetch();
