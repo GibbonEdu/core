@@ -24,10 +24,10 @@
 
     # install apt packages
     - apt-get update -qy
-    - apt-get install -qy mariadb-client gettext git libzip-dev libgd-dev libpng-dev locales unzip zip zlib1g-dev
+    - apt-get install -qy mariadb-client gettext git libzip-dev libicu-dev libgd-dev libpng-dev locales unzip zip zlib1g-dev
 
     # install php extensions
-    - docker-php-ext-install gd gettext pdo_mysql zip > /dev/null
+    - docker-php-ext-install gd gettext intl pdo_mysql zip > /dev/null
 
     # properly setup php
     - cp -pdf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
@@ -61,6 +61,8 @@
     - |
       # setup system locale for test
       cat <<- EOF | tee -a /etc/locale.gen >/dev/null
+      en_US.UTF-8 UTF-8
+      en_GB.UTF-8 UTF-8
       es_ES.UTF-8 UTF-8
       fr_FR.UTF-8 UTF-8
       zh_TW.UTF-8 UTF-8
@@ -126,14 +128,22 @@
     when: on_failure
     expire_in: 1 week
 
-php:7.3:
-  image: php:7.3
-  extends: .tests
-
 php:7.4:
   image: php:7.4
   extends: .tests
 
 php:8.0:
   image: php:8.0
+  extends: .tests
+
+php:8.1:
+  image: php:8.1
+  extends: .tests
+
+php:8.2:
+  image: php:8.2
+  extends: .tests
+
+php:8.3:
+  image: php:8.3-rc
   extends: .tests

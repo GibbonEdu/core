@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php-version: ["7.4", "8.0", "8.1", "8.2"]
+        php-version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
         experimental: [false]
         name: ["CI Test"]
     services:
@@ -43,6 +43,7 @@ jobs:
         run: |
           cat <<- EOF |
           en_US.UTF-8 UTF-8
+          en_GB.UTF-8 UTF-8
           es_ES.UTF-8 UTF-8
           fr_FR.UTF-8 UTF-8
           zh_TW.UTF-8 UTF-8
