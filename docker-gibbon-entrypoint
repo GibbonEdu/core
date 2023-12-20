@@ -1,0 +1,33 @@
+#!/bin/sh
+set -e
+
+# xdebug setup
+if [ "$DEBUG" = "true" ]; then
+    # Install xdebug PECL extension
+    pecl install xdebug
+    CONTAINER_IP=`/sbin/ip route|awk '/default/ { print $3 }'`
+    cat << EOF > /usr/local/etc/php/conf.d/debug.ini
+zend_extension=xdebug.so
+
+xdebug.cli_color = 1
+xdebug.client_host=${CONTAINER_IP}
+xdebug.log_level=0
+xdebug.mode=develop,debug
+xdebug.show_error_trace = On
+xdebug.start_with_request=yes
+xdebug.var_display_max_children = 128
+xdebug.var_display_max_data = 128
+xdebug.var_display_max_depth = 8
+
+max_execution_time=600
+EOF
+else
+    echo "Debug mode not enabled"
+fi
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- apache2-foreground "$@"
+fi
+
+exec "$@"
