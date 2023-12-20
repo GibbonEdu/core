@@ -23,18 +23,18 @@ RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-g
     curl \
     lynx \    
     ca-certificates \    
+    libzip-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libonig-dev \
     && a2enmod rewrite && \
-    sed -i 's/short_open_tag = Off/short_open_tag = On/' $PHP_INI_DIR/php.ini && \
-    sed -i 's/magic_quotes_gpc = On/magic_quotes_gpc = Off/g' $PHP_INI_DIR/php.ini && \
-    sed -i "s/^allow_url_fopen.*$/allow_url_fopen = On/" $PHP_INI_DIR/php.ini && \
-    sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' $PHP_INI_DIR/php.ini && \
-    wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
-    tar -xzf v${VERSION}.tar.gz && \
-    cp -af core-${VERSION}/. ./ && \
-    rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
-    git clone https://github.com/GibbonEdu/i18n.git ./i18n && \
-    chmod -R 755 . && chown -R www-data:www-data . && \
-    apt-get remove -y wget && \
+#    sed -i 's/short_open_tag = Off/short_open_tag = On/' $PHP_INI_DIR/php.ini && \
+#    sed -i 's/magic_quotes_gpc = On/magic_quotes_gpc = Off/g' $PHP_INI_DIR/php.ini && \
+#    sed -i "s/^allow_url_fopen.*$/allow_url_fopen = On/" $PHP_INI_DIR/php.ini && \
+#    sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' $PHP_INI_DIR/php.ini && \
     apt-get clean autoclean && \
     apt-get autoremove -y && \
     rm -rfv /var/lib/{apt,dpkg,cache,log}/
@@ -48,9 +48,13 @@ RUN docker-php-ext-install bcmath \
   && docker-php-ext-install opcache \
   && docker-php-ext-install pdo_mysql \  
   && docker-php-ext-install zip
+RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
+    tar -xzf v${VERSION}.tar.gz && \
+    cp -af core-${VERSION}/. ./ && \
+    rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
+    git clone https://github.com/GibbonEdu/i18n.git ./i18n && \ 
+    chmod -R 755 . && chown -R www-data:www-data .
 
-
-ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf 
 ADD .htaccess .
 
 EXPOSE 80
