@@ -1,4 +1,4 @@
-FROM php:8.3-apache-buster
+FROM php:8.2-apache-buster
 
 
 
@@ -56,7 +56,7 @@ ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 ADD .htaccess .
 
 EXPOSE 80
-VOLUME /var/www/site/
+VOLUME /var/www/site/uploads
 
 COPY ./docker-gibbon-entrypoint /usr/local/bin
 
