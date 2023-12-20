@@ -48,10 +48,7 @@ RUN docker-php-ext-install bcmath \
   && docker-php-ext-install opcache \
   && docker-php-ext-install pdo_mysql \  
   && docker-php-ext-install zip
-RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
-    tar -xzf v${VERSION}.tar.gz && \
-    cp -af core-${VERSION}/. ./ && \
-    rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
+RUN git clone https://github.com/GibbonEdu/core.git -b v${VERSION} . && \
     git clone https://github.com/GibbonEdu/i18n.git ./i18n && \ 
     chmod -R 755 . && chown -R www-data:www-data .
 
