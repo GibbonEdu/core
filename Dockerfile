@@ -47,8 +47,14 @@ RUN docker-php-ext-install bcmath \
   && docker-php-ext-install mysqli \
   && docker-php-ext-install opcache \
   && docker-php-ext-install pdo_mysql \  
+  && docker-php-ext-install pdo \
+  && docker-php-ext-install gettext \
   && docker-php-ext-install zip
+# Add twig command line tool
+RUN wget https://github.com/xrash/twig-cli/raw/master/bin/twig.phar -O /tmp/twig.phar && chmod +x /tmp/twig.phar && mv /tmp/twig.phar /usr/local/bin/twig
+
 RUN git clone https://github.com/GibbonEdu/core.git -b v${VERSION} . && \
+    rm -f docker-gibbon-entrypoint Dockerfile docker-compose.yml && \
     git clone https://github.com/GibbonEdu/i18n.git ./i18n && \ 
     chmod -R 755 . && chown -R www-data:www-data .
 

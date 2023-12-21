@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'gibbondb'      
+      MYSQL_USER: 'gibbon'      
+      MYSQL_PASSWORD: 'gibbon-password'      
+      MYSQL_ROOT_PASSWORD: 'SuperSecretPassword'
+    ports:      
+      - '3306:3306'
+    expose:
+      - '3306'      
+    volumes:
+      - gibbon-db:/var/lib/mysql
+  gibbon:
+    image: gibbon/gibbon
+    build: .
+    restart: always
+    environment:
+      MYSQL_HOST: 'db'
+      MYSQL_DATABASE: 'gibbondb'
+      MYSQL_USER: 'gibbon'
+      MYSQL_PASSWORD: 'gibbon-password'
+    ports:
+      - "8080:80"
+    volumes:
+      - gibbon-uploads:/var/www/html/uploads
+volumes:
+  gibbon-db:
+  gibbon-uploads:

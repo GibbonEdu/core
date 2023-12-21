@@ -2,11 +2,12 @@
 set -e
 
 # xdebug setup
-if [ "$DEBUG" = "true" ]; then
+if [ -n "$DEBUG" ]; then
+    echo "Debug mode enabled"
     # Install xdebug PECL extension
     pecl install xdebug
     CONTAINER_IP=`/sbin/ip route|awk '/default/ { print $3 }'`
-    cat << EOF > /usr/local/etc/php/conf.d/debug.ini
+    cat << EOF > $PHP_INI_DIR/conf.d/debug.ini
 zend_extension=xdebug.so
 
 xdebug.cli_color = 1
@@ -25,9 +26,12 @@ else
     echo "Debug mode not enabled"
 fi
 
-# first arg is `-f` or `--some-option`
-if [ "${1#-}" != "$1" ]; then
-	set -- apache2-foreground "$@"
-fi
+if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [ -n "$MYSQL_DATABASE" ]; then
+    if [ ! -e "config.php" ]; then
+        echo "File config.php does not exists, Configuring instance with environment variables"        
+        cat resources/templates/installer/config.twig.html | twig -p databaseServer="$MYSQL_HOST" -p databaseName="$MYSQL_DATABASE" > config.php
+        rm -Rf installer
+    fi
+    unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
 
-exec "$@"
+sh docker-php-entrypoint "$@"
