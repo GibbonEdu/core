@@ -52,7 +52,7 @@ RUN docker-php-ext-install bcmath \
   && docker-php-ext-install zip \
   && docker-php-ext-install intl
 
-#RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN git clone --single-branch https://github.com/GibbonEdu/core.git -b v${VERSION} . && \
     rm -f docker-gibbon-entrypoint Dockerfile docker-compose.yml && \
     git clone --single-branch https://github.com/GibbonEdu/i18n.git ./i18n && \ 

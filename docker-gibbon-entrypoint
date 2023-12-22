@@ -30,11 +30,15 @@ fi
 
 if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [ -n "$MYSQL_DATABASE" ]; then
     if [ ! -e "config.php" ]; then
+        guid="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+        if [ -n "$GUID" ]; then 
+            guid="$GUID"
+        fi        
         echo "File config.php does not exists, Configuring instance with environment variables"        	        
-        twigc resources/templates/installer/config.twig.html -p "databaseServer='$MYSQL_HOST'" -p "databaseUsername='$MYSQL_USER'"  -p "databasePassword='$MYSQL_PASSWORD'" -p "databaseName='$MYSQL_DATABASE'" > config.php
+        twigc resources/templates/installer/config.twig.html -p "guid='$guid'" -p "databaseServer='$MYSQL_HOST'" -p "databaseUsername='$MYSQL_USER'"  -p "databasePassword='$MYSQL_PASSWORD'" -p "databaseName='$MYSQL_DATABASE'" | grep -v '^Deprecated:'> config.php
         rm -Rf installer
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
 fi
-
+composer install
 sh /usr/local/bin/docker-php-entrypoint "$@"
