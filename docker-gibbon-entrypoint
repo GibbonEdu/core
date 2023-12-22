@@ -7,6 +7,7 @@ if [ -n "$DEBUG" ]; then
     # Install xdebug PECL extension
     pecl install xdebug
     CONTAINER_IP=`/sbin/ip route|awk '/default/ { print $3 }'`
+    cp $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
     cat << EOF > $PHP_INI_DIR/conf.d/debug.ini
 zend_extension=xdebug.so
 
@@ -26,6 +27,7 @@ EOF
 else
     echo "Debug mode not enabled"
     rm -f $PHP_INI_DIR/conf.d/debug.ini
+    cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 fi
 
 if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [ -n "$MYSQL_DATABASE" ]; then
@@ -36,9 +38,10 @@ if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [
         fi        
         echo "File config.php does not exists, Configuring instance with environment variables"        	        
         twigc resources/templates/installer/config.twig.html -p "guid='$guid'" -p "databaseServer='$MYSQL_HOST'" -p "databaseUsername='$MYSQL_USER'"  -p "databasePassword='$MYSQL_PASSWORD'" -p "databaseName='$MYSQL_DATABASE'" | grep -v '^Deprecated:'> config.php
-        rm -Rf installer
+        rm -Rf installer        
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
 fi
 composer install
+chown 33:33 -R .
 sh /usr/local/bin/docker-php-entrypoint "$@"
