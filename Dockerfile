@@ -71,6 +71,11 @@ COPY ./docker-gibbon-entrypoint /usr/local/bin
 #COPY  ./installer/TwigCommand.php /var/www/html/installer/
 
 RUN chmod u+x /usr/local/bin/docker-gibbon-entrypoint
+# basic recommendations
+RUN chmod o+w g+w uploads && \
+    php_flag register_globals off && \
+    echo "\nOptions -Index\n" >> .htaccess && \        
+    sed "s/Options Indexes FollowSymLinks/Options FollowSymLinks/g" -i /etc/apache2/apache2.conf
 
 ENTRYPOINT [ "docker-gibbon-entrypoint" ]
 

@@ -1,13 +1,13 @@
 #!/bin/sh
 set -e
-
+environment='production'
 # xdebug setup
 if [ -n "$DEBUG" ]; then
+    environment='development'
     echo "Debug mode enabled"
     # Install xdebug PECL extension
     pecl install xdebug
-    CONTAINER_IP=`/sbin/ip route|awk '/default/ { print $3 }'`
-    cp $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+    CONTAINER_IP=`/sbin/ip route|awk '/default/ { print $3 }'`    
     cat << EOF > $PHP_INI_DIR/conf.d/debug.ini
 zend_extension=xdebug.so
 
@@ -29,6 +29,11 @@ else
     rm -f $PHP_INI_DIR/conf.d/debug.ini
     cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 fi
+#generate php.ini based on development/production php recommendations
+if [ ! -e "$PHP_INI_DIR/php.ini" ]; then
+    cp $PHP_INI_DIR/php.ini-$environment $PHP_INI_DIR/php.ini
+    echo "\nmax_input_vars=5000\n" >> $PHP_INI_DIR/php.ini
+fi
 
 if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [ -n "$MYSQL_DATABASE" ]; then
     if [ ! -e "config.php" ]; then
@@ -38,11 +43,6 @@ if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [
         fi        
         echo "File config.php does not exists, Configuring instance with environment variables"        	        
         twigc resources/templates/installer/config.twig.html -p "guid='$guid'" -p "databaseServer='$MYSQL_HOST'" -p "databaseUsername='$MYSQL_USER'"  -p "databasePassword='$MYSQL_PASSWORD'" -p "databaseName='$MYSQL_DATABASE'" | grep -v '^Deprecated:'> config.php        
-        chmod o+w g+w uploads
-        php_flag register_globals off
-        echo "\nOptions -Index\n" >> .htaccess
-        echo "\nmax_input_vars=5000\n" >> $PHP_INI_DIR/php.ini
-        sed "s/Options Indexes FollowSymLinks/Options FollowSymLinks/g" -i /etc/apache2/apache2.conf
         rm -Rf installer
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
