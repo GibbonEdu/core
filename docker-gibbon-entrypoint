@@ -47,11 +47,9 @@ if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
 fi
-if [ ! -e "vendor" ]; then
-    composer install
-    chown 33:33 -R .
-    chmod -Rv 755
-fi
+#if [ ! -e "vendor" ]; then
+#fi
+#chmod o+w g+w uploads
 
 
 sh /usr/local/bin/docker-php-entrypoint "$@"

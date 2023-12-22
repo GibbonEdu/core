@@ -63,20 +63,24 @@ RUN wget https://github.com/okdana/twigc/releases/download/v0.4.0/twigc.phar -O 
 
 ADD .htaccess .
 
-EXPOSE 80
-VOLUME /var/www/html/uploads
+# composer
+RUN composer install && \
+    chown 33:33 -R . && \
+    chmod -Rv 755 .
+
+# basic recommendations https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config
+RUN echo "\nphp_flag register_globals off\n" >> .htaccess && \   
+    sed "s/Options Indexes FollowSymLinks/Options FollowSymLinks/g" -i /etc/apache2/apache2.conf
 
 COPY ./docker-gibbon-entrypoint /usr/local/bin
 
-#COPY  ./installer/TwigCommand.php /var/www/html/installer/
-
 RUN chmod u+x /usr/local/bin/docker-gibbon-entrypoint
-# basic recommendations
-RUN chmod o+w g+w uploads && \
-    php_flag register_globals off && \
-    echo "\nOptions -Index\n" >> .htaccess && \        
-    sed "s/Options Indexes FollowSymLinks/Options FollowSymLinks/g" -i /etc/apache2/apache2.conf
+
+EXPOSE 80
+VOLUME /var/www/html/uploads
+
 
 ENTRYPOINT [ "docker-gibbon-entrypoint" ]
 
 CMD ["apache2-foreground"]
+
