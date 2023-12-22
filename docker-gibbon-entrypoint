@@ -22,6 +22,7 @@ xdebug.var_display_max_depth = 8
 
 max_execution_time=600
 EOF
+
 else
     echo "Debug mode not enabled"
 fi
@@ -33,5 +34,6 @@ if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [
         rm -Rf installer
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
+fi
 
 sh docker-php-entrypoint "$@"
