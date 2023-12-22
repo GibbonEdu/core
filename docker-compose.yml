@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.9'
 services:
   db:
     image: mysql:8
@@ -16,9 +16,10 @@ services:
       - gibbon-db:/var/lib/mysql
       - ./gibbon.sql:/docker-entrypoint-initdb.d/gibbon.sql
     healthcheck:
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      test: ["CMD", 'mysqladmin', 'ping', '--silent', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      interval: 30s
       timeout: 20s
-      retries: 10
+      retries: 20
   gibbon:
     image: gibbon/gibbon
     build: .

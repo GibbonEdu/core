@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 environment='production'
+
+# Check if the environment variable is set
+if [ -z "$GIBBON_STUDENTS" ]; then
+    students="30"
+else
+    students="$GIBBON_STUDENTS"
+fi
 # xdebug setup
 if [ -n "$DEBUG" ]; then
     environment='development'
@@ -33,6 +40,7 @@ fi
 if [ ! -e "$PHP_INI_DIR/php.ini" ]; then
     cp $PHP_INI_DIR/php.ini-$environment $PHP_INI_DIR/php.ini
     echo "\nmax_input_vars=5000\n" >> $PHP_INI_DIR/php.ini
+    echo "max_file_uploads=$students\n" >> $PHP_INI_DIR/php.ini
 fi
 
 if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [ -n "$MYSQL_DATABASE" ]; then
@@ -47,9 +55,13 @@ if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
 fi
-#if [ ! -e "vendor" ]; then
-#fi
-#chmod o+w g+w uploads
-
+# new volume could contain diferent permissions, asure permissions on uploads are ok
+owner=$(stat -c "%U" "uploads")
+if [ "$owner" != "33" ]; then
+    chown -R 33:33 uploads
+    chmod -R g+w uploads
+    chmod -R u+w uploads
+    chmod -R o-w uploads
+fi
 
 sh /usr/local/bin/docker-php-entrypoint "$@"
