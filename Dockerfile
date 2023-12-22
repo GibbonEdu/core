@@ -49,14 +49,17 @@ RUN docker-php-ext-install bcmath \
   && docker-php-ext-install pdo_mysql \  
   && docker-php-ext-install pdo \
   && docker-php-ext-install gettext \
-  && docker-php-ext-install zip
-# Add twig command line tool
-RUN wget https://github.com/xrash/twig-cli/raw/master/bin/twig.phar -O /tmp/twig.phar && chmod +x /tmp/twig.phar && mv /tmp/twig.phar /usr/local/bin/twig
+  && docker-php-ext-install zip \
+  && docker-php-ext-install intl
 
-RUN git clone https://github.com/GibbonEdu/core.git -b v${VERSION} . && \
+#RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN git clone --single-branch https://github.com/GibbonEdu/core.git -b v${VERSION} . && \
     rm -f docker-gibbon-entrypoint Dockerfile docker-compose.yml && \
-    git clone https://github.com/GibbonEdu/i18n.git ./i18n && \ 
+    git clone --single-branch https://github.com/GibbonEdu/i18n.git ./i18n && \ 
     chmod -R 755 . && chown -R www-data:www-data .
+#Tool to generate config.php
+RUN wget https://github.com/okdana/twigc/releases/download/v0.4.0/twigc.phar -O /tmp/twigc.phar && \
+    chmod +x /tmp/twigc.phar && mv /tmp/twigc.phar /usr/local/bin/twigc
 
 ADD .htaccess .
 
@@ -64,6 +67,8 @@ EXPOSE 80
 VOLUME /var/www/html/uploads
 
 COPY ./docker-gibbon-entrypoint /usr/local/bin
+
+#COPY  ./installer/TwigCommand.php /var/www/html/installer/
 
 RUN chmod u+x /usr/local/bin/docker-gibbon-entrypoint
 
