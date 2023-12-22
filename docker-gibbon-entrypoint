@@ -37,11 +37,21 @@ if [ -n "$MYSQL_HOST" ] && [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ] && [
             guid="$GUID"
         fi        
         echo "File config.php does not exists, Configuring instance with environment variables"        	        
-        twigc resources/templates/installer/config.twig.html -p "guid='$guid'" -p "databaseServer='$MYSQL_HOST'" -p "databaseUsername='$MYSQL_USER'"  -p "databasePassword='$MYSQL_PASSWORD'" -p "databaseName='$MYSQL_DATABASE'" | grep -v '^Deprecated:'> config.php
-        rm -Rf installer        
+        twigc resources/templates/installer/config.twig.html -p "guid='$guid'" -p "databaseServer='$MYSQL_HOST'" -p "databaseUsername='$MYSQL_USER'"  -p "databasePassword='$MYSQL_PASSWORD'" -p "databaseName='$MYSQL_DATABASE'" | grep -v '^Deprecated:'> config.php        
+        chmod o+w g+w uploads
+        php_flag register_globals off
+        echo "\nOptions -Index\n" >> .htaccess
+        echo "\nmax_input_vars=5000\n" >> $PHP_INI_DIR/php.ini
+        sed "s/Options Indexes FollowSymLinks/Options FollowSymLinks/g" -i /etc/apache2/apache2.conf
+        rm -Rf installer
     fi
     unset MYSQL_HOST MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE 
 fi
-composer install
-chown 33:33 -R .
+if [ ! -e "vendor" ]; then
+    composer install
+    chown 33:33 -R .
+    chmod -Rv 755
+fi
+
+
 sh /usr/local/bin/docker-php-entrypoint "$@"

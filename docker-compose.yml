@@ -14,6 +14,7 @@ services:
       - '3306'      
     volumes:
       - gibbon-db:/var/lib/mysql
+      - ./gibbon.sql:/docker-entrypoint-initdb.d/gibbon.sql
   gibbon:
     image: gibbon/gibbon
     build: .
@@ -27,6 +28,7 @@ services:
       - "8080:80"
     volumes:
       - gibbon-uploads:/var/www/html/uploads
+      
 volumes:
   gibbon-db:
   gibbon-uploads:
