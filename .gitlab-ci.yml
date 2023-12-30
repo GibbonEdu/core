@@ -145,5 +145,5 @@ php:8.2:
   extends: .tests
 
 php:8.3:
-  image: php:8.3-rc
+  image: php:8.3
   extends: .tests
