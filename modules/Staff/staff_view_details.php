@@ -243,11 +243,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo __('Timetable');
                         echo '</h4>';
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
+                            $table = DataTable::createDetails('timetable');
+
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                                echo '</div>';
+                                $table->addHeaderAction('edit', __('Edit'))
+                                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                    ->addParam('type', 'Staff')
+                                    ->addParam('allUsers', '')
+                                    ->displayLabel();
                             }
+
+                            if ($gibbonPersonID == $session->get('gibbonPersonID')) {
+                                $table->addHeaderAction('export', __('Export'))
+                                    ->modalWindow()
+                                    ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->setIcon('download')
+                                    ->displayLabel()
+                                    ->prepend(' | ');
+                            }
+
+                            echo $table->render(['' => '']);
 
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = '';
