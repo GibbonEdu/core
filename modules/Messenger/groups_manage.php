@@ -24,6 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Forms\Form;
 
 $page->breadcrumbs->add(__('Manage Groups'));
 
@@ -32,20 +33,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $search = $_GET['search'] ?? '';
+
+    // School Year Picker
+    if (!empty($gibbonSchoolYearID)) {
+       $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+    }
+
     $groupGateway = $container->get(GroupGateway::class);
 
+    // QUERY
     $criteria = $groupGateway->newQueryCriteria(true)
+        ->searchBy($groupGateway->getSearchableColumns(), $search)
         ->sortBy(['schoolYear', 'name'])
         ->fromPOST();
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
     if ($highestAction == 'Manage Groups_all') {
-        $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'));
+        $groups = $groupGateway->queryGroups($criteria, $gibbonSchoolYearID);
     } else {
-        $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+        $groups = $groupGateway->queryGroups($criteria, $gibbonSchoolYearID, $session->get('gibbonPersonID'));
     }
+
+    // SEARCH FORM
+    $searchForm = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+    $searchForm->setClass('noIntBorder fullWidth');
+
+    $searchForm->addHiddenValue('address', $session->get('address'));
+    $searchForm->addHiddenValue('q', '/modules/Messenger/groups_manage.php');
+    $searchForm->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+    $row = $searchForm->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Group name'));
+        $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
+
+    $searchForm->addRow()->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
+    echo $searchForm->getOutput();
     
-    // FORM
+    // BULK ACTION FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/groups_manageProcessBulk.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
