@@ -17,6 +17,8 @@ if ($session->has('absoluteURL')) {
         $URL = Url::fromModuleRoute('Staff', 'staff_view_details')->withQueryParam('gibbonPersonID', $id);
     } elseif ($type == 'Cla') {
         $URL = Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $id);
+    } elseif ($type == 'Fac') {
+        $URL = Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParam('gibbonSpaceID', $id);
     }
 }
 

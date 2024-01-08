@@ -35,6 +35,7 @@ v27.0.00
         Staff: added anchor links for job openings page
         Timetable: added timetable iCal Export buttons to staff and student profiles
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
+        Fast Finder: added facilities as one of the searchable options with the fast finder.
 
     Bug Fixes
 

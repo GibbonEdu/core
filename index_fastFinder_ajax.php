@@ -43,6 +43,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
     $highestActionStudent = getHighestGroupedAction($guid, '/modules/students/student_view.php', $connection2);
 
+    $facilityIsAccessible = isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.php');
     $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
     $classIsAccessible = false;
     $alarmIsAccessible = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
@@ -132,6 +133,23 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
         } catch (PDOException $e) { die($resultError); }
 
         if ($resultList->rowCount() > 0) $resultSet['Staff'] = $resultList->fetchAll();
+    }
+
+    // FACILITY
+    if ($facilityIsAccessible == true) {
+        try {
+            $data = array('search' => '%'.$searchTerm.'%');
+            $sql = "SELECT gibbonSpace.gibbonSpaceID AS id,
+                    gibbonSpace.name AS name,
+                    NULL as type
+                    FROM gibbonSpace
+                    WHERE gibbonSpace.name LIKE :search
+                    ORDER BY name";
+            $resultList = $connection2->prepare($sql);
+            $resultList->execute($data);
+        } catch (PDOException $e) { die($resultError); }
+
+        if ($resultList->rowCount() > 0) $resultSet['Facility'] = $resultList->fetchAll();
     }
 
     // STUDENTS
