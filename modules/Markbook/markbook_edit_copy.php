@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
         $gibbonMarkbookCopyClassID = (isset($_POST['gibbonMarkbookCopyClassID']))? $_POST['gibbonMarkbookCopyClassID'] : null;
 
         if ( empty($gibbonCourseClassID) or empty($gibbonMarkbookCopyClassID) ) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
         	$highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);

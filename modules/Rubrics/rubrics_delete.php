@@ -52,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
             //Check if gibbonRubricID specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
-                echo "<div class='error'>";
-                echo __('You have not specified one or more required parameters.');
-                echo '</div>';
+                $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 try {
                     if ($highestAction == 'Manage Rubrics_viewEditAll') {
@@ -70,9 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2");
                     echo $form->getOutput();

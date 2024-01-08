@@ -50,9 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
         $status2 = $_GET['status2'] ?? '';
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $budgetsAccess = false;
             if ($highestAction == 'Manage Expenses_all') { //Access to everything {

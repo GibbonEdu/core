@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $subpage = $_GET['subpage'] ?? '';
         if ($gibbonPersonID == '' or $subpage == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             
                 $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -49,9 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $student = $result->fetch();
 

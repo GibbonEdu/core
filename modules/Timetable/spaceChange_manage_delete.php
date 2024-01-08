@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'];
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
         if ($gibbonTTSpaceChangeID == '' OR $gibbonCourseClassID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($highestAction == 'Manage Facility Changes_allClasses') {
@@ -57,9 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
-                echo '</div>';
+                $page->addError(__('Your request failed due to a database error.'));
             }
 
             if ($result->rowCount() != 1) {

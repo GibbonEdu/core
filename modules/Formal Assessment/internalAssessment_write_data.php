@@ -55,9 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($highestAction == 'Write Internal Assessments_all') {

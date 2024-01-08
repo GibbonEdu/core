@@ -95,9 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? ''; 
         $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($viewBy == 'date') {
@@ -122,9 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $returns['success0'] = __('Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
                 $page->return->addReturns($returns);
                 if ($otherYearDuplicateSuccess != true) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 }
             } else {
                 //Let's go!
@@ -206,9 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         $duplicate = $_POST['duplicate'];
                     }
                     if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '') {
-                        echo "<div class='error'>";
-                        echo __('You have not specified one or more required parameters.');
-                        echo '</div>';
+                        $page->addError(__('You have not specified one or more required parameters.'));
                     } else {
                         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_duplicateProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
 

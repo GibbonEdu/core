@@ -51,9 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
     } else {
         //Proceed!
         if ($gibbonSchoolYearID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -69,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 $values = $result->fetch();
 
                 if ($gibbonCourseID == '') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
                     $courseGateway = $container->get(CourseGateway::class);
 

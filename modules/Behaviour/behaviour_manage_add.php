@@ -172,9 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             if ($gibbonBehaviourID == '') {
-                echo "<div class='error'>";
-                echo __('You have not specified one or more required parameters.');
-                echo '</div>';
+                $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 //Check for existence of behaviour record
 

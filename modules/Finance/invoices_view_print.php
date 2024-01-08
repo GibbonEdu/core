@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
         }
 
         if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '' or $gibbonPersonID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             //Confirm access to this student
             try {

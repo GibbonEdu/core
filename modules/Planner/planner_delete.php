@@ -94,9 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
         $gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $proceed = true;
             try {
@@ -123,9 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 //Let's go!
                 $row = $result->fetch();

@@ -38,9 +38,7 @@ if (isset($_GET['gibbonPersonIDParent'])) {
 }
 
 //Check variables
-if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $gibbonPersonIDParent == '') { echo "<div class='error'>";
-    echo __('You have not specified one or more required parameters.');
-    echo '</div>';
+if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $gibbonPersonIDParent == '') { $page->addError(__('You have not specified one or more required parameters.'));
 } else {
     //Check for record
     $keyReadFail = false;
@@ -50,15 +48,11 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
         $resultKeyRead = $connection2->prepare($sqlKeyRead);
         $resultKeyRead->execute($dataKeyRead);
     } catch (PDOException $e) {
-        echo "<div class='error'>";
-        echo __('Your request failed due to a database error.');
-        echo '</div>';
+        $page->addError(__('Your request failed due to a database error.'));
     }
 
     if ($resultKeyRead->rowCount() != 1) { //If not exists, report error
-        echo "<div class='error'>";
-        echo __('The selected record does not exist, or you do not have access to it.');
-        echo '</div>';
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
     } else {    //If exists check confirmed
         $rowKeyRead = $resultKeyRead->fetch();
 
@@ -76,9 +70,7 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
             }
 
             if ($keyWriteFail == true) { //Report error
-                echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
-                echo '</div>';
+                $page->addError(__('Your request failed due to a database error.'));
             } else { //Report success
                 $page->addSuccess(__('Thank you for confirming receipt and reading of this email.'));
             }

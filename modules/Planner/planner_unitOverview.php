@@ -27,9 +27,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOverview.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -99,9 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     if ($resultChild->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $data = array('date' => $date);
                         $data['gibbonPlannerEntryID1'] = $gibbonPlannerEntryID;
@@ -122,9 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 $result->execute($data);
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $row = $result->fetch();
 
@@ -163,9 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         $resultUnit->execute($dataUnit);
 
                     if ($resultUnit->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $rowUnit = $resultUnit->fetch();
 

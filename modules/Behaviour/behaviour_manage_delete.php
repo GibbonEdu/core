@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         //Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
         if ($gibbonBehaviourID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
                 $data = array('gibbonBehaviourID' => $gibbonBehaviourID);

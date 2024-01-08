@@ -128,9 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         }
 
         if ($proceed == false) {
-            echo "<div class='error'>";
-            echo __('Your request failed because you do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('Your request failed because you do not have access to this action.'));
         } else {
             $page->breadcrumbs
                 ->add(
