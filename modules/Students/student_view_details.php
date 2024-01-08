@@ -594,6 +594,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 ->directLink()
                                 ->displayLabel();
 
+                            if ($gibbonPersonID == $session->get('gibbonPersonID')) {
+                                $table->addHeaderAction('export', __('Export'))
+                                    ->modalWindow()
+                                    ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->setIcon('download')
+                                    ->displayLabel()
+                                    ->prepend(' | ');
+                            }
+
                             echo $table->render([['' => '']]);
 
                             include './modules/Timetable/moduleFunctions.php';
