@@ -37,10 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('My Coverage'));
-    
+
     $gibbonPersonID = $session->get('gibbonPersonID');
     $displayCount = 0;
-    
+
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
@@ -121,9 +121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         if ($coverageByTimetable) {
             $table->addColumn('date', __('Date'))
-                ->format(Format::using('dateReadable', 'date'))
+                ->format(Format::using('dateIntlReadable', 'date'))
                 ->formatDetails(function ($coverage) {
-                    return Format::small(Format::dateReadable($coverage['date'], '%A'));
+                    return Format::small(Format::dateIntlReadable($coverage['date'], 'EEEE'));
                 });
 
             $table->addColumn('period', __('Period'))
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     ->formatDetails([AbsenceFormats::class, 'timeDetails']);
 
             $table->addColumn('contextName', __('Cover'));
-        } else {            
+        } else {
             $table->addColumn('date', __('Date'))
                 ->context('primary')
                 ->format([AbsenceFormats::class, 'dateDetails']);
@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
-                    
+
                 if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] >= date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             ->width('30%')
             ->sortable(['surname', 'preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);
@@ -280,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         echo $table->render($coverage);
         $displayCount++;
     }
-    
+
     if ($displayCount == 0) {
         $page->addError(__('There are no records to display.'));
     }

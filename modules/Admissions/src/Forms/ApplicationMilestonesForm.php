@@ -79,13 +79,13 @@ class ApplicationMilestonesForm extends Form
             $dateInfo = '';
             if ($checked) {
                 $user = $this->userGateway->getByID($milestonesData[$milestone]['user'], ['preferredName', 'surname']);
-                $dateInfo = Format::dateReadable($milestonesData[$milestone]['date']).' '.__('By').' '.Format::name('', $user['preferredName'], $user['surname'], 'Staff', false, true);
+                $dateInfo = Format::dateIntlReadable($milestonesData[$milestone]['date']).' '.__('By').' '.Format::name('', $user['preferredName'], $user['surname'], 'Staff', false, true);
             }
 
             $description = '<div class="milestone flex-1 text-left"><span class="milestoneCheck '.($checked ? '' : 'hidden').'">'.$checkIcon.'</span><span class="milestoneCross '.($checked ? 'hidden' : '').'">'.$crossIcon.'</span><span class="text-base leading-normal">'.__($milestone).'</span></div><div class="flex-1 text-left">'.$dateInfo.'</div>';
             $col->addCheckbox("milestones[{$milestone}]")
                 ->setValue('Y')
-                ->checked($checked ? 'Y' : 'N') 
+                ->checked($checked ? 'Y' : 'N')
                 ->description($description)
                 ->alignRight()
                 ->setLabelClass('w-full flex items-center')

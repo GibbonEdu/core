@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     if ($gibbonFirstAidID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFirstAidID' => $gibbonFirstAidID);
             $sql = "SELECT gibbonFirstAid.*, patient.gibbonPersonID AS gibbonPersonIDPatient, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
                 FROM gibbonFirstAid
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             if (!empty($values['followUp'])) {
                 $row = $form->addRow();
                     $column = $row->addColumn();
-                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
+                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateIntlReadable($values['timestamp'], 'HH:mm, MMM dd yyyy')]));
                     $column->addContent($values['followUp'])->setClass('fullWidth');
             }
 

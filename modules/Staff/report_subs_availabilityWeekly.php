@@ -135,14 +135,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $dateRange = new DatePeriod($dateStart, new DateInterval('P1D'), $dateEnd);
     $daysOfWeekGateway = $container->get(DaysOfWeekGateway::class);
-    
+
     foreach ($dateRange as $weekday) {
         if (!isSchoolOpen($guid, $weekday->format('Y-m-d'), $connection2)) continue;
 
         $dayOfWeek = $daysOfWeekGateway->getDayOfWeekByDate($weekday->format('Y-m-d'));
 
         $url = './index.php?q=/modules/Staff/report_subs_availability.php&date='.Format::date($weekday->format('Y-m-d'));
-        $columnTitle = Format::link($url, Format::dateReadable($weekday->format('Y-m-d'), '%a, %b %e'));
+        $columnTitle = Format::link($url, Format::dateIntlReadable($weekday->format('Y-m-d'), 'EEE, MMM d'));
 
         $table->addColumn($weekday->format('D'), $columnTitle)
             ->context('primary')

@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (empty($log['timestampTaken'])) return Format::small(__('N/A'));
 
                         return $currentDate != substr($log['timestampTaken'], 0, 10)
-                            ? Format::dateTimeReadable($log['timestampTaken'], '%H:%M, %b %d')
-                            : Format::dateTimeReadable($log['timestampTaken'], '%H:%M');
+                            ? Format::dateIntlReadable($log['timestampTaken'], 'HH:mm, MMM dd')
+                            : Format::dateIntlReadable($log['timestampTaken'], 'HH:mm');
                     });
 
                 $table->addColumn('direction', __('Attendance'))

@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     // COVERAGE
     $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
     $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGroupedUnique();
-    
+
     $ttCount = count(array_unique(array_filter(array_column($times, 'ttName'))));
 
     if (empty($times)) {
@@ -94,8 +94,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         ->addClass('thickbox float-right mt-8')
         ->getOutput();
 
-    echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
-    echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
+    echo '<h2>'.__(Format::dateIntlReadable($date->format('Y-m-d'), 'EEEE')).'</h2>';
+    echo '<p>'.Format::dateIntlReadable($date->format('Y-m-d')).'</p>';
 
     foreach ($times as $groupBy => $timeSlot) {
 
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
         // DATA TABLE
         $gridRenderer = new GridView($container->get('twig'));
-        
+
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
         if (!empty($groupBy)) {
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                     return $coverage['contextName'].'<br/>'.Format::small(Format::timeRange($coverage['timeStart'], $coverage['timeEnd']));
                 };
 
-                $url = $coverage['context'] == 'Class' 
+                $url = $coverage['context'] == 'Class'
                     ? './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID']
                     : '';
                 return Format::link($url, $coverage['contextName']).'<br/>'.Format::small($coverage['space']);
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                 }
                 return AbsenceFormats::substituteDetails($coverage);
         });
-        
+
         // ACTIONS
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // Proceed!
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonStaffCoverageDateID = $_REQUEST['gibbonStaffCoverageDateID'] ?? '';
-    
+
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $subGateway = $container->get(SubstituteGateway::class);
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // DETAILS
     $table = DataTable::createDetails('coverage');
 
-    $table->addColumn('date', __('Date'))->format(Format::using('dateReadable', ['date', '%A, %b %e']));
+    $table->addColumn('date', __('Date'))->format(Format::using('dateIntlReadable', ['date', 'EEEE, MMM d']));
     $table->addColumn('period', __('Period'));
     $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
 
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
                 $url = './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID'];
                 return Format::link($url, Format::courseClassName($coverage['courseNameShort'], $coverage['nameShort']), ['target' => '_blank']);
             });
-        
+
         $table->addColumn('studentsTotal', __('Students'));
 
         $table->addColumn('spaceName', __('Room'))
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     $subs = $subGateway->queryAvailableSubsByDate($criteria, $coverage['date'], $coverage['timeStart'], $coverage['timeEnd']);
     $availability = $subGateway->selectUnavailableDatesByDateRange($coverage['date'], $coverage['date'])->fetchGrouped();
-    
+
     // Check for special days for these classes
     $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
     $specialDay = $specialDayGateway->getSpecialDayByDate($coverage['date']);
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
             return $item['status'] == 'Absent' && $item['allDay'] == 'Y';
         }));
     });
-    
+
     // Sort by highest availability to lowest availability
     $subList = $subs->toArray();
     usort($subList, function ($a, $b) {
