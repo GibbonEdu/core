@@ -29,9 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -327,9 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                             }
                         } elseif ($viewBy == 'class') {
                             if ($gibbonCourseClassID == '') {
-                                echo "<div class='error'>";
-                                echo __('You have not specified one or more required parameters.');
-                                echo '</div>';
+                                $page->addError(__('You have not specified one or more required parameters.'));
                             } else {
 
                                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
@@ -338,9 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 $result->execute($data);
 
                                 if ($result->rowCount() != 1) {
-                                    echo "<div class='error'>";
-                                    echo __('The selected record does not exist, or you do not have access to it.');
-                                    echo '</div>';
+                                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                                 } else {
                                     $row = $result->fetch();
 
@@ -626,9 +620,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 }
             } elseif ($viewBy == 'class') {
                 if ($gibbonCourseClassID == '') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
 
@@ -655,9 +647,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     }
 
                     if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $row = $result->fetch();
 

@@ -67,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             //Let's go!
             $values = $result->fetch();

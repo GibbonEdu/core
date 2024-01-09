@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         if ($highestAction != 'Manage Outcomes_viewEditAll' and $highestAction != 'Manage Outcomes_viewAllEditLearningArea') {
             $page->addError(__('You do not have access to this action.'));
@@ -57,9 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             //Check if gibbonOutcomeID specified
             $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
             if ($gibbonOutcomeID == '') {
-                echo "<div class='error'>";
-                echo __('You have not specified one or more required parameters.');
-                echo '</div>';
+                $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 try {
                     if ($highestAction == 'Manage Outcomes_viewEditAll') {

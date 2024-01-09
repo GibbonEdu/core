@@ -52,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
         $gibbonPersonID = str_pad($gibbonPersonID, 10, 0, STR_PAD_LEFT);
 
         if ($gibbonPersonID == '' ) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $hookGateway = $container->get(HookGateway::class);
             $search = $_GET['search'] ?? '';
@@ -117,9 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
 
@@ -280,9 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             if ($tt != false) {
                                 echo $tt;
                             } else {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             }
                         }
                     } elseif ($subpage == 'Personal') {
@@ -573,9 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('The selected record does not exist, or you do not have access to it.');
-                            echo '</div>';
+                            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 echo "<div class='linkTop'>";
@@ -596,9 +588,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             if ($tt != false) {
                                 echo $tt;
                             } else {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             }
                         }
                     }

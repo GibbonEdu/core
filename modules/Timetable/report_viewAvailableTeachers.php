@@ -83,9 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $result = $pdo->select($sql, $data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
             $startDayStamp = strtotime(Format::dateConvert($ttDate));

@@ -62,9 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
         //Check if courseschool year specified
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $courseGateway = $container->get(CourseGateway::class);
 
@@ -76,9 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $values = $result->fetch();
                 $yearName = $values['schoolYear'];
@@ -88,9 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
 
                         $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);

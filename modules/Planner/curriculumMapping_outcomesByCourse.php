@@ -78,9 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
             $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
             //Get classes in this course
@@ -91,9 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 $resultClasses->execute($dataClasses);
 
             if ($resultClasses->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $classCount = $resultClasses->rowCount();
                 $classes = $resultClasses->fetchAll();

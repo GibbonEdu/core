@@ -178,15 +178,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>";
-                    echo __('Your request failed due to a database error.');
-                    echo '</div>';
+                    $page->addError(__('Your request failed due to a database error.'));
                 }
 
                 if ($resultSelect->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('Your request failed due to a database error.');
-                    echo '</div>';
+                    $page->addError(__('Your request failed due to a database error.'));
                 } else {
                     $rowSelect = $resultSelect->fetch();
 

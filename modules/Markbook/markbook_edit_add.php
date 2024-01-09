@@ -56,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     } else {
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonCourseClassID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($highestAction == 'Edit Markbook_everything') {

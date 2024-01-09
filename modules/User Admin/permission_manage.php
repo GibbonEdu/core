@@ -99,9 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $resultPermissions->execute($dataPermissions);
 
     if ($resultRoles->rowCount() < 1 or $resultModules->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('Your request failed due to a database error.');
-        echo '</div>';
+        $page->addError(__('Your request failed due to a database error.'));
     } else {
         //Fill role and permission arrays
         $roleArray = ($resultRoles->rowCount() > 0)? $resultRoles->fetchAll() : array();

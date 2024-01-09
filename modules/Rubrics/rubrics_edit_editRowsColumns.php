@@ -71,9 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
             //Check if gibbonRubricID specified
             if ($gibbonRubricID == '') {
-                echo "<div class='error'>";
-                echo __('You have not specified one or more required parameters.');
-                echo '</div>';
+                $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 
                 $data = array('gibbonRubricID' => $gibbonRubricID);

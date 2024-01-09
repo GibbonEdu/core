@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         //Check if gibbonTTSpaceBookingID specified
         $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'];
         if ($gibbonTTSpaceBookingID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($highestAction == 'Manage Facility Bookings_allBookings') {

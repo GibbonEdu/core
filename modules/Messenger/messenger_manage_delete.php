@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         //Check if gibbonMessengerID specified
         $gibbonMessengerID = $_GET['gibbonMessengerID'];
         if ($gibbonMessengerID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($highestAction == 'Manage Messages_all') {

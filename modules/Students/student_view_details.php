@@ -75,9 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         $sort = $_GET['sort'] ?? '';
 
         if ($gibbonPersonID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
             return;
         } else {
             $settingGateway = $container->get(SettingGateway::class);
@@ -121,9 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $result->execute($data);
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
@@ -240,9 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     return;
                 } else {
                     $row = $result->fetch();
@@ -1398,9 +1392,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $page->addError(__('You do not have access to this action.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed because you do not have access to this action.');
-                                echo '</div>';
+                                $page->addError(__('Your request failed because you do not have access to this action.'));
                             } else {
                                 echo '<p>';
                                 echo __('Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.').' <b>'.__('Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).').'</b>';
@@ -1517,9 +1509,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Attendance') {
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             include './modules/Attendance/moduleFunctions.php';
                             include './modules/Attendance/src/StudentHistoryData.php';
@@ -1538,9 +1528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Markbook') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             // Register scripts available to the core, but not included by default
                             $page->scripts->add('chart');
@@ -2042,9 +2030,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Internal Assessment') {
                         if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $highestAction2 = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_view.php', $connection2);
                             if ($highestAction2 == false) {
@@ -2066,9 +2052,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'External Assessment') {
                         if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php') == false and isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             //Module includes
                             include './modules/Formal Assessment/moduleFunctions.php';
@@ -2082,9 +2066,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Reports') {
                         if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $highestActionReports = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_view.php', $connection2);
                             $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
@@ -2190,9 +2172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Individual Needs') {
                         if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             //Edit link
                             if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == true) {
@@ -2206,9 +2186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled');
                             if ($statusTable == false) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed due to a database error.');
-                                echo '</div>';
+                                $page->addError(__('Your request failed due to a database error.'));
                             } else {
                                 echo $statusTable;
                             }
@@ -2281,9 +2259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Library Borrowing') {
                         if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             //Print borrowing record
                             $libraryGateway = $container->get(LibraryReportGateway::class);
@@ -2347,9 +2323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
@@ -2376,9 +2350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Activities') {
                         if (!(isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent'))) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             echo '<p>';
                             echo __('This report shows the current and historical activities that a student has enrolled in.');
@@ -2453,9 +2425,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Homework') {
                         if (!(isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') or isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php'))) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $role = $session->get('gibbonRoleIDCurrentCategory');
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
@@ -2479,9 +2449,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Behaviour') {
                         if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             include './modules/Behaviour/moduleFunctions.php';
 

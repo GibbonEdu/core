@@ -51,9 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         //Check if gibbonStaffID specified
         $gibbonStaffID = $_GET['gibbonStaffID'];
         if ($gibbonStaffID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $staffGateway = $container->get(StaffGateway::class);
             $staff = $staffGateway->selectStaffByStaffID($gibbonStaffID);
