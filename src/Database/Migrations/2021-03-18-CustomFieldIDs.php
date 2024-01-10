@@ -45,6 +45,8 @@ class CustomFieldIDs extends Migration
         $partialFail = false;
 
         $updateIDs = function ($fieldData) {
+            if (empty($fieldData) || !is_array($fieldData)) return [];
+
             return array_reduce(array_keys($fieldData), function ($group, $key) use (&$fieldData) {
                 $group[str_pad($key, 4, '0', STR_PAD_LEFT)] = $fieldData[$key];
                 return $group;

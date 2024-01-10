@@ -39,6 +39,7 @@ v27.0.00
         Messenger: Added search form and school year navigator to Manage Groups page for quicker group browsing.
 
     Bug Fixes
+        System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
 
 v26.0.00
 --------
