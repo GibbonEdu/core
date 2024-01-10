@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             if ($highestAction == 'Unit Planner_all') {
                 $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
+                $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {

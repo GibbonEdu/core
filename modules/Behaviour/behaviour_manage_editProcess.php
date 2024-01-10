@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             }
                         }
 
-                        $event->sendNotificationsAsBcc($pdo, $gibbon->session);
+                        $event->sendNotificationsAsBcc($pdo, $session);
 
                         // Check if this is an IN student 
                         $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                             $eventIN->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
 
-                            $eventIN->sendNotificationsAsBcc($pdo, $gibbon->session);
+                            $eventIN->sendNotificationsAsBcc($pdo, $session);
                         }
                     }
 

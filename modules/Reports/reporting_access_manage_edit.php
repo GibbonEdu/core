@@ -51,13 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
         return;
     }
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 
-    $form = Form::create('accessManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_access_manage_editProcess.php');
+    $form = Form::create('accessManage', $session->get('absoluteURL').'/modules/Reports/reporting_access_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingAccessID', $gibbonReportingAccessID);
 
     $values['gibbonRoleIDList'] = explode(',', $values['gibbonRoleIDList']);

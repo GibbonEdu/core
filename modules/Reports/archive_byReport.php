@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
     $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID) && $canViewPastReports) {

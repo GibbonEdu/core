@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
             if ($highestAction == 'Unit Planner_all') {
                 $resultCourse = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $resultCourse = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                $resultCourse = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
             }
 
             if ($resultCourse->rowCount() != 1) {

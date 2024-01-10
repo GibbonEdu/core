@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     } else {
         $viewMode = $_REQUEST['viewMode'] ?? '';
         $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
-        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         if ($highestAction == 'Student History_all') {
             $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addSearchSubmit($gibbon->session);
+                    $row->addSearchSubmit($session);
 
                 echo $form->getOutput();
             }
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                     $row = $form->addRow();
                         $row->addFooter();
-                        $row->addSearchSubmit($gibbon->session);
+                        $row->addSearchSubmit($session);
 
                     echo $form->getOutput();
                 }

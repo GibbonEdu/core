@@ -56,14 +56,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
     if (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) {
         //Get an array of days school is in session
         $dates = getLastNSchoolDays(
-            $gibbon->session->get('guid'),
+            $session->get('guid'),
             $connection2,
             date("Y-m-d"),
             $numberOfSchoolDays,
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             echo '</div>';
         } else {
 
-            $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sql = "
                 SELECT
                   gibbonPerson.gibbonPersonID,
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             $absences = array_map(function ($row) use ($gibbon, $connection2, $dates) {
               // Get number of absences within date range
                 $row['count'] = getAbsenceCount(
-                    $gibbon->session->get('guid'),
+                    $session->get('guid'),
                     $row['gibbonPersonID'],
                     $connection2,
                     end($dates),

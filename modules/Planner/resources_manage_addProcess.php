@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 exit;
             } else {
                 if ($type == 'File') {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

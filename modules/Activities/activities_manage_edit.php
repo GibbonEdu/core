@@ -58,17 +58,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $settingGateway = $container->get(SettingGateway::class);
 
-            $form = Form::create('activity', $gibbon->session->get('absoluteURL') . '/modules/' . $gibbon->session->get('module') . '/activities_manage_editProcess.php');
+            $form = Form::create('activity', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/activities_manage_editProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $gibbon->session->get('address'));
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
             $form->addHiddenValue('search', $search);
             $form->addHiddenValue('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
 
             if (!empty($search) || !empty($gibbonSchoolYearTermID)) {
                 $form->addHeaderAction('back', __('Back to Search Results'))
-                    ->setURL('/modules/' . $gibbon->session->get('module') . '/activities_manage.php')
+                    ->setURL('/modules/' . $session->get('module') . '/activities_manage.php')
                     ->addParam('search', $search)
                     ->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
             }
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $row->addSelect('provider')
                     ->required()
                     ->fromArray([
-                        'School' => $gibbon->session->get('organisationNameShort'),
+                        'School' => $session->get('organisationNameShort'),
                         'External' => __('External')
                     ]);
 
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             if ($dateType != 'Date') {
                 $row = $form->addRow();
                     $row->addLabel('gibbonSchoolYearTermIDList', __('Terms'))->description(__('Terms in which the activity will run.'));
-                    $row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $gibbon->session->get('gibbonSchoolYearID'))->loadFromCSV($values);
+                    $row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $session->get('gibbonSchoolYearID'))->loadFromCSV($values);
             } else {
                 $row = $form->addRow();
                     $row->addLabel('listingStart', __('Listing Start Date'))->description(__('Default: 2 weeks before the end of the current term.'));
@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             //Custom Blocks
             $row = $form->addRow();
-                $slotBlocks = $row->addCustomBlocks('timeSlots', $gibbon->session)
+                $slotBlocks = $row->addCustomBlocks('timeSlots', $session)
                     ->fromTemplate($slotBlock)
                     ->settings([
                         'placeholder' => __('Time Slots will appear here...'),
@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $row = $form->addRow();
                 $row->addLabel('staff', __('Staff'));
-                $row->addSelectUsers('staff', $gibbon->session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
+                $row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), ['includeStaff' => true])->selectMultiple();
             
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));

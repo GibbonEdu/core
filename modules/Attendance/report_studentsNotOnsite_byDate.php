@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -105,9 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     }
     $criteria->fromPOST();
 
-    $attendance = $attendanceGateway->queryStudentsNotOnsite($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate, $allStudents, $countClassAsSchool);
+    $attendance = $attendanceGateway->queryStudentsNotOnsite($criteria, $session->get('gibbonSchoolYearID'), $currentDate, $allStudents, $countClassAsSchool);
 
-    $table = ReportTable::createPaginated('attendanceReport', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('attendanceReport', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report Data'));
 
     $table->addMetaData('blankSlate', __('All students are present.'));

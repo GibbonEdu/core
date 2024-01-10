@@ -31,7 +31,7 @@ $type = $_POST['type'] ?? '';
 $gibbonReportingCycleIDList = !empty($_POST['gibbonReportingCycleIDList'])? explode(',', $_POST['gibbonReportingCycleIDList']) : [];
 $notificationText = $_POST['notificationText'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php&type='.$type;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php&type='.$type;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.php') == false) {
     $URL .= '&return=error0';

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             if ($highestAction == 'Unit Planner_all') {
                 $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {
@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $form->addRow()->addHeading('Outcomes', __('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'));
                         $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
                         $row = $form->addRow();
-                            $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                            $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
                         $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
                         $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, category FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             ->addClass('addBlock');
 
                         $row = $form->addRow();
-                            $customBlocks = $row->addPlannerSmartBlocks('smart', $gibbon->session, $guid)
+                            $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid)
                                 ->addToolInput($blockCreator);
 
                         $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);

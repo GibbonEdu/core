@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $sendTestEmail = $_POST['sendTestEmail'] ?? 'N';
     $saveMode = $_POST['saveMode'] ?? 'Preview';
     $data = [
-        'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'),
+        'gibbonSchoolYearID'=> $session->get('gibbonSchoolYearID'),
         'status'            => $_POST['status'] ?? 'Draft',
         'email'             => $_POST['email'] ?? 'N',
         'messageWall'       => $_POST['messageWall'] ?? 'N',

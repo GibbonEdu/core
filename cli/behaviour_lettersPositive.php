@@ -54,7 +54,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 
     // Initialize the notification sender & gateway objects
     $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    $notificationSender = new NotificationSender($notificationGateway, $session);
 
     //Get settings
     $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');

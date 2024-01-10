@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         $row = $form->addRow();
         $row->addAdvancedOptionsToggle();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
         echo $form->getOutput();
     }
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->fromPOST();
     $items = $gateway->queryCatalog($criteria, $session->get('gibbonSchoolYearID'));
 
-    $table = ReportTable::createPaginated('items', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('items', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Manage Catalog'));
 
     $table->addHeaderAction('add', __('Add'))
@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->format(function ($item) use ($gibbon) {
             if (!empty($item['gibbonLibraryItemIDParent'])) return Format::tag(__('Copy'), 'dull text-xxs');
             if ($item['ownershipType'] == 'School') {
-                return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
+                return sprintf('<b>%1$s</b><br/>', $session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
                 return sprintf('<b>%1$s</b><br/>', __('Individual'));
             }

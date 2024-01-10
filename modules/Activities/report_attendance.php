@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

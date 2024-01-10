@@ -59,7 +59,7 @@ if (!$session->has('gibbonPersonID')) {
                 $multiple = true;
             }
 
-            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
             //Insert files
             for ($i = 1; $i < 5; ++$i) {

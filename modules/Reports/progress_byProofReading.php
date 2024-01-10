@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
     // Proceed!
     $page->breadcrumbs->add(__('Proof Reading Progress'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);
     $reportingProofGateway = $container->get(ReportingProofGateway::class);
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
             ->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

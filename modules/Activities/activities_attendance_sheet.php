@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

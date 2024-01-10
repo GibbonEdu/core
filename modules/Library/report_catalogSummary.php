@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
         $row = $form->addRow();
             $row->addFooter(false);
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     $catalog = $reportGateway->queryCatalogSummary($criteria);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Catalog Summary'));
 
     $table->addColumn('id', __('School ID'))

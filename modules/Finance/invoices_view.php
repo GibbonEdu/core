@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
         if ($highestAction=="View Invoices_myChildren") {
             //Test data access field for permission
             
-                $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 $options = array();
                 while ($row = $result->fetch()) {
                     
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
+                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
@@ -71,18 +71,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
                     $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
-                    $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+                    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
                     $form->setClass('noIntBorder fullWidth standardForm');
 
                     $form->addHiddenValue('q', '/modules/Finance/invoices_view.php');
-                    $form->addHiddenValue('address', $gibbon->session->get('address'));
+                    $form->addHiddenValue('address', $session->get('address'));
 
                     $row = $form->addRow();
                         $row->addLabel('search', __('Student'));
                         $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
 
                     $row = $form->addRow();
-                        $row->addSearchSubmit($gibbon->session);
+                        $row->addSearchSubmit($session);
 
                     echo $form->getOutput();
                 }
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 }
             }
         } else if ($highestAction=="View Invoices_mine") {
-            $gibbonPersonID = $gibbon->session->get("gibbonPersonID");
+            $gibbonPersonID = $session->get("gibbonPersonID");
             $options = [$gibbonPersonID];
         }
 
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
             //Confirm access to this student
             try {
                 if ($highestAction=="View Invoices_myChildren") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $gibbon->session->get('gibbonPersonID'));
+                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                     $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                 } else if ($highestAction=="View Invoices_mine") {
                     $dataChild = array('gibbonPersonID' => $gibbonPersonID);
@@ -158,8 +158,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                         echo __('Schedule');
                         echo '</th>';
                         echo "<th style='width: 120px'>";
-                        echo __('Total')." <span style='font-style: italic; font-size: 75%'>(".$gibbon->session->get('currency').')</span><br/>';
-                        echo "<span style='font-style: italic; font-size: 75%'>".__('Paid').' ('.$gibbon->session->get('currency').')</span>';
+                        echo __('Total')." <span style='font-style: italic; font-size: 75%'>(".$session->get('currency').')</span><br/>';
+                        echo "<span style='font-style: italic; font-size: 75%'>".__('Paid').' ('.$session->get('currency').')</span>';
                         echo '</th>';
                         echo "<th style='width: 80px'>";
                         echo __('Issue Date').'<br/>';
@@ -243,8 +243,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                                 }
                             }
                             if ($feeError == false) {
-                                if (substr($gibbon->session->get('currency'), 4) != '') {
-                                    echo substr($gibbon->session->get('currency'), 4).' ';
+                                if (substr($session->get('currency'), 4) != '') {
+                                    echo substr($session->get('currency'), 4).' ';
                                 }
                                 echo number_format($totalFee, 2, '.', ',').'<br/>';
                                 if ($row['paidAmount'] != '') {
@@ -253,8 +253,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                                         $styleExtra = 'color: #c00;';
                                     }
                                     echo "<span style='$styleExtra font-style: italic; font-size: 85%'>";
-                                    if (substr($gibbon->session->get('currency'), 4) != '') {
-                                        echo substr($gibbon->session->get('currency'), 4).' ';
+                                    if (substr($session->get('currency'), 4) != '') {
+                                        echo substr($session->get('currency'), 4).' ';
                                     }
                                     echo number_format($row['paidAmount'], 2, '.', ',').'</span>';
                                 }
@@ -270,9 +270,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] == 'Issued') {
-                                echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             } elseif ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
-                                echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             }
                             echo "<script type='text/javascript'>";
                             echo '$(document).ready(function(){';
@@ -284,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '});';
                             echo '</script>';
                             if (!empty($row['notes'])) {
-                                echo "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                                echo "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                             }
                             echo '</td>';
                             echo '</tr>';

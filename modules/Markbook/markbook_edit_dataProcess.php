@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     if ($uploadedResponse == 'Y') {
                         //Move attached image  file, if there is one
                         if (!empty($_FILES['response'.$i]['tmp_name'])) {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                             $file = (isset($_FILES['response'.$i]))? $_FILES['response'.$i] : null;
 
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             }
                             if (!empty($errorMessage) || filesize($attachment) === 0) {
                                 $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
-                                $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
+                                $logGateway->addLog($session->get('gibbonSchoolYearID'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                     'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
                                     'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                                     'name' => $name,

@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
 
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $allStudents = $_GET['allStudents'] ?? '';
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         $row->addCheckbox('allStudents')->setValue('on')->checked($allStudents);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         // Custom Blocks for Fees
         $row = $form->addRow();
-            $customBlocks = $row->addCustomBlocks('feesBlock', $gibbon->session)
+            $customBlocks = $row->addCustomBlocks('feesBlock', $session)
                 ->fromTemplate($blockTemplate)
                 ->settings(array('inputNameStrategy' => 'string', 'addOnEvent' => 'change', 'sortable' => true))
                 ->placeholder(__('Fees will be listed here...'))

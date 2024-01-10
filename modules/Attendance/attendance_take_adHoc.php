@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

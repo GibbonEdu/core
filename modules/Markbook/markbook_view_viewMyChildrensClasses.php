@@ -88,7 +88,7 @@ if ($result->rowCount() < 1) {
             $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -201,7 +201,7 @@ if ($result->rowCount() < 1) {
                 ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
 
             $rowFilter = $form->addRow();
-                $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('search'))->prepend($showHide->getOutput());
+                $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('search'))->prepend($showHide->getOutput());
 
             echo $form->getOutput();
 

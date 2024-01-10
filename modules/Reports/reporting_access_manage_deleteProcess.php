@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 
 $gibbonReportingAccessID = $_GET['gibbonReportingAccessID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_manage_delete.php') == false) {
     $URL .= '&return=error0';

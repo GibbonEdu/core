@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                                         $partialFail = true;
                                     }
                                 } elseif ($resourceType == 'File') {
-                                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                                     // Handle the attached file, if there is one
                                     if (!empty($_FILES['file'.$i]['tmp_name'])) {

@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     if ($highestAction == 'Unit Planner_all') {
                         $resultCourse = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
                     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $resultCourse = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                        $resultCourse = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
                     }
 
                     if ($resultCourse->rowCount() != 1) {
@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $form->addRow()->addHeading('Outcomes', __('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'))->addClass('advanced');
                         $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
                         $row = $form->addRow()->addClass('advanced');
-                            $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                            $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
                         //SMART BLOCKS
                         $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'))->append(__('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.'))->addClass('advanced');
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             ->addClass('advanced addBlock');
 
                         $row = $form->addRow()->addClass('advanced');
-                            $customBlocks = $row->addPlannerSmartBlocks('smart', $gibbon->session, $guid)
+                            $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid)
                                 ->addToolInput($blockCreator);
 
                         for ($i=0 ; $i<5 ; $i++) {

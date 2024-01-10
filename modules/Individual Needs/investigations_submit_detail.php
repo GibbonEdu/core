@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
         $contribution = $contributionsGateway->getContributionByID($gibbonINInvestigationContributionID);
 
-        if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
+        if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $session->get('gibbonPersonID')) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_submit_detailProcess.php");

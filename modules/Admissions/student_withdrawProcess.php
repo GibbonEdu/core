@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
     // Validate the database relationships exist
     $person = $userGateway->getByID($gibbonPersonID);
-    $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
+    $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
 
     if (empty($person) || empty($student)) {
         $URL .= '&return=error2';
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
                 'title'                       => __('Student Withdrawn'),
                 'note'                        => $withdrawNote,
                 'gibbonPersonID'              => $gibbonPersonID,
-                'gibbonPersonIDCreator'       => $gibbon->session->get('gibbonPersonID'),
+                'gibbonPersonIDCreator'       => $session->get('gibbonPersonID'),
                 'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Academic') ?? null,
                 'timestamp'                   => date('Y-m-d H:i:s', time()),
             ]);
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
             $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
                 'student'   => $studentName,
                 'formGroup'   => $student['formGroup'],
-                'school'    => $gibbon->session->get('organisationNameShort'),
+                'school'    => $session->get('organisationNameShort'),
                 'date'      => Format::date($data['dateEnd']),
             ]);
 
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
             // Admissions Administrator
             if (in_array('admin', $notify)) {
-                $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+                $event->addRecipient($session->get('organisationAdmissions'));
             }
 
             // Head of Year
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
             // Class Teachers
             if (in_array('teachers', $notify)) {
-                $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
+                $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
                 foreach ($teachers as $teacher) {
                     $event->addRecipient($teacher['gibbonPersonID']);
                 }
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
             }
 
             // Add event listeners to the notification sender
-            $event->sendNotifications($pdo, $gibbon->session);
+            $event->sendNotifications($pdo, $session);
         }
     }
 

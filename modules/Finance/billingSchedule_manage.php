@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo __('Search');
         echo '</h3>';
 
-        $form = Form::create("searchBox", $gibbon->session->get('absoluteURL') . "/index.php", "get", "noIntBorder fullWidth standardForm");
+        $form = Form::create("searchBox", $session->get('absoluteURL') . "/index.php", "get", "noIntBorder fullWidth standardForm");
         $form->setClass('noIntBorder fullWidth');
         $form->addHiddenValue("q", "/modules/Finance/billingSchedule_manage.php");
 
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             $row->addTextField("search")->maxLength(20)->setValue($search);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __("Clear Search"));
+            $row->addSearchSubmit($session, __("Clear Search"));
 
         echo $form->getOutput();
 

@@ -130,7 +130,7 @@ class MarkbookView
         $this->pdo = $pdo;
 
         $this->gibbonCourseClassID = $gibbonCourseClassID;
-        $this->gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $this->gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
         $this->settingGateway = $settingGateway;
 
         // Preload Gibbon settings - we check them a lot

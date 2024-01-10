@@ -27,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_migrate.php') == false) {
     $URL .= '&return=error0';

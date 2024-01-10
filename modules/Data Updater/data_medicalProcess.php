@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     if (!empty($_FILES["attachment$i"]['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
-                        $fileUploader = new FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new FileUploader($pdo, $session);
                         $data['attachment'] = $fileUploader->uploadFromPost($_FILES["attachment$i"]);
 
                         if (empty($data['attachment'])) {
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     if (!empty($_FILES['attachment']['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
-                        $fileUploader = new FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new FileUploader($pdo, $session);
                         $data['attachment'] = $fileUploader->uploadFromPost($_FILES['attachment']);
 
                         if (empty($data['attachment'])) {
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     $event->setNotificationText(__('A medical data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_medical_manage.php');
 
-                    $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $session);
                 }
 
                 if ($partialFail == true) {

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     if ($highestAction == 'Unit Planner_all') {
         $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
+        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
     }
 
     if ($result->rowCount() != 1) {
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         $lessonTimes = $plannerEntryGateway->queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
         $form->setTitle(__('Step 1 - Select Lessons'));
         $form->setDescription(__('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.'));
 
@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $form->setTitle(__('Step 2 - Distribute Blocks'));
         $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
         
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
 
         $deployIndex = 0;
         $deployed = 0;

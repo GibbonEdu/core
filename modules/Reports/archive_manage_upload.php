@@ -35,12 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
     $page->return->addReturns(['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>'])]);
 
-    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_uploadPreview.php');
+    $form = Form::create('archiveImport', $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_uploadPreview.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Step 1 - Select ZIP File'));
     $form->setDescription(__('This page allows you to bulk import reports, in the form of a ZIP file containing PDFs named with individual usernames.'));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading('File Import', __('File Import'));
 
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearID', __('School Year'));
-        $row->addSelectSchoolYear('gibbonSchoolYearID')->required()->selected($gibbon->session->get('gibbonSchoolYearID'));
+        $row->addSelectSchoolYear('gibbonSchoolYearID')->required()->selected($session->get('gibbonSchoolYearID'));
 
     $row = $form->addRow();
         $row->addLabel('reportIdentifier', __('Report Name'));

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         $row->addLabel('search', __('Search For'))->description(__('Group name'));
         $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
-    $searchForm->addRow()->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
+    $searchForm->addRow()->addSearchSubmit($session, __('Clear Search'), ['gibbonSchoolYearID']);
     echo $searchForm->getOutput();
     
     // BULK ACTION FORM

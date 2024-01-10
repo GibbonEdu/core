@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
