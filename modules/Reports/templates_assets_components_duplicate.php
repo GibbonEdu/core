@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
     $values['templateFile'] = str_replace('.twig.html', '_copy.twig.html', $values['templateFile']);
 
-    $form = Form::create('manageComponents', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_components_duplicateProcess.php');
+    $form = Form::create('manageComponents', $session->get('absoluteURL').'/modules/Reports/templates_assets_components_duplicateProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID);
 
     $row = $form->addRow();

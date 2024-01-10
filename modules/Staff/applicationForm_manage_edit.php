@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $heading = $form->addRow()->addHeading('Supporting Documents', __('Supporting Documents'));
 
-                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                 $requiredDocumentsList = explode(',', $staffApplicationFormRequiredDocuments);
 

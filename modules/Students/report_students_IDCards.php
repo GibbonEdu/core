@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             //Get background image
             $bg = '';
             if (!empty($_FILES['file']['tmp_name'])) {
-                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                 $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

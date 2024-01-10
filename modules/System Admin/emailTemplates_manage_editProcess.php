@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
 
         // Send the email to the current user
         $mail = $container->get(Mailer::class);
-        $mail->AddAddress($gibbon->session->get('email'));
+        $mail->AddAddress($session->get('email'));
         $mail->setDefaultSender($subject);
         $mail->renderBody('mail/email.twig.html', [
             'title'  => $subject,

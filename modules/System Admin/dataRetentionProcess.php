@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
             'gibbonPersonID'            => $gibbonPersonID,
             'tables'                    => json_encode(array_keys($tables)),
             'status'                    => count($successfulTables) ==  count($tables)? 'Success' : 'Partial Failure',
-            'gibbonPersonIDOperator'    => $gibbon->session->get('gibbonPersonID'),
+            'gibbonPersonIDOperator'    => $session->get('gibbonPersonID'),
         ];
 
         // Update existing records to merge the list of scrubbed tables
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     }
 
     // Write to log
-    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList, COUNT_RECURSIVE)));
+    $logGateway->addLog($session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList, COUNT_RECURSIVE)));
 
     $URL .= $partialFail
         ?'&return=warning2'

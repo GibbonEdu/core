@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
                 //Move attached file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

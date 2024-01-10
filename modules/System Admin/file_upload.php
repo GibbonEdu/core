@@ -45,11 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
 
     if ($step == 1) {
         // STEP 1
-        $form->setAction($gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_uploadPreview.php');
+        $form->setAction($session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_uploadPreview.php');
         $form->setTitle(__('Step 1 - Select ZIP File'));
         $form->setDescription(__('This page allows you to bulk import files such as user photos, personal documents, and custom field files. The uploaded file needs to be in the form of a ZIP file containing files named with a unique identifier. See options below to configure how file names are handled.'));
         
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('step', 2);
 
         $form->addRow()->addHeading('File Import', __('File Import'));

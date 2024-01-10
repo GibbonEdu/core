@@ -73,9 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         echo Format::alert(__('This criteria is already in use in {count} locations. It cannot be deleted or changed to a different criteria type.', ['count' => '<b>'.$criteriaInUse.'</b>']), 'warning');
     }
 
-    $form = Form::create('reportCriteriaManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editProcess.php');
+    $form = Form::create('reportCriteriaManage', $session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editProcess.php');
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCriteriaID', $gibbonReportingCriteriaID);
     $form->addHiddenValue('gibbonReportingScopeID', $gibbonReportingScopeID);
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);

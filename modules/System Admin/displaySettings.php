@@ -44,9 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
         $row->addLabel($setting['name'].'File', __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
+            ->setAttachment('organisationLogo', $session->get('absoluteURL'), $setting['value'])->required();
 
-    $theme = getThemeManifest($gibbon->session->get('gibbonThemeName'), $guid);
+    $theme = getThemeManifest($session->get('gibbonThemeName'), $guid);
     if (!empty($theme['themeColours'])) {
         $setting = $settingGateway->getSettingByScope('System', 'themeColour', true);
         $row = $form->addRow();
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->setAttachment('organisationBackground', $gibbon->session->get('absoluteURL'), $setting['value']);
+            ->setAttachment('organisationBackground', $session->get('absoluteURL'), $setting['value']);
 
     $setting = $settingGateway->getSettingByScope('System', 'mainMenuCategoryOrder', true);
     $row = $form->addRow();

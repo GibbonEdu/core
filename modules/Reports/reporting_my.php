@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
     // Proceed!
     $page->breadcrumbs->add(__('My Reporting'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     // Select Person, if able to
     if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.php', 'Write Reports_editAll')) {
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID');
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -54,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     } else {
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
     }
 
     if (empty($gibbonPersonID)) {

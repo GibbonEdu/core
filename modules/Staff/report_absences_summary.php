@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
         $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
         echo $form->getOutput();
 
@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('staffAbsences', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('staffAbsences', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report'));
     $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 

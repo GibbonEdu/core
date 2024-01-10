@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->setURL('/modules/School Admin/department_manage_add.php')
         ->displayLabel();
 
-    $table->addDraggableColumn('gibbonDepartmentID', $gibbon->session->get('absoluteURL').'/modules/School Admin/department_manage_editOrderAjax.php');
+    $table->addDraggableColumn('gibbonDepartmentID', $session->get('absoluteURL').'/modules/School Admin/department_manage_editOrderAjax.php');
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('type', __('Type'))->translatable();

@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $templates = $prototypeGateway->queryPrototypes($criteria);
     $fonts = $fontGateway->selectFontList()->fetchKeyPair();
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $templatePath = $absolutePath.'/modules/Reports/templates';
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->fromPOST('manageFonts');
 
     $fonts = $fontGateway->queryFonts($criteria);
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
     // Data TABLE

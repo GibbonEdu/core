@@ -30,8 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if gibbonCourseClassID and gibbonCourseID specified
-    $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonPersonID = $session->get('gibbonPersonID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     $gibbonCourseID = $_GET['gibbonCourseID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '') {

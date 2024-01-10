@@ -33,7 +33,7 @@ $urlParams = [
     'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? '',
     'referer' => $_REQUEST['referer'] ?? '',
 ];
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_addMultiple.php&'.http_build_query($urlParams);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_addMultiple.php&'.http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria_manage_add.php') == false) {
     $URL .= '&return=error0';

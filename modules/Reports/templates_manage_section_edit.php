@@ -57,9 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
 
     $prototype = $templatePrototypeGateway->getByID($values['gibbonReportPrototypeSectionID']);
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_section_editProcess.php');
+    $form = Form::create('templatesManage', $session->get('absoluteURL').'/modules/Reports/templates_manage_section_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
     $form->addHiddenValue('gibbonReportTemplateSectionID', $gibbonReportTemplateSectionID);
 

@@ -35,7 +35,7 @@ $urlParams = [
     'gibbonCourseID' => $_POST['gibbonCourseID'] ?? null,
     'scopeType' => $_POST['scopeType'] ?? null,
 ];
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_add.php&'.http_build_query($urlParams);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_add.php&'.http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria_manage_add.php') == false) {
     $URL .= '&return=error0';

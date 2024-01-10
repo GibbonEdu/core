@@ -33,10 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     $page->return->addReturns(['warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:')]);
     
-    if (!empty($gibbon->session->get('moduleUpdateError'))) {
-        $page->addError(__('The following SQL statements caused errors:').' '.$gibbon->session->get('moduleUpdateError'));
+    if (!empty($session->get('moduleUpdateError'))) {
+        $page->addError(__('The following SQL statements caused errors:').' '.$session->get('moduleUpdateError'));
     }
-    $gibbon->session->set('moduleUpdateError', '');
+    $session->set('moduleUpdateError', '');
 
     // Check if module specified
     $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             // Let's go!
             $versionDB = $module['version'];
 
-            if (file_exists($gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/version.php')) {
-                include $gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/version.php';
+            if (file_exists($session->get('absolutePath').'/modules/'.$module['name'].'/version.php')) {
+                include $session->get('absolutePath').'/modules/'.$module['name'].'/version.php';
             }
             @$versionCode = $moduleVersion;
 
@@ -77,14 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             } elseif (version_compare($versionDB, $versionCode, '<')) {
                 // Time to update
                 $page->addMessage(sprintf(__('This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($module['name'])));
-                $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/module_manage_updateProcess.php?&gibbonModuleID='.$module['gibbonModuleID']);
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/module_manage_updateProcess.php?&gibbonModuleID='.$module['gibbonModuleID']);
                 
                 $form->setTitle(__('Database Update'))
                     ->setDescription(sprintf(__('It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($module['name']), $versionDB, $versionCode).'</b>');
                 
                 $form->addHiddenValue('versionDB', $versionDB);
                 $form->addHiddenValue('versionCode', $versionCode);
-                $form->addHiddenValue('address', $gibbon->session->get('address'));
+                $form->addHiddenValue('address', $session->get('address'));
 
                 $form->addRow()->addSubmit();
                 echo $form->getOutput(); 

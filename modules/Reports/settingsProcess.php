@@ -26,7 +26,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['archiveInformation' => 'HTML']);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/settings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/settings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/settings.php') == false) {
     $URL .= '&return=error0';

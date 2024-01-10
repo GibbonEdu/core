@@ -42,6 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/Reports/reporting_scopes_manage_deleteProcess.php?gibbonReportingScopeID='.$gibbonReportingScopeID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reporting_scopes_manage_deleteProcess.php?gibbonReportingScopeID='.$gibbonReportingScopeID, true);
     echo $form->getOutput();
 }

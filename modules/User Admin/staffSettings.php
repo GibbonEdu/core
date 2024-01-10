@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $settingGateway = $container->get(SettingGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
-    $absoluteURL = $gibbon->session->get('absoluteURL');
+    $absoluteURL = $session->get('absoluteURL');
 
     // QUERY
     $criteria = $staffAbsenceTypeGateway->newQueryCriteria(true)

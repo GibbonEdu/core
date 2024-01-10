@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
+        $row->addSearchSubmit($session, __('Clear Search'), array('gibbonSchoolYearID'));
 
     echo $form->getOutput();
 

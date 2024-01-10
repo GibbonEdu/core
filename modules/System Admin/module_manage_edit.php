@@ -44,9 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $page->addError(__('The specified record cannot be found.'));
         } else {
             // Let's go!
-            $form = Form::create('moduleEdit', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/module_manage_editProcess.php?gibbonModuleID='.$module['gibbonModuleID']);
+            $form = Form::create('moduleEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/module_manage_editProcess.php?gibbonModuleID='.$module['gibbonModuleID']);
 
-            $form->addHiddenValue('address', $gibbon->session->get('address'));
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));

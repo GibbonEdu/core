@@ -40,7 +40,7 @@ $urlParams = [
     'allStudents' => $_POST['allStudents'] ?? '',
 ];
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write.php&'.http_build_query($urlParams);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write.php&'.http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.php') == false) {
     $URL .= '&return=error0';
@@ -73,14 +73,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     }
 
     // ACCESS CHECK: overall check (for high-level access) or per-scope check for general access
-    $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $gibbon->session->get('gibbonPersonID'));
+    $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $session->get('gibbonPersonID'));
     $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
     if ($highestAction == 'Write Reports_editAll') {
         $reportingOpen = ($accessCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = true;
         $canWriteReport = true;
     } elseif ($highestAction == 'Write Reports_mine') {
-        $writeCheck = $reportingAccessGateway->getAccessToScopeAndCriteriaGroupByPerson($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $gibbon->session->get('gibbonPersonID'));
+        $writeCheck = $reportingAccessGateway->getAccessToScopeAndCriteriaGroupByPerson($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $session->get('gibbonPersonID'));
         $reportingOpen = ($writeCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = ($accessCheck['canAccess'] ?? 'N') == 'Y';
         $canWriteReport = $reportingOpen && ($writeCheck['canWrite'] ?? 'N') == 'Y';
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         'gibbonReportingCriteriaID' => $urlParams['gibbonReportingScopeID'],
         'gibbonSchoolYearID'        => $reportingCycle['gibbonSchoolYearID'],
         'gibbonCourseClassID'       => $reportingScope['scopeType'] == 'Course' ? $urlParams['scopeTypeID'] : '',
-        'gibbonPersonIDCreated'     => $gibbon->session->get('gibbonPersonID'),
+        'gibbonPersonIDCreated'     => $session->get('gibbonPersonID'),
     ];
     
     // Insert or update each record
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
             'value' => $data['value'],
             'comment' => $data['comment'],
             'gibbonScaleGradeID' => $data['gibbonScaleGradeID'],
-            'gibbonPersonIDModified' => $gibbon->session->get('gibbonPersonID'),
+            'gibbonPersonIDModified' => $session->get('gibbonPersonID'),
             'timestampModified' => date('Y-m-d H:i:s'),
         ]);
         $partialFail = !$updated;

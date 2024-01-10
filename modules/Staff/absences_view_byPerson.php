@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     } else {

@@ -85,7 +85,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 
                 $partialFail = false;
                 if (!empty($_FILES['file1']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
                     $fileUploader->getFileExtensions('Document');
 
                     $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;

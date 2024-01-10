@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
         $row->addTextField('nameShort')->required()->maxLength(10);
 
-    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader = new FileUploader($pdo, $session);
 
     $row = $form->addRow();
         $row->addLabel('file1', __('Logo'));

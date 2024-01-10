@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         $row->addTextField('ip')->setValue($ip);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->filterBy('gibbonPersonID', $gibbonPersonID)
         ->fromPOST();
 
-    $logs = $logGateway->queryLogs($criteria, $gibbon->session->get('gibbonSchoolYearID'));
+    $logs = $logGateway->queryLogs($criteria, $session->get('gibbonSchoolYearID'));
 
     $table = DataTable::createPaginated('logView', $criteria);
     $table->setTitle(__('Data'));

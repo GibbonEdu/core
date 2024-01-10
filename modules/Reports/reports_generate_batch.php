@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
     $logs = $logs[$gibbonReportID] ?? [];
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_generate_batchProcess.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Reports/reports_generate_batchProcess.php');
     $form->setTitle(__('Year Groups'));
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
 

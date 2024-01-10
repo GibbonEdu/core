@@ -41,14 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_edit.php&gibbonReportingCycleID='.$gibbonReportingCycleID.'&gibbonReportingScopeID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_edit.php&gibbonReportingCycleID='.$gibbonReportingCycleID.'&gibbonReportingScopeID='.$_GET['editID'];
     }
 
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('archiveManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_scopes_manage_addProcess.php');
+    $form = Form::create('archiveManage', $session->get('absoluteURL').'/modules/Reports/reporting_scopes_manage_addProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
 
     $row = $form->addRow();

@@ -26,7 +26,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.php') == false) {
     $URL .= '&return=error0';
@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
 
     $_POST['cachePath'] = '/'.trim($_POST['cachePath'], '/');
 
-    if (!is_dir($gibbon->session->get('absolutePath').'/'.$_POST['cachePath'])) {
-        mkdir($gibbon->session->get('absolutePath').'/'.$_POST['cachePath'], 0755);
+    if (!is_dir($session->get('absolutePath').'/'.$_POST['cachePath'])) {
+        mkdir($session->get('absolutePath').'/'.$_POST['cachePath'], 0755);
     }
 
     foreach ($settingsToUpdate as $scope => $settings) {

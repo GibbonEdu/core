@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 
 $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_delete.php') == false) {
     $URL .= '&return=error0';

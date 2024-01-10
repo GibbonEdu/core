@@ -26,7 +26,7 @@ require_once '../../gibbon.php';
 
 $gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_delete.php') == false) {
     $URL .= '&return=error0';
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         exit;
     }
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
     
     $partialFail &= !unlink($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);

@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     // Proceed!
     $page->breadcrumbs->add(__('Manage Reporting Cycles'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 
     // QUERY
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         ->setURL('/modules/Reports/reporting_cycles_manage_add.php')
         ->displayLabel();
 
-    $table->addDraggableColumn('gibbonReportingCycleID', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_editOrderAjax.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
+    $table->addDraggableColumn('gibbonReportingCycleID', $session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_editOrderAjax.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
 
     $table->addColumn('name', __('Name'))->width('30%');
     $table->addColumn('cycleNumber', __('Cycle'))->width('8%');

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Student Transport'));
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     $transport->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentTransport', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentTransport', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Student Transport'));
 
     $table->addColumn('transport', __('Transport'))

@@ -36,7 +36,7 @@ $status = $_POST['status'] ?? 'Draft';
 $twoSided = $_POST['twoSided'] ?? 'N';
 $action = $_POST['action'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
     $URL .= '&return=error0';
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
         $options = compact('status', 'twoSided');
         $process = $container->get(GenerateReportProcess::class);
 
-        $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $gibbon->session->get('gibbonPersonID'));
+        $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $session->get('gibbonPersonID'));
         $partialFail &= !$success;
         
         sleep(1.0);
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
             if (!empty($entry)) {
                 // Remove the file itself
-                $path = $gibbon->session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
+                $path = $session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
                 if (!empty($archive) && file_exists($path)) {
                     unlink($path);
                 }

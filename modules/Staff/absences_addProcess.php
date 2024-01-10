@@ -32,8 +32,8 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_add.php';
-$URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_add.php';
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') == false) {
     $URL .= '&return=error0';
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $schoolClosedOverride = $_POST['schoolClosedOverride'] ?? '';
 
     $data = [
-        'gibbonSchoolYearID'       => $gibbon->session->get('gibbonSchoolYearID'),
+        'gibbonSchoolYearID'       => $session->get('gibbonSchoolYearID'),
         'gibbonPersonID'           => $_POST['gibbonPersonID'] ?? '',
         'gibbonStaffAbsenceTypeID' => $_POST['gibbonStaffAbsenceTypeID'] ?? '',
         'reason'                   => $_POST['reason'] ?? '',
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         'commentConfidential'      => $_POST['commentConfidential'] ?? '',
         'status'                   => 'Approved',
         'coverageRequired'         => $_POST['coverageRequired'] ?? 'N',
-        'gibbonPersonIDCreator'    => $gibbon->session->get('gibbonPersonID'),
+        'gibbonPersonIDCreator'    => $session->get('gibbonPersonID'),
         'notificationSent'         => 'N',
         'notificationList'         => json_encode($notificationList),
         'gibbonGroupID'            => $_POST['gibbonGroupID'] ?? null,

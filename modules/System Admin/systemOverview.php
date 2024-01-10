@@ -79,8 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         'versionCheck'  => getCurrentVersion($guid, $connection2, $version),
         'uploadsCheck'  => $uploadsCheck ?? '',
 
-        'gibboneduComOrganisationName' => $gibbon->session->get('gibboneduComOrganisationName'),
-        'gibboneduComOrganisationKey'  => $gibbon->session->get('gibboneduComOrganisationKey'),
+        'gibboneduComOrganisationName' => $session->get('gibboneduComOrganisationName'),
+        'gibboneduComOrganisationKey'  => $session->get('gibboneduComOrganisationKey'),
     ]);
 
 }

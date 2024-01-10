@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
+            $row->addSearchSubmit($session, __('Clear Search'), array('gibbonSchoolYearID'));
 
         echo $form->getOutput();
 

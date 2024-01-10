@@ -41,6 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_components_deleteProcess.php?gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/templates_assets_components_deleteProcess.php?gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID, true);
     echo $form->getOutput();
 }

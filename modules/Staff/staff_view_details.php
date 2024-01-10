@@ -399,7 +399,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     } elseif ($subpage == 'Facilities') {
                         $staffFacilityGateway = $container->get(StaffFacilityGateway::class);
                         $criteria = $staffFacilityGateway->newQueryCriteria();
-                        $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
+                        $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                         $table = DataTable::create('facilities');
 

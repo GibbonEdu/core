@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
     }, $ids);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_generate_singleProcess.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Reports/reports_generate_singleProcess.php');
 
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('contextData', $contextData);

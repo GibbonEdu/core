@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $subjectListing = $_POST['subjectListing'] ?? '';
     $blurb = $_POST['blurb'] ?? '';
 
-    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+    $fileUploader = new Gibbon\FileUploader($pdo, $session);
     $fileUploader->getFileExtensions();
 
     if ($type == '' or $name == '' or $nameShort == '') {

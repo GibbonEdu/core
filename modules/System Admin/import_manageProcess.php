@@ -26,7 +26,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/import_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/import_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
     $URL .= '&return=error0';
@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
 
     $_POST['importCustomFolderLocation'] = '/'.trim($_POST['importCustomFolderLocation'], '/');
 
-    if (!is_dir($gibbon->session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'])) {
-        mkdir($gibbon->session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'], 0755);
+    if (!is_dir($session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'])) {
+        mkdir($session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'], 0755);
     }
 
     foreach ($settingsToUpdate as $scope => $settings) {

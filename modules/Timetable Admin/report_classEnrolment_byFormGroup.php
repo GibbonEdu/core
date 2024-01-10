@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
         $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->required()->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt.php';
 
     $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-    $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+    $gibbonPersonID = $session->get('gibbonPersonID');
 
     $tt = $container->get(TimetableGateway::class)->getTTByID($gibbonTTID);
 
