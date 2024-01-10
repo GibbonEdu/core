@@ -119,9 +119,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
-        ->format(function ($item) use ($gibbon) {
+        ->format(function ($item) use ($session) {
             if ($item['ownershipType'] == 'School') {
-                return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
+                return sprintf('<b>%1$s</b><br/>', $session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
                 return sprintf('<b>%1$s</b><br/>', __('Individual'));
             }
