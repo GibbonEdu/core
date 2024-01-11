@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $row->addSelect('gibbonRoleID')->fromQuery($pdo, $sql)->selected($gibbonRoleID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

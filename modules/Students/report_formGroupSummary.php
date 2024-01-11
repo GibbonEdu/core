@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupS
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $today = time();
     $dateFrom = $_GET['dateFrom'] ?? '';
     $dateTo = $_GET['dateTo'] ?? '';
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupS
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupS
     $formGroups = $reportGateway->queryStudentCountByFormGroup($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('formGroupSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('formGroupSummary', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Form Group Summary'));
 
     $table->modifyRows(function ($formGroup, $row) {

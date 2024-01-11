@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

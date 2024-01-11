@@ -27,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
     $URL .= '&return=error0';
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         $time = time();
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
-            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
             if (empty($alarmTest)) {
                 //Write alarm to database
-                $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
+                $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
                 $alarmGateway->insert($data);
             } else {
                 $alarmGateway->updateWhere(['gibbonAlarmID' => $alarmTest['gibbonAlarmID']], ['type' => $alarm]);

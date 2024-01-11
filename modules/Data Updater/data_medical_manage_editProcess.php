@@ -460,7 +460,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             }
 
             if (!empty($conditions)) {
-                $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
+                $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
                 $alert = $container->get(AlertLevelGateway::class)->getByID($gibbonAlertLevelID);
 
                 // Raise a new notification event
@@ -476,7 +476,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
 
                 // Send all notifications
-                $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+                $sendReport = $event->sendNotifications($pdo, $session);
             }
 
             $URL .= '&return=success0';

@@ -47,11 +47,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
             $where .= " WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID";
         }
 
-        $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/outcomes.php');
+        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/outcomes.php');
 
         $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
         $row = $form->addRow();
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
                 ->selected($filter2);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 

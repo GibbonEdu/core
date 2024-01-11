@@ -74,11 +74,12 @@ class AttendanceView
      */
     public function __construct(Core $gibbon, Connection $pdo, SettingGateway $settingGateway)
     {
+        global $session;
         $this->pdo = $pdo;
         $this->settingGateway = $settingGateway;
 
         // Collect the current IDs of the user
-        $this->userRoleIDs = array_filter(array_column($gibbon->session->get('gibbonRoleIDAll'), 0));
+        $this->userRoleIDs = array_filter(array_column($session->get('gibbonRoleIDAll'), 0));
         // Get the current date
         $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 

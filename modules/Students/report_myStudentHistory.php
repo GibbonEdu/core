@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
         ->sortBy('surname')
         ->fromPOST();
 
-    $students = $studentGateway->queryStudentHistoryByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
+    $students = $studentGateway->queryStudentHistoryByPerson($criteria, $session->get('gibbonPersonID'));
 
     // Render table
     $gridRenderer = new GridView($container->get('twig'));

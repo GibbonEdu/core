@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         ->setURL('/modules/School Admin/yearGroup_manage_add.php')
         ->displayLabel();
 
-    $table->addDraggableColumn('gibbonYearGroupID', $gibbon->session->get('absoluteURL').'/modules/School Admin/yearGroup_manage_editOrderAjax.php');
+    $table->addDraggableColumn('gibbonYearGroupID', $session->get('absoluteURL').'/modules/School Admin/yearGroup_manage_editOrderAjax.php');
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));

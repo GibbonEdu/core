@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $criteria = $attendanceLogGateway->newQueryCriteria()
                         ->sortBy(['timeStart', 'timeEnd', 'timestampTaken']);
 
-                    $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
+                    $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
                     $classLogs->transform(function (&$log) use (&$classLogCount) {
                         if (!empty($log['gibbonAttendanceLogPersonID'])) $classLogCount++;
                     });

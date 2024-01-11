@@ -67,10 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         return;
     }
 
-    $form = Form::create('scopesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_scopes_manage_editProcess.php');
+    $form = Form::create('scopesManage', $session->get('absoluteURL').'/modules/Reports/reporting_scopes_manage_editProcess.php');
     $form->setTitle($reportingCycle['name']);
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID']);
     $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
 

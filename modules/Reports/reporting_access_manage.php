@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
     $page->breadcrumbs
         ->add(__('Manage Access'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
 
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
             ->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

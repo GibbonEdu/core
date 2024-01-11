@@ -45,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $investigationGateway = $container->get(INInvestigationGateway::class);
 
     $data = [
-        'gibbonSchoolYearID'    => $gibbon->session->get('gibbonSchoolYearID'),
-        'gibbonPersonIDCreator' => $gibbon->session->get('gibbonPersonID'),
+        'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
+        'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
         'gibbonPersonIDStudent' => $_POST['gibbonPersonIDStudent'] ?? '',
         'status'                => 'Referral',
         'date'                  => Format::dateConvert($_POST['date']) ?? '',
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
     //Notify form tutors
     $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    $notificationSender = new NotificationSender($notificationGateway, $session);
 
     // Raise a new notification event
     $event = new NotificationEvent('Individual Needs', 'New Investigation');

@@ -31,7 +31,7 @@ require_once '../../gibbon.php';
 
 $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage_delete.php') == false) {
     $URL .= '&return=error0';

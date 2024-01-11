@@ -32,13 +32,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_add
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_edit.php&gibbonReportArchiveID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_edit.php&gibbonReportArchiveID='.$_GET['editID'];
     }
 
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('archiveManage', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_addProcess.php');
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form = Form::create('archiveManage', $session->get('absoluteURL').'/modules/Reports/archive_manage_addProcess.php');
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique'));

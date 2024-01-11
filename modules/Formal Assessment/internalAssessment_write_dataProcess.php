@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     //Move attached file, if there is one
                     if ($uploadedResponse == 'Y') {
                         if (!empty($_FILES["response$i"]['tmp_name'])) {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                             $file = (isset($_FILES["response$i"]))? $_FILES["response$i"] : null;
 
@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $time = time();
                 //Move attached file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

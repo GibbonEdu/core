@@ -346,7 +346,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
 
                 $row = $form->addRow()->addClass('advanced');
-                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                    $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
             }
 
             //Access

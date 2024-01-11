@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 $row->addTextField('search')->setValue($search)->maxLength(30);
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+                $row->addSearchSubmit($session, __('Clear Search'));
 
             echo $form->getOutput();
         }

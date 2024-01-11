@@ -48,12 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         return;
     }
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
-    $form = Form::create('manageComponents', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_components_editProcess.php');
+    $form = Form::create('manageComponents', $session->get('absoluteURL').'/modules/Reports/templates_assets_components_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID);
 
     $form->addHeaderAction('help', __('Help'))

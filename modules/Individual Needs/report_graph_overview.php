@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     $viewMode = $_REQUEST['format'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-    $onClickURL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/';
+    $onClickURL = $session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/';
     $onClickURL .= !empty($gibbonYearGroupID)? 'in_summary.php&gibbonFormGroupID=' : 'report_graph_overview.php&gibbonYearGroupID=';
 
     // DATA
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
         echo $chart->render();
     }
 
-    $table = ReportTable::createPaginated('inOverview', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('inOverview', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Individual Needs').': '.($gibbonYearGroupID ? __('Form Group') : __('Year Groups')));
 
     $table->addColumn('labelName', $gibbonYearGroupID ? __('Form Group') : __('Year Groups'))

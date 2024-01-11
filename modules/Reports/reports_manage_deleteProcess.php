@@ -23,10 +23,10 @@ use Gibbon\Module\Reports\Domain\ReportGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 $gibbonReportID = $_GET['gibbonReportID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_delete.php') == false) {
     $URL .= '&return=error0';

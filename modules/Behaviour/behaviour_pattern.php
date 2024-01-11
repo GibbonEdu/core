@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($minimumCount);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
     }
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     // DATA TABLE
     $table = ReportTable::createPaginated('behaviourPatterns', $criteria);
-    $table->setTitle(__('Behaviour Records'))->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Behaviour Records'))->setViewMode($viewMode, $session);
     $table->setDescription(__('The students listed below match the criteria above, for {type} behaviour records in the current school year. The count is updated according to the criteria above.', ['type' => __($type)]));
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 

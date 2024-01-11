@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session, 'Clear Filters', ['view', 'sidebar']);
+            $row->addSearchSubmit($session, 'Clear Filters', ['view', 'sidebar']);
 
         echo $form->getOutput();
     }
@@ -150,9 +150,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $criteria->sortBy(['surname', 'preferredName']);
         }
 
-        $staff = $staffGateway->queryAllStaff($criteria, $gibbon->session->get('gibbonSchoolYearID'));
+        $staff = $staffGateway->queryAllStaff($criteria, $session->get('gibbonSchoolYearID'));
 
-        $table = ReportTable::createPaginated('staffView', $criteria)->setViewMode($viewMode, $gibbon->session);
+        $table = ReportTable::createPaginated('staffView', $criteria)->setViewMode($viewMode, $session);
         $table->setTitle($directoryView ? __('Staff Directory') : __('Choose A Staff Member'));
 
         if ($urlParams['sortBy'] == 'biographicalGrouping') {

@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
         $data = [
             'gibbonFirstAidID' => $gibbonFirstAidID,
-            'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'),
+            'gibbonPersonID' => $session->get('gibbonPersonID'),
             'followUp' => $followUp,
         ];
 

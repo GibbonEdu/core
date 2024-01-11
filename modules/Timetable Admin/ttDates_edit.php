@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('dateStamp', $dateStamp)
                 ->displayLabel()
-                ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_add.php');
+                ->setURL('/modules/' . $session->get('module') . '/ttDates_edit_add.php');
 
         $table->addColumn('ttName', __('Timetable'));
         $table->addColumn('dayName', __('Day'));
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonTTDayID')
                 ->format(function ($subcategory, $actions) use ($gibbon) {
                     $actions->addAction('delete', __('Delete'))
-                            ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_delete.php');
+                            ->setURL('/modules/' . $session->get('module') . '/ttDates_edit_delete.php');
                 });
 
         echo $table->render($result->toDataSet());

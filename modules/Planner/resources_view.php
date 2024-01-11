@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $table = DataTable::createPaginated('resources', $criteria);
     $table->setTitle(__('View'));
         $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
+        ->setURL('/modules/' .$session->get('module') . '/resources_manage_add.php')
         ->displayLabel();
         
     $table->addColumn('name', __('Name'))

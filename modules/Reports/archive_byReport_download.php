@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_d
         $filename = basename($archiveEntry['filePath']);
     }
 
-    $filepath = realpath($gibbon->session->get('absolutePath') . $archive['path'] .'/'. $archiveEntry['filePath']);
+    $filepath = realpath($session->get('absolutePath') . $archive['path'] .'/'. $archiveEntry['filePath']);
 
     $outputType = ($action == 'view')? 'inline' : 'attachment';
 

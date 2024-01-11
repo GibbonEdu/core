@@ -39,17 +39,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     $mode = $_GET['mode'] ?? 'Person';
-    $gibbonPersonID = $_GET['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID');
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $override = $_GET['override'] ?? 'N';
     $filter = $_REQUEST['filter'] ?? '';
 
     $urlParams = compact('mode', 'gibbonPersonID', 'gibbonFormGroupID', 'override', 'filter');
 
-    $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
+    $proofReview = $gibbonPersonID == $session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
     if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) $proofReview = false;
 
     $reportingProofGateway = $container->get(ReportingProofGateway::class);
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->addHiddenValue('q', '/modules/Reports/reporting_proofread.php');
 
     $criteria = $reportingAccessGateway->newQueryCriteria();
-    $reportingCycles = $reportingAccessGateway->queryActiveReportingCyclesByPerson($criteria, $gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))->toArray();
+    $reportingCycles = $reportingAccessGateway->queryActiveReportingCyclesByPerson($criteria, $gibbonSchoolYearID, $session->get('gibbonPersonID'))->toArray();
     $reportingCycleIDs = array_column($reportingCycles, 'gibbonReportingCycleID');
 
     if (count($reportingCycles) == 0) {
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         }
     } elseif ($highestAction == 'Proof Read_mine') {
         $criteria = $reportingAccessGateway->newQueryCriteria()->sortBy('gibbonReportingScope.sequenceNumber');
-        $reportingScopes = $reportingAccessGateway->queryActiveReportingScopesByPerson($criteria, $reportingCycleIDs, $gibbon->session->get('gibbonPersonID'))->toArray();
+        $reportingScopes = $reportingAccessGateway->queryActiveReportingScopesByPerson($criteria, $reportingCycleIDs, $session->get('gibbonPersonID'))->toArray();
         $reportingScopeIDs = array_column($reportingScopes, 'gibbonReportingScopeID');
 
         if (count($reportingScopes) == 0) {
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             if ($scope['canProofRead'] != 'Y') continue;
 
             $criteria = $reportingAccessGateway->newQueryCriteria();
-            $criteriaGroups = $reportingAccessGateway->queryActiveCriteriaGroupsByPerson($criteria, $scope['gibbonReportingScopeID'], $gibbon->session->get('gibbonPersonID'));
+            $criteriaGroups = $reportingAccessGateway->queryActiveCriteriaGroupsByPerson($criteria, $scope['gibbonReportingScopeID'], $session->get('gibbonPersonID'));
 
             if ($criteriaGroups->getResultCount() > 0) {
                 $staffByScope = $reportingAccessGateway->selectAccessibleStaffByReportingScope($scope['gibbonReportingScopeID'])->fetchAll();
@@ -136,8 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         }
 
         // Ensure the current user is always in the list
-        if (empty($staff[$gibbon->session->get('gibbonPersonID')])) {
-            $staff[$gibbon->session->get('gibbonPersonID')] = Format::name('', $gibbon->session->get('preferredName'), $gibbon->session->get('surname'), 'Staff', true, true);
+        if (empty($staff[$session->get('gibbonPersonID')])) {
+            $staff[$session->get('gibbonPersonID')] = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', true, true);
         }
 
         asort($formGroups, SORT_NATURAL);
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -241,11 +241,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         'partialColour' => 'blue',
     ]);
 
-    $form = Form::createTable('reportingProof', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
+    $form = Form::createTable('reportingProof', $session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Comments'));
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     $form->addHiddenValue('override', $override);
@@ -258,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->addRow()->addContent($page->fetchFromTemplate('ui/pagination.twig.html', [
         'dataSet' => $proofsPaginated,
         'filterOptions' => $filterOptions,
-        'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
+        'url' => $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
     ]));
 
     if (count($proofReading) == 0) {
@@ -396,7 +396,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
     $form->addRow()->addContent($page->fetchFromTemplate('ui/pagination.twig.html', [
         'dataSet' => $proofsPaginated,
-        'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
+        'url' => $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
     ]));
 
     echo $form->getOutput();

@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_by
         $addTTButton = $form->getFactory()->createButton(__('Add Timetable Entry'))->addClass('addBlock');
 
         $row = $form->addRow();
-            $ttBlocks = $row->addCustomBlocks('ttBlocks', $gibbon->session)
+            $ttBlocks = $row->addCustomBlocks('ttBlocks', $session)
                 ->fromTemplate($ttBlock)
                 ->settings([
                     'placeholder' => __('Timetable Entries will appear here.')

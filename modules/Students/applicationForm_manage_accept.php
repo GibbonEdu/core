@@ -1166,7 +1166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $event->setNotificationText($notificationText);
                     $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=".$values['gibbonSchoolYearIDEntry']."&search=");
 
-                    $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $session);
 
 
                     // Raise a new notification event for SEN
@@ -1182,7 +1182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&allStudents=on');
 
                         // Send all notifications
-                        $event->sendNotifications($pdo, $gibbon->session);
+                        $event->sendNotifications($pdo, $session);
                     }
 
                     //SET STATUS TO ACCEPTED

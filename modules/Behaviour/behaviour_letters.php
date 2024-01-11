@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
         $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

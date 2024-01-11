@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                 $column->addLabel('notes', __('Notes'));
                 $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
 
-            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $session);
             $row = $form->addRow();
                 $row->addLabel('file1', __('Contract File'));
                 $row->addFileUpload('file1')->accepts($fileUploader->getFileExtensions('Document'));

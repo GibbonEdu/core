@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     }
 
     $organisationInfo = '';
-    if ($gibbon->session->get('organisationDBAEmail') != '' and $gibbon->session->get('organisationDBAName') != '') {
-        $organisationInfo = ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationDBAEmail')."'>".$gibbon->session->get('organisationDBAName').'</a>');
+    if ($session->get('organisationDBAEmail') != '' and $session->get('organisationDBAName') != '') {
+        $organisationInfo = ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationDBAEmail')."'>".$session->get('organisationDBAName').'</a>');
     }
 
     $page->return->addReturns([
@@ -74,9 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $allStaff = $staffGateway->queryAllStaff($criteria)->toArray();
         $allStaff = Format::nameListArray($allStaff, 'Staff', true, true);
 
-        $form = Form::create('selectStaff', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::create('selectStaff', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Choose Staff'));
-        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/data_staff.php');
+        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_staff.php');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Staff'));
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         echo $form->getOutput();
 
     } else {
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
     }
     
     if (!empty($gibbonPersonID)) {
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         }
 
         // Check access to person
-        if ($highestAction == 'Update Staff Data_my' && $values['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
+        if ($highestAction == 'Update Staff Data_my' && $values['gibbonPersonID'] != $session->get('gibbonPersonID')) {
             echo Format::alert(__('The selected record does not exist, or you do not have access to it.'), 'error');
             return;
         }
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $existing = false;
         $proceed = false;
 
-        $staffUpdate = $staffUpdateGateway->selectBy(['gibbonStaffID' => $gibbonStaffID, 'gibbonPersonIDUpdater' => $gibbon->session->get('gibbonPersonID'), 'status' => 'Pending']);
+        $staffUpdate = $staffUpdateGateway->selectBy(['gibbonStaffID' => $gibbonStaffID, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'), 'status' => 'Pending']);
             
         if ($staffUpdate->rowCount() > 1) {
             echo Format::alert(__('Your request failed due to a database error.'), 'error');
@@ -128,11 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         // Let's go
         $required = ($highestAction != 'Update Staff Data_any');
 
-        $form = Form::create('updateStaff', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/data_staffProcess.php?gibbonStaffID='.$gibbonStaffID);
+        $form = Form::create('updateStaff', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_staffProcess.php?gibbonStaffID='.$gibbonStaffID);
         $form->setTitle(__('Update Data'));
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('existing', !empty($values['gibbonStaffUpdateID'])? $values['gibbonStaffUpdateID'] : 'N');
         $form->addHiddenValue('gibbonStaffID', $gibbonStaffID);
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);

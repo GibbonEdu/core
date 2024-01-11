@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     foreach ($languages as $i18n) {
         // Download & install the required language files
-        $installed = i18nFileInstall($gibbon->session->get('absolutePath'), $i18n['code']);
+        $installed = i18nFileInstall($session->get('absolutePath'), $i18n['code']);
 
         if ($installed) {
             // Tag this i18n with the current version it was installed at

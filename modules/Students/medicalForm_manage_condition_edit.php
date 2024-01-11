@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 $row->addLabel('attachment', __('Attachment'))
                     ->description(__('Additional details about this medical condition. Attachments are only visible to users who manage medical data.'));
                 $row->addFileUpload('attachment')
-                    ->setAttachment('attachment', $gibbon->session->get('absoluteURL'), $values['attachment'] ?? '');
+                    ->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment'] ?? '');
 
             $row = $form->addRow();
                 $row->addFooter();

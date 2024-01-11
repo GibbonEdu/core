@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportingAccessID = $_POST['gibbonReportingAccessID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage_edit.php&gibbonReportingAccessID='.$gibbonReportingAccessID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage_edit.php&gibbonReportingAccessID='.$gibbonReportingAccessID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_manage_edit.php') == false) {
     $URL .= '&return=error0';

@@ -84,7 +84,7 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                 if (!empty($_FILES['attachment']['tmp_name'])) {
 
                     // Upload the file, return the /uploads relative path
-                    $fileUploader = new FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new FileUploader($pdo, $session);
                     $attachment = $fileUploader->uploadFromPost($_FILES['attachment']);
 
                     if (empty($attachment)) {
@@ -113,7 +113,7 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID() , 12, '0', STR_PAD_LEFT);
 
-                    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
+                    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
 
                     /**
                      * @var AlertLevelGateway
@@ -134,7 +134,7 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                     $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
 
                     // Send all notifications
-                    $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+                    $sendReport = $event->sendNotifications($pdo, $session);
 
 
                     $URL .= "&return=success0&editID=$AI";

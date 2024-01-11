@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
 
     $row = $form->addRow();
-    $row->addSearchSubmit($gibbon->session);
+    $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

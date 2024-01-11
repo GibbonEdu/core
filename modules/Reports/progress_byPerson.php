@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
     // Proceed!
     $page->breadcrumbs->add(__('Progress by Person'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $gibbonReportingScopeID = $_GET['gibbonReportingScopeID'] ?? '';
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
             ->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

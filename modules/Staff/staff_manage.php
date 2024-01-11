@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

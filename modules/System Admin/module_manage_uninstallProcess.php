@@ -34,8 +34,8 @@ $orphaned = $_GET['orphaned'] ?? '';
 
 $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
-$URLDelete = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
     $URL .= '&return=error0';
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $notificationGateway->deleteCascadeNotificationByModuleName($moduleName);
 
             // Clear the main menu from session cache
-            $gibbon->session->forget('menuMainItems');
+            $session->forget('menuMainItems');
 
             $URLDelete .= $orphaned != 'true'
                 ? '&return=warning0'

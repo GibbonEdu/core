@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
         $row->addTextField('search')->setValue($search);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
+        $row->addSearchSubmit($session, __('Clear Search'), ['gibbonSchoolYearID']);
 
     echo $form->getOutput();
 

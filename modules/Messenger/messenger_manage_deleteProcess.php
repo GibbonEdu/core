@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                     exit();
                 }
 
-                $gibbon->session->set('messageWallRefreshed', 0);
+                $session->set('messageWallRefreshed', 0);
 
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");

@@ -34,14 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$_GET['editID'];
     }
 
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('criteriaTypesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_addProcess.php');
+    $form = Form::create('criteriaTypesManage', $session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique'));

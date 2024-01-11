@@ -281,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                     $row->addLabel('attachment'.$count, __('Attachment'))
                                         ->description(__('Additional details about this medical condition. Attachments are only visible to users who manage medical data.'));
                                     $row->addFileUpload('attachment'.$count)
-                                        ->setAttachment('attachment', $gibbon->session->get('absoluteURL'), $rowCond['attachment'] ?? '');
+                                        ->setAttachment('attachment', $session->get('absoluteURL'), $rowCond['attachment'] ?? '');
 
 								$count++;
 							}

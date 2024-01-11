@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     $setting = $settingGateway->getSettingByScope('System', 'cachePath', true);
 
     // CACHE CHECK
-    $cachePath = $gibbon->session->get('absolutePath') . $setting['value'];
+    $cachePath = $session->get('absolutePath') . $setting['value'];
     $fileCount = $fileWriteable = $templatesSize = $reportsSize = 0;
 
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($cachePath), RecursiveIteratorIterator::SELF_FIRST);
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     }
 
     // mPDF Cache Check
-    $mPDFCachePath = $gibbon->session->get('absolutePath').'/vendor/mpdf/mpdf/tmp';
+    $mPDFCachePath = $session->get('absolutePath').'/vendor/mpdf/mpdf/tmp';
 
     if (!is_dir($cachePath) || !is_writeable($cachePath)) {
         echo Format::alert(__('Your cache directory is missing or is not system writeable. Check the file permissions in your cache directory and resolve these errors manually.'), 'error');

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 if ($highestAction == 'Unit Planner_all') {
                     $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
                 } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
                 }
 
                 if ($result->rowCount() != 1) {
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 } else {
                     //Move attached file, if there is one
                     if (!empty($_FILES['file']['tmp_name'])) {
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+        $notificationSender = new NotificationSender($notificationGateway, $session);
 
         foreach ($gibbonPersonIDMulti as $gibbonPersonID) {
             //Write to database

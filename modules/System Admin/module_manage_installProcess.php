@@ -28,8 +28,8 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Get URL from calling page, and set returning URL
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';
-$gibbon->session->set('moduleInstallError', '');
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';
+$session->set('moduleInstallError', '');
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
     $URL .= '&return=error0';
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         $URL .= '&return=error5';
         header("Location: {$URL}");
     } else {
-        if (!(include $gibbon->session->get('absolutePath')."/modules/$moduleName/manifest.php")) {
+        if (!(include $session->get('absolutePath')."/modules/$moduleName/manifest.php")) {
             $URL .= '&return=error5';
             header("Location: {$URL}");
         } else {
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $moduleTables[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $gibbon->session->set('moduleInstallError', $gibbon->session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
+                                $session->set('moduleInstallError', $session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                 $partialFail = true;
                             }
                         }
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $gibbonSetting[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $gibbon->session->set('moduleInstallError', "Y".$gibbon->session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
+                                $session->set('moduleInstallError', "Y".$session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                 $partialFail = true;
                             }
                         }
@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $hooks[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $gibbon->session->set('moduleInstallError', $gibbon->session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
+                                $session->set('moduleInstallError', $session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                 $partialFail = true;
                             }
                         }
@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                         $moduleGateway->update($gibbonModuleID, ['active' => 'Y']);
 
                         // Clear the main menu from session cache
-                        $gibbon->session->forget('menuMainItems');
+                        $session->forget('menuMainItems');
 
                         // We made it!
                         $URL .= '&return=success0';

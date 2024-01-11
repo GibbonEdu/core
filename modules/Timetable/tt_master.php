@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         $row->addSelect('gibbonTTID')->fromArray($ttList)->required()->selected($gibbonTTID);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
 
     echo $form->getOutput();

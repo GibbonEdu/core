@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
     if ($highestAction == 'Unit Planner_all') {
         $result = $courseGateway->selectCourseDetailsByClass($urlParams['gibbonCourseClassID']);
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $result = $courseGateway->selectCourseDetailsByClassAndPerson($urlParams['gibbonCourseClassID'], $gibbon->session->get('gibbonPersonID'));
+        $result = $courseGateway->selectCourseDetailsByClassAndPerson($urlParams['gibbonCourseClassID'], $session->get('gibbonPersonID'));
     }
 
     if ($result->rowCount() != 1) {

@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
     $page->breadcrumbs->add(__('Send Notifications'));
 
     $step = $_POST['step'] ?? 1;
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingCycles = $container->get(ReportingCycleGateway::class)->selectReportingCyclesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
 
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
     if ($step == 1) {
         // STEP 1
         $form = Form::create('notificationSend', $session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php');
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('step', 2);
 
         $form->addRow()->addHeading('Step 1', __('Step 1'));
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
 
         // FORM
         $form = Form::create('notificationSend', $session->get('absoluteURL').'/modules/Reports/notification_sendProcess.php');
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('type', $type);
         $form->addHiddenValue('gibbonReportingCycleIDList', implode(',', $gibbonReportingCycleIDList));
 

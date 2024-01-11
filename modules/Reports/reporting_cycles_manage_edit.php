@@ -48,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         return;
     }
 
-    $form = Form::create('archiveManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_editProcess.php');
+    $form = Form::create('archiveManage', $session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
     $form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
 
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     // Custom Blocks
     $row = $form->addRow();
-    $customBlocks = $row->addCustomBlocks('milestones', $gibbon->session)
+    $customBlocks = $row->addCustomBlocks('milestones', $session)
         ->fromTemplate($blockTemplate)
         ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true))
         ->placeholder(__('Milestones will be listed here...'))

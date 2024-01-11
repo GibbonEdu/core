@@ -45,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
         return;
     }
 
-    $form = Form::create('formBuilder', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_duplicateProcess.php');
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form = Form::create('formBuilder', $session->get('absoluteURL').'/modules/System Admin/formBuilder_duplicateProcess.php');
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
     $row = $form->addRow();

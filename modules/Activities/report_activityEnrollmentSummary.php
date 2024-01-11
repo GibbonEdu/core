@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('activityEnrollmentSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('activityEnrollmentSummary', $criteria)->setViewMode($viewMode, $session);
 
     $table->setTitle(__('Activity Enrolment Summary'));
 

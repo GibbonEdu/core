@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
                         $path = $session->get('absolutePath');
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
@@ -403,7 +403,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                                     // Initialize the notification sender & gateway objects
                                     $notificationGateway = new NotificationGateway($pdo);
-                                    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                                    $notificationSender = new NotificationSender($notificationGateway, $session);
 
                                     // Raise a new notification event
                                     $event = new NotificationEvent('Students', 'Updated Privacy Settings');

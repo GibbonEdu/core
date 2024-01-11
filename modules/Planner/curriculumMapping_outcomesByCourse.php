@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 		$row->addSelect('gibbonCourseID')->fromArray($courses)->required()->selected($gibbonCourseID)->placeholder();
 
 	$row = $form->addRow();
-		$row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+		$row->addSearchSubmit($session, __('Clear Filters'));
 
 	echo $form->getOutput();
 

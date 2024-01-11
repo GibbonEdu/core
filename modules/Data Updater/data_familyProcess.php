@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     $event->setNotificationText(__('A family data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_family_manage.php');
 
-                    $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $session);
                 }
 
                 $URLSuccess .= '&return=success0';

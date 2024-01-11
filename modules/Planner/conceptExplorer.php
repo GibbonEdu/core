@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

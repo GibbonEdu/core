@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                         // Send notifications
-                        $event->sendNotifications($pdo, $gibbon->session);
+                        $event->sendNotifications($pdo, $session);
                     }
 
                     $URL .= '&return=success0';

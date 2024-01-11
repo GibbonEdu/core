@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
                 ->selected($department);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 

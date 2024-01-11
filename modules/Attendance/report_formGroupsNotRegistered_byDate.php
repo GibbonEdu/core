@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

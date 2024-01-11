@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             $row->addSelect('month')->fromArray(['' => __('All')])->fromArray($months)->selected($month);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
 
         // DATA TABLE
-        $table = ReportTable::createPaginated('staffCoverage'.$gibbonPersonID, $criteria)->setViewMode($viewMode, $gibbon->session);
+        $table = ReportTable::createPaginated('staffCoverage'.$gibbonPersonID, $criteria)->setViewMode($viewMode, $session);
         $table->setTitle(__('Report'));
         $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         });
 
         // DATA TABLE
-        $table = ReportTable::createPaginated('staffCoverage', $criteria)->setViewMode($viewMode, $gibbon->session);
+        $table = ReportTable::createPaginated('staffCoverage', $criteria)->setViewMode($viewMode, $session);
         $table->setTitle(__('Report'));
         $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 

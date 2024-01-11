@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder();
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
+            $row->addSearchSubmit($session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
         $form->loadAllValuesFrom($request);
 

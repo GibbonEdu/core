@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $row->addTextField('search')->setValue($search)->maxLength(20);
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+                $row->addSearchSubmit($session, __('Clear Search'));
 
             echo $form->getOutput();
 

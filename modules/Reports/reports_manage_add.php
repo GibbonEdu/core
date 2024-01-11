@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     $page->breadcrumbs
         ->add(__('Manage Reports'), 'reports_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
@@ -39,17 +39,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonReportID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonReportID='.$_GET['editID'];
     }
 
     $page->return->setEditLink($editLink);
 
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 
-    $form = Form::create('reportsManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_manage_addProcess.php');
+    $form = Form::create('reportsManage', $session->get('absoluteURL').'/modules/Reports/reports_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     $form->addRow()->addHeading('Report Details', __('Report Details'));

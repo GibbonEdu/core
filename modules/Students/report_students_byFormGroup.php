@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $students = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID != '*' ? $gibbonFormGroupID : null);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsByFormGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsByFormGroup', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report Data'));
     $table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
         $output = '';

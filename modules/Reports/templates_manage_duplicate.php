@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_d
         ->add(__('Duplicate Template'));
 
     if (isset($_GET['editID'])) {
-        $page->return->setEditLink($gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID']);
+        $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID']);
     }
 
     $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_d
     }
 
 
-    $form = Form::create('$reportingTemplates', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_duplicateProcess.php');
+    $form = Form::create('$reportingTemplates', $session->get('absoluteURL').'/modules/Reports/templates_manage_duplicateProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
 
     $row = $form->addRow();

@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             // Participants
             $table = $container->get(ClassGroupTable::class);
-            $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
+            $table->build($session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
 
             echo $table->getOutput();
 

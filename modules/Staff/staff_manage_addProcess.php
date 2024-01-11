@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
             $event->setActionLink('/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID.'&allStaff=&search=');
 
             // Send notifications
-            $event->sendNotifications($pdo, $gibbon->session);
+            $event->sendNotifications($pdo, $session);
 
             $URL .= "&return=success0&editID=$AI";
             header("Location: {$URL}");

@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -98,10 +98,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             ->pageSize(!empty($viewMode) ? 0 : 50)
             ->fromPOST();
 
-        $logs = $attendanceLogGateway->queryStudentsNotInClass($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate, $allStudents);
+        $logs = $attendanceLogGateway->queryStudentsNotInClass($criteria, $session->get('gibbonSchoolYearID'), $currentDate, $allStudents);
 
         // DATA TABLE
-        $table = ReportTable::createPaginated('studentsNotInClass', $criteria)->setViewMode($viewMode, $gibbon->session);
+        $table = ReportTable::createPaginated('studentsNotInClass', $criteria)->setViewMode($viewMode, $session);
         $table->setTitle(__('Students Not In Class'));
 
         $table->addRowCountColumn($logs->getPageFrom())->context('primary');

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     $page->breadcrumbs->add(__('Sound Alarm'));
 
     //Get list of acceptable file extensions
-    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader = new FileUploader($pdo, $session);
     $fileUploader->getFileExtensions('Audio');
 
     // Alarm Types
@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         'Custom'   => __('Custom'),
     );
 
-    $form = Form::create('alarmSettings', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/alarmProcess.php');
+    $form = Form::create('alarmSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/alarmProcess.php');
     
     $settingGateway = $container->get(SettingGateway::class);
     
     $settingAlarmSound = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound', true);
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     
     $row = $form->addRow();
         $label = $row->addLabel('file', __($settingAlarmSound['nameDisplay']))->description(__($settingAlarmSound['description']));
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 
         $file = $row->addFileUpload('file')
                     ->accepts($fileUploader->getFileExtensionsCSV())
-                    ->setAttachment('attachmentCurrent', $gibbon->session->get('absoluteURL'), $settingAlarmSound['value']);
+                    ->setAttachment('attachmentCurrent', $session->get('absoluteURL'), $settingAlarmSound['value']);
 
     $settingAlarm = $settingGateway->getSettingByScope('System', 'alarm', true);
     $form->addHiddenValue('alarmCurrent', $settingAlarm['value']);

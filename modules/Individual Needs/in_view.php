@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
             $row->addCheckbox('allStudents')->setValue('on')->checked($allStudents);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+            $row->addSearchSubmit($session, __('Clear Search'));
 
         echo $form->getOutput();
 

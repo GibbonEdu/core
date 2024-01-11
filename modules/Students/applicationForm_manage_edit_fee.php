@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
     $applicationProcessFeeText = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFeeText');
 
-    $form = Form::create('applicationFormFee', $gibbon->session->get('absoluteURL').'/modules/Students/applicationForm_manage_edit_feeProcess.php?search='.$search);
+    $form = Form::create('applicationFormFee', $session->get('absoluteURL').'/modules/Students/applicationForm_manage_edit_feeProcess.php?search='.$search);
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

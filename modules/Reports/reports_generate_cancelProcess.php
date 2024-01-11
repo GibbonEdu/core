@@ -30,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 $processID = $_POST['processID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
     $URL .= '&return=error0';

@@ -27,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_manage_add.php') == false) {
     $URL .= '&return=error0';

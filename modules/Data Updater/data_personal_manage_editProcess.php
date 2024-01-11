@@ -442,7 +442,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                                 // Initialize the notification sender & gateway objects
                                 $notificationGateway = new NotificationGateway($pdo);
-                                $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                                $notificationSender = new NotificationSender($notificationGateway, $session);
 
                                 // Raise a new notification event
                                 $event = new NotificationEvent('Students', 'Updated Privacy Settings');

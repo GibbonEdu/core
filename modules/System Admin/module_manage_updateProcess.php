@@ -27,8 +27,8 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';  
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_update.php&gibbonModuleID='.$gibbonModuleID;
-$gibbon->session->set('moduleUpdateError', '');
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_update.php&gibbonModuleID='.$gibbonModuleID;
+$session->set('moduleUpdateError', '');
 
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_update.php') == false) {
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                include $gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/CHANGEDB.php';
+                include $session->get('absolutePath').'/modules/'.$module['name'].'/CHANGEDB.php';
 
                 $partialFail = false;
                 foreach ($sql as $version) {
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 try {
                                     $result = $connection2->query($sqlToken);
                                 } catch (PDOException $e) {
-                                    $gibbon->session->set('moduleUpdateError', $gibbon->session->get('moduleUpdateError').htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
+                                    $session->set('moduleUpdateError', $session->get('moduleUpdateError').htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                     $partialFail = true;
                                 }
                             }

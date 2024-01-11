@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($criteria->getFilterValue('yearGroup'));
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
+            $row->addSearchSubmit($session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
         echo $form->getOutput();
 

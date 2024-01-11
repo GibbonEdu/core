@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         $gibbonPersonIDCreator = $session->get('gibbonPersonID');
         $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
         $fileUploader->getFileExtensions();
 
         //Lock markbook column table

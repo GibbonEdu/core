@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                         $partialFail = false;
 
                         if ($type == 'File' && !empty($_FILES['file']['tmp_name'])) {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

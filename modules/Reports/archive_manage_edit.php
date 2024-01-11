@@ -47,9 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_edi
         return;
     }
 
-    $form = Form::create('archiveManage', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_editProcess.php');
+    $form = Form::create('archiveManage', $session->get('absoluteURL').'/modules/Reports/archive_manage_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportArchiveID', $gibbonReportArchiveID);
 
     $row = $form->addRow();

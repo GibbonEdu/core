@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
 
                     $row = $form->addRow();
-                        $row->addSearchSubmit($gibbon->session);
+                        $row->addSearchSubmit($session);
 
                     echo $form->getOutput();
                 }
