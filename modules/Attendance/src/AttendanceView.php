@@ -78,6 +78,7 @@ class AttendanceView
         $this->settingGateway = $settingGateway;
 
         // Collect the current IDs of the user
+        global $session;
         $this->userRoleIDs = array_filter(array_column($session->get('gibbonRoleIDAll'), 0));
         // Get the current date
         $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');

@@ -130,6 +130,7 @@ class MarkbookView
         $this->pdo = $pdo;
 
         $this->gibbonCourseClassID = $gibbonCourseClassID;
+        global $session;
         $this->gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
         $this->settingGateway = $settingGateway;
 
