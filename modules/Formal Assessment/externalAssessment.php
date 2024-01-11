@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         $row->addCheckbox('allStudents')->checked($allStudents);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
     echo $form->getOutput();
 

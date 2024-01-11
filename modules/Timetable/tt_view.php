@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
         try {
             if ($highestAction == 'View Timetable by Person_myChildren') {
-                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbonPersonID);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbonPersonID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' AS type, gibbonRoleIDPrimary
                     FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -61,12 +61,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
                     GROUP BY gibbonPerson.gibbonPersonID";
             } else {
-                if ($allUsers == 'on' && $canViewAllTimetables && $gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
-                    $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
+                if ($allUsers == 'on' && $canViewAllTimetables && $session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
+                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' AS type, gibbonRoleIDPrimary FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                     WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
                 } else {
-                    $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID);
+                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID);
                     $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' AS type, gibbonRoleIDPrimary FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID1) UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS formGroup, 'Staff' AS type, gibbonRoleIDPrimary FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE gibbonStaff.type='Teaching' AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID2) ORDER BY surname, preferredName";
                 }
             }
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
-        } else if ($highestAction == 'View Timetable by Person_my' && $gibbonPersonID != $gibbon->session->get('gibbonPersonID')) {
+        } else if ($highestAction == 'View Timetable by Person_my' && $gibbonPersonID != $session->get('gibbonPersonID')) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if ($canEdit && ($roleCategory == 'Student' or $roleCategory == 'Staff')) {
                 $params = [
                     "gibbonPersonID" => $gibbonPersonID,
-                    "gibbonSchoolYearID" => $gibbon->session->get('gibbonSchoolYearID'),
+                    "gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'),
                     "type" => $roleCategory,
                     "allUsers" => $allUsers,
                 ];
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             }
 
             //Set sidebar
-            $gibbon->session->set('sidebarExtra', Format::userPhoto($row['image_240'], 240));
+            $session->set('sidebarExtra', Format::userPhoto($row['image_240'], 240));
         }
     }
 }

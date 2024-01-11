@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
-                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $gibbonFormGroupID);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $gibbonFormGroupID);
                 if ($highestAction == "View Form Groups_all") {
                     $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
                         FROM gibbonFormGroup
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                             AND gibbonFormGroupID=:gibbonFormGroupID';
                 }
                 else {
-                    $data['gibbonPersonID'] = $gibbon->session->get('gibbonPersonID');
+                    $data['gibbonPersonID'] = $session->get('gibbonPersonID');
                     $data['today'] = date('Y-m-d');
                     $sql = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroup.gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
                         FROM gibbonFormGroup

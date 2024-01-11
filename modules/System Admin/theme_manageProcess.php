@@ -58,12 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             $themeGateway->update($gibbonThemeID, ['active' => 'Y']);
 
             // Clear template cache, invalidate front-end cache
-            $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
-            removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates', true);
-            $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $gibbon->session->get('cacheString'));
+            $cachePath = $session->has('cachePath') ? $session->get('cachePath') : '/uploads/cache';
+            removeDirectoryContents($session->get('absolutePath').$cachePath.'/templates', true);
+            $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $session->get('cacheString'));
            
             // Update the theme name in the session
-            $gibbon->session->set('gibbonThemeName', $theme['name']);
+            $session->set('gibbonThemeName', $theme['name']);
 
 
             $URL .= '&return=success0';

@@ -72,7 +72,7 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 $attachment = $_POST['attachment'] ?? $row['attachment'];
                 //Move attached image  file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

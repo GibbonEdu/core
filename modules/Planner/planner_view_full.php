@@ -467,7 +467,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
 
                         // LESSON CONTENTS
-                        $form = Form::create('smartBlockCompletion', $gibbon->session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
+                        $form = Form::create('smartBlockCompletion', $session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
                         $form->setClass('blank');
 
                         $form->setTitle(__('Lesson Content'));
@@ -487,7 +487,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form->setDescription($description);
 
                         if (!empty($blocks)) {
-                            $form->addHiddenValue('address', $gibbon->session->get('address'));
+                            $form->addHiddenValue('address', $session->get('address'));
                             $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
                             $form->addHiddenValue('date', $values['date']);
                             $form->addHiddenValue('mode', 'view');
@@ -512,7 +512,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     ->addParam('gibbonCourseID', $values['gibbonCourseID'] ?? '')
                                     ->addParam('gibbonUnitID', $values['gibbonUnitID'] ?? '')
                                     ->addParam('gibbonUnitClassID', $gibbonUnitClassID ?? '')
-                                    ->addParam('gibbonSchoolYearID', $gibbon->session->get('gibbonSchoolYearID'))
+                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
                                     ->addParam('subView', $subView ?? '')
                                     ->displayLabel();
                             }
@@ -671,9 +671,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             }
 
                                             // SUBMIT HOMEWORK - Teacher Recorded
-                                            $form = Form::create('homeworkTeacher', $gibbon->session->get('absoluteURL').'/modules/Planner/planner_view_full_submitProcess.php?address='.$_GET['q'].$paramsVar.'&gibbonPlannerEntryID='.$values['gibbonPlannerEntryID']);
+                                            $form = Form::create('homeworkTeacher', $session->get('absoluteURL').'/modules/Planner/planner_view_full_submitProcess.php?address='.$_GET['q'].$paramsVar.'&gibbonPlannerEntryID='.$values['gibbonPlannerEntryID']);
 
-                                            $form->addHiddenValue('address', $gibbon->session->get('address'));
+                                            $form->addHiddenValue('address', $session->get('address'));
                                             $form->addHiddenValue('lesson', $values['name']);
                                             $form->addHiddenValue('count', $count);
                                             $form->addHiddenValue('status', $status);
@@ -1114,9 +1114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 									}
 
                                 // SUBMIT HOMEWORK - Student Recorded
-                                $form = Form::create('homeworkStudent', $gibbon->session->get('absoluteURL')."/modules/Planner/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$gibbon->session->get('address')."&gibbonCourseClassID=$gibbonCourseClassID&date=$date");
+                                $form = Form::create('homeworkStudent', $session->get('absoluteURL')."/modules/Planner/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$session->get('address')."&gibbonCourseClassID=$gibbonCourseClassID&date=$date");
 
-                                $form->addHiddenValue('address', $gibbon->session->get('address'));
+                                $form->addHiddenValue('address', $session->get('address'));
                                 $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
 
                                 $row = $form->addRow();
@@ -1328,7 +1328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
 
                         if ($canTakeAttendance && date('Y-m-d') >= $values['date']) {
-                            $form->addHiddenValue('address', $gibbon->session->get('address'));
+                            $form->addHiddenValue('address', $session->get('address'));
                             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
                             $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
                             $form->addHiddenValue('currentDate', $values['date']);

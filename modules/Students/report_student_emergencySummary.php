@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
     if (count($choices) == 0 && $session->has('report_student_emergencySummary.php_choices')) {
         $choices = $session->get('report_student_emergencySummary.php_choices');
     }
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (isset($_GET['gibbonPersonIDList'])) {
         $choices = explode(',', $_GET['gibbonPersonIDList']);
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
     $students->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Student Emergency Data Summary'));
 
     $table->addMetaData('post', ['gibbonPersonID' => $choices]);

@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonYearGroupIDList = explode(',', $_GET['gibbonYearGroupIDList'] ?? '');
 
     if (empty($viewMode)) {
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $yearGroupCounts[] = $houses + ['yearGroupName' => __('Total')];
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsByHouse', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsByHouse', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Students by House'));
     $table->modifyRows(function ($house, $row) {
         if ($house['yearGroupName'] == __('Total')) $row->addClass('dull');

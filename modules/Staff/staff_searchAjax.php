@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
     $results = $staffGateway->queryAllStaff($criteria)->toArray();
 
-    $absoluteURL = $gibbon->session->get('absoluteURL');
+    $absoluteURL = $session->get('absoluteURL');
     $list = array_map(function ($token) use ($absoluteURL) {
         return [
             'id'       => $token['gibbonPersonID'],

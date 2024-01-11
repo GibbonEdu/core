@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         $row->addLabel('search', __('Search For'))->description(_('Family Name'));
         $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
-    $form->addRow()->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
+    $form->addRow()->addSearchSubmit($session, __('Clear Search'), ['gibbonSchoolYearID']);
     echo $form->getOutput();
 
 

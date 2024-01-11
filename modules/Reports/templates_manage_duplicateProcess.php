@@ -30,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_duplicate.php&gibbonReportTemplateID='.$gibbonReportTemplateID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_duplicate.php&gibbonReportTemplateID='.$gibbonReportTemplateID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_duplicate.php') == false) {
     $URL .= '&return=error0';

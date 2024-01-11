@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
+        $row->addSearchSubmit($session, __('Clear Search'), ['gibbonSchoolYearID']);
 
     echo $form->getOutput();
 

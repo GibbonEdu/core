@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
     }
 
-    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader = new FileUploader($pdo, $session);
     $fileUploader->getFileExtensions('Graphics/Design');
 
     // Move attached logo file, if there is one

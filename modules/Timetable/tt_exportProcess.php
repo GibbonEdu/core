@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $gateway = new NotificationGateway($pdo);
         $result = $gateway->selectNotificationEventByName('Timetable', 'Updated Timetable Subscriber')->fetch();
             $gibbonNotificationEventID = $result['gibbonNotificationEventID'];
-            $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+            $gibbonPersonID = $session->get('gibbonPersonID');
             $listeners = $gateway->selectAllNotificationListeners($result['gibbonNotificationEventID'])->fetchAll();
             $scopeType = 'All';
             $scopeID = 0;

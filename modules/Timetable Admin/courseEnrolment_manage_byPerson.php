@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $row->addCheckbox('allUsers')->setValue('on')->checked($allUsers);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
+            $row->addSearchSubmit($session, __('Clear Search'), array('gibbonSchoolYearID'));
 
         echo $form->getOutput();
 
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __('View');
         echo '</h3>';
             
-        $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID, $gibbon->session->get('gibbonRoleIDCurrentCategory'));
+        $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID, $session->get('gibbonRoleIDCurrentCategory'));
 
         // DATA TABLE
         $table = DataTable::createPaginated('courseEnrolmentByPerson', $criteria);

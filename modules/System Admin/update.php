@@ -42,9 +42,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     ]);
 
     // Get and display SQL errors
-    if ($gibbon->session->has('systemUpdateError')) {
-        echo Format::alert(__('The following SQL statements caused errors:').'<br/>'.implode('<br/>', $gibbon->session->get('systemUpdateError')));
-        $gibbon->session->forget('systemUpdateError');
+    if ($session->has('systemUpdateError')) {
+        echo Format::alert(__('The following SQL statements caused errors:').'<br/>'.implode('<br/>', $session->get('systemUpdateError')));
+        $session->forget('systemUpdateError');
     }
 
     $updater = $container->get(Updater::class);
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         // Check for new version of Gibbon
         echo getCurrentVersion($guid, $connection2, $version);
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('type', 'regularRelease');
 
         if ($return == 'success0') {
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
             $row = $form->addRow();
                 $row->addContent('v'.$updater->versionDB)->addClass('text-xl text-right');
-                $row->addContent('<img src="'.$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
+                $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
                 $row->addContent('v'.$updater->versionCode)->addClass('text-xl text-left flex-1');
 
             $form->addRow()->addSubmit();
@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         // Go! Start with warning about cutting edge code
         echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'warning');
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('type', 'cuttingEdge');
 
         if ($updater->isComposerUpdateRequired()) {
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                 $row->addContent('v'.$updater->versionDB)
                     ->addClass('text-xl text-right')
                     ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeCodeLine.'</span>');
-                $row->addContent('<img src="'.$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
+                $row->addContent('<img src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
                 $row->addContent('v'.$updater->versionCode)
                     ->addClass('text-xl text-left flex-1')
                     ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeMaxLine.'</span>');
@@ -156,8 +156,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $engineUpdate = $container->get(EngineUpdate::class);
 
         if ($engineUpdate->canMigrate()) {
-            $form = Form::create('innoDB', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php?type=InnoDB');
-            $form->addHiddenValue('address', $gibbon->session->get('address'));
+            $form = Form::create('innoDB', $session->get('absoluteURL').'/modules/System Admin/updateProcess.php?type=InnoDB');
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->setTitle(__('Database Engine Migration'));
             $form->setDescription(__('Starting from v16, Gibbon is offering installations the option to migrate from MySQL\'s MyISAM engine to InnoDB, as a way to achieve greater reliability and performance.'));

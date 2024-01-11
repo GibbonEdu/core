@@ -32,7 +32,7 @@ $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 $gibbonReportTemplateSectionID = $_POST['gibbonReportTemplateSectionID'] ?? '';
 $search = $_GET['search'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_section_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&gibbonReportTemplateSectionID='.$gibbonReportTemplateSectionID.'&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_section_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&gibbonReportTemplateSectionID='.$gibbonReportTemplateSectionID.'&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_section_edit.php') == false) {
     $URL .= '&return=error0';
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
             }, []);
 
             // Upload the file, return the /uploads relative path
-            $fileUploader = empty($fileUploader) ? new FileUploader($pdo, $gibbon->session) : $fileUploader;
+            $fileUploader = empty($fileUploader) ? new FileUploader($pdo, $session) : $fileUploader;
             $config[$configName] = $fileUploader->uploadFromPost($file, $configName.'_file');
         }
     }

@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_edit.php&gibbonReportArchiveID='.$gibbonReportArchiveID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_edit.php&gibbonReportArchiveID='.$gibbonReportArchiveID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_edit.php') == false) {
     $URL .= '&return=error0';

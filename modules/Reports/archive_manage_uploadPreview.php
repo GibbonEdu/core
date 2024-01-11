@@ -106,18 +106,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 
     // Upload the temporary file to the archive
     if (!empty($tempFile['tmp_name'])) {
-        $fileUploader = new FileUploader($pdo, $gibbon->session);
+        $fileUploader = new FileUploader($pdo, $session);
         $file = $fileUploader->upload($tempFile['name'], $tempFile['tmp_name'], $archive['path'].'/temp');
     } else {
         $page->addError(__('Failed to write file to disk.'));
         return;
     }
 
-    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_uploadProcess.php');
+    $form = Form::create('archiveImport', $session->get('absoluteURL').'/modules/Reports/archive_manage_uploadProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Step 2 - Data Check & Confirm'));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportArchiveID', $gibbonReportArchiveID);
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
     $form->addHiddenValue('reportIdentifier', $reportIdentifier);

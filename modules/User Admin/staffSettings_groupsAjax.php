@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         ->searchBy($groupGateway->getSearchableColumns(), $searchTerm)
         ->sortBy('name');
 
-    $results = $groupGateway->queryGroups($criteria, $gibbon->session->get('gibbonSchoolYearID'))->toArray();
+    $results = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'))->toArray();
 
     $list = array_map(function ($token) {
         return [

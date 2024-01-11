@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     $data = [
         'gibbonPersonIDCoverage' => null,
-        'gibbonPersonIDStatus'   => $gibbon->session->get('gibbonPersonID'),
+        'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),
         'requestType'            => 'Individual',
         'status'                 => 'Pending',
         'notificationSent'       => 'N',

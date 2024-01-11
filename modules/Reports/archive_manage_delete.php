@@ -41,6 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_del
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_deleteProcess.php?gibbonReportArchiveID='.$gibbonReportArchiveID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/archive_manage_deleteProcess.php?gibbonReportArchiveID='.$gibbonReportArchiveID, true);
     echo $form->getOutput();
 }

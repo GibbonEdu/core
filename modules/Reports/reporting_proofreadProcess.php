@@ -35,7 +35,7 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $page = $_POST['page'] ?? '';
 $filter = $_POST['filter'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page.'&filter='.$filter;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page.'&filter='.$filter;
 
 if (!empty($_POST['override'])) {
     $URL .= '&override='.$_POST['override'];
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             if (!empty($gibbonReportingProofID)) {
                 $data = [
                     'status'                 => $status == 'Revised' ? 'Accepted' : $status,
-                    'gibbonPersonIDActioned' => $gibbon->session->get('gibbonPersonID'),
+                    'gibbonPersonIDActioned' => $session->get('gibbonPersonID'),
                     'timestampActioned'      => date('Y-m-d H:i:s'),
                 ];
                 $updated = $reportingProofGateway->update($gibbonReportingProofID, $data);
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 'status'                 => $status,
                 'comment'                => $status == 'Edited' ? ($comments[$gibbonReportingValueID] ?? '') : '',
                 'reason'                 => $reasons[$gibbonReportingValueID] ?? '',
-                'gibbonPersonIDProofed'  => $gibbon->session->get('gibbonPersonID'),
+                'gibbonPersonIDProofed'  => $session->get('gibbonPersonID'),
                 'timestampProofed'       => date('Y-m-d H:i:s'),
             ];
 

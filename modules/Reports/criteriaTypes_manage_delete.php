@@ -41,6 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_deleteProcess.php?gibbonReportingCriteriaTypeID='.$gibbonReportingCriteriaTypeID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_deleteProcess.php?gibbonReportingCriteriaTypeID='.$gibbonReportingCriteriaTypeID, true);
     echo $form->getOutput();
 }

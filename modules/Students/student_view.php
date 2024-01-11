@@ -37,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
         $studentGateway = $container->get(StudentGateway::class);
 
-        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
 
         $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
@@ -101,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 'yearGroup' => __('Year Group'),
             );
 
-            $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+            $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Filter'));
             $form->setClass('noIntBorder fullWidth');
-            $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/student_view.php');
+            $form->addHiddenValue('q', '/modules/'.$session->get('module').'/student_view.php');
         
             $searchDescription = $canViewFullProfile 
                 ? __('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.') 
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+                $row->addSearchSubmit($session, __('Clear Search'));
             
             echo $form->getOutput();
 

@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
     $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
-    $gibbonThemeName = $gibbon->session->get('gibbonThemeName');
+    $gibbonThemeName = $session->get('gibbonThemeName');
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
 
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $row = $form->addRow()->addClass('single');
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'))->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonIDList[0] ?? '')->photo(true, 'small');
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonIDList[0] ?? '')->photo(true, 'small');
 
     if ($canTakeAdHocAttendance) {
         // Show the ad hoc attendance groups
@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     }
 
 
-    $form->addRow()->addSearchSubmit($gibbon->session);
+    $form->addRow()->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($gibbonPersonIDList[0], $targetDate)->fetchAll();
 
             //Get classes for partial attendance
-            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonIDList[0], $targetDate)->fetchAll();
+            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($session->get('gibbonSchoolYearID'), $gibbonPersonIDList[0], $targetDate)->fetchAll();
 
             if ($absenceType == 'partial' && empty($classes)) {
                 echo Format::alert(__('Cannot record a partial absence. This student does not have timetabled classes for this day.'));
@@ -297,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                     //Get classes for partial attendance
                     $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $targetDate)->fetchAll();
-                    $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $student['gibbonPersonID'], $targetDate)->fetchAll();
+                    $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($session->get('gibbonSchoolYearID'), $student['gibbonPersonID'], $targetDate)->fetchAll();
                     
                     // Filter only classes that are attendanceable
                     $classes = array_filter($classes, function ($item) {

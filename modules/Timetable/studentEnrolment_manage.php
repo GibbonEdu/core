@@ -30,8 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     // Proceed!
     $page->breadcrumbs->add(__('Manage Student Enrolment'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-    $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+    $gibbonPersonID = $session->get('gibbonPersonID');
 
     echo '<p>';
     echo __('This page allows departmental Coordinators and Assistant Coordinators to manage student enolment within their department.');

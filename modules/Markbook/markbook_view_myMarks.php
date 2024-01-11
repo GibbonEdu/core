@@ -131,7 +131,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
         ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span> &nbsp;&nbsp;');
 
     $rowFilter = $form->addRow();
-        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'))->prepend($showHide->getOutput());
+        $rowFilter->addSearchSubmit($session, __('Clear Filters'))->prepend($showHide->getOutput());
 
     echo $form->getOutput();
 

@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 
 $gibbonReportingCriteriaTypeID = $_GET['gibbonReportingCriteriaTypeID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_manage_delete.php') == false) {
     $URL .= '&return=error0';

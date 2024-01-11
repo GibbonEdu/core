@@ -396,7 +396,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $fileCount = $_POST['fileCount'];
                         }
 
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         for ($i = 0; $i < $fileCount; ++$i) {
                             if (empty($_FILES["file$i"]['tmp_name'])) continue;

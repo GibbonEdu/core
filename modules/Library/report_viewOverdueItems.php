@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     $items = $reportGateway->queryOverdueItems($criteria, $session->get('gibbonSchoolYearID'), $ignoreStatus);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('View Overdue Items'));
 
     $table->addColumn('preferredName', __('Borrowing User'))

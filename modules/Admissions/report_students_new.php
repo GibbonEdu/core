@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students
     $ignoreEnrolment = $_GET['ignoreEnrolment'] ?? false;
     $startDateFrom = $_GET['startDateFrom'] ?? '';
     $startDateTo = $_GET['startDateTo'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('New Students'));
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students
     $students->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsNew', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsNew', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('New Students'));
 
     $table->modifyRows($reportGateway->getSharedUserRowHighlighter());

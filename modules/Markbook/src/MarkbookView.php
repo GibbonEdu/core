@@ -126,11 +126,12 @@ class MarkbookView
      * @return   void
      */
     public function __construct(Core $gibbon, Connection $pdo, $gibbonCourseClassID, SettingGateway $settingGateway)
-    {
+    {   
+        global $session;
         $this->pdo = $pdo;
 
         $this->gibbonCourseClassID = $gibbonCourseClassID;
-        $this->gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $this->gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
         $this->settingGateway = $settingGateway;
 
         // Preload Gibbon settings - we check them a lot

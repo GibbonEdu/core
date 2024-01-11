@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
 
     $settingGateway = $container->get(SettingGateway::class);
     $personDocumentTypeGateway = $container->get(PersonalDocumentTypeGateway::class);
-    $absoluteURL = $gibbon->session->get('absoluteURL');
+    $absoluteURL = $session->get('absoluteURL');
 
     // QUERY
     $criteria = $personDocumentTypeGateway->newQueryCriteria(true)
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         ->setURL('/modules/User Admin/personalDocumentSettings_manage_add.php')
         ->displayLabel();
 
-    $table->addDraggableColumn('gibbonPersonalDocumentTypeID', $gibbon->session->get('absoluteURL').'/modules/User Admin/personalDocumentSettings_manage_editOrderAjax.php');
+    $table->addDraggableColumn('gibbonPersonalDocumentTypeID', $session->get('absoluteURL').'/modules/User Admin/personalDocumentSettings_manage_editOrderAjax.php');
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));

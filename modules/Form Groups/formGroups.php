@@ -38,10 +38,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
 
         $gateway = $container->get(FormGroupGateway::class);
         if ($highestAction == "View Form Groups_all") {
-            $formGroups = $gateway->selectFormGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
+            $formGroups = $gateway->selectFormGroupsBySchoolYear($session->get('gibbonSchoolYearID'));
         }
         else {
-            $formGroups = $gateway->selectFormGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
+            $formGroups = $gateway->selectFormGroupsBySchoolYearMyChildren($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
         }
 
         $formatTutorsList = function($row) use ($gateway) {

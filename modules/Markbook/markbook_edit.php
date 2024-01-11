@@ -38,11 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
         //Get class variable
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonCourseClassID == '') {
-            $gibbonCourseClassID = $gibbon->session->get('markbookClass') ?? '';
+            $gibbonCourseClassID = $session->get('markbookClass') ?? '';
         }
 
         if ($gibbonCourseClassID == '') {
-            $row = getAnyTaughtClass( $pdo, $gibbon->session->get('gibbonPersonID'), $gibbon->session->get('gibbonSchoolYearID') );
+            $row = getAnyTaughtClass( $pdo, $session->get('gibbonPersonID'), $session->get('gibbonSchoolYearID') );
             $gibbonCourseClassID = $row['gibbonCourseClassID'] ?? '';
         }
 
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } else {
-                    $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
                     if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
                         //Check highest role in any department
-                        $isCoordinator = isDepartmentCoordinator( $pdo, $gibbon->session->get('gibbonPersonID') );
+                        $isCoordinator = isDepartmentCoordinator( $pdo, $session->get('gibbonPersonID') );
                         if ($isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything') {
                             $params = [
                                 "gibbonCourseClassID" => $gibbonCourseClassID
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 //Get teacher list
                 $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-                $teaching = (isset($teacherList[ $gibbon->session->get('gibbonPersonID') ]) );
+                $teaching = (isset($teacherList[ $session->get('gibbonPersonID') ]) );
 
                 $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
 
@@ -144,11 +144,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 if ($canEditThisClass) {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
+                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
 
                     if ($container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableColumnWeighting') == 'Y') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
-                            echo " | <a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Manage Weightings')."<img title='".__('Manage Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a>";
+                            echo " | <a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Manage Weightings')."<img title='".__('Manage Weightings')."' src='./themes/".$session->get('gibbonThemeName')."/img/run.png'/></a>";
                         }
                     }
 
@@ -226,10 +226,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                         echo Format::yesNo($row['viewableParents']);
                         echo '</td>';
                         echo '<td>';
-                        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                        echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-                        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Enter Data')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
-                        echo "<a href='".$gibbon->session->get('absoluteURL').'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$row['gibbonMarkbookColumnID']."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_edit.php'><img title='".__('Export to Excel')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/download.png'/></a>";
+                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                        echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
+                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
+                        echo "<a href='".$session->get('absoluteURL').'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$row['gibbonMarkbookColumnID']."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_edit.php'><img title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
                         echo '</td>';
                         echo '</tr>';
 
@@ -245,15 +245,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     echo __('Copy Markbook Columns');
                     echo '</h1>';
 
-                    $form = Form::create('searchForm', $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
+                    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setClass('noIntBorder fullWidth');
 
-                    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/applicationForm_manage.php');
+                    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/applicationForm_manage.php');
 
                     $col = $form->addRow()->addColumn()->addClass('inline right');
                         $col->addContent(__('Copy from').' '.__('Class').': &nbsp;');
-                        $col->addSelectClass('gibbonMarkbookCopyClassID', $gibbon->session->get('gibbonSchoolYearID'))->setClass('mediumWidth');
+                        $col->addSelectClass('gibbonMarkbookCopyClassID', $session->get('gibbonSchoolYearID'))->setClass('mediumWidth');
                         $col->addSubmit(__('Go'));
 
                     echo $form->getOutput();
@@ -263,5 +263,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
     }
 
     // Print the sidebar
-    $session->set('sidebarExtra', sidebarExtra($guid, $pdo, $gibbon->session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit.php'));
+    $session->set('sidebarExtra', sidebarExtra($guid, $pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit.php'));
 }

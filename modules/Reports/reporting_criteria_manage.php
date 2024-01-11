@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     $page->breadcrumbs->add(__('Manage Criteria'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     }
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
                 return Format::link($url, $reportingCriteria['scopeTypeName']);
             });
     } else {
-        $table->addDraggableColumn('gibbonReportingCriteriaID', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editOrderAjax.php', ['gibbonReportingCycleID' => $urlParams['gibbonReportingCycleID'], 'gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID']]);
+        $table->addDraggableColumn('gibbonReportingCriteriaID', $session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editOrderAjax.php', ['gibbonReportingCycleID' => $urlParams['gibbonReportingCycleID'], 'gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID']]);
     }
 
     $table->addColumn('name', __('Criteria'));

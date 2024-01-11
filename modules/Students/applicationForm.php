@@ -834,7 +834,7 @@ if ($proceed == false) {
             }
         }
 
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
         $requiredDocumentsList = explode(',', $requiredDocuments);
 

@@ -349,7 +349,7 @@ if ($proceed == false) {
                         $fileCount = $_POST['fileCount'];
                     }
 
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     for ($i = 0; $i < $fileCount; ++$i) {
                         if (empty($_FILES["file$i"]['tmp_name'])) continue;
@@ -378,7 +378,7 @@ if ($proceed == false) {
                 $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));
                 $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                $event->sendNotifications($pdo, $session);
 
 
                 //Email reference form link to referee

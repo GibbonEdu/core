@@ -32,7 +32,7 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 require_once __DIR__.'/moduleFunctions.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.php') == false) {
     $URL .= '&return=error0';
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $partialFail = false;
     $count = 0;
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
     // COMPONENTS

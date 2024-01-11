@@ -482,7 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         $studentGateway = $container->get(StudentGateway::class);
-                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
+                        $staff = $studentGateway->selectAllRelatedUsersByStudent($session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
                         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
                         $criteria = $studentGateway->newQueryCriteria();
 
@@ -653,7 +653,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $formGroupGateway = $container->get(FormGroupGateway::class);
                         $studentGateway = $container->get(StudentGateway::class);
 
-                        $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
+                        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
                         $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
                         $yearGroup = $yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
                         $headOfYear = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
@@ -728,7 +728,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields'] ?? '');
                         
                         $col = $table->addColumn('Background Information', __('Background Information'));
-                        $country = $gibbon->session->get('country');
+                        $country = $session->get('country');
 
                         $col->addColumn('countryOfBirth', __('Country of Birth'))->translatable();
                         $col->addColumn('ethnicity', __('Ethnicity'));
@@ -1428,7 +1428,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $rowFilter->addSelect('category')->fromQuery($pdo, $sql)->selected($category)->placeholder();
 
                                     $rowFilter = $form->addRow();
-                                        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
+                                        $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
 
                                     echo $form->getOutput();
                                 }
@@ -1661,7 +1661,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
 
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
+                                    $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
 
                                 echo $form->getOutput();
                                 ?>
@@ -2069,21 +2069,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $highestActionReports = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_view.php', $connection2);
-                            $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+                            $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
                             if ($highestActionReports == 'View by Student') {
                                 $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
                             } else if ($highestActionReports == 'View Reports_myChildren') {
                                 $studentGateway = $container->get(StudentGateway::class);
                                 $children = $studentGateway
-                                    ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
+                                    ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))
                                     ->fetchGroupedUnique();
 
                                 if (!empty($children[$gibbonPersonID])) {
                                     $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
                                 }
                             } else if ($highestActionReports == 'View Reports_mine') {
-                                $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+                                $gibbonPersonID = $session->get('gibbonPersonID');
                                 $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
                             }
 
@@ -2431,7 +2431,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
                             // DEADLINES
-                            $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'viewableStudents' : 'viewableParents')->fetchAll();
+                            $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'viewableStudents' : 'viewableParents')->fetchAll();
 
                             echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                                 'gibbonPersonID' => $gibbonPersonID,
@@ -2443,7 +2443,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Planner/src/Tables/HomeworkTable.php';
                             $page->scripts->add('planner', '/modules/Planner/js/module.js');
 
-                            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'Student' : 'Parent');
+                            $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'Student' : 'Parent');
 
                             echo $table->getOutput();
                         }

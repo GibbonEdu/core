@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
             $row->addTextField('search')->setValue($criteria->getSearchText());
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+            $row->addSearchSubmit($session, __('Clear Search'));
 
         echo $form->getOutput();
 

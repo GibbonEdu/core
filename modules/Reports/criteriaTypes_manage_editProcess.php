@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportingCriteriaTypeID = $_POST['gibbonReportingCriteriaTypeID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$gibbonReportingCriteriaTypeID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$gibbonReportingCriteriaTypeID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_manage_edit.php') == false) {
     $URL .= '&return=error0';

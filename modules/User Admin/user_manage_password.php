@@ -111,8 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             echo '<br/>';
 
             // LOGIN TROUBLESHOOTING
-            $trueIcon = "<img title='" . __('Yes'). "' src='".$gibbon->session->get('absoluteURL')."/themes/".$gibbon->session->get('gibbonThemeName')."/img/iconTick.png' class='w-5 h-5 mr-4 float-right' />";
-            $falseIcon = "<img title='" . __('No'). "' src='".$gibbon->session->get('absoluteURL')."/themes/".$gibbon->session->get('gibbonThemeName')."/img/iconCross.png' class='w-5 h-5 mr-4 float-right' />";
+            $trueIcon = "<img title='" . __('Yes'). "' src='".$session->get('absoluteURL')."/themes/".$session->get('gibbonThemeName')."/img/iconTick.png' class='w-5 h-5 mr-4 float-right' />";
+            $falseIcon = "<img title='" . __('No'). "' src='".$session->get('absoluteURL')."/themes/".$session->get('gibbonThemeName')."/img/iconCross.png' class='w-5 h-5 mr-4 float-right' />";
 
             $form = Form::create('loginAccess', "")->setClass('smallIntBorder w-full');
             $form->setTitle(__('Login Troubleshooting'));

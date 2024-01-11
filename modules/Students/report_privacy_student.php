@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Privacy Choices by Student'));
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     $privacyChoices = $reportGateway->queryStudentPrivacyChoices($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('privacyByStudent', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('privacyByStudent', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Privacy Choices by Student'));
 
     $table->addRowCountColumn($privacyChoices->getPageFrom());

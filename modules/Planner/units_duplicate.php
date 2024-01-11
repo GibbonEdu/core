@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
             if ($highestAction == 'Unit Planner_all') {
                 $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {

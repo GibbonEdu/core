@@ -37,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
         __('View Messages').' ('.$date.')');
 
     // Update messenger last read timestamp
-    $gibbon->session->set('messengerLastRead', date('Y-m-d H:i:s'));
-    $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['messengerLastRead' => date('Y-m-d H:i:s')]);
+    $session->set('messengerLastRead', date('Y-m-d H:i:s'));
+    $container->get(UserGateway::class)->update($session->get('gibbonPersonID'), ['messengerLastRead' => date('Y-m-d H:i:s')]);
 
     // Handle attendance student registration message
     if (isset($_GET['return'])) {

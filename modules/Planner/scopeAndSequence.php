@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 

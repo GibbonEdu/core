@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         $event->addRecipient($gibbonPersonIDStaff);
                                     }
 
-                                    $event->sendNotifications($pdo, $gibbon->session);
+                                    $event->sendNotifications($pdo, $session);
                                 }
 
                                 if ($status == 'Waiting List') {
@@ -286,7 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         $event->addRecipient($gibbonPersonIDStaff);
                                     }
 
-                                    $event->sendNotifications($pdo, $gibbon->session);
+                                    $event->sendNotifications($pdo, $session);
                                 }
                             }
 
@@ -387,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             }
                                         }
 
-                                        $event->sendNotifications($pdo, $gibbon->session);
+                                        $event->sendNotifications($pdo, $session);
                                     }
                                 }
                             }

@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     $reportIdentifier = $_GET['reportIdentifier'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->selected($gibbonFormGroupID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

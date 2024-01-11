@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
         $row->addSelect('weekOfYear')->fromArray($weeks)->selected($weekOfYear);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

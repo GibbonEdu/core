@@ -43,18 +43,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
     $search = $_GET['search'] ?? null;
 
     // FORM
-    $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::create('resourcesManage', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/resources_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Resource name.'));
         $row->addTextField('search')->setValue($search);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         ->sortBy('timestamp', 'DESC')
         ->fromPOST();
 
-    $gibbonPersonID = $highestAction == 'Manage Resources_all' ? null : $gibbon->session->get('gibbonPersonID');
+    $gibbonPersonID = $highestAction == 'Manage Resources_all' ? null : $session->get('gibbonPersonID');
     $resources = $resourceGateway->queryResources($criteria, $gibbonPersonID);
 
     // TABLE
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
     $table->setTitle(__('View'));
     $table->addHeaderAction('add', __('Add'))
         ->addParam('search', $search)
-        ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
+        ->setURL('/modules/' .$session->get('module') . '/resources_manage_add.php')
         ->displayLabel();
 
     $table->addColumn('name', __('Name'))

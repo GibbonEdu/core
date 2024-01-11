@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
     // Proceed!
     $page->breadcrumbs->add(__('Student Name Conflicts'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingValueGateway = $container->get(ReportingValueGateway::class);
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
             ->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

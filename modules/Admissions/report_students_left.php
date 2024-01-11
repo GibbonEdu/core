@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students
     $ignoreStatus = $_GET['ignoreStatus'] ?? false;
     $endDateFrom = $_GET['endDateFrom'] ?? '';
     $endDateTo = $_GET['endDateTo'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Left Students'));
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students
     $students->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsLeft', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsLeft', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Left Students'));
 
     if ($type == 'Date Range') {

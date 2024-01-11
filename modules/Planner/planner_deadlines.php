@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addSearchSubmit($gibbon->session);
+                    $row->addSearchSubmit($session);
 
                 echo $form->getOutput();
             }
@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                         echo Format::alert(__('Your request failed because you do not have access to this action.'));
                     } else {
                         // DEADLINES
-                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
+                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
 
                         echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                             'gibbonPersonID' => $gibbonPersonID,
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                         ]);
 
                         // HOMEWORK TABLE
-                        $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
+                        $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
                         $table->setTitle($homeworkNamePlural);
 
                         echo $table->getOutput();
@@ -259,10 +259,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         } else {
             // DEADLINES
             if ($highestAction == 'Lesson Planner_viewEditAllClasses' and $show == 'all') {
-                $deadlines = $plannerGateway->selectAllUpcomingHomework($gibbon->session->get('gibbonSchoolYearID'))->fetchAll();
+                $deadlines = $plannerGateway->selectAllUpcomingHomework($session->get('gibbonSchoolYearID'))->fetchAll();
             } else {
                 $gibbonPersonID = $session->get('gibbonPersonID');
-                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
             }
 
             echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
@@ -273,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ]);
 
             // HOMEWORK TABLE
-            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category, $gibbonCourseClassID);
+            $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, $category, $gibbonCourseClassID);
             $table->setTitle($homeworkNamePlural);
 
             echo $table->getOutput();

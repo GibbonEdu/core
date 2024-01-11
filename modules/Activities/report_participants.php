@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
     $participants->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('participants', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('participants', $criteria)->setViewMode($viewMode, $session);
 
     $table->setTitle(__('Participants by Activity'));
 

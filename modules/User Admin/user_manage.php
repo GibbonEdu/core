@@ -48,18 +48,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
-    $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/user_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/user_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -116,10 +116,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('family', __('Family'))
         ->notSortable()
-        ->format(function($person) use ($gibbon) {
+        ->format(function($person) use ($session) {
             $output = '';
             foreach ($person['families'] as $family) {
-                $output .= '<a href="'.$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
+                $output .= '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
             }
             return $output;
         });
@@ -130,11 +130,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $table->addActionColumn()
         ->addParam('gibbonPersonID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($gibbon, $highestAction) {
+        ->format(function ($person, $actions) use ($session, $highestAction) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/user_manage_edit.php');
 
-            if ($highestAction == 'Manage Users_editDelete' && $person['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
+            if ($highestAction == 'Manage Users_editDelete' && $person['gibbonPersonID'] != $session->get('gibbonPersonID')) {
                 $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/User Admin/user_manage_delete.php');
             }

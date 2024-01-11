@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     $page->breadcrumbs
         ->add(__('Manage Reports'), 'reports_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
@@ -55,10 +55,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
         return;
     }
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_manage_editProcess.php');
+    $form = Form::create('templatesManage', $session->get('absoluteURL').'/modules/Reports/reports_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 

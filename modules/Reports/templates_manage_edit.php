@@ -59,9 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         return;
     }
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL') . '/modules/Reports/templates_manage_editProcess.php');
+    $form = Form::create('templatesManage', $session->get('absoluteURL') . '/modules/Reports/templates_manage_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
 
     $form->addRow()->addHeading('Basic Information', __('Basic Information'));
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $table = $container->get(DataTable::class);
     $table->addMetaData('blankSlate', __('There are no sections here yet.'));
 
-    $draggableAJAX = $gibbon->session->get('absoluteURL') . '/modules/Reports/templates_manage_editOrderAjax.php';
+    $draggableAJAX = $session->get('absoluteURL') . '/modules/Reports/templates_manage_editOrderAjax.php';
     $table->addDraggableColumn('gibbonReportTemplateSectionID', $draggableAJAX, [
         'gibbonReportTemplateID' => $gibbonReportTemplateID,
     ]);
@@ -184,9 +184,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $prototypeAdditionalSections = $prototypeSectionGateway->selectPrototypeSections('Additional')->fetchGrouped();
 
     // SETTINGS FORM
-    // $form = Form::create('settings', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
+    // $form = Form::create('settings', $session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
 
-    // $form->addHiddenValue('address', $gibbon->session->get('address'));
+    // $form->addHiddenValue('address', $session->get('address'));
     // $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
 
     // $fonts = ['Helvetica', 'Arial', 'Times New Roman'];

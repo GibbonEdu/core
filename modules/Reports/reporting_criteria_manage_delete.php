@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         echo Format::alert(__('This is a grouped record created using Add Multiple.').' '.__('Deleting this record will delete all {count} records in the same group. Check the detach option to remove this record from the group and not delete other records.', ['count' => '<b>'.$groupCount.'</b>']), 'error');
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_deleteProcess.php?gibbonReportingCriteriaID='.$gibbonReportingCriteriaID, false, false);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_deleteProcess.php?gibbonReportingCriteriaID='.$gibbonReportingCriteriaID, false, false);
 
     if (!empty($values['groupID'])) {
         $row = $form->addRow();

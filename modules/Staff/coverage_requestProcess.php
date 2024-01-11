@@ -34,8 +34,8 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonStaffAbsenceID = $gibbonStaffAbsenceID ?? $_POST['gibbonStaffAbsenceID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
-$URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') == false) {
     $URL .= '&return=error0';
@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     $data = [
         'gibbonStaffAbsenceID'   => $gibbonStaffAbsenceID,
-        'gibbonSchoolYearID'     => $gibbon->session->get('gibbonSchoolYearID'),
-        'gibbonPersonIDStatus'   => $gibbon->session->get('gibbonPersonID'),
+        'gibbonSchoolYearID'     => $session->get('gibbonSchoolYearID'),
+        'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),
         'gibbonPersonID'         => $absence['gibbonPersonID'],
         'gibbonPersonIDCoverage' => $_POST['gibbonPersonIDCoverage'] ?? null,
         'notesStatus'            => $_POST['notesStatus'] ?? '',

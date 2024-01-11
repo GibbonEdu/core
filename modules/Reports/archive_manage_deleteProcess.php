@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 
 $gibbonReportArchiveID = $_GET['gibbonReportArchiveID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_delete.php') == false) {
     $URL .= '&return=error0';

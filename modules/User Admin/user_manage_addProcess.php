@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
                         $path = $session->get('absolutePath');
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 'jobTitle' => $_POST['jobTitle'] ?? '',
                             ]));
                             $event->setActionLink('/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$AI.'&allStaff=&search=');
-                            $event->sendNotifications($pdo, $gibbon->session);
+                            $event->sendNotifications($pdo, $session);
                         }
                     }
 

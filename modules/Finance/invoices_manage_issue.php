@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 			if (empty($email)) {
 				$form->addRow()->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');
 			} else {
-				$form->addRow()->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
+				$form->addRow()->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $session);
 			}
 
 			$row = $form->addRow();

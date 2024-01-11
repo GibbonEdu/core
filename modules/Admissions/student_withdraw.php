@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), ['showForm' => true])->required()->placeholder();
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'), ['showForm' => true])->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('status', __('Status'))->description(__("Set this to Left unless the student's withdraw date is in the future."));
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
     $row = $form->addRow();
         $row->addLabel('notificationList', __('Notify Additional People'));
         $row->addFinder('notificationList')
-            ->fromAjax($gibbon->session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
+            ->fromAjax($session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
             ->setParameter('resultsLimit', 10)
             ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
 

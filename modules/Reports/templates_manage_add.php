@@ -35,13 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL') . '/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID=' . $_GET['editID'] . '&search=' . $search;
+        $editLink = $session->get('absoluteURL') . '/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID=' . $_GET['editID'] . '&search=' . $search;
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL') . '/modules/Reports/templates_manage_addProcess.php');
+    $form = Form::create('templatesManage', $session->get('absoluteURL') . '/modules/Reports/templates_manage_addProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 

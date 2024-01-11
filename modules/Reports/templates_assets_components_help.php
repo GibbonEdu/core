@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
 
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
     $dataFactory = $container->get(DataFactory::class);
-    $dataFactory->setAssetPath($gibbon->session->get('absolutePath').$customAssetPath);
+    $dataFactory->setAssetPath($session->get('absolutePath').$customAssetPath);
 
     $coreSources = glob(__DIR__ . '/src/Sources/*.php');
     
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         }
     }
 
-    $additionalSources = glob($gibbon->session->get('absolutePath').'/'.$customAssetPath.'/sources/*.php');
+    $additionalSources = glob($session->get('absolutePath').'/'.$customAssetPath.'/sources/*.php');
 
     if (!empty($additionalSources)) {
         echo '<h2>';

@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         return;
     }
 
-    $form = Form::create('reportCriteriaManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_addMultipleProcess.php');
+    $form = Form::create('reportCriteriaManage', $session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_addMultipleProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
     $form->addHiddenValue('gibbonReportingScopeID', $gibbonReportingScopeID);
     $form->addHiddenValue('scopeType', $reportingScope['scopeType']);

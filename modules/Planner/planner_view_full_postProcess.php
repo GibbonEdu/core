@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                 // Initialize the notification sender & gateway objects
                 $notificationGateway = new NotificationGateway($pdo);
-                $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                $notificationSender = new NotificationSender($notificationGateway, $session);
 
                 //Create notification for all people in class except me
                 $dataClassGroup = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);

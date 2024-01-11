@@ -28,7 +28,7 @@ $gibbonActivityStaffID = $_POST['gibbonActivityStaffID'] ?? '';
 $search = $_POST['search'] ?? '';
 $gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL') . '/index.php?q=/modules/' . $gibbon->session->get('module') . "/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID";
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/' . $session->get('module') . "/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
     $URL .= '&return=error0';

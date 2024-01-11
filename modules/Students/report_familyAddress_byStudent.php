@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
     $choices = $_POST['gibbonPersonID'] ?? [];
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (isset($_GET['gibbonPersonIDList'])) {
         $choices = explode(',', $_GET['gibbonPersonIDList']);
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     $families->joinColumn('gibbonFamilyID', 'children', $childrenData);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('familyAddressByStudent', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('familyAddressByStudent', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Family Address by Student'));
     $table->setDescription(__('This report attempts to print the family address(es) based on parents who are labelled as Contact Priority 1.'));
 

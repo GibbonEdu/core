@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
     // Make a request using a Guzzle HTTP get request
     $client = new Client();
     $response = $client->request('GET', $apiEndpoint, [
-        'headers' => ['Referer' => $gibbon->session->get('absoluteURL').'/index.php'],
+        'headers' => ['Referer' => $session->get('absoluteURL').'/index.php'],
         'query' => $params,
         'exceptions' => false,
     ]);

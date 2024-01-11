@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
     $page->breadcrumbs->add(__('Send Reports'));
 
     $step = $_GET['step'] ?? 1;
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 

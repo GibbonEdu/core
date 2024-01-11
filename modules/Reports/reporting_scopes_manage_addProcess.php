@@ -28,7 +28,7 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_add.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_add.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_manage_add.php') == false) {
     $URL .= '&return=error0';

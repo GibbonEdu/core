@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                 $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder();
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session);
+                $row->addSearchSubmit($session);
 
             echo $form->getOutput();
         }

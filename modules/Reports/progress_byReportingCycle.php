@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byReporti
     // Proceed!
     $page->breadcrumbs->add(__('Progress by Reporting Cycle'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byReporti
             ->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

@@ -29,7 +29,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_upload.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_upload.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upload.php') == false) {
     $URL .= '&return=error0';
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         exit;
     }
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     if (!is_file($absolutePath.'/'.$file)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         mkdir($absolutePath.$destinationFolder, 0755, true);
     }
 
-    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader = new FileUploader($pdo, $session);
     $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$file, $destinationFolder, ['pdf']);
 
     $partialFail = false;

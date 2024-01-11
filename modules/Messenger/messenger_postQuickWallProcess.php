@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         } else {
             //Write to database
             try {
-                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'confidential' => 'N', 'timestamp' => date('Y-m-d H:i:s'));
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'confidential' => 'N', 'timestamp' => date('Y-m-d H:i:s'));
                 $sql = 'INSERT INTO gibbonMessenger SET gibbonSchoolYearID=:gibbonSchoolYearID, email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, confidential=:confidential, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

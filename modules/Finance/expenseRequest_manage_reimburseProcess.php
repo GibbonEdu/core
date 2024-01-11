@@ -110,7 +110,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
                         $paymentMethod = $_POST['paymentMethod'] ?? '';
 
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

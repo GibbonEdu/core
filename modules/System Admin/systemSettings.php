@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'].'File', __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
+            ->setAttachment('organisationLogo', $session->get('absoluteURL'), $setting['value'])->required();
 
     $setting = $settingGateway->getSettingByScope('System', 'organisationAdministrator', true);
     $row = $form->addRow();

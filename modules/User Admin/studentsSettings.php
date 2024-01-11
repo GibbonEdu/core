@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
 
     $studentNoteGateway = $container->get(StudentNoteGateway::class);
-    $absoluteURL = $gibbon->session->get('absoluteURL');
+    $absoluteURL = $session->get('absoluteURL');
 
     // QUERY
     $criteria = $studentNoteGateway->newQueryCriteria(true)

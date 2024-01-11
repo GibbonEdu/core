@@ -38,9 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
         return;
     }
 
-    $form = Form::create('reportsGenerate', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_generate_cancelProcess.php');
+    $form = Form::create('reportsGenerate', $session->get('absoluteURL').'/modules/Reports/reports_generate_cancelProcess.php');
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('processID', $processID);
 

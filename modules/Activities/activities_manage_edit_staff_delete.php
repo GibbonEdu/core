@@ -39,8 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     if (!$activityGateway->exists($gibbonActivityID) || !$activityStaffGateway->exists($gibbonActivityStaffID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $form = DeleteForm::createForm($gibbon->session->get('absoluteURL') . '/modules/' . $gibbon->session->get('module') . "/activities_manage_edit_staff_deleteProcess.php");
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form = DeleteForm::createForm($session->get('absoluteURL') . '/modules/' . $session->get('module') . "/activities_manage_edit_staff_deleteProcess.php");
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
         $form->addHiddenValue('gibbonActivityStaffID', $gibbonActivityStaffID);
         $form->addHiddenValue('search', $search);

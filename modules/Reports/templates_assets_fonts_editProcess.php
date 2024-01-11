@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportTemplateFontID = $_POST['gibbonReportTemplateFontID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_fonts_edit.php&gibbonReportTemplateFontID='.$gibbonReportTemplateFontID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_fonts_edit.php&gibbonReportTemplateFontID='.$gibbonReportTemplateFontID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_fonts_edit.php') == false) {
     $URL .= '&return=error0';

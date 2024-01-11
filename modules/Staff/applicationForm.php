@@ -244,7 +244,7 @@ if ($proceed == false) {
                 $heading->wrap('<p>', '</p>');
             }
 
-            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
             $requiredDocumentsList = explode(',', $staffApplicationFormRequiredDocuments);
 

@@ -48,9 +48,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_f
         return;
     }
 
-    $form = Form::create('templatesFonts', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_fonts_editProcess.php');
+    $form = Form::create('templatesFonts', $session->get('absoluteURL').'/modules/Reports/templates_assets_fonts_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateFontID', $gibbonReportTemplateFontID);
 
     $row = $form->addRow();

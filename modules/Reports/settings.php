@@ -32,10 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/settings.php') == 
     $settingGateway = $container->get(SettingGateway::class);
 
     // FORM
-    $form = Form::create('settings', $gibbon->session->get('absoluteURL').'/modules/Reports/settingsProcess.php');
+    $form = Form::create('settings', $session->get('absoluteURL').'/modules/Reports/settingsProcess.php');
     $form->setTitle(__('Settings'));
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading('General Options', __('General Options'));
 

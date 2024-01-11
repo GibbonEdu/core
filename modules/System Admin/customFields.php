@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
                    ->addParam('contextName', $context);
         }
 
-        $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
+        $table->addDraggableColumn('gibbonCustomFieldID', $session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
 
         $table->addColumn('name', __('Name'))
             ->description(__('Heading'))

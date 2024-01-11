@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 }
                             }
                             if ($type == 'File') {
-                                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                                $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                                 $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         return;
     }
 
-    $tempDirectoryPath = $gibbon->session->get('absolutePath').'/uploads/temp';
+    $tempDirectoryPath = $session->get('absolutePath').'/uploads/temp';
     if (!is_dir($tempDirectoryPath)) {
         mkdir($tempDirectoryPath, 0755);
     }
@@ -154,11 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         return;
     }
 
-    $form = Form::create('fileUpload', $gibbon->session->get('absoluteURL').'/modules/System Admin/file_uploadProcess.php');
+    $form = Form::create('fileUpload', $session->get('absoluteURL').'/modules/System Admin/file_uploadProcess.php');
     $form->setTitle(__('Step 2 - Data Check & Confirm'));
     $form->setMultiPartForm($steps, $step);
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('type', $type);
     $form->addHiddenValue('gibbonPersonalDocumentTypeID', $gibbonPersonalDocumentTypeID);
     $form->addHiddenValue('gibbonCustomFieldID', $gibbonCustomFieldID);

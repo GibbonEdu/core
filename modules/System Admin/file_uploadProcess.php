@@ -29,7 +29,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_upload.php&step=3';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_upload.php&step=3';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
     $URL .= '&return=error0';
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         exit;
     }
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     if (!is_file($absolutePath.'/'.$zipFile)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");

@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                 $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                $event->sendNotifications($pdo, $session);
             }
 
             //DEAL WITH OUTCOME

@@ -36,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byFamily.p
 
     $studentGateway = $container->get(StudentGateway::class);
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-    $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+    $gibbonPersonID = $session->get('gibbonPersonID');
 
     $students = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
 

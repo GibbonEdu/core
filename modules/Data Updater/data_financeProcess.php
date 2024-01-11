@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     $event->setNotificationText(__('A finance data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_finance_manage.php');
 
-                    $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $session);
                 }
 
 

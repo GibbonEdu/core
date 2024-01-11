@@ -50,8 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_mig
         return;
     }
 
-    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_migrateProcess.php');
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form = Form::create('archiveImport', $session->get('absoluteURL').'/modules/Reports/archive_manage_migrateProcess.php');
+    $form->addHiddenValue('address', $session->get('address'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();
     $row = $form->addRow();

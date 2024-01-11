@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
