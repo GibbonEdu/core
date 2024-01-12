@@ -63,6 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
                 $row->addSelect('type')->fromString($types)->required()->placeholder();
 
             $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->selected('Y');
+
+            $row = $form->addRow();
                 $row->addLabel('capacity', __('Capacity'));
                 $row->addNumber('capacity')->maxLength(5)->setValue('0');
 
