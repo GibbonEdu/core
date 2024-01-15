@@ -50,6 +50,13 @@ class FacilityGateway extends QueryableGateway
             ->cols([
                 'gibbonSpaceID', 'name', 'type', 'active', 'capacity', 'computer', 'computerStudent', 'projector', 'tv', 'dvd', 'hifi', 'speakers', 'iwb', 'phoneInternal', 'phoneExternal'
             ]);
+        $criteria->addFilterRules([
+            'active' => function ($query, $active) {
+                return $query
+                    ->where('gibbonSpace.active = :active')
+                    ->bindValue('active', $active);
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
