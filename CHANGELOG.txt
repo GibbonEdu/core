@@ -38,6 +38,7 @@ v27.0.00
         Fast Finder: added facilities as one of the searchable options with the fast finder.
         Messenger: Added search form and school year navigator to Manage Groups page for quicker group browsing.
         System: Replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated.
+        Facilities: Added an 'active' column in the gibbonSpace table and changed pages to only show active Facilities.
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
