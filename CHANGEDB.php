@@ -790,5 +790,5 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 ALTER TABLE `gibbonActivityStudent` CHANGE `status` `status` ENUM('Accepted','Pending','Waiting List','Not Accepted','Left') NOT NULL DEFAULT 'Pending';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'privacyOptionVisibility', 'Display privacy options?', 'If enabled, privacy options can be selected by users through the Data Updater and Application Form. If not enabled, privacy options can only be changed by staff through Manage Users.', 'Y');end
 UPDATE `gibbonSetting` SET description='Comma-separated list of choices to make available if privacy options are turned on.' WHERE scope='User Admin' AND name='privacyOptions';end
-
+ALTER TABLE `gibbonSpace` ADD `active` ENUM('N','Y') NOT NULL DEFAULT 'Y' AFTER `type`;end
 ";

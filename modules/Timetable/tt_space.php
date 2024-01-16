@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         // CRITERIA
         $criteria = $facilityGateway->newQueryCriteria(true)
             ->searchBy($facilityGateway->getSearchableColumns(), $search)
+            ->filterBy('active', 'Y')
             ->sortBy('name')
             ->fromPOST();
 

@@ -54,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         } else {
             $name = $_POST['name'] ?? '';
             $type = $_POST['type'] ?? '';
+            $active = $_POST['active'] ?? '';
             $capacity = $_POST['capacity'] ?? '';
             $computer = $_POST['computer'] ?? '';
             $computerStudent = $_POST['computerStudent'] ?? '';
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             $comment = $_POST['comment'] ?? '';
 
             //Validate Inputs
-            if ($name == '' or $type == '' or $computer == '' or $computerStudent == '' or $projector == '' or $tv == '' or $dvd == '' or $hifi == '' or $speakers == '' or $iwb == '') {
+            if ($name == '' or $type == '' or $active == '' or $computer == '' or $computerStudent == '' or $projector == '' or $tv == '' or $dvd == '' or $hifi == '' or $speakers == '' or $iwb == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
@@ -90,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name, 'type' => $type, 'capacity' => $capacity, 'computer' => $computer, 'computerStudent' => $computerStudent, 'projector' => $projector, 'tv' => $tv, 'dvd' => $dvd, 'hifi' => $hifi, 'speakers' => $speakers, 'iwb' => $iwb, 'phoneInternal' => $phoneInternal, 'phoneExternal' => $phoneExternal, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID);
-                        $sql = 'UPDATE gibbonSpace SET name=:name, type=:type, capacity=:capacity, computer=:computer, computerStudent=:computerStudent, projector=:projector, tv=:tv, dvd=:dvd , hifi=:hifi, speakers=:speakers, iwb=:iwb, phoneInternal=:phoneInternal, phoneExternal=:phoneExternal, comment=:comment WHERE gibbonSpaceID=:gibbonSpaceID';
+                        $data = array('name' => $name, 'type' => $type, 'active' => $active, 'capacity' => $capacity, 'computer' => $computer, 'computerStudent' => $computerStudent, 'projector' => $projector, 'tv' => $tv, 'dvd' => $dvd, 'hifi' => $hifi, 'speakers' => $speakers, 'iwb' => $iwb, 'phoneInternal' => $phoneInternal, 'phoneExternal' => $phoneExternal, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID);
+                        $sql = 'UPDATE gibbonSpace SET name=:name, type=:type, active=:active, capacity=:capacity, computer=:computer, computerStudent=:computerStudent, projector=:projector, tv=:tv, dvd=:dvd , hifi=:hifi, speakers=:speakers, iwb=:iwb, phoneInternal=:phoneInternal, phoneExternal=:phoneExternal, comment=:comment WHERE gibbonSpaceID=:gibbonSpaceID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

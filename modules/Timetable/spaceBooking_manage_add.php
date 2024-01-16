@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $timeEnd = isset($_GET['timeEnd'])? $_GET['timeEnd'] : '';
 
             // Collect facilities
-            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace ORDER BY name";
+            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace WHERE active='Y' ORDER BY name";
             $results = $pdo->executeQuery(array(), $sql);
             if ($results->rowCOunt() > 0) {
                 $facilities['--'.__('Facilities').'--'] = $results->fetchAll(\PDO::FETCH_KEY_PAIR);

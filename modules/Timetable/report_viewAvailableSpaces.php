@@ -361,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                         $vacancies = '';
                                         if ($rowPeriods['type'] != 'Break') {
                                             
-                                            $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+                                            $sqlSelect = 'SELECT * FROM gibbonSpace WHERE active="Y" ORDER BY name';
                                             $resultSelect = $pdo->select($sqlSelect);
 
                                             $removers = [];
