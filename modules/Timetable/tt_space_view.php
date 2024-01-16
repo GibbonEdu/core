@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-
+use Gibbon\Tables\DataTable;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -56,6 +56,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             $page->breadcrumbs
                 ->add(__('View Timetable by Facility'), 'tt_space.php')
                 ->add($row['name']);
+            
+            //Create Details Table
+            $table = DataTable::createDetails('basicInfo');
+            $table->setTitle(__('Basic Information'));
+
+            $table->addColumn('name', __('Name'));
+
+            $table->addColumn('type', __('Type'));
+
+            $table->addColumn('capacity', __('Capacity'));
+
+            $table->addColumn('projector', __('Projector'))
+                ->width('100%');
+            
+            $table->addColumn('phoneInternal', __('Phone Number'))
+                ->width('100%');
+
+            echo $table->render([$row]);
 
             if ($search != '') {
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
