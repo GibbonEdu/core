@@ -64,9 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
         echo $form->getOutput();
     }
-
+    
     // Cancel out early if there's no form group selected
-    if (empty($gibbonFormGroupID)) return;
+    if (!isset($gibbonFormGroupID)) return;
 
     $formGroupGateway = $container->get(FormGroupGateway::class);
     $studentGateway = $container->get(StudentGateway::class);

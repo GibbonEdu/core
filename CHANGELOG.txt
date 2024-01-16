@@ -42,6 +42,7 @@ v27.0.00
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
+        Students: fixed view all option in Students > Students by Form Group. 
 
 v26.0.00
 --------
