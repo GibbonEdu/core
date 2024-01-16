@@ -39,9 +39,11 @@ v27.0.00
         Messenger: Added search form and school year navigator to Manage Groups page for quicker group browsing.
         System: Replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated.
         Facilities: added the ability to toggle facilities between active and inactive, removing inactive facilities from general use
+        Timetable: added basic information table to View Timetable by Facility.
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
+        Students: fixed view all option in Students > Students by Form Group. 
 
 v26.0.00
 --------
