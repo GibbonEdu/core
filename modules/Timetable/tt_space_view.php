@@ -59,7 +59,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             
             //Create Details Table
             $table = DataTable::createDetails('basicInfo');
-            $table->setTitle(__('Basic Information'));
 
             $table->addColumn('name', __('Name'));
 
