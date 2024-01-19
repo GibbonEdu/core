@@ -46,7 +46,8 @@ v27.0.00
         Students: fixed the view all option in the Students by Form Group report
 
     Deprecations
-        System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated.
+        System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated
+        System: removed fetchFromString from View class, added a Sandbox class for rendering template data
 
 v26.0.00
 --------
