@@ -310,11 +310,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                             foreach ($logs as $log) {
                                 if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
-                                    $name = $log['type'];
+                                    $name = $log['type'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
                                 }
                             }
 
-                            $group[$class['gibbonCourseClassID']] = $name;
+                            $group[$class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID']] = $name;
                             return $group;
                         }, []);
 
@@ -324,7 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             $classEnd = strtotime($targetDate.' '.$class['timeEnd']);
                             if (($classStart >= $effectiveStart && $classStart < $effectiveEnd) 
                                     || ($effectiveStart >= $classStart && $effectiveStart < $classEnd)) {
-                                $group[] = $class['gibbonCourseClassID'];
+                                $group[] = $class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID'];
                             }
                             
                             return $group;
@@ -332,8 +332,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                         $disabled = array_reduce($classes, function ($group, $class) use (&$logs, $targetDate) {
                             foreach ($logs as $log) {
-                                if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
-                                    $group[] = $class['gibbonCourseClassID'];
+                                if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate && (empty($log['gibbonTTDayRowClassID']) || ($class['gibbonTTDayRowClassID'] == $log['gibbonTTDayRowClassID'])) ) {
+                                    $group[] = $class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID'];
                                 }
                             }
                             
@@ -428,7 +428,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray($attendance->getFutureAttendanceTypes())->required()->selected('Absent');
+            $row->addSelect('type')->fromArray($attendance->getFutureAttendanceTypes())->required()->selected($scope == 'multiple' ? 'Present - Offsite' : 'Absent');
 
         $row = $form->addRow();
             $row->addLabel('reason', __('Reason'));
