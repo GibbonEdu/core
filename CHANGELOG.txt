@@ -43,6 +43,7 @@ v27.0.00
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
+        System: fixed input serialization of form data in Import from File page
         Students: fixed the view all option in the Students by Form Group report
 
     Deprecations
