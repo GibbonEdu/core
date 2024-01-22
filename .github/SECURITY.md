@@ -20,3 +20,6 @@ Gibbon runs on a 6 month release cycle, with stable versions available every Jan
 
 ## CVE Databases
 We ask that developers do no not immediately post security vulnerabilities in a CVE database. Many schools who use Gibbon may have limited funds or IT infrastructure and may only update once or twice a year. It's important to give our community ample time to update their systems before a vulnerability is posted on a public database. Once an issue has been patched and released to the community, we are open to posting these after a window of 3 months, to help ensure all systems are updated. We want to be sure to consider our schools and their capacity, to ensure we're putting their interests first.
+
+## Bug Bounties
+Gibbon is free, open-souce and non-profit, and as such, we do not offer paid bug bounties. We greatly appreicate the work of external security researchers, and are happy to give credit to them in our release notes, but as a non-profit project we do not offer monetary compensation for bug reports.
