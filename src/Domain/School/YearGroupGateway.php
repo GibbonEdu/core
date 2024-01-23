@@ -138,4 +138,18 @@ class YearGroupGateway extends QueryableGateway
         $sql = 'SELECT gibbonYearGroupID FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
         return $this->db()->selectOne($sql);
     }
+
+    /**
+     * Get the total number of year groups.
+     *
+     * @version v27
+     * @since   v27
+     *
+     * @return int|false
+     */
+    public function getYearGroupCount()
+    {
+        $sql = 'SELECT COUNT(gibbonYearGroupID) FROM gibbonYearGroup';
+        return $this->db()->selectOne($sql);
+    }
 }
