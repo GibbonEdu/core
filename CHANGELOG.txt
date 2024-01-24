@@ -40,6 +40,7 @@ v27.0.00
         School Admin: added the ability to toggle facilities between active and inactive, removing inactive facilities from general use
         Students: add an Upcoming Students option to the Students by House report
         Timetable: added basic information table to the View Timetable by Facility report
+        System: Updated Format file to remove in-baked styling
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file

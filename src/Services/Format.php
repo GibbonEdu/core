@@ -817,9 +817,8 @@ class Format
      * @param string $class
      * @return string
      */
-    public static function photo($path, $size = 75, $class = '')
+    public static function photo($path, $size = 75, $class = 'inline-block shadow bg-white border border-gray-600')
     {
-        $class .= ' inline-block shadow bg-white border border-gray-600 ';
         switch ($size) {
             case 240:
             case 'lg':
