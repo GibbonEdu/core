@@ -44,7 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
     // ABSENCE DATA
+    $status = $_GET['status'] ?? 'Full';
+    echo $status;
     $criteria = $staffAbsenceGateway->newQueryCriteria()
+        ->filterBy('status', $status == 'Full' ? $status : '')
         ->filterBy('type', $gibbonStaffAbsenceTypeID)
         ->fromPOST();
 
@@ -102,6 +105,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
         $row = $form->addRow();
             $row->addLabel('month', __('Month'));
             $row->addSelect('month')->fromArray(['' => __('All')])->fromArray($months)->selected($month);
+        
+        $row = $form->addRow();
+            $row->addLabel('Status', __('All Staff'))->description(__('Include all staff, regardless of status and current employment.'));
+            $row->addCheckbox('status')->setValue('on')->checked($status);
 
         $row = $form->addRow();
         $row->addFooter();
@@ -202,6 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     // DATA TABLE
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria()
+        ->filterBy('all', $status == 'on' ? $status : '')
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 

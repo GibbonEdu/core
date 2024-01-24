@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         $row = $form->addRow();
                 $row->addLabel('Status', __('All Staff'))->description(__('Include all staff, regardless of status and current employment.'));
-                $row->addCheckbox('status')->setValue('Left')->checked($status);
+                $row->addCheckbox('status')->setValue('on')->checked($status);
 
         $row = $form->addRow();
             $row->addSearchSubmit($session);

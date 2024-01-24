@@ -41,6 +41,7 @@ v27.0.00
         Students: add an Upcoming Students option to the Students by House report
         Timetable: added basic information table to the View Timetable by Facility report
         System: Updated Format file to remove in-baked styling
+        Staff: Added status filter to Staff Absence and Coverage Summaries to display only 'Full' status staff by default
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
