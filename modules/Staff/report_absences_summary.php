@@ -269,6 +269,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
             ->width('10%');
     }
 
+    $table->modifyRows(function ($values, $row) {
+        if ($values['status'] == 'Left') $row->addClass('error');
+        return $row;
+    });
+
     $table->addColumn('total', __('Total'))->notSortable();
 
 
