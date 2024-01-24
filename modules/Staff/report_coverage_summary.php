@@ -75,8 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     }
     
     // Get all substitutes
+    $status = $_GET['status'] ?? 'Full';
     $criteria = $substituteGateway->newQueryCriteria()
         ->filterBy('allStaff', $internalCoverage == 'Y')
+        ->filterBy('status', $status == 'Full' ? $status : '')
         ->sortBy(['active', 'surname', 'preferredName'])
         ->fromPOST();
 
@@ -106,6 +108,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $row = $form->addRow();
             $row->addLabel('month', __('Month'));
             $row->addSelect('month')->fromArray(['' => __('All')])->fromArray($months)->selected($month);
+
+        $row = $form->addRow();
+                $row->addLabel('Status', __('All Staff'))->description(__('Include all staff, regardless of status and current employment.'));
+                $row->addCheckbox('status')->setValue('Left')->checked($status);
 
         $row = $form->addRow();
             $row->addSearchSubmit($session);
