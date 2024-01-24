@@ -45,10 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
     // ABSENCE DATA
     $status = $_GET['status'] ?? 'Full';
-    echo $status;
     $criteria = $staffAbsenceGateway->newQueryCriteria()
-        ->filterBy('status', $status == 'Full' ? $status : '')
         ->filterBy('type', $gibbonStaffAbsenceTypeID)
+        ->filterBy('all', $status == 'on')
         ->fromPOST();
 
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
@@ -209,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     // DATA TABLE
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria()
-        ->filterBy('all', $status == 'on' ? $status : '')
+        ->filterBy('all', $status == 'on')
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
