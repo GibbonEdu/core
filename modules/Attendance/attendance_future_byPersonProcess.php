@@ -33,7 +33,7 @@ include __DIR__ . '/moduleFunctions.php';
 
 $address = $_POST['address'] ?? '';
 
-$gibbonPersonID = $_POST['gibbonPersonIDList'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonIDList'] ?? $_POST['gibbonPersonID'] ?? '';
 
 $urlParams = [
     'scope'            => $_POST['scope'] ?? '',
@@ -46,7 +46,7 @@ $urlParams = [
     'timeEnd'          => $_POST['timeEnd'] ?? '',
 ];
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&".http_build_query($urlParams);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonIDList=$gibbonPersonID&".http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -150,7 +150,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     $courses = $courseList[$gibbonPersonIDCurrent] ?? [];
                     if (!empty($courses) && is_array($courses)) {
 
-                        foreach ($courses as $gibbonCourseClassID) {
+                        foreach ($courses as $classID) {
+                            list($gibbonCourseClassID, $gibbonTTDayRowClassID) = explode('-', $classID);
+
                             $data = [
                                 'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
                                 'gibbonPersonID' => $gibbonPersonIDCurrent,
@@ -163,6 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                 'date' => $date,
                                 'timestampTaken' => date('Y-m-d H:i:s'),
                                 'gibbonCourseClassID' => $gibbonCourseClassID,
+                                'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
                             ];
 
                             $gibbonAttendanceLogPersonID = $attendanceLogGateway->insert($data);

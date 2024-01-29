@@ -143,7 +143,8 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                     gibbonSpace.name AS name,
                     NULL as type
                     FROM gibbonSpace
-                    WHERE gibbonSpace.name LIKE :search
+                    WHERE gibbonSpace.name LIKE :search 
+                    AND gibbonSpace.active='Y'
                     ORDER BY name";
             $resultList = $connection2->prepare($sql);
             $resultList->execute($data);

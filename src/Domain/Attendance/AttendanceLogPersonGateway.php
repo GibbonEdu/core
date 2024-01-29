@@ -351,7 +351,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $gibbonPersonID, $date)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'gibbonCourseClassID' => $gibbonCourseClassID];
-        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, direction, context, timestampTaken FROM gibbonAttendanceLogPerson
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, direction, context, timestampTaken, gibbonAttendanceLogPerson.gibbonTTDayRowClassID FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                 AND date=:date
@@ -376,7 +376,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     public function selectFutureAttendanceLogsByPersonAndDate($gibbonPersonID, $date)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $date);
-        $sql = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName 
+        $sql = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName, gibbonAttendanceLogPerson.gibbonTTDayRowClassID
             FROM gibbonAttendanceLogPerson 
             JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) 
             LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
@@ -391,7 +391,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];
-        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceCode.scope
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceCode.scope, gibbonAttendanceLogPerson.gibbonTTDayRowClassID
                 FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)

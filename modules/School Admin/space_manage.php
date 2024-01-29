@@ -73,6 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
         ->addParam('search', $search)
         ->displayLabel();
 
+    $table->modifyRows(function ($value, $row) {
+        if ($value['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('type', __('Type'));
     $table->addColumn('capacity', __('Capacity'));

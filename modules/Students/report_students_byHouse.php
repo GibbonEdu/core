@@ -31,11 +31,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
+    $includeUpcoming = $_REQUEST['includeUpcoming'] ?? 'N';
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonYearGroupIDList = explode(',', $_GET['gibbonYearGroupIDList'] ?? '');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students by House'));
+
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_students_byHouse.php");
+
+        $row = $form->addRow();
+            $row->addLabel('includeUpcoming', __('Include Upcoming Students?'));
+            $row->addCheckbox('includeUpcoming')->setValue('Y')->checked($includeUpcoming);
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSearchSubmit($session);
+
+        echo $form->getOutput();
     }
 
     $houseGateway = $container->get(HouseGateway::class);
@@ -44,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         ->sortBy(['gibbonHouse.name'])
         ->fromPOST();
 
-    $houseCounts = $houseGateway->queryStudentHouseCountByYearGroup($criteria, $gibbonSchoolYearID);
+    $houseCounts = $houseGateway->queryStudentHouseCountByYearGroup($criteria, $gibbonSchoolYearID, $includeUpcoming);
     $houses = [];
 
     // Group each year group result by house, and total up houses as we go

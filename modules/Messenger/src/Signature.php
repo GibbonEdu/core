@@ -24,7 +24,7 @@ namespace Gibbon\Module\Messenger;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\View\View;
+use Gibbon\View\Sandbox;
 
 /**
  * Signature
@@ -36,15 +36,15 @@ class Signature
 {
     protected $session;
     protected $db;
-    protected $view;
+    protected $sandbox;
     protected $settingGateway;
     protected $signatureTemplate;
 
-    public function __construct(Session $session, Connection $db, View $view, SettingGateway $settingGateway)
+    public function __construct(Session $session, Connection $db, Sandbox $sandbox, SettingGateway $settingGateway)
     {
         $this->session = $session;
         $this->db = $db;
-        $this->view = $view;
+        $this->sandbox = $sandbox;
         $this->settingGateway = $settingGateway;
 
         $this->signatureTemplate = $this->settingGateway->getSettingByScope('Messenger', 'signatureTemplate');
@@ -70,7 +70,7 @@ class Signature
             $signatureData = $values + [
                 'organisationName' => $this->session->get('organisationName'),
             ];
-            $signature = '<p></p>'.$this->view->fetchFromString($this->signatureTemplate, $signatureData);
+            $signature = '<p></p>'.$this->sandbox->render($this->signatureTemplate, $signatureData);
         }
 
         return $signature;

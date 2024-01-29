@@ -173,7 +173,6 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->leftJoin('gibbonPerson AS coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID')
             ->where('gibbonStaffAbsenceDate.date BETWEEN :dateStart AND :dateEnd')
             ->where("gibbonStaffAbsence.status = 'Approved'")
-            ->where("gibbonPerson.status = 'Full'")
             ->bindValue('dateStart', $dateStart)
             ->bindValue('dateEnd', $dateEnd)
             ->groupBy(['gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffCoverageDate.gibbonStaffCoverageDateID']);
@@ -184,6 +183,10 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
         } else {
             $query->cols(['1 as days', 'gibbonStaffAbsenceDate.date as dateStart', 'gibbonStaffAbsenceDate.date as dateEnd', 'gibbonStaffAbsenceDate.value as value'])
                 ->groupBy(['gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID']);
+        }
+
+        if (!$criteria->hasFilter('all')) {
+            $query->where('gibbonPerson.status = "Full"');
         }
 
         $criteria->addFilterRules($this->getSharedFilterRules());

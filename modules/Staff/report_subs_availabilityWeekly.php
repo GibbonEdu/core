@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $subGateway = $container->get(SubstituteGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
 
-    $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
+    $date = isset($_REQUEST['date']) ? Format::dateConvert($_REQUEST['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
     $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');

@@ -69,6 +69,7 @@ class Student extends DataSource
                 gibbonPerson.nameInCharacters,
                 gibbonPerson.studentID,
                 gibbonPerson.dayType,
+                gibbonPerson.gender,
                 gibbonYearGroup.gibbonYearGroupID,
                 gibbonYearGroup.name as yearGroupName,
                 gibbonYearGroup.nameShort as yearGroupNameShort,
