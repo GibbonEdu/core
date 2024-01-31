@@ -36,6 +36,8 @@ v27.0.00
         Timetable: added timetable iCal Export buttons to staff and student profiles
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
         Fast Finder: added facilities as one of the searchable options with the fast finder.
+        System: Updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions.
+        System: Replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated.
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
         School Admin: added the ability to toggle facilities between active and inactive, removing inactive facilities from general use
         Students: add an Upcoming Students option to the Students by House report
