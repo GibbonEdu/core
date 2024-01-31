@@ -1,0 +1,16 @@
+{% if bookshelves %}
+    <div id="bookshelves" class="bookshelfContainer overflow-x-auto max-w-4xl font-sans">
+        <div class="columns-auto">
+        {% for bookshelf in bookshelves|keys %}
+            <h3>{{bookshelf}}</h3>
+            <div class="grid grid-rows-1 grid-flow-col gap-4 box-border h-auto w-auto p-4 border-b-8">
+                {% for book in bookshelves[bookshelf] %}
+                    {% if book.imageLocation is not empty %}
+                        <img src="{{ book.imageLocation }}" class="w-full -mt-1 col-span-3">
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endif %}

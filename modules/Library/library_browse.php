@@ -50,91 +50,131 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }
 
     //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
+    // $page = 1;
+    // if (isset($_GET['page'])) {
+    //     $page = $_GET['page'];
+    // }
+    // if ((!is_numeric($page)) or $page < 1) {
+    //     $page = 1;
+    // }
+
+    /**
+     * FOR LATER
+     * SELECT BOOKSHELVES BASED ON TYPEFIELD JSON
+     * APPEND BOOKSHELVES TO ARRAY TO BE PASSED INTO TEMPLATE
+     */
+    $sampleBookShelves = [];
+    
+    try {
+        $sqlSample1 = "SELECT * FROM gibbonLibraryItem WHERE status='Available' LIMIT 0, 10";
+        $resultSample1 = $connection2->prepare($sqlSample1);
+        $resultSample1->execute();
+    } catch (PDOException $e) {
     }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
+    try {
+        $sqlSample2 = "SELECT * FROM gibbonLibraryItem WHERE status='On Loan' LIMIT 0, 10";
+        $resultSample2 = $connection2->prepare($sqlSample2);
+        $resultSample2->execute();
+    } catch (PDOException $e) {
     }
+
+    // array_push($sampleBookShelves, $resultSample1->fetchAll());
+    // array_push($sampleBookShelves, $resultSample2->fetchAll());
+
+    /**
+     * FOR LATER
+     * SET ARRAY KEYS TO EQUAL THE DECIDED FIELDS THAT ARE BEING SORTED
+     */
+
+    $sampleBookShelves['Available Books'] = $resultSample1->fetchAll();
+    $sampleBookShelves['Books On Loan'] = $resultSample2->fetchAll();
+    
+    $page->writeFromTemplate('libraryShelf.twig.html', [
+        'bookshelves' => $sampleBookShelves,
+    ]);
 
     echo "<div class='w-full' style='border: 1px solid #444; margin-bottom: 30px; background-size: contain; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
     echo "<div class='w-full lg:w-4/5 px-2 lg:px-0' style='margin: 0 auto'>";
     //Display filters
-    echo "<table class='noIntBorder borderGrey mb-1' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
-    echo '<tr>';
-    echo "<td style='width: 10px'></td>";
-    echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . __('Monthly Top 5') . '</div>';
-    try {
-        $dataTop = array('timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30))));
-        $sqlTop = "SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE timestampOut>=:timestampOut AND gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5";
-        $resultTop = $connection2->prepare($sqlTop);
-        $resultTop->execute($dataTop);
-    } catch (PDOException $e) {
-    }
-    if ($resultTop->rowCount() < 1) {
-        echo "<div class='warning'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        $count = 0;
-        while ($rowTop = $resultTop->fetch()) {
-            ++$count;
-            if ($rowTop['name'] != '') {
-                if (strlen($rowTop['name']) > 35) {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . substr($rowTop['name'], 0, 35) . '...</div>';
-                } else {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . $rowTop['name'] . '</div>';
-                }
-                if ($rowTop['producer'] != '') {
-                    if (strlen($rowTop['producer']) > 35) {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . substr($rowTop['producer'], 0, 35) . '...</div>';
-                    } else {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . $rowTop['producer'] . '</div>';
-                    }
-                }
-            }
-        }
-    }
-    echo '</td>';
-    echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>" . __('New Titles') . '</div>';
-    try {
-        $dataTop = array();
-        $sqlTop = "SELECT gibbonLibraryItem.name, producer FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryType.name='Print Publication'  ORDER BY timestampCreator DESC LIMIT 0, 5";
-        $resultTop = $connection2->prepare($sqlTop);
-        $resultTop->execute($dataTop);
-    } catch (PDOException $e) {
-    }
-    if ($resultTop->rowCount() < 1) {
-        echo "<div class='warning'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        $count = 0;
-        while ($rowTop = $resultTop->fetch()) {
-            ++$count;
-            if ($rowTop['name'] != '') {
-                if (strlen($rowTop['name']) > 35) {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . substr($rowTop['name'], 0, 35) . '...</div>';
-                } else {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . $rowTop['name'] . '</div>';
-                }
-                if ($rowTop['producer'] != '') {
-                    if (strlen($rowTop['producer']) > 35) {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . substr($rowTop['producer'], 0, 35) . '...</div>';
-                    } else {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . $rowTop['producer'] . '</div>';
-                    }
-                }
-            }
-        }
-    }
-    echo '</td>';
-    echo "<td style='width: 5px'></td>";
-    echo '</tr>';
-    echo '</table>';
+    // echo "<table class='noIntBorder borderGrey mb-1' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
+    // echo '<tr>';
+    // echo "<td style='width: 10px'></td>";
+    // echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
+    // echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . __('Monthly Top 5') . '</div>';
+    // try {
+    //     $dataTop = array('timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30))));
+    //     $sqlTop = "SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE timestampOut>=:timestampOut AND gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5";
+    //     $resultTop = $connection2->prepare($sqlTop);
+    //     $resultTop->execute($dataTop);
+
+    //     $dataSample = array('timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30))));
+    //     $sqlSample = "SELECT * FROM gibbonLibraryItem WHERE status='Available' LIMIT 0, 10";
+    //     $resultSample = $connection2->prepare($sqlSample);
+    //     $resultSample->execute($dataSample);
+    // } catch (PDOException $e) {
+    // }
+    // if ($resultTop->rowCount() < 1) {
+    //     echo "<div class='warning'>";
+    //     echo __('There are no records to display.');
+    //     echo '</div>';
+    // } else {
+    //     $count = 0;
+    //     while ($rowTop = $resultTop->fetch()) {
+    //         ++$count;
+    //         if ($rowTop['name'] != '') {
+    //             if (strlen($rowTop['name']) > 35) {
+    //                 echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . substr($rowTop['name'], 0, 35) . '...</div>';
+    //             } else {
+    //                 echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . $rowTop['name'] . '</div>';
+    //             }
+    //             if ($rowTop['producer'] != '') {
+    //                 if (strlen($rowTop['producer']) > 35) {
+    //                     echo "<div style='font-style: italic; font-size: 85%'> by " . substr($rowTop['producer'], 0, 35) . '...</div>';
+    //                 } else {
+    //                     echo "<div style='font-style: italic; font-size: 85%'> by " . $rowTop['producer'] . '</div>';
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // echo '</td>';
+    // echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
+    // echo "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>" . __('New Titles') . '</div>';
+    // try {
+    //     $dataTop = array();
+    //     $sqlTop = "SELECT gibbonLibraryItem.name, producer FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryType.name='Print Publication'  ORDER BY timestampCreator DESC LIMIT 0, 5";
+    //     $resultTop = $connection2->prepare($sqlTop);
+    //     $resultTop->execute($dataTop);
+    // } catch (PDOException $e) {
+    // }
+    // if ($resultTop->rowCount() < 1) {
+    //     echo "<div class='warning'>";
+    //     echo __('There are no records to display.');
+    //     echo '</div>';
+    // } else {
+    //     $count = 0;
+    //     while ($rowTop = $resultTop->fetch()) {
+    //         ++$count;
+    //         if ($rowTop['name'] != '') {
+    //             if (strlen($rowTop['name']) > 35) {
+    //                 echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . substr($rowTop['name'], 0, 35) . '...</div>';
+    //             } else {
+    //                 echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . $rowTop['name'] . '</div>';
+    //             }
+    //             if ($rowTop['producer'] != '') {
+    //                 if (strlen($rowTop['producer']) > 35) {
+    //                     echo "<div style='font-style: italic; font-size: 85%'> by " . substr($rowTop['producer'], 0, 35) . '...</div>';
+    //                 } else {
+    //                     echo "<div style='font-style: italic; font-size: 85%'> by " . $rowTop['producer'] . '</div>';
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // echo '</td>';
+    // echo "<td style='width: 5px'></td>";
+    // echo '</tr>';
+    // echo '</table>';
 
     //Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
@@ -169,9 +209,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setClass('noIntBorder fullWidth borderGrey mb-6');
 
+    $col = $form->addRow()->addColumn();
+    $col->addLabel('everything', __('All Fields'));
+    $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
+
+    $row = $form->addRow();
+    // Drop-downs to change the whole group at once
+
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
     $row = $form->addRow();
+        $row->setClass('hidden advanced-search');
 
     $col = $row->addColumn()->setClass('quarterWidth');
     $col->addLabel('name', __('Title'));
@@ -198,11 +246,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->selected($collection)
         ->placeholder();
 
-    $col = $form->addRow()->addColumn();
-    $col->addLabel('everything', __('All Fields'));
-    $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
-
     $row = $form->addRow();
+    $row->addButton(__('Advanced Search'))->addData('toggle', '.advanced-search')->addClass('w-32 m-px sm:self-center');
     $row->addSearchSubmit($session);
 
     echo $form->getOutput();
@@ -221,6 +266,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->filterBy('everything', $everything)
         ->fromPOST();
     $books = $gateway->queryBrowseItems($criteria);
+
+
     $table = DataTable::createPaginated('books', $criteria);
 
     $table->addExpandableColumn('details')->format(function ($item) {
