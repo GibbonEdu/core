@@ -48,6 +48,7 @@ v27.0.00
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
         System: fixed input serialization of form data in Import from File page
         System: fixed the file uploader to handle exif image rotation from mobile devices
+        System: fixed login access required message to always display the login form
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Attendance: fixed handling of double periods in Set Future Absence tool
         Staff: fixed My Coverage page showing coverage from past years

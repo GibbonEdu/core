@@ -267,6 +267,11 @@ class Page extends View
      */
     public function addError(string $text)
     {
+        // Override to always display the sidebar when pages are inaccessible
+        if ($text == __('You do not have access to this action.') && empty($this['isLoggedIn'])) {
+            $this['showSidebar'] = true;
+        }
+
         $this->addAlert($text, 'error');
     }
 
