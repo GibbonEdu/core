@@ -299,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     $table->modifyRows(function ($activity, $row)  {
                         if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] != 'Waiting List') $row->addClass('current');
-                        if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] == 'Waiting List') $row->addClass('warning');
+                        else if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] == 'Waiting List') $row->addClass('warning');
                         else if ($activity['registration'] != 'Y') $row->addClass('dull');
                         else if ($activity['enrolmentFull']) $row->addClass('error');
 
@@ -308,19 +308,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 }
 
                 $table->addColumn('name', __('Activity'))
+                    ->context('primary')
                     ->format(function ($activity) {
                         return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
                     });
 
                 $table->addColumn('provider', __('Provider'))
+                    ->context('secondary')
                     ->width('10%')
                     ->format(function ($activity) use ($session) {
                         return ($activity['provider'] == 'School')? $session->get('organisationNameShort') : __('External');
                     });
 
                 $table->addColumn('date', $dateType != 'Date'? __('Term') : __('Dates'))
-                    ->width('18%')
                     ->description(__('Days'))
+                    ->context('secondary')
+                    ->width('18%')
                     ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
                     ->format(function ($activity) use ($dateType, $schoolTerms, $activityGateway) {
                         if (empty($schoolTerms)) return '';
@@ -365,6 +368,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 if ($canAccessRegistration) {
                     $table->addColumn('enrolmentAvailable', __('Enrolment'))
+                        ->context('primary')
                         ->sortable(false)
                         ->format(function ($activity) use ($disableExternalProviderSignup) {
                             if ($activity['provider'] == 'External' and $disableExternalProviderSignup == 'Y') {
