@@ -340,7 +340,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 //$narrow can be "full", "narrow", or "trim" (between narrow and full)
 function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '', $narrow = 'full', $edit = false)
 {
-    global $session;
+    global $session, $container;
 
     $zCount = 0;
     $output = '';
@@ -630,7 +630,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             );
 
             // Get all special days
-            global $container;
             $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
             $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($dateRange->start->format('Y-m-d'), $dateRange->end->format('Y-m-d'))->fetchGroupedUnique();
 
@@ -728,7 +727,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
                     ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
                     ->filterBy('status', 'Accepted');
-                $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+                $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
                 $staffCoverage = [];
 
                 foreach ($coverageList as $coverage) {

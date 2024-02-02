@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         ->filterBy('date:upcoming')
         ->fromPOST('myCoverage');
 
-    $myCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, true);
+    $myCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonSchoolYearID, $gibbonPersonID, true);
 
     $criteria = $staffCoverageGateway->newQueryCriteria()
         ->sortBy('date', 'ASC')

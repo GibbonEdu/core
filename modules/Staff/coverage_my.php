@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     $settingGateway = $container->get(SettingGateway::class);
 
     $urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold');
+    $coverageMode =  $settingGateway->getSettingByScope('Staff', 'coverageMode');
 
     // TODAY'S COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
@@ -57,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         ->filterBy('dateEnd:'.date('Y-m-d'))
         ->fromPOST('staffCoverageToday');
 
-    $todaysCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID);
+    $todaysCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
     if (count($todaysCoverage) > 0) {
         $page->write('<h2>'.__("Today's Coverage").'</h2>');
@@ -90,11 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
     // TEACHER COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
-        // ->sortBy('dateStart')
+        ->sortBy('dateStart', 'DESC')
         ->filterBy('date:upcoming')
         ->fromPOST('staffCoverageSelf');
 
-    $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $gibbonPersonID, false);
+    $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
     if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') || $coverage->getResultCount() > 0) {
         $coverageByTimetable = count(array_filter($coverage->toArray(), function($item) {
             return !empty($item['gibbonTTDayRowClassID']);
@@ -158,23 +159,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
             ->addParam('gibbonStaffAbsenceID')
-            ->format(function ($coverage, $actions) use ($guid, $connection2) {
+            ->format(function ($coverage, $actions) use ($guid, $connection2, $coverageMode) {
                 $actions->addAction('view', __('View Details'))
                     ->isModal(800, 550)
                     ->setURL('/modules/Staff/coverage_view_details.php');
 
-                if ($coverage['status'] == 'Requested' || $coverage['status'] == 'Accepted') {
+                if ($coverage['status'] == 'Requested' || $coverage['status'] == 'Pending' || $coverage['status'] == 'Accepted') {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
-                    
+                   
                 if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] >= date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_cancel.php');
                 }
 
-                $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && (($coverage['coverageMode'] == 'Requested' && $coverage['absenceStatus'] == 'Approved') || ($coverage['coverageMode'] == 'Assigned' && $coverage['absenceStatus'] != 'Declined'));
+                $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && (($coverageMode == 'Requested' && $coverage['absenceStatus'] == 'Approved') || ($coverageMode == 'Assigned' && $coverage['absenceStatus'] != 'Declined'));
 
                 if ($canRequestCoverage && !empty($coverage['gibbonStaffAbsenceID']) && $coverage['status'] == 'Declined') {
                     $actions->addAction('coverage', __('Request Coverage'))
@@ -193,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     if (!empty($substitute)) {
         $criteria = $staffCoverageGateway->newQueryCriteria();
 
-        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
         $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
         $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
@@ -211,11 +212,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         // QUERY
         $criteria = $staffCoverageGateway->newQueryCriteria(true)
-            ->sortBy('date')
+            ->sortBy('date', 'DESC')
             ->filterBy('date:upcoming')
             ->fromPOST('staffCoverageOther');
 
-        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID);
+        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
         // DATA TABLE
         $table = DataTable::createPaginated('staffCoverageOther', $criteria);

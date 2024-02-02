@@ -50,6 +50,7 @@ v27.0.00
         System: fixed the file uploader to handle exif image rotation from mobile devices
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Attendance: fixed handling of double periods in Set Future Absence tool
+        Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
 
     Deprecations
