@@ -27,7 +27,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

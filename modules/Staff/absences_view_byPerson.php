@@ -176,6 +176,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Staff/absences_manage_delete.php');
             }
+            
+            if (date('Y-m-d') <= $absence['dateEnd']) {
+                $actions->addAction('cancel', __('Cancel'))
+                    ->setIcon('iconCross')
+                    ->setURL('/modules/Staff/absences_view_cancel.php');
+            }
         });
 
     echo $table->render($absences);
