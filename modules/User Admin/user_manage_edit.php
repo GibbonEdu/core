@@ -382,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 if (!empty($departureReasonsList)) {
                     $row->addSelect('departureReason')->fromString($departureReasonsList)->placeholder();
                 } else {
-                    $row->addTextField('departureReason')->maxLength(30);
+                    $row->addTextField('departureReason')->maxLength(100);
                 }
             }
 
