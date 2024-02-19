@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         $ttDays = $timetableDayGateway->selectTTDaysByID($gibbonTTID)->fetchAll();
 
         if (empty($values) || empty($ttDays)) {
-            $page->addBlankSlate();;
+            echo $page->getBlankSlate();;
         } else {
             foreach ($ttDays as $ttDay) {
                 echo '<h2 style="margin-top: 40px">';

@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 }
 
                 if ($result->rowCount() == 0) {
-                    $page->addBlankSlate();
+                    echo $page->getBlankSlate();
                     return;
                 }
 
@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     $resultCourseClass = $pdo->select($sqlCourseClass, $dataCourseClass);
 
                     if ($resultCourseClass->rowCount() < 1) {
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                     } else {
                         $count = 0;
                         $countPresent = 0;

@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         );
 
         if (empty($rows)) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
             $data = [];
             $days = [];

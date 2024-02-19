@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $values = $formPageGateway->getByID($gibbonFormPageID);
 
     if (empty($formValues) || empty($values)) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
         return;
     }
 

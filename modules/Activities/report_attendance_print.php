@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         echo '</h2>';
 
         if ($result->rowCount() < 1) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
             echo "<div class='linkTop'>";
             echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";

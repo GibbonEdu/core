@@ -49,7 +49,7 @@ $page->write('<p>'.__("This page shows your children's academic results througho
     $result->execute($data);
 
 if ($result->rowCount() < 1) {
-    $page->addBlankSlate();
+    echo $page->getBlankSlate();
     return;
 } else {
     //Get child list
@@ -66,7 +66,7 @@ if ($result->rowCount() < 1) {
     }
 
     if (count($options) == 0) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
         return;
     } elseif (count($options) == 1) {
         $gibbonPersonID = key($options);
@@ -543,5 +543,5 @@ if ($result->rowCount() < 1) {
     }
 }
 if ($entryCount < 1) {
-    $page->addBlankSlate();
+    echo $page->getBlankSlate();
 }

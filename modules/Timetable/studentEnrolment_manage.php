@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     $courses = $courseGateway->queryCoursesByDepartmentStaff($criteria, $gibbonSchoolYearID, $gibbonPersonID)->toArray();
 
     if (empty($courses)) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
         return;
     }
 

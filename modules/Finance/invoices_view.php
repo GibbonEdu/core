@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             } else {
                 //Get child list
                 $count = 0;
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 }
 
                 if (count($options) == 0) {
-                    $page->addBlankSlate();
+                    echo $page->getBlankSlate();
                 } elseif (count($options) == 1) {
                     $_GET['search'] = key($options);
                 } else {
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                         echo __('View');
                         echo '</h3>';
 
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                     } else {
                         echo '<h3>';
                         echo __('View');

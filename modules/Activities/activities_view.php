@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $result->execute($data);
 
                 if ($result->rowCount() < 1) {
-                    $page->addBlankSlate();
+                    echo $page->getBlankSlate();
                 } else {
                     $options = array();
                     while ($row = $result->fetch()) {
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
 
                     if ($countChild == 0) {
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                     }
                 }
             }
@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             }
 
             if ($continue == false) {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             } else {
                 //Should we show date as term or date?
                 $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');

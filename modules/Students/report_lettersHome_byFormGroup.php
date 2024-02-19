@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_lettersHom
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
         $siblings = array();
         $currentFormGroup = '';

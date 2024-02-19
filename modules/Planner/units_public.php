@@ -47,7 +47,7 @@ if ($makeUnitsPublic != 'Y') {
     $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";

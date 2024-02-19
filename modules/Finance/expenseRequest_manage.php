@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         echo "<a style='margin-right: 3px' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a><br/>";
                         echo '</div>';
 
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                     } else {
                         echo '<h3>';
                         echo __('View');

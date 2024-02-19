@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         echo __('School is closed on the specified date, and so attendance information cannot be recorded.');
         echo '</div>';
     } else if ($result->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else if ($dateStart > $today || $dateEnd > $today) {
         echo "<div class='error'>";
         echo __('The specified date is in the future: it must be today or earlier.');

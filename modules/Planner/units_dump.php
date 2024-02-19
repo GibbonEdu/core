@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         //Tabs
                         echo "<div id='tabs1'>";
                         if ($row['details'] == '') {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             echo '<h2>';
                             echo __('Description');
@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                         //No resources!
                         if ($noReosurces) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         }
                         echo '</div>';
                         echo "<div id='tabs4'>";

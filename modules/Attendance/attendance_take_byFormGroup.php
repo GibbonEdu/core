@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $result->execute($data);
 
                     if ($result->rowCount() == 0) {
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                         return;
                     }
 
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $resultFormGroup->execute($dataFormGroup);
 
                         if ($resultFormGroup->rowCount() < 1) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             $count = 0;
                             $countPresent = 0;

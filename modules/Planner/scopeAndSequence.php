@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     $resultUnit->execute($dataUnit);
 
                 if ($resultUnit->rowCount() < 1) {
-                    $page->addBlankSlate();
+                    echo $page->getBlankSlate();
                     $countCoursesNoUnits ++;
                     $coursesNoUnits .= $row['nameShort'].', ';
                 }

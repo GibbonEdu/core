@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $result->execute($data);
 
     if (empty($gibbonActivityID) || $result->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
         $output = '';
 

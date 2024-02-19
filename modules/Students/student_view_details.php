@@ -616,7 +616,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $page->addData('preventOverflow', false);
                                 echo $tt;
                             } else {
-                                $page->addBlankSlate();
+                                echo $page->getBlankSlate();
                             }
                         } else {
                             echo '<h4>';
@@ -632,7 +632,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() < 1) {
-                                $page->addBlankSlate();
+                                echo $page->getBlankSlate();
                             } else {
                                 echo '<ul>';
                                 while ($rowDetail = $resultDetail->fetch()) {
@@ -790,7 +790,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultFamily->execute($dataFamily);
 
                         if ($resultFamily->rowCount() < 1) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             while ($rowFamily = $resultFamily->fetch()) {
                                 $count = 1;
@@ -1076,7 +1076,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultFamily->execute($dataFamily);
 
                         if ($resultFamily->rowCount() == 0) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             while ($rowFamily = $resultFamily->fetch()) {
                                 $count = 1;
@@ -2228,7 +2228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $rowIN = $pdo->select($sqlIN, $dataIN)->fetch();
 
                             if (empty($rowIN)) {
-                                $page->addBlankSlate();
+                                echo $page->getBlankSlate();
                             } else {
                                 echo "<div style='font-weight: bold'>".__('Targets').'</div>';
                                 echo '<p>'.$rowIN['targets'].'</p>';
@@ -2335,7 +2335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($tt != false) {
                                 echo $tt;
                             } else {
-                                $page->addBlankSlate();
+                                echo $page->getBlankSlate();
                             }
                         }
                     } elseif ($subpage == 'Activities') {
@@ -2358,7 +2358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultYears->execute($dataYears);
 
                             if ($resultYears->rowCount() < 1) {
-                                $page->addBlankSlate();
+                                echo $page->getBlankSlate();
                             } else {
                                 $yearCount = 0;
                                 while ($rowYears = $resultYears->fetch()) {
@@ -2450,7 +2450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if (!empty($hook)) {
                         $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
                         if (empty($rowHook)) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             $options = unserialize($rowHook['options']);
 

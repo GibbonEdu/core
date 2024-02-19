@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 
 
         if ($result->rowCount() < 1) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         }
         else {
             echo '<h2 class=\'bigTop\'>';

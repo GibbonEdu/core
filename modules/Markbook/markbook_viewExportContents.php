@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		ORDER BY surname, preferredName";
 	$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents, '_');
     if ($resultStudents->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
 
 		$excel = new Gibbon\Excel('markbookColumn.xlsx');

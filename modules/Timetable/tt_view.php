@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if ($tt != false) {
                 echo $tt;
             } else {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             }
 
             //Set sidebar

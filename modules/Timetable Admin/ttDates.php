@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
         $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
 
             $page->addData('preventOverflow', true);

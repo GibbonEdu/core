@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             true
         );
         if (!is_array($dates) || count($dates) != $numberOfSchoolDays) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
 
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $importLog = $logGateway->getLogByID($gibbonLogID);
 
     if (empty($importLog)) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
         return;
     }
 
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $importResults = $importData['results'] ?? [];
 
     if (empty($importData['results']) || !isset($importData['type'])) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
         return;
     }
 

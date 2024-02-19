@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $courses = $courseGateway->queryCoursesBySchoolYear($criteria, $gibbonSchoolYearID);
 
         if (count($courses) == 0) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
             return;
         }
 

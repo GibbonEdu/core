@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         }
 
         if ($result->rowCount() != 1) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
             if ($search != '') {
                 $params = [

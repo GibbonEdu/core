@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         }
         else if ($dateStart > $today || $dateEnd > $today) {
             echo "<div class='error'>";

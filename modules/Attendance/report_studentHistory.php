@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             $result->execute($data);
             
             if ($result->rowCount() < 1) {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             } else {
                 //Get child list
                 $countChild = 0;
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 }
 
                 if ($countChild == 0) {
-                    $page->addBlankSlate();
+                    echo $page->getBlankSlate();
                 } else {
                     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
                     $form->setTitle(__('Choose'));

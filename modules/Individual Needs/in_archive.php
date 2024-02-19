@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     }, $students);
 
     if (empty($students)) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
         return;
     }
 

@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             if ($tt != false) {
                 echo $tt;
             } else {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             }
         }
     }

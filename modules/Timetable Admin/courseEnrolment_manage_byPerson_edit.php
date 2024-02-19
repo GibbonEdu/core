@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             if ($tt != false) {
                 echo $tt;
             } else {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             }
 
             //SHOW OLD ENROLMENT RECORDS

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
             echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
             echo "<tr class='head'>";

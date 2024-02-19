@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $activityResult->execute($data);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     echo '</h2>';
 
     if ($allColumns == false && $attendanceResult->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     }
 
     if (count($activitySessions) <= 0) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             echo "<div class='linkTop'>";

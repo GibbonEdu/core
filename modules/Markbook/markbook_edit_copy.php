@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 			            $result->execute($data);
 
 			        if ($result->rowCount() < 1) {
-	                    $page->addBlankSlate();
+	                    echo $page->getBlankSlate();
 	                } else {
 
 		                    $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);

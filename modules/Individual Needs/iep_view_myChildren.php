@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
         //Get child list
         $count = 0;
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
 
         if (count($options) == 0) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } elseif (count($options) == 1) {
             $gibbonPersonID = key($options);
         } else {
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                     echo __('View');
                     echo '</h3>';
 
-                    $page->addBlankSlate();
+                    echo $page->getBlankSlate();
                 } else {
                     echo '<h3>';
                     echo __('View');

@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_graph_st
         }
 
         if (empty($enrolment)) {
-            $page->addBlankSlate();
+            echo $page->getBlankSlate();
         } else {
             //PLOT DATA
             $page->scripts->add('chart');

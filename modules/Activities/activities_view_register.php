@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $result->execute($data);
 
                         if ($result->rowCount() < 1) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             $countChild = 0;
                             while ($values = $result->fetch()) {

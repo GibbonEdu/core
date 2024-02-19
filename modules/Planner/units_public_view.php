@@ -95,7 +95,7 @@ if ($makeUnitsPublic != 'Y') {
             echo __('Description');
             echo '</h4>';
             if ($row['description'] == '') {
-                $page->addBlankSlate();
+                echo $page->getBlankSlate();
             } else {
                 echo '<p>';
                 echo $row['description'];
@@ -253,7 +253,7 @@ if ($makeUnitsPublic != 'Y') {
 
 			//No resources!
 			if ($noReosurces) {
-				$page->addBlankSlate();
+				echo $page->getBlankSlate();
 			}
             echo '</div>';
             echo "<div id='tabs4'>";

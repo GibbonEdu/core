@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $activityResult->execute($data);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     }
 
     if (count($activitySessions) <= 0) {
-        $page->addBlankSlate();
+        echo $page->getBlankSlate();
     } else {
         $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
         $form->setClass('blank block w-full');

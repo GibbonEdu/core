@@ -176,7 +176,7 @@ else {
                         $result->execute($data);
 
                     if ($result->rowCount() < 1) {
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                     } else {
                         //Store receipt for this message data in an array
 
