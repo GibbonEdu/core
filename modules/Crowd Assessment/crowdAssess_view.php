@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('View Assessment'));
 
     // Get lesson variable
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
     if (empty($gibbonPlannerEntryID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

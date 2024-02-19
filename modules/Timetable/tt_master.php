@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
 
     $gibbonTTID = null;
     if (isset($_GET['gibbonTTID'])) {
-        $gibbonTTID = $_GET['gibbonTTID'];
+        $gibbonTTID = $_GET['gibbonTTID'] ?? '';
     }
     if ($gibbonTTID == null) { //If TT not set, get the first timetable in the current year, and display that
         

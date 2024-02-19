@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
 } else {
     //Proceed!
     //Check if gibbonFinanceFeeCategoryID specified
-    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
     if ($gibbonFinanceFeeCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -50,11 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -78,9 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             $params += [
                 'viewBy' => 'class',
                 'date' => $class,
@@ -96,9 +96,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         //Check if gibbonPlannerEntryID and gibbonCourseClassID specified
         $gibbonCourseClassID = null;
         if (isset($_GET['gibbonCourseClassID'])) {
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

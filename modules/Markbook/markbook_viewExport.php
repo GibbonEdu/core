@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$return = $_GET['return'];
+$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$return = $_GET['return'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/$return";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {

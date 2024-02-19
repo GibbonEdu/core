@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
+                $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             }
 
             echo '<h3>';

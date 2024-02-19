@@ -34,10 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     echo __('Student Application Form Printout');
     echo '</h2>';
 
-    $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'];
+    $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
     $search = '';
     if (isset($_GET['search'])) {
-        $search = $_GET['search'];
+        $search = $_GET['search'] ?? '';
     }
 
     if ($gibbonApplicationFormID == '') {

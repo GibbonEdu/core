@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $gibbonFormGroupID = $row['gibbonFormGroupID'];
             }
         } else {
-            $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
+            $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         }
 
         $today = date('Y-m-d');

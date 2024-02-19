@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             //Proceed!
             $filter2 = '';
             if (isset($_GET['filter2'])) {
-                $filter2 = $_GET['filter2'];
+                $filter2 = $_GET['filter2'] ?? '';
             }
 
             if ($filter2 != '') {
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             }
 
             //Check if gibbonOutcomeID specified
-            $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
+            $gibbonOutcomeID = $_GET['gibbonOutcomeID'] ?? '';
             if ($gibbonOutcomeID == '') {
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {

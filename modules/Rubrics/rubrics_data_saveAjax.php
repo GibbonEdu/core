@@ -27,7 +27,7 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
     return;
 }
 
-$mode = $_GET['mode'];
+$mode = $_GET['mode'] ?? '';
 if ($mode == 'Add') {
     
         $data = array('gibbonRubricID' => $_GET['gibbonRubricID'], 'gibbonPersonID' => $_GET['gibbonPersonID'], 'gibbonRubricCellID' => $_GET['gibbonRubricCellID'], 'contextDBTable' => $_GET['contextDBTable'], 'contextDBTableID' => $_GET['contextDBTableID']);

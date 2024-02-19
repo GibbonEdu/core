@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         $search = $_GET['search'] ?? null;
 
         //Check if gibbonMessengerID specified
-        $gibbonMessengerID = $_GET['gibbonMessengerID'];
+        $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
         if ($gibbonMessengerID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

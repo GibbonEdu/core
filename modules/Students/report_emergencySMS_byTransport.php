@@ -43,19 +43,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
     $transport = null;
     if (isset($_GET['transport'])) {
-        $transport = $_GET['transport'];
+        $transport = $_GET['transport'] ?? '';
     }
     $prefix = null;
     if (isset($_GET['prefix'])) {
-        $prefix = $_GET['prefix'];
+        $prefix = $_GET['prefix'] ?? '';
     }
     $append = null;
     if (isset($_GET['append'])) {
-        $append = $_GET['append'];
+        $append = $_GET['append'] ?? '';
     }
     $hideName = null;
     if (isset($_GET['hideName'])) {
-        $hideName = $_GET['hideName'];
+        $hideName = $_GET['hideName'] ?? '';
     }
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', "get");

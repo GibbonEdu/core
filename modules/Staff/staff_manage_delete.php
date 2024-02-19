@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.
     $search = $_GET['search'] ?? '' ;
 
     //Check if gibbonStaffID specified
-    $gibbonStaffID = $_GET['gibbonStaffID'];
+    $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
     if ($gibbonStaffID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

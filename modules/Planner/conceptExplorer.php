@@ -38,10 +38,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     //Deal with paramaters
     $tags = array();
     if (isset($_GET['tags'])) {
-        $tags = $_GET['tags'];
+        $tags = $_GET['tags'] ?? '';
     }
     else if (isset($_GET['tag'])) {
-        $tags[0] = $_GET['tag'];
+        $tags[0] = $_GET['tag'] ?? '';
     }
     $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
 

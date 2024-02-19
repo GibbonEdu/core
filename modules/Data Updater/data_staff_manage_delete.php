@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     // Proceed!
 
     // Check required values
-    $gibbonStaffUpdateID = $_GET['gibbonStaffUpdateID'];
+    $gibbonStaffUpdateID = $_GET['gibbonStaffUpdateID'] ?? '';
     if ($gibbonStaffUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
     $allColumns = (isset($_GET['allColumns'])) ? $_GET['allColumns'] : false;
 

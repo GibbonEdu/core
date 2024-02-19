@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     $staffGateway = $container->get(StaffGateway::class);
 
     // Check if required values are present
-    $gibbonStaffUpdateID = $_GET['gibbonStaffUpdateID'];
+    $gibbonStaffUpdateID = $_GET['gibbonStaffUpdateID'] ?? '';
     if (empty($gibbonStaffUpdateID) || $gibbonStaffUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

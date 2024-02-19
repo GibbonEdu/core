@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
                 $gibbonPersonID = null;
                 if (isset($_GET['search'])) {
-                    $gibbonPersonID = $_GET['search'];
+                    $gibbonPersonID = $_GET['search'] ?? '';
                 }
             }
         } else if ($highestAction=="View Invoices_mine") {

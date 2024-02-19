@@ -27,23 +27,23 @@ include './moduleFunctions.php';
 
 $page = $container->get('page');
 
-$id = $_GET['id'];
+$id = $_GET['id'] ?? '';
 $mode = null;
 if (isset($_GET['mode'])) {
-    $mode = $_GET['mode'];
+    $mode = $_GET['mode'] ?? '';
 }
 if ($mode == '') {
     $mode = 'masterAdd';
 }
 $gibbonUnitBlockID = null;
 if (isset($_GET['gibbonUnitBlockID'])) {
-    $gibbonUnitBlockID = $_GET['gibbonUnitBlockID'];
+    $gibbonUnitBlockID = $_GET['gibbonUnitBlockID'] ?? '';
 }
 
 //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
 $gibbonUnitID = null;
 if (isset($_GET['gibbonUnitID'])) {
-    $gibbonUnitID = $_GET['gibbonUnitID'];
+    $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 }
 
 if ($gibbonUnitBlockID != '') {

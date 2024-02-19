@@ -43,7 +43,7 @@ echo "<link rel='stylesheet' type='text/css' href='".$session->get('absoluteURL'
             } else {
                 //Proceed!
                 //Get class variable
-                $gibbonResourceID = $_GET['gibbonResourceID'];
+                $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
                 if ($gibbonResourceID == '') {
                     echo "<div class='warning'>";
                     echo 'Resource has not been specified .';

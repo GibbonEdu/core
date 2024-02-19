@@ -21,15 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$gibbonPlannerEntryGuestID = $_GET['gibbonPlannerEntryGuestID'];
-$viewBy = $_GET['viewBy'];
-$subView = $_GET['subView'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$gibbonPlannerEntryGuestID = $_GET['gibbonPlannerEntryGuestID'] ?? '';
+$viewBy = $_GET['viewBy'] ?? '';
+$subView = $_GET['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$date = $_GET['date'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$date = $_GET['date'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/planner_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 
 //Params to pass back (viewBy + date or classID)

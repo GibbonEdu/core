@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         ->add(__('Edit Request'));
 
     //Check if gibbonPersonUpdateID specified
-    $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
+    $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'] ?? '';
     if ($gibbonPersonUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

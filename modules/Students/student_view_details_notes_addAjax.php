@@ -23,7 +23,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
+$gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
 
 if ($gibbonStudentNoteCategoryID != '') {
     

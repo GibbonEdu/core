@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 //Set pagination variable
                 $page = 1;
                 if (isset($_GET['page'])) {
-                    $page = $_GET['page'];
+                    $page = $_GET['page'] ?? '';
                 }
                 if ((!is_numeric($page)) or $page < 1) {
                     $page = 1;

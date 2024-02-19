@@ -34,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     } else {
         //Proceed!
         //Check if gibbonTTSpaceChangeID and gibbonCourseClassID specified
-        $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'] ?? '';
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonTTSpaceChangeID == '' OR $gibbonCourseClassID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

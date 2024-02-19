@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
         //Check if gibbonStaffID specified
-        $gibbonStaffID = $_GET['gibbonStaffID'];
+        $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
         if ($gibbonStaffID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

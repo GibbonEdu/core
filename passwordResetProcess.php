@@ -40,7 +40,7 @@ $_POST = $validator->sanitize($_POST);
 
 //Check email address is not blank
 $input = $_GET['input'] ?? ($_POST['email'] ?? '');
-$step = $_GET['step'];
+$step = $_GET['step'] ?? '';
 
 $URL = Url::fromRoute('passwordReset');
 $URLSuccess1 = Url::fromRoute();
@@ -151,9 +151,9 @@ else {
         }
         else { //This is the confirmation/reset phase
             //Get URL parameters
-        	$input = $_GET['input'];
-        	$key = $_GET['key'];
-        	$gibbonPersonResetID = $_GET['gibbonPersonResetID'];
+        	$input = $_GET['input'] ?? '';
+        	$key = $_GET['key'] ?? '';
+        	$gibbonPersonResetID = $_GET['gibbonPersonResetID'] ?? '';
 
         	//Verify authenticity of this request and check it is fresh (within 48 hours)
         	try {

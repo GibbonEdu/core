@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     //Check if gibbonCourseClassID and gibbonCourseID specified
     $gibbonPersonID = $session->get('gibbonPersonID');
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

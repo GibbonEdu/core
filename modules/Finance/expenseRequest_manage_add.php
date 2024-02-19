@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
     $urlParams = compact('gibbonFinanceBudgetCycleID');
 
@@ -43,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $page->return->addReturns(['success1' => __('Your request was completed successfully, but notifications could not be sent out.')]);
 
     //Check if gibbonFinanceBudgetCycleID specified
-    $status2 = $_GET['status2'];
-    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+    $status2 = $_GET['status2'] ?? '';
+    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
     if ($gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
