@@ -38,7 +38,7 @@ $filter = $_POST['filter'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page.'&filter='.$filter;
 
 if (!empty($_POST['override'])) {
-    $URL .= '&override='.$_POST['override'];
+    $URL .= '&override='.($_POST['override'] ?? '');
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofread.php') == false) {

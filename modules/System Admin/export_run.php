@@ -40,7 +40,7 @@ include __DIR__ . '/../../gibbon.php';
 
 require __DIR__ . '/moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q='.$_POST['address'];
+$URL = $session->get('absoluteURL').'/index.php?q='.($_POST['address'] ?? '');
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.php")==false) {
     // Access denied

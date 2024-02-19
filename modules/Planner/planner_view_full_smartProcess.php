@@ -30,7 +30,7 @@ include './moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $mode = $_POST['mode'] ?? '';
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID".$_POST['params'];
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID".($_POST['params'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     $URL .= '&return=error0';
