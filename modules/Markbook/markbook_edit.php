@@ -29,11 +29,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {
     //Acess denied
-    $pageCount->addError(__('Your request failed because you do not have access to this action.'));
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        $pageCount->addError(__('The highest grouped action cannot be determined.'));
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Get class variable
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -80,11 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 echo '<h1>';
                 echo __('Edit Markbook');
                 echo '</h1>';
-                $pageCount->addError(__('The selected record does not exist, or you do not have access to it.'));
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $row = $result->fetch();
 
-                $pageCount->breadcrumbs->add(__('Edit {courseClass} Markbook', [
+                $page->breadcrumbs->add(__('Edit {courseClass} Markbook', [
                     'courseClass' => Format::courseClassName($row['course'], $row['class']),
                 ]));
 
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                             $params = [
                                 "gibbonCourseClassID" => $gibbonCourseClassID
                             ];
-                            $pageCount->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
+                            $page->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
                                 ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
                                 ->addParams($params)
                                 ->setIcon('page_new_multi')

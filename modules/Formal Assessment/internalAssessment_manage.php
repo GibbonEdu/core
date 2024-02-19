@@ -26,7 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage.php') == false) {
     //Access denied
-    $pageCount->addError(__('Your request failed because you do not have access to this action.'));
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get class variable
     $gibbonCourseClassID = null;
@@ -63,16 +63,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '<h1>';
             echo __('Manage Internal Assessment');
             echo '</h1>';
-            $pageCount->addError(__('The selected record does not exist, or you do not have access to it.'));
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
-            $pageCount->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
+            $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
 
             //Add multiple columns
             $params = [
                 "gibbonCourseClassID" => $gibbonCourseClassID
             ];
-            $pageCount->navigator->addHeaderAction('addMultiple', __('Add Multiple Columns'))
+            $page->navigator->addHeaderAction('addMultiple', __('Add Multiple Columns'))
                 ->setURL('/modules/Formal Assessment/internalAssessment_manage_add.php')
                 ->addParams($params)
                 ->setIcon('page_new_multi')

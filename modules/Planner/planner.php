@@ -29,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == false) {
     //Acess denied
-    $pageCount->addError(__('Your request failed because you do not have access to this action.'));
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if (isset($_GET['search'])) {
                 $search = $_GET['search'];
             }
-            $pageCount->breadcrumbs->add(__('My Children\'s Classes'));
+            $page->breadcrumbs->add(__('My Children\'s Classes'));
 
             //Test data access field for permission
 
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                $pageCount->addMessage(__('There are no records to display.'));
+                $page->addMessage(__('There are no records to display.'));
             } else {
                 //Get child list
                 $count = 0;
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 }
 
                 if ($count == 0) {
-                    $pageCount->addMessage(__('There are no records to display.'));
+                    $page->addMessage(__('There are no records to display.'));
                 } elseif ($count == 1) {
                     $search = $gibbonPersonIDArray[0];
                 } else {
@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $resultChild->execute($dataChild);
 
                     if ($resultChild->rowCount() < 1) {
-                        $pageCount->addBlankSlate();
+                        $page->addBlankSlate();
                     } else {
                         $rowChild = $resultChild->fetch();
 
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 }
 
                                 if ($result->rowCount() < 1) {
-                                    $pageCount->addBlankSlate();
+                                    $page->addBlankSlate();
                                 } else {
                                     echo "<table cellspacing='0' style='width: 100%'>";
                                     echo "<tr class='head'>";
@@ -321,7 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                             }
                         } elseif ($viewBy == 'class') {
                             if ($gibbonCourseClassID == '') {
-                                $pageCount->addError(__('You have not specified one or more required parameters.'));
+                                $page->addError(__('You have not specified one or more required parameters.'));
                             } else {
 
                                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
@@ -330,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 $result->execute($data);
 
                                 if ($result->rowCount() != 1) {
-                                    $pageCount->addError(__('The selected record does not exist, or you do not have access to it.'));
+                                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                                 } else {
                                     $row = $result->fetch();
 
@@ -347,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     }
 
                                     if ($result->rowCount() < 1) {
-                                        $pageCount->addBlankSlate();
+                                        $page->addBlankSlate();
                                     } else {
                                         echo "<table cellspacing='0' style='width: 100%'>";
                                         echo "<tr class='head'>";
@@ -464,7 +464,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
             $gibbonPersonID = $session->get('gibbonPersonID');
             if ($viewBy == 'date') {
-                $pageCount->breadcrumbs->add(__('Planner for {classDesc}', [
+                $page->breadcrumbs->add(__('Planner for {classDesc}', [
                     'classDesc' => Format::date($date),
                 ]));
 
@@ -612,7 +612,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 }
             } elseif ($viewBy == 'class') {
                 if ($gibbonCourseClassID == '') {
-                    $pageCount->addError(__('You have not specified one or more required parameters.'));
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
 
@@ -639,17 +639,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     }
 
                     if ($result->rowCount() != 1) {
-                        $pageCount->addError(__('The selected record does not exist, or you do not have access to it.'));
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $row = $result->fetch();
 
-                        $pageCount->breadcrumbs->add(__('Planner for {classDesc}', [
+                        $page->breadcrumbs->add(__('Planner for {classDesc}', [
                             'classDesc' => $row['course'].'.'.$row['class'],
                         ]));
 
                         $returns = array();
                         $returns['success1'] = __('Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.');
-                        $pageCount->return->addReturns($returns);
+                        $page->return->addReturns($returns);
 
                         try {
                             if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
@@ -687,7 +687,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         }
 
                         if ($result->rowCount() < 1) {
-                            $pageCount->addBlankSlate();
+                            $page->addBlankSlate();
                         } else {
                             //PRINT LESSON VIEW
                             if ($subView == 'lesson' or $subView == '') {
