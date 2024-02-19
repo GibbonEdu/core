@@ -26,7 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage.php') == false) {
     //Access denied
-    $page->addError(__('Your request failed because you do not have access to this action.'));
+    $pageCount->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get class variable
     $gibbonCourseClassID = null;
@@ -63,16 +63,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '<h1>';
             echo __('Manage Internal Assessment');
             echo '</h1>';
-            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+            $pageCount->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
-            $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
+            $pageCount->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
 
             //Add multiple columns
             $params = [
                 "gibbonCourseClassID" => $gibbonCourseClassID
             ];
-            $page->navigator->addHeaderAction('addMultiple', __('Add Multiple Columns'))
+            $pageCount->navigator->addHeaderAction('addMultiple', __('Add Multiple Columns'))
                 ->setURL('/modules/Formal Assessment/internalAssessment_manage_add.php')
                 ->addParams($params)
                 ->setIcon('page_new_multi')
@@ -107,12 +107,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '</h3>';
 
             //Set pagination variable
-            $page = 1;
+            $pageCount = 1;
             if (isset($_GET['page'])) {
-                $page = $_GET['page'];
+                $pageCount = $_GET['page'];
             }
-            if ((!is_numeric($page)) or $page < 1) {
-                $page = 1;
+            if ((!is_numeric($pageCount)) or $pageCount < 1) {
+                $pageCount = 1;
             }
 
             
@@ -122,9 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                $page->addBlankSlate();
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";

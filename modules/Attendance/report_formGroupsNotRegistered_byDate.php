@@ -123,9 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            $page->addBlankSlate();
         } else if ($dateStart > $today || $dateEnd > $today) {
             echo "<div class='error'>";
             echo __('The specified date is in the future: it must be today or earlier.');

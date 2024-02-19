@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
 
             if ($result->isEmpty()) {
-                $page->addMessage(__('There are no records to display.'));
+                $page->addBlankSlate();
             } else {
                 $table = DataTable::create('studentsView');
                 $table->setTitle($title);

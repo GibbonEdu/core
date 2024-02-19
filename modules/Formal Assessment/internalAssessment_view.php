@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				$result->execute($data);
 
 			if ($result->rowCount() < 1) {
-				$page->addMessage(__('There are no records to display.'));
+				$page->addBlankSlate();
 			} else {
 				//Get child list
 				$options = array();
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				$gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
 				if (count($options) == 0) {
-					$page->addMessage(__('There are no records to display.'));
+					$page->addBlankSlate();
 				} elseif (count($options) == 1) {
 					$gibbonPersonID = key($options);
 				} else {

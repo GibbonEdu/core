@@ -173,9 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_graph_st
         }
 
         if (empty($enrolment)) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            $page->addBlankSlate();
         } else {
             //PLOT DATA
             $page->scripts->add('chart');

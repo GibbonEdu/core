@@ -283,6 +283,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     }
     
     if ($displayCount == 0) {
-        $page->addError(__('There are no records to display.'));
+        $page->addBlankSlate();
     }
 }

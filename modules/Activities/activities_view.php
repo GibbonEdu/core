@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $result->execute($data);
 
                 if ($result->rowCount() < 1) {
-                    $page->addMessage(__('There are no records to display.'));
+                    $page->addBlankSlate();
                 } else {
                     $options = array();
                     while ($row = $result->fetch()) {
@@ -107,9 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
 
                     if ($countChild == 0) {
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        $page->addBlankSlate();
                     }
                 }
             }
@@ -196,9 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             }
 
             if ($continue == false) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                $page->addBlankSlate();
             } else {
                 //Should we show date as term or date?
                 $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');

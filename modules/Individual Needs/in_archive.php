@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     }, $students);
 
     if (empty($students)) {
-        $page->addError(__('There are no records to display.'));
+        $page->addBlankSlate();
         return;
     }
 

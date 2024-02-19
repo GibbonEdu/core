@@ -147,9 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     $resultUnit->execute($dataUnit);
 
                 if ($resultUnit->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('There are no records to display.');
-                    echo '</div>';
+                    $page->addBlankSlate();
                     $countCoursesNoUnits ++;
                     $coursesNoUnits .= $row['nameShort'].', ';
                 }

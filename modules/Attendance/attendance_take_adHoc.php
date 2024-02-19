@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $students = $attendanceLogGateway->selectAdHocAttendanceStudents($session->get('gibbonSchoolYearID'), $target, $targetID, $currentDate)->fetchAll();
 
     if (empty($students)) {
-        echo Format::alert(__('There are no records to display.'));
+        $page->addBlankSlate();
         return;
     } 
 

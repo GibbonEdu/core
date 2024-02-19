@@ -49,7 +49,7 @@ $page->write('<p>'.__("This page shows your children's academic results througho
     $result->execute($data);
 
 if ($result->rowCount() < 1) {
-    echo Format::alert(__('There are no records to display.'), 'message');
+    $page->addBlankSlate();
     return;
 } else {
     //Get child list
@@ -66,7 +66,7 @@ if ($result->rowCount() < 1) {
     }
 
     if (count($options) == 0) {
-        echo Format::alert(__('There are no records to display.'), 'message');
+        $page->addBlankSlate();
         return;
     } elseif (count($options) == 1) {
         $gibbonPersonID = key($options);
@@ -543,5 +543,5 @@ if ($result->rowCount() < 1) {
     }
 }
 if ($entryCount < 1) {
-    echo Format::alert(__('There are no records to display.'), 'message');
+    $page->addBlankSlate();
 }

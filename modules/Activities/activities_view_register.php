@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $result->execute($data);
 
                         if ($result->rowCount() < 1) {
-                            $page->addMessage(__('There are no records to display.'));
+                            $page->addBlankSlate();
                         } else {
                             $countChild = 0;
                             while ($values = $result->fetch()) {

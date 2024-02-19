@@ -89,9 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo __('School is closed on the specified date, and so attendance information cannot be recorded.');
         echo '</div>';
     } else if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        $page->addBlankSlate();
     }
     else if ($dateEnd > $today) {
         echo "<div class='error'>";

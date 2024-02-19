@@ -186,9 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             $resultPlanners->execute($dataPlanners);
 
                         if ($resultPlanners->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            $page->addBlankSlate();
                         } else {
                             $dataMulti = array();
                             $whereMulti = '(';
@@ -309,9 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $resultOutcomes = $connection2->prepare($sqlOutcomes);
                                 $resultOutcomes->execute($dataOutcomes);
                             if ($resultOutcomes->rowCount() < 1) {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                $page->addBlankSlate();
                             } else {
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
@@ -553,9 +549,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
 							//No resources!
 							if ($noReosurces) {
-								echo "<div class='error'>";
-								echo __('There are no records to display.');
-								echo '</div>';
+								$page->addBlankSlate();
 							}
                             echo '</div>';
                             echo '</div>';

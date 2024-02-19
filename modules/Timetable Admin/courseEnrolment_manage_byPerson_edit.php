@@ -234,9 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             if ($tt != false) {
                 echo $tt;
             } else {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                $page->addBlankSlate();
             }
 
             //SHOW OLD ENROLMENT RECORDS

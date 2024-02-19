@@ -107,9 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $result->execute($data);
 
                     if ($result->rowCount() == 0) {
-                        echo '<div class="error">';
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        $page->addBlankSlate();
                         return;
                     }
 
@@ -150,9 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $resultFormGroup->execute($dataFormGroup);
 
                         if ($resultFormGroup->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            $page->addBlankSlate();
                         } else {
                             $count = 0;
                             $countPresent = 0;

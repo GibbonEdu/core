@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        $page->addMessage(__('There are no records to display.'));
+        $page->addBlankSlate();
     } else {
         //Get child list
         $count = 0;
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
 
         if (count($options) == 0) {
-            $page->addMessage(__('There are no records to display.'));
+            $page->addBlankSlate();
         } elseif (count($options) == 1) {
             $gibbonPersonID = key($options);
         } else {
@@ -108,9 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                     echo __('View');
                     echo '</h3>';
 
-                    echo "<div class='error'>";
-                    echo __('There are no records to display.');
-                    echo '</div>';
+                    $page->addBlankSlate();
                 } else {
                     echo '<h3>';
                     echo __('View');

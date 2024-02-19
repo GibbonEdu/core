@@ -176,9 +176,7 @@ else {
                         $result->execute($data);
 
                     if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        $page->addBlankSlate();
                     } else {
                         //Store receipt for this message data in an array
 

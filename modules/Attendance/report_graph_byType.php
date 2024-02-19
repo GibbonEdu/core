@@ -139,9 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         );
 
         if (empty($rows)) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            $page->addBlankSlate();
         } else {
             $data = [];
             $days = [];

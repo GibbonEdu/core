@@ -90,9 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 
         if (count($_POST) > 0) {
             if ($gibbonPersonIDs == null or $gibbonDepartmentIDs == null or ($dataType != 'attainment' and $dataType != 'effort')) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                $page->addBlankSlate();
             } else {
                 $output = '';
                 echo '<h2>';
@@ -228,9 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                 }
 
                 if ($resultGrades->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('There are no records to display.');
-                    echo '</div>';
+                    $page->addBlankSlate();;
                 } else {
                     //Prep grades & terms
                     $grades = array();

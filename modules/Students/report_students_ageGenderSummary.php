@@ -56,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
     $years = getYearGroups($connection2);
 
     if (count($ages) < 1 or count($years) < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        $page->addBlankSlate();
     } else {
         echo '<div style="overflow-x: scroll;">';
         echo "<table class='mini' cellspacing='0' style='max-width: 100%'>";

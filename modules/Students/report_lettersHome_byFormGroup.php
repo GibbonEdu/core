@@ -45,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_lettersHom
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        $page->addBlankSlate();
     } else {
         $siblings = array();
         $currentFormGroup = '';

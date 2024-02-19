@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                $page->addMessage(__('There are no records to display.'));
+                $page->addBlankSlate();
             } else {
                 //Get child list
                 $count = 0;
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 }
 
                 if (count($options) == 0) {
-                    $page->addMessage(__('There are no records to display.'));
+                    $page->addBlankSlate();
                 } elseif (count($options) == 1) {
                     $_GET['search'] = key($options);
                 } else {
@@ -133,9 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                         echo __('View');
                         echo '</h3>';
 
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        $page->addBlankSlate();
                     } else {
                         echo '<h3>';
                         echo __('View');
