@@ -262,13 +262,13 @@ class Page extends View
     }
 
     /**
-     * Add a message when there are no records to display (but not an error message).
+     * Returns a message when there are no records to display (but not an error message).
      *
      * @param string $text Error message text.
      */
-    public function addBlankSlate(string $text = null)
+    public function getBlankSlate(string $text = null)
     {
-        echo Format::alert($text ?? __('There are no records to display.'), 'message');
+        return Format::alert($text ?? __('There are no records to display.'), 'message');
     }
 
     /**
