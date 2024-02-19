@@ -211,9 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $rollTeachers = isset($_POST['rollTeachers'])? $_POST['rollTeachers'] : '';
 
                 if ($rollStudents != 'on' and $rollTeachers != 'on') {
-                    echo "<div class='error'>";
-                    echo __('Your request failed because your inputs were invalid.');
-                    echo '</div>';
+                    $page->addError(__('Your request failed because your inputs were invalid.'));
                 } else {
                     $classes = isset($_POST['gibbonCourseClassIDNext'])? $_POST['gibbonCourseClassIDNext'] : array();
                     $classes = array_filter($classes);

@@ -54,9 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
+            $page->addError(__('The specified record does not exist.'));
         } else {
             //Let's go!
             $values = $result->fetch();

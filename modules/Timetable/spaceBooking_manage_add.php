@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->breadcrumbs
@@ -163,9 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
             //Check for required fields
             if ($foreignKey == null or $foreignKeyID == null or $foreignKey == '' or $foreignKeyID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $repeat == '') {
-                echo "<div class='error'>";
-                echo __('Your request failed because your inputs were invalid.');
-                echo '</div>';
+                $page->addError(__('Your request failed because your inputs were invalid.'));
             } else {
                 try {
                     if ($foreignKey == 'gibbonSpaceID') {

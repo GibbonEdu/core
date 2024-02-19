@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
             $result3->execute($data3);
 
         if ($result3->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
+            $page->addError(__('The specified record does not exist.'));
         } else {
             //Let's go!
             $row3 = $result3->fetch();

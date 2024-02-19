@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->add(__('Map Classes'));
 
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
-        echo "<div class='error'>";
-        echo __('Your request failed because your inputs were invalid.');
-        echo '</div>';
+        $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 
