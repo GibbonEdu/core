@@ -27,6 +27,7 @@ use Gibbon\View\Components\Breadcrumbs;
 use Gibbon\View\Components\ReturnMessage;
 use Psr\Container\ContainerInterface;
 use Gibbon\View\Components\Navigator;
+use Gibbon\Services\Format;
 
 /**
  * Holds the details for rendering the current page.
@@ -258,6 +259,16 @@ class Page extends View
         }
 
         return $scripts;
+    }
+
+    /**
+     * Add a message when there are no records to display (but not an error message).
+     *
+     * @param string $text Error message text.
+     */
+    public function addBlankSlate(string $text = null)
+    {
+        echo Format::alert($text ?? __('There are no records to display.'), 'message');
     }
 
     /**
