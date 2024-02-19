@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $resultChild->execute($dataChild);
 
                     if ($resultChild->rowCount() < 1) {
-                        $page->addBlankSlate();
+                        echo $page->getBlankSlate();
                     } else {
                         $rowChild = $resultChild->fetch();
 
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 }
 
                                 if ($result->rowCount() < 1) {
-                                    $page->addBlankSlate();
+                                    echo $page->getBlankSlate();
                                 } else {
                                     echo "<table cellspacing='0' style='width: 100%'>";
                                     echo "<tr class='head'>";
@@ -347,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     }
 
                                     if ($result->rowCount() < 1) {
-                                        $page->addBlankSlate();
+                                        echo $page->getBlankSlate();
                                     } else {
                                         echo "<table cellspacing='0' style='width: 100%'>";
                                         echo "<tr class='head'>";
@@ -687,7 +687,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         }
 
                         if ($result->rowCount() < 1) {
-                            $page->addBlankSlate();
+                            echo $page->getBlankSlate();
                         } else {
                             //PRINT LESSON VIEW
                             if ($subView == 'lesson' or $subView == '') {
