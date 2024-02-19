@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
 
             if ($name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
                     //Sort out logo
                     $imageFail = false;
-                    $logo = $_POST['logo'];
+                    $logo = $_POST['logo'] ?? '';
                     if (!empty($_FILES['file1']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);
 

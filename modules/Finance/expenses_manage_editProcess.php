@@ -122,7 +122,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                             $paymentReimbursementStatus = null;
                             $reimbursementComment = '';
                             if (isset($_POST['paymentReimbursementStatus'])) {
-                                $paymentReimbursementStatus = $_POST['paymentReimbursementStatus'];
+                                $paymentReimbursementStatus = $_POST['paymentReimbursementStatus'] ?? '';
                                 if ($paymentReimbursementStatus != 'Requested' and $paymentReimbursementStatus != 'Complete') {
                                     $paymentReimbursementStatus = null;
                                 }

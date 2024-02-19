@@ -38,11 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
 
     $gibbonCourseIDs = array();
     if (isset($_POST['gibbonCourseID'])) {
-        $gibbonCourseIDs = $_POST['gibbonCourseID'];
+        $gibbonCourseIDs = $_POST['gibbonCourseID'] ?? '';
     }
     $gibbonYearGroupID = '';
     if (isset($_POST['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
+        $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
     }
 
     $form = Form::create('action', $session->get('absoluteURL')."/index.php?q=/modules/".$session->get('module')."/scopeAndSequence.php");

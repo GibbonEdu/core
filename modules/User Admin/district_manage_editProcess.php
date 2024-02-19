@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $name = $_POST['name'];
+            $name = $_POST['name'] ?? '';
 
             if ($name == '') {
                 $URL .= '&return=error3';

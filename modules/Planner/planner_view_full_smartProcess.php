@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                 $partialFail = false;
                 if ($mode == 'view') {
-                    $ids = $_POST['gibbonUnitClassBlockID'];
+                    $ids = $_POST['gibbonUnitClassBlockID'] ?? '';
                     for ($i = 0; $i < count($ids); ++$i) {
                         if ($ids[$i] == '') {
                             $partialFail = true;

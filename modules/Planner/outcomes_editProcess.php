@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                     //Proceed!
                     $scope = $_POST['scope'] ?? '';
                     if ($scope == 'Learning Area') {
-                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
                     } else {
                         $gibbonDepartmentID = null;
                     }

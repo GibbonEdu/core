@@ -101,8 +101,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $paidDate = null;
                 }
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paidAmountLog = $_POST['paidAmount'];
-                    $paidAmount = $_POST['paidAmount'];
+                    $paidAmountLog = $_POST['paidAmount'] ?? '';
+                    $paidAmount = $_POST['paidAmount'] ?? '';
                     //If some paid already, work out amount, and add it to total
                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
                     $paidAmount += $alreadyPaid;
@@ -113,11 +113,11 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 }
                 $paymentType = null;
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paymentType = $_POST['paymentType'];
+                    $paymentType = $_POST['paymentType'] ?? '';
                 }
                 $paymentTransactionID = null;
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paymentTransactionID = $_POST['paymentTransactionID'];
+                    $paymentTransactionID = $_POST['paymentTransactionID'] ?? '';
                 }
                 if ($row['billingScheduleType'] == 'Ad Hoc' and ($row['status'] == 'Pending' or $row['status'] == 'Issued')) {
                     $invoiceDueDate = !empty($_POST['invoiceDueDate']) ? Format::dateConvert($_POST['invoiceDueDate']) : null;
@@ -281,7 +281,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 //Email reminder
                 if (isset($_POST['emailReminder'])) {
                     if ($_POST['emailReminder'] == 'Y') {
-                        $from = $_POST['email'];
+                        $from = $_POST['email'] ?? '';
                         if ($partialFail == false and $from != '') {
                             //Send emails
                             $emails = array() ;

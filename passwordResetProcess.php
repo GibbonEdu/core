@@ -172,8 +172,8 @@ else {
         	} else {
                 $row = $result->fetch();
                 $gibbonPersonID = $row['gibbonPersonID'];
-                $passwordNew = $_POST['passwordNew'];
-                $passwordConfirm = $_POST['passwordConfirm'];
+                $passwordNew = $_POST['passwordNew'] ?? '';
+                $passwordConfirm = $_POST['passwordConfirm'] ?? '';
 
                 //Check passwords are not blank
                 if ($passwordNew == '' or $passwordConfirm == '') {

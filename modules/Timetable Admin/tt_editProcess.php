@@ -25,14 +25,14 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$nameShortDisplay = $_POST['nameShortDisplay'];
-$active = $_POST['active'];
-$count = $_POST['count'];
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$nameShortDisplay = $_POST['nameShortDisplay'] ?? '';
+$active = $_POST['active'] ?? '';
+$count = $_POST['count'] ?? '';
 $gibbonYearGroupIDList = (isset($_POST["gibbonYearGroupID"]) ? implode(',', $_POST["gibbonYearGroupID"]) : '');
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonTTID = $_POST['gibbonTTID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonTTID = $_POST['gibbonTTID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_edit.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 

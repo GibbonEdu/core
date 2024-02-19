@@ -83,10 +83,10 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                         $contactEmail = 'Y';
                         $contactMail = 'Y';
                     } else {
-                        $contactCall = $_POST['contactCall'];
-                        $contactSMS = $_POST['contactSMS'];
-                        $contactEmail = $_POST['contactEmail'];
-                        $contactMail = $_POST['contactMail'];
+                        $contactCall = $_POST['contactCall'] ?? '';
+                        $contactSMS = $_POST['contactSMS'] ?? '';
+                        $contactEmail = $_POST['contactEmail'] ?? '';
+                        $contactMail = $_POST['contactMail'] ?? '';
                     }
 
                     //Enforce one and only one contactPriority=1 parent

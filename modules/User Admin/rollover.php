@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
         echo __('Step 2');
         echo '</h3>';
 
-        $nextYearID = $_POST['nextYear'];
+        $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
@@ -737,7 +737,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = null;
                         if (isset($_POST['enrolFull-count'])) {
-                            $count = $_POST['enrolFull-count'];
+                            $count = $_POST['enrolFull-count'] ?? '';
                         }
                         if ($count == '') {
                             echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
@@ -847,7 +847,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = null;
                         if (isset($_POST['reenrol-count'])) {
-                            $count = $_POST['reenrol-count'];
+                            $count = $_POST['reenrol-count'] ?? '';
                         }
                         if ($count == '') {
                             echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');

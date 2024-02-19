@@ -191,13 +191,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
             $phone2CountryCode = $_POST['phone2CountryCode'] ?? '';
             $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2'] ?? '');
-            $phone3Type = $_POST['phone3Type'];
+            $phone3Type = $_POST['phone3Type'] ?? '';
             if ($_POST['phone3'] != '' && $phone3Type == '') {
                 $phone3Type = 'Other';
             }
             $phone3CountryCode = $_POST['phone3CountryCode'] ?? '';
             $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3'] ?? '');
-            $phone4Type = $_POST['phone4Type'];
+            $phone4Type = $_POST['phone4Type'] ?? '';
             if ($_POST['phone4'] != '' && $phone4Type == '') {
                 $phone4Type = 'Other';
             }
@@ -460,7 +460,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         $partialFail = false;
                         $matchAddressCount = null;
                         if (isset($_POST['matchAddressCount'])) {
-                            $matchAddressCount = $_POST['matchAddressCount'];
+                            $matchAddressCount = $_POST['matchAddressCount'] ?? '';
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {

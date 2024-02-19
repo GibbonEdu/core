@@ -330,8 +330,8 @@ class MessageTargets
         //Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my")) {
             if ($_POST["group"] == "Y") {
-                $staff = $_POST["groupsStaff"];
-                $students = $_POST["groupsStudents"];
+                $staff = $_POST["groupsStaff"] ?? '';
+                $students = $_POST["groupsStudents"] ?? '';
                 $parents = "N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
                     $parents=$_POST["groupsParents"];

@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         echo __('Step 2');
         echo '</h3>';
 
-        $nextYearID = $_POST['nextYear'];
+        $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo "<div class='error'>";
@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             }
         }
     } elseif ($step == 3) {
-        $nextYearID = $_POST['nextYear'];
+        $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo "<div class='error'>";

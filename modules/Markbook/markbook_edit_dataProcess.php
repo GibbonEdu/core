@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 $gibbonScaleIDTarget = $row['gibbonScaleIDTarget'];
 
                 for ($i = 1;$i <= $count;++$i) {
-                    $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];
+                    $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"] ?? '';
                     //Modified Assessment
                     if ($enableModifiedAssessment != 'Y') {
                         $modifiedAssessment = NULL;
@@ -134,13 +134,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $effortDescriptor = '';
                         $effortConcern = '';
                     } else {
-                        $effortValue = $_POST["$i-effortValue"];
+                        $effortValue = $_POST["$i-effortValue"] ?? '';
                     }
                     //Comment
                     if ($comment != 'Y') {
                         $commentValue = null;
                     } else {
-                        $commentValue = $_POST["comment$i"];
+                        $commentValue = $_POST["comment$i"] ?? '';
                     }
                     $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 

@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $initials = $_POST['initials'];
+            $initials = $_POST['initials'] ?? '';
             if ($initials == '') {
                 $initials = null;
             }
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             } else {
                 $dateStart = Format::dateConvert($dateStart);
             }
-            $dateEnd = $_POST['dateEnd'];
+            $dateEnd = $_POST['dateEnd'] ?? '';
             if ($dateEnd == '') {
                 $dateEnd = null;
             } else {

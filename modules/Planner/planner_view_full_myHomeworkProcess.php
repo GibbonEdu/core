@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             header("Location: {$URL}");
         } else {
             //Get variables
-            $homework = $_POST['homework'];
+            $homework = $_POST['homework'] ?? '';
             if ($homework == 'Y') {
                 $homeworkDetails = $_POST['homeworkDetails'] ?? '';
                 if ($_POST['homeworkDueDateTime'] != '') {

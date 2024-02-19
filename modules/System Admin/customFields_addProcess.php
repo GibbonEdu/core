@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     ];
 
     if ($data['context'] == 'Custom') {
-        $data['context'] = $_POST['contextName'];
+        $data['context'] = $_POST['contextName'] ?? '';
     }
 
     // Prevent rich text and code editors from being used on public forms

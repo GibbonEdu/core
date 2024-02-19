@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $row = $result->fetch();
                     //Validate Inputs
                     $title = $_POST['title'] ?? '';
-                    $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'];
+                    $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'] ?? '';
                     if ($gibbonStudentNoteCategoryID == '') {
                         $gibbonStudentNoteCategoryID = null;
                     }

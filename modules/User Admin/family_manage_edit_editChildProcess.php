@@ -58,7 +58,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $comment = $_POST['comment'];
+                $comment = $_POST['comment'] ?? '';
 
                 //Write to database
                 try {

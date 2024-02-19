@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                     foreach ($orders as $order) {
                         //It is a lesson, get gibbonPlannerID
                         if (strpos($order, 'lessonHeader-') !== false) {
-                            $AI = $_POST["gibbonPlannerEntryID$lessonCount"];
+                            $AI = $_POST["gibbonPlannerEntryID$lessonCount"] ?? '';
                             $lessonDescriptions[$_POST['gibbonPlannerEntryID'.$lessonCount]][0] = $_POST['gibbonPlannerEntryID'.$lessonCount];
                             $lessonDescriptions[$_POST['gibbonPlannerEntryID'.$lessonCount]][1] = '';
                             ++$lessonCount;

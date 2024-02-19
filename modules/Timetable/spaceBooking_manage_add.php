@@ -148,17 +148,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 }
             }
             $date = Format::dateConvert($_POST['date']);
-            $timeStart = $_POST['timeStart'];
-            $timeEnd = $_POST['timeEnd'];
-            $reason = $_POST['reason'];
-            $repeat = $_POST['repeat'];
+            $timeStart = $_POST['timeStart'] ?? '';
+            $timeEnd = $_POST['timeEnd'] ?? '';
+            $reason = $_POST['reason'] ?? '';
+            $repeat = $_POST['repeat'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $repeatDaily = null;
             $repeatWeekly = null;
             if ($repeat == 'Daily') {
-                $repeatDaily = $_POST['repeatDaily'];
+                $repeatDaily = $_POST['repeatDaily'] ?? '';
             } elseif ($repeat == 'Weekly') {
-                $repeatWeekly = $_POST['repeatWeekly'];
+                $repeatWeekly = $_POST['repeatWeekly'] ?? '';
             }
 
             //Check for required fields

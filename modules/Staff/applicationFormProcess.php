@@ -88,14 +88,14 @@ if ($proceed == false) {
     $email = $_POST['email'] ?? '';
     $phone1Type = null;
     if (isset($_POST['phone1Type'])) {
-        $phone1Type = $_POST['phone1Type'];
+        $phone1Type = $_POST['phone1Type'] ?? '';
         if ($_POST['phone1'] != '' and $phone1Type == '') {
             $phone1Type = 'Other';
         }
     }
     $phone1CountryCode = null;
     if (isset($_POST['phone1CountryCode'])) {
-        $phone1CountryCode = $_POST['phone1CountryCode'];
+        $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
     }
     $phone1 = null;
     if (isset($_POST['phone1'])) {
@@ -134,7 +134,7 @@ if ($proceed == false) {
             if (!empty($requiredDocuments)) {
                 $fileCount = 0;
                 if (isset($_POST['fileCount'])) {
-                    $fileCount = $_POST['fileCount'];
+                    $fileCount = $_POST['fileCount'] ?? '';
                 }
 
                 $fileUploader = new Gibbon\FileUploader($pdo, $session);

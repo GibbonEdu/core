@@ -146,8 +146,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
                             
                             $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
-                            $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
-                            $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
+                            $homeworkSubmissionType = $_POST['homeworkSubmissionType'] ?? '';
+                            $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'] ?? '';
                             if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
                                 $homeworkCrowdAssess = 'Y';
                                 if (isset($_POST['homeworkCrowdAssessOtherTeachersRead'])) {

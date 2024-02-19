@@ -165,15 +165,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 foreach ($order as $i) {
                                     $title = '';
                                     if ($_POST["title$i"] != "Block $i") {
-                                        $title = $_POST["title$i"];
+                                        $title = $_POST["title$i"] ?? '';
                                     }
                                     $type2 = '';
                                     if ($_POST["type$i"] != 'type (e.g. discussion, outcome)') {
-                                        $type2 = $_POST["type$i"];
+                                        $type2 = $_POST["type$i"] ?? '';
                                     }
                                     $length = '';
                                     if ($_POST["length$i"] != 'length (min)') {
-                                        $length = $_POST["length$i"];
+                                        $length = $_POST["length$i"] ?? '';
                                     }
                                     $contents = $_POST["contents$i"] ?? '';
                                     $teachersNotes = $_POST["teachersNotes$i"] ?? '';

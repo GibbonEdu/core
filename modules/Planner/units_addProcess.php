@@ -132,23 +132,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     if ($blockCount > 0) {
                         $order = array();
                         if (isset($_POST['order'])) {
-                            $order = $_POST['order'];
+                            $order = $_POST['order'] ?? '';
                         }
                         foreach ($order as $i) {
                             $title = '';
                             if ($_POST["title$i"] != "Block $i") {
-                                $title = $_POST["title$i"];
+                                $title = $_POST["title$i"] ?? '';
                             }
                             $type2 = '';
                             if ($_POST["type$i"] != 'type (e.g. discussion, outcome)') {
-                                $type2 = $_POST["type$i"];
+                                $type2 = $_POST["type$i"] ?? '';
                             }
                             $length = '';
                             if ($_POST["length$i"] != 'length (min)') {
-                                $length = $_POST["length$i"];
+                                $length = $_POST["length$i"] ?? '';
                             }
-                            $contents = $_POST["contents$i"];
-                            $teachersNotes = $_POST["teachersNotes$i"];
+                            $contents = $_POST["contents$i"] ?? '';
+                            $teachersNotes = $_POST["teachersNotes$i"] ?? '';
 
                             if ($title != '') {
                                 try {

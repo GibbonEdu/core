@@ -63,15 +63,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             if ($_POST['gibbonScaleIDAttainment'] == '') {
                 $gibbonScaleIDAttainment = null;
             } else {
-                $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'];
+                $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'] ?? '';
                 if (isset($_POST['attainmentWeighting'])) {
                     if (is_numeric($_POST['attainmentWeighting']) && $_POST['attainmentWeighting'] > 0) {
-                        $attainmentWeighting = $_POST['attainmentWeighting'];
+                        $attainmentWeighting = $_POST['attainmentWeighting'] ?? '';
                     }
                 }
                 if (isset($_POST['attainmentRawMax'])) {
                     if (is_numeric($_POST['attainmentRawMax']) && $_POST['attainmentRawMax'] > 0) {
-                        $attainmentRawMax = $_POST['attainmentRawMax'];
+                        $attainmentRawMax = $_POST['attainmentRawMax'] ?? '';
                         $attainmentRaw = 'Y';
                     }
                 }
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if ($_POST['gibbonRubricIDAttainment'] == '') {
                     $gibbonRubricIDAttainment = null;
                 } else {
-                    $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'];
+                    $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'] ?? '';
                 }
             }
         }
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $effort = 'N';
         }
         else {
-            $effort = $_POST['effort'];
+            $effort = $_POST['effort'] ?? '';
         }
         if ($effort == 'N') {
             $gibbonScaleIDEffort = null;
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             if ($_POST['gibbonScaleIDEffort'] == '') {
                 $gibbonScaleIDEffort = null;
             } else {
-                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'];
+                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'] ?? '';
             }
             if ($enableRubrics != 'Y') {
                 $gibbonRubricIDEffort = null;
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if ($_POST['gibbonRubricIDEffort'] == '') {
                     $gibbonRubricIDEffort = null;
                 } else {
-                    $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'];
+                    $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'] ?? '';
                 }
             }
         }

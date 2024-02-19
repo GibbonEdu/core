@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 //UPDATE STATUS
                 $statuses = array();
                 if (isset($_POST['status'])) {
-                    $statuses = $_POST['status'];
+                    $statuses = $_POST['status'] ?? '';
                 }
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -128,9 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 //Scan through assistants
                 $staff = array();
                 if (isset($_POST['staff'])) {
-                    $staff = $_POST['staff'];
+                    $staff = $_POST['staff'] ?? '';
                 }
-                $comment = $_POST['comment'];
+                $comment = $_POST['comment'] ?? '';
                 if (count($staff) > 0) {
                     foreach ($staff as $t) {
                         //Check to see if person is already registered as an assistant

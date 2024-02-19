@@ -73,19 +73,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $sqlSet = '';
             if (isset($_POST['longTermMedicationOn'])) {
                 if ($_POST['longTermMedicationOn'] == 'on') {
-                    $data['longTermMedication'] = $_POST['longTermMedication'];
+                    $data['longTermMedication'] = $_POST['longTermMedication'] ?? '';
                     $sqlSet .= 'longTermMedication=:longTermMedication, ';
                 }
             }
             if (isset($_POST['longTermMedicationDetailsOn'])) {
                 if ($_POST['longTermMedicationDetailsOn'] == 'on') {
-                    $data['longTermMedicationDetails'] = $_POST['longTermMedicationDetails'];
+                    $data['longTermMedicationDetails'] = $_POST['longTermMedicationDetails'] ?? '';
                     $sqlSet .= 'longTermMedicationDetails=:longTermMedicationDetails, ';
                 }
             }
             if (isset($_POST['commentOn'])) {
                 if ($_POST['commentOn'] == 'on') {
-                    $data['comment'] = $_POST['comment'];
+                    $data['comment'] = $_POST['comment'] ?? '';
                     $sqlSet .= 'comment=:comment, ';
                 }
             }
@@ -103,21 +103,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             if ($_POST['formExists'] == true) {
                 //Scan through existing conditions
                 if (isset($_POST['count'])) {
-                    $count = $_POST['count'];
+                    $count = $_POST['count'] ?? '';
                 }
                 for ($i = 0; $i < $count; ++$i) {
                     $dataCond = array();
                     $sqlSetCond = '';
                     if (isset($_POST["nameOn$i"])) {
                         if ($_POST["nameOn$i"] == 'on') {
-                            $dataCond['name'] = $_POST["name$i"];
+                            $dataCond['name'] = $_POST["name$i"] ?? '';
                             $sqlSetCond .= 'name=:name, ';
                         }
                     }
                     if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
                         if ($_POST["gibbonAlertLevelIDOn$i"] == 'on') {
                             if ($_POST["gibbonAlertLevelID$i"] != '') {
-                                $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
+                                $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"] ?? '';
                                 $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
                                 if (!empty($_POST["gibbonPersonMedicalConditionID$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
@@ -129,32 +129,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                     if (isset($_POST["triggersOn$i"])) {
                         if ($_POST["triggersOn$i"] == 'on') {
-                            $dataCond['triggers'] = $_POST["triggers$i"];
+                            $dataCond['triggers'] = $_POST["triggers$i"] ?? '';
                             $sqlSetCond .= 'triggers=:triggers, ';
                         }
                     }
                     if (isset($_POST["reactionOn$i"])) {
                         if ($_POST["reactionOn$i"] == 'on') {
-                            $dataCond['reaction'] = $_POST["reaction$i"];
+                            $dataCond['reaction'] = $_POST["reaction$i"] ?? '';
                             $sqlSetCond .= 'reaction=:reaction, ';
                         }
                     }
                     if (isset($_POST["responseOn$i"])) {
                         if ($_POST["responseOn$i"] == 'on') {
-                            $dataCond['response'] = $_POST["response$i"];
+                            $dataCond['response'] = $_POST["response$i"] ?? '';
                             $sqlSetCond .= 'response=:response, ';
                         }
                     }
                     if (isset($_POST["medicationOn$i"])) {
                         if ($_POST["medicationOn$i"] == 'on') {
-                            $dataCond['medication'] = $_POST["medication$i"];
+                            $dataCond['medication'] = $_POST["medication$i"] ?? '';
                             $sqlSetCond .= 'medication=:medication, ';
                         }
                     }
                     if (isset($_POST["lastEpisodeOn$i"])) {
                         if ($_POST["lastEpisodeOn$i"] == 'on') {
                             if ($_POST["lastEpisode$i"] != '') {
-                                $dataCond['lastEpisode'] = $_POST["lastEpisode$i"];
+                                $dataCond['lastEpisode'] = $_POST["lastEpisode$i"] ?? '';
                                 $sqlSetCond .= 'lastEpisode=:lastEpisode, ';
                             } else {
                                 $sqlSetCond .= 'lastEpisode=NULL, ';
@@ -163,13 +163,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                     if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
                         if ($_POST["lastEpisodeTreatmentOn$i"] == 'on') {
-                            $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"];
+                            $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"] ?? '';
                             $sqlSetCond .= 'lastEpisodeTreatment=:lastEpisodeTreatment, ';
                         }
                     }
                     if (isset($_POST["commentOn$i"])) {
                         if ($_POST["commentOn$i"] == 'on') {
-                            $dataCond['comment'] = $_POST["comment$i"];
+                            $dataCond['comment'] = $_POST["comment$i"] ?? '';
                             $sqlSetCond .= 'comment=:comment, ';
                         }
                     }
@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
                     try {
                         $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
-                        $dataCond['gibbonPersonMedicalConditionID'] = $_POST["gibbonPersonMedicalConditionID$i"];
+                        $dataCond['gibbonPersonMedicalConditionID'] = $_POST["gibbonPersonMedicalConditionID$i"] ?? '';
                         $sqlCond = "UPDATE gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID";
                         $resultCond = $connection2->prepare($sqlCond);
                         $resultCond->execute($dataCond);
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 //Scan through new conditions
                 $gibbonAlertLevelID = 001;
                 if (isset($_POST['count2'])) {
-                    $count2 = $_POST['count2'];
+                    $count2 = $_POST['count2'] ?? '';
                 }
                 for ($i = ($count + 1); $i <= ($count + $count2); ++$i) {
                     if (isset($_POST["nameOn$i"]) && $_POST["nameOn$i"] == 'on' && $_POST["gibbonPersonMedicalConditionUpdateID$i"] != '') {
@@ -201,14 +201,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         $sqlSetCond = '';
                         if (isset($_POST["nameOn$i"])) {
                             if ($_POST["nameOn$i"] == 'on') {
-                                $dataCond['name'] = $_POST["name$i"];
+                                $dataCond['name'] = $_POST["name$i"] ?? '';
                                 $sqlSetCond .= 'name=:name, ';
                             }
                         }
                         if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
                             if ($_POST["gibbonAlertLevelIDOn$i"] == 'on') {
                                 if ($_POST["gibbonAlertLevelID$i"] != '') {
-                                    $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
+                                    $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"] ?? '';
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
                                     if (!empty($_POST["name$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
@@ -220,32 +220,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
                         if (isset($_POST["triggersOn$i"])) {
                             if ($_POST["triggersOn$i"] == 'on') {
-                                $dataCond['triggers'] = $_POST["triggers$i"];
+                                $dataCond['triggers'] = $_POST["triggers$i"] ?? '';
                                 $sqlSetCond .= 'triggers=:triggers, ';
                             }
                         }
                         if (isset($_POST["reactionOn$i"])) {
                             if ($_POST["reactionOn$i"] == 'on') {
-                                $dataCond['reaction'] = $_POST["reaction$i"];
+                                $dataCond['reaction'] = $_POST["reaction$i"] ?? '';
                                 $sqlSetCond .= 'reaction=:reaction, ';
                             }
                         }
                         if (isset($_POST["responseOn$i"])) {
                             if ($_POST["responseOn$i"] == 'on') {
-                                $dataCond['response'] = $_POST["response$i"];
+                                $dataCond['response'] = $_POST["response$i"] ?? '';
                                 $sqlSetCond .= 'response=:response, ';
                             }
                         }
                         if (isset($_POST["medicationOn$i"])) {
                             if ($_POST["medicationOn$i"] == 'on') {
-                                $dataCond['medication'] = $_POST["medication$i"];
+                                $dataCond['medication'] = $_POST["medication$i"] ?? '';
                                 $sqlSetCond .= 'medication=:medication, ';
                             }
                         }
                         if (isset($_POST["lastEpisodeOn$i"])) {
                             if ($_POST["lastEpisodeOn$i"] == 'on') {
                                 if ($_POST["lastEpisode$i"] != '') {
-                                    $dataCond['lastEpisode'] = $_POST["lastEpisode$i"];
+                                    $dataCond['lastEpisode'] = $_POST["lastEpisode$i"] ?? '';
                                     $sqlSetCond .= 'lastEpisode=:lastEpisode, ';
                                 } else {
                                     $sqlSetCond .= 'lastEpisode=NULL, ';
@@ -254,13 +254,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
                         if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
                             if ($_POST["lastEpisodeTreatmentOn$i"] == 'on') {
-                                $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"];
+                                $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"] ?? '';
                                 $sqlSetCond .= 'lastEpisodeTreatment=:lastEpisodeTreatment, ';
                             }
                         }
                         if (isset($_POST["commentOn$i"])) {
                             if ($_POST["commentOn$i"] == 'on') {
-                                $dataCond['comment'] = $_POST["comment$i"];
+                                $dataCond['comment'] = $_POST["comment$i"] ?? '';
                                 $sqlSetCond .= 'comment=:comment, ';
                             }
                         }
@@ -342,7 +342,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
                 //Scan through new conditions
                 if (isset($_POST['count2'])) {
-                    $count2 = $_POST['count2'];
+                    $count2 = $_POST['count2'] ?? '';
                 }
                 for ($i = ($count + 1); $i <= ($count + $count2); ++$i) {
                     if ($_POST["nameOn$i"] == 'on' and $_POST["gibbonAlertLevelIDOn$i"] == 'on') {
@@ -351,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         $sqlSetCond = '';
                         if (isset($_POST["nameOn$i"])) {
                             if ($_POST["nameOn$i"] == 'on') {
-                                $dataCond['name'] = $_POST["name$i"];
+                                $dataCond['name'] = $_POST["name$i"] ?? '';
                                 $sqlSetCond .= 'name=:name, ';
 
                             }
@@ -359,44 +359,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
                             if ($_POST["gibbonAlertLevelIDOn$i"] == 'on') {
                                 if ($_POST["gibbonAlertLevelID$i"] != '') {
-                                    $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
+                                    $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"] ?? '';
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
                                     if (!empty($_POST["name$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
                                         $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
-                                        $conditions[] = $_POST["name$i"];
+                                        $conditions[] = $_POST["name$i"] ?? '';
                                     }
                                 }
                             }
                         }
                         if (isset($_POST["triggersOn$i"])) {
                             if ($_POST["triggersOn$i"] == 'on') {
-                                $dataCond['triggers'] = $_POST["triggers$i"];
+                                $dataCond['triggers'] = $_POST["triggers$i"] ?? '';
                                 $sqlSetCond .= 'triggers=:triggers, ';
                             }
                         }
                         if (isset($_POST["reactionOn$i"])) {
                             if ($_POST["reactionOn$i"] == 'on') {
-                                $dataCond['reaction'] = $_POST["reaction$i"];
+                                $dataCond['reaction'] = $_POST["reaction$i"] ?? '';
                                 $sqlSetCond .= 'reaction=:reaction, ';
                             }
                         }
                         if (isset($_POST["responseOn$i"])) {
                             if ($_POST["responseOn$i"] == 'on') {
-                                $dataCond['response'] = $_POST["response$i"];
+                                $dataCond['response'] = $_POST["response$i"] ?? '';
                                 $sqlSetCond .= 'response=:response, ';
                             }
                         }
                         if (isset($_POST["medicationOn$i"])) {
                             if ($_POST["medicationOn$i"] == 'on') {
-                                $dataCond['medication'] = $_POST["medication$i"];
+                                $dataCond['medication'] = $_POST["medication$i"] ?? '';
                                 $sqlSetCond .= 'medication=:medication, ';
                             }
                         }
                         if (isset($_POST["lastEpisodeOn$i"])) {
                             if ($_POST["lastEpisodeOn$i"] == 'on') {
                                 if ($_POST["lastEpisode$i"] != '') {
-                                    $dataCond['lastEpisode'] = $_POST["lastEpisode$i"];
+                                    $dataCond['lastEpisode'] = $_POST["lastEpisode$i"] ?? '';
                                     $sqlSetCond .= 'lastEpisode=:lastEpisode, ';
                                 } else {
                                     $sqlSetCond .= 'lastEpisode=NULL, ';
@@ -405,13 +405,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
                         if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
                             if ($_POST["lastEpisodeTreatmentOn$i"] == 'on') {
-                                $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"];
+                                $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"] ?? '';
                                 $sqlSetCond .= 'lastEpisodeTreatment=:lastEpisodeTreatment, ';
                             }
                         }
                         if (isset($_POST["commentOn$i"])) {
                             if ($_POST["commentOn$i"] == 'on') {
-                                $dataCond['comment'] = $_POST["comment$i"];
+                                $dataCond['comment'] = $_POST["comment$i"] ?? '';
                                 $sqlSetCond .= 'comment=:comment, ';
                             }
                         }

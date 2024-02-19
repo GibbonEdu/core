@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $partialFail = false;
 
                     //Add in all cells
-                    $cells = $_POST['cell'];
+                    $cells = $_POST['cell'] ?? '';
                     for ($i = 0; $i < count($cells); ++$i) {
                         if ($_POST['gibbonRubricColumnID'][$i] == '' or $_POST['gibbonRubricRowID'][$i] == '') {
                             $partialFail = true;
