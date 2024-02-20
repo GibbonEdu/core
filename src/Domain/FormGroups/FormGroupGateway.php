@@ -136,6 +136,13 @@ class FormGroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectFormGroups()
+    {
+        $sql = "SELECT gibbonFormGroupID as value, name, gibbonSchoolYearID FROM gibbonFormGroup ORDER BY gibbonSchoolYearID, name";
+
+        return $this->db()->select($sql);
+    }
+
     public function getFormGroupByID($gibbonFormGroupID)
     {
         $data = array('gibbonFormGroupID' => $gibbonFormGroupID);

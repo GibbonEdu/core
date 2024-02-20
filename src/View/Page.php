@@ -27,6 +27,7 @@ use Gibbon\View\Components\Breadcrumbs;
 use Gibbon\View\Components\ReturnMessage;
 use Psr\Container\ContainerInterface;
 use Gibbon\View\Components\Navigator;
+use Gibbon\Services\Format;
 
 /**
  * Holds the details for rendering the current page.
@@ -261,12 +262,27 @@ class Page extends View
     }
 
     /**
+     * Returns a message when there are no records to display (but not an error message).
+     *
+     * @param string $text Error message text.
+     */
+    public function getBlankSlate(string $text = null)
+    {
+        return Format::alert($text ?? __('There are no records to display.'), 'message');
+    }
+
+    /**
      * Add user feedback as an error message displayed on this page.
      *
      * @param string $text Error message text.
      */
     public function addError(string $text)
     {
+        // Override to always display the sidebar when pages are inaccessible
+        if ($text == __('You do not have access to this action.') && empty($this['isLoggedIn'])) {
+            $this['showSidebar'] = true;
+        }
+
         $this->addAlert($text, 'error');
     }
 

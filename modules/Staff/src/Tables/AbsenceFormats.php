@@ -53,7 +53,7 @@ class AbsenceFormats
     public static function substituteDetails($coverage)
     {
         if (empty($coverage['gibbonPersonIDCoverage'])) {
-            if ($coverage['status'] == 'Pending') {
+            if ($coverage['status'] == 'Pending' || $coverage['status'] == 'Requested') {
                 return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
             } else if ($coverage['status'] == 'Not Required') {
                 return Format::tag(__('Not Required'), 'dull whitespace-nowrap');
@@ -168,7 +168,7 @@ class AbsenceFormats
         } elseif ($relativeSeconds <= (86400 * ($urgencyThreshold * 3))) {
             return '<span class="tag warning">'.__('Upcoming').'</span>';
         } else {
-            return __('Upcoming');
+            return __($coverage['status']);
         }
     }
 

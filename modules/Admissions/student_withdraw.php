@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
         if (!empty($departureReasonsList)) {
             $row->addSelect('departureReason')->fromString($departureReasonsList)->required()->placeholder();
         } else {
-            $row->addTextField('departureReason')->maxLength(30)->required();
+            $row->addTextField('departureReason')->maxLength(100)->required();
         }
 
     $schools = $pdo->select("SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY lastSchool")->fetchAll(\PDO::FETCH_COLUMN);

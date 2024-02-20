@@ -37,6 +37,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
  */
 class CoverageView
 {
+    protected $gibbonStaffCoverageID;
     protected $staffCoverageGateway;
     protected $userGateway;
 

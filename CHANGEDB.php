@@ -792,4 +792,5 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 UPDATE `gibbonSetting` SET description='Comma-separated list of choices to make available if privacy options are turned on.' WHERE scope='User Admin' AND name='privacyOptions';end
 ALTER TABLE `gibbonSpace` ADD `active` ENUM('N','Y') NOT NULL DEFAULT 'Y' AFTER `type`;end
 UPDATE `gibbonAction` SET category='Learn' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') AND name='Individual Needs Settings';end
+ALTER TABLE `gibbonPerson` CHANGE `departureReason` `departureReason` VARCHAR(100) NOT NULL;end
 ";

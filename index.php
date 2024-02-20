@@ -225,13 +225,13 @@ $session->set('sidebarExtra', '');
 $session->set('sidebarExtraPosition', 'top');
 
 // Check the current Action 'entrySidebar' to see if we should display a sidebar
-$showSidebar = $page->getAction()
+$page['showSidebar'] = $page->getAction()
     ? $page->getAction()['entrySidebar'] != 'N'
     : true;
 
 // Override showSidebar if the URL 'sidebar' param is explicitly set
 if (!empty($_GET['sidebar'])) {
-    $showSidebar = strtolower($_GET['sidebar']) !== 'false';
+    $page['showSidebar'] = strtolower($_GET['sidebar']) !== 'false';
 }
 
 /**
@@ -734,18 +734,19 @@ if (!empty($_GET['return'])) {
         }
     }
 }
+
 /**
  * GET SIDEBAR CONTENT
  *
  * TODO: rewrite the Sidebar class as a template file.
  */
 $sidebarContents = '';
-if ($showSidebar) {
+if ($page['showSidebar']) {
     $page->addSidebarExtra($session->get('sidebarExtra'));
     $session->set('sidebarExtra', '');
 
     $page->addData([
-        'sidebar'         => $showSidebar,
+        'sidebar'         => $page['showSidebar'],
         'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);

@@ -143,8 +143,31 @@ class AdmissionsFields extends AbstractFieldGroup
                 break;
                 
             case 'gibbonFormGroupIDEntry':
+
                 $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ?  : '')->readonly($accepted)->selected($default);
+
+                if ($formBuilder->hasConfig('gibbonSchoolYearID')) {
+                    // Handle form group selection within the Office Only, school year is provided
+                    $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))
+                        ->required($required)
+                        ->placeholder($required ?  : '')
+                        ->readonly($accepted)
+                        ->selected($default);
+
+                } else {
+                    // Handle form group select in a regular application form
+                    $formGroups = $this->formGroupGateway->selectFormGroups()->fetchAll();
+                    $formGroupsChained = array_combine(array_column($formGroups, 'value'), array_column($formGroups, 'gibbonSchoolYearID'));
+                    $formGroupsOptions = array_combine(array_column($formGroups, 'value'), array_column($formGroups, 'name'));
+
+                    $row->addSelect('gibbonFormGroupIDEntry')
+                        ->fromArray($formGroupsOptions)
+                        ->chainedTo('gibbonSchoolYearIDEntry', $formGroupsChained)
+                        ->required($required)
+                        ->placeholder($required ?  : '')
+                        ->readonly($accepted)
+                        ->selected($default);
+                }
                 break;
 
             case 'dayType':

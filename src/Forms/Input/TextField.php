@@ -128,11 +128,10 @@ class TextField extends Input
      */
     protected function getElement()
     {
-
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
         if (!empty($this->autocomplete)) {
-            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes($str)); }, $this->autocomplete));
+            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str))); }, $this->autocomplete));
             $output .= '<script type="text/javascript">';
             $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
             $output .= '</script>';
