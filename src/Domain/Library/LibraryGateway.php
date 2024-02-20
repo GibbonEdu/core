@@ -12,7 +12,7 @@ class LibraryGateway extends QueryableGateway
     use TableAware;
     private static $tableName = 'gibbonLibraryItem';
     private static $primaryKey = 'gibbonLibraryItemID';
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['gibbonLibraryItem.name', 'gibbonLibraryItem.producer'];
 
     public function queryLendingDetail(QueryCriteria $criteria)
     {
@@ -385,5 +385,29 @@ class LibraryGateway extends QueryableGateway
             WHERE gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID";
 
         return $this->db()->update($sql, $data);
+    }
+
+    public function queryLibraryShelves(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonLibraryShelf.gibbonLibraryShelfID',
+                'gibbonLibraryShelf.name',
+                'gibbonLibraryShelf.active',
+                'gibbonLibraryShelf.field',
+                'gibbonLibraryShelf.fieldKey',
+                'gibbonLibraryShelf.type',
+            ]);
+
+        $criteria->addFilterRules([
+            'name' => function ($query, $name) {
+                return $query
+                    ->where('gibbonLibraryItem.name LIKE :name')
+                    ->bindValue('name', '%' . $name . '%');
+            }
+        ]);
+        return $this->runQuery($query, $criteria);
     }
 }

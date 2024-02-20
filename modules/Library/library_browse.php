@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $sampleBookShelves['Available Books'] = $resultSample1->fetchAll();
     $sampleBookShelves['Books On Loan'] = $resultSample2->fetchAll();
     
-    $page->writeFromTemplate('libraryShelf.twig.html', [
+    $page->writeFromTemplate('libraryShelves.twig.html', [
         'bookshelves' => $sampleBookShelves,
     ]);
 
@@ -219,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
     $row = $form->addRow();
-        $row->setClass('hidden advanced-search');
+        $row->setClass('advancedOptions hidden');
 
     $col = $row->addColumn()->setClass('quarterWidth');
     $col->addLabel('name', __('Title'));
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->placeholder();
 
     $row = $form->addRow();
-    $row->addButton(__('Advanced Search'))->addData('toggle', '.advanced-search')->addClass('w-32 m-px sm:self-center');
+    $row->addAdvancedOptionsToggle();
     $row->addSearchSubmit($session);
 
     echo $form->getOutput();
