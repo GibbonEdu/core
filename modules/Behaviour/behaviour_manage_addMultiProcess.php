@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $partialFail = false;
 
         // Initialize the notification sender & gateway objects
-        $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $session);
+        $notificationGateway = $container->get(NotificationGateway::class);
+        $notificationSender = $container->get(NotificationSender::class);
 
         foreach ($gibbonPersonIDMulti as $gibbonPersonID) {
             //Write to database

@@ -95,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
     //Deal with resolution
     if ($isTutor && $investigation['status'] == 'Referral') {
-        $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $session);
+        $notificationGateway = $container->get(NotificationGateway::class);
+        $notificationSender = $container->get(NotificationSender::class);
 
         $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
         $status = ($_POST['resolvable'] == 'Y') ? 'Resolved' : 'Investigation';

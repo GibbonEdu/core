@@ -92,8 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 }
 
                 // Initialize the notification sender & gateway objects
-                $notificationGateway = new NotificationGateway($pdo);
-                $notificationSender = new NotificationSender($notificationGateway, $session);
+                $notificationGateway = $container->get(NotificationGateway::class);
+                $notificationSender = $container->get(NotificationSender::class);
 
                 //Create notification for all people in class except me
                 $dataClassGroup = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
