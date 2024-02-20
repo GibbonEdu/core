@@ -88,6 +88,7 @@ jobs:
         run: composer test:phpstan
 
       - name: Check PHP warning and deprecated messages in server_log
+        if: success() || failure()
         run: |
           # Check number of uncaught exceptions.
           export NUM_EXCEPTION=$(grep --perl-regexp 'Uncaught Exception: ' ./tests/_logs/server_log | wc -l)
@@ -138,6 +139,7 @@ jobs:
         continue-on-error: ${{ matrix.experimental }}
 
       - name: Check PHP notice in server_log
+        if: success() || failure()
         run: |
           # Check number of notice.
           export NUM_NOTICE=$(grep --perl-regexp 'Notice: ' ./tests/_logs/server_log | wc -l)
