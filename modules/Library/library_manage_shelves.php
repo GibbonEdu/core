@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     $gateway = $container->get(LibraryShelfGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
-        ->sortBy('name')
+        ->sortBy(['sequenceNumber', 'name'])
         ->filterBy('name', $name)
         ->fromPOST();
     $shelves = $gateway->queryLibraryShelves($criteria);
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         ->setURL('/modules/Library/library_manage_shelves_add.php')
         ->displayLabel();
 
-    //$table->addDraggableColumn('gibbonYearGroupID', $session->get('absoluteURL').'/modules/School Admin/yearGroup_manage_editOrderAjax.php');
+    $table->addDraggableColumn('gibbonLibraryShelfID', $session->get('absoluteURL').'/modules/Library/library_shelves_editOrderAjax.php');
 
     $table->addColumn('name', __('Name'));
         
