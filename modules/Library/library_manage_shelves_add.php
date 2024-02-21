@@ -98,13 +98,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->required();
         
         $row = $form->addRow()->addClass('autoFill');
-            $row->addLabel('fieldKey', __('Possible Shelves'));
+            $row->addLabel('fieldKey', __('Sub-Category'));
             $row->addSelect('fieldKey')
                 ->fromArray($categories['subCategory'])
                 ->chainedTo('field', $categories['subCategoryChained'])
                 ->placeholder('Please select...')
-                ->selected($urlParams['fieldKey'])
-                ->required();
+                ->selected($urlParams['fieldKey']);
 
         $form->toggleVisibilityByClass('manual')->onSelect('type')->when('manual');
 
@@ -114,18 +113,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->required();
 
         $row = $form->addRow()->addClass('manual');
-            $row->addLabel('fieldKey', __('Custom Tag'));
-            $row->addTextField('fieldKey')
-                ->required();
+            $row->addLabel('fieldKey', __('Custom Sub-Category'));
+            $row->addTextField('fieldKey');
 
         $row = $form->addRow();
-        $row->addLabel('addItems', __('Add Items Manually'));
-        $row->addClass('manual');
-        $row->addFinder('addItems')
-            ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
-            ->setParameter('resultsLimit', 10)
-            ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
-
+            $row->addLabel('addItems', __('Add More Items'));
+            $row->addClass('manual');
+            $row->addFinder('addItems')
+                ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
+                ->setParameter('resultsLimit', 10)
+                ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
+        
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();

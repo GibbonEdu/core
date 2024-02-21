@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     ];
 
     // Validate the required values are present
-    if (empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['field']) || empty($data['fieldKey'])) {
+    if (empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['field'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;

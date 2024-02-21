@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Library\LibraryShelfGateway;
+use Gibbon\Domain\Library\LibraryShelfItemGateway;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_shelves_edit.php') == false) {
     // Access denied
@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     $gibbonLibraryShelfID = $_GET['gibbonLibraryShelfID'] ?? '';
     $shelfGateway = $container->get(LibraryShelfGateway::class);
+    $itemGateway = $container->get(LibraryShelfItemGateway::class);
     $categories = $shelfGateway->selectDisplayableCategories();
 
     if (empty($gibbonLibraryShelfID)) {
@@ -72,61 +73,72 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     $row = $form->addRow();
         $row->addLabel('type', __('Fill Option'));
-        $row->addSelect('type')
-            ->required()
-            ->fromArray([
-                'automatic' => __('Automatic'),
-                'manual' => __('Manual')
-            ])
-            ->selected($values['type']);
+        $row->addTextField('type')->setValue($values['type'])->readOnly();
 
-    $form->toggleVisibilityByClass('automatic')->onSelect('type')->when('automatic');
-
-    $row = $form->addRow()->addClass('automatic');
-        $row->addLabel('gibbonLibraryTypeID', __('Catalog Type'))
-            ->description(__('What type of item would you like to fill a list with?'));
-        $row->addSelect('gibbonLibraryTypeID')
-            ->fromArray($categories['types'])
-            ->placeholder('Please select...')
-            ->selected($values['field']);
-
-    $form->toggleVisibilityByClass('autoFill')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
-    
-    $row = $form->addRow()->addClass('autoFill');
+    $row = $form->addRow();
         $row->addLabel('field', __('Category'));
-        $row->addSelect('field')
-            ->fromArray(array_keys($categories['categoryChained']))
-            ->chainedTo('gibbonLibraryTypeID', $categories['categoryChained'])
-            ->placeholder('Please select...')
-            ->selected($values['field'])
+        $row->addTextField('field')->setValue($values['field'])->readOnly();
+
+    if($values['type'] == 'AUTOMATIC') {
+        $row = $form->addRow();
+        $row->addLabel('fieldKey', __('Sub-Category'));
+        $row->addTextField('fieldKey')->setValue($values['fieldKey'])->readOnly()
             ->required();
+
+    } elseif($values['type'] == 'MANUAL') {
+        $row = $form->addRow();
+        $row->addLabel('fieldKey', __('Custom Sub-Category'));
+        $row->addTextField('fieldKey')->setValue($values['fieldKey']);
+    }
     
-    $row = $form->addRow()->addClass('autoFill');
-        $row->addLabel('fieldKey', __('Possible Shelves'));
-        $row->addSelect('fieldKey')
-            ->fromArray($categories['subCategory'])
-            ->chainedTo('field', $categories['subCategoryChained'])
-            ->placeholder('Please select...')
-            ->selected($values['fieldKey'])
-            ->required();
-
-    $form->toggleVisibilityByClass('manual')->onSelect('type')->when('manual');
-
-    $row = $form->addRow()->addClass('manual');
-        $row->addLabel('field', __('Category'));
-        $row->addTextField('field')->setValue('Custom')->readOnly()
-            ->required();
-
-    $row = $form->addRow()->addClass('manual');
-        $row->addLabel('fieldKey', __('Custom Tag'));
-        $row->addTextField('fieldKey')
-            ->required();
+    $row = $form->addRow();
+        $row->addLabel('addItems', __('Add More Items'));
+        $row->addFinder('addItems')
+            ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
+            ->setParameter('resultsLimit', 10)
+            ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
 
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 
     $form->loadAllValuesFrom($values);
+
+    echo $form->getOutput();
+
+    // QUERY
+    $criteria = $itemGateway->newQueryCriteria(true)
+    ->sortBy('name')
+    ->pageSize(15)
+    ->fromPOST();
+
+    $items = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->toDataSet();
+
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Library/library_shelves_editProcessBulk.php');
+    $form->addHiddenValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
+    $col = $form->createBulkActionColumn([
+        'Delete' => __('Delete'),
+    ]);
+    $col->addSubmit(__('Go'));
+
+    // DATA TABLE
+    $table = $form->addRow()->addDataTable('items', $criteria)->withData($items);
+    $table->setTitle(__('Current Items'));
+    $table->addMetaData('bulkActions', $col);
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('producer', __('Producer'));
+    
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonLibraryShelfID', $gibbonLibraryShelfID)
+        ->format(function ($item, $actions) {
+            $actions->addAction('delete', __('Delete'))
+                        ->addParam('gibbonLibraryShelfItemID', $item['gibbonLibraryShelfItemID'])
+                        ->setURL('/modules/Library/library_manage_shelves_edit_items_delete.php');
+        });
+
+    $table->addCheckboxColumn('gibbonLibraryShelfItemID');
 
     echo $form->getOutput();
 }

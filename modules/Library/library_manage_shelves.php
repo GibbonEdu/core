@@ -43,11 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_manage_shelves.php");
 
         $row = $form->addRow();
-            $row->addLabel('name', __('Name'));
+            $row->addLabel('name', __('Shelf Name'));
             $row->addTextField('name')->setValue($name)->placeholder();
 
         $row = $form->addRow();
-        $row->addAdvancedOptionsToggle();
         $row->addSearchSubmit($session, __('Clear Search'));
 
         echo $form->getOutput();
@@ -70,12 +69,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $table->addDraggableColumn('gibbonLibraryShelfID', $session->get('absoluteURL').'/modules/Library/library_shelves_editOrderAjax.php');
 
     $table->addColumn('name', __('Name'));
+    $table->addColumn('field', __('Category'));
+    $table->addColumn('fieldKey', __('Sub-Category'));
         
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonLibraryShelfID')
         ->addParam('name', $name)
-        ->format(function ($shelves, $actions) {
+        ->format(function ($shelf, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Library/library_manage_shelves_edit.php');
 

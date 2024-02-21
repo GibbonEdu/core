@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Library\LibraryShelfGateway;
+use Gibbon\Domain\Library\LibraryShelfItemGateway;
 
 require_once '../../gibbon.php';
 
@@ -40,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 } else {
     // Proceed!
     $shelfGateway = $container->get(LibraryShelfGateway::class);
+    $itemGateway = $container->get(LibraryShelfItemGateway::class);
 
     $data = [
         'name'    => $_POST['name'] ?? '',
@@ -49,13 +51,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         'fieldKey'    => $_POST['fieldKey'] ?? '',
     ];
 
-    if (empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['field']) || empty($data['fieldKey'])) {
+    if (empty($data['name']) || empty($data['active']) || empty($data['field'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     $updated = $shelfGateway->update($gibbonLibraryShelfID, $data);
+
+    $shelfItems = isset($_POST['addItems'])? explode(',', $_POST['addItems']) : [];
+
+    $currentItems = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->toDataSet()->getColumn('gibbonLibraryItemID');
+    var_dump($currentItems);
+    if(!empty($shelfItems)) {
+        foreach($shelfItems as $item) {
+            if(!in_array($item, $currentItems)) {
+                $itemGateway->insertShelfItem($item, $gibbonLibraryShelfID);
+            }
+        }
+    }
 
     $URL .= !$updated
         ? '&return=error2'
