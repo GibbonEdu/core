@@ -24,6 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_shelves_edit.php') == false) {
     // Access denied
@@ -81,14 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     if($values['type'] == 'AUTOMATIC') {
         $row = $form->addRow();
-        $row->addLabel('fieldKey', __('Sub-Category'));
-        $row->addTextField('fieldKey')->setValue($values['fieldKey'])->readOnly()
+        $row->addLabel('fieldValue', __('Sub-Category'));
+        $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly()
             ->required();
 
     } elseif($values['type'] == 'MANUAL') {
         $row = $form->addRow();
-        $row->addLabel('fieldKey', __('Custom Sub-Category'));
-        $row->addTextField('fieldKey')->setValue($values['fieldKey']);
+        $row->addLabel('fieldValue', __('Custom Sub-Category'));
+        $row->addTextField('fieldValue')->setValue($values['fieldValue']);
     }
     
     $row = $form->addRow();
@@ -108,8 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     // QUERY
     $criteria = $itemGateway->newQueryCriteria(true)
+    ->pageSize(50)
     ->sortBy('name')
-    ->pageSize(15)
     ->fromPOST();
 
     $items = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->toDataSet();

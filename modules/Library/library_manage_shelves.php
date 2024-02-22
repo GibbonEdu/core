@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('field', __('Category'));
-    $table->addColumn('fieldKey', __('Sub-Category'));
+    $table->addColumn('fieldValue', __('Sub-Category'));
         
     // ACTIONS
     $table->addActionColumn()

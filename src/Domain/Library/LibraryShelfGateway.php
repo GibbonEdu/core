@@ -24,7 +24,7 @@ class LibraryShelfGateway extends QueryableGateway
                 'gibbonLibraryShelf.name',
                 'gibbonLibraryShelf.active',
                 'gibbonLibraryShelf.field',
-                'gibbonLibraryShelf.fieldKey',
+                'gibbonLibraryShelf.fieldValue',
                 'gibbonLibraryShelf.type',
             ]);
 

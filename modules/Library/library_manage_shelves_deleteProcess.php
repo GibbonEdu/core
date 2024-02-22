@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Library\LibraryShelfGateway;
+use Gibbon\Domain\Library\LibraryShelfItemGateway;
 
 require_once '../../gibbon.php';
 
@@ -36,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 } else {
     // Proceed!
     $shelfGateway = $container->get(LibraryShelfGateway::class);
+    $itemGateway = $container->get(LibraryShelfItemGateway::class);
     $values = $shelfGateway->getByID($gibbonLibraryShelfID);
 
     if (empty($values)) {
@@ -44,15 +46,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         exit;
     }
 
-    // TODO: Add code for removing books from shelves as well (might require gateway method)
     $partialFail = false;
 
-    // // Delete each date first
-    // foreach ($coverageDates as $date) {
-    //     $partialFail &= !$staffCoverageDateGateway->delete($date['gibbonStaffCoverageDateID']);
-    // }
+    $shelfItems = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->fetchAll();
+    if(count($shelfItems) >= 1) {
+        try {
+            $data = array('gibbonLibraryShelfID' => $gibbonLibraryShelfID);
+            $sql = 'DELETE FROM gibbonLibraryShelfItem WHERE gibbonLibraryShelfID=:gibbonLibraryShelfID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+    }
 
-    // Then delete the coverage itself
     $partialFail &= $shelfGateway->delete($gibbonLibraryShelfID);
 
     $URL .= $partialFail

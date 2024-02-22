@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $browseBGImageStyle = "; background-image: url(\"$browseBGImage\")";
     }
 
-    //Set pagination variable
+    //Set pagination variable 
     // $page = 1;
     // if (isset($_GET['page'])) {
     //     $page = $_GET['page'];

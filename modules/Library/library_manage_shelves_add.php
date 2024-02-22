@@ -25,7 +25,6 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Library\LibraryShelfGateway;
-use Gibbon\Domain\Library\LibraryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_shelves_add.php') == false) {
     // Access denied
@@ -33,10 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 } else {
     //Proceed!
     $shelfGateway =  $container->get(LibraryShelfGateway::class);
+
     $page->breadcrumbs
         ->add(__('Manage Library Shelves'), 'library_manage_shelves.php')
         ->add(__('Add Shelf'));
-    $urlParamKeys = array('shelfName' => '', 'active' => '', 'type' => '', 'gibbonLibraryTypeID' => '', 'field' => '', 'fieldKey' => '', 'addItems' => '');
+    $urlParamKeys = array('shelfName' => '', 'active' => '', 'type' => '', 'gibbonLibraryTypeID' => '', 'field' => '', 'fieldValue' => '', 'addItems' => '');
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_shelves_edit.php&gibbonLibraryShelfID='.$_GET['editID'];
@@ -98,12 +98,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->required();
         
         $row = $form->addRow()->addClass('autoFill');
-            $row->addLabel('fieldKey', __('Sub-Category'));
-            $row->addSelect('fieldKey')
+            $row->addLabel('fieldValue', __('Sub-Category'));
+            $row->addSelect('fieldValue')
                 ->fromArray($categories['subCategory'])
                 ->chainedTo('field', $categories['subCategoryChained'])
                 ->placeholder('Please select...')
-                ->selected($urlParams['fieldKey']);
+                ->selected($urlParams['fieldValue']);
 
         $form->toggleVisibilityByClass('manual')->onSelect('type')->when('manual');
 
@@ -113,8 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->required();
 
         $row = $form->addRow()->addClass('manual');
-            $row->addLabel('fieldKey', __('Custom Sub-Category'));
-            $row->addTextField('fieldKey');
+            $row->addLabel('fieldValue', __('Custom Sub-Category'));
+            $row->addTextField('fieldValue');
 
         $row = $form->addRow();
             $row->addLabel('addItems', __('Add More Items'));

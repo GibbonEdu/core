@@ -397,7 +397,7 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryShelf.name',
                 'gibbonLibraryShelf.active',
                 'gibbonLibraryShelf.field',
-                'gibbonLibraryShelf.fieldKey',
+                'gibbonLibraryShelf.fieldValue',
                 'gibbonLibraryShelf.type',
             ]);
 
@@ -410,4 +410,18 @@ class LibraryGateway extends QueryableGateway
         ]);
         return $this->runQuery($query, $criteria);
     }
+
+
+    public function selectItemsByTypeFields($libraryType, $field, $fieldValue)
+    {
+        $field = '$.'.$field;
+        $data = array('libraryType' => $libraryType, 'field' => $field, 'fieldValue' => $fieldValue);
+        $sql = "SELECT gibbonLibraryItemID FROM gibbonLibraryItem
+                JOIN gibbonLibraryType ON (gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID)
+                WHERE gibbonLibraryItem.gibbonLibraryTypeID = :libraryType
+                AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue;";
+
+        return $this->db()->select($sql, $data);
+    }
+
 }

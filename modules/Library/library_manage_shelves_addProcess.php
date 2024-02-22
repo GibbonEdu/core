@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
 
@@ -36,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     exit;
 } else {
     // Proceed!
+    $libraryGateway = $container->get(LibraryGateway::class);
     $shelfGateway = $container->get(LibraryShelfGateway::class);
     $itemGateway = $container->get(LibraryShelfItemGateway::class);
 
@@ -44,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         'active'         => $_POST['active'] ?? '',
         'type'           => $_POST['type'] ?? '',
         'field'        => $_POST['field'] ?? '',
-        'fieldKey'       => $_POST['fieldKey'] ?? '',
+        'fieldValue'       => $_POST['fieldValue'] ?? '',
     ];
 
     // Validate the required values are present
@@ -53,15 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         header("Location: {$URL}");
         exit;
     }
-
-    // Validate the database relationships exist
-    // $person = $container->get(UserGateway::class)->getByID($data['gibbonPersonID']);
-
-    // if (empty($person)) {
-    //     $URL .= '&return=error2';
-    //     header("Location: {$URL}");
-    //     exit;
-    // }
+    
 
     // Validate that this person doesn't already have a record
     if (!$shelfGateway->unique($data, ['name'])) {
@@ -72,14 +66,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     // Create the substitute
     $gibbonLibraryShelfID = $shelfGateway->insert($data);
-    var_dump($gibbonLibraryShelfID);
 
     $shelfItems = isset($_POST['addItems'])? explode(',', $_POST['addItems']) : [];
-    var_dump($shelfItems);
-    if(!empty($shelfItems)) {
+    //$gibbonLibraryTypeID = isset($_POST['gibbonLibraryTypeID'])? $_POST['gibbonLibraryTypeID'] : '';
+    $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'];
+    
+    if(!empty($shelfItems) && $data['type'] == 'manual') {
         foreach($shelfItems as $item) {
             $itemGateway->insertShelfItem($item, $gibbonLibraryShelfID);
         }
+    } else if(!empty($gibbonLibraryTypeID) && $data['type'] == 'automatic') {
+        $autoItems = $libraryGateway->selectItemsByTypeFields($gibbonLibraryTypeID, $data['field'], $data['fieldValue'])->fetchAll();
+        foreach($autoItems as $item) {
+            $itemGateway->insertShelfItem($item['gibbonLibraryItemID'], $gibbonLibraryShelfID);
+        }
+    } else {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
     }
 
     $URL .= !$gibbonLibraryShelfID

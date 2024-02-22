@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         'active' => $_POST['active'] ?? '',
         'type'   => $_POST['type'] ?? '',
         'field'     => $_POST['field'] ?? '',
-        'fieldKey'    => $_POST['fieldKey'] ?? '',
+        'fieldValue'    => $_POST['fieldValue'] ?? '',
     ];
 
     if (empty($data['name']) || empty($data['active']) || empty($data['field'])) {

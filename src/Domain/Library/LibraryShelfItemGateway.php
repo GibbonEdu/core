@@ -28,7 +28,6 @@ class LibraryShelfItemGateway extends QueryableGateway
                 FROM gibbonLibraryItem
                 JOIN gibbonLibraryShelfItem ON (gibbonLibraryItem.gibbonLibraryItemID=gibbonLibraryShelfItem.gibbonLibraryItemID)
                 WHERE gibbonLibraryShelfItem.gibbonLibraryShelfID=:gibbonLibraryShelfID";
-                //ORDER BY sequenceNumber";
 
         return $this->db()->select($sql, $data);
     }
