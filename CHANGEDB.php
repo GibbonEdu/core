@@ -793,4 +793,6 @@ UPDATE `gibbonSetting` SET description='Comma-separated list of choices to make 
 ALTER TABLE `gibbonSpace` ADD `active` ENUM('N','Y') NOT NULL DEFAULT 'Y' AFTER `type`;end
 UPDATE `gibbonAction` SET category='Learn' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') AND name='Individual Needs Settings';end
 ALTER TABLE `gibbonPerson` CHANGE `departureReason` `departureReason` VARCHAR(100) NOT NULL;end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('First Aid Qualification Expiry', 'Staff', 'Manage Staff', 'Core', 'All', 'Y');end
 ";
+

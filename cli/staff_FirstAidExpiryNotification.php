@@ -23,6 +23,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
 
@@ -34,10 +35,16 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 	print __("This script cannot be run from a browser, only via CLI.") ;
 }
 else {
-    //SCAN THROUGH ALL OVERDUE LOANS
+    //SCAN THROUGH ALL UPCOMING EXPIRES
     $today = date('Y-m-d');
     $data = array('today' => $today);
-    $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+    $sql = "SELECT p.gibbonPersonID, p.surname, p.preferredName, s.firstAidExpiry 
+    
+    FROM `gibbonStaff` s 
+    JOIN gibbonPerson p ON (p.`gibbonPersonID` = s.`gibbonPersonID`) 
+    WHERE (p.`status` = 'Full' 
+    AND firstAidExpiry <= DATE_ADD(:today, INTERVAL 3 month) 
+    AND firstAidExpiry > :today);";
     $result = $connection2->prepare($sql);
     $result->execute($data);
 
@@ -46,19 +53,25 @@ else {
     $notificationSender = $container->get(NotificationSender::class);
 
     // Raise a new notification event
-    $event = new NotificationEvent('Library', 'Overdue Loan Items');
+    $event = new NotificationEvent('Staff', 'First Aid Qualification Expiry');
+    $staffList = [];
 
     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
         if ($result->rowCount() > 0) {
-            while ($row = $result->fetch()) { //For every student
-                $notificationText = sprintf(__('You have an overdue loan item that needs to be returned (%1$s).'), $row['name']);
-                $notificationSender->addNotification($row['gibbonPersonIDStatusResponsible'], $notificationText, 'Library', '/index.php?q=/modules/Library/library_browse.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']);
+            while ($row = $result->fetch()) { //For every staff
+                $staffNames = $row['surname']. ', ' . $row['preferredName'] . ' - ' . Format::date($row['firstAidExpiry']);
+                $staffList[] = $staffNames;
             }
         }
     }
 
-    $event->setNotificationText(sprintf(__('A Library Overdue Items CLI script has run, notifying %1$s users.'), $notificationSender->getNotificationCount()));
-    $event->setActionLink('/index.php?q=/modules/Attendance/report_formGroupsNotRegistered_byDate.php');
+    if(empty($staffList) )
+    {
+        return;
+    }
+
+    $event->setNotificationText(__('The following people have first aid qualifications that are expiring soon:').'<br/></br>'.Format::list($staffList));
+    $event->setActionLink('/index.php?q=/modules/Staff/staff_manage.php');
 
     // Push the event to the notification sender
     $event->pushNotifications($notificationGateway, $notificationSender);
@@ -68,6 +81,4 @@ else {
 
     // Output the result to terminal
     echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
-}
-?>
-
+} 
