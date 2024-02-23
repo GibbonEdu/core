@@ -57,12 +57,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         exit;
     }
 
+    $criteria = $itemGateway->newQueryCriteria(true)
+    ->sortBy('name')
+    ->fromPOST();
     $updated = $shelfGateway->update($gibbonLibraryShelfID, $data);
 
     $shelfItems = isset($_POST['addItems'])? explode(',', $_POST['addItems']) : [];
 
-    $currentItems = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->toDataSet()->getColumn('gibbonLibraryItemID');
-    var_dump($currentItems);
+    $currentItems = $itemGateway->queryItemsByShelf($gibbonLibraryShelfID, $criteria)->getColumn('gibbonLibraryItemID');
     if(!empty($shelfItems)) {
         foreach($shelfItems as $item) {
             if(!in_array($item, $currentItems)) {

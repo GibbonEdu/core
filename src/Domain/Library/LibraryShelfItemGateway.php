@@ -21,15 +21,23 @@ class LibraryShelfItemGateway extends QueryableGateway
         ]);
     }
 
-    public function selectItemsByShelf($gibbonLibraryShelfID)
-    {
-        $data = array('gibbonLibraryShelfID' => $gibbonLibraryShelfID);
-        $sql = "SELECT gibbonLibraryShelfItem.gibbonLibraryShelfItemID, gibbonLibraryShelfItem.gibbonLibraryItemID, gibbonLibraryItem.name, gibbonLibraryItem.producer
-                FROM gibbonLibraryItem
-                JOIN gibbonLibraryShelfItem ON (gibbonLibraryItem.gibbonLibraryItemID=gibbonLibraryShelfItem.gibbonLibraryItemID)
-                WHERE gibbonLibraryShelfItem.gibbonLibraryShelfID=:gibbonLibraryShelfID";
 
-        return $this->db()->select($sql, $data);
+    public function queryItemsByShelf($gibbonLibraryShelfID, QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonLibraryItem')
+            ->cols([
+                'gibbonLibraryShelfItem.gibbonLibraryShelfItemID', 
+                'gibbonLibraryShelfItem.gibbonLibraryItemID', 
+                'gibbonLibraryItem.name', 
+                'gibbonLibraryItem.producer',
+            ])
+            ->innerJoin('gibbonLibraryShelfItem', 'gibbonLibraryItem.gibbonLibraryItemID=gibbonLibraryShelfItem.gibbonLibraryItemID')
+            ->where('gibbonLibraryShelfItem.gibbonLibraryShelfID=:gibbonLibraryShelfID')
+            ->bindValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
+
+        return $this->runQuery($query, $criteria);
     }
 
 

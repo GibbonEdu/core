@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     ->sortBy('name')
     ->fromPOST();
 
-    $items = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->toDataSet();
+    $items = $itemGateway->queryItemsByShelf($gibbonLibraryShelfID, $criteria);//->toDataSet();
 
     // FORM
     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Library/library_shelves_editProcessBulk.php');

@@ -47,8 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     }
 
     $partialFail = false;
+    $criteria = $itemGateway->newQueryCriteria(true)
+    ->fromPOST();
 
-    $shelfItems = $itemGateway->selectItemsByShelf($gibbonLibraryShelfID)->fetchAll();
+    $shelfItems = $itemGateway->queryItemsByShelf($gibbonLibraryShelfID, $criteria);
     if(count($shelfItems) >= 1) {
         try {
             $data = array('gibbonLibraryShelfID' => $gibbonLibraryShelfID);
