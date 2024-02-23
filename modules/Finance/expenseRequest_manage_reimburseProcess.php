@@ -137,8 +137,10 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 
                         //Notify reimbursement officer that action is required
                         $reimbursementOfficer = $settingGateway->getSettingByScope('Finance', 'reimbursementOfficer');
+                        $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+
                         if ($reimbursementOfficer != false and $reimbursementOfficer != '') {
-                            $notificationText = sprintf(__('Someone has requested reimbursement for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                            $notificationText = __('{person} has requested reimbursement for {title} in budget {budgetName}.', ['person' => $personName, 'title' => $row['title'], 'budgetName' => $row['budget']]);
                             $notificationSender = $container->get(NotificationSender::class);
                             $notificationSender->addNotification($reimbursementOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                             $notificationSender->sendNotifications();

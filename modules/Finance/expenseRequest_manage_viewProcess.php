@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -148,19 +149,21 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                 }
 
                                 //Notify budget holders
+                                $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+
                                 if ($budgetLevelExpenseApproval == 'Y') {
                                     $dataHolder = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
                                     $sqlHolder = "SELECT * FROM gibbonFinanceBudgetPerson WHERE access='Full' AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
                                     $resultHolder = $connection2->prepare($sqlHolder);
                                     $resultHolder->execute($dataHolder);
                                     while ($rowHolder = $resultHolder->fetch()) {
-                                        $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                                        $notificationText = __('{person} has commented on the expense request for {title} in budget {budgetName}.', ['person' => $personName, 'title' => $row['title'], 'budgetName' => $row['budget']]);
                                         $notificationSender->addNotification($rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                     }
                                 }
 
                                 //Notify approvers that it is commented upon
-                                $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                                $notificationText = __('{person} has commented on the expense request for {title} in budget {budgetName}.', ['person' => $personName, 'title' => $row['title'], 'budgetName' => $row['budget']]);
                                 foreach ($approvers as $approver) {
                                     $notificationSender->addNotification($approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 }
