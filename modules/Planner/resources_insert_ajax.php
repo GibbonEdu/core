@@ -34,7 +34,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $output = '';
 $id = null;
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = $_GET['id'] ?? '';
 }
 
 $category = isset($_POST['category'.$id])? $_POST['category'.$id] : (isset($_GET['category'])? $_GET['category'] : '');

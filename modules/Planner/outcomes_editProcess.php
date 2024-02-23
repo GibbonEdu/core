@@ -28,7 +28,7 @@ include './moduleFunctions.php';
 
 $filter2 = $_GET['filter2'] ?? '';
 
-$gibbonOutcomeID = $_GET['gibbonOutcomeID'];
+$gibbonOutcomeID = $_GET['gibbonOutcomeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_edit.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php') == false) {

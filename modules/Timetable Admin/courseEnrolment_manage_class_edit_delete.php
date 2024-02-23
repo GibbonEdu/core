@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-    $gibbonCourseClassPersonID = $_GET['gibbonCourseClassPersonID'];
+    $gibbonCourseClassPersonID = $_GET['gibbonCourseClassPersonID'] ?? '';
     $search = $_GET['search'] ?? '';
     
     if ($gibbonCourseClassPersonID == '' or $gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '') {

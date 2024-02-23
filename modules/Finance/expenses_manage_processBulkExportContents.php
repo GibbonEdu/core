@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 } else {
     //Proceed!
     $financeExpenseExportIDs = $session->get('financeExpenseExportIDs');
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
     if ($financeExpenseExportIDs == '' or $gibbonFinanceBudgetCycleID == '') {
         echo "<div class='error'>";

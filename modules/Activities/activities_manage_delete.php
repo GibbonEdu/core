@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 } else {
     //Proceed!
     //Check if gibbonActivityID specified
-    $gibbonActivityID = $_GET['gibbonActivityID'];
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     } else {
         //Proceed!
         //Check if gibbonTTSpaceBookingID specified
-        $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'];
+        $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'] ?? '';
         if ($gibbonTTSpaceBookingID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

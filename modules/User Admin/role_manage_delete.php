@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_del
 } else {
     //Proceed!
     //Check if gibbonRoleID specified
-    $gibbonRoleID = $_GET['gibbonRoleID'];
+    $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
     if ($gibbonRoleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

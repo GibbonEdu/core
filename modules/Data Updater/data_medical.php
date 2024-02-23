@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
         $gibbonPersonID = null;
         if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 		}
 
 		$gibbonPersonID = $_GET['gibbonPersonID'] ?? null;

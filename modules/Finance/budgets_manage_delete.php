@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_del
 } else {
     //Proceed!
     //Check if gibbonFinanceBudgetID specified
-    $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'];
+    $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'] ?? '';
     if ($gibbonFinanceBudgetID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

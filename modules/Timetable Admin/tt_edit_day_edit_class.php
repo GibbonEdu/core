@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if gibbonTTDayID, gibbonTTID, gibbonSchoolYearID, and gibbonTTColumnRowID specified
-    $gibbonTTDayID = $_GET['gibbonTTDayID'];
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
+    $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

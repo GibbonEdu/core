@@ -46,11 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -75,9 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             $params += [
                 'viewBy' => 'class',
                 'date' => $class,
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                 $step = null;
                 if (isset($_GET['step'])) {
-                    $step = $_GET['step'];
+                    $step = $_GET['step'] ?? '';
                 }
                 if ($step != 1 and $step != 2) {
                     $step = 1;

@@ -29,11 +29,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Search & Filters
 $search = null;
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
 }
 $filter2 = null;
 if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
+    $filter2 = $_GET['filter2'] ?? '';
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') == false) {

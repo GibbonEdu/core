@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
 } else {
     //Proceed!
     //Check if gibbonRubricID specified
-    $gibbonRubricID = $_GET['gibbonRubricID'];
+    $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
     if ($gibbonRubricID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

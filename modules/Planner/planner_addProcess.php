@@ -49,8 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         } else {
             //Proceed!
             //Validate Inputs
-            $viewBy = $_GET['viewBy'];
-            $subView = $_GET['subView'];
+            $viewBy = $_GET['viewBy'] ?? '';
+            $subView = $_GET['subView'] ?? '';
             if ($viewBy != 'date' and $viewBy != 'class') {
                 $viewBy = 'date';
             }

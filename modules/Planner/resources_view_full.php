@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_ful
 } else {
     //Proceed!
     //Get class variable
-    $gibbonResourceID = $_GET['gibbonResourceID'];
+    $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
     if ($gibbonResourceID == '') {
         echo "<div class='warning'>";
         echo __('You have not specified one or more required parameters.');

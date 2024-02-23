@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
+    $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
     if ($gibbonDepartmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

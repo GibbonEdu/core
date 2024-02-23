@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     }
     $page->return->setEditLink($editLink);
 
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

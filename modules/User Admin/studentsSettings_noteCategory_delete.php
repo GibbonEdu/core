@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 } else {
     //Proceed!
     //Check if gibbonStudentNoteCategoryID specified
-    $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
+    $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
     if ($gibbonStudentNoteCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

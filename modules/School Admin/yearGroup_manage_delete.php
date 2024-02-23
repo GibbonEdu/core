@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 } else {
     //Proceed!
     //Check if gibbonYearGroupID specified
-    $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     if ($gibbonYearGroupID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

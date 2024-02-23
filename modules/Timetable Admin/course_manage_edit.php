@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     }
 
     //Check if gibbonCourseID specified
-    $gibbonCourseID = $_GET['gibbonCourseID'];
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     if ($gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

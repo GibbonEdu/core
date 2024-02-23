@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $editID = '';
         if (isset($_GET['editID'])) {
             $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$_GET['editID'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID;
-            $editID = $_GET['editID'];
+            $editID = $_GET['editID'] ?? '';
         }
         $page->return->setEditLink($editLink);
         $page->return->addReturns(['warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')]);

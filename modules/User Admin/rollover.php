@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
     $step = null;
     if (isset($_GET['step'])) {
-        $step = $_GET['step'];
+        $step = $_GET['step'] ?? '';
     }
     if ($step != 1 and $step != 2 and $step != 3) {
         $step = 1;

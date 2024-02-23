@@ -41,11 +41,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
             $viewBy = 'date';
         }
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
             $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
             $params += [

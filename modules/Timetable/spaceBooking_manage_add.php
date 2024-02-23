@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
         $step = null;
         if (isset($_GET['step'])) {
-            $step = $_GET['step'];
+            $step = $_GET['step'] ?? '';
         }
         if ($step != 1 and $step != 2) {
             $step = 1;

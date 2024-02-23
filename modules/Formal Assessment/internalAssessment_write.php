@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         //Get class variable
         $gibbonCourseClassID = null;
         if (isset($_GET['gibbonCourseClassID'])) {
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
         if ($gibbonCourseClassID == '') {
 
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 } else {
                     $x = null;
                     if (isset($_GET['page'])) {
-                        $x = $_GET['page'];
+                        $x = $_GET['page'] ?? '';
                     }
                     if ($x == '') {
                         $x = 0;

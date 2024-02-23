@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 } else {
     //Proceed!
     //Check if gibbonPersonMedicalUpdateID specified
-    $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
+    $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'] ?? '';
     if ($gibbonPersonMedicalUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

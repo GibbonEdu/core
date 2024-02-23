@@ -1399,7 +1399,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $categories = false;
                                 $category = null;
                                 if (isset($_GET['category'])) {
-                                    $category = $_GET['category'];
+                                    $category = $_GET['category'] ?? '';
                                 }
 
 

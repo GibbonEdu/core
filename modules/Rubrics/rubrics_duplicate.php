@@ -28,11 +28,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Search & Filters
 $search = null;
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
 }
 $filter2 = null;
 if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
+    $filter2 = $_GET['filter2'] ?? '';
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.php') == false) {
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                 ->add(__('Duplicate Rubric'));
 
             //Check if gibbonRubricID specified
-            $gibbonRubricID = $_GET['gibbonRubricID'];
+            $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
             if ($gibbonRubricID == '') {
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {

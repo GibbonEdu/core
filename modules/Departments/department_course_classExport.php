@@ -24,7 +24,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
 $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 

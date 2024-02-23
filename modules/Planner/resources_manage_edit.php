@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
     } else {
         //Proceed!
         //Check if gibbonResourceID specified
-        $gibbonResourceID = $_GET['gibbonResourceID'];
+        $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
         if ($gibbonResourceID == 'Y') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

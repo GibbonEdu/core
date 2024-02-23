@@ -29,11 +29,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Search & Filters
 $search = null;
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
 }
 $filter2 = null;
 if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
+    $filter2 = $_GET['filter2'] ?? '';
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php') == false) {
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                 ->add(__('Edit Rubric'));
 
             if (isset($_GET['addReturn'])) {
-                $addReturn = $_GET['addReturn'];
+                $addReturn = $_GET['addReturn'] ?? '';
             } else {
                 $addReturn = '';
             }
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             if (isset($_GET['columnDeleteReturn'])) {
-                $columnDeleteReturn = $_GET['columnDeleteReturn'];
+                $columnDeleteReturn = $_GET['columnDeleteReturn'] ?? '';
             } else {
                 $columnDeleteReturn = '';
             }
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             if (isset($_GET['rowDeleteReturn'])) {
-                $rowDeleteReturn = $_GET['rowDeleteReturn'];
+                $rowDeleteReturn = $_GET['rowDeleteReturn'] ?? '';
             } else {
                 $rowDeleteReturn = '';
             }
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             if (isset($_GET['cellEditReturn'])) {
-                $cellEditReturn = $_GET['cellEditReturn'];
+                $cellEditReturn = $_GET['cellEditReturn'] ?? '';
             } else {
                 $cellEditReturn = '';
             }
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             //Check if gibbonRubricID specified
-            $gibbonRubricID = $_GET['gibbonRubricID'];
+            $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
             if ($gibbonRubricID == '') {
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {

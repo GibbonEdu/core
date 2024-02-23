@@ -64,7 +64,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     //Get class variable
     $gibbonCourseClassID = null;
     if (isset($_GET['gibbonCourseClassID'])) {
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     }
 
     if ($gibbonCourseClassID == '') {

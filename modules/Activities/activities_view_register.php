@@ -65,11 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             } else {
                 //Check if gibbonActivityID specified
-                $gibbonActivityID = $_GET['gibbonActivityID'];
+                $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
                 if ($gibbonActivityID == 'Y') {
                     $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
-                    $mode = $_GET['mode'];
+                    $mode = $_GET['mode'] ?? '';
 
                     if ($_GET['search'] != '' or $gibbonPersonID != '') {
                         $params = [

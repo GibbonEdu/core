@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
         if ($highestAction == 'Individual Needs Records_view') {
             $page->breadcrumbs

@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
-            $editID = $_GET['editID'];
+            $editID = $_GET['editID'] ?? '';
             $editLink = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$editID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
         }
         $page->return->setEditLink($editLink);

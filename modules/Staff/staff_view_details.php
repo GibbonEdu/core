@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     $subpage = null;
                     if (isset($_GET['subpage'])) {
-                        $subpage = $_GET['subpage'];
+                        $subpage = $_GET['subpage'] ?? '';
                     }
                     if ($subpage == '' and $hook == '') {
                         $subpage = 'Overview';
@@ -268,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                             $gibbonTTID = null;
                             if (isset($_GET['gibbonTTID'])) {
-                                $gibbonTTID = $_GET['gibbonTTID'];
+                                $gibbonTTID = $_GET['gibbonTTID'] ?? '';
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search#timetable");
                             if ($tt != false) {
@@ -580,7 +580,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                             $gibbonTTID = null;
                             if (isset($_GET['gibbonTTID'])) {
-                                $gibbonTTID = $_GET['gibbonTTID'];
+                                $gibbonTTID = $_GET['gibbonTTID'] ?? '';
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search");
                             if ($tt != false) {
