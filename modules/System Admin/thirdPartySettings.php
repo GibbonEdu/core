@@ -287,13 +287,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addPassword($setting['name'])->setValue($setting['value']);
 
     // Test Email
-    if ($session->get('enableMailerSMTP') == 'Y') {
-        $row = $form->addRow()->addClass('emailTest');
-            $row->addLabel('emailTest', __('Test Email'))->description(__('You can use this tool to send an email to test your SMTP configuration.'));
-            $col = $row->addColumn();
-            $col->addEmail('emailTest')->setValue($session->get('email'))->addClass('w-full');
-            $col->addButton(__('Go'), 'testEmail()')->addClass('-ml-px w-24');
-    }
+    
+    $row = $form->addRow()->addClass('emailTest');
+        $row->addLabel('emailTest', __('Test Email'))->description(__('You can use this tool to send an email to test your SMTP configuration.'));
+        $col = $row->addColumn();
+        $col->addEmail('emailTest')->setValue($session->get('email'))->addClass('w-full');
+        $col->addButton(__('Go'), 'testEmail()')->addClass('-ml-px w-24');
+    
 
     $row = $form->addRow();
         $row->addFooter();
