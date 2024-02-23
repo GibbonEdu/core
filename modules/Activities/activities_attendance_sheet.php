@@ -79,9 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         } else {
             echo "<div class='linkTop'>";
             echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/activities_attendance_sheetPrint.php&gibbonActivityID=$gibbonActivityID&columns=$numberOfColumns'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";

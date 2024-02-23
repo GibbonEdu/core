@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             $result = $connection2->prepare($sql);
             $result->execute($data);
         if ($result->rowCount() < 1) {
-            $page->addMessage(__('There are no records to display.'));
+            echo $page->getBlankSlate();
         } else {
             //Get child list
             $count = 0;
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             }
 
             if ($count == 0) {
-                $page->addMessage(__('There are no records to display.'));
+                echo $page->getBlankSlate();
             } elseif ($count == 1) {
                 $gibbonPersonID = $gibbonPersonIDArray[0];
             } else {

@@ -146,9 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         echo '</div>';
     }
     else if ( empty($dateStart) || empty($group)) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else if ($dateStart > $today || $dateEnd > $today) {
             echo "<div class='error'>";
             echo __('The specified date is in the future: it must be today or earlier.');
@@ -210,9 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         }
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         } else {
 
             if (empty($daysOfWeek)) {

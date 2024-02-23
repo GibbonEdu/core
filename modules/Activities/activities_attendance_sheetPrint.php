@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $result->execute($data);
 
     if (empty($gibbonActivityID) || $result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         $output = '';
 

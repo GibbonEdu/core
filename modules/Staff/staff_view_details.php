@@ -595,7 +595,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     if (!empty($hook)) {
                         $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
                         if (empty($rowHook)) {
-                            echo Format::alert(__('There are no records to display.'), 'error');
+                            echo $page->getBlankSlate();
                         } else {
                             $options = unserialize($rowHook['options']);
 

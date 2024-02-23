@@ -126,9 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         }
         else {
             echo '<h2 class=\'bigTop\'>';

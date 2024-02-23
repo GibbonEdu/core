@@ -84,9 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $activityResult->execute($data);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -164,9 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     echo '</h2>';
 
     if ($allColumns == false && $attendanceResult->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -178,9 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     }
 
     if (count($activitySessions) <= 0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             echo "<div class='linkTop'>";
