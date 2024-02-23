@@ -30,9 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Set variables
         $today = date('Y-m-d');

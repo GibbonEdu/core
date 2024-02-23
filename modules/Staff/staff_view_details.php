@@ -44,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     $highestActionManage = getHighestGroupedAction($guid, "/modules/Staff/staff_manage.php", $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonPersonID = str_pad($gibbonPersonID, 10, 0, STR_PAD_LEFT);

@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
 
