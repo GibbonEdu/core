@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         else if ($highestAction == 'Student History_myChildren') {
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
+                $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             }
             //Test data access field for permission
             $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             $result->execute($data);
             
             if ($result->rowCount() < 1) {
-                $page->addMessage(__('There are no records to display.'));
+                echo $page->getBlankSlate();
             } else {
                 //Get child list
                 $countChild = 0;
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 }
 
                 if ($countChild == 0) {
-                    $page->addMessage(__('There are no records to display.'));
+                    echo $page->getBlankSlate();
                 } else {
                     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
                     $form->setTitle(__('Choose'));

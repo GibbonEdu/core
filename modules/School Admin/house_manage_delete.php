@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 } else {
     //Proceed!
     //Check if gibbonHouseID specified
-    $gibbonHouseID = $_GET['gibbonHouseID'];
+    $gibbonHouseID = $_GET['gibbonHouseID'] ?? '';
     if ($gibbonHouseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
 
     $settingGateway = $container->get(SettingGateway::class);
@@ -87,9 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $activityResult->execute($data);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -176,9 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     }
 
     if (count($activitySessions) <= 0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
         $form->setClass('blank block w-full');

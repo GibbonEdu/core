@@ -161,8 +161,8 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 
     if (!empty($reportByYearGroup)) {
         // Initialize the notification sender & gateway objects
-        $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $session);
+        $notificationGateway = $container->get(NotificationGateway::class);
+        $notificationSender = $container->get(NotificationSender::class);
 
         $reportHeading = '<h3>'.__('Weekly Attendance Summary').': '.$dateStart->format('M j').' - '.$dateEnd->format('M j').'</h3>';
 

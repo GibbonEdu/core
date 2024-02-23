@@ -109,8 +109,8 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         // SMS Credit notification
         if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
-            $notificationGateway = new NotificationGateway($pdo);
-            $notificationSender = new NotificationSender($notificationGateway, $session);
+            $notificationGateway = $container->get(NotificationGateway::class);
+            $notificationSender = $container->get(NotificationSender::class);
             $organisationAdministrator = $settingGateway->getSettingByScope('System', 'organisationAdministrator');
             $notificationString = __('Low SMS credit warning.');
             $notificationSender->addNotification($organisationAdministrator, $notificationString, "Messenger", "/index.php?q=/modules/Messenger/messenger_post.php");

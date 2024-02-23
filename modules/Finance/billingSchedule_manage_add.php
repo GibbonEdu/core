@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $urlParams = compact('gibbonSchoolYearID');
 
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     $page->return->setEditLink($editLink);
 
     //Check if search and gibbonSchoolYearID specified
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

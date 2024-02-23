@@ -36,19 +36,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $gibbonINDescriptorID = null;
     if (isset($_GET['gibbonINDescriptorID'])) {
-        $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
+        $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
     }
     $gibbonAlertLevelID = null;
     if (isset($_GET['gibbonAlertLevelID'])) {
-        $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'];
+        $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'] ?? '';
     }
     $gibbonFormGroupID = null;
     if (isset($_GET['gibbonFormGroupID'])) {
-        $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     }
     $gibbonYearGroupID = null;
     if (isset($_GET['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     }
 
     echo '<h3>';

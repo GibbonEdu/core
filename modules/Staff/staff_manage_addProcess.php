@@ -31,11 +31,11 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $allStaff = '';
 if (isset($_GET['allStaff'])) {
-    $allStaff = $_GET['allStaff'];
+    $allStaff = $_GET['allStaff'] ?? '';
 }
 $search = '';
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
 }
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_add.php&search=$search&allStaff=$allStaff";
 

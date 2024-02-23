@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->add(__('Edit Department'));
 
     //Check if gibbonDepartmentID specified
-    $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
+    $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
     if ($gibbonDepartmentID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

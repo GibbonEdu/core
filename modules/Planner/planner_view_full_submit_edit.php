@@ -32,12 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        $viewBy = $_GET['viewBy'];
-		$subView = $_GET['subView'];
+        $viewBy = $_GET['viewBy'] ?? '';
+		$subView = $_GET['subView'] ?? '';
 		$class = null;
 		$date = null;
 		$gibbonCourseClassID = null;
@@ -45,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
             $viewBy = 'date';
         }
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (!empty($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -56,13 +54,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
 
         //Get class variable
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
@@ -97,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 // planner's parameters
                 $params = [];
                 if ($date != '') {
-                    $params['date'] = $_GET['date'];
+                    $params['date'] = $_GET['date'] ?? '';
                 }
                 if ($viewBy != '') {
                     $params['viewBy'] = $_GET['viewBy'] ?? '';

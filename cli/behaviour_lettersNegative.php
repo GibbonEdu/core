@@ -48,8 +48,8 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     $mail->SMTPKeepAlive = true;
 
     // Initialize the notification sender & gateway objects
-    $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $session);
+    $notificationGateway = $container->get(NotificationGateway::class);
+    $notificationSender = $container->get(NotificationSender::class);
 
     //Get settings
     $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');

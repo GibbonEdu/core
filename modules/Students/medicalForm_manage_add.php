@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $page->return->setEditLink($editLink);
 
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : '';
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
     if ($search != '') {
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'medicalForm_manage.php')->withQueryParam('search', $search));
     }

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     if ($gibbonCourseClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

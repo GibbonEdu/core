@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
         ->add(__('Duplicate Role')); 
 
     //Check if courseschool year specified
-    $gibbonRoleID = $_GET['gibbonRoleID'];
+    $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
     if ($gibbonRoleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

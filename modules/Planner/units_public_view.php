@@ -95,9 +95,7 @@ if ($makeUnitsPublic != 'Y') {
             echo __('Description');
             echo '</h4>';
             if ($row['description'] == '') {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                echo $page->getBlankSlate();
             } else {
                 echo '<p>';
                 echo $row['description'];
@@ -255,9 +253,7 @@ if ($makeUnitsPublic != 'Y') {
 
 			//No resources!
 			if ($noReosurces) {
-				echo "<div class='error'>";
-				echo __('There are no records to display.');
-				echo '</div>';
+				echo $page->getBlankSlate();
 			}
             echo '</div>';
             echo "<div id='tabs4'>";

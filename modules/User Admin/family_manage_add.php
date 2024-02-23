@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     }
     $page->return->setEditLink($editLink);
 
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
     if ($search != '') {
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'family_manage.php')->withQueryParam('search', $search));
     }

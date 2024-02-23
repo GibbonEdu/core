@@ -45,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
 
         $settingGateway = $container->get(SettingGateway::class);
@@ -56,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -79,15 +77,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
         $gibbonPersonID = null;
 
         //Proceed!
         //Get class variable
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
             echo __('The selected record does not exist, or you do not have access to it.');
@@ -98,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             $data = array();
             $gibbonPersonID = null;
             if (isset($_GET['search'])) {
-                $gibbonPersonID = $_GET['search'];
+                $gibbonPersonID = $_GET['search'] ?? '';
             }
             if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                 if ($gibbonPersonID == '') {

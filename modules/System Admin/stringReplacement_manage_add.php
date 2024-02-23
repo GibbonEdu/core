@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 } else {
     $search = '';
     if (isset($_GET['search'])) {
-        $search = $_GET['search'];
+        $search = $_GET['search'] ?? '';
     }
 
     //Proceed!

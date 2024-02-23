@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 } else {
     //Proceed!
     //Check if gibbonLibraryItemID specified
-    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
+    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -62,19 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $name = '';
             if (isset($_GET['name'])) {
-                $name = $_GET['name'];
+                $name = $_GET['name'] ?? '';
             }
             $gibbonLibraryTypeID = '';
             if (isset($_GET['gibbonLibraryTypeID'])) {
-                $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'];
+                $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
             }
             $gibbonSpaceID = '';
             if (isset($_GET['gibbonSpaceID'])) {
-                $gibbonSpaceID = $_GET['gibbonSpaceID'];
+                $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
             }
             $status = '';
             if (isset($_GET['status'])) {
-                $status = $_GET['status'];
+                $status = $_GET['status'] ?? '';
             }
 
             if ($name != '' or $gibbonLibraryTypeID != '' or $gibbonSpaceID != '' or $status != '') {

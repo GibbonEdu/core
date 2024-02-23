@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
     //Check if gibbonActivityID specified
-    $gibbonActivityID = $_GET['gibbonActivityID'];
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     if ($gibbonActivityID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

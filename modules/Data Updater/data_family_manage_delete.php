@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 } else {
     //Proceed!
     //Check if gibbonFamilyUpdateID specified
-    $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
+    $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'] ?? '';
     if ($gibbonFamilyUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

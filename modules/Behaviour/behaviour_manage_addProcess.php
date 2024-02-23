@@ -112,8 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $rowDetail = $resultDetail->fetch();
 
                         // Initialize the notification sender & gateway objects
-                        $notificationGateway = new NotificationGateway($pdo);
-                        $notificationSender = new NotificationSender($notificationGateway, $session);
+                        $notificationGateway = $container->get(NotificationGateway::class);
+                        $notificationSender = $container->get(NotificationSender::class);;
 
                         $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
                         $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";

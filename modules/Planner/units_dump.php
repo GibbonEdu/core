@@ -120,9 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         //Tabs
                         echo "<div id='tabs1'>";
                         if ($row['details'] == '') {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         } else {
                             echo '<h2>';
                             echo __('Description');
@@ -295,9 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                         //No resources!
                         if ($noReosurces) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         }
                         echo '</div>';
                         echo "<div id='tabs4'>";

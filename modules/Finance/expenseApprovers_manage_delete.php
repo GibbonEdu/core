@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 } else {
     //Proceed!
     //Check if gibbonFinanceExpenseApproverID specified
-    $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
+    $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
     if ($gibbonFinanceExpenseApproverID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

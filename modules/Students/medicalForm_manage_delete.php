@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 } else {
     //Proceed!
     //Check if gibbonPersonMedicalID specified
-    $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
-    $search = $_GET['search'];
+    $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
+    $search = $_GET['search'] ?? '';
     if ($gibbonPersonMedicalID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -31,17 +31,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -50,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -61,22 +59,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             $class = $_GET['class'] ?? [];
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
         $replyTo = null;
         if (isset($_GET['replyTo'])) {
-            $replyTo = $_GET['replyTo'];
+            $replyTo = $_GET['replyTo'] ?? '';
         }
 
         $gibbonPersonID = null;
         if (isset($_GET['search'])) {
-            $gibbonPersonID = $_GET['search'];
+            $gibbonPersonID = $_GET['search'] ?? '';
         }
 
         //Get class variable
         $gibbonPlannerEntryID = null;
         if (isset($_GET['gibbonPlannerEntryID'])) {
-            $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+            $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         }
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
@@ -128,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 // planner parameters
                 $params = [];
                 if ($date != '') {
-                    $params['date'] = $_GET['date'];
+                    $params['date'] = $_GET['date'] ?? '';
                 }
                 if ($viewBy != '') {
                     $params['viewBy'] = $_GET['viewBy'] ?? '';
@@ -186,9 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             $resultPlanners->execute($dataPlanners);
 
                         if ($resultPlanners->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         } else {
                             $dataMulti = array();
                             $whereMulti = '(';
@@ -309,9 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $resultOutcomes = $connection2->prepare($sqlOutcomes);
                                 $resultOutcomes->execute($dataOutcomes);
                             if ($resultOutcomes->rowCount() < 1) {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                echo $page->getBlankSlate();
                             } else {
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
@@ -553,9 +547,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
 							//No resources!
 							if ($noReosurces) {
-								echo "<div class='error'>";
-								echo __('There are no records to display.');
-								echo '</div>';
+								echo $page->getBlankSlate();
 							}
                             echo '</div>';
                             echo '</div>';
