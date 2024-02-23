@@ -67,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $gibbonINInvestigationID = $investigationGateway->insert($data);
 
     //Notify form tutors
-    $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $session);
+    $notificationGateway = $container->get(NotificationGateway::class);
+    $notificationSender = $container->get(NotificationSender::class);
 
     // Raise a new notification event
     $event = new NotificationEvent('Individual Needs', 'New Investigation');

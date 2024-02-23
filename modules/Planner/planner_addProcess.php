@@ -283,8 +283,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 //Notify participants
                 if (isset($_POST['notify'])) {
                     //Create notification for all people in class except me
-                    $notificationGateway = new NotificationGateway($pdo);
-                    $notificationSender = new NotificationSender($notificationGateway, $session);
+                    $notificationGateway = $container->get(NotificationGateway::class);
+                    $notificationSender = $container->get(NotificationSender::class);
 
                     try {
                         $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);

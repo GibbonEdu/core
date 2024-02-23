@@ -77,8 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ];
             $investigationGateway->update($gibbonINInvestigationID, $data);
 
-            $notificationGateway = new NotificationGateway($pdo);
-            $notificationSender = new NotificationSender($notificationGateway, $session);
+            $notificationGateway = $container->get(NotificationGateway::class);
+            $notificationSender = $container->get(NotificationSender::class);;
 
             $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
             $notificationString = __('An Individual Needs investigation for {student} has been completed.', ['student' => $studentName]);
