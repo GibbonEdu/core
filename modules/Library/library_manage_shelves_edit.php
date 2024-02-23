@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
     // QUERY
     $criteria = $itemGateway->newQueryCriteria(true)
-    ->pageSize(50)
+    ->pageSize(10)
     ->sortBy('name')
     ->fromPOST();
 

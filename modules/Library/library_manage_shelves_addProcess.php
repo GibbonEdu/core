@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
             $itemGateway->insertShelfItem($item, $gibbonLibraryShelfID);
         }
     } else if(!empty($gibbonLibraryTypeID) && $data['type'] == 'automatic') {
-        $autoItems = $libraryGateway->selectItemsByTypeFields($gibbonLibraryTypeID, $data['field'], $data['fieldValue'])->fetchAll();
+        $autoItems = $libraryGateway->selectItemsByTypeFields($gibbonLibraryTypeID, '"'.$data['field'].'"', $data['fieldValue'])->fetchAll();
         foreach($autoItems as $item) {
             $itemGateway->insertShelfItem($item['gibbonLibraryItemID'], $gibbonLibraryShelfID);
         }

@@ -261,10 +261,17 @@ class LibraryGateway extends QueryableGateway
                     ->bindValue('name', '%' . $name . '%');
             },
             'parent' => function ($query, $parentID) {
-                return $query
+                if($parentID == 'NULL') {
+                    $query = $query
+                    ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                    ->where('(gibbonLibraryItem.id IS NULL OR parent.id IS NULL)');
+                } else {
+                    $query = $query
                     ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
                     ->where('(gibbonLibraryItem.id = :parentID OR parent.id = :parentID)')
                     ->bindValue('parentID', $parentID);
+                }
+                return $query;
             },
             'type' => function ($query, $type) {
                 return $query
@@ -419,7 +426,8 @@ class LibraryGateway extends QueryableGateway
         $sql = "SELECT gibbonLibraryItemID FROM gibbonLibraryItem
                 JOIN gibbonLibraryType ON (gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID)
                 WHERE gibbonLibraryItem.gibbonLibraryTypeID = :libraryType
-                AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue;";
+                AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue
+                AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL;";
 
         return $this->db()->select($sql, $data);
     }

@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $libraryGateway = $container->get(LibraryGateway::class);
     $criteria = $libraryGateway->newQueryCriteria(true)
         ->searchBy($libraryGateway->getSearchableColumns(), $searchTerm)
+        ->filterBy('parent', 'NULL')
         ->sortBy('name');
 
     $results = $libraryGateway->queryCatalog($criteria, $session->get('gibbonSchoolYearID'))->toArray();
