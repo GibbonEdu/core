@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 } else {
     //Proceed!
     //Check if gibbonMessengerCannedResponseID specified
-    $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
+    $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'] ?? '';
     if ($gibbonMessengerCannedResponseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

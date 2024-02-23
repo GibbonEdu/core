@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $importLog = $logGateway->getLogByID($gibbonLogID);
 
     if (empty($importLog)) {
-        $page->addError(__('There are no records to display.'));
+        echo $page->getBlankSlate();
         return;
     }
 
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $importResults = $importData['results'] ?? [];
 
     if (empty($importData['results']) || !isset($importData['type'])) {
-        $page->addError(__('There are no records to display.'));
+        echo $page->getBlankSlate();
         return;
     }
 

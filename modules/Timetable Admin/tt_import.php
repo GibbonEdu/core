@@ -51,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     }
 
     //Check if gibbonTTID and gibbonSchoolYearID specified
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if ($gibbonTTID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
             $row = $result->fetch();
 
             if (isset($_GET['step'])) {
-                $step = $_GET['step'];
+                $step = $_GET['step'] ?? '';
             } else {
                 $step = 1;
             }

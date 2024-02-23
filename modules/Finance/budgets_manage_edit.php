@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
     $page->return->addReturns(['error4' => __('Your request failed due to an attachment error.')]);
 
     //Check if gibbonFinanceBudgetID specified
-    $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'];
+    $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'] ?? '';
     if ($gibbonFinanceBudgetID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

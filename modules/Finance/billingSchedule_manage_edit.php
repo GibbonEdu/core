@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 } else {
     //Proceed!
     
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $urlParams = compact('gibbonSchoolYearID');
 
@@ -37,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         ->add(__('Manage Billing Schedule'), 'billingSchedule_manage.php', $urlParams)
         ->add(__('Edit Entry'));
 
-    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-    $search = $_GET['search'];
+    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+    $search = $_GET['search'] ?? '';
     //Check if gibbonFinanceBillingScheduleID and gibbonSchoolYearID  specified
     if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

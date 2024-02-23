@@ -47,9 +47,7 @@ if ($makeUnitsPublic != 'Y') {
     $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";

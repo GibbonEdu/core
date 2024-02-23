@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 } else {
     //Proceed!
     //Check if gibbonScaleID specified
-    $gibbonScaleID = $_GET['gibbonScaleID'];
+    $gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
     if ($gibbonScaleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

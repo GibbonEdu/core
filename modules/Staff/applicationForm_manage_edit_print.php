@@ -33,10 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     echo __('Staff Application Form Printout');
     echo '</h2>';
 
-    $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
+    $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'] ?? '';
     $search = '';
     if (isset($_GET['search'])) {
-        $search = $_GET['search'];
+        $search = $_GET['search'] ?? '';
     }
 
     if ($gibbonStaffApplicationFormID == '') {

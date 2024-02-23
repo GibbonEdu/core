@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonActivityID = $_GET['gibbonActivityID'];
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     $numberOfColumns = (isset($_GET['columns']) && $_GET['columns'] <= 20 ) ? $_GET['columns'] : 20;
 
     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $result->execute($data);
 
     if (empty($gibbonActivityID) || $result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         $output = '';
 

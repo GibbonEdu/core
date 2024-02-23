@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
         ->add(__('Edit File Extensions'));
 
     //Check if gibbonFileExtensionID specified
-    $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'];
+    $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'] ?? '';
     if ($gibbonFileExtensionID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

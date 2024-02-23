@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->breadcrumbs
@@ -43,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
         $step = null;
         if (isset($_GET['step'])) {
-            $step = $_GET['step'];
+            $step = $_GET['step'] ?? '';
         }
         if ($step != 1 and $step != 2) {
             $step = 1;

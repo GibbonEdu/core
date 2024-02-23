@@ -29,7 +29,7 @@ if (!isset($_GET['gibbonNotificationID'])) {
     header("Location: {$URL->withReturn('error1')}");
     exit();
 } else {
-    $gibbonNotificationID = $_GET['gibbonNotificationID'];
+    $gibbonNotificationID = $_GET['gibbonNotificationID'] ?? '';
 
     //Check for existence of notification, beloning to this user
     try {

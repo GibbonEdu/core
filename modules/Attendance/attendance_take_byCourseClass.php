@@ -139,9 +139,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 }
 
                 if ($result->rowCount() == 0) {
-                    echo '<div class="error">';
-                    echo __('There are no records to display.');
-                    echo '</div>';
+                    echo $page->getBlankSlate();
                     return;
                 }
 
@@ -212,7 +210,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     $resultCourseClass = $pdo->select($sqlCourseClass, $dataCourseClass);
 
                     if ($resultCourseClass->rowCount() < 1) {
-                        echo Format::alert(__('There are no records to display.'), 'error');
+                        echo $page->getBlankSlate();
                     } else {
                         $count = 0;
                         $countPresent = 0;

@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $search = $_GET['search'] ?? '';
@@ -160,9 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if ($tt != false) {
                 echo $tt;
             } else {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                echo $page->getBlankSlate();
             }
 
             //Set sidebar

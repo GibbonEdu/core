@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
         ->add(__('Edit Job Opening'));
 
     //Check if gibbonStaffJobOpeningID specified
-    $gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'];
+    $gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'] ?? '';
     if ($gibbonStaffJobOpeningID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

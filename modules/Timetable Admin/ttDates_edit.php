@@ -34,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
         ->add(__('Edit Days in Date'));
 
     //Check if gibbonSchoolYearID and dateStamp specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $dateStamp = $_GET['dateStamp'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $dateStamp = $_GET['dateStamp'] ?? '';
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -45,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Check if courseschool year specified
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
@@ -90,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
                             $step = null;
                             if (isset($_GET['step'])) {
-                                $step = $_GET['step'];
+                                $step = $_GET['step'] ?? '';
                             }
                             if ($step != 1 and $step != 2 and $step != 3) {
                                 $step = 1;

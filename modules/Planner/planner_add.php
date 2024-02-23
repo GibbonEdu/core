@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Set variables
         $today = date('Y-m-d');
@@ -52,11 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -81,9 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             $params += [
                 'viewBy' => 'class',
                 'date' => $class,

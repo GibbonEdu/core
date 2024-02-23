@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
         ->add(__('Edit Request'));
 
     //Check if gibbonFinanceInvoiceeUpdateID specified
-    $gibbonFinanceInvoiceeUpdateID = $_GET['gibbonFinanceInvoiceeUpdateID'];
+    $gibbonFinanceInvoiceeUpdateID = $_GET['gibbonFinanceInvoiceeUpdateID'] ?? '';
     if ($gibbonFinanceInvoiceeUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Get action with highest precendence
         $page->breadcrumbs->add(__('Graphing'));
@@ -90,9 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 
         if (count($_POST) > 0) {
             if ($gibbonPersonIDs == null or $gibbonDepartmentIDs == null or ($dataType != 'attainment' and $dataType != 'effort')) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                echo $page->getBlankSlate();
             } else {
                 $output = '';
                 echo '<h2>';
@@ -228,9 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                 }
 
                 if ($resultGrades->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('There are no records to display.');
-                    echo '</div>';
+                    echo $page->getBlankSlate();;
                 } else {
                     //Prep grades & terms
                     $grades = array();

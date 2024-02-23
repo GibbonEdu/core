@@ -31,12 +31,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-        $type = $_GET['type'];
+        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+        $type = $_GET['type'] ?? '';
         $gibbonPersonID = null;
         if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         }
 
         if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '' or $gibbonPersonID == '') {

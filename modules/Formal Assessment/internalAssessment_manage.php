@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     //Get class variable
     $gibbonCourseClassID = null;
     if (isset($_GET['gibbonCourseClassID'])) {
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     } else {
         
             $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
@@ -106,25 +106,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo __('Internal Assessment Columns');
             echo '</h3>';
 
-            //Set pagination variable
-            $page = 1;
-            if (isset($_GET['page'])) {
-                $page = $_GET['page'];
-            }
-            if ((!is_numeric($page)) or $page < 1) {
-                $page = 1;
-            }
-
-            
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                echo $page->getBlankSlate();
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";

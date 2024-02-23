@@ -46,11 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $params = [];
     $viewBy = null;
     if (isset($_GET['viewBy'])) {
-        $viewBy = $_GET['viewBy'];
+        $viewBy = $_GET['viewBy'] ?? '';
     }
     $subView = null;
     if (isset($_GET['subView'])) {
-        $subView = $_GET['subView'];
+        $subView = $_GET['subView'] ?? '';
     }
     if ($viewBy != 'date' and $viewBy != 'class') {
         $viewBy = 'date';
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $dateStamp = null;
     if ($viewBy == 'date') {
         if (isset($_GET['date'])) {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
         }
         if (isset($_GET['dateHuman'])) {
             $date = Format::dateConvert($_GET['dateHuman']);
@@ -77,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     } elseif ($viewBy == 'class') {
         $class = null;
         if (isset($_GET['class'])) {
-            $class = $_GET['class'];
+            $class = $_GET['class'] ?? '';
         }
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $params += [
             'viewBy' => 'class',
             'date' => $class,
@@ -90,16 +90,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
     $show = null;
     if (isset($_GET['show'])) {
-        $show = $_GET['show'];
+        $show = $_GET['show'] ?? '';
     }
 
     if (isset($_GET['gibbonCourseClassIDFilter'])) {
-        $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'] ?? '';
         $params['gibbonCourseClassID'] = $gibbonCourseClassID;
     }
     $gibbonPersonID = null;
     if (isset($_GET['search'])) {
-        $gibbonPersonID = $_GET['search'];
+        $gibbonPersonID = $_GET['search'] ?? '';
     }
 
     //My children's classes
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             $result = $connection2->prepare($sql);
             $result->execute($data);
         if ($result->rowCount() < 1) {
-            $page->addMessage(__('There are no records to display.'));
+            echo $page->getBlankSlate();
         } else {
             //Get child list
             $count = 0;
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             }
 
             if ($count == 0) {
-                $page->addMessage(__('There are no records to display.'));
+                echo $page->getBlankSlate();
             } elseif ($count == 1) {
                 $gibbonPersonID = $gibbonPersonIDArray[0];
             } else {

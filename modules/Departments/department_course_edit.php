@@ -29,8 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if courseschool year specified
-    $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
+    $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 
     if ($gibbonDepartmentID == '' or $gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

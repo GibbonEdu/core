@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
 } else {
     //Proceed!
 
-    $gibbonStaffDutyPersonID = $_GET['gibbonStaffDutyPersonID'];
+    $gibbonStaffDutyPersonID = $_GET['gibbonStaffDutyPersonID'] ?? '';
     if ($gibbonStaffDutyPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

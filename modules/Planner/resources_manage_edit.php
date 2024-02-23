@@ -38,13 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         //Check if gibbonResourceID specified
-        $gibbonResourceID = $_GET['gibbonResourceID'];
+        $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
         if ($gibbonResourceID == 'Y') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

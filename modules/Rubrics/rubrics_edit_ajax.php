@@ -35,5 +35,5 @@ if (!(mysql_select_db($databaseName, $connection))) {
 
 mysql_set_charset('utf8');
 
-$gibbonRubricID = $_GET['gibbonRubricID'];
+$gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 echo rubricEdit($guid, $connection, $gibbonRubricID);

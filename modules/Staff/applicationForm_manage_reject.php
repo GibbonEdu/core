@@ -36,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->add(__('Reject Application'));
 
     //Check if gibbonStaffApplicationFormID specified
-    $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
-    $search = $_GET['search'];
+    $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'] ?? '';
+    $search = $_GET['search'] ?? '';
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -48,9 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
+            $page->addError(__('The specified record does not exist.'));
         } else {
             //Let's go!
             $values = $result->fetch();

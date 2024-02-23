@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
 
     $gibbonPersonID = null;
     if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     }
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');

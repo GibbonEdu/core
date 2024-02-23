@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                     //Ready to go!
                     $gibbonFinanceBudgetCycleID = '';
                     if (isset($_GET['gibbonFinanceBudgetCycleID'])) {
-                        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+                        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
                     }
                     if ($gibbonFinanceBudgetCycleID == '') {
                         
@@ -154,11 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
                         $status2 = null;
                         if (isset($_GET['status2'])) {
-                            $status2 = $_GET['status2'];
+                            $status2 = $_GET['status2'] ?? '';
                         }
                         $gibbonFinanceBudgetID2 = null;
                         if (isset($_GET['gibbonFinanceBudgetID2'])) {
-                            $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+                            $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
                         }
 
                         echo '<h3>';

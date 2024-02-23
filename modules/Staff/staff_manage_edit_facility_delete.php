@@ -31,11 +31,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
 
     $allStaff = '';
     if (isset($_GET['allStaff'])) {
-        $allStaff = $_GET['allStaff'];
+        $allStaff = $_GET['allStaff'] ?? '';
     }
     $search = '';
     if (isset($_GET['search'])) {
-        $search = $_GET['search'];
+        $search = $_GET['search'] ?? '';
     }
 
     //Check if gibbonStaffID and gibbonSpacePersonID specified

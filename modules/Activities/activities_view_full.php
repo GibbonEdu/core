@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             //Proceed!
             //Get class variable
-            $gibbonActivityID = $_GET['gibbonActivityID'];
+            $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
             if ($gibbonActivityID == '') {
                 echo "<div class='warning'>";
                 echo __('Your request failed because your inputs were invalid.');

@@ -78,9 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		ORDER BY surname, preferredName";
 	$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents, '_');
     if ($resultStudents->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
 
 		$excel = new Gibbon\Excel('markbookColumn.xlsx');

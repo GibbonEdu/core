@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if (empty($gibbonSchoolYearID)) {
-        echo '<div class="error">';
-        echo __('The specified record does not exist.');
-        echo '</div>';
+        $page->addError(__('The specified record does not exist.'));
     } else {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
@@ -82,9 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $courses = $courseGateway->queryCoursesBySchoolYear($criteria, $gibbonSchoolYearID);
 
         if (count($courses) == 0) {
-            echo '<div class="error">';
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
             return;
         }
 

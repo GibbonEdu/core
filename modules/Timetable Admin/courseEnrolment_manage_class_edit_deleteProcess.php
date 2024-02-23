@@ -24,7 +24,7 @@ include '../../gibbon.php';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-$gibbonCourseClassPersonID = $_GET['gibbonCourseClassPersonID'];
+$gibbonCourseClassPersonID = $_GET['gibbonCourseClassPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 
 if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassPersonID == '') { echo 'Fatal error loading this page!';

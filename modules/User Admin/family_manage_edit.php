@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
         ->add(__('Edit Family'));        
 
     //Check if search and gibbonFamilyID specified
-    $gibbonFamilyID = $_GET['gibbonFamilyID'];
+    $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
     $search = $_GET['search'] ?? '';
     if ($search != '') {
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'family_manage.php')->withQueryParam('search', $search));
