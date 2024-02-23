@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     $ttColumnGateway = $container->get(TimetableColumnGateway::class);
 
     //Check if gibbonTTColumnID specified
-    $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
+    $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
     if ($gibbonTTColumnID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

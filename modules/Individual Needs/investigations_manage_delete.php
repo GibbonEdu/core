@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         return;
     }
 
-    $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'];
+    $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
     if (empty($gibbonINInvestigationID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

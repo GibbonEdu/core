@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
 
@@ -50,11 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         //Get viewBy, date and class variables
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -64,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         $dateStamp = null;
         if ($viewBy == 'date') {
             if (isset($_GET['date'])) {
-                $date = $_GET['date'];
+                $date = $_GET['date'] ?? '';
             }
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
@@ -77,11 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
             $gibbonCourseClassID = null;
             if (isset($_GET['gibbonCourseClassID'])) {
-                $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+                $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             }
         }
         [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
@@ -92,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
             $search = null;
             if (isset($_GET['search'])) {
-                $search = $_GET['search'];
+                $search = $_GET['search'] ?? '';
             }
             $page->breadcrumbs->add(__('My Children\'s Classes'));
 
@@ -473,14 +471,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     echo __('School is closed on the specified day.');
                     echo '</div>';
                 } else {
-                    //Set pagination variable
-                    $pageCount = 1;
-                    if (isset($_GET['page'])) {
-                        $pageCount = $_GET['page'];
-                    }
-                    if ((!is_numeric($pageCount)) or $pageCount < 1) {
-                        $pageCount = 1;
-                    }
 
                     try {
                         if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {

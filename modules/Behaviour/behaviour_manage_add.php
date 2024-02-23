@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $editID = '';
         if (isset($_GET['editID'])) {
             $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$_GET['editID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type;
-            $editID = $_GET['editID'];
+            $editID = $_GET['editID'] ?? '';
         }
 
         $page->return->setEditLink($editLink);
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $step = null;
         if (isset($_GET['step'])) {
-            $step = $_GET['step'];
+            $step = $_GET['step'] ?? '';
         }
         if ($step != 1 and $step != 2) {
             $step = 1;

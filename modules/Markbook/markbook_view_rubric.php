@@ -32,10 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $page->scripts->add('chart');
 
     //Check if gibbonCourseClassID and gibbonMarkbookColumnID and gibbonPersonID and gibbonRubricID specified
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $gibbonRubricID = $_GET['gibbonRubricID'];
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
     if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '' or $gibbonPersonID == '' or $gibbonRubricID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

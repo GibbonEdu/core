@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
 
     $numberOfColumns = (isset($_GET['numberOfColumns']) && $_GET['numberOfColumns'] <= 20 ) ? $_GET['numberOfColumns'] : 20;

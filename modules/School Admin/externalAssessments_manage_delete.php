@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 } else {
     //Proceed!
     //Check if gibbonExternalAssessmentID specified
-    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
     if ($gibbonExternalAssessmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

@@ -25,12 +25,12 @@ include './moduleFunctions.php';
 
 $page = $container->get('page');
 
-$id = $_GET['id'];
-$type = $_GET['type'];
-$gibbonOutcomeID = $_GET['gibbonOutcomeID'];
-$title = $_GET['title'];
-$category = $_GET['category'];
-$contents = $_GET['contents'];
-$allowOutcomeEditing = $_GET['allowOutcomeEditing'];
+$id = $_GET['id'] ?? '';
+$type = $_GET['type'] ?? '';
+$gibbonOutcomeID = $_GET['gibbonOutcomeID'] ?? '';
+$title = $_GET['title'] ?? '';
+$category = $_GET['category'] ?? '';
+$contents = $_GET['contents'] ?? '';
+$allowOutcomeEditing = $_GET['allowOutcomeEditing'] ?? '';
 
 makeBlockOutcome($guid,  $id, $type, $gibbonOutcomeID, $title, $category, $contents, '', false, $allowOutcomeEditing);

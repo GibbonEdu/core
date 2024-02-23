@@ -128,15 +128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 echo __('Markbook Columns');
                 echo '</h3>';
 
-                //Set pagination variable
-                $pageCount = 1;
-                if (isset($_GET['page'])) {
-                    $pageCount = $_GET['page'];
-                }
-                if ((!is_numeric($pageCount)) or $pageCount < 1) {
-                    $pageCount = 1;
-                }
-
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
                 $result = $connection2->prepare($sql);

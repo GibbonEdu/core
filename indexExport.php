@@ -23,7 +23,7 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-$gibbonFormGroupID = $_GET['gibbonFormGroupID'];
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $URL = Url::fromRoute();
 
 try {

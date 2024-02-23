@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 
             $filter2 = '';
             if (isset($_GET['filter2'])) {
-                $filter2 = $_GET['filter2'];
+                $filter2 = $_GET['filter2'] ?? '';
             }
 
             if ($filter2 != '') {

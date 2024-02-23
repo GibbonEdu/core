@@ -28,11 +28,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     //Proceed!
     $search = '';
     if (isset($_GET['search'])) {
-        $search = $_GET['search'];
+        $search = $_GET['search'] ?? '';
     }
 
     //Check if gibbonStringID specified
-    $gibbonStringID = $_GET['gibbonStringID'];
+    $gibbonStringID = $_GET['gibbonStringID'] ?? '';
     if ($gibbonStringID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

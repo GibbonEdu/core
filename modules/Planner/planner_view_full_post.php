@@ -32,17 +32,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -51,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -63,18 +61,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
         $replyTo = null;
         if (isset($_GET['replyTo'])) {
-            $replyTo = $_GET['replyTo'];
+            $replyTo = $_GET['replyTo'] ?? '';
         }
         $search = $_GET['search'] ?? '';
 
         //Get class variable
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
@@ -89,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    $gibbonPersonID = $_GET['search'];
+                    $gibbonPersonID = $_GET['search'] ?? '';
                     
                         $dataChild = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
@@ -126,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 // planner's parameters
                 $params = [];
                 if ($date != '') {
-                    $params['date'] = $_GET['date'];
+                    $params['date'] = $_GET['date'] ?? '';
                 }
                 if ($viewBy != '') {
                     $params['viewBy'] = $_GET['viewBy'] ?? '';

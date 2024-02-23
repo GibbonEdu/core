@@ -165,8 +165,8 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         }
 
         // Initialize the notification sender & gateway objects
-        $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $session);
+        $notificationGateway = $container->get(NotificationGateway::class);
+        $notificationSender = $container->get(NotificationSender::class);
 
         // Raise a new notification event
         $event = new NotificationEvent('Attendance', 'Daily Attendance Summary');

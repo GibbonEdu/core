@@ -64,9 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -1393,7 +1391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $categories = false;
                                 $category = null;
                                 if (isset($_GET['category'])) {
-                                    $category = $_GET['category'];
+                                    $category = $_GET['category'] ?? '';
                                 }
 
 
@@ -1527,9 +1525,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
                             if ($highestAction2 == false) {
-                                echo "<div class='error'>";
-                                echo __('The highest grouped action cannot be determined.');
-                                echo '</div>';
+                                $page->addError(__('The highest grouped action cannot be determined.'));
                             } else {
                                 //Module includes
                                 include './modules/Markbook/moduleFunctions.php';
@@ -2026,9 +2022,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         } else {
                             $highestAction2 = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_view.php', $connection2);
                             if ($highestAction2 == false) {
-                                echo "<div class='error'>";
-                                echo __('The highest grouped action cannot be determined.');
-                                echo '</div>';
+                                $page->addError(__('The highest grouped action cannot be determined.'));
                             } else {
                                 //Module includes
                                 include './modules/Formal Assessment/moduleFunctions.php';

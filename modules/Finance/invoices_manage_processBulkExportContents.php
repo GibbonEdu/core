@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 } else {
     //Proceed!
     $gibbonFinanceInvoiceIDs = $session->get('financeInvoiceExportIDs');
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     if ($gibbonFinanceInvoiceIDs == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";

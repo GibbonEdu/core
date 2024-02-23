@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         ->add(__('Edit Facility'));
 
     //Check if gibbonSpaceID specified
-    $gibbonSpaceID = $_GET['gibbonSpaceID'];
+    $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
     if ($gibbonSpaceID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

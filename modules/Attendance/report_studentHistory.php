@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         else if ($highestAction == 'Student History_myChildren') {
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
+                $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
             }
             //Test data access field for permission
             $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));

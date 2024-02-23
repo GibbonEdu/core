@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['homeworkDetails' 
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $params = '';
 if (isset($_GET['date'])) {
     $params = $params.'&date='.$_GET['date'];

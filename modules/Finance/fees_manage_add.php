@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 } else {
     //Proceed!
     //Check if school year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $urlParams = compact('gibbonSchoolYearID');
 
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
     }
     $page->return->setEditLink($editLink);
 
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

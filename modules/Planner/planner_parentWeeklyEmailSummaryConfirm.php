@@ -22,19 +22,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Get variables
 $gibbonSchoolYearID = '';
 if (isset($_GET['gibbonSchoolYearID'])) {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 }
 $key = '';
 if (isset($_GET['key'])) {
-    $key = $_GET['key'];
+    $key = $_GET['key'] ?? '';
 }
 $gibbonPersonIDStudent = '';
 if (isset($_GET['gibbonPersonIDStudent'])) {
-    $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'];
+    $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
 }
 $gibbonPersonIDParent = '';
 if (isset($_GET['gibbonPersonIDParent'])) {
-    $gibbonPersonIDParent = $_GET['gibbonPersonIDParent'];
+    $gibbonPersonIDParent = $_GET['gibbonPersonIDParent'] ?? '';
 }
 
 //Check variables

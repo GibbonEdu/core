@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if (empty($gibbonSchoolYearID)) {
-        echo '<div class="error">';
-        echo __('The specified record does not exist.');
-        echo '</div>';
+        $page->addError(__('The specified record does not exist.'));
     } else {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 

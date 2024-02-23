@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $search = $_GET['search'] ?? '';
@@ -49,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
         //Check if gibbonStaffID specified
-        $gibbonStaffID = $_GET['gibbonStaffID'];
+        $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
         if ($gibbonStaffID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {

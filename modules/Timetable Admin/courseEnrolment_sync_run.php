@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->add(__('Sync Now'));
 
     if (empty($gibbonYearGroupIDList) || empty($gibbonSchoolYearID)) {
-        echo "<div class='error'>";
-        echo __('Your request failed because your inputs were invalid.');
-        echo '</div>';
+        $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 
@@ -69,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $result = $pdo->executeQuery($data, $sql);
 
     if ($result->rowCount() == 0) {
-        echo "<div class='error'>";
-        echo __('Your request failed because your inputs were invalid.');
-        echo '</div>';
+        $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 

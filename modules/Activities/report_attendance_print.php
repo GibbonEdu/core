@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonActivityID = $_GET['gibbonActivityID'];
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
         $sql = "SELECT name, programStart, programEnd, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND gibbonActivity.gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";

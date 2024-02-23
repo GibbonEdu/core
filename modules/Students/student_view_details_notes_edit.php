@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     } else {
         $allStudents = $_GET['allStudents'] ?? '';
@@ -65,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         ->add(__('Edit Student Note'));
 
                     //Check if gibbonStudentNoteID specified
-                    $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
+                    $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'] ?? '';
                     if ($gibbonStudentNoteID == '') {
                         $page->addError(__('The specified record cannot be found.'));
                     } else {

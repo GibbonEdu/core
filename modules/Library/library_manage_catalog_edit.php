@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 } else {
     //Proceed!
     //Check if gibbonLibraryItemID specified
-    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
+    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $values = $result->fetch();
             $step = '';
             if (isset($_GET['step'])) {
-                $step = $_GET['step'];
+                $step = $_GET['step'] ?? '';
             }
             if ($step != 1 and $step != 2) {
                 $step = 1;

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
 
     $settingGateway = $container->get(SettingGateway::class);

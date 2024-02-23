@@ -28,16 +28,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-    $type = $_GET['type'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+    $type = $_GET['type'] ?? '';
     $preview = false;
     if (isset($_GET['preview']) && $_GET['preview'] == 'true') {
-        $preview = $_GET['preview'];
+        $preview = $_GET['preview'] ?? '';
     }
     $receiptNumber = null;
     if (isset($_GET['receiptNumber'])) {
-        $receiptNumber = $_GET['receiptNumber'];
+        $receiptNumber = $_GET['receiptNumber'] ?? '';
     }
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '') {

@@ -43,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
     $timetableGateway = $container->get(TimetableGateway::class);
 
     //Check if gibbonTTID and gibbonSchoolYearID specified
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if ($gibbonTTID == '' || $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
