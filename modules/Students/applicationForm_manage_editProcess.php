@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
             $privacy = null;
             if (isset($_POST['privacyOptions'])) {
-                $privacyOptions = $_POST['privacyOptions'] ?? '';
+                $privacyOptions = $_POST['privacyOptions'] ?? [];
                 foreach ($privacyOptions as $privacyOption) {
                     if ($privacyOption != '') {
                         $privacy .= $privacyOption.',';
