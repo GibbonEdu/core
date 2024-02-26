@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     if ($blockCount > 0) {
                         $order = array();
                         if (isset($_POST['order'])) {
-                            $order = $_POST['order'] ?? '';
+                            $order = $_POST['order'] ?? [];
                         }
                         foreach ($order as $i) {
                             $title = '';
