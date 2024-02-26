@@ -70,7 +70,7 @@ class MessageTargets
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
             if (!empty($_POST["role"]) && $_POST["role"]=="Y") {
                 $choices = $_POST["roles"] ?? [];
-                if ($choices!="") {
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t);
