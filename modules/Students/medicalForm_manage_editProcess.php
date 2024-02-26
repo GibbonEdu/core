@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $longTermMedication = $_POST['longTermMedication'] ?? '';
+            $longTermMedication = $_POST['longTermMedication'] ?? 'N';
             $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
             $comment = $_POST['comment'] ?? '';
 
