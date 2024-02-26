@@ -737,7 +737,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = null;
                         if (isset($_POST['enrolFull-count'])) {
-                            $count = $_POST['enrolFull-count'] ?? '';
+                            $count = $_POST['enrolFull-count'] ?? 0;
                         }
                         if ($count == '') {
                             echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
