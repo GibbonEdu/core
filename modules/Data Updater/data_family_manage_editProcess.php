@@ -59,37 +59,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
             $set = '';
             if (isset($_POST['newnameAddressOn'])) {
                 if ($_POST['newnameAddressOn'] == 'on') {
-                    $data['nameAddress'] = $_POST['newnameAddress'];
+                    $data['nameAddress'] = $_POST['newnameAddress'] ?? '';
                     $set .= 'gibbonFamily.nameAddress=:nameAddress, ';
                 }
             }
             if (isset($_POST['newhomeAddressOn'])) {
                 if ($_POST['newhomeAddressOn'] == 'on') {
-                    $data['homeAddress'] = $_POST['newhomeAddress'];
+                    $data['homeAddress'] = $_POST['newhomeAddress'] ?? '';
                     $set .= 'gibbonFamily.homeAddress=:homeAddress, ';
                 }
             }
             if (isset($_POST['newhomeAddressDistrictOn'])) {
                 if ($_POST['newhomeAddressDistrictOn'] == 'on') {
-                    $data['homeAddressDistrict'] = $_POST['newhomeAddressDistrict'];
+                    $data['homeAddressDistrict'] = $_POST['newhomeAddressDistrict'] ?? '';
                     $set .= 'gibbonFamily.homeAddressDistrict=:homeAddressDistrict, ';
                 }
             }
             if (isset($_POST['newhomeAddressCountryOn'])) {
                 if ($_POST['newhomeAddressCountryOn'] == 'on') {
-                    $data['homeAddressCountry'] = $_POST['newhomeAddressCountry'];
+                    $data['homeAddressCountry'] = $_POST['newhomeAddressCountry'] ?? '';
                     $set .= 'gibbonFamily.homeAddressCountry=:homeAddressCountry, ';
                 }
             }
             if (isset($_POST['newlanguageHomePrimaryOn'])) {
                 if ($_POST['newlanguageHomePrimaryOn'] == 'on') {
-                    $data['languageHomePrimary'] = $_POST['newlanguageHomePrimary'];
+                    $data['languageHomePrimary'] = $_POST['newlanguageHomePrimary'] ?? '';
                     $set .= 'gibbonFamily.languageHomePrimary=:languageHomePrimary, ';
                 }
             }
             if (isset($_POST['newlanguageHomeSecondaryOn'])) {
                 if ($_POST['newlanguageHomeSecondaryOn'] == 'on') {
-                    $data['languageHomeSecondary'] = $_POST['newlanguageHomeSecondary'];
+                    $data['languageHomeSecondary'] = $_POST['newlanguageHomeSecondary'] ?? '';
                     $set .= 'gibbonFamily.languageHomeSecondary=:languageHomeSecondary, ';
                 }
             }

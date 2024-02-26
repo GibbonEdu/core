@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             $gibbonFormGroupID = null;
             if (isset($_POST['gibbonFormGroupID']) && $_POST['gibbonFormGroupID'] != '') {
-                $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
+                $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
             }
 
             $paymentMade = !empty($_POST['paymentMade']) ? $_POST['paymentMade'] : 'N';
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($sen == 'N') {
                 $senDetails = '';
             } else {
-                $senDetails = $_POST['senDetails'];
+                $senDetails = $_POST['senDetails'] ?? '';
             }
             $gibbonSchoolYearIDEntry = $_POST['gibbonSchoolYearIDEntry'] ?? '';
             $gibbonYearGroupIDEntry = $_POST['gibbonYearGroupIDEntry'] ?? '';
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             //GET FAMILY FEILDS
             $gibbonFamily = $_POST['gibbonFamily'] ?? '';
             if ($gibbonFamily == 'TRUE') {
-                $gibbonFamilyID = $_POST['gibbonFamilyID'];
+                $gibbonFamilyID = $_POST['gibbonFamilyID'] ?? '';
             } else {
                 $gibbonFamilyID = null;
             }
@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $companyAll = $_POST['companyAll'] ?? null;
             $gibbonFinanceFeeCategoryIDList = null;
             if (isset($_POST['gibbonFinanceFeeCategoryIDList'])) {
-                $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'];
+                $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'] ?? '';
                 if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
                     foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
                         $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';
@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
             $privacy = null;
             if (isset($_POST['privacyOptions'])) {
-                $privacyOptions = $_POST['privacyOptions'];
+                $privacyOptions = $_POST['privacyOptions'] ?? [];
                 foreach ($privacyOptions as $privacyOption) {
                     if ($privacyOption != '') {
                         $privacy .= $privacyOption.',';
@@ -393,7 +393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
                         $fileCount = 0;
                         if (isset($_POST['fileCount'])) {
-                            $fileCount = $_POST['fileCount'];
+                            $fileCount = $_POST['fileCount'] ?? '';
                         }
 
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);

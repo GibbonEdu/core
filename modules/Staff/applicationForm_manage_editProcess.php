@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $milestones = substr($milestones, 0, -1);
             $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
             $notes = $_POST['notes'] ?? '';
-            $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'];
+            $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'] ?? '';
             $questions = $_POST['questions'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $surname = $_POST['surname'] ?? '';
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $email = $_POST['email'] ?? '';
             $phone1Type = null;
             if (isset($_POST['phone1Type'])) {
-                $phone1Type = $_POST['phone1Type'];
+                $phone1Type = $_POST['phone1Type'] ?? '';
                 if ($_POST['phone1'] != '' and $phone1Type == '') {
                     $phone1Type = 'Other';
                 }
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
                         $fileCount = 0;
                         if (isset($_POST['fileCount'])) {
-                            $fileCount = $_POST['fileCount'];
+                            $fileCount = $_POST['fileCount'] ?? '';
                         }
 
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);

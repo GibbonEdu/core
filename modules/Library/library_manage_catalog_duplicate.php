@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Library', 'library_manage_catalog.php')->withQueryParams($urlParams));
         }
 
-        $number = $_POST['number'];
+        $number = $_POST['number'] ?? '';
 
         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID='.$values['gibbonLibraryItemID'].'&'.http_build_query($urlParams));
 

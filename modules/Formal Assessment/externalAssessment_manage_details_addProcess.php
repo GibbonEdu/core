@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $count = 0;
 if (is_numeric($_POST['count'])) {
-    $count = $_POST['count'];
+    $count = $_POST['count'] ?? '';
 }
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'] ?? '';

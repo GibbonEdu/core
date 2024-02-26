@@ -346,7 +346,7 @@ if ($proceed == false) {
                 if ($requiredDocuments != '' and $requiredDocuments != false) {
                     $fileCount = 0;
                     if (isset($_POST['fileCount'])) {
-                        $fileCount = $_POST['fileCount'];
+                        $fileCount = $_POST['fileCount'] ?? 0;
                     }
 
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);

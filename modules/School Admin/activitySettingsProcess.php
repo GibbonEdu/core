@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $dateType = $_POST['dateType'];
+    $dateType = $_POST['dateType'] ?? '';
     if ($dateType == 'Term') {
-        $maxPerTerm = $_POST['maxPerTerm'];
+        $maxPerTerm = $_POST['maxPerTerm'] ?? '';
     } else {
         $maxPerTerm = 0;
     }
-    $access = $_POST['access'];
-    $payment = $_POST['payment'];
+    $access = $_POST['access'] ?? '';
+    $payment = $_POST['payment'] ?? '';
     $disableExternalProviderSignup = $_POST['disableExternalProviderSignup'] ?? '';
     $hideExternalProviderCost = $_POST['hideExternalProviderCost'] ?? '';
 
