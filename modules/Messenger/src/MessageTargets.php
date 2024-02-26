@@ -116,7 +116,7 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
                     $parents = $_POST["yearGroupsParents"] ?? '';
                 }
-                $choices = $_POST["yearGroups"] ?? '';
+                $choices = $_POST["yearGroups"] ?? [];
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
