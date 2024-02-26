@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {
-        $types = $_POST['types'] ?? '';
+        $types = $_POST['types'] ?? [];
     } else {
         if (!isset($_POST['dateStart'])) {
             $types = $attendance->getAttendanceTypes();
