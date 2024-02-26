@@ -69,7 +69,7 @@ class MessageTargets
         //Roles
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
             if (!empty($_POST["role"]) && $_POST["role"]=="Y") {
-                $choices = $_POST["roles"] ?? '';
+                $choices = $_POST["roles"] ?? [];
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
