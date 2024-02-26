@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 //Scan through assistants
                 $staff = array();
                 if (isset($_POST['staff'])) {
-                    $staff = $_POST['staff'] ?? '';
+                    $staff = $_POST['staff'] ?? [];
                 }
                 $comment = $_POST['comment'] ?? '';
                 if (count($staff) > 0) {
