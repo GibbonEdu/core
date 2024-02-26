@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 //Scan through staff
                 $staff = array();
                 if (isset($_POST['staff'])) {
-                    $staff = $_POST['staff'] ?? '';
+                    $staff = $_POST['staff'] ?? [];
                 }
                 $role = $_POST['role'] ?? '';
                 if ($role == '') {
