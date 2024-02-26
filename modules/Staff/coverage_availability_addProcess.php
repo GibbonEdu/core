@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     }
 
     $dateStart = $_POST['dateStart'] ?? '';
-    $dateEnd = $_POST['dateEnd'] ?? ($_POST['dateStart'] ?? '');
+    $dateEnd = $_POST['dateEnd'] ?? $_POST['dateStart'] ?? '';
 
     $start = new DateTime(Format::dateConvert($dateStart).' 00:00:00');
     $end = new DateTime(Format::dateConvert($dateEnd).' 23:00:00');
