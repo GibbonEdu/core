@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                     //UPDATE CYCLE ALLOCATION VALUES
                     $partialFail = false;
                     if (isset($_POST['values'])) {
-                        $values = $_POST['values'] ?? '';
+                        $values = $_POST['values'] ?? [];
                         $gibbonFinanceBudgetIDs = $_POST['gibbonFinanceBudgetIDs'] ?? '';
                         $count = 0;
                         foreach ($values as $value) {
