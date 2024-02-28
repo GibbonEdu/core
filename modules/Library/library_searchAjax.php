@@ -43,13 +43,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         ->filterBy('parent', 'NULL')
         ->sortBy('name');
 
-    $results = $libraryGateway->queryCatalog($criteria, $session->get('gibbonSchoolYearID'))->toArray();
+    $results = $libraryGateway->queryItemsForShelves($criteria)->toArray();
 
     $list = array_map(function ($token) {
         return [
             'id'       => $token['gibbonLibraryItemID'],
             'name'     => $token['name'],
             'producer' => $token['producer'],
+            'imageLocation' => $token['imageLocation'],
         ];
     }, $results);
 

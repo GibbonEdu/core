@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         });
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
-        ->format(function ($item) use ($gibbon) {
+        ->format(function ($item) use ($session) {
             if (!empty($item['gibbonLibraryItemIDParent'])) return Format::tag(__('Copy'), 'dull text-xxs');
             if ($item['ownershipType'] == 'School') {
                 return sprintf('<b>%1$s</b><br/>', $session->get('organisationNameShort'));

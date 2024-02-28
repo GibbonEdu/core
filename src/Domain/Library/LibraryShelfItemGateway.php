@@ -32,8 +32,14 @@ class LibraryShelfItemGateway extends QueryableGateway
                 'gibbonLibraryShelfItem.gibbonLibraryItemID', 
                 'gibbonLibraryItem.name', 
                 'gibbonLibraryItem.producer',
+                'gibbonLibraryItem.imageLocation',
+                'gibbonLibraryItem.status',
+                'gibbonLibraryItem.locationDetail',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , "$.Description") as description',
+                'gibbonSpace.name as spaceName',
             ])
             ->innerJoin('gibbonLibraryShelfItem', 'gibbonLibraryItem.gibbonLibraryItemID=gibbonLibraryShelfItem.gibbonLibraryItemID')
+            ->leftJoin('gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')
             ->where('gibbonLibraryShelfItem.gibbonLibraryShelfID=:gibbonLibraryShelfID')
             ->bindValue('gibbonLibraryShelfID', $gibbonLibraryShelfID);
 

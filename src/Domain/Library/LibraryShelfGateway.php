@@ -26,6 +26,7 @@ class LibraryShelfGateway extends QueryableGateway
                 'gibbonLibraryShelf.field',
                 'gibbonLibraryShelf.fieldValue',
                 'gibbonLibraryShelf.type',
+                'gibbonLibraryShelf.sequenceNumber',
             ]);
 
         $criteria->addFilterRules([
@@ -33,6 +34,11 @@ class LibraryShelfGateway extends QueryableGateway
                 return $query
                     ->where('gibbonLibraryShelf.name LIKE :name')
                     ->bindValue('name', '%' . $name . '%');
+            },
+            'active' => function ($query, $active) {
+                return $query
+                    ->where('gibbonLibraryShelf.active = :active')
+                    ->bindValue('active', $active);
             }
         ]);
         return $this->runQuery($query, $criteria);
@@ -75,4 +81,5 @@ class LibraryShelfGateway extends QueryableGateway
                 'subCategoryChained' => $subCategoryChained, 
                 'types' => $types];
     }
+
 }

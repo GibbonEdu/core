@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
             $row->addFinder('addItems')
                 ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
                 ->setParameter('resultsLimit', 10)
-                ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
+                ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.imageLocation + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');        
         
         $row = $form->addRow();
             $row->addFooter();

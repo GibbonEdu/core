@@ -1,16 +1,90 @@
-{% if bookshelves %}
-    <div id="bookshelves" class="bookshelfContainer overflow-x-auto max-w-4xl font-sans">
-        <div class="columns-auto">
-        {% for bookshelf in bookshelves|keys %}
-            <h3>{{bookshelf}}</h3>
-            <div class="grid grid-rows-1 grid-flow-col gap-4 box-border h-auto w-auto p-4 border-b-8">
-                {% for book in bookshelves[bookshelf] %}
-                    {% if book.imageLocation is not empty %}
-                        <img src="{{ book.imageLocation }}" class="w-full -mt-1 col-span-3">
+
+{% import _self as shelfItemViewer  %}
+{% if libraryShelves and shelfNames%}
+    <div id="libraryShelves" class="shelfContainer overflow-y-auto w-full">
+        <h1>Hand-Picked Collections</h1>
+        <div class="columns-auto w-full divide-y">
+        {% for shelf in libraryShelves|keys %}
+            <h3 class="mt-8">{{shelfNames[shelf]}}</h3>
+            <div class="flex justify-content-start pl-4 pr-4 pt-4 content-end gap-5 flex-row h-60 w-auto overflow-x-auto overscroll-contain pb-8 border-2 border-transparent rounded-lg bg-gray-100 bg-opacity-50">
+                {% for item in libraryShelves[shelf] %}
+                    {% if item.imageLocation is not empty %}
+                        <a onclick="showDescription()" data-log="{{shelfItemViewer.tooltip(item) }}">
+                            <img src="{{ item.imageLocation }}" class="transition ease-out duration-700 border-2 rounded-md border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64 shadow-xl">
+                        </a>
                     {% endif %}
                 {% endfor %}
             </div>
         {% endfor %}
         </div>
     </div>
+
+    
+
+    <script>
+    function showDescription() {
+        $("div.toolTipDescription").show();
+        $("div.tooltip-reset").addClass('tooltip-reset-large');
+        $("div.tooltip-reset").removeClass('tooltip-reset');
+    }
+
+    $('#libraryShelves').tooltip({
+        items: "a[data-log]",
+        show: 800,
+        hide: false,
+        content: function () {
+            return $(this).data('log');
+        },
+        tooltipClass: "tooltip-reset",
+        position: {
+            my: "center bottom-5",
+            at: "center top",
+            using: function (position, feedback) {
+                $(this).css(position);
+                $("<div>").
+                    addClass("arrow").
+                    addClass(feedback.vertical).
+                    addClass(feedback.horizontal).
+                    appendTo(this);
+            }
+        }
+    });
+    </script>
+    <style>
+        .tooltip-reset {
+            min-width: 50rem;
+        }
+        .tooltip-reset-large {
+            width: 50rem;
+        }
+        .w-1\/7 {
+            width: 14.28%;
+        }
+    </style>
 {% endif %}
+
+{% macro tooltip(item) %}
+    <section class='flex flex-row p-1 w-auto'>
+        <div class='flex-1'>
+            <h4 class='mt-2 text-white'>{{item.name}}</h4>
+            <p class='text-white'>by: {{item.producer}}</p>
+            <p class='text-white'>Location: {{item.spaceName}}</p>
+            <p class='text-white'>Location Detail: {{item.locationDetail}}</p>
+        
+            
+            {% if item.status == 'Available' %}
+                <div><p class='text-green-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'On Loan' %}
+                <div><p class='text-red-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'Reserved' %}
+                <div><p class='text-yellow-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'Repair' %}
+                <div><p class='text-Orange-500'>Status: {{item.status}}</p></div>
+            {% endif%}
+        </div>
+        <div class='toolTipDescription flex-1 pl-2 hidden'>
+            <h5 class='mt-2 text-white'>Description:</h5>
+            <p class='text-white'>{{item.description}}</p>
+        </div>
+    </section>
+{% endmacro tooltip %}

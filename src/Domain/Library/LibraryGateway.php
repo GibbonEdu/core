@@ -156,6 +156,7 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryItem.gibbonPersonIDCreator',
                 'gibbonLibraryItem.timestampCreator',
                 'gibbonLibraryItem.gibbonPersonIDUpdate',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , "$.Description") as description',
                 'gibbonLibraryItem.timestampUpdate'
             ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
@@ -185,9 +186,17 @@ class LibraryGateway extends QueryableGateway
                     ->where("gibbonLibraryItem.fields LIKE CONCAT('%\"Collection\":\"', :collection, '\"%')")
                     ->bindValue('collection', $collection);
             },
+            'location' => function ($query, $location) {
+                return $query
+                    ->where('gibbonSpace.name LIKE :location')
+                    ->bindValue('location', $location);
+            },
             'everything' => function ($query, $needle) {
                 $globalSearch = "(";
                 foreach ($query->getCols() as $col) {
+                    if(preg_match('/.* as .*/', $col)) {
+                        $col = preg_replace('/ as .*/', '', $col);
+                    }
                     $globalSearch .= $col . " LIKE :needle OR ";
                 }
                 $globalSearch = preg_replace("/ OR $/", ")", $globalSearch);
@@ -430,6 +439,45 @@ class LibraryGateway extends QueryableGateway
                 AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL;";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function queryItemsForShelves(QueryCriteria $criteria)
+    {
+      
+        $query = $this
+        ->newQuery()
+        ->from($this->getTableName())
+        ->cols([
+          "gibbonLibraryItem.id",
+          "gibbonLibraryItem.name",
+          "gibbonLibraryItem.producer",
+          "gibbonLibraryItem.gibbonLibraryItemID",
+          "gibbonLibraryItem.gibbonLibraryTypeID",
+          "gibbonLibraryItem.imageLocation",
+        ])
+        ->where("gibbonLibraryItem.imageLocation IS NOT NULL AND gibbonLibraryItem.imageLocation != ''");
+
+        $criteria->addFilterRules([
+        'name' => function ($query, $name) {
+            return $query
+            ->where('(gibbonLibraryItem.name like :name OR gibbonLibraryItem.producer like :name OR gibbonLibraryItem.id like :name)')
+            ->bindValue('name', '%'.$name.'%');
+        },
+        'parent' => function ($query, $parentID) {
+            if($parentID == 'NULL') {
+                $query = $query
+                ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                ->where('(gibbonLibraryItem.id IS NULL OR parent.id IS NULL)');
+            } else {
+                $query = $query
+                ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                ->where('(gibbonLibraryItem.id = :parentID OR parent.id = :parentID)')
+                ->bindValue('parentID', $parentID);
+            }
+            return $query;
+        },
+        ]);
+        return $this->runQuery($query, $criteria);
     }
 
 }

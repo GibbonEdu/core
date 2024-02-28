@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     } elseif($values['type'] == 'MANUAL') {
         $row = $form->addRow();
         $row->addLabel('fieldValue', __('Custom Sub-Category'));
-        $row->addTextField('fieldValue')->setValue($values['fieldValue']);
+        $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly();
     }
     
     $row = $form->addRow();
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $row->addFinder('addItems')
             ->fromAjax($session->get('absoluteURL').'/modules/Library/library_searchAjax.php')
             ->setParameter('resultsLimit', 10)
-            ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
+            ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.imageLocation + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.producer + "</span></div></li>"; }');
 
     $row = $form->addRow();
         $row->addFooter();
@@ -111,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $criteria = $itemGateway->newQueryCriteria(true)
     ->pageSize(10)
     ->sortBy('name')
+    ->filterBy('imageType',)
     ->fromPOST();
 
     $items = $itemGateway->queryItemsByShelf($gibbonLibraryShelfID, $criteria);//->toDataSet();
