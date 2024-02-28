@@ -46,7 +46,7 @@
     </script>        
     <style>
         .tooltip-reset {
-            min-width: 16rem;
+            min-width: 20rem;
         }
     </style>
 {% else %}
@@ -62,26 +62,27 @@
 {% endif %}
 
 {% macro tooltip(item) %}
-    <section class='p-1'>
-        <div>
+    <section class='flex flex-row p-1 w-auto'>
+        <div class='flex-1'>
             <h4 class='mt-2 text-white'>{{item.name}}</h4>
             <p class='text-white'>by: {{item.producer}}</p>
-        </div>
-        <div>
             <p class='text-white'>Location: {{item.spaceName}}</p>
             <p class='text-white'>Location Detail: {{item.locationDetail}}</p>
+        
+            
+            {% if item.status == 'Available' %}
+                <div><p class='text-green-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'On Loan' %}
+                <div><p class='text-red-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'Reserved' %}
+                <div><p class='text-yellow-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'Repair' %}
+                <div><p class='text-Orange-500'>Status: {{item.status}}</p></div>
+            {% endif%}
         </div>
-        <div>
-            <p class='text-white'>Description: {{item.description}}</p>
+        <div class='toolTipDescription flex-1 pl-2'>
+            <h5 class='mt-2 text-white'>Description:</h5>
+            <p class='text-white'>{{ item.description|slice(0, 200) }}...</p>
         </div>
-        {% if item.status == 'Available' %}
-            <div><p class='text-green-500'>Status: {{item.status}}</p></div>
-        {% elseif item.status == 'On Loan' %}
-            <div><p class='text-red-500'>Status: {{item.status}}</p></div>
-        {% elseif item.status == 'Reserved' %}
-            <div><p class='text-yellow-500'>Status: {{item.status}}</p></div>
-        {% elseif item.status == 'Repair' %}
-            <div><p class='text-Orange-500'>Status: {{item.status}}</p></div>
-        {% endif%}
     </section>
 {% endmacro tooltip %}

@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
 
         $row = $form->addRow()->addClass('manual');
             $row->addLabel('fieldValue', __('Custom Sub-Category'));
-            $row->addTextField('fieldValue');
+            $row->addTextField('fieldValue')->setValue('Custom')->readOnly();
 
         $row = $form->addRow();
             $row->addLabel('addItems', __('Add More Items'));

@@ -9,7 +9,7 @@
             <div class="flex justify-content-start pl-4 pr-4 pt-4 content-end gap-5 flex-row h-60 w-auto overflow-x-auto overscroll-contain pb-8 border-2 border-transparent rounded-lg bg-gray-100 bg-opacity-50">
                 {% for item in libraryShelves[shelf] %}
                     {% if item.imageLocation is not empty %}
-                        <a onclick="showDescription()" data-log="{{shelfItemViewer.tooltip(item) }}">
+                        <a data-log="{{shelfItemViewer.tooltip(item) }}">
                             <img src="{{ item.imageLocation }}" class="transition ease-out duration-700 border-2 rounded-md border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64 shadow-xl">
                         </a>
                     {% endif %}
@@ -22,12 +22,6 @@
     
 
     <script>
-    function showDescription() {
-        $("div.toolTipDescription").show();
-        $("div.tooltip-reset").addClass('tooltip-reset-large');
-        $("div.tooltip-reset").removeClass('tooltip-reset');
-    }
-
     $('#libraryShelves').tooltip({
         items: "a[data-log]",
         show: 800,
@@ -52,13 +46,7 @@
     </script>
     <style>
         .tooltip-reset {
-            min-width: 50rem;
-        }
-        .tooltip-reset-large {
-            width: 50rem;
-        }
-        .w-1\/7 {
-            width: 14.28%;
+            min-width: 20rem;
         }
     </style>
 {% endif %}
@@ -82,9 +70,9 @@
                 <div><p class='text-Orange-500'>Status: {{item.status}}</p></div>
             {% endif%}
         </div>
-        <div class='toolTipDescription flex-1 pl-2 hidden'>
+        <div class='toolTipDescription flex-1 pl-2'>
             <h5 class='mt-2 text-white'>Description:</h5>
-            <p class='text-white'>{{item.description}}</p>
+            <p class='text-white'>{{ item.description|slice(0, 200) }}...</p>
         </div>
     </section>
 {% endmacro tooltip %}

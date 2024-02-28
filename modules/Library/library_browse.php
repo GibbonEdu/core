@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->placeholder();
         
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue($locationToggle);
+    $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
 
     $row = $form->addRow();
     $row->addAdvancedOptionsToggle()->addClass('pt-2');

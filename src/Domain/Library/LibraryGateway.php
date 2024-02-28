@@ -12,7 +12,7 @@ class LibraryGateway extends QueryableGateway
     use TableAware;
     private static $tableName = 'gibbonLibraryItem';
     private static $primaryKey = 'gibbonLibraryItemID';
-    private static $searchableColumns = ['gibbonLibraryItem.name', 'gibbonLibraryItem.producer'];
+    private static $searchableColumns = ['gibbonLibraryItem.name', 'gibbonLibraryItem.producer', 'gibbonLibraryItem.id'];
 
     public function queryLendingDetail(QueryCriteria $criteria)
     {
@@ -454,8 +454,10 @@ class LibraryGateway extends QueryableGateway
           "gibbonLibraryItem.gibbonLibraryItemID",
           "gibbonLibraryItem.gibbonLibraryTypeID",
           "gibbonLibraryItem.imageLocation",
+          "gibbonLibraryItem.status",
         ])
-        ->where("gibbonLibraryItem.imageLocation IS NOT NULL AND gibbonLibraryItem.imageLocation != ''");
+        ->where("gibbonLibraryItem.imageLocation IS NOT NULL AND gibbonLibraryItem.imageLocation != ''")
+        ->where("gibbonLibraryItem.status IN ('Available','On Loan','Repair')");
 
         $criteria->addFilterRules([
         'name' => function ($query, $name) {
