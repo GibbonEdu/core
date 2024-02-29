@@ -326,7 +326,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             return $group;
                         }, []);
 
-                        echo '<div class="column-no-break">';
+                        echo '<div class="overflow-x-scroll max-w-xs" >';
                         echo '<h2>';
                         echo __('Message Wall');
                         echo '</h2>';
@@ -346,7 +346,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             } elseif (count($unpinnedMessages) == 2) {
                                 $height = 197;
                             }
-                            echo "<table id='messageWallWidget' style='width: 100%; height: ".$height."px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
+                            echo "<table id='messageWallWidget' style='width: w-auto; height: ".$height."px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
                             //Content added by JS
                             $rand = rand(0, count($unpinnedMessages));
                             $total = count($unpinnedMessages);
@@ -360,7 +360,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
                                 echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
                                 //Image
-                                $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
+                                $style = "style='width: 45px; height: 50px; float: right; margin-left: 6px; border: 1px solid black'";
                                 if (empty($message['image_240']) or (!empty($message['photo']) and !file_exists($this->session->get('absolutePath').'/'.$message['photo']))) {
                                     echo "<img $style  src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/anonymous_75.jpg'/>";
                                 } else {
