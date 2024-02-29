@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             // Check for tables and views to remove, and remove them
             $tables = null;
             if (isset($_POST['remove'])) {
-                $tables = $_POST['remove'];
+                $tables = $_POST['remove'] ?? [];
             }
             if (is_array($tables)) {
                 if (count($tables) > 0) {

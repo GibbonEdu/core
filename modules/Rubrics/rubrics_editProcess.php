@@ -75,20 +75,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     header("Location: {$URL}");
                 } else {
                     //Proceed!
-                    $scope = $_POST['scope'];
+                    $scope = $_POST['scope'] ?? '';
                     $gibbonDepartmentID = null;
                     if ($scope == 'Learning Area') {
-                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
                     }
-                    $name = $_POST['name'];
-                    $active = $_POST['active'];
-                    $category = $_POST['category'];
-                    $description = $_POST['description'];
+                    $name = $_POST['name'] ?? '';
+                    $active = $_POST['active'] ?? '';
+                    $category = $_POST['category'] ?? '';
+                    $description = $_POST['description'] ?? '';
                     $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList']) ? implode(',', $_POST['gibbonYearGroupIDList']) : '';
                     $gibbonScaleID = null;
                     if (isset($_POST['gibbonScaleID'])) {
                         if ($_POST['gibbonScaleID'] != '') {
-                            $gibbonScaleID = $_POST['gibbonScaleID'];
+                            $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
                         }
                     }
 

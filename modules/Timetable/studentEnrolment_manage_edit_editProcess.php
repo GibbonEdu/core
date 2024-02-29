@@ -59,7 +59,7 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonPersonID == ''
             } else {
                 //Validate Inputs
                 $values = $result->fetch();
-                $role = $_POST['role'];
+                $role = $_POST['role'] ?? '';
 
                 if ($role == '') {
                     $URL .= '&return=error3';

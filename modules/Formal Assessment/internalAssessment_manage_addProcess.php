@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             if ($_POST['gibbonScaleIDAttainment'] == '') {
                 $gibbonScaleIDAttainment = null;
             } else {
-                $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'];
+                $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'] ?? '';
             }
         }
         //Sort out effort
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             if ($_POST['gibbonScaleIDEffort'] == '') {
                 $gibbonScaleIDEffort = null;
             } else {
-                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'];
+                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'] ?? '';
             }
         }
         $comment = $_POST['comment'] ?? '';

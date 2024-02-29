@@ -39,6 +39,7 @@ v27.0.00
         Students: add an Upcoming Students option to the Students by House report
         Staff: added anchor links for Job Openings page, enabling easier external linking
         Staff: added status filter to Staff Absence and Coverage Summaries to display only Full staff by default
+        Staff: added a notification to inform staff of first aid qualification that are expiring soon
         Timetable: added basic information table to the View Timetable by Facility report
         Timetable: added timetable iCal Export buttons to staff and student profiles
         User Admin: added an option to disable the display of privacy options, so they can be managed internally

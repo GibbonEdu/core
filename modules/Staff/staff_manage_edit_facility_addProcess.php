@@ -57,8 +57,8 @@ if ($gibbonStaffID == '' or $gibbonPersonID == '') { echo 'Fatal error loading t
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $gibbonSpaceID = $_POST['gibbonSpaceID'];
-                $usageType = $_POST['usageType'];
+                $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? '';
+                $usageType = $_POST['usageType'] ?? '';
 
                 if ($gibbonSpaceID == '') {
                     $URL .= '&return=error1&step=1';

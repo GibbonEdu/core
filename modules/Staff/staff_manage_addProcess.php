@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $gibbonPersonID = $_POST['gibbonPersonID'];
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
     $initials = $_POST['initials'] ?? '';
     if ($initials == '') {
         $initials = null;

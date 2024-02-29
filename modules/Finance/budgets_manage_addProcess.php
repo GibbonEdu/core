@@ -77,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
             $partialFail = false;
             $staff = array();
             if (isset($_POST['staff'])) {
-                $staff = $_POST['staff'];
+                $staff = $_POST['staff'] ?? [];
             }
-            $access = $_POST['access'];
+            $access = $_POST['access'] ?? '';
             if ($access != 'Full' and $access != 'Write' and $access != 'Read') {
                 $role = 'Read';
             }
