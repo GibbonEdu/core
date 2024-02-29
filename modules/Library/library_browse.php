@@ -151,15 +151,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             ]);
     } else {
         $gateway = $container->get(LibraryGateway::class);
-        $criteria = $gateway->newQueryCriteria()
-            ->sortBy('id')
-            ->filterBy('name', $name)
-            ->filterBy('producer', $producer)
-            ->filterBy('type', $type)
-            ->filterBy('collection', $collection)
-            ->filterBy('location', ($locationToggle == 'on') ? $location : 'Library')
-            ->filterBy('everything', $everything)
-            ->fromPOST();
 
         $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
         $typeFields = $pdo->select($sql)->fetchGroupedUnique();
@@ -169,6 +160,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             $locationSql = "SELECT gibbonSpace.name FROM gibbonSpace WHERE gibbonSpaceID = ".$location;
             $locationName = $pdo->select($locationSql)->fetch();
         }
+
+        $criteria = $gateway->newQueryCriteria()
+            ->sortBy('id')
+            ->filterBy('name', $name)
+            ->filterBy('producer', $producer)
+            ->filterBy('type', $type)
+            ->filterBy('collection', $collection)
+            ->filterBy('location', ($locationToggle == 'on') ? $locationName['name'] : 'Library')
+            ->filterBy('everything', $everything)
+            ->fromPOST();
 
         $searchItems = $gateway->queryBrowseItems($criteria)->toArray();
         $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $locationName['name']];

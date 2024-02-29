@@ -190,7 +190,7 @@ class LibraryGateway extends QueryableGateway
             },
             'location' => function ($query, $location) {
                 return $query
-                    ->where('gibbonSpace.gibbonSpaceID LIKE :location')
+                    ->where('gibbonSpace.name LIKE :location')
                     ->bindValue('location', $location);
             },
             'everything' => function ($query, $needle) {
