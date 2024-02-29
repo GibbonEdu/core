@@ -89,12 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         //Scan through staff
         $staff = array();
         if (isset($_POST['staff'])) {
-            $staff = $_POST['staff'];
+            $staff = $_POST['staff'] ?? '';
         }
         if ($type == 'Learning Area') {
-            $role = $_POST['roleLA'];
+            $role = $_POST['roleLA'] ?? '';
         } elseif ($type == 'Administration') {
-            $role = $_POST['roleAdmin'];
+            $role = $_POST['roleAdmin'] ?? '';
         }
         if ($role == '') {
             $role = 'Other';

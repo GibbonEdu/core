@@ -64,8 +64,8 @@ if ($proceed == false) {
     $firstName = trim($_POST['firstName']);
     $preferredName = trim($firstName);
     $officialName = $firstName.' '.$surname;
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
+    $gender = $_POST['gender'] ?? '';
+    $dob = $_POST['dob'] ?? '';
     if ($dob == '') {
         $dob = null;
     } else {
@@ -74,7 +74,7 @@ if ($proceed == false) {
     $email = trim($_POST['email']);
     $emailAlternate = (!empty($_POST['emailAlternate']) ? trim($_POST['emailAlternate']) : '');
     $username = trim($_POST['usernameCheck']);
-    $password = $_POST['passwordNew'];
+    $password = $_POST['passwordNew'] ?? '';
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);
     $status = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultStatus');

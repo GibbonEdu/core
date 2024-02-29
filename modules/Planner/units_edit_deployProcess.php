@@ -92,8 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                         if (strpos($order, 'lessonHeader-') !== false) {
                             $summary = 'Part of the '.$row['name'].' unit.';
                             $teachersNotes = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'teachersNotesTemplate');
-                            $viewableStudents = $_POST['viewableStudents'];
-                            $viewableParents = $_POST['viewableParents'];
+                            $viewableStudents = $_POST['viewableStudents'] ?? 'N';
+                            $viewableParents = $_POST['viewableParents'] ?? 'N';
 
                             try {
                                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $_POST["date$lessonCount"], 'timeStart' => $_POST["timeStart$lessonCount"], 'timeEnd' => $_POST["timeEnd$lessonCount"], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonPersonIDLastEdit' => $session->get('gibbonPersonID'));

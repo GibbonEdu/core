@@ -27,7 +27,7 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML']);
 
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_edit.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_edit.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.($_POST['gibbonSchoolYearID'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_edit.php') == false) {
     $URL .= '&return=error0';

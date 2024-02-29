@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
 
     if ($name == '' or $nameShort == '') {
         $URL .= '&return=error1';

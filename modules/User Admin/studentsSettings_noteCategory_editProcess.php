@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $name = $_POST['name'];
-            $active = $_POST['active'];
-            $template = $_POST['template'];
+            $name = $_POST['name'] ?? '';
+            $active = $_POST['active'] ?? '';
+            $template = $_POST['template'] ?? '';
 
             //Validate Inputs
             if ($name == '' or $active == '') {

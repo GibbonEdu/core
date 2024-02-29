@@ -25,7 +25,7 @@ include '../../gibbon.php';
 
 $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-$action = $_POST['action'];
+$action = $_POST['action'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID";
 

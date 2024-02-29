@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     ];
 
     if (!empty($_POST['options'])) {
-        $data['options'] = $_POST['options'];
+        $data['options'] = $_POST['options'] ?? '';
     }
 
     // Validate the required values are present

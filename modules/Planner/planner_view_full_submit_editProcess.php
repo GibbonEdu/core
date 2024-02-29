@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 include './moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].($_POST['params'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_submit_edit.php') == false) {
     $URL .= '&return=error0';
@@ -67,10 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 } else {
                     if ($_POST['submission'] == 'true') {
                         $submission = true;
-                        $gibbonPlannerEntryHomeworkID = $_POST['gibbonPlannerEntryHomeworkID'];
+                        $gibbonPlannerEntryHomeworkID = $_POST['gibbonPlannerEntryHomeworkID'] ?? '';
                     } else {
                         $submission = false;
-                        $gibbonPersonID = $_POST['gibbonPersonID'];
+                        $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
                     }
 
                     $type = $_POST['type'] ?? '';

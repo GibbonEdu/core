@@ -192,12 +192,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                     echo $form->getOutput();
 
                 } elseif ($step == 2) {
-                    $gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'];
-                    $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-                    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
+                    $gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'] ?? '';
+                    $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+                    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
                     $duplicate = null;
                     if (isset($_POST['duplicate'])) {
-                        $duplicate = $_POST['duplicate'];
+                        $duplicate = $_POST['duplicate'] ?? '';
                     }
                     if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '') {
                         $page->addError(__('You have not specified one or more required parameters.'));

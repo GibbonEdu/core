@@ -76,12 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                 } else {
                     $row = $result->fetch();
                     //Proceed!
-                    $scope = $_POST['scope'];
+                    $scope = $_POST['scope'] ?? '';
                     $gibbonDepartmentID = null;
                     if ($scope == 'Learning Area') {
                         $gibbonDepartmentID = !empty($_POST['gibbonDepartmentID'])? $_POST['gibbonDepartmentID'] : $row['gibbonDepartmentID'];
                     }
-                    $name = $_POST['name'];
+                    $name = $_POST['name'] ?? '';
 
                     if ($scope == '' or ($scope == 'Learning Area' and $gibbonDepartmentID == null) or $name == '') {
                         $URL .= '&return=error3';

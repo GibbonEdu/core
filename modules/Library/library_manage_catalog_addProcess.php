@@ -62,10 +62,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $replacementCost = null;
     if ($replacement == 'Y') {
         if ($_POST['gibbonSchoolYearIDReplacement'] != '') {
-            $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'];
+            $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'] ?? '';
         }
         if ($_POST['replacementCost'] != '') {
-            $replacementCost = $_POST['replacementCost'];
+            $replacementCost = $_POST['replacementCost'] ?? '';
         }
     } else {
         $replacement == 'N';

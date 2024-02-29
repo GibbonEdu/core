@@ -92,10 +92,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $replacementCost = null;
     if ($replacement == 'Y') {
         if ($_POST['gibbonSchoolYearIDReplacement'] != '') {
-            $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'];
+            $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'] ?? '';
         }
         if ($_POST['replacementCost'] != '') {
-            $replacementCost = $_POST['replacementCost'];
+            $replacementCost = $_POST['replacementCost'] ?? '';
         }
     } else {
         $replacement == 'N';
@@ -106,9 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $ownershipType = $_POST['ownershipType'] ?? '';
     $gibbonPersonIDOwnership = null;
     if ($ownershipType == 'School' and $_POST['gibbonPersonIDOwnershipSchool'] != '') {
-        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'];
+        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'] ?? '';
     } elseif ($ownershipType == 'Individual' and $_POST['gibbonPersonIDOwnershipIndividual'] != '') {
-        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'];
+        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'] ?? '';
     }
     $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
     $bookable = $_POST['bookable'] ?? '';
