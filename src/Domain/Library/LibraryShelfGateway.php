@@ -51,9 +51,8 @@ class LibraryShelfGateway extends QueryableGateway
     }
 
     public function selectDisplayableCategories() {
-         // Build the type/collection arrays
+    // Build the type/collection arrays
     $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-    //$result = $pdo->select($sql);
     $result = $this->db()->select($sql);
     
     $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : array();

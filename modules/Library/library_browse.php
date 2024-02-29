@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -37,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     //Proceed!
     //Get display settings
     $settingGateway = $container->get(SettingGateway::class);
-
 
     //Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
@@ -72,43 +72,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
 
     $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('fullWidth blank border-transparent mb-6');
-    $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
-    $row = $form->addRow()->addClass('grid sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4');
-    $row->addTextField('everything')->setClass('fullWidth sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
-    $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
-
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
+
+    $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
+
+    $row = $form->addRow()->addClass('grid sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4');
+        $row->addTextField('everything')->setClass('fullWidth sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
+        $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
 
     $row = $form->addRow();
         $row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('name', __('Title'));
-    $col->setClass('');
-    $col->addTextField('name')->setClass('fullWidth')->setValue($name);
+        $col->addLabel('name', __('Title'));
+        $col->setClass('');
+        $col->addTextField('name')->setClass('fullWidth')->setValue($name);
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('producer', __('Author/Producer'));
-    $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
+        $col->addLabel('producer', __('Author/Producer'));
+        $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
 
     $form->toggleVisibilityByClass('allLocations')->onCheckbox('locationToggle')->when('on');
 
     $col = $row->addColumn()->setClass('allLocations quarterWidth');
-    $col->addLabel('location', __('Location'));
-    $col->addTextField('location')->setClass('fullWidth')->setValue($location);
+        $col->addLabel('location', __('Location'));
+        $col->addSelectSpace('location')->setClass('fullWidth')->setValue($location)->placeHolder()->selected($location);
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('type', __('Type'));
-    $col->addSelect('type')
+        $col->addLabel('type', __('Type'));
+        $col->addSelect('type')
         ->fromArray($types)
         ->setClass('fullWidth')
         ->selected($type)
         ->placeholder();
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('collection', __('Collection'));
-    $col->addSelect('collection')
+        $col->addLabel('collection', __('Collection'));
+        $col->addSelect('collection')
         ->fromArray($collections)
         ->chainedTo('type', $collectionsChained)
         ->setClass('fullWidth')
@@ -116,10 +118,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->placeholder();
         
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
+        $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
 
     $row = $form->addRow();
-    $row->addAdvancedOptionsToggle()->addClass('pt-2');
+        $row->addAdvancedOptionsToggle()->addClass('pt-2');
 
     echo $form->getOutput();
 
@@ -127,6 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         //SHELF TEMPLATE
         $shelfGateway = $container->get(LibraryShelfGateway::class);
         $itemGateway = $container->get(LibraryShelfItemGateway::class);
+
         $criteria = $shelfGateway->newQueryCriteria(true)
             ->sortBy(['sequenceNumber', 'name'])
             ->filterBy('active', 'Y')
@@ -147,9 +150,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             'shelfNames' => $shelfNames,
             ]);
     } else {
-        $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
-        $typeFields = $pdo->select($sql)->fetchGroupedUnique();
-
         $gateway = $container->get(LibraryGateway::class);
         $criteria = $gateway->newQueryCriteria()
             ->sortBy('id')
@@ -160,52 +160,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             ->filterBy('location', ($locationToggle == 'on') ? $location : 'Library')
             ->filterBy('everything', $everything)
             ->fromPOST();
+
+        $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
+        $typeFields = $pdo->select($sql)->fetchGroupedUnique();
+        $locationName = ['name' => ''];
+        
+        if(!empty($location)) {
+            $locationSql = "SELECT gibbonSpace.name FROM gibbonSpace WHERE gibbonSpaceID = ".$location;
+            $locationName = $pdo->select($locationSql)->fetch();
+        }
+
         $searchItems = $gateway->queryBrowseItems($criteria)->toArray();
-        $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $location];
+        $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $locationName['name']];
+        
         echo $page->fetchFromTemplate('librarySearch.twig.html', [
             'searchItems' => $searchItems,
             'searchTerms' => $searchTerms,
             ]);
     }
-    
-
-    //Cache TypeFields
-    
-
-    // $table = DataTable::createPaginated('books', $criteria);
-
-    // $table->addExpandableColumn('details')->format(function ($item) {
-    //     $typeFields = json_decode($item['fields'], true);
-    //     $details = "<table class='smallIntBorder' style='width:100%;'>";
-    //     foreach ($typeFields as $fieldName => $fieldValue) {
-    //         $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($fieldName), $fieldValue);
-    //     }
-    //     $details .= "</table>";
-    //     return $details;
-    // });
-
-    // $table->addColumn('imageLocation', __('Cover Art'))->notSortable()->format(function ($item) {
-    //     return Format::photo($item['imageLocation']);
-    // });
-
-    // $table->addColumn('name', __('Name'))
-    //     ->description(__('Author/Producer'))
-    //     ->format(function ($item) {
-    //         return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['name'], __($item['producer']));
-    //     });
-
-    // $table->addColumn('id', __('ID'))
-    //     ->description(__('Status'))
-    //     ->format(function ($item) {
-    //         return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['id'], __($item['status']));
-    //     });
-
-    // $table->addColumn('spaceName', __('Location'))
-    //     ->sortable(['spaceName', 'locationDetail'])
-    //     ->format(function ($item) {
-    //         return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['spaceName'], $item['locationDetail']);
-    //     });
-
-    // echo $table->render($searchItems);
 
 }

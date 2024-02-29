@@ -21,9 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
-use Gibbon\Comms\NotificationEvent;
-use Gibbon\Services\Format;
-use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 $action = $_POST['action'] ?? '';
@@ -44,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         exit;
     } 
     
-    // Check if person specified
+    // Check if items specified
     if (empty($items)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");

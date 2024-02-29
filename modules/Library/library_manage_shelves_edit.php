@@ -24,7 +24,6 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Library\LibraryShelfGateway;
 use Gibbon\Domain\Library\LibraryShelfItemGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
-use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_shelves_edit.php') == false) {
     // Access denied

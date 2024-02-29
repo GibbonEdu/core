@@ -157,6 +157,8 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryItem.timestampCreator',
                 'gibbonLibraryItem.gibbonPersonIDUpdate',
                 'JSON_EXTRACT(gibbonLibraryItem.fields , "$.Description") as description',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , "$.Subjects") as subjects',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , \'$."Search Terms"\') as searchTerms',
                 'gibbonLibraryItem.timestampUpdate'
             ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
@@ -188,7 +190,7 @@ class LibraryGateway extends QueryableGateway
             },
             'location' => function ($query, $location) {
                 return $query
-                    ->where('gibbonSpace.name LIKE :location')
+                    ->where('gibbonSpace.gibbonSpaceID LIKE :location')
                     ->bindValue('location', $location);
             },
             'everything' => function ($query, $needle) {
@@ -402,31 +404,6 @@ class LibraryGateway extends QueryableGateway
 
         return $this->db()->update($sql, $data);
     }
-
-    public function queryLibraryShelves(QueryCriteria $criteria)
-    {
-        $query = $this
-            ->newQuery()
-            ->from($this->getTableName())
-            ->cols([
-                'gibbonLibraryShelf.gibbonLibraryShelfID',
-                'gibbonLibraryShelf.name',
-                'gibbonLibraryShelf.active',
-                'gibbonLibraryShelf.field',
-                'gibbonLibraryShelf.fieldValue',
-                'gibbonLibraryShelf.type',
-            ]);
-
-        $criteria->addFilterRules([
-            'name' => function ($query, $name) {
-                return $query
-                    ->where('gibbonLibraryItem.name LIKE :name')
-                    ->bindValue('name', '%' . $name . '%');
-            }
-        ]);
-        return $this->runQuery($query, $criteria);
-    }
-
 
     public function selectItemsByTypeFields($libraryType, $field, $fieldValue)
     {

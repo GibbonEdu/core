@@ -56,7 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         exit;
     }
     
-
     // Validate that this person doesn't already have a record
     if (!$shelfGateway->unique($data, ['name'])) {
         $URL .= '&return=error7';
