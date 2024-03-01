@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     //$gibbonLibraryTypeID = isset($_POST['gibbonLibraryTypeID'])? $_POST['gibbonLibraryTypeID'] : '';
     $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'];
     
-    if(!empty($shelfItems) && $data['type'] == 'manual') {
+    if(!empty($shelfItems) && $data['type'] == 'Manual') {
         foreach($shelfItems as $item) {
             $itemGateway->insertShelfItem($item, $gibbonLibraryShelfID);
         }
