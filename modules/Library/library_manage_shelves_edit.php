@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly()
             ->required();
 
-    } elseif($values['type'] == 'MANUAL') {
+    } elseif($values['type'] == 'Manual') {
         $row = $form->addRow();
         $row->addLabel('fieldValue', __('Custom Sub-Category'));
         $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly();
