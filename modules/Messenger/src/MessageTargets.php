@@ -90,8 +90,8 @@ class MessageTargets
         //Role Categories
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
             if (!empty($_POST['roleCategory']) && $_POST['roleCategory'] == 'Y') {
-                $choices=$_POST['roleCategories'] ?? '';
-                if ($choices!="") {
+                $choices=$_POST['roleCategories'] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t);
@@ -110,14 +110,14 @@ class MessageTargets
         //Year Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
             if ($_POST["yearGroup"]=="Y") {
-                $staff = $_POST["yearGroupsStaff"] ?? '';
-                $students = $_POST["yearGroupsStudents"] ?? '';
+                $staff = $_POST["yearGroupsStaff"] ?? [];
+                $students = $_POST["yearGroupsStudents"] ?? [];
                 $parents="N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
-                    $parents = $_POST["yearGroupsParents"] ?? '';
+                    $parents = $_POST["yearGroupsParents"] ?? [];
                 }
                 $choices = $_POST["yearGroups"] ?? [];
-                if ($choices!="") {
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -136,14 +136,14 @@ class MessageTargets
         //Form Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
             if ($_POST["formGroup"]=="Y") {
-                $staff = $_POST["formGroupsStaff"] ?? '';
-                $students = $_POST["formGroupsStudents"] ?? '';
+                $staff = $_POST["formGroupsStaff"] ?? [];
+                $students = $_POST["formGroupsStudents"] ?? [];
                 $parents="N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-                    $parents = $_POST["formGroupsParents"] ?? '';
+                    $parents = $_POST["formGroupsParents"] ?? [];
                 }
-                $choices = $_POST["formGroups"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["formGroups"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -162,14 +162,14 @@ class MessageTargets
         //Course Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
             if ($_POST["course"]=="Y") {
-                $staff = $_POST["coursesStaff"] ?? '';
-                $students = $_POST["coursesStudents"] ?? '';
+                $staff = $_POST["coursesStaff"] ?? [];
+                $students = $_POST["coursesStudents"] ?? [];
                 $parents="N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
-                    $parents = $_POST["coursesParents"] ?? '';
+                    $parents = $_POST["coursesParents"] ?? [];
                 }
-                $choices = $_POST["courses"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["courses"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -188,14 +188,14 @@ class MessageTargets
         //Class Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
             if ($_POST["class"]=="Y") {
-                $staff = $_POST["classesStaff"] ?? '';
-                $students = $_POST["classesStudents"] ?? '';
+                $staff = $_POST["classesStaff"] ?? [];
+                $students = $_POST["classesStudents"] ?? [];
                 $parents="N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
-                    $parents = $_POST["classesParents"] ?? '';
+                    $parents = $_POST["classesParents"] ?? [];
                 }
-                $choices = $_POST["classes"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["classes"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -214,14 +214,14 @@ class MessageTargets
         //Activity Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
             if ($_POST["activity"]=="Y") {
-                $staff = $_POST["activitiesStaff"] ?? '';
-                $students = $_POST["activitiesStudents"] ?? '';
+                $staff = $_POST["activitiesStaff"] ?? [];
+                $students = $_POST["activitiesStudents"] ?? [];
                 $parents="N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
-                    $parents = $_POST["activitiesParents"] ?? '';
+                    $parents = $_POST["activitiesParents"] ?? [];
                 }
-                $choices = $_POST["activities"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["activities"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -242,8 +242,8 @@ class MessageTargets
             if ($_POST["applicants"]=="Y") {
                 $students = $_POST["applicantsStudents"] ;
                 $parents = $_POST["applicantsParents"] ;
-                $choices = $_POST["applicantList"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["applicantList"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
@@ -262,8 +262,8 @@ class MessageTargets
         //Houses
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
             if ($_POST["houses"]=="Y") {
-                $choices = $_POST["houseList"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["houseList"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
@@ -282,14 +282,14 @@ class MessageTargets
         //Transport
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
             if ($_POST["transport"]=="Y") {
-                        $staff = $_POST["transportStaff"] ?? '';
-                        $students = $_POST["transportStudents"] ?? '';
+                        $staff = $_POST["transportStaff"] ?? [];
+                        $students = $_POST["transportStudents"] ?? [];
                         $parents="N";
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
-                $parents = $_POST["transportParents"] ?? '';
+                $parents = $_POST["transportParents"] ?? [];
             }
-            $choices = $_POST["transports"] ?? '';
-            if ($choices!="") {
+            $choices = $_POST["transports"] ?? [];
+            if (!empty($choices)) {
                 foreach ($choices as $t) {
                 try {
                     $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents, "staff"=>$staff);
@@ -308,10 +308,10 @@ class MessageTargets
         //Attendance
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
             if ($_POST["attendance"]=="Y") {
-            $choices = $_POST["attendanceStatus"] ?? '';
-            $students = $_POST["attendanceStudents"] ?? '';
-            $parents = $_POST["attendanceParents"] ?? '';
-            if ($choices!="") {
+            $choices = $_POST["attendanceStatus"] ?? [];
+            $students = $_POST["attendanceStudents"] ?? [];
+            $parents = $_POST["attendanceParents"] ?? [];
+            if (!empty($choices)) {
                 foreach ($choices as $t) {
                 try {
                     $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents);
@@ -330,14 +330,14 @@ class MessageTargets
         //Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my")) {
             if ($_POST["group"] == "Y") {
-                $staff = $_POST["groupsStaff"] ?? '';
-                $students = $_POST["groupsStudents"] ?? '';
+                $staff = $_POST["groupsStaff"] ?? [];
+                $students = $_POST["groupsStudents"] ?? [];
                 $parents = "N";
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
-                    $parents = $_POST["groupsParents"] ?? '';
+                    $parents = $_POST["groupsParents"] ?? [];
                 }
-                $choices = $_POST["groups"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["groups"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -356,8 +356,8 @@ class MessageTargets
         //Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             if ($_POST["individuals"]=="Y") {
-                $choices = $_POST["individualList"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["individualList"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
@@ -405,8 +405,8 @@ class MessageTargets
         //Roles
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
             if ($_POST["role"]=="Y") {
-                $choices=$_POST["roles"] ;
-                if ($choices!="") {
+                $choices=$_POST["roles"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("AI"=>$AI, "t"=>$t);
@@ -494,8 +494,8 @@ class MessageTargets
         //Role Categories
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
             if ($_POST["roleCategory"]=="Y") {
-                $choices=$_POST["roleCategories"] ;
-                if ($choices!="") {
+                $choices=$_POST["roleCategories"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("AI"=>$AI, "t"=>$t);
@@ -585,8 +585,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
                     $parents=$_POST["yearGroupsParents"] ;
                 }
-                $choices=$_POST["yearGroups"] ;
-                if ($choices!="") {
+                $choices=$_POST["yearGroups"]  ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("AI"=>$AI, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -762,8 +762,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
                     $parents=$_POST["formGroupsParents"] ;
                 }
-                $choices=$_POST["formGroups"] ;
-                if ($choices!="") {
+                $choices=$_POST["formGroups"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("AI"=>$AI, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -920,8 +920,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
                     $parents=$_POST["coursesParents"] ;
                 }
-                $choices=$_POST["courses"] ;
-                if ($choices!="") {
+                $choices=$_POST["courses"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -1104,8 +1104,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
                     $parents=$_POST["classesParents"] ;
                 }
-                $choices=$_POST["classes"] ;
-                if ($choices!="") {
+                $choices=$_POST["classes"] ?? [];;
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -1289,8 +1289,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
                     $parents=$_POST["activitiesParents"] ;
                 }
-                $choices=$_POST["activities"] ;
-                if ($choices!="") {
+                $choices=$_POST["activities"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -1446,8 +1446,8 @@ class MessageTargets
                 $parents = $_POST["applicantsParents"] ;
                 $applicantsWhere = "AND NOT gibbonApplicationForm.status IN ('Waiting List', 'Rejected', 'Withdrawn', 'Pending')";
 
-                $choices=$_POST["applicantList"] ;
-                if ($choices!="") {
+                $choices=$_POST["applicantList"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "students" => $students, "parents" => $parents);
@@ -1639,8 +1639,8 @@ class MessageTargets
         //Houses
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
             if ($_POST["houses"]=="Y") {
-                $choices=$_POST["houseList"] ;
-                if ($choices!="") {
+                $choices=$_POST["houseList"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
@@ -1696,8 +1696,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
                     $parents=$_POST["transportParents"] ;
                 }
-                $choices=$_POST["transports"] ;
-                if ($choices!="") {
+                $choices=$_POST["transports"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("AI"=>$AI, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -1848,10 +1848,10 @@ class MessageTargets
         //Target Absent students / Attendance Status
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
             if ($_POST["attendance"]=="Y") {
-                $choices = $_POST["attendanceStatus"] ?? '';
-                $students = $_POST["attendanceStudents"] ?? '';
-                $parents = $_POST["attendanceParents"] ?? '';
-                if ($choices!="") {
+                $choices = $_POST["attendanceStatus"] ?? [];
+                $students = $_POST["attendanceStudents"] ?? [];
+                $parents = $_POST["attendanceParents"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("AI"=>$AI, "t"=>$t, "students"=>$students, "parents"=>$parents);
@@ -2005,8 +2005,8 @@ class MessageTargets
                 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
                     $parents=$_POST["groupsParents"] ;
                 }
-                $choices=$_POST["groups"] ;
-                if ($choices!="") {
+                $choices=$_POST["groups"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
@@ -2153,8 +2153,8 @@ class MessageTargets
         //Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             if ($_POST["individuals"]=="Y") {
-                $choices=$_POST["individualList"] ;
-                if ($choices!="") {
+                $choices=$_POST["individualList"] ?? [];
+                if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
                             $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
