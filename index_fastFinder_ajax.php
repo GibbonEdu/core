@@ -82,6 +82,23 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
         }
     }
 
+    // DEPARTMENT
+    if ($departmentIsAccessible == true) {
+        try {
+            $data = array('search' => '%'.$searchTerm.'%');
+            $sql = "SELECT gibbonDepartment.gibbonDepartmentID AS id,
+                    gibbonDepartment.name AS name,
+                    gibbonDepartment.type as type
+                    FROM gibbonDepartment
+                    WHERE gibbonDepartment.name LIKE :search 
+                    ORDER BY name";
+            $resultList = $connection2->prepare($sql);
+            $resultList->execute($data);
+        } catch (PDOException $e) { die($resultError); }
+
+        if ($resultList->rowCount() > 0) $resultSet['Department'] = $resultList->fetchAll();
+    }
+    
     // CLASSES
     if ($classIsAccessible) {
         try {
@@ -152,23 +169,6 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
         } catch (PDOException $e) { die($resultError); }
 
         if ($resultList->rowCount() > 0) $resultSet['Facility'] = $resultList->fetchAll();
-    }
-
-    // DEPARTMENT
-    if ($departmentIsAccessible == true) {
-        try {
-            $data = array('search' => '%'.$searchTerm.'%');
-            $sql = "SELECT gibbonDepartment.gibbonDepartmentID AS id,
-                    gibbonDepartment.name AS name,
-                    gibbonDepartment.type as type
-                    FROM gibbonDepartment
-                    WHERE gibbonDepartment.name LIKE :search 
-                    ORDER BY name";
-            $resultList = $connection2->prepare($sql);
-            $resultList->execute($data);
-        } catch (PDOException $e) { die($resultError); }
-
-        if ($resultList->rowCount() > 0) $resultSet['Department'] = $resultList->fetchAll();
     }
 
     // STUDENTS
