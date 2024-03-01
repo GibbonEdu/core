@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                         FROM gibbonCourseClass
                                         LEFT JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID)
                                         WHERE gibbonCourseID=:gibbonCourseID
-                                        ORDER BY name";
+                                        ORDER BY gibbonCourseClass.nameShort";
                             $resultClass = $pdo->select($sqlClass, $dataClass)->toDataSet();
 
                             if (count($resultClass) == 0) {
