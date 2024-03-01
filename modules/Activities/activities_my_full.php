@@ -214,7 +214,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                         echo '</ul>';
                     }
 
-
                         $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp";
                         $resultStudents = $connection2->prepare($sqlStudents);
