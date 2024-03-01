@@ -67,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
             $row->addSelect('type')
                 ->required()
                 ->fromArray([
-                    'automatic' => __('Automatic'),
-                    'manual' => __('Manual')
+                    'Automatic' => __('Automatic'),
+                    'Manual' => __('Manual')
                 ])
                 ->placeholder('Please select...')
                 ->selected($urlParams['type']);
