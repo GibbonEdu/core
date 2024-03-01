@@ -22,31 +22,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
 
-function getIPAddress() {
+function getIPAddress()
+{
     $return = false;
 
     if (getenv('HTTP_CLIENT_IP'))
-       $return = getenv('HTTP_CLIENT_IP');
-    else if(getenv('HTTP_X_FORWARDED_FOR'))
-       $return = getenv('HTTP_X_FORWARDED_FOR');
-    else if(getenv('HTTP_X_FORWARDED'))
-       $return = getenv('HTTP_X_FORWARDED');
-    else if(getenv('HTTP_FORWARDED_FOR'))
-       $return = getenv('HTTP_FORWARDED_FOR');
-    else if(getenv('HTTP_FORWARDED'))
-      $return = getenv('HTTP_FORWARDED');
-    else if(getenv('REMOTE_ADDR'))
-       $return = getenv('REMOTE_ADDR');
+        $return = getenv('HTTP_CLIENT_IP');
+    else if (getenv('HTTP_X_FORWARDED_FOR'))
+        $return = getenv('HTTP_X_FORWARDED_FOR');
+    else if (getenv('HTTP_X_FORWARDED'))
+        $return = getenv('HTTP_X_FORWARDED');
+    else if (getenv('HTTP_FORWARDED_FOR'))
+        $return = getenv('HTTP_FORWARDED_FOR');
+    else if (getenv('HTTP_FORWARDED'))
+        $return = getenv('HTTP_FORWARDED');
+    else if (getenv('REMOTE_ADDR'))
+        $return = getenv('REMOTE_ADDR');
 
     return $return;
 }
@@ -75,7 +73,7 @@ function emailBodyConvert($body)
     $return = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $return);
     $return = strip_tags($return, '<a>');
 
-    return $return ;
+    return $return;
 }
 
 /**
@@ -92,7 +90,7 @@ function emailBodyConvert($body)
  *
  * @return string The resulted translation string.
  */
-function __($text, $params=[], $options=[])
+function __($text, $params = [], $options = [])
 {
     global $gibbon, $guid; // For backwards compatibilty
 
@@ -189,12 +187,12 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
 {
     $return = false;
 
-    $return .= "<select name='$fieldName' id='$fieldName' style='width: ".$width."px'>";
+    $return .= "<select name='$fieldName' id='$fieldName' style='width: " . $width . "px'>";
 
-        $dataSelect = array('gibbonScaleID' => $gibbonScaleID);
-        $sqlSelect = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
+    $dataSelect = array('gibbonScaleID' => $gibbonScaleID);
+    $sqlSelect = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
+    $resultSelect = $connection2->prepare($sqlSelect);
+    $resultSelect->execute($dataSelect);
     $return .= "<option value=''></option>";
     $sequence = '';
     $descriptor = '';
@@ -214,9 +212,9 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
             }
         }
         if ($valueMode == 'value') {
-            $return .= "<option $selected value='".htmlPrep($rowSelect['value'])."'>".htmlPrep(__($rowSelect['value'])).'</option>';
+            $return .= "<option $selected value='" . htmlPrep($rowSelect['value']) . "'>" . htmlPrep(__($rowSelect['value'])) . '</option>';
         } else {
-            $return .= "<option $selected value='".htmlPrep($rowSelect['gibbonScaleGradeID'])."'>".htmlPrep(__($rowSelect['value'])).'</option>';
+            $return .= "<option $selected value='" . htmlPrep($rowSelect['gibbonScaleGradeID']) . "'>" . htmlPrep(__($rowSelect['value'])) . '</option>';
         }
     }
     $return .= '</select>';
@@ -271,12 +269,12 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
 function daysUntilNextBirthday($birthday)
 {
     $today = date('Y-m-d');
-    $btsString = substr($today, 0, 4).'-'.substr($birthday, 5);
+    $btsString = substr($today, 0, 4) . '-' . substr($birthday, 5);
     $bts = strtotime($btsString);
     $ts = time();
 
     if ($bts < $ts) {
-        $bts = strtotime(date('y', strtotime('+1 year')).'-'.substr($birthday, 5));
+        $bts = strtotime(date('y', strtotime('+1 year')) . '-' . substr($birthday, 5));
     }
 
     $days = ceil(($bts - $ts) / 86400);
@@ -363,24 +361,24 @@ function getPasswordPolicy($guid, $connection2)
 function getFastFinder($connection2, $guid)
 {
     global $session;
-    
+
     $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
-        $row->addFinder('fastFinderSearch')
-            ->fromAjax(Url::fromHandlerRoute('index_fastFinder_ajax.php'))
-            ->setClass('w-full text-white flex items-center')
-            ->setAria('label', __('Search'))
-            ->setParameter('hintText', __('Start typing a name...'))
-            ->setParameter('noResultsText', __('No results'))
-            ->setParameter('searchingText', __('Searching...'))
-            ->setParameter('tokenLimit', 1)
-            ->setParameter('arialabel', __('Fast Finder'))
-            ->addValidation('Validate.Presence', 'failureMessage: " "')
-            ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
+    $row->addFinder('fastFinderSearch')
+        ->fromAjax(Url::fromHandlerRoute('index_fastFinder_ajax.php'))
+        ->setClass('w-full text-white flex items-center')
+        ->setAria('label', __('Search'))
+        ->setParameter('hintText', __('Start typing a name...'))
+        ->setParameter('noResultsText', __('No results'))
+        ->setParameter('searchingText', __('Searching...'))
+        ->setParameter('tokenLimit', 1)
+        ->setParameter('arialabel', __('Fast Finder'))
+        ->addValidation('Validate.Presence', 'failureMessage: " "')
+        ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="' . __('Go') . '">');
 
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
@@ -415,10 +413,10 @@ function getAlert($guid, $connection2, $gibbonAlertLevelID)
     $output = false;
 
 
-        $dataAlert = array('gibbonAlertLevelID' => $gibbonAlertLevelID);
-        $sqlAlert = 'SELECT * FROM gibbonAlertLevel WHERE gibbonAlertLevelID=:gibbonAlertLevelID';
-        $resultAlert = $connection2->prepare($sqlAlert);
-        $resultAlert->execute($dataAlert);
+    $dataAlert = array('gibbonAlertLevelID' => $gibbonAlertLevelID);
+    $sqlAlert = 'SELECT * FROM gibbonAlertLevel WHERE gibbonAlertLevelID=:gibbonAlertLevelID';
+    $resultAlert = $connection2->prepare($sqlAlert);
+    $resultAlert->execute($dataAlert);
     if ($resultAlert->rowCount() == 1) {
         $rowAlert = $resultAlert->fetch();
         $output = array();
@@ -553,8 +551,8 @@ function getYearGroups($connection2)
         $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
         $result = $connection2->query($sql);
         while ($row = $result->fetch()) {
-            $output .= $row['gibbonYearGroupID'].',';
-            $output .= $row['name'].',';
+            $output .= $row['gibbonYearGroupID'] . ',';
+            $output .= $row['name'] . ',';
         }
     } catch (PDOException $e) {
     }
@@ -578,7 +576,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
         $years = explode(',', $ids);
         if (count($years) > 0 and $years[0] != '') {
             if (count($years) == $resultYears->rowCount()) {
-                $output = '<i>'.__('All').'</i>';
+                $output = '<i>' . __('All') . '</i>';
             } else {
                 try {
                     $dataYears = array();
@@ -586,10 +584,10 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                     for ($i = 0; $i < count($years); ++$i) {
                         if ($i == 0) {
                             $dataYears["year$i"] = $years[$i];
-                            $sqlYearsOr = $sqlYearsOr.' WHERE gibbonYearGroupID=:year'.$i;
+                            $sqlYearsOr = $sqlYearsOr . ' WHERE gibbonYearGroupID=:year' . $i;
                         } else {
                             $dataYears["year$i"] = $years[$i];
-                            $sqlYearsOr = $sqlYearsOr.' OR gibbonYearGroupID=:year'.$i;
+                            $sqlYearsOr = $sqlYearsOr . ' OR gibbonYearGroupID=:year' . $i;
                         }
                     }
 
@@ -617,7 +615,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                 }
             }
         } else {
-            $output = '<i>'.__('None').'</i>';
+            $output = '<i>' . __('None') . '</i>';
         }
     } catch (PDOException $e) {
     }
@@ -645,17 +643,17 @@ function getTerms($connection2, $gibbonSchoolYearID, $short = false)
     $output = false;
     //Scan through year groups
 
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+    $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     while ($row = $result->fetch()) {
-        $output .= $row['gibbonSchoolYearTermID'].',';
+        $output .= $row['gibbonSchoolYearTermID'] . ',';
         if ($short == true) {
-            $output .= $row['nameShort'].',';
+            $output .= $row['nameShort'] . ',';
         } else {
-            $output .= $row['name'].',';
+            $output .= $row['name'] . ',';
         }
     }
     if ($output != false) {
@@ -724,15 +722,15 @@ function getMaxUpload($multiple = false)
     $output .= "<div style='margin-top: 10px; font-style: italic; color: #c00'>";
     if ($multiple == true) {
         if ($post < $file) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post) . '<br/>';
         } else {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file) . '<br/>';
         }
     } else {
         if ($post < $file) {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $post).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $post) . '<br/>';
         } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $file).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $file) . '<br/>';
         }
     }
     $output .= '</div>';
@@ -766,10 +764,10 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
     $output = false;
 
 
-        $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-        $sqlAlert = 'SELECT * FROM gibbonPersonMedical JOIN gibbonPersonMedicalCondition ON (gibbonPersonMedical.gibbonPersonMedicalID=gibbonPersonMedicalCondition.gibbonPersonMedicalID) JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonAlertLevel.sequenceNumber DESC';
-        $resultAlert = $connection2->prepare($sqlAlert);
-        $resultAlert->execute($dataAlert);
+    $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
+    $sqlAlert = 'SELECT * FROM gibbonPersonMedical JOIN gibbonPersonMedicalCondition ON (gibbonPersonMedical.gibbonPersonMedicalID=gibbonPersonMedicalCondition.gibbonPersonMedicalID) JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonAlertLevel.sequenceNumber DESC';
+    $resultAlert = $connection2->prepare($sqlAlert);
+    $resultAlert->execute($dataAlert);
 
     if ($resultAlert->rowCount() > 0) {
         $rowAlert = $resultAlert->fetch();
@@ -796,7 +794,7 @@ function getHighestGroupedAction($guid, $address, $connection2)
 
     try {
         $data = [
-            'actionName' => '%'.getActionName($address).'%',
+            'actionName' => '%' . getActionName($address) . '%',
             'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
             'moduleName' => $module,
         ];
@@ -844,10 +842,10 @@ function getRoleCategory($gibbonRoleID, $connection2)
     $output = false;
 
 
-        $data = array('gibbonRoleID' => $gibbonRoleID);
-        $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonRoleID' => $gibbonRoleID);
+    $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -935,8 +933,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
         if ($alert = $resultAlert->fetch()) {
             $title = $resultAlert->rowCount() == 1
-                ? $resultAlert->rowCount().' '.sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name'])
-                : $resultAlert->rowCount().' '.sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
+                ? $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name'])
+                : $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
 
             $alerts[] = [
                 'highestLevel'    => __($alert['name']),
@@ -979,10 +977,10 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
         } elseif ($resultAlert->rowCount() >= $academicAlertMediumThreshold) {
             $gibbonAlertLevelID = 002;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold - 1));
         } elseif ($resultAlert->rowCount() >= $academicAlertLowThreshold) {
             $gibbonAlertLevelID = 003;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold - 1));
         }
         if ($gibbonAlertLevelID != '') {
             /**
@@ -995,13 +993,13 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('A'),
-                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
+                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                                            ->withQueryParams([
-                                                'gibbonPersonID' => $gibbonPersonID,
-                                                'subpage' => 'Markbook',
-                                                'filter' => $session->get('gibbonSchoolYearID'),
-                                            ]),
+                        ->withQueryParams([
+                            'gibbonPersonID' => $gibbonPersonID,
+                            'subpage' => 'Markbook',
+                            'filter' => $session->get('gibbonSchoolYearID'),
+                        ]),
                 ];
             }
         }
@@ -1010,10 +1008,10 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
 
-            $dataAlert = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
-            $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
-            $resultAlert = $connection2->prepare($sqlAlert);
-            $resultAlert->execute($dataAlert);
+        $dataAlert = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+        $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
+        $resultAlert = $connection2->prepare($sqlAlert);
+        $resultAlert->execute($dataAlert);
 
         $behaviourAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertLowThreshold');
         $behaviourAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertMediumThreshold');
@@ -1024,10 +1022,10 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
         } elseif ($resultAlert->rowCount() >= $behaviourAlertMediumThreshold) {
             $gibbonAlertLevelID = 002;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold - 1));
         } elseif ($resultAlert->rowCount() >= $behaviourAlertLowThreshold) {
             $gibbonAlertLevelID = 003;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold - 1));
         }
 
         if ($gibbonAlertLevelID != '') {
@@ -1041,9 +1039,9 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('B'),
-                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
+                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                                            ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Behaviour']),
+                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Behaviour']),
                 ];
             }
         }
@@ -1059,7 +1057,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert['name']),
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
+                    ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
             ];
         }
 
@@ -1078,7 +1076,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'tag'             => __('P'),
                     'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
-                                            ->withQueryParam('gibbonPersonID', $gibbonPersonID),
+                        ->withQueryParam('gibbonPersonID', $gibbonPersonID),
                 ];
             }
         }
@@ -1091,7 +1089,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
         foreach ($alerts as $alert) {
             $style = "color: {$alert['highestColour']}; border-color: {$alert['highestColour']}; background-color: {$alert['highestColourBG']};";
-            $class = $classDefault .' '. ($alert['class'] ?? 'float-left');
+            $class = $classDefault . ' ' . ($alert['class'] ?? 'float-left');
             $output .= Format::link($alert['link'], $alert['tag'], [
                 'title' => $alert['title'],
                 'class' => $class,
@@ -1224,7 +1222,7 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
             if (!empty($module)) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $module);
+                    $data = array('actionName' => '%' . getActionName($address) . '%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $module);
 
                     $sql = "SELECT gibbonAction.name FROM gibbonAction
                     JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
@@ -1330,10 +1328,10 @@ function getModuleCategory($address, $connection2)
     $module = getModuleName($address);
 
 
-        $data = array('name' => $module);
-        $sql = "SELECT * FROM gibbonModule WHERE name=:name AND active='Y'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('name' => $module);
+    $sql = "SELECT * FROM gibbonModule WHERE name=:name AND active='Y'";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $output = __($row['category']);
@@ -1380,7 +1378,7 @@ function setCurrentSchoolYear($guid,  $connection2)
         $session->set('gibbonSchoolYearID', $row['gibbonSchoolYearID']);
         $session->set('gibbonSchoolYearName', $row['name']);
         $session->set('gibbonSchoolYearSequenceNumber', $row['sequenceNumber']);
-        $session->set('gibbonSchoolYearFirstDay',$row['firstDay']);
+        $session->set('gibbonSchoolYearFirstDay', $row['firstDay']);
         $session->set('gibbonSchoolYearLastDay', $row['lastDay']);
     }
 }
@@ -1420,17 +1418,17 @@ function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
     $output = false;
 
 
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+    $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
 
-            $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
-            $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC';
-            $resultPrevious = $connection2->prepare($sqlPrevious);
-            $resultPrevious->execute($dataPrevious);
+        $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
+        $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC';
+        $resultPrevious = $connection2->prepare($sqlPrevious);
+        $resultPrevious->execute($dataPrevious);
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonSchoolYearID'];
@@ -1459,17 +1457,17 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
     $output = false;
 
 
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+    $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
 
-            $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
-            $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
-            $resultPrevious = $connection2->prepare($sqlPrevious);
-            $resultPrevious->execute($dataPrevious);
+        $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
+        $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
+        $resultPrevious = $connection2->prepare($sqlPrevious);
+        $resultPrevious->execute($dataPrevious);
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonSchoolYearID'];
@@ -1497,17 +1495,17 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
 {
     $output = false;
 
-        $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
-        $sql = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
+    $sql = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
 
-            $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
-            $sqlPrevious = 'SELECT * FROM gibbonYearGroup WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
-            $resultPrevious = $connection2->prepare($sqlPrevious);
-            $resultPrevious->execute($dataPrevious);
+        $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
+        $sqlPrevious = 'SELECT * FROM gibbonYearGroup WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
+        $resultPrevious = $connection2->prepare($sqlPrevious);
+        $resultPrevious->execute($dataPrevious);
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonYearGroupID'];
@@ -1534,10 +1532,10 @@ function getNextFormGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;
 
-        $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
-        $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+    $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         if (!is_null($row['gibbonFormGroupIDNext'])) {
@@ -1565,10 +1563,10 @@ function getLastYearGroupID($connection2)
 {
     $output = false;
 
-        $data = array();
-        $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array();
+    $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() > 1) {
         $row = $result->fetch();
         $output = $row['gibbonYearGroupID'];
@@ -1600,8 +1598,8 @@ function randomPassword($length)
     $password = '';
 
     //Generate the password
-    for ($i = 0;$i < $length;++$i) {
-        $password = $password.substr($charList, rand(1, strlen($charList)), 1);
+    for ($i = 0; $i < $length; ++$i) {
+        $password = $password . substr($charList, rand(1, strlen($charList)), 1);
     }
 
     return $password;
@@ -1617,11 +1615,11 @@ function getModuleID($connection2, $address)
 function getModuleIDFromName($connection2, $name)
 {
 
-        $dataModuleID = array('name' => $name);
-        $sqlModuleID = 'SELECT gibbonModuleID FROM gibbonModule WHERE name=:name';
-        $resultModuleID = $connection2->prepare($sqlModuleID);
-        $resultModuleID->execute($dataModuleID);
-        $row = $resultModuleID->fetch();
+    $dataModuleID = array('name' => $name);
+    $sqlModuleID = 'SELECT gibbonModuleID FROM gibbonModule WHERE name=:name';
+    $resultModuleID = $connection2->prepare($sqlModuleID);
+    $resultModuleID->execute($dataModuleID);
+    $row = $resultModuleID->fetch();
 
     return $row['gibbonModuleID'];
 }
@@ -1635,24 +1633,20 @@ function getModuleIDFromName($connection2, $name)
  */
 function isCommandLineInterface()
 {
-    if (php_sapi_name() === 'cli')
-    {
+    if (php_sapi_name() === 'cli') {
         return true;
     }
 
     if (stripos(php_sapi_name(), 'cgi') !== false) {
-        if (defined('STDIN'))
-        {
+        if (defined('STDIN')) {
             return true;
         }
 
-        if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv'] ?? []) > 0)
-        {
+        if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv'] ?? []) > 0) {
             return true;
         }
 
-        if (!array_key_exists('REQUEST_METHOD', $_SERVER))
-        {
+        if (!array_key_exists('REQUEST_METHOD', $_SERVER)) {
             return true;
         }
     }
