@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->placeholder('Please select...')
                 ->selected($urlParams['type']);
 
-        $form->toggleVisibilityByClass('automatic')->onSelect('type')->when('automatic');
+        $form->toggleVisibilityByClass('automatic')->onSelect('type')->when('Automatic');
 
         $row = $form->addRow()->addClass('automatic');
             $row->addLabel('gibbonLibraryTypeID', __('Catalog Type'))
