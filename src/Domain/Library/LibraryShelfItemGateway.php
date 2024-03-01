@@ -46,5 +46,40 @@ class LibraryShelfItemGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectDefaultShelfTopBorrowed()
+    {
+        $data = ['timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30)))];
+        $sql = "SELECT gibbonLibraryItem.name, gibbonLibraryItem.producer, gibbonLibraryItem.imageLocation, gibbonLibraryItem.status, gibbonLibraryItem.locationDetail, JSON_EXTRACT(gibbonLibraryItem.fields , \"$.Description\") as description, gibbonSpace.name as spaceName, COUNT( * ) AS count 
+        FROM gibbonLibraryItem 
+        JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) 
+        JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID)
+        JOIN gibbonSpace ON (gibbonLibraryItem.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
+        WHERE timestampOut>=:timestampOut 
+        AND gibbonLibraryItem.borrowable='Y' 
+        AND gibbonLibraryItemEvent.type='Loan' 
+        AND gibbonLibraryType.name='Print Publication' 
+        AND gibbonSpace.type='Library'
+        AND gibbonLibraryItem.imageLocation IS NOT NULL
+        AND gibbonLibraryItem.imageLocation <> ''
+        GROUP BY producer, name 
+        ORDER BY count DESC LIMIT 0, 20";
 
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectDefaultShelfNewItems()
+    {
+        $sql = "SELECT gibbonLibraryItem.name, gibbonLibraryItem.producer, gibbonLibraryItem.imageLocation, gibbonLibraryItem.status, gibbonLibraryItem.locationDetail, JSON_EXTRACT(gibbonLibraryItem.fields , \"$.Description\") as description, gibbonSpace.name as spaceName
+            FROM gibbonLibraryItem 
+            JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) 
+            JOIN gibbonSpace ON (gibbonLibraryItem.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
+            WHERE gibbonLibraryItem.borrowable='Y' 
+            AND gibbonLibraryType.name='Print Publication' 
+            AND gibbonSpace.type='Library'
+            AND gibbonLibraryItem.imageLocation IS NOT NULL
+            AND gibbonLibraryItem.imageLocation <> ''
+            ORDER BY timestampCreator DESC LIMIT 0, 20";
+
+        return $this->db()->select($sql);
+    }
 }

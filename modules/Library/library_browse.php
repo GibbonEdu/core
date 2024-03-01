@@ -38,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     //Proceed!
     //Get display settings
     $settingGateway = $container->get(SettingGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
 
     //Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
@@ -126,11 +127,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo $form->getOutput();
 
     if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location)){
-        //SHELF TEMPLATE
+        // Display a collection of books on visual library shelves
+        $libraryShelves = [];
+        $shelfNames = [];
+
         $shelfGateway = $container->get(LibraryShelfGateway::class);
         $itemGateway = $container->get(LibraryShelfItemGateway::class);
 
-        $criteria = $shelfGateway->newQueryCriteria(true)
+        // Add a default shelf with Top 20
+        $topItems = $itemGateway->selectDefaultShelfTopBorrowed()->fetchAll();
+        if (!empty($topItems)) {
+            $libraryShelves['top'] = $topItems;
+            $shelfNames['top'] = __('Monthly Top 20');
+        }
+
+        // Add a default shelf with New Titles
+        $newItems = $itemGateway->selectDefaultShelfNewItems()->fetchAll();
+        if (!empty($newItems)) {
+            $libraryShelves['new'] = $newItems;
+            $shelfNames['new'] = __('New Titles');
+        }
+
+        // Add all other shelves
+        $criteria = $shelfGateway->newQueryCriteria()
             ->sortBy(['sequenceNumber', 'name'])
             ->filterBy('active', 'Y')
             ->fromPOST();
@@ -138,6 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $activeShelves = $shelfGateway->queryLibraryShelves($criteria)->toArray();
         $criteria = $itemGateway->newQueryCriteria()
             ->sortBy('name')
+            ->pageSize(30)
             ->fromPOST();
 
         foreach($activeShelves as $shelf) {
@@ -148,8 +168,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         echo $page->fetchFromTemplate('libraryShelves.twig.html', [
             'libraryShelves' => $libraryShelves,
             'shelfNames' => $shelfNames,
-            ]);
+        ]);
     } else {
+        // Otherwise display the search results
         $gateway = $container->get(LibraryGateway::class);
 
         $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
@@ -169,6 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             ->filterBy('collection', $collection)
             ->filterBy('location', ($locationToggle == 'on') ? $locationName['name'] : 'Library')
             ->filterBy('everything', $everything)
+            ->pageSize(100)
             ->fromPOST();
 
         $searchItems = $gateway->queryBrowseItems($criteria)->toArray();

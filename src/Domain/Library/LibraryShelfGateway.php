@@ -51,29 +51,30 @@ class LibraryShelfGateway extends QueryableGateway
     }
 
     public function selectDisplayableCategories() {
-    // Build the type/collection arrays
-    $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-    $result = $this->db()->select($sql);
-    
-    $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
-    $category = $categoryChained = $subCategory = $subCategoryChained = array();
-    $types = array_reduce($typeList, function ($group, $item) use (&$category, &$categoryChained, &$subCategory, &$subCategoryChained) {
-        $group[$item['value']] = __($item['name']);
+        // Build the type/collection arrays
+        $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+        $result = $this->db()->select($sql);
+        
+        $typeList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
+        $category = $categoryChained = $subCategory = $subCategoryChained = array();
+        $types = array_reduce($typeList, function ($group, $item) use (&$category, &$categoryChained, &$subCategory, &$subCategoryChained) {
+            $group[$item['value']] = __($item['name']);
 
-        foreach (json_decode($item['fields'], true) as $field) {
-            if ($field['type'] == 'Select') {
-                $category[$field['name']] = __($field['name']);
-                $categoryChained[$field['name']] = $item['value'];
-                foreach (explode(',', $field['options']) as $fieldItem) {
-                    
-                    $fieldItem = trim($fieldItem);
-                    $subCategory[$fieldItem] = __($fieldItem);
-                    $subCategoryChained[$fieldItem] = $field['name'];
+            foreach (json_decode($item['fields'], true) as $field) {
+                if ($field['type'] == 'Select') {
+                    $category[$field['name']] = __($field['name']);
+                    $categoryChained[$field['name']] = $item['value'];
+                    foreach (explode(',', $field['options']) as $fieldItem) {
+                        
+                        $fieldItem = trim($fieldItem);
+                        $subCategory[$fieldItem] = __($fieldItem);
+                        $subCategoryChained[$fieldItem] = $field['name'];
+                    }
                 }
             }
-        }
-        return $group;
-    }, array());
+            return $group;
+        }, array());
+
         return ['category' => $category, 
                 'categoryChained' => $categoryChained, 
                 'subCategory' => $subCategory, 

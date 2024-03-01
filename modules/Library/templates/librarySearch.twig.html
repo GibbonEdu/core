@@ -10,11 +10,11 @@
             {% endfor %}
             ...
         </h3>
-        <div class="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 p-3 gap-4 columns-auto w-full overflow-y-auto overscroll-contain max-h-screen border-2 border-transparent rounded-lg bg-gray-100 bg-opacity-50">
+        <div class="flex flex-wrap p-3 gap-4 columns-auto w-full overflow-y-auto overscroll-contain max-h-screen border-2 border-transparent bg-gray-100 bg-opacity-50">
         {% for item in searchItems %}
             {% if item.imageLocation is not empty %}
                 <a data-log="{{searchItemViewer.tooltip(item) }}">
-                    <img src="{{ item.imageLocation }}" class="transition shadow-xl ease-out duration-700 rounded-md border-2 border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64">
+                    <img src="{{ "?" in item.imageLocation ? item.imageLocation ~ "&fife=w200" : item.imageLocation }}" class="transition shadow-xl ease-out duration-300 border-2 border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64">
                 </a>
             {% endif %}
         {% endfor %}
