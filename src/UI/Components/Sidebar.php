@@ -360,7 +360,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
                                 echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
                                 //Image
-                                $style = "style='width: 45px; height: 50px; float: right; margin-left: 6px; border: 1px solid black'";
+                                $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
                                 if (empty($message['image_240']) or (!empty($message['photo']) and !file_exists($this->session->get('absolutePath').'/'.$message['photo']))) {
                                     echo "<img $style  src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/anonymous_75.jpg'/>";
                                 } else {
