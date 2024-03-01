@@ -346,7 +346,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             } elseif (count($unpinnedMessages) == 2) {
                                 $height = 197;
                             }
-                            echo "<table id='messageWallWidget' style='width: w-auto; height: ".$height."px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
+                            echo "<table id='messageWallWidget' style='width: 100%; height: ".$height."px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
                             //Content added by JS
                             $rand = rand(0, count($unpinnedMessages));
                             $total = count($unpinnedMessages);
