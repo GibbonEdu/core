@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $row->addLabel('field', __('Category'));
         $row->addTextField('field')->setValue($values['field'])->readOnly();
 
-    if($values['type'] == 'AUTOMATIC') {
+    if($values['type'] == 'Automatic') {
         $row = $form->addRow();
         $row->addLabel('fieldValue', __('Sub-Category'));
         $row->addTextField('fieldValue')->setValue($values['fieldValue'])->readOnly()
