@@ -102,10 +102,9 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             }
 
         }
-        
-        $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-        $result = $pdo->executeQuery($data, $sql);
+
+        $result = $container->get(SchoolYearTermGateway::class)->selectSchoolYearTermName($session->get('gibbonSchoolYearID'));
+
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
         $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');

@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\Activities\ActivityGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -36,10 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(ActivityGateway::class)->selectActvity($gibbonActivityID);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");

@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
@@ -47,11 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
         else {
             $today = date('Y-m-d');
 
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-            $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityID=:gibbonActivityID";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
+            $result = $container->get(ActivityGateway::class)->getActivityAndDescription($session->get('gibbonSchoolYearID'), $gibbonActivityID);
+            
             if ($result->rowCount() != 1) {
                 echo "<div class='warning'>";
                 echo __('The selected record does not exist, or you do not have access to it.');
@@ -123,12 +122,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo '</td>';
                 echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff').'</span><br/>';
-
-                    $dataStaff = array('gibbonActivityID' => $row['gibbonActivityID']);
-                    $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-                    $resultStaff = $connection2->prepare($sqlStaff);
-                    $resultStaff->execute($dataStaff);
-
+                   
+                $resultStaff = $container->get(ActivityStaffGateway::class)->selectStaffByActivity( $row['gibbonActivityID']);
+                
                 if ($resultStaff->rowCount() < 1) {
                     echo '<i>'.__('None').'</i>';
                 } else {

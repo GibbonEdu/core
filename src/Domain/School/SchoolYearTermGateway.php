@@ -128,4 +128,20 @@ class SchoolYearTermGateway extends QueryableGateway
         ])->fetchAll(\PDO::FETCH_COLUMN, 0);
     }
 
+    public function selectBySchoolYear($gibbonSchoolYearID) 
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
+        $sql = "SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND lastDay>=:today ORDER BY sequenceNumber";
+        
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectSchoolYearTermName($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        
+        return $this->db()->select($sql, $data);
+    }
+
 }

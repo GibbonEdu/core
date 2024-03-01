@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
@@ -34,11 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(ActivityGateway::class)->selectActvity($gibbonActivityID);
         if ($result) {
             if ($result->rowCount() != 1) {
                 $page->addError( __('The selected record does not exist, or you do not have access to it.'));
