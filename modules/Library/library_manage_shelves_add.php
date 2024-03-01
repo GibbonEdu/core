@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->placeholder('Please select...')
                 ->selected($urlParams['fieldValue']);
 
-        $form->toggleVisibilityByClass('manual')->onSelect('type')->when('manual');
+        $form->toggleVisibilityByClass('manual')->onSelect('type')->when('Manual');
 
         $row = $form->addRow()->addClass('manual');
             $row->addLabel('field', __('Category'));
