@@ -161,6 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             ->fromPOST();
 
         foreach($activeShelves as $shelf) {
+            if($shelf['type'] == 'Automatic') {
+                $itemGateway->updateShelfContents($shelf['gibbonLibraryShelfID'], $shelf['field'], $shelf['fieldValue']);
+            }
             $libraryShelves[$shelf['gibbonLibraryShelfID']] = $itemGateway->queryItemsByShelf($shelf['gibbonLibraryShelfID'], $criteria);
             $shelfNames[$shelf['gibbonLibraryShelfID']] = $shelf['name'];
         }
