@@ -19,7 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Finance\BillingScheduleGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -39,12 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     echo '<p>';
     echo sprintf(__('The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/billingSchedule_manage.php'>", '</a>');
     echo '</p>';
-
-    
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonActivityStudentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort AS formGroup, gibbonActivityStudent.status, payment, paymentType, gibbonActivity.name, programStart, programEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='N' ORDER BY surname, preferredName, name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        
+        $result = $container->get(UserGateway::class)->selectStudentsPaymentInvoices($session->get('gibbonSchoolYearID'), $session->get('gibbonSchoolYearID'));
 
     if ($result->rowCount() < 1) {
         echo $page->getBlankSlate();
@@ -56,9 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $form->setClass('w-full blank');
         $form->addHiddenValue('address', $session->get('address'));
 
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
-        $resultSchedule = $pdo->executeQuery($data, $sql);
+        $resultSchedule = $container->get(BillingScheduleGateway::class)->selectBillingSchedulesByName($session->get('gibbonSchoolYearID'));
 
         $billingSchedules = ($resultSchedule->rowCount() > 0)? $resultSchedule->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
         $billingSchedules = array_map(function($item) {
@@ -103,11 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     echo __('Invoices Generated');
     echo '</h2>';
 
-    
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFormGroup.nameShort AS formGroup, gibbonActivityStudent.status, payment, gibbonActivity.name, programStart, programEnd, gibbonFinanceInvoiceID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='Y' ORDER BY surname, preferredName, name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $result = $container ->get(UserGateway::class)->selectInvoiceByStudent($session->get('gibbonSchoolYearID'), $session->get('gibbonSchoolYearID'));
 
     if ($result->rowCount() < 1) {
         echo $page->getBlankSlate();

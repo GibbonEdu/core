@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\Domain\Finance\BillingScheduleGateway;
+use Gibbon\Domain\Finance\InvoiceeGateway;
+use Gibbon\Domain\Finance\InvoiceGateway;
 
 include '../../gibbon.php';
 
@@ -68,10 +71,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             // Check billing schedule specified exists in the current year
             $checkFail = false;
             try {
-                $dataCheck = array('gibbonFinanceBillingScheduleID' => $action);
-                $sqlCheck = 'SELECT gibbonFinanceBillingScheduleID FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID';
-                $resultCheck = $connection2->prepare($sqlCheck);
-                $resultCheck->execute($dataCheck);
+
+                $resultCheck = $container->get(BillingScheduleGateway::class)->getByID($action, ['gibbonFinanceBillingScheduleID']);
+
             } catch (PDOException $e) {
                 $checkFail = true;
                 $partialFail = true;
@@ -85,10 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                     //Check student is invoicee
                     $checkFail2 = false;
                     try {
-                        $dataCheck2 = array('gibbonActivityStudentID' => $gibbonActivityStudentID);
-                        $sqlCheck2 = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonPersonID=(SELECT gibbonPersonID FROM gibbonActivityStudent WHERE gibbonActivityStudentID=:gibbonActivityStudentID)';
-                        $resultCheck2 = $connection2->prepare($sqlCheck2);
-                        $resultCheck2->execute($dataCheck2);
+                        $resultCheck2 = $container->get(InvoiceeGateway::class)->selectStudentsInvoiceByActivity($gibbonActivityStudentID);
                     } catch (PDOException $e) {
                         $checkFail2 = true;
                         $partialFail = true;
@@ -102,16 +101,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
                             //Check for existing pending invoice for this student in this billing schedule
                             $checkFail3 = false;
-                            try {
-                                $dataCheck3 = array('gibbonFinanceBillingScheduleID' => $action, 'gibbonFinanceInvoiceeID' => $rowCheck2['gibbonFinanceInvoiceeID']);
-                                $sqlCheck3 = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND status='Pending'";
-                                $resultCheck3 = $connection2->prepare($sqlCheck3);
-                                $resultCheck3->execute($dataCheck3);
+                            try {                                
+                                
+                                $resultCheck3 = $container->get(InvoiceGateway::class)->selectStudentsWithPendingInvoices($action, $rowCheck2['gibbonFinanceInvoiceeID']);
+
                             } catch (PDOException $e) {
                                 $checkFail3 = true;
                                 $partialFail = true;
                             }
-
                             if ($checkFail3 == false) {
                                 if ($resultCheck3->rowCount() == 0) { //No invoice, so create it
                                     //CREATE NEW INVOICE
@@ -126,10 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                                     while ($continue == false and $count < 100) {
                                         $key = $randStrGenerator->generate();
 
-                                            $dataUnique = array('key' => $key);
-                                            $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
-                                            $resultUnique = $connection2->prepare($sqlUnique);
-                                            $resultUnique->execute($dataUnique);
+                                            $resultUnique - $container->get(InvoiceGateway::class)->getByID($key);
 
                                         if ($resultUnique->rowCount() == 0) {
                                             $continue = true;

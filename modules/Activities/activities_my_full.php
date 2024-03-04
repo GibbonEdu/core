@@ -19,11 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\ActivityStaffGateway;
-use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -170,11 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>";
                 echo "<h3 style='padding-top: 0px; margin-top: 5px'>".__('Time Slots').'</h3>';
 
-
-                    $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
-                    $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
-                    $resultSlots = $connection2->prepare($sqlSlots);
-                    $resultSlots->execute($dataSlots);
+                    $resultSlots = $container->get(ActivitySlotGateway::class)->selectActivitySlots($row['gibbonActivityID']);
 
                 $count = 0;
                 while ($rowSlots = $resultSlots->fetch()) {
@@ -197,12 +195,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 $role = $session->get('gibbonRoleIDCurrentCategory');
                 if ($role == 'Staff') {
                     echo '<h3>'.__('Participants').'</h3>';
-
-
-                        $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
-                        $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName";
-                        $resultStudents = $connection2->prepare($sqlStudents);
-                        $resultStudents->execute($dataStudents);
+                    
+                        $resultStudents = $container->get(ActivityStudentGateway::class)->selectAcceptedStudentsByActivity($row['gibbonActivityID']);
 
                     if ($resultStudents->rowCount() < 1) {
                         echo '<i>'.__('None').'</i>';
@@ -213,11 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                         }
                         echo '</ul>';
                     }
-
-                        $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
-                        $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp";
-                        $resultStudents = $connection2->prepare($sqlStudents);
-                        $resultStudents->execute($dataStudents);
+                        $resultStudents = $container->get(ActivityStudentGateway::class)->selectsWaitingListStudentsByActivity($row['gibbonActivityID']);
 
                     if ($resultStudents->rowCount() > 0) {
                         echo '<h3>'.__('Waiting List').'</h3>';

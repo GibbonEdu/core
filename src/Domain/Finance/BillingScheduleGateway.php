@@ -54,4 +54,12 @@ class BillingScheduleGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectBillingSchedulesByName($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

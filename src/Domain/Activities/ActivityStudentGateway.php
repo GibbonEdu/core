@@ -66,4 +66,20 @@ class ActivityStudentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectAcceptedStudentsByActivity($gibbonActivityID)
+    {
+        $dataStudents = ['gibbonActivityID' => $gibbonActivityID];
+        $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName";
+
+        return $this->db()->select($sqlStudents, $dataStudents);
+    }
+
+    public function selectsWaitingListStudentsByActivity($gibbonActivityID)
+    {
+        $dataStudents = ['gibbonActivityID' => $gibbonActivityID];
+        $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp";
+
+        return $this->db()->select($sqlStudents, $dataStudents);
+    }
+
 }

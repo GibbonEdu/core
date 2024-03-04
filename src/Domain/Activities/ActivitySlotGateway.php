@@ -49,4 +49,12 @@ class ActivitySlotGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function selectActivitySlots($gibbonActivityID)
+    {
+        $dataSlots = ['gibbonActivityID' => $gibbonActivityID];
+        $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
+
+        return $this->db()->select($sqlSlots, $dataSlots);
+    }
 }
