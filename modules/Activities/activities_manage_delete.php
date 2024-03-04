@@ -35,7 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-            $result = $container->get(ActivityGateway::class)->selectActvity($gibbonActivityID);
+            $result = $container->get(ActivityGateway::class)->selectBy(['gibbonActivityID'=>$gibbonActivityID]);
+
         if ($result) {
             if ($result->rowCount() != 1) {
                 $page->addError( __('The selected record does not exist, or you do not have access to it.'));

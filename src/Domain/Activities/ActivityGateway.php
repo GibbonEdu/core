@@ -283,14 +283,6 @@ class ActivityGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectActivity($gibbonActivityID)
-    {
-        $data = ['gibbonActivityID' => $gibbonActivityID];
-        $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-
-        return $this->db()->select($sql, $data);
-    }
-
     public function selectActivityByYearandStaff($gibbonPersonID, $gibbonSchoolYearID, $gibbonActivityID)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonActivityID' => $gibbonActivityID];
