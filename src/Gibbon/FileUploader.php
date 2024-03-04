@@ -183,7 +183,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange) && is_string($filenameChange)) {
-            $filenameChange =  preg_replace('/[^a-zA-Z0-9]/', '', $filenameChange);
+            $filenameChange =  preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
@@ -414,7 +414,7 @@ class FileUploader
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         $name = mb_substr($filename, 0, mb_strrpos($filename, '.'));
-        $name = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
+        $name = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $name);
 
         // Use password policy to generate random string
         $randStrGenerator = new PasswordPolicy(true, true, false, 16);
