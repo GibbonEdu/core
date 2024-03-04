@@ -53,6 +53,7 @@ v27.0.00
         System: fixed input serialization of form data in Import from File page
         System: fixed the file uploader to handle exif image rotation from mobile devices
         System: fixed login access required message to always display the login form
+        System: fixed bug in FileUploader that did not allow Chinese and Latin characters
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Attendance: fixed handling of double periods in Set Future Absence tool
