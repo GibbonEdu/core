@@ -46,6 +46,7 @@ v27.0.00
         User Admin: increased the field length for Departure Reason to 100 characters
         System Admin: added an importer for Behaviour Records
         System: added departments as one of the searchable options with the fast finder
+        System: improved randomness of password salt generation
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
