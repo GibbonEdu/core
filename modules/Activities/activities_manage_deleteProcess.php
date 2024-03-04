@@ -38,14 +38,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         header("Location: {$URL}");
     } else {
         try {
-            $result = $container->get(ActivityGateway::class)->selectBy(['gibbonActivityID'=>$gibbonActivityID]);
+            $values = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {

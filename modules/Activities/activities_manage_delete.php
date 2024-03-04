@@ -35,16 +35,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-            $result = $container->get(ActivityGateway::class)->selectBy(['gibbonActivityID'=>$gibbonActivityID]);
+            $values = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
 
-        if ($result) {
-            if ($result->rowCount() != 1) {
+            if (empty($values)) {
                 $page->addError( __('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
                 echo $form->getOutput();
             }
-        }
+        
     }
 }
 ?>
