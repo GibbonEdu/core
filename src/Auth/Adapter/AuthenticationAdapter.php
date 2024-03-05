@@ -423,10 +423,9 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
 
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'Login - Failed');
-        $personName = Format::name('', $this->session->get('preferredName'), $this->session->get('surname'), 'Staff', false, true);
 
         $event->addRecipient($this->session->get('organisationAdministrator'));
-        $event->setNotificationText(__('{person} failed to login to account {username} 3 times in a row.', ['person' => $personName, 'username' => $userData['username']]));
+        $event->setNotificationText(__('Someone failed to login to account {username} 3 times in a row.', ['username' => $userData['username']]));
         $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$userData['username']);
 
         $event->sendNotifications($this->getContainer()->get('db'), $this->session);
