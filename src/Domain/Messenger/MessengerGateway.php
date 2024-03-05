@@ -788,7 +788,7 @@ class MessengerGateway extends QueryableGateway
                     });
 
                 $table->addColumn('message', __('Message'))
-                    ->width('650px')
+                    ->width('640px')
                     ->addClass('align-top overflow-x-scroll max-w-lg')
                     ->format(function ($message) {
                         $output = '<h3 style="margin-top: 3px">';
