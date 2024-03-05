@@ -798,7 +798,6 @@ class MessengerGateway extends QueryableGateway
                         $output .= '</p>';
                         $output .= $this->validator->sanitizeRichText($message['details']);
                         $output .= '</p>';
-                        //$output .= '</div>';
 
                         return $output;
                     });
