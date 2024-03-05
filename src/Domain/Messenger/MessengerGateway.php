@@ -791,7 +791,6 @@ class MessengerGateway extends QueryableGateway
                     ->width('650px')
                     ->addClass('align-top overflow-x-scroll max-w-lg')
                     ->format(function ($message) {
-                        //$output = '<div style="max-width:600px;overflow-x: scroll;">';
                         $output = '<h3 style="margin-top: 3px">';
                         $output .= $this->validator->sanitizePlainText($message['subject']);
                         $output .= '</h3>';
