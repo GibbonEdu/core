@@ -798,7 +798,5 @@ CREATE TABLE `gibbonLibraryShelf` ( `gibbonLibraryShelfID` INT(6) UNSIGNED ZEROF
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Library'), 'Manage Library Shelves', 0, 'Catalog', 'Allows user to manage shelves displaying library items for library browsing.', NULL, 'library_manage_shelves.php, library_manage_shelves_add.php, library_manage_shelves_edit.php, library_manage_shelves_delete.php', 'library_manage_shelves.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Library' AND gibbonAction.name='Manage Library Shelves'));end
 CREATE TABLE `gibbonLibraryShelfItem` ( `gibbonLibraryShelfItemID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `gibbonLibraryItemID` INT(10) UNSIGNED ZEROFILL NOT NULL, `gibbonLibraryShelfID` INT(6) UNSIGNED ZEROFILL NOT NULL, PRIMARY KEY (`gibbonLibraryShelfItemID`)) ENGINE = InnoDB CHARSET=utf8;end
-=======
->>>>>>> be106370d4bf6a76ab149ab409dd5cbd6d7118a7
 ";
 
