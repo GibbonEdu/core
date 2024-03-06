@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff').'</span><br/>';
                    
-                $resultStaff = $container->get(ActivityStaffGateway::class)->selectStaffByActivity( $row['gibbonActivityID']);
+                $resultStaff = $container->get(ActivityStaffGateway::class)->selectStaffByOngoingActivity( $row['gibbonActivityID']);
                 
                 if ($resultStaff->rowCount() < 1) {
                     echo '<i>'.__('None').'</i>';

@@ -21,8 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
 
 //Module includes
@@ -64,14 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 try {
                     if ($dateType != 'Date') {
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND gibbonActivityID=:gibbonActivityID";
-                    } else {
-                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID, 'today' => $today);
-                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:today AND gibbonActivityID=:gibbonActivityID";
+                        
+                        $result = $container->get(ActivityGateway::class)->getActivityDuringTerm($session->get('gibbonSchoolYearID'), $gibbonActivityID);
+
+                    } else {                 
+                        
+                        $result = $container->get(ActivityGateway::class)->getOngoingActivity($session->get('gibbonSchoolYearID'), $gibbonActivityID);
+
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
                 } catch (PDOException $e) {
                 }
 
@@ -150,10 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff').'</span><br/>';
 
-                        $dataStaff = array('gibbonActivityID' => $row['gibbonActivityID']);
-                        $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-                        $resultStaff = $connection2->prepare($sqlStaff);
-                        $resultStaff->execute($dataStaff);
+                        $resultStaff = $container->get(ActivityStaffGateway::class)->selectStaffByActivity($row['gibbonActivityID']);
 
                     if ($resultStaff->rowCount() < 1) {
                         echo '<i>'.__('None').'</i>';

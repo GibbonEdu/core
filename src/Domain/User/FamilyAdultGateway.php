@@ -100,4 +100,12 @@ class FamilyAdultGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->runDelete($query);
     }
+
+    public function getFamilyAdult($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+
+        return $this->db()->select($sql, $data);
+    }
 }

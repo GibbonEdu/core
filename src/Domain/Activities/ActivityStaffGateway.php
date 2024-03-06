@@ -97,10 +97,18 @@ class ActivityStaffGateway extends QueryableGateway
     return $this->db()->select($sqlCheck, $dataCheck);
    }
 
-   public function selectStaffByActivity($gibbonActivityID)
+   public function selectStaffByOngoingActivity($gibbonActivityID)
    {
     $dataStaff = ['gibbonActivityID' => $gibbonActivityID];
     $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+
+    return $this->db()->select($sqlStaff, $dataStaff);
+   }
+
+   public function selectStaffByActivity($gibbonActivityID)
+   {
+    $dataStaff = ['gibbonActivityID' => $gibbonActivityID];
+    $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
 
     return $this->db()->select($sqlStaff, $dataStaff);
    }

@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\FamilyAdultGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
     // Access denied
@@ -38,10 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
         if ($highestAction=="View Invoices_myChildren") {
             //Test data access field for permission
             
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
 
             if ($result->rowCount() < 1) {
                 echo $page->getBlankSlate();

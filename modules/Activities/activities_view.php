@@ -19,12 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Students\StudentEnrolmentGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -79,10 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $result = $container->get(FamilyAdultGateway::class)->getFamilyAdult($session->get('gibbonPersonID'));
 
                 if ($result->rowCount() < 1) {
                     echo $page->getBlankSlate();
@@ -147,10 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
                 $continue = false;
 
-                    $dataStudent = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $resultStudent = $connection2->prepare($sqlStudent);
-                    $resultStudent->execute($dataStudent);
+                    $resultStudent = $container->get(StudentEnrolmentGateway::class)->getStudentEnrolmentDetails($session->get('gibbonPersonID'), $session->get('gibbonSchoolYearID'));
 
                 if ($resultStudent->rowCount() == 1) {
                     $rowStudent = $resultStudent->fetch();
@@ -171,10 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $resultChild->execute($dataChild);
                 if ($resultChild->rowCount() == 1) {
 
-                    $dataStudent = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $resultStudent = $connection2->prepare($sqlStudent);
-                    $resultStudent->execute($dataStudent);
+                    $resultStudent = $container->get(StudentEnrolmentGateway::class)->getStudentEnrolmentDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
                     if ($resultStudent->rowCount() == 1) {
                         $rowStudent = $resultStudent->fetch();
@@ -238,12 +232,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo '<li>';
                             echo '<b>'.$terms[($i + 1)].':</b> ';
 
-
-                                $dataActivityCount = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$terms[$i].'%');
-                                $sqlActivityCount = "SELECT * FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
-                                $resultActivityCount = $connection2->prepare($sqlActivityCount);
-                                $resultActivityCount->execute($dataActivityCount);
-
+                                $resultActivityCount = $container->get(ActivityStudentGateway::class)->selectCurrentActivityRegistrationsOfStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, $terms[$i]);
+                                
                             if ($resultActivityCount->rowCount() >= 0) {
                                 echo $resultActivityCount->rowCount().' activities';
                             }

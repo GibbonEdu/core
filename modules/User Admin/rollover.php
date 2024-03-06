@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\School\YearGroupGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
+use Gibbon\Domain\Students\StudentEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -384,10 +385,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count++;
                             //Check for enrolment in next year
                             try {
-                                $dataEnrolmentCheck = array('gibbonPersonID' => $rowReenrol['gibbonPersonID'], 'gibbonSchoolYearID' => $nextYearID);
-                                $sqlEnrolmentCheck = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                                $resultEnrolmentCheck = $connection2->prepare($sqlEnrolmentCheck);
-                                $resultEnrolmentCheck->execute($dataEnrolmentCheck);
+
+                                $resultEnrolmentCheck = $container->get(StudentEnrolmentGateway::class)->getStudentEnrolmentDetails($rowReenrol['gibbonPersonID'], $nextYearID);
+
                             } catch (PDOException $e) {
                                 $form->addRow()->addAlert($e->getMessage(), 'error');
                             }
