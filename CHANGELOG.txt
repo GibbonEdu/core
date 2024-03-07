@@ -47,6 +47,7 @@ v27.0.00
         System Admin: added an importer for Behaviour Records
         System: added departments as one of the searchable options with the fast finder
         Library: added ui changes to Library module browsing through library shelves and improved search page
+        Messenger: added a new key index in the table Messenger Target to reduce the runtime for the recipients column
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
