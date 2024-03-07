@@ -97,4 +97,11 @@ class ActivityStudentGateway extends QueryableGateway
         return $this->db()->select($sqlActivityCount, $dataActivityCount);
     }
 
+    public function getRegistrationConfirmation($gibbonActivityID, $gibbonPersonID)
+    {
+        $dataReg = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
+        $sqlReg = 'SELECT gibbonActivityStudentID, status FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
+
+        return $this->db()->select($sqlReg, $dataReg);
+    }
 }

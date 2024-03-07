@@ -112,4 +112,12 @@ class ActivityStaffGateway extends QueryableGateway
 
     return $this->db()->select($sqlStaff, $dataStaff);
    }
+
+   public function selectOrganisersByActivity($gibbonActivityID)
+   {
+    $dataStaff = ['gibbonActivityID' => $gibbonActivityID];
+    $sqlStaff = "SELECT gibbonPersonID FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND role='Organiser'";
+    
+    return $this->db()->select($sqlStaff, $dataStaff);
+   }
 }
