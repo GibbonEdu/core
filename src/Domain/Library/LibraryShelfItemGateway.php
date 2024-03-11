@@ -85,7 +85,7 @@ class LibraryShelfItemGateway extends QueryableGateway
 
     public function updateShelfContents($libraryShelfID, $field, $fieldValue)
     {
-        $field = '$.'.$field;
+        $field = '$."'.$field.'"';
         $data = array('libraryShelfID' => $libraryShelfID, 'field' => $field, 'fieldValue' => $fieldValue);
         $sql = "SELECT gibbonLibraryItemID
         FROM gibbonLibraryItem

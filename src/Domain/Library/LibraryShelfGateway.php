@@ -64,8 +64,12 @@ class LibraryShelfGateway extends QueryableGateway
                 if ($field['type'] == 'Select') {
                     $category[$field['name']] = __($field['name']);
                     $categoryChained[$field['name']] = $item['value'];
+                    if($item['name'] == 'Print Publication'){
+                        $category['Search Terms'] = __('Search Terms');
+                        $categoryChained['Search Terms'] = $item['value'];
+                    }
+                    $categoryChained[$field['name']] = $item['value'];
                     foreach (explode(',', $field['options']) as $fieldItem) {
-                        
                         $fieldItem = trim($fieldItem);
                         $subCategory[$fieldItem] = __($fieldItem);
                         $subCategoryChained[$fieldItem] = $field['name'];
