@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $page->breadcrumbs
         ->add(__('Manage Library Shelves'), 'library_manage_shelves.php')
         ->add(__('Add Shelf'));
-    $urlParamKeys = array('shelfName' => '', 'active' => '', 'type' => '', 'gibbonLibraryTypeID' => '', 'field' => '', 'fieldValue' => '', 'addItems' => '');
+    $urlParamKeys = array('shelfName' => '', 'active' => '', 'type' => '', 'gibbonLibraryTypeID' => '', 'field' => '', 'fieldValue' => '', 'addItems' => '', 'shuffle' => '');
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_shelves_edit.php&gibbonLibraryShelfID='.$_GET['editID'];
@@ -59,6 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $row = $form->addRow();
             $row->addLabel('active', __('Active'));
             $row->addYesNo('active')
+                ->required();
+
+        $row = $form->addRow();
+            $row->addLabel('shuffle', __('Automatically Shuffle'));
+            $row->addYesNo('shuffle')
+                ->selected('N')
                 ->required();
 
         $row = $form->addRow();

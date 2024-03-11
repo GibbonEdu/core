@@ -72,6 +72,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
             ->setValue($values['active']);
 
     $row = $form->addRow();
+        $row->addLabel('shuffle', __('Automatically Shuffle'));
+        $row->addYesNo('shuffle')
+            ->required()
+            ->setValue($values['shuffle']);
+
+    $row = $form->addRow();
         $row->addLabel('type', __('Fill Option'));
         $row->addTextField('type')->setValue($values['type'])->readOnly();
 

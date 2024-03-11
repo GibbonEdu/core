@@ -47,10 +47,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         'type'           => $_POST['type'] ?? '',
         'field'        => $_POST['field'] ?? '',
         'fieldValue'       => $_POST['fieldValue'] ?? '',
+        'shuffle'       => $_POST['shuffle'] ?? '',
     ];
 
     // Validate the required values are present
-    if (empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['field'])) {
+    if (empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['field'])|| empty($data['shuffle'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;

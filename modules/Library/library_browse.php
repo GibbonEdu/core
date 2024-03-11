@@ -164,8 +164,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             if($shelf['type'] == 'Automatic') {
                 $itemGateway->updateShelfContents($shelf['gibbonLibraryShelfID'], $shelf['field'], $shelf['fieldValue']);
             }
-            $libraryShelves[$shelf['gibbonLibraryShelfID']] = $itemGateway->queryItemsByShelf($shelf['gibbonLibraryShelfID'], $criteria);
+            $libraryShelves[$shelf['gibbonLibraryShelfID']] = $itemGateway->queryItemsByShelf($shelf['gibbonLibraryShelfID'], $criteria)->toArray();
             $shelfNames[$shelf['gibbonLibraryShelfID']] = $shelf['name'];
+
+            //Shuffle shelf items on load if necessary
+            if($shelf['shuffle'] == 'Y') {
+                shuffle($libraryShelves[$shelf['gibbonLibraryShelfID']]);
+            }
         }
 
         echo $page->fetchFromTemplate('libraryShelves.twig.html', [

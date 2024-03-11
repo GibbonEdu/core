@@ -72,6 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $table->addColumn('type', __('Fill-Type'));
     $table->addColumn('field', __('Category'));
     $table->addColumn('fieldValue', __('Sub-Category'));
+    $table->addColumn('shuffle', __('Auto-Shuffle'));
         
     // ACTIONS
     $table->addActionColumn()
