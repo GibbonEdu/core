@@ -44,6 +44,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <span class="text-xs italic opacity-75">
                     {{ __('Due at {time} on {date}', {'time': formatUsing('time', deadline.homeworkDueDateTime), 'date': formatUsing('date', deadline.homeworkDueDateTime) })|raw }} 
 
+                    {% if deadline.type == 'studentRecorded' %}
+                        • {{ __('Student Recorded') }}
+                    {% endif %}
+
                     {{ tag|raw }}
                 </span>
             </a>

@@ -57,6 +57,7 @@ v27.0.00
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Attendance: fixed handling of double periods in Set Future Absence tool
+        Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
 
