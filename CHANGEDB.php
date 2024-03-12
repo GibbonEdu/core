@@ -799,5 +799,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Library' AND gibbonAction.name='Manage Library Shelves'));end
 CREATE TABLE `gibbonLibraryShelfItem` ( `gibbonLibraryShelfItemID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `gibbonLibraryItemID` INT(10) UNSIGNED ZEROFILL NOT NULL, `gibbonLibraryShelfID` INT(6) UNSIGNED ZEROFILL NOT NULL, PRIMARY KEY (`gibbonLibraryShelfItemID`)) ENGINE = InnoDB CHARSET=utf8;end
 ALTER TABLE `gibbonLibraryShelf` ADD `shuffle` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `active`;end
+CREATE INDEX `gibbonMessengerID` ON gibbonMessengerTarget(`gibbonMessengerID`,`gibbonMessengerTargetID`);end
 ";
 
