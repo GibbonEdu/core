@@ -43,9 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
     $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
 
-    require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
-
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students Not Onsite'));
 
