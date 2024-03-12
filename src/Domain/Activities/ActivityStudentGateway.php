@@ -104,4 +104,12 @@ class ActivityStudentGateway extends QueryableGateway
 
         return $this->db()->select($sqlReg, $dataReg);
     }
+
+    public function selectNumberOfPeopleRegisteredForActivity($gibbonActivityID)
+    {
+        $dataNumberRegistered = ['gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d')];
+        $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivityID=:gibbonActivityID";
+
+        return $this->db()->select($sqlNumberRegistered, $dataNumberRegistered);
+    }
 }

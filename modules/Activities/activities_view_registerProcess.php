@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     // Grab organizer info for notifications
                     try {
-                        $resultStaff = $containe->get(ActivityStaffGateway::class)->selectOrganisersByActivity($gibbonActivityID);
+                        $resultStaff = $container->get(ActivityStaffGateway::class)->selectOrganisersByActivity($gibbonActivityID);
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
@@ -157,11 +157,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     $status = 'Pending';
                                 } else {
                                     //Check number of people registered for this activity (if we ignore status it stops people jumping the queue when someone unregisters)
-                                    $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'));
-                                    $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivityID=:gibbonActivityID";
-                                    $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
-                                    $resultNumberRegistered->execute($dataNumberRegistered);
 
+                                    $resultNumberRegistered =$container->get(ActivityStudentGateway::class)->selectNumberOfPeopleRegisteredForActivity($gibbonActivityID);
+                                    
                                     //If activity is full...
                                     if ($resultNumberRegistered->rowCount() >= $row['maxParticipants']) {
                                         if ($row['waitingList'] == 'Y') {
@@ -310,10 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 }
 
                                 //Count spaces
-                                $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'));
-                                $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
-                                $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
-                                $resultNumberRegistered->execute($dataNumberRegistered);
+                                $resultNumberRegistered = $container->get(ActivityStudentGateway::class)->selectNumberOfPeopleRegisteredForActivity($gibbonActivityID);
 
                                 //If activity is not full...
                                 $spaces = $row['maxParticipants'] - $resultNumberRegistered->rowCount();
