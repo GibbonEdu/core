@@ -108,8 +108,11 @@ foreach ($families as $gibbonFamilyID => $students) {
 
         $allHomework = $plannerEntryGateway->queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $student['gibbonPersonID']);
 
-        $tracker = $plannerEntryGateway->selectHomeworkTrackerByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGroupedUnique();
-        $allHomework->joinColumn('gibbonPlannerEntryID', 'tracker', $tracker);
+        $trackerTeacher = $plannerEntryGateway->selectTeacherRecordedHomeworkTrackerByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGroupedUnique();
+        $allHomework->joinColumn('gibbonPlannerEntryID', 'trackerTeacher', $trackerTeacher);
+
+        $trackerStudent = $plannerEntryGateway->selectStudentRecordedHomeworkTrackerByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGroupedUnique();
+        $allHomework->joinColumn('gibbonPlannerEntryID', 'trackerStudent', $trackerStudent);
 
         $submissions = $plannerEntryGateway->selectHomeworkSubmissionsByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGrouped();
         $allHomework->joinColumn('gibbonPlannerEntryID', 'submissions', $submissions);

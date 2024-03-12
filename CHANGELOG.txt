@@ -31,6 +31,7 @@ v27.0.00
         System: automatically hyperlink any urls included in Custom Field descriptions
         System: removed raw exception message output from the interface
         System: added facilities as one of the searchable options with the fast finder
+        System: improved randomness of password salt generation
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
@@ -46,18 +47,25 @@ v27.0.00
         User Admin: increased the field length for Departure Reason to 100 characters
         System Admin: added an importer for Behaviour Records
         System: added departments as one of the searchable options with the fast finder
-        System: improved randomness of password salt generation
+        Library: added ui changes to Library module browsing through library shelves and improved search page
+        Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
         System: fixed input serialization of form data in Import from File page
         System: fixed the file uploader to handle exif image rotation from mobile devices
         System: fixed login access required message to always display the login form
+        System: fixed bug in FileUploader that did not allow Chinese and Latin characters
+        System: fixed incorrect directory separator character in XAMPP installation
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Attendance: fixed handling of double periods in Set Future Absence tool
+        Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
+        Messenger: fixed blank read receipt text when editing a draft message
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
+        Messenger: fixed visual bug when messages are wider than the message wall
+
 
     Deprecations
         System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated

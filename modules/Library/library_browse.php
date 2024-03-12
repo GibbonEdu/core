@@ -21,9 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
-use Gibbon\Services\Format;
 use Gibbon\Domain\Library\LibraryGateway;
+use Gibbon\Domain\Library\LibraryShelfGateway;
+use Gibbon\Domain\Library\LibraryShelfItemGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -37,110 +38,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     //Proceed!
     //Get display settings
     $settingGateway = $container->get(SettingGateway::class);
-
-    $browseBGColorStyle = null;
-    $browseBGColor = $settingGateway->getSettingByScope('Library', 'browseBGColor');
-    if ($browseBGColor != '') {
-        $browseBGColorStyle = "; background-color: $browseBGColor";
-    }
-    $browseBGImageStyle = null;
-    $browseBGImage = $settingGateway->getSettingByScope('Library', 'browseBGImage');
-    if ($browseBGImage != '') {
-        $browseBGImageStyle = "; background-image: url(\"$browseBGImage\")";
-    }
-
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'] ?? '';
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
-    echo "<div class='w-full' style='border: 1px solid #444; margin-bottom: 30px; background-size: contain; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
-    echo "<div class='w-full lg:w-4/5 px-2 lg:px-0' style='margin: 0 auto'>";
-    //Display filters
-    echo "<table class='noIntBorder borderGrey mb-1' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
-    echo '<tr>';
-    echo "<td style='width: 10px'></td>";
-    echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . __('Monthly Top 5') . '</div>';
-    try {
-        $dataTop = array('timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30))));
-        $sqlTop = "SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE timestampOut>=:timestampOut AND gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5";
-        $resultTop = $connection2->prepare($sqlTop);
-        $resultTop->execute($dataTop);
-    } catch (PDOException $e) {
-    }
-    if ($resultTop->rowCount() < 1) {
-        echo "<div class='warning'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        $count = 0;
-        while ($rowTop = $resultTop->fetch()) {
-            ++$count;
-            if ($rowTop['name'] != '') {
-                if (strlen($rowTop['name']) > 35) {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . substr($rowTop['name'], 0, 35) . '...</div>';
-                } else {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . $rowTop['name'] . '</div>';
-                }
-                if ($rowTop['producer'] != '') {
-                    if (strlen($rowTop['producer']) > 35) {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . substr($rowTop['producer'], 0, 35) . '...</div>';
-                    } else {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . $rowTop['producer'] . '</div>';
-                    }
-                }
-            }
-        }
-    }
-    echo '</td>';
-    echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>" . __('New Titles') . '</div>';
-    try {
-        $dataTop = array();
-        $sqlTop = "SELECT gibbonLibraryItem.name, producer FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryType.name='Print Publication'  ORDER BY timestampCreator DESC LIMIT 0, 5";
-        $resultTop = $connection2->prepare($sqlTop);
-        $resultTop->execute($dataTop);
-    } catch (PDOException $e) {
-    }
-    if ($resultTop->rowCount() < 1) {
-        echo "<div class='warning'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        $count = 0;
-        while ($rowTop = $resultTop->fetch()) {
-            ++$count;
-            if ($rowTop['name'] != '') {
-                if (strlen($rowTop['name']) > 35) {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . substr($rowTop['name'], 0, 35) . '...</div>';
-                } else {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. " . $rowTop['name'] . '</div>';
-                }
-                if ($rowTop['producer'] != '') {
-                    if (strlen($rowTop['producer']) > 35) {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . substr($rowTop['producer'], 0, 35) . '...</div>';
-                    } else {
-                        echo "<div style='font-style: italic; font-size: 85%'> by " . $rowTop['producer'] . '</div>';
-                    }
-                }
-            }
-        }
-    }
-    echo '</td>';
-    echo "<td style='width: 5px'></td>";
-    echo '</tr>';
-    echo '</table>';
+    $settingGateway = $container->get(SettingGateway::class);
 
     //Get current filter values
     $name = trim($_REQUEST['name'] ?? '');
     $producer = trim($_REQUEST['producer'] ?? '');
     $type = trim($_REQUEST['type'] ?? '');
     $collection = trim($_REQUEST['collection'] ?? '');
+    $location = trim($_REQUEST['location'] ?? '');
+    $locationToggle = trim($_REQUEST['locationToggle'] ?? '');
     $everything = trim($_REQUEST['everything'] ?? '');
 
     $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
@@ -167,96 +73,141 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
 
     $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth borderGrey mb-6');
-
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('fullWidth blank border-transparent mb-6');
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
+    $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
+
+    $row = $form->addRow()->addClass('grid sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4');
+        $row->addTextField('everything')->setClass('fullWidth sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
+        $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
+
     $row = $form->addRow();
+        $row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('name', __('Title'));
-    $col->addTextField('name')->setClass('fullWidth')->setValue($name);
+        $col->addLabel('name', __('Title'));
+        $col->setClass('');
+        $col->addTextField('name')->setClass('fullWidth')->setValue($name);
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('producer', __('Author/Producer'));
-    $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
+        $col->addLabel('producer', __('Author/Producer'));
+        $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
+
+    $form->toggleVisibilityByClass('allLocations')->onCheckbox('locationToggle')->when('on');
+
+    $col = $row->addColumn()->setClass('allLocations quarterWidth');
+        $col->addLabel('location', __('Location'));
+        $col->addSelectSpace('location')->setClass('fullWidth')->setValue($location)->placeHolder()->selected($location);
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('type', __('Type'));
-    $col->addSelect('type')
+        $col->addLabel('type', __('Type'));
+        $col->addSelect('type')
         ->fromArray($types)
         ->setClass('fullWidth')
         ->selected($type)
         ->placeholder();
 
     $col = $row->addColumn()->setClass('quarterWidth');
-    $col->addLabel('collection', __('Collection'));
-    $col->addSelect('collection')
+        $col->addLabel('collection', __('Collection'));
+        $col->addSelect('collection')
         ->fromArray($collections)
         ->chainedTo('type', $collectionsChained)
         ->setClass('fullWidth')
         ->selected($collection)
         ->placeholder();
-
-    $col = $form->addRow()->addColumn();
-    $col->addLabel('everything', __('All Fields'));
-    $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
+        
+    $col = $row->addColumn()->setClass('quarterWidth');
+        $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
 
     $row = $form->addRow();
-    $row->addSearchSubmit($session);
+        $row->addAdvancedOptionsToggle()->addClass('pt-2');
 
     echo $form->getOutput();
 
-    //Cache TypeFields
-    $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
-    $typeFields = $pdo->select($sql)->fetchGroupedUnique();
+    if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location)){
+        // Display a collection of books on visual library shelves
+        $libraryShelves = [];
+        $shelfNames = [];
 
-    $gateway = $container->get(LibraryGateway::class);
-    $criteria = $gateway->newQueryCriteria(true)
-        ->sortBy('id')
-        ->filterBy('name', $name)
-        ->filterBy('producer', $producer)
-        ->filterBy('type', $type)
-        ->filterBy('collection', $collection)
-        ->filterBy('everything', $everything)
-        ->fromPOST();
-    $books = $gateway->queryBrowseItems($criteria);
-    $table = DataTable::createPaginated('books', $criteria);
+        $shelfGateway = $container->get(LibraryShelfGateway::class);
+        $itemGateway = $container->get(LibraryShelfItemGateway::class);
 
-    $table->addExpandableColumn('details')->format(function ($item) {
-        $typeFields = json_decode($item['fields'], true);
-        $details = "<table class='smallIntBorder' style='width:100%;'>";
-        foreach ($typeFields as $fieldName => $fieldValue) {
-            $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($fieldName), $fieldValue);
+        // Add a default shelf with Top 20
+        $topItems = $itemGateway->selectDefaultShelfTopBorrowed()->fetchAll();
+        if (!empty($topItems)) {
+            $libraryShelves['top'] = $topItems;
+            $shelfNames['top'] = __('Monthly Top 20');
         }
-        $details .= "</table>";
-        return $details;
-    });
 
-    $table->addColumn('imageLocation', __('Cover Art'))->notSortable()->format(function ($item) {
-        return Format::photo($item['imageLocation']);
-    });
+        // Add a default shelf with New Titles
+        $newItems = $itemGateway->selectDefaultShelfNewItems()->fetchAll();
+        if (!empty($newItems)) {
+            $libraryShelves['new'] = $newItems;
+            $shelfNames['new'] = __('New Titles');
+        }
 
-    $table->addColumn('name', __('Name'))
-        ->description(__('Author/Producer'))
-        ->format(function ($item) {
-            return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['name'], __($item['producer']));
-        });
+        // Add all other shelves
+        $criteria = $shelfGateway->newQueryCriteria()
+            ->sortBy(['sequenceNumber', 'name'])
+            ->filterBy('active', 'Y')
+            ->fromPOST();
 
-    $table->addColumn('id', __('ID'))
-        ->description(__('Status'))
-        ->format(function ($item) {
-            return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['id'], __($item['status']));
-        });
+        $activeShelves = $shelfGateway->queryLibraryShelves($criteria)->toArray();
+        $criteria = $itemGateway->newQueryCriteria()
+            ->sortBy('name')
+            ->pageSize(30)
+            ->fromPOST();
 
-    $table->addColumn('spaceName', __('Location'))
-        ->sortable(['spaceName', 'locationDetail'])
-        ->format(function ($item) {
-            return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['spaceName'], $item['locationDetail']);
-        });
+        foreach($activeShelves as $shelf) {
+            if($shelf['type'] == 'Automatic') {
+                $itemGateway->updateShelfContents($shelf['gibbonLibraryShelfID'], $shelf['field'], $shelf['fieldValue']);
+            }
+            $libraryShelves[$shelf['gibbonLibraryShelfID']] = $itemGateway->queryItemsByShelf($shelf['gibbonLibraryShelfID'], $criteria)->toArray();
+            $shelfNames[$shelf['gibbonLibraryShelfID']] = $shelf['name'];
 
-    echo $table->render($books);
+            //Shuffle shelf items on load if necessary
+            if($shelf['shuffle'] == 'Y') {
+                shuffle($libraryShelves[$shelf['gibbonLibraryShelfID']]);
+            }
+        }
 
-    echo '</div>';
-    echo '</div>';
+        echo $page->fetchFromTemplate('libraryShelves.twig.html', [
+            'libraryShelves' => $libraryShelves,
+            'shelfNames' => $shelfNames,
+        ]);
+    } else {
+        // Otherwise display the search results
+        $gateway = $container->get(LibraryGateway::class);
+
+        $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
+        $typeFields = $pdo->select($sql)->fetchGroupedUnique();
+        $locationName = ['name' => ''];
+        
+        if(!empty($location)) {
+            $locationSql = "SELECT gibbonSpace.name FROM gibbonSpace WHERE gibbonSpaceID = ".$location;
+            $locationName = $pdo->select($locationSql)->fetch();
+        }
+
+        $criteria = $gateway->newQueryCriteria()
+            ->sortBy('id')
+            ->filterBy('name', $name)
+            ->filterBy('producer', $producer)
+            ->filterBy('type', $type)
+            ->filterBy('collection', $collection)
+            ->filterBy('location', ($locationToggle == 'on') ? $locationName['name'] : 'Library')
+            ->filterBy('everything', $everything)
+            ->pageSize(100)
+            ->fromPOST();
+
+        $searchItems = $gateway->queryBrowseItems($criteria)->toArray();
+        $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $locationName['name']];
+        
+        echo $page->fetchFromTemplate('librarySearch.twig.html', [
+            'searchItems' => $searchItems,
+            'searchTerms' => $searchTerms,
+            ]);
+    }
+
 }

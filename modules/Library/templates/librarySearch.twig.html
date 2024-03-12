@@ -1,0 +1,88 @@
+
+{% import _self as searchItemViewer  %}
+{% if searchItems%}
+    <div id="librarySearch" class="searchLibraryContainer overflow-y-auto w-full">
+        <h3>Showing results for: 
+            {% for term in searchTerms|keys %}
+                {% if searchTerms[term] != '' %}
+                {{term}}: "{{searchTerms[term]}}"
+                {% endif %}
+            {% endfor %}
+            ...
+        </h3>
+        <div class="flex flex-wrap p-3 gap-4 columns-auto w-full overflow-y-auto overscroll-contain max-h-screen border-2 border-transparent bg-gray-100 bg-opacity-50">
+        {% for item in searchItems %}
+            {% if item.imageLocation is not empty %}
+                <a data-log="{{searchItemViewer.tooltip(item) }}">
+                    <img src="{{ "?" in item.imageLocation ? item.imageLocation ~ "&fife=w200" : item.imageLocation }}" class="transition shadow-xl ease-out duration-300 border-2 border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64">
+                </a>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+
+    <script>
+    $('#librarySearch').tooltip({
+        items: "a[data-log]",
+        show: 800,
+        hide: false,
+        content: function () {
+            return $(this).data('log');
+        },
+        tooltipClass: "tooltip-reset",
+        position: {
+            my: "center bottom-5",
+            at: "center top",
+            using: function (position, feedback) {
+                $(this).css(position);
+                $("<div>").
+                    addClass("arrow").
+                    addClass(feedback.vertical).
+                    addClass(feedback.horizontal).
+                    appendTo(this);
+            }
+        }
+    });
+    </script>        
+    <style>
+        .tooltip-reset {
+            min-width: 20rem;
+        }
+    </style>
+{% else %}
+<h3>No results for: 
+    {% for term in searchTerms|keys %}
+        {% if searchTerms[term] != '' %}
+        {{term}}: "{{searchTerms[term]}}"
+        {% endif %}
+    {% endfor %}
+    ...
+</h3>
+
+{% endif %}
+
+{% macro tooltip(item) %}
+    <section class='flex flex-row p-1 w-auto'>
+        <div class='flex-1'>
+            <h4 class='mt-2 text-white'>{{item.name}}</h4>
+            <p class='text-white'>by: {{item.producer}}</p>
+            <p class='text-white'>Location: {{item.spaceName}}</p>
+            <p class='text-white'>Location Detail: {{item.locationDetail}}</p>
+        
+            
+            {% if item.status == 'Available' %}
+                <div><p class='text-green-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'On Loan' %}
+                <div><p class='text-red-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'Reserved' %}
+                <div><p class='text-yellow-500'>Status: {{item.status}}</p></div>
+            {% elseif item.status == 'Repair' %}
+                <div><p class='text-Orange-500'>Status: {{item.status}}</p></div>
+            {% endif%}
+        </div>
+        <div class='toolTipDescription flex-1 pl-2'>
+            <h5 class='mt-2 text-white'>Description:</h5>
+            <p class='text-white'>{{ item.description|slice(0, 200) }}...</p>
+        </div>
+    </section>
+{% endmacro tooltip %}

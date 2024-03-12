@@ -22,13 +22,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
 
