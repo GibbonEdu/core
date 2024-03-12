@@ -23,6 +23,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -230,7 +231,9 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         }
 
                                         //Notify original creator that it is commented upon
-                                        $notificationText = sprintf(__('Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                                        $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+
+                                        $notificationText = __('{person} has commented on your expense request for {title} in budget {budgetName}.', ['person' => $personName, 'title' => $row['title'], 'budgetName' => $row['budget']]);
                                         $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                         $notificationSender->sendNotifications();
 

@@ -121,7 +121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         // Raise a new notification event
                         $event = new NotificationEvent('Behaviour', 'New Negative Record');
 
-                        $event->setNotificationText(sprintf(__('Someone has created a negative behaviour record for %1$s.'), $studentName));
+                        $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+
+                        $event->setNotificationText(__('{person} has created a negative behaviour record for {student}.', ['person' => $personName, 'student' => $studentName]));
                         $event->setActionLink($actionLink);
 
                         $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
@@ -141,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         // Add direct notifications to form group tutors
                         if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
                             if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
-                                $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
+                                $notificationText = __('{person} has created a negative behaviour record for your tutee, {student}.', ['person' => $personName, 'student' => $studentName]);
 
                                 if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
                                     $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
@@ -161,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             // Raise a notification event for IN students
                             $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
                             
-                            $eventIN->setNotificationText(sprintf(__('Someone has created a negative behaviour record for %1$s.'), $studentName));
+                            $eventIN->setNotificationText(__('{person} has created a negative behaviour record for {student}.', ['person' => $personName, 'student' => $studentName]));
                             $eventIN->setActionLink($actionLink);
     
                             $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
