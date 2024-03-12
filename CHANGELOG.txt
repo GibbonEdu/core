@@ -63,6 +63,8 @@ v27.0.00
         Messenger: fixed blank read receipt text when editing a draft message
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
+        Messenger: fixed visual bug when messages are wider than the message wall
+
 
     Deprecations
         System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated

@@ -326,7 +326,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             return $group;
                         }, []);
 
-                        echo '<div class="column-no-break">';
+                        echo '<div class="column-no-break overflow-x-scroll max-w-xs" >';
                         echo '<h2>';
                         echo __('Message Wall');
                         echo '</h2>';
