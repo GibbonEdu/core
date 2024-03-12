@@ -82,4 +82,31 @@ class LibraryShelfItemGateway extends QueryableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function updateShelfContents($libraryShelfID, $field, $fieldValue)
+    {
+        $field = '$."'.$field.'"';
+        $data = array('libraryShelfID' => $libraryShelfID, 'field' => $field, 'fieldValue' => $fieldValue);
+        $sql = "SELECT gibbonLibraryItemID
+        FROM gibbonLibraryItem
+        WHERE gibbonLibraryItemID NOT IN
+            (SELECT gibbonLibraryItemID 
+             FROM gibbonLibraryShelfItem
+            WHERE gibbonLibraryShelfID = :libraryShelfID)
+        AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue
+        AND gibbonLibraryItem.status IN ('Available','On Loan','Repair')
+        AND gibbonLibraryItem.ownershipType <> 'Individual'
+        AND gibbonLibraryItem.borrowable = 'Y'
+        AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL;";
+
+        $newItems = $this->db()->select($sql, $data)->fetchAll();
+
+        if(!empty($newItems)) {foreach($newItems as $item) {
+            $this->insert([
+                'gibbonLibraryItemID' 	    => $item['gibbonLibraryItemID'],
+                'gibbonLibraryShelfID'  	=> $libraryShelfID
+            ]);
+        }}
+        return $newItems;
+    }
 }

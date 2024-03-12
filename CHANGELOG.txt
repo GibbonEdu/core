@@ -23,6 +23,7 @@ v27.0.00
 --------
 
     Headlines
+        A fresh UI update for the Library module with customisable shelves
 
     Changes With Important Notices
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
@@ -34,20 +35,21 @@ v27.0.00
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
+        Library: added ui changes to Library module browsing through library shelves and improved search page
+        Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
+        Messenger: added an inded to the Message Target table to speed up the recipients query
         School Admin: added the ability to toggle facilities between active and inactive
-        Students: add an Upcoming Students option to the Students by House report
         Staff: added anchor links for Job Openings page, enabling easier external linking
         Staff: added status filter to Staff Absence and Coverage Summaries to display only Full staff by default
         Staff: added a notification to inform staff of first aid qualification that are expiring soon
+        Students: add an Upcoming Students option to the Students by House report
         Timetable: added basic information table to the View Timetable by Facility report
         Timetable: added timetable iCal Export buttons to staff and student profiles
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
         User Admin: increased the field length for Departure Reason to 100 characters
         System Admin: added an importer for Behaviour Records
         System: added departments as one of the searchable options with the fast finder
-        Library: added ui changes to Library module browsing through library shelves and improved search page
-        Messenger: added a new key index in the table Messenger Target to reduce the runtime for the recipients column
 
     Bug Fixes
         System: fixed PHP 8+ compatibility in CustomFieldIDs migration file
@@ -55,9 +57,12 @@ v27.0.00
         System: fixed the file uploader to handle exif image rotation from mobile devices
         System: fixed login access required message to always display the login form
         System: fixed bug in FileUploader that did not allow Chinese and Latin characters
+        System: fixed incorrect directory separator character in XAMPP installation
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Attendance: fixed handling of double periods in Set Future Absence tool
+        Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
+        Messenger: fixed blank read receipt text when editing a draft message
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
 

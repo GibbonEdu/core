@@ -417,8 +417,10 @@ class SubstituteGateway extends QueryableGateway
             AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
             AND (student.dateStart IS NULL OR student.dateStart<=:date) 
             AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
-            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
-            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
+            AND (
+                (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
+                OR (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))
+            )";
 
         $result = $this->db()->selectOne($sql, $data);
 

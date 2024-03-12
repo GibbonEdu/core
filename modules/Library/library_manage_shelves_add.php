@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $page->breadcrumbs
         ->add(__('Manage Library Shelves'), 'library_manage_shelves.php')
         ->add(__('Add Shelf'));
-    $urlParamKeys = array('shelfName' => '', 'active' => '', 'type' => '', 'gibbonLibraryTypeID' => '', 'field' => '', 'fieldValue' => '', 'addItems' => '');
+    $urlParamKeys = array('shelfName' => '', 'active' => '', 'type' => '', 'gibbonLibraryTypeID' => '', 'field' => '', 'fieldValue' => '', 'addItems' => '', 'shuffle' => '');
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_shelves_edit.php&gibbonLibraryShelfID='.$_GET['editID'];
@@ -44,7 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
     $categories = $shelfGateway->selectDisplayableCategories();
 
     if (empty($viewMode)) {
-        //$page->breadcrumbs->add(__('Manage Library Shelves'));
         $form = Form::create('libraryShelf', $session->get('absoluteURL').'/modules/Library/library_manage_shelves_addProcess.php?'.http_build_query($urlParams));
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->addRow()
@@ -60,6 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         $row = $form->addRow();
             $row->addLabel('active', __('Active'));
             $row->addYesNo('active')
+                ->required();
+
+        $row = $form->addRow();
+            $row->addLabel('shuffle', __('Automatically Shuffle'));
+            $row->addYesNo('shuffle')
+                ->selected('N')
                 ->required();
 
         $row = $form->addRow();
@@ -94,13 +99,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->selected($urlParams['field'])
                 ->required();
         
-        $row = $form->addRow()->addClass('autoFill');
+        $form->toggleVisibilityByClass('searchTerm')->onSelect('field')->when('Search Terms');
+
+        $form->toggleVisibilityByClass('autoFillSelect')->onSelect('field')->whenNot('Search Terms');
+
+        $row = $form->addRow()->addClass('autoFillSelect');
             $row->addLabel('fieldValue', __('Sub-Category'));
             $row->addSelect('fieldValue')
                 ->fromArray($categories['subCategory'])
                 ->chainedTo('field', $categories['subCategoryChained'])
                 ->placeholder('Please select...')
                 ->selected($urlParams['fieldValue']);
+
+        $row = $form->addRow()->addClass('searchTerm');
+            $row->addLabel('fieldValue', __('Search Term'));
+            $row->addTextField('fieldValue')
+                ->placeholder('Enter Term Name...');
 
         $form->toggleVisibilityByClass('manual')->onSelect('type')->when('Manual');
 
