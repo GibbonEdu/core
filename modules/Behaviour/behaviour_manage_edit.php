@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //To show other students involved in the incident
                 if(!empty($values['gibbonMultiIncidentID'])) {
 
-                    $resultList = $container->get(BehaviourGateway::class)->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID']);
+                    $students = $container->get(BehaviourGateway::class)->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
                 $students = $resultList->fetchAll();  
             }
