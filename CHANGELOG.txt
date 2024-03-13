@@ -34,6 +34,7 @@ v27.0.00
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
+        Behaviour: added changes to view other students involved in the multiple behaviour recorf
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
         School Admin: added the ability to toggle facilities between active and inactive
         Students: add an Upcoming Students option to the Students by House report
