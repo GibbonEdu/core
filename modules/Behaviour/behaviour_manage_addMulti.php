@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->add(__('Add Multiple'));
 
     $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? null;
+    $gibbonMultiIncidentID = $_GET['gibbonMultiIncidentID'] ?? null;
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';

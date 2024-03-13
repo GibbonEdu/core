@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $type = $_GET['type'] ?? '';
-
+        
         //Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
         if ($gibbonBehaviourID == '') {
@@ -60,14 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         } else {
             try {
                 if ($highestAction == 'Manage Behaviour Records_all') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID ORDER BY date DESC';
+                    $result = $container->get(BehaviourGateway::class)->getBehaviourID($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
                 } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonPersonIDCreator=:gibbonPersonID ORDER BY date DESC';
+                    $result = $container->get(BehaviourGateway::class)->getBehaviourIDByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
                 }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
             } catch (PDOException $e) {
             }
 
@@ -100,18 +97,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                 $form->addRow()->addClass('hidden')->addHeading('Step 1', __('Step 1'));
 
+
+                //To show other students involved in the incident
+                if(!empty($values['gibbonMultiIncidentID'])) {
+
+                    $resultList = $container->get(BehaviourGateway::class)->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID']);
+                }
+                $students = $resultList->fetchAll();  
+            }
+
                 //Student
                 $row = $form->addRow();
                     $row->addLabel('students', __('Student'));
                     $row->addTextField('students')->setValue(Format::name('', $values['preferredNameStudent'], $values['surnameStudent'], 'Student'))->readonly();
                     $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
+                //Other Students
+                if (!empty($values['gibbonMultiIncidentID'])) {
+                $row = $form->addRow();
+                    $row->addLabel('otherStudents0', __('Other Students Involved'));
+                    $col = $row->addColumn()->addClass('flex flex-col');
+
+                    foreach ($students as $i => $student) {
+
+                        if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
+                        $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
+                        $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', true)).'</b>');
+                    }
+                }
+            }
+
                 //Date
                 $row = $form->addRow();
                 	$row->addLabel('date', __('Date'));
                 	$row->addDate('date')->setValue(Format::date($values['date']))->required()->readonly();
 
-                //Date
+                //Type
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addTextField('type')->setValue($values['type'])->required()->readonly();
@@ -219,5 +240,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
         }
     }
-}
 ?>
