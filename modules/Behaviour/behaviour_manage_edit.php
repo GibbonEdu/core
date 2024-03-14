@@ -19,7 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -73,7 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } else {
                 //Let's go!
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
-                
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
                 $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
@@ -99,7 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 //To show other students involved in the incident
                 if(!empty($values['gibbonMultiIncidentID'])) {
-
                     $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
             }
@@ -173,12 +170,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $column->addLabel('comment', __('Incident'));
                     $column->addTextArea('comment')->setRows(5)->setClass('fullWidth')->setValue($values['comment']);
 
-                //Follow Up
-                // $row = $form->addRow();
-                //     $column = $row->addColumn();
-                //     $column->addLabel('followup', __('Follow Up'));
-                //     $column->addTextArea('followup')->setRows(5)->setClass('fullWidth')->setValue($values['followup']);
-
                 $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
                 //Print old-style followup as first log entry
@@ -214,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                while ($rowSelect = $resultSelect->fetch()) {
+                    while ($rowSelect = $resultSelect->fetch()) {
                     $show = true;
                     if ($highestAction == 'Manage Behaviour Records_my') {
 

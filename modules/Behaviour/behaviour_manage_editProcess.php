@@ -102,26 +102,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         header("Location: {$URL}");
                         exit();
                     }
-                    
 
                 // Add a new follow up log, if needed
-                if (!empty($followUp)) {
-                    $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+                    if (!empty($followUp)) {
+                        $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
 
-                    $data = [
-                        'gibbonBehaviourID' => $gibbonBehaviourID,
-                        'gibbonPersonID' => $session->get('gibbonPersonID'),
-                        'followUp' => $followUp,
-                    ];
+                        $data = [
+                            'gibbonBehaviourID' => $gibbonBehaviourID,
+                            'gibbonPersonID' => $session->get('gibbonPersonID'),
+                            'followUp' => $followUp,
+                        ];
 
-                    $inserted = $behaviourFollowUpGateway->insert($data);
+                        $inserted = $behaviourFollowUpGateway->insert($data);
 
-                    if (!$inserted) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit;
-                    }
-                }
+                        if (!$inserted) {
+                            $URL .= '&return=error2';
+                            header("Location: {$URL}");
+                            exit;
+                        }
+                    }   
 
                     // Send a notification to student's tutors and anyone subscribed to the notification event
                     $studentGateway = $container->get(StudentGateway::class);
