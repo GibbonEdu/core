@@ -431,13 +431,15 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
         $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
         $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
 
+        $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
         } else {
             if ($row['status'] != 'Requested') { //Finished? Return
                 return true;
             } else { //Not finished
-                $notificationText = sprintf(__('Someone has requested expense approval for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                $notificationText = __('{person} has requested expense approval for {title} in budget {budgetName}.', ['person' => $personName, 'title' => $row['title'], 'budgetName' => $row['budget']]);
 
                 if ($row['statusApprovalBudgetCleared'] == 'N') { //Notify budget holders (e.g. access Full)
                     //Get Full budget people, and notify them

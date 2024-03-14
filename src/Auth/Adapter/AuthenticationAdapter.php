@@ -424,7 +424,7 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         $event = new NotificationEvent('User Admin', 'Login - Failed');
 
         $event->addRecipient($this->session->get('organisationAdministrator'));
-        $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $userData['username']));
+        $event->setNotificationText(__('Someone at the IP address {ipAddress} failed to login to account {username} 3 times in a row.', ['ipAddress' => $_SERVER['REMOTE_ADDR'], 'username' => $userData['username']]));
         $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$userData['username']);
 
         $event->sendNotifications($this->getContainer()->get('db'), $this->session);

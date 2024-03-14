@@ -224,12 +224,18 @@ class MessageForm extends Form
 
                 $form->toggleVisibilityByClass('emailReceipt')->onRadio('emailReceipt')->when('Y');
                 $form->addRow()->addClass('emailReceipt')
-                    ->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.'));
+                    ->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the top of the message.'));
             }
 
-            $row = $form->addRow()->addClass('emailReceipt');
-                $row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-                $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'] ?? __('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly($sent);
+            if (empty($values['emailReceiptText'])) {
+                $values['emailReceiptText'] = __('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.');
+            }
+
+            if (!$sent || $values['emailReceipt'] == 'Y') {
+                $row = $form->addRow()->addClass('emailReceipt');
+                    $row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
+                    $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'])->readonly($sent);
+            }
         }
 
         // Individual naming
