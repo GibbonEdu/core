@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Behaviour\BehaviourGateway;
+
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -72,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } else {
                 //Let's go!
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+                
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
                 $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
@@ -172,11 +174,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $column->addTextArea('comment')->setRows(5)->setClass('fullWidth')->setValue($values['comment']);
 
                 //Follow Up
+                // $row = $form->addRow();
+                //     $column = $row->addColumn();
+                //     $column->addLabel('followup', __('Follow Up'));
+                //     $column->addTextArea('followup')->setRows(5)->setClass('fullWidth')->setValue($values['followup']);
+
+                $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
+
+                //Print old-style followup as first log entry
+                if (!empty($values['followup'])) {
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameCreator'], $values['surnameCreator']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
+                        $column->addContent($values['followup'])->setClass('fullWidth');
+                }
+
+                //Print new-style follow-up as log
+                $behaviourGateway = $container->get(BehaviourGateway::class);
+                $logs = $behaviourGateway->queryFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll();
+
+                if (!empty($logs)) {
+                    $form->addRow()->addContent($page->fetchFromTemplate('ui/discussion.twig.html', [
+                    'discussion' => $logs
+                ]));
+                }
+
+                //Allow entry of fresh followup
                 $row = $form->addRow();
                     $column = $row->addColumn();
-                    $column->addLabel('followup', __('Follow Up'));
-                    $column->addTextArea('followup')->setRows(5)->setClass('fullWidth')->setValue($values['followup']);
-
+                    $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')) .' / '.__('Notes'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what was the incident, what did you do.'));
+                    $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+                
+                
                 //Lesson link
                 $lessons = array();
                 $minDate = date('Y-m-d', (strtotime($values['date']) - (24 * 60 * 60 * 30)));
