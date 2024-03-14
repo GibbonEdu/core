@@ -38,9 +38,6 @@ v27.0.00
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
-        Behaviour: added the ability to view other students involved in multiple behaviour records
-        Library: added ui changes to Library module browsing through library shelves and improved search page
-        Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
         Messenger: added an index to the Message Target table to speed up the recipients query
         School Admin: added the ability to toggle facilities between active and inactive
