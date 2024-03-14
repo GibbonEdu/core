@@ -38,6 +38,7 @@ $settingGateway = $container->get(SettingGateway::class);
 
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+$behaviourGateway = $container->get(BehaviourGateway::class);
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
 $address = $_POST['address'] ?? '';
@@ -62,28 +63,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                if ($highestAction == 'Manage Behaviour Records_all') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $result = $container->get(BehaviourGateway::class)->getBehaviourID($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
-                } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonPersonIDCreator=:gibbonPersonID ORDER BY date DESC';
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
 
-            if ($result->rowCount() != 1) {
+                if ($highestAction == 'Manage Behaviour Records_all') {
+                    $behaviourRecord = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                } elseif ($highestAction == 'Manage Behaviour Records_my') {
+                    $behaviourRecord = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
+                }          
+
+            if (empty($behaviourRecord)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $behaviourRecord = $result->fetch();
-
+                
                 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
                 $date = $_POST['date'] ?? '';
                 $type = $_POST['type'] ?? '';

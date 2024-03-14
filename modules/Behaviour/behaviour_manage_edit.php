@@ -33,6 +33,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+$behaviourGateway = $container->get(BehaviourGateway::class);
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     // Access denied
@@ -59,21 +60,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         if ($gibbonBehaviourID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
-            try {
-                if ($highestAction == 'Manage Behaviour Records_all') {
-                    $result = $container->get(BehaviourGateway::class)->getBehaviourID($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
-                } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $result = $container->get(BehaviourGateway::class)->getBehaviourIDByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
-                }
-            } catch (PDOException $e) {
-            }
 
-            if ($result->rowCount() != 1) {
+                if ($highestAction == 'Manage Behaviour Records_all') {
+                    $values = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                } elseif ($highestAction == 'Manage Behaviour Records_my') {
+                    $values = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
+                }
+            
+            if (empty($values)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 //Let's go!
-                $values = $result->fetch();
-
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
@@ -101,9 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //To show other students involved in the incident
                 if(!empty($values['gibbonMultiIncidentID'])) {
 
-                    $students = $container->get(BehaviourGateway::class)->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
+                    $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
-                $students = $resultList->fetchAll();  
             }
 
                 //Student
@@ -119,9 +115,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $col = $row->addColumn()->addClass('flex flex-col');
 
                     foreach ($students as $i => $student) {
-
                         if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
-                        $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
+                        //$url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
+                        $url = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
                         $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', true)).'</b>');
                     }
                 }
