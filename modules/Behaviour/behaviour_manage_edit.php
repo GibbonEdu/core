@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -32,6 +33,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+$behaviourGateway = $container->get(BehaviourGateway::class);
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     // Access denied
@@ -52,31 +54,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $type = $_GET['type'] ?? '';
-
+        
         //Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
         if ($gibbonBehaviourID == '') {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
-            try {
-                if ($highestAction == 'Manage Behaviour Records_all') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID ORDER BY date DESC';
-                } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonPersonIDCreator=:gibbonPersonID ORDER BY date DESC';
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
-            if ($result->rowCount() != 1) {
+                if ($highestAction == 'Manage Behaviour Records_all') {
+                    $values = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                } elseif ($highestAction == 'Manage Behaviour Records_my') {
+                    $values = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
+                }
+            
+            if (empty($values)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 //Let's go!
-                $values = $result->fetch();
-
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
@@ -100,18 +94,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                 $form->addRow()->addClass('hidden')->addHeading('Step 1', __('Step 1'));
 
+
+                //To show other students involved in the incident
+                if(!empty($values['gibbonMultiIncidentID'])) {
+
+                    $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
+                }
+            }
+
                 //Student
                 $row = $form->addRow();
                     $row->addLabel('students', __('Student'));
                     $row->addTextField('students')->setValue(Format::name('', $values['preferredNameStudent'], $values['surnameStudent'], 'Student'))->readonly();
                     $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
+                //Other Students
+                if (!empty($values['gibbonMultiIncidentID'])) {
+                $row = $form->addRow();
+                    $row->addLabel('otherStudents0', __('Other Students Involved'));
+                    $col = $row->addColumn()->addClass('flex flex-col');
+
+                    foreach ($students as $i => $student) {
+                        if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
+                        //$url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
+                        $url = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
+                        $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', true)).'</b>');
+                    }
+                }
+            }
+
                 //Date
                 $row = $form->addRow();
                 	$row->addLabel('date', __('Date'));
                 	$row->addDate('date')->setValue(Format::date($values['date']))->required()->readonly();
 
-                //Date
+                //Type
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addTextField('type')->setValue($values['type'])->required()->readonly();
@@ -219,5 +236,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
         }
     }
-}
 ?>
