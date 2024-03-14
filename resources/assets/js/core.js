@@ -895,3 +895,19 @@ function gibbonFormSubmitted(form) {
         }, 500);
     }
 }
+
+
+/**
+ * Gibbon Form Submit: a generic form submit function that can be used to submit forms via AJAX
+ * 
+ * @param {HTMLFormElement} form
+ */
+function gibbonFormSubmitQuiet(form, url) {
+    var submitData = $(form).serialize();
+
+    $.ajax({
+        type: 'POST',
+        data: submitData,
+        url: url
+    });   
+}

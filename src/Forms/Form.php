@@ -336,6 +336,18 @@ class Form implements OutputableInterface
     }
 
     /**
+     * setOnKeyDown
+     * Add a javascript function to the form's onkeydown event.
+     * @param string $function
+     * @return self
+     */
+    public function setOnKeyDown($function)
+    {
+        $this->setAttribute('onkeydown', $function);
+        return $this;
+    }
+
+    /**
      * Adds a Trigger object that injects javascript to respond to form events.
      * @param  string  $selector
      * @param  object  $trigger

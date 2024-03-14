@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 use Gibbon\Forms\CustomFieldHandler;
 
@@ -386,6 +387,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');
+
+            $formData = $container->get(FormSessionStorage::class);
+            $formData->load('plannerAdd');
+            $form->loadAllValuesFrom($formData->getData());
+            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            $form->setOnKeyDown("gibbonFormSubmitQuiet(this, '$autoSaveUrl')");
 
             echo $form->getOutput();
         }
