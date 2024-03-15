@@ -65,6 +65,7 @@ v27.0.00
         System: fixed Ivory Coast name and country code in list of countries
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
+        Admissions: ensure form submission email goes to the admissions account email address rather than parent1
         Attendance: fixed handling of double periods in Set Future Absence tool
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
         Messenger: fixed blank read receipt text when editing a draft message
