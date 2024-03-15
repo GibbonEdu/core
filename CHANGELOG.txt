@@ -62,6 +62,7 @@ v27.0.00
         System: fixed the bug so that staff and student name are displayed in messages
         System: fixed bug in FileUploader that did not allow Chinese and Latin characters
         System: fixed incorrect directory separator character in XAMPP installation
+        System: fixed Ivory Coast name and country code in list of countries
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Attendance: fixed handling of double periods in Set Future Absence tool

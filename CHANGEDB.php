@@ -801,4 +801,5 @@ CREATE TABLE `gibbonLibraryShelfItem` ( `gibbonLibraryShelfItemID` INT(6) UNSIGN
 ALTER TABLE `gibbonLibraryShelf` ADD `shuffle` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `active`;end
 CREATE INDEX `gibbonMessengerID` ON gibbonMessengerTarget(`gibbonMessengerID`,`gibbonMessengerTargetID`);end
 ALTER TABLE `gibbonBehaviour` ADD `gibbonMultiIncidentID` varchar(64) DEFAULT NULL;end
+UPDATE `gibbonCountry` SET `printable_name` = 'Ivory Coast (Côte d\'Ivoire)', `iddCountryCode` = '225' WHERE `gibbonCountry`.`printable_name` = 'Cote D\'Ivoire';end
 ";
