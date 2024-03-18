@@ -897,6 +897,27 @@ function gibbonFormSubmitted(form) {
 }
 
 
+function debounce(func, timeout) {
+    timeout = timeout || 300;
+
+    var timer;
+
+    return function () {
+        clearTimeout(timer);
+        var args = arguments;
+        timer = setTimeout(function () {
+        func.apply(this, args);
+        }, timeout);
+    };
+}
+
+/**
+ * Store a map of debounced functions for AJAX form submissions
+ * 
+ * @type {Record<string, Function>}
+ */
+var __GIBBON_URL_DEBOUNCE_MAP = {};
+
 /**
  * Gibbon Form Submit: a generic form submit function that can be used to submit forms via AJAX
  * 
@@ -905,9 +926,15 @@ function gibbonFormSubmitted(form) {
 function gibbonFormSubmitQuiet(form, url) {
     var submitData = $(form).serialize();
 
-    $.ajax({
-        type: 'POST',
-        data: submitData,
-        url: url
-    });   
+    if (!__GIBBON_URL_DEBOUNCE_MAP[url]) {   
+        __GIBBON_URL_DEBOUNCE_MAP[url] = debounce(function(submitData) {
+            $.ajax({
+                type: 'POST',
+                data: submitData,
+                url: url
+            });
+        });
+    }
+
+    __GIBBON_URL_DEBOUNCE_MAP[url](submitData);
 }
