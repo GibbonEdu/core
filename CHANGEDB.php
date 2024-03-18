@@ -801,6 +801,6 @@ CREATE TABLE `gibbonLibraryShelfItem` ( `gibbonLibraryShelfItemID` INT(6) UNSIGN
 ALTER TABLE `gibbonLibraryShelf` ADD `shuffle` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `active`;end
 CREATE INDEX `gibbonMessengerID` ON gibbonMessengerTarget(`gibbonMessengerID`,`gibbonMessengerTargetID`);end
 ALTER TABLE `gibbonBehaviour` ADD `gibbonMultiIncidentID` varchar(64) DEFAULT NULL;end
-CREATE TABLE `gibbonBehaviourFollowUp` ( `gibbonBehaviourFollowUpID` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT,
- `gibbonBehaviourID` int(10) unsigned zerofill NOT NULL, `gibbonPersonID` int(10) unsigned zerofill NOT NULL, `followUp` text, `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonBehaviourFollowUpID`), KEY `gibbonBehaviourID` (`gibbonBehaviourID`));end
+CREATE TABLE `gibbonBehaviourFollowUp` ( `gibbonBehaviourFollowUpID` INT(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+ `gibbonBehaviourID` INT(10) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL, `followUp` TEXT, `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonBehaviourFollowUpID`), KEY `gibbonBehaviourID` (`gibbonBehaviourID`));end
 ";
