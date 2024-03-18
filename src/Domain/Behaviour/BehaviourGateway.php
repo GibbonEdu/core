@@ -46,7 +46,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
     private static $searchableColumns = [];
 
     private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['descriptor' => null, 'level' => null, 'comment' => '', 'followup' => ''];
+    private static $scrubbableColumns = ['descriptor' => null, 'level' => null, 'comment' => ''];
     
     /**
      * @param QueryCriteria $criteria
@@ -253,24 +253,5 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
         $sql = 'SELECT gibbonBehaviour.gibbonPersonID AS gibbonPersonID, student.preferredName AS preferredNameStudent, student.surname AS surnameStudent FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID)WHERE gibbonMultiIncidentID = :gibbonMultiIncidentID ORDER BY preferredNameStudent';
 
         return $this->db()->select($sql, $data);
-    }
-    public function queryFollowUpByBehaviourID($gibbonBehaviourID)
-    {
-        $query = $this
-            ->newSelect()
-            ->from($this->getTableName())
-            ->cols([
-                'gibbonBehaviourFollowUp.*',
-                'gibbonBehaviourFollowUp.followUp as comment',
-                'gibbonPerson.surname',
-                'gibbonPerson.preferredName',
-                'gibbonPerson.image_240'
-            ])
-            ->innerJoin('gibbonBehaviourFollowUp', 'gibbonBehaviourFollowUp.gibbonBehaviourID=gibbonBehaviour.gibbonBehaviourID')
-            ->innerJoin('gibbonPerson', 'gibbonBehaviourFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->where('gibbonBehaviourFollowUp.gibbonBehaviourID=:gibbonBehaviourID')
-            ->bindValue('gibbonBehaviourID', $gibbonBehaviourID);
-
-        return $this->runSelect($query);
     }
 }

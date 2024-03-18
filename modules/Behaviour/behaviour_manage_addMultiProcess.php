@@ -19,16 +19,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
-use Gibbon\Data\Validator;
-use Gibbon\Domain\IndividualNeeds\INGateway;
 
 require_once '../../gibbon.php';
 
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $descriptor = $_POST['descriptor'] ?? null;
     $level = $_POST['level'] ?? null;
     $comment = $_POST['comment'] ?? '';
-    $followup = $_POST['followup'] ?? '';
+    $followUp = $_POST['followUp'] ?? '';
     $copyToNotes = $_POST['copyToNotes'] ?? null;
 
     $customRequireFail = false;
@@ -80,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         foreach ($gibbonPersonIDMulti as $gibbonPersonID) {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date),'gibbonMultiIncidentID' => $gibbonMultiIncidentID, 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'fields' => $fields, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = 'INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, gibbonMultiIncidentID=:gibbonMultiIncidentID, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, fields=:fields, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date),'gibbonMultiIncidentID' => $gibbonMultiIncidentID, 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                $sql = 'INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, gibbonMultiIncidentID=:gibbonMultiIncidentID, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -89,6 +90,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
 
             $gibbonBehaviourID = $connection2->lastInsertID();
+
+            // Add a follow up log
+            if (!empty($followUp)) {
+                $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+                $data = [
+                            'gibbonBehaviourID' => $gibbonBehaviourID,
+                            'gibbonPersonID' => $session->get('gibbonPersonID'),
+                            'followUp' => $followUp,
+                        ];
+
+                $inserted = $behaviourFollowUpGateway->insert($data);
+
+                if (!$inserted) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit;
+                }
+            } 
 
             // Attempt to notify tutor(s) and EA(s) of negative behaviour
             if ($type == 'Negative') {

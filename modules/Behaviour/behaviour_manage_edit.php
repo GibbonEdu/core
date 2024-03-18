@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourFollowupGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -182,7 +183,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 //Print new-style follow-up as log
                 $behaviourGateway = $container->get(BehaviourGateway::class);
-                $logs = $behaviourGateway->queryFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll();
+                $behaviourFollowUpGateway = $container->get(BehaviourFollowupGateway::class);
+                $logs = $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll();
 
                 if (!empty($logs)) {
                     $form->addRow()->addContent($page->fetchFromTemplate('ui/discussion.twig.html', [

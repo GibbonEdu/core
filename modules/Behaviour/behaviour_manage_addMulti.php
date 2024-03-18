@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('followup', __('Follow Up'));
-        $col->addTextArea('followup')
+        $col->addTextArea('followUp')
             ->setRows(5)
             ->setClass('fullWidth');
 

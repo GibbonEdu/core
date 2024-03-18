@@ -46,4 +46,23 @@ class BehaviourFollowupGateway extends QueryableGateway implements ScrubbableGat
     private static $scrubbableKey = ['gibbonPersonID', 'gibbonBehaviourFollowUpID', 'gibbonBehaviourID'];
     private static $scrubbableColumns = ['followUp' => ''];
 
+    public function selectFollowUpByBehaviourID($gibbonBehaviourID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonBehaviourFollowUp.*',
+                'gibbonBehaviourFollowUp.followUp as comment',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.image_240'
+            ])
+            ->innerJoin('gibbonBehaviour', 'gibbonBehaviourFollowUp.gibbonBehaviourID=gibbonBehaviour.gibbonBehaviourID')
+            ->innerJoin('gibbonPerson', 'gibbonBehaviourFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where('gibbonBehaviourFollowUp.gibbonBehaviourID=:gibbonBehaviourID')
+            ->bindValue('gibbonBehaviourID', $gibbonBehaviourID);
+
+        return $this->runSelect($query);
+    }
 }

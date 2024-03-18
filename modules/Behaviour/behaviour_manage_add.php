@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row = $form->addRow();
             	$column = $row->addColumn();
             	$column->addLabel('followup', __('Follow Up'));
-            	$column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
+            	$column->addTextArea('followUp')->setRows(5)->setClass('fullWidth');
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);
