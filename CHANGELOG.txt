@@ -68,6 +68,7 @@ v27.0.00
         Admissions: ensure form submission email goes to the admissions account email address rather than parent1
         Attendance: fixed handling of double periods in Set Future Absence tool
         Attendance: fixed timestamp of attendance taken for double periods in Take Attendance by Class
+        Attendance: fixed onsite school absences not showing blue in Attendance by Form Group
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
         Messenger: fixed blank read receipt text when editing a draft message
         Messenger: fixed visual bug when messages are wider than the message wall
