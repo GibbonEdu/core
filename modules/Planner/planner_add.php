@@ -148,9 +148,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
             $page->return->setEditLink($editLink);
 
-
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
+            $formId = 'action';
+            $form = Form::create($formId, $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
             $form->setFactory(PlannerFormFactory::create($pdo));
+
+            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            $keydownJS = "gibbonFormSubmitQuiet($('#$formId'), '$autoSaveUrl')";
 
             $form->addHiddenValue('address', $session->get('address'));
 
@@ -248,13 +251,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Lesson Details'));
-                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
+                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description)->setOnKeyDownFormSubmitQuiet($autoSaveUrl, $formId);
 
             $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
+                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes)->setOnKeyDownFormSubmitQuiet($autoSaveUrl, $formId);
 
             //HOMEWORK
             $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
@@ -277,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
                 $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required();
+                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->setOnKeyDownFormSubmitQuiet($autoSaveUrl, $formId);
 
             $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
             $row = $form->addRow()->addClass('homework');
@@ -391,8 +394,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $formData = $container->get(FormSessionStorage::class);
             $formData->load('plannerAdd');
             $form->loadAllValuesFrom($formData->getData());
-            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
-            $form->setOnKeyDown("gibbonFormSubmitQuiet(this, '$autoSaveUrl')");
+            $form->setOnKeyDown($keydownJS);
 
             echo $form->getOutput();
         }
