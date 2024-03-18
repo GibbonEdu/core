@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourFollowupGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -103,6 +104,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             return;
         }
 
+        $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+         // Join follow up based on behaviour ID
+         $behaviourIDs = $records->getColumn('gibbonBehaviourID');
+        
+         $followUpData = $behaviourFollowUpGateway->selectFollowUpsByBehaviorID($behaviourIDs)->fetchGrouped();
+
+         $records->joinColumn('gibbonBehaviourID', 'followUps', $followUpData);
+
         // DATA TABLE
         $table = DataTable::createPaginated('behaviourManage', $criteria);
         $table->setTitle(__('Behaviour Records'));
@@ -132,10 +141,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->prepend('&nbsp|&nbsp');
         }
 
-        // $dataSet = $BehaviourGateway->queryAllUsers();
-        // $gibbonBehaviourIDs = $dataSet->getColumn('gibbonBehaviourID');
-        // $folowUpData = $BehaviourFollowUpGateway->selectFollowUpDetailsByBehaviourID($gibbonBehaviorIDs)->fetchGrouped();
-        
         $table->addExpandableColumn('comment')
             ->format(function($beahviour) {
                 $output = '';
@@ -143,9 +148,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $output .= '<strong>'.__('Incident').'</strong><br/>';
                     $output .= nl2br($beahviour['comment']).'<br/>';
                 }
-                if (!empty($beahviour['followup'])) {
-                    $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                    $output .= nl2br($beahviour['followup']).'<br/>';
+
+                if (!empty($beahviour['followUps'])) {
+                    foreach ($beahviour['followUps'] as $followUp) { 
+                        $output .= '<br/><strong>'.__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname'].'</strong><br/>';
+                        $output .= nl2br($followUp['followUp']).'<br/>';
+                    }
                 }
                 return $output;
             });

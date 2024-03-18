@@ -65,4 +65,16 @@ class BehaviourFollowupGateway extends QueryableGateway implements ScrubbableGat
 
         return $this->runSelect($query);
     }
+
+    public function selectFollowUpsByBehaviorID($gibbonBehaviourIDList)
+    {
+        $idList = is_array($gibbonBehaviourIDList) ? implode(',', $gibbonBehaviourIDList) : $gibbonBehaviourIDList;
+        $data = array('idList' => $idList);
+        $sql = "SELECT gibbonBehaviourFollowUp.gibbonBehaviourID, gibbonBehaviourFollowUp.gibbonPersonID, gibbonBehaviourFollowUp.followUp, gibbonPerson.firstName, gibbonPerson.surname
+        FROM gibbonBehaviourFollowUp
+        JOIN gibbonPerson ON (gibbonBehaviourFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID)
+        WHERE FIND_IN_SET(gibbonBehaviourFollowUp.gibbonBehaviourID, :idList)";
+
+        return $this->db()->select($sql, $data);
+    }
 }

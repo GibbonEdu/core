@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         ];
 
                         $inserted = $behaviourFollowUpGateway->insert($data);
-
+                        
                         if (!$inserted) {
                             $URL .= '&return=error2';
                             header("Location: {$URL}");

@@ -173,15 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
-                //Print old-style followup as first log entry
-                if (!empty($values['followup'])) {
-                    $row = $form->addRow();
-                        $column = $row->addColumn();
-                        $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameCreator'], $values['surnameCreator']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
-                        $column->addContent($values['followup'])->setClass('fullWidth');
-                }
-
-                //Print new-style follow-up as log
+                //Print follow-up as log
                 $behaviourGateway = $container->get(BehaviourGateway::class);
                 $behaviourFollowUpGateway = $container->get(BehaviourFollowupGateway::class);
                 $logs = $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll();
@@ -197,7 +189,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $column = $row->addColumn();
                     $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')));
                     $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
-                
                 
                 //Lesson link
                 $lessons = array();
