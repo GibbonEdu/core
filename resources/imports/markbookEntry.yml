@@ -1,5 +1,5 @@
 details:
-    type: markbookEntry
+    type: markbookEntryByUsername
     name: Markbook - Marks
     table: gibbonMarkbookEntry
     modes: { update: true, insert: true, export: true }
@@ -33,9 +33,9 @@ table:
         relationship: { table: gibbonMarkbookColumn, key: gibbonMarkbookColumnID, field: [ name, gibbonCourseClassID ]  }
     gibbonPersonIDStudent: 
         name: "Student"
-        desc: "Surname, Preferred Name"
+        desc: "Username, Email or Student ID"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, join: gibbonCourseClassPerson, on: [gibbonPersonID, gibbonPersonID], field: ["CONCAT(surname, ', ', preferredName)", gibbonCourseClassID] }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, join: gibbonCourseClassPerson, on: [gibbonPersonID, gibbonPersonID], field: [username, gibbonCourseClassID] }
     attainmentValue: 
         name: "Attainment Value"
         desc: ""
@@ -49,10 +49,10 @@ table:
         desc: ""
         args: { filter: string, linked: attainmentValue }
         relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonMarkbookColumn, on: [gibbonScaleIDAttainment, gibbonScaleID], field: [ value, gibbonMarkbookColumnID ] }
-    # attainmentConcern: 
-    #     name: "Attainment Concern?"
-    #     desc: ""
-    #     args: { filter: string, custom: true }
+    attainmentConcern: 
+        name: "Attainment Concern?"
+        desc: ""
+        args: { filter: string, custom: true }
     effortValue: 
         name: "Effort Value"
         desc: ""
@@ -62,10 +62,10 @@ table:
         desc: ""
         args: { filter: string, linked: effortValue }
         relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonMarkbookColumn, on: [gibbonScaleIDEffort, gibbonScaleID], field: [ value, gibbonMarkbookColumnID ] }
-    # effortConcern: 
-    #     name: "Effort Concern?"
-    #     desc: ""
-    #     args: { filter: string, custom: true }
+    effortConcern: 
+        name: "Effort Concern?"
+        desc: ""
+        args: { filter: string, custom: true }
     comment: 
         name: "Comment"
         desc: ""
