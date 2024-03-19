@@ -112,13 +112,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 if (!empty($values['gibbonMultiIncidentID'])) {
                 $row = $form->addRow();
                     $row->addLabel('otherStudents0', __('Other Students Involved'));
-                    $col = $row->addColumn()->addClass('flex flex-col');
+                    $col = $row->addColumn()->addClass('flex flex-col pl-6');
 
                     foreach ($students as $i => $student) {
                         if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
-                        //$url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
                         $url = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
-                        $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', true)).'</b>');
+                        $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)).'</b>');
                     }
                 }
             }

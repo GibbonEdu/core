@@ -62,9 +62,13 @@ v27.0.00
         System: fixed the bug so that staff and student name are displayed in messages
         System: fixed bug in FileUploader that did not allow Chinese and Latin characters
         System: fixed incorrect directory separator character in XAMPP installation
+        System: fixed Ivory Coast name and country code in list of countries
         Activities: fixed highlight colour for Waiting List activities in View Activities
         Admissions: fixed Form Group at Entry field when not using it as Office Only
+        Admissions: ensure form submission email goes to the admissions account email address rather than parent1
         Attendance: fixed handling of double periods in Set Future Absence tool
+        Attendance: fixed timestamp of attendance taken for double periods in Take Attendance by Class
+        Attendance: fixed onsite school absences not showing blue in Attendance by Form Group
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
         Messenger: fixed blank read receipt text when editing a draft message
         Messenger: fixed visual bug when messages are wider than the message wall

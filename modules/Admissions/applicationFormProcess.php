@@ -86,6 +86,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
         'foreignTableID' => $formData->identify($identifier),
         'accessID'       => $accessID,
         'accessToken'    => $account['accessToken'],
+        'accountEmail'   => $account['email'],
         'gibbonPersonID' => !$public ? $account['gibbonPersonID'] : '',
         'gibbonFamilyID' => !$public ? $account['gibbonFamilyID'] : '',
     ]);

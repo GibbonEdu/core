@@ -273,6 +273,7 @@ class PlannerEntryGateway extends QueryableGateway
                 AND homework='Y' 
                 AND (role='Teacher' OR (role='Student' AND $viewableBy='Y')) 
                 AND homeworkDueDateTime>:todayTime 
+                AND gibbonPlannerEntry.homeworkSubmission<>'Y'
                 AND ((date<:todayDate) OR (date=:todayDate AND timeEnd<=:time))
                 AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)
                 AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)

@@ -96,7 +96,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 AND gibbonAttendanceLogPerson.context = 'Class'")
             ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
             ->leftJoin('gibbonPerson as takenBy', 'gibbonAttendanceLogPerson.gibbonPersonIDTaker=takenBy.gibbonPersonID')
-            ->joinSubSelect('LEFT', $subSelect, 'timetable', '(timetable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND timetable.date=:date)')
+            ->joinSubSelect('LEFT', $subSelect, 'timetable', '(timetable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND timetable.date=:date AND (gibbonAttendanceLogPerson.gibbonTTDayRowClassID IS NULL OR gibbonAttendanceLogPerson.gibbonTTDayRowClassID=timetable.gibbonTTDayRowClassID))')
             ->where("gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID")
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->where("gibbonCourseClassPerson.role = 'Student'")
