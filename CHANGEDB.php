@@ -802,4 +802,6 @@ ALTER TABLE `gibbonLibraryShelf` ADD `shuffle` ENUM('N','Y') NOT NULL DEFAULT 'N
 CREATE INDEX `gibbonMessengerID` ON gibbonMessengerTarget(`gibbonMessengerID`,`gibbonMessengerTargetID`);end
 ALTER TABLE `gibbonBehaviour` ADD `gibbonMultiIncidentID` varchar(64) DEFAULT NULL;end
 UPDATE `gibbonCountry` SET `printable_name` = 'Ivory Coast (Côte d\'Ivoire)', `iddCountryCode` = '225' WHERE `gibbonCountry`.`printable_name` = 'Cote D\'Ivoire';end
+CREATE TABLE `gibbonBehaviourFollowUp` ( `gibbonBehaviourFollowUpID` INT(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonBehaviourID` INT(12) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL, `followUp` TEXT, `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonBehaviourFollowUpID`), KEY `gibbonBehaviourID` (`gibbonBehaviourID`));end
 ";
+

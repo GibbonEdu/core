@@ -46,7 +46,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
     private static $searchableColumns = [];
 
     private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['descriptor' => null, 'level' => null, 'comment' => '', 'followup' => ''];
+    private static $scrubbableColumns = ['descriptor' => null, 'level' => null, 'comment' => ''];
     
     /**
      * @param QueryCriteria $criteria

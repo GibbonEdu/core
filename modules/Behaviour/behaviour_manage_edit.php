@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Behaviour\BehaviourGateway;
+use Gibbon\Domain\Behaviour\BehaviourFollowupGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,7 +98,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 //To show other students involved in the incident
                 if(!empty($values['gibbonMultiIncidentID'])) {
-
                     $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
             }
@@ -170,12 +170,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $column->addLabel('comment', __('Incident'));
                     $column->addTextArea('comment')->setRows(5)->setClass('fullWidth')->setValue($values['comment']);
 
-                //Follow Up
+                $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
+
+                //Print old-style followup as first log entry
+                if (!empty($values['followup'])) {
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameCreator'], $values['surnameCreator']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
+                        $column->addContent($values['followup'])->setClass('fullWidth');
+                }
+
+                //Print follow-up as log
+                $behaviourGateway = $container->get(BehaviourGateway::class);
+                $behaviourFollowUpGateway = $container->get(BehaviourFollowupGateway::class);
+                $logs = $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll();
+
+                if (!empty($logs)) {
+                    $form->addRow()->addContent($page->fetchFromTemplate('ui/discussion.twig.html', [
+                    'discussion' => $logs
+                ]));
+                }
+
+                //Allow entry of fresh followup
                 $row = $form->addRow();
                     $column = $row->addColumn();
-                    $column->addLabel('followup', __('Follow Up'));
-                    $column->addTextArea('followup')->setRows(5)->setClass('fullWidth')->setValue($values['followup']);
-
+                    $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')));
+                    $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+                
                 //Lesson link
                 $lessons = array();
                 $minDate = date('Y-m-d', (strtotime($values['date']) - (24 * 60 * 60 * 30)));
@@ -184,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                while ($rowSelect = $resultSelect->fetch()) {
+                    while ($rowSelect = $resultSelect->fetch()) {
                     $show = true;
                     if ($highestAction == 'Manage Behaviour Records_my') {
 
