@@ -251,13 +251,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Lesson Details'));
-                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description)->setOnKeyDownFormSubmitQuiet($autoSaveUrl, $formId);
+                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description)->enableAutoSave($autoSaveUrl, $formId);
 
             $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes)->setOnKeyDownFormSubmitQuiet($autoSaveUrl, $formId);
+                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes)->enableAutoSave($autoSaveUrl, $formId);
 
             //HOMEWORK
             $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
@@ -280,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
                 $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->setOnKeyDownFormSubmitQuiet($autoSaveUrl, $formId);
+                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->enableAutoSave($autoSaveUrl, $formId);
 
             $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
             $row = $form->addRow()->addClass('homework');

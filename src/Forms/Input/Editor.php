@@ -120,7 +120,7 @@ class Editor extends Input
      * @param string $function
      * @return self
      */
-    public function setOnKeyDownFormSubmitQuiet($url, $formId)
+    public function enableAutoSave(string $url, string $formId)
     {
         $this->onKeyDownSubmitUrl = $url;
         $this->onKeyDownSubmitFormId = $formId;
