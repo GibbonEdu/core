@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } else {
                 //Let's go!
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+                
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
                 $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
@@ -235,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(Format::date($rowSelect['date']), 0, 5).$submission;
                     }
                 }
-
+                
                 $row = $form->addRow();
                     $row->addLabel('gibbonPlannerEntryID', __('Link To Lesson?'))->description(__('From last 30 days'));
                     if (count($lessons) < 1) {
@@ -244,6 +245,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     else {
                         $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons)->placeholder()->selected($values['gibbonPlannerEntryID']);
                     }
+
+                //Behaviour link
+                if(empty($values['gibbonMultiIncidentID'])) {
+
+                $resultSelect = $behaviourGateway->selectBehavioursByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'), $gibbonBehaviourID);
+                $behaviours = $resultSelect->fetchKeyPair();
+
+                $row = $form->addRow();
+                    $row->addLabel('gibbonBehaviourLinkToID', __('Link To Other Existing Behaviour'))->description(__('From last 30 days'));
+                    $row->addSelect('gibbonBehaviourLinkToID')->fromArray($behaviours)->placeholder();
+                }
 
                 // CUSTOM FIELDS
                 $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', [], $values['fields']);

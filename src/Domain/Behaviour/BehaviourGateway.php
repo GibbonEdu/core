@@ -65,7 +65,6 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                 'gibbonBehaviour.date',
                 'gibbonBehaviour.timestamp',
                 'gibbonBehaviour.comment',
-                'gibbonBehaviour.followup',
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
@@ -253,5 +252,20 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
         $sql = 'SELECT gibbonBehaviour.gibbonPersonID AS gibbonPersonID, student.preferredName AS preferredNameStudent, student.surname AS surnameStudent FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID)WHERE gibbonMultiIncidentID = :gibbonMultiIncidentID ORDER BY preferredNameStudent';
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function selectBehavioursByCreator($gibbonSchoolYearID, $gibbonPersonIDCreator, $gibbonBehaviourID) {
+        $dataSelect = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonBehaviourID' => $gibbonBehaviourID];                
+        $sqlSelect = 'SELECT gibbonBehaviour.gibbonBehaviourID as value, CONCAT(gibbonPerson.firstName, " ", gibbonPerson.surname, "  (", DATE_FORMAT(gibbonBehaviour.date,  "%d/%c/%Y"), "), ", gibbonBehaviour.type, ", ", gibbonBehaviour.descriptor) FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID = gibbonPerson.gibbonPersonID) WHERE (gibbonBehaviour.gibbonBehaviourID != :gibbonBehaviourID) AND (gibbonBehaviour.gibbonPersonIDCreator = :gibbonPersonIDCreator) AND (gibbonSchoolYearID=:gibbonSchoolYearID) AND (gibbonBehaviour.date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) ORDER BY gibbonBehaviour.date DESC';
+
+        return $this->db()->select($sqlSelect, $dataSelect);
+    }
+
+    public function updateMultiIncidentIDByBehaviourID($gibbonBehaviourID, $gibbonMultiIncidentID)
+    {
+        $data = ['gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonMultiIncidentID' => $gibbonMultiIncidentID];
+        $sql = 'UPDATE gibbonBehaviour SET gibbonMultiIncidentID=:gibbonMultiIncidentID WHERE gibbonBehaviourID=:gibbonBehaviourID';
+                
+        return $this->db()->update($sql, $data);
     }
 }

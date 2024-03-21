@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $behaviourRecord = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
                 } elseif ($highestAction == 'Manage Behaviour Records_my') {
                     $behaviourRecord = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
-                }          
+                }
 
             if (empty($behaviourRecord)) {
                 $URL .= '&return=error2';
@@ -84,7 +84,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $comment = $_POST['comment'] ?? '';
                 $followUp = $_POST['followUp'] ?? '';
                 $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
+                $gibbonBehaviourLinkToID = !empty($_POST['gibbonBehaviourLinkToID']) ? $_POST['gibbonBehaviourLinkToID'] : null;
+                
+                $linkToBehaviour = $container->get(BehaviourGateway::class)->getByID($gibbonBehaviourLinkToID);
+                $linkToMultiIncidentID = '';
+                
+                if(!empty($gibbonBehaviourLinkToID)) {
+                    if(!empty($linkToBehaviour['gibbonMultiIncidentID'])) {
+                        $linkToMultiIncidentID = $linkToBehaviour['gibbonMultiIncidentID'];
+                    } else {
+                        $salt = getSalt();
+                        $linkToMultiIncidentID = hash('sha256', $salt);
 
+                        $updatedNew = $behaviourGateway->updateMultiIncidentIDByBehaviourID($linkToBehaviour['gibbonBehaviourID'], $linkToMultiIncidentID);
+                    }
+
+                    $updated = $behaviourGateway->updateMultiIncidentIDByBehaviourID($gibbonBehaviourID, $linkToMultiIncidentID);
+                }
+                                      
                 $customRequireFail = false;
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
 
@@ -93,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     header("Location: {$URL}");
                 } else {
                     try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
+                        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID];
                         $sql = 'UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -102,6 +119,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         header("Location: {$URL}");
                         exit();
                     }
+                    
+
+                // Add a new follow up log, if needed
+                if (!empty($followUp)) {
+                    $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+
+                    $data = [
+                        'gibbonBehaviourID' => $gibbonBehaviourID,
+                        'gibbonPersonID' => $session->get('gibbonPersonID'),
+                        'followUp' => $followUp,
+                    ];
+
+                    $inserted = $behaviourFollowUpGateway->insert($data);
+
+                    if (!$inserted) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                }
 
                 // Add a new follow up log, if needed
                     if (!empty($followUp)) {
