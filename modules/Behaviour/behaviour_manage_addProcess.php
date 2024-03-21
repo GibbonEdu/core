@@ -203,13 +203,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         // Add event listeners to the notification sender
                         $eventIN->pushNotifications($notificationGateway, $notificationSender);
                     }
-                    $eventIN->setActionLink($actionLink);
-
-                    $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
-                    $eventIN->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
-
-                    // Add event listeners to the notification sender
-                    $eventIN->pushNotifications($notificationGateway, $notificationSender);
                     
                     // Send all notifications
                     $notificationSender->sendNotifications();
