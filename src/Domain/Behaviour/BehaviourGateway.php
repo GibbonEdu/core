@@ -253,4 +253,19 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectBehavioursByCreator($gibbonSchoolYearID, $gibbonPersonIDCreator, $gibbonBehaviourID) {
+        $dataSelect = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonBehaviourID' => $gibbonBehaviourID];                
+        $sqlSelect = 'SELECT gibbonBehaviour.gibbonBehaviourID as value, CONCAT(gibbonPerson.firstName, " ", gibbonPerson.surname, "  (", DATE_FORMAT(gibbonBehaviour.date,  "%d/%c/%Y"), "), ", gibbonBehaviour.type, ", ", gibbonBehaviour.descriptor) FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID = gibbonPerson.gibbonPersonID) WHERE (gibbonBehaviour.gibbonBehaviourID != :gibbonBehaviourID) AND (gibbonBehaviour.gibbonPersonIDCreator = :gibbonPersonIDCreator) AND (gibbonSchoolYearID=:gibbonSchoolYearID) AND (gibbonBehaviour.date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) ORDER BY gibbonBehaviour.date DESC';
+
+        return $this->db()->select($sqlSelect, $dataSelect);
+    }
+
+    public function updateMultiIncidentIDByBehaviourID($gibbonBehaviourID, $gibbonMultiIncidentID)
+    {
+        $data = ['gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonMultiIncidentID' => $gibbonMultiIncidentID];
+        $sql = 'UPDATE gibbonBehaviour SET gibbonMultiIncidentID=:gibbonMultiIncidentID WHERE gibbonBehaviourID=:gibbonBehaviourID';
+                
+        return $this->db()->update($sql, $data);
+    }
 }

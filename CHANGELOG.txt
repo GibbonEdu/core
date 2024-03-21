@@ -39,6 +39,8 @@ v27.0.00
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
         Behaviour: added the ability to view other students involved in multiple behaviour records
+        Behaviour: updated the viee so that followups are displayed as conversational logs and stored in a separate table
+        Behaviour: added the ability to able to link a behaviour record to some other existing behaviour record
         Library: added ui changes to Library module browsing through library shelves and improved search page
         Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
