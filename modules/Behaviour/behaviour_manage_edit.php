@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } else {
                 //Let's go!
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+                
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
                 $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
