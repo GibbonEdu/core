@@ -141,10 +141,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->prepend('&nbsp|&nbsp');
         }
 
-        // $dataSet = $BehaviourGateway->queryAllUsers();
-        // $gibbonBehaviourIDs = $dataSet->getColumn('gibbonBehaviourID');
-        // $folowUpData = $BehaviourFollowUpGateway->selectFollowUpDetailsByBehaviourID($gibbonBehaviorIDs)->fetchGrouped();
-        
         $table->addExpandableColumn('comment')
             ->format(function($beahviour) {
                 $output = '';
