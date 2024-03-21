@@ -173,20 +173,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
+                $logs = [];
+
                 //Print old-style followup as first log entry
                 if (!empty($values['followup'])) {
-                    $row = $form->addRow();
-                        $column = $row->addColumn();
-                        $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameCreator'], $values['surnameCreator']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
-                        $column->addContent($values['followup'])->setClass('fullWidth');
+                    $logs[] = [
+                        'comment'       => $values['followup'],
+                        'timestamp'     => $values['timestamp'],
+                        'surname'       => $values['surnameCreator'],
+                        'preferredName' => $values['preferredNameCreator'],
+                        'image_240'     => $values['imageCreator'],
+                    ];
                 }
 
                 //Print follow-up as log
                 $behaviourGateway = $container->get(BehaviourGateway::class);
                 $behaviourFollowUpGateway = $container->get(BehaviourFollowupGateway::class);
-                $logs = $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll();
+                $logs = array_merge($logs, $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll());
 
-                if (!empty($logs)) {
+                if (!empty($logs) ) {
                     $form->addRow()->addContent($page->fetchFromTemplate('ui/discussion.twig.html', [
                     'discussion' => $logs
                 ]));
@@ -239,12 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 
                 $row = $form->addRow();
                     $row->addLabel('gibbonPlannerEntryID', __('Link To Lesson?'))->description(__('From last 30 days'));
-                    if (count($lessons) < 1) {
-                        $row->addSelect('gibbonPlannerEntryID')->placeholder();
-                    }
-                    else {
-                        $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons)->placeholder()->selected($values['gibbonPlannerEntryID']);
-                    }
+                    $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons ?? [])->placeholder()->selected($values['gibbonPlannerEntryID']);
 
                 //Behaviour link
                 if(empty($values['gibbonMultiIncidentID'])) {

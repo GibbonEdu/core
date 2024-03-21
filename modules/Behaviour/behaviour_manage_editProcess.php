@@ -121,26 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     }
                     
 
-                // Add a new follow up log, if needed
-                if (!empty($followUp)) {
-                    $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
-
-                    $data = [
-                        'gibbonBehaviourID' => $gibbonBehaviourID,
-                        'gibbonPersonID' => $session->get('gibbonPersonID'),
-                        'followUp' => $followUp,
-                    ];
-
-                    $inserted = $behaviourFollowUpGateway->insert($data);
-
-                    if (!$inserted) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit;
-                    }
-                }
-
-                // Add a new follow up log, if needed
+                    // Add a new follow up log, if needed
                     if (!empty($followUp)) {
                         $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
 
