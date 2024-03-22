@@ -264,7 +264,7 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCou
 
     // Calculate & get the cumulative average
     $markbook->cacheWeightings($gibbonPersonID);
-    $cumulativeMark = round($markbook->getCumulativeAverage($gibbonPersonID, $gibbonSchoolYearTermID));
+    $cumulativeMark = round(floatval($markbook->getCumulativeAverage($gibbonPersonID, $gibbonSchoolYearTermID)));
 
     // Only display if there are marks
     if (!empty($cumulativeMark)) {
