@@ -152,9 +152,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $form = Form::create($formId, $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
             $form->setFactory(PlannerFormFactory::create($pdo));
 
-            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
-            $keydownJS = "gibbonFormSubmitQuiet($('#$formId'), '$autoSaveUrl')";
-
             $form->addHiddenValue('address', $session->get('address'));
 
             //BASIC INFORMATION
@@ -394,7 +391,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $formData = $container->get(FormSessionStorage::class);
             $formData->load('plannerAdd');
             $form->loadAllValuesFrom($formData->getData());
-            $form->setOnKeyDown($keydownJS);
+            
+            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            $form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
         }
