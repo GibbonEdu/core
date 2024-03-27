@@ -40,7 +40,8 @@ class ActivityStudentGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-    public function queryActivityEnrolment($criteria, $gibbonActivityID) {
+    public function queryActivityEnrolment($criteria, $gibbonActivityID) 
+    {
         $query = $this
             ->newQuery()
             ->cols(['gibbonActivityStudent.*', 'surname', 'preferredName', 'gibbonFormGroup.nameShort as formGroup', 'FIND_IN_SET(gibbonActivityStudent.status, "Accepted,Pending,Waiting List,Not Accepted,Left") as sortOrder'])
@@ -56,4 +57,59 @@ class ActivityStudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectActivityByStudents($gibbonActivityID) 
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT gibbonSchoolYearTermIDList, maxParticipants, programStart, programEnd, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectAcceptedStudentsByActivity($gibbonActivityID)
+    {
+        $dataStudents = ['gibbonActivityID' => $gibbonActivityID];
+        $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName";
+
+        return $this->db()->select($sqlStudents, $dataStudents);
+    }
+
+    public function selectsWaitingListStudentsByActivity($gibbonActivityID)
+    {
+        $dataStudents = ['gibbonActivityID' => $gibbonActivityID];
+        $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp";
+
+        return $this->db()->select($sqlStudents, $dataStudents);
+    }
+
+    public function getExistingRegistration($gibbonActivityID, $gibbonPersonID)
+    {
+        $dataReg = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
+        $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
+
+        return $this->db()->select($sqlReg, $dataReg);
+    }
+
+    public function selectCurrentActivityRegistrationsOfStudent($gibbonSchoolYearID, $gibbonPersonID, $term)
+    {
+        $dataActivityCount = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term.'%'];
+        $sqlActivityCount = "SELECT * FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
+
+        return $this->db()->select($sqlActivityCount, $dataActivityCount);
+    }
+
+    public function getRegistrationConfirmation($gibbonActivityID, $gibbonPersonID)
+    {
+        $dataReg = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
+        $sqlReg = 'SELECT gibbonActivityStudentID, status FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
+
+        return $this->db()->select($sqlReg, $dataReg);
+    }
+
+    public function selectNumberOfPeopleRegisteredForActivity($gibbonActivityID)
+    {
+        $dataNumberRegistered = ['gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d')];
+        $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivityID=:gibbonActivityID";
+
+        return $this->db()->select($sqlNumberRegistered, $dataNumberRegistered);
+    }
 }

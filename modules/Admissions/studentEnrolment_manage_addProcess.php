@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\Students\StudentEnrolmentGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 include '../../gibbon.php';
 
@@ -75,10 +76,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             } else {
                 //Check for existing enrolment
                 try {
-                    $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                    $sql = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+
+                    $result = $container->get(StudentEnrolmentGateway::class)->getStudentEnrolmentDetails($gibbonPersonID, $gibbonSchoolYearID);
+                    
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");

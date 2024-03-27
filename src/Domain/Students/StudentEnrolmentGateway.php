@@ -19,39 +19,30 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
+namespace Gibbon\Domain\Students;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
- * School Year Special Day Gateway
- *
- * @version v25
- * @since   v25
+ * @version v27
+ * @since   v27
  */
-class DaysOfWeekGateway extends QueryableGateway
+class StudentEnrolmentGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonDaysOfWeek';
-    private static $primaryKey = 'gibbonDaysOfWeekID';
+    private static $tableName = 'gibbonStudentEnrolment';
+    private static $primaryKey = 'gibbonStudentEnrolmentID';
 
-    public function getDayOfWeekByDate($date)
+    private static $searchableColumns = [];
+    
+    public function getStudentEnrolmentDetails($gibbonPersonID, $gibbonSchoolYearID)
     {
-        $data = ['dayOfWeek' => date('l', strtotime($date))];
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name=:dayOfWeek";
+        $dataStudent = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
 
-        return $this->db()->selectOne($sql, $data);
+        return $this->db()->select($sqlStudent, $dataStudent);
     }
-
-    public function selectDaysOfWeek()
-    {
-        $sql = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
-        
-        return $this->db()->select($sql);
-
-    }
-
 }

@@ -168,4 +168,10 @@ class SchoolYearGateway extends QueryableGateway
     {
         return $this->db()->selectOne("SELECT * FROM gibbonSchoolYear WHERE status='Current'");
     }
+    public function selectCurrentOrUpcomingSchoolYear() 
+    {
+        $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
+
+        return $this->db()->select($sql);
+    }
 }

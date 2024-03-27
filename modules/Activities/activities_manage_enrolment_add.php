@@ -19,8 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -36,10 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
     if ($highestAction == 'My Activities_viewEditEnrolment') {
-        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-        $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $result = $container->get(ActivityGateway::class)->selectActivityByYearandStaff($session->get('gibbonPersonID'), $session->get('gibbonSchoolYearID'), $gibbonActivityID);
 
         if (!$result || $result->rowCount() == 0) {
             //Acess denied
@@ -60,16 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
 
-        if ($result->rowCount() != 1) {
+        $values = $container->get(ActivityGateway::class)->getActivityDetailsByID($gibbonActivityID);
+
+        if (empty($values)) {
             $page->addError(__('The specified record does not exist.'));
         } else {
-            $values = $result->fetch();
-
             $settingGateway = $container->get(SettingGateway::class);
 
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
@@ -114,18 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			}
 
 			$students = array();
-			$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => date('Y-m-d'));
-			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.name AS formGroupName
-					FROM gibbonPerson
-					JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-					JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-					JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-					WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-					AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
-					AND gibbonPerson.status='FULL'
-					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
-					ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
-			$result = $pdo->executeQuery($data, $sql);
+
+		    $result = $container->get(UserGateway::class)->selectUserByFormGroup($values['gibbonYearGroupIDList'], $session->get('gibbonSchoolYearID'));
 
 			if ($result->rowCount() > 0) {
 				$students['--'.__('Enrolable Students').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
@@ -134,8 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				}, array());
 			}
 
-            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-			$result = $pdo->executeQuery(array(), $sql);
+			$result = $container->get(UserGateway::class)->selectUsers();
 
             if ($result->rowCount() > 0) {
                 $students['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
