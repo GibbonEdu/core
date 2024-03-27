@@ -214,4 +214,29 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->update($sql, $data);
     }
+
+    public function selectUserByFormGroup($gibbonYearGroupIDList, $gibbonSchoolYearID) 
+    {
+        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')];
+
+        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.name AS formGroupName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) AND gibbonPerson.status='FULL' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectUsers() 
+    {
+        $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+        
+        return $this->db()->select($sql);
+    }
+
+    public function selectStudentsByActivity($gibbonSchoolYearID, $gibbonActivityID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroupID, gibbonActivityStudent.status 
+        FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart <= :today) AND (dateEnd IS NULL  OR dateEnd >= :today) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }

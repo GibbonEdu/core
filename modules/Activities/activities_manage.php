@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -80,11 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     if ($dateType != 'Date') {
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $result = $container->get(SchoolYearTermGateway::class)->selectSchoolYearTermName($session->get('gibbonSchoolYearID'));
+
         $row = $form->addRow();
             $row->addLabel('gibbonSchoolYearTermID', __('Term'));
-            $row->addSelect('gibbonSchoolYearTermID')->fromQuery($pdo, $sql, $data)->selected($gibbonSchoolYearTermID)->placeholder();
+            $row->addSelect('gibbonSchoolYearTermID')->fromResults($result)->selected($gibbonSchoolYearTermID)->placeholder();
     }
 
     $row = $form->addRow();
@@ -111,11 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         'DuplicateParticipants' => __('Duplicate With Participants'),
         'Delete' => __('Delete'),
     );
-    $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
+    $result = $container->get(SchoolYearGateway::class)->selectCurrentOrUpcomingSchoolYear();
 
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addSelect('gibbonSchoolYearIDCopyTo')
-            ->fromQuery($pdo, $sql)
+            ->fromResults($result)
             ->setClass('shortWidth schoolYear');
         $col->addSubmit(__('Go'));
 
