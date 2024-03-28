@@ -79,6 +79,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
             $row->addTextField('gradeScale')->readonly()->setValue($gradeScale['name'] ?? '');
     }
 
+    if ($values['valueType'] == 'Image') {
+        $options = json_decode($values['options'], true);
+        $row = $form->addRow();
+            $row->addLabel('imageSize', __('Maximum Size'))->description(__('In Pixels'));
+            $row->addRange('imageSize', 40, 2048, 1)->required()->setValue($options['imageSize'] ?? 1024);
+    
+        $row = $form->addRow();
+            $row->addLabel('imageQuality', __('Image Quality'))->description(__('Percentage'));
+            $row->addRange('imageQuality', 40, 100, 5)->required()->setValue($options['imageQuality'] ?? 1024);
+    }
+
     if ($values['valueType'] == 'Yes/No') {
         $row = $form->addRow();
             $row->addLabel('defaultValue', __('Default Value'));

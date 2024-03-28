@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         'Yes/No'      => __('Yes/No'),
         'Text'        => __('Text'),
         'Number'      => __('Number'),
+        'Image'       => __('Image'),
     ];
     $row = $form->addRow();
         $row->addLabel('valueType', __('Value Type'));
@@ -67,6 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
     $row = $form->addRow()->addClass('characterLimit');
         $row->addLabel('characterLimit', __('Character Limit'));
         $row->addNumber('characterLimit')->maxLength(6)->required()->setValue(1000);
+
+    $form->toggleVisibilityByClass('imageOptions')->onSelect('valueType')->when('Image');
+    $row = $form->addRow()->addClass('imageOptions');
+        $row->addLabel('imageSize', __('Maximum Size'))->description(__('In Pixels'));
+        $row->addRange('imageSize', 40, 2048, 1)->required()->setValue(1024);
+
+    $row = $form->addRow()->addClass('imageOptions');
+        $row->addLabel('imageQuality', __('Image Quality'))->description(__('Percentage'));
+        $row->addRange('imageQuality', 40, 100, 5)->required()->setValue(80);
 
     $form->toggleVisibilityByClass('gradeScale')->onSelect('valueType')->when('Grade Scale');
     $row = $form->addRow()->addClass('gradeScale');

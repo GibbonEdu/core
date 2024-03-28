@@ -48,6 +48,7 @@ v27.0.00
         Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
         Messenger: added an index to the Message Target table to speed up the recipients query
+        Reports: added uploadable Image as a field type in Manage Criteria Types
         School Admin: added the ability to toggle facilities between active and inactive
         Staff: added anchor links for Job Openings page, enabling easier external linking
         Staff: added status filter to Staff Absence and Coverage Summaries to display only Full staff by default

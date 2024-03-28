@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                 ->readonly(!$canWriteReport);
         } else {
             $row = $form->addRow();
-            $row->addLabel($fieldName, $criteria['name'])->description($criteria['description'])->setClass('font-normal');
+            $row->addLabel($fieldName, $criteria['name'])->description($criteria['description']);
 
             if ($criteria['valueType'] == 'Grade Scale') {
                 $gradeSelect = $row->addSelectGradeScaleGrade($fieldName, $criteria['gibbonScaleID'], ['valueMode' => 'value', 'labelMode' => 'both', 'honourDefault' => true])
@@ -240,6 +240,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                     ->setValue($criteria['value'])
                     ->maxLength(20)
                     ->onlyInteger(false)
+                    ->readonly(!$canWriteReport);
+            } elseif ($criteria['valueType'] == 'Image') {
+                $row->addFileUpload('file'.$criteria['gibbonReportingCriteriaID'])
+                    ->addClass('reportCriteria')
+                    ->setID($fieldID)
+                    ->setAttachment($fieldName, $session->get('absoluteURL'), $criteria['value'] ?? '')
                     ->readonly(!$canWriteReport);
             } else {
                 $row->addTextField($fieldName)

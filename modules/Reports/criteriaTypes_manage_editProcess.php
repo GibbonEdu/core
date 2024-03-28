@@ -39,11 +39,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
     // Proceed!
     $criteriaTypeGateway = $container->get(ReportingCriteriaTypeGateway::class);
 
+    $options = [
+        'imageSize' => $_POST['imageSize'] ?? '',
+        'imageQuality' => $_POST['imageQuality'] ?? '',
+    ];
+
     $data = [
         'name'           => $_POST['name'] ?? '',
         'active'         => $_POST['active'] ?? '',
         'defaultValue'   => $_POST['defaultValue'] ?? null,
         'characterLimit' => $_POST['characterLimit'] ?? '',
+        'options'        => json_encode($options),
     ];
 
     // Validate the required values are present

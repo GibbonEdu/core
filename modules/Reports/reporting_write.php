@@ -169,6 +169,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
                         ->maxLength(20)
                         ->onlyInteger(false)
                         ->readonly(!$canWriteReport);
+                } elseif ($criteria['valueType'] == 'Image') {
+                    $row->addFileUpload('file'.$criteria['gibbonReportingCriteriaID'])
+                        ->addClass('reportCriteria')
+                        ->setID($fieldID)
+                        ->setAttachment($fieldName, $session->get('absoluteURL'), $criteria['value'] ?? '')
+                        ->readonly(!$canWriteReport);
                 } else {
                     $row->addTextField($fieldName)
                         ->setID($fieldID)
