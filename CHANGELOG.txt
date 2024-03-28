@@ -24,6 +24,7 @@ v27.0.00
 
     Headlines
         A fresh UI update for the Library module with customisable shelves
+        Added an auto-save system when creating new lesson plans
 
     Changes With Important Notices
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
