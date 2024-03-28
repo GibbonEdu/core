@@ -74,6 +74,7 @@ v27.0.00
         Attendance: fixed handling of double periods in Set Future Absence tool
         Attendance: fixed timestamp of attendance taken for double periods in Take Attendance by Class
         Attendance: fixed onsite school absences not showing blue in Attendance by Form Group
+        Attendance: fixed Consecutive Absences report not returning any results
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
         Markbook: fixed the Markbook Entry importer so that it supports username, email or student ID
         Messenger: fixed blank read receipt text when editing a draft message
