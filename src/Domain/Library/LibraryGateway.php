@@ -193,6 +193,15 @@ class LibraryGateway extends QueryableGateway
                     ->where('gibbonSpace.name LIKE :location')
                     ->bindValue('location', $location);
             },
+            'agecheck' => function ($query, $readerAge) {
+                //var_dump($readerAge);
+                return $query
+                    ->where('gibbonLibraryItem.fields->\'$."Reader Age (Youngest)"\' != "" 
+                            AND gibbonLibraryItem.fields->\'$."Reader Age (Oldest)"\' != "" 
+                            AND gibbonLibraryItem.fields->\'$."Reader Age (Youngest)"\'+0 <= :readerAge 
+                            AND gibbonLibraryItem.fields->\'$."Reader Age (Oldest)"\'+0 >= :readerAge')
+                    ->bindValue('readerAge', $readerAge);
+            },
             'everything' => function ($query, $needle) {
                 $globalSearch = "(";
                 foreach ($query->getCols() as $col) {

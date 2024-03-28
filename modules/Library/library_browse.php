@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $location = trim($_REQUEST['location'] ?? '');
     $locationToggle = trim($_REQUEST['locationToggle'] ?? '');
     $everything = trim($_REQUEST['everything'] ?? '');
+    $readerAge = trim($_REQUEST['readerAge'] ?? 0);
 
     $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
 
@@ -122,11 +123,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
 
     $row = $form->addRow();
+        $row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
+    $col = $row->addColumn()->setClass('fullwidth');
+        $col->addLabel('readerAge', __('Readers Age'));
+        $ageArray=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+        $col->addSelect('readerAge')->fromArray($ageArray)->selected($readerAge)->placeholder();
+
+    $row = $form->addRow();
         $row->addAdvancedOptionsToggle()->addClass('pt-2');
 
     echo $form->getOutput();
 
-    if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location)){
+    if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location) && empty($readerAge)){
         // Display a collection of books on visual library shelves
         $libraryShelves = [];
         $shelfNames = [];
@@ -183,6 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
         $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
         $typeFields = $pdo->select($sql)->fetchGroupedUnique();
+        //var_dump($typeFields);
         $locationName = ['name' => ''];
         
         if(!empty($location)) {
@@ -190,8 +199,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             $locationName = $pdo->select($locationSql)->fetch();
         }
 
+        
+
         $criteria = $gateway->newQueryCriteria()
             ->sortBy('id')
+            ->filterBy('agecheck',$readerAge)
             ->filterBy('name', $name)
             ->filterBy('producer', $producer)
             ->filterBy('type', $type)
@@ -200,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             ->filterBy('everything', $everything)
             ->pageSize(100)
             ->fromPOST();
-
+        
         $searchItems = $gateway->queryBrowseItems($criteria)->toArray();
         $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $locationName['name']];
         
