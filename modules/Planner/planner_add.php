@@ -149,6 +149,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $page->return->setEditLink($editLink);
 
             $formId = 'action';
+            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            
             $form = Form::create($formId, $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
             $form->setFactory(PlannerFormFactory::create($pdo));
 
@@ -390,9 +392,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $formData = $container->get(FormSessionStorage::class);
             $formData->load('plannerAdd');
-            $form->loadAllValuesFrom($formData->getData());
             
-            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            $form->loadAllValuesFrom($formData->getData());
             $form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
