@@ -336,6 +336,19 @@ class Form implements OutputableInterface
     }
 
     /**
+     * setOnKeyDown
+     * Add a javascript function to the form's onkeydown event.
+     * @param string $function
+     * @return self
+     */
+    public function enableAutoSave(string $formId, string $autoSaveUrl)
+    {
+        $keydownJS = "gibbonFormSubmitQuiet($('#$formId'), '$autoSaveUrl')";
+        $this->setAttribute('onkeydown', $keydownJS);
+        return $this;
+    }
+
+    /**
      * Adds a Trigger object that injects javascript to respond to form events.
      * @param  string  $selector
      * @param  object  $trigger

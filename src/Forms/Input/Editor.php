@@ -36,6 +36,8 @@ class Editor extends Input
     protected $allowUpload = true;
     protected $resourceAlphaSort = false;
     protected $initialFilter = '';
+    protected $onKeyDownSubmitUrl = '';
+    protected $onKeyDownSubmitFormId = '';
 
     /**
      * Create a tinyMCE rich-text editor input.
@@ -114,6 +116,18 @@ class Editor extends Input
     }
 
     /**
+     * Add a javascript function to the form's onkeydown event.
+     * @param string $function
+     * @return self
+     */
+    public function enableAutoSave(string $url, string $formId)
+    {
+        $this->onKeyDownSubmitUrl = $url;
+        $this->onKeyDownSubmitFormId = $formId;
+        return $this;
+    }
+
+    /**
      * Sets a filter for resource upload.
      * @param   string    $value
      * @return  $this
@@ -151,7 +165,10 @@ class Editor extends Input
                 'initialFilter' => $this->initialFilter,
                 'resourceAlphaSort' => $this->resourceAlphaSort,
                 'absoluteURL' => $session->get('absoluteURL'),
+                'onKeyDownSubmitUrl' => $this->onKeyDownSubmitUrl,
+                'onKeyDownSubmitFormId' => $this->onKeyDownSubmitFormId,
             ];
+
             return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
         }
     }

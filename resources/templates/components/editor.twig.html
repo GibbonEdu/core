@@ -135,6 +135,15 @@ $(document).ready(function(){
         tinyMCE.execCommand('mceAddControl', false, '{{ id }}');
     {% endif %}
 
+    {% if onKeyDownSubmitUrl %}
+    setTimeout(function() {
+        tinyMCE.get('{{ id }}').on('keydown', function (){
+            tinyMCE.triggerSave();
+            gibbonFormSubmitQuiet($('#{{ onKeyDownSubmitFormId }}'), '{{ onKeyDownSubmitUrl }}')
+        })
+    }, 100);
+    {% endif %}
+
     $('#{{ id }}edButtonPreview').addClass('active') ;
     $('#{{ id }}edButtonHTML').click(function(){
         tinyMCE.execCommand('mceRemoveEditor', false, '{{ id }}');

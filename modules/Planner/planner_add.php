@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 use Gibbon\Forms\CustomFieldHandler;
 
@@ -147,8 +148,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
             $page->return->setEditLink($editLink);
 
-
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
+            $formId = 'action';
+            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            
+            $form = Form::create($formId, $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
             $form->setFactory(PlannerFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
@@ -247,13 +250,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Lesson Details'));
-                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
+                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description)->enableAutoSave($autoSaveUrl, $formId);
 
             $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
+                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes)->enableAutoSave($autoSaveUrl, $formId);
 
             //HOMEWORK
             $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
@@ -276,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
                 $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required();
+                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->enableAutoSave($autoSaveUrl, $formId);
 
             $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
             $row = $form->addRow()->addClass('homework');
@@ -386,6 +389,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');
+
+            $formData = $container->get(FormSessionStorage::class);
+            $formData->load('plannerAdd');
+            
+            $form->loadAllValuesFrom($formData->getData());
+            $form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
         }
