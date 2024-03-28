@@ -56,7 +56,7 @@ table:
         name: "Term Added"
         desc: ""
         args: {filter: string, custom: true }
-        relationship: { table: gibbonSchoolYearTerm, key: gibbonSchoolYearTermID, join: gibbonSchoolYear, on: [gibbonSchoolYearID, gibbonSchoolYearID], field: nameShort  }
+        relationship: { table: gibbonSchoolYearTerm, key: gibbonSchoolYearTermID, field: [ gibbonSchoolYearTerm.nameShort, gibbonSchoolYearID ]  }
     attainment: 
         name: "Assess Attainment?"
         desc: ""
