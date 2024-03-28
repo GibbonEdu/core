@@ -1,5 +1,5 @@
 details:
-    type: markbookEntryByUsername
+    type: markbookEntry
     name: Markbook - Marks
     table: gibbonMarkbookEntry
     modes: { update: true, insert: true, export: true }
