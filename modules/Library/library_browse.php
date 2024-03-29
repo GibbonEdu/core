@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
 
     $row = $form->addRow();
-        $row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
+        $row->setClass('advancedOptions hidden grid grid-cols-7 gap-4');
 
     $col = $row->addColumn()->setClass('quarterWidth');
         $col->addLabel('name', __('Title'));
@@ -119,15 +119,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         ->selected($collection)
         ->placeholder();
         
+    $col = $row->addColumn()->setClass('fullWidth');
+        $col->addLabel('readerAge', __('Readers Age'));
+        $ageArray=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+        $col->addSelect('readerAge')->fromArray($ageArray)->setClass('fullWidth')->selected($readerAge)->placeholder();
+
     $col = $row->addColumn()->setClass('quarterWidth');
         $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
 
-    $row = $form->addRow();
-        $row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
-    $col = $row->addColumn()->setClass('fullwidth');
-        $col->addLabel('readerAge', __('Readers Age'));
-        $ageArray=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
-        $col->addSelect('readerAge')->fromArray($ageArray)->selected($readerAge)->placeholder();
+    //$row = $form->addRow();
+    //$row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
+
 
     $row = $form->addRow();
         $row->addAdvancedOptionsToggle()->addClass('pt-2');
