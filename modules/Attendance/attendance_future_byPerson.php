@@ -391,6 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                 foreach ($classes as $class) {
                     $name = $class['columnName'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
+                    $logName = $name;
 
                     $classStart = strtotime($targetDate.' '.$class['timeStart']);
                     $classEnd = strtotime($targetDate.' '.$class['timeEnd']);
@@ -401,25 +402,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     $disabled = false;
                     foreach (array_reverse($logs) as $log) {
                         if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
-                            $disabled = $class['gibbonCourseClassID'];
-                            $name .= ' ('.$log['type'].')';
+                            $logName = $name . ' ('.$log['type'].')';
                             break;
                         }
 
                         if ($log['context'] != 'Class' && $log['date'] == $targetDate) {
-                            $disabled = $class['gibbonCourseClassID'];
-                            $name .= ' ('.$log['type'].')';
-                            break;
+                            $logName = $name . ' ('.$log['type'].')';
                         }
                     }
 
                     $row = $table->addRow();
                     $row->addCheckbox("courses[{$gibbonPersonIDList[0]}][]")
-                        ->description($name)
+                        ->description($logName)
                         ->setValue($class['gibbonCourseClassID'])
                         ->inline()
                         ->setClass('')
-                        ->checked($checked ? $class['gibbonCourseClassID'] : '', $disabled);
+                        ->checked($checked ? $class['gibbonCourseClassID'] : '');
                 }
             } else {
                

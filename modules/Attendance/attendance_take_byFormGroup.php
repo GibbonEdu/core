@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $countPresent = 0;
                             $columns = 4;
 
-                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
+                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
                             $students = $resultFormGroup->fetchAll();
 
                             // Build the attendance log data per student
