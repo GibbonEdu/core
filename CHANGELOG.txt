@@ -81,6 +81,7 @@ v27.0.00
         Markbook: fixed the Term Added field in the Markbook Column importer
         Messenger: fixed blank read receipt text when editing a draft message
         Messenger: fixed visual bug when messages are wider than the message wall
+        Reports: fixed missing sequenceNumber in duplicated Reporting Cycles
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
 

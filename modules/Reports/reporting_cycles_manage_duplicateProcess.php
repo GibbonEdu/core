@@ -91,6 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     // Update duplicated values
     $data['milestones'] = json_encode($milestones);
     $data['notes'] = $values['notes'];
+    $data['sequenceNumber'] = $values['sequenceNumber'];
     $data['gibbonYearGroupIDList'] = $values['gibbonYearGroupIDList'];
 
     // Create the record
