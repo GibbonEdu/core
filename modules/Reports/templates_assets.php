@@ -61,7 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         } elseif ($template['type'] == 'Additional' && !is_file($absolutePath.$customAssetPath.'/templates/'.$template['templateFile'])) {
             $template['status'] = __('Not Installed');
             $template['statusClass'] = 'error';
-        } else if (!empty($fontsMissing)) {
+        } else if (stripos(basename($template['templateFile']), '.twig.html') === false) {
+            $template['status'] = __('Invalid File Type');
+            $template['statusClass'] = 'error';
+            $template['statusTitle'] = __('The file {file} is missing the extension {ext} and may not work as expected.', ['file' => basename($template['templateFile']), 'ext' => '.twig.html']);
+        }else if (!empty($fontsMissing)) {
             $template['status'] = __('Missing Font');
             $template['statusClass'] = 'warning';
             $template['statusTitle'] = implode('<br/>', $fontsMissing);

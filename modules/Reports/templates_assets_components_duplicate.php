@@ -63,7 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
             ->maxLength(255)
             ->required()
             ->setValue(basename($values['templateFile']))
-            ->prepend(dirname($values['templateFile']).'/');
+            ->prepend(dirname($values['templateFile']).'/')
+            ->addValidation(
+                'Validate.Format',
+                'pattern: /.*\.twig\.html/, failureMessage: "'.__('Invalid File Type').'"'
+            );
 
     $row = $form->addRow();
         $row->addFooter();

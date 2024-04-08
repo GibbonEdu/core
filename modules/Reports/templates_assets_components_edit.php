@@ -48,6 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         return;
     }
 
+    if (stripos(basename($values['templateFile']), '.twig.html') === false) {
+        $page->addError(__('The file {file} is missing the extension {ext} and may not work as expected.', ['file' => basename($values['templateFile']), 'ext' => '.twig.html']));
+    }
+
     $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
