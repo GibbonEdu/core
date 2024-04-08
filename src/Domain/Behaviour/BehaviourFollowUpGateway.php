@@ -32,7 +32,7 @@ use Gibbon\Domain\Traits\ScrubByPerson;
  * @version v27
  * @since   v27
  */
-class BehaviourFollowupGateway extends QueryableGateway implements ScrubbableGateway
+class BehaviourFollowUpGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
