@@ -406,8 +406,8 @@ class StudentGateway extends QueryableGateway
 
     public function selectStudentEnrolmentHistory($gibbonPersonID)
     {
-        $dataSelect = ['gibbonPersonID' => $gibbonPersonID];
-        $sqlSelect = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear, gibbonYearGroup.nameShort as studyYear
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear, gibbonYearGroup.nameShort as studyYear
             FROM gibbonStudentEnrolment
             JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
             JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
@@ -416,6 +416,6 @@ class StudentGateway extends QueryableGateway
             AND (gibbonSchoolYear.status = 'Current' OR gibbonSchoolYear.status='Past')
             ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID";
           
-          return $this->db()->select($sqlSelect, $dataSelect);
+          return $this->db()->select($sql, $data);
     }
 }
