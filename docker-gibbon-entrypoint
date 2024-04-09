@@ -70,8 +70,8 @@ if [[ $(mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATA
     RANDOM_PASSWORD=$(openssl rand -base64 12)
 
     # Set environment variables
-    export EMAIL="example@example.com"
-    export USERNAME="example_username"
+    export EMAIL="${GIBBON_ADMIN_EMAIL:=admin@example.com}"
+    export USERNAME="${GIBBON_ADMIN_USERNAME:=admin}"
     export PASSWORD_STRONG="$RANDOM_PASSWORD"
     export PASSWORD_STRONG_SALT="$(openssl rand -base64 12)"
     export STATUS="active"
