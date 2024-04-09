@@ -408,25 +408,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table->addColumn('email', __('Email'))
                                 ->format(Format::using('link', ['email']));
 
-                        $table->addColumn('schoolHistory', __('School History'))
-                                ->format(function($row) use ($connection2) {
+                                $studentGateway = $container->get(StudentGateway::class);
+                                $table->addColumn('schoolHistory', __('School History'))
+                                ->format(function($row) use ($connection2, $studentGateway ) {
                                     if ($row['dateStart'] != '') {
                                         echo '<u>'.__('Start Date').'</u>: '.Format::date($row['dateStart']).'</br>';
                                     }
 
-                                    $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                                    $sqlSelect = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear
-                                        FROM gibbonStudentEnrolment
-                                        JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                                        WHERE gibbonPersonID=:gibbonPersonID
-                                        AND (gibbonSchoolYear.status = 'Current' OR gibbonSchoolYear.status='Past')
-                                        ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-
+                                    $resultSelect = $studentGateway->selectStudentEnrolmentHistory($row['gibbonPersonID']);
+                                    
                                     while ($rowSelect = $resultSelect->fetch()) {
-                                        echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].'<br/>';
+                                        echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].' ('.$rowSelect['studyYear'].')'.'<br/>';
                                     }
 
                                     if ($row['dateEnd'] != '') {
