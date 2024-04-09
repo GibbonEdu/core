@@ -121,14 +121,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         
     $col = $row->addColumn()->setClass('fullWidth');
         $col->addLabel('readerAge', __('Readers Age'));
-        $ageArray=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+        $ageArray=range(2,21);
         $col->addSelect('readerAge')->fromArray($ageArray)->setClass('fullWidth')->selected($readerAge)->placeholder();
 
     $col = $row->addColumn()->setClass('quarterWidth');
         $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
 
-    //$row = $form->addRow();
-    //$row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
 
 
     $row = $form->addRow();
@@ -193,7 +191,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
         $sql = "SELECT gibbonLibraryTypeID as groupBy, gibbonLibraryType.* FROM gibbonLibraryType";
         $typeFields = $pdo->select($sql)->fetchGroupedUnique();
-        //var_dump($typeFields);
         $locationName = ['name' => ''];
         
         if(!empty($location)) {

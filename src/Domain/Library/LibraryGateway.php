@@ -194,7 +194,6 @@ class LibraryGateway extends QueryableGateway
                     ->bindValue('location', $location);
             },
             'agecheck' => function ($query, $readerAge) {
-                //var_dump($readerAge);
                 return $query
                     ->where('gibbonLibraryItem.fields->\'$."Reader Age (Youngest)"\' != "" 
                             AND gibbonLibraryItem.fields->\'$."Reader Age (Oldest)"\' != "" 
