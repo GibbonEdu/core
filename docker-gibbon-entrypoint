@@ -64,4 +64,30 @@ if [ "$owner" != "33" ]; then
     chmod -R o-w uploads
 fi
 
+# Check if admin record exists
+if [[ $(mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -N -B -e "SELECT COUNT(*) FROM gibbonPerson WHERE gibbonPersonID=1;") -eq 0 ]]; then
+    # Generate a random password
+    RANDOM_PASSWORD=$(openssl rand -base64 12)
+
+    # Set environment variables
+    export EMAIL="example@example.com"
+    export USERNAME="example_username"
+    export PASSWORD_STRONG="$RANDOM_PASSWORD"
+    export PASSWORD_STRONG_SALT="$(openssl rand -base64 12)"
+    export STATUS="active"
+    export CAN_LOGIN=1
+    export PASSWORD_FORCE_RESET=0
+    export GIBBON_ROLE_ID_PRIMARY=1
+    export GIBBON_ROLE_ID_ALL=1
+
+    # Insert new record
+    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" <<EOF
+    INSERT INTO gibbonPerson (gibbonPersonID, title, surname, firstName, preferredName, officialName, username, passwordStrong, passwordStrongSalt, status, canLogin, passwordForceReset, gibbonRoleIDPrimary, gibbonRoleIDAll, email)
+    VALUES (1, '', '', '', '', '', '\$USERNAME', '\$PASSWORD_STRONG', '\$PASSWORD_STRONG_SALT', '\$STATUS', \$CAN_LOGIN, \$PASSWORD_FORCE_RESET, \$GIBBON_ROLE_ID_PRIMARY, \$GIBBON_ROLE_ID_ALL, '\$EMAIL');
+EOF
+    echo "New record inserted. Password: $RANDOM_PASSWORD"
+else
+    echo "Record already exists."
+fi
+
 sh /usr/local/bin/docker-php-entrypoint "$@"
