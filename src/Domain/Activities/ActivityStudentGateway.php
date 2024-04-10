@@ -40,7 +40,8 @@ class ActivityStudentGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-    public function queryActivityEnrolment($criteria, $gibbonActivityID) {
+    public function queryActivityEnrolment($criteria, $gibbonActivityID) 
+    {
         $query = $this
             ->newQuery()
             ->cols(['gibbonActivityStudent.*', 'surname', 'preferredName', 'gibbonFormGroup.nameShort as formGroup', 'FIND_IN_SET(gibbonActivityStudent.status, "Accepted,Pending,Waiting List,Not Accepted,Left") as sortOrder'])
@@ -54,6 +55,15 @@ class ActivityStudentGateway extends QueryableGateway
             ->where('gibbonPerson.status="Full"');
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectActivityByStudents($gibbonActivityID) 
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT gibbonSchoolYearTermIDList, maxParticipants, programStart, programEnd, (SELECT COUNT(*) 
+        FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
+
+        return $this->db()->select($sql, $data);
     }
 
 }

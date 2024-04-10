@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityAttendanceGateway;
 
 require_once '../../gibbon.php';
 
@@ -39,11 +41,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
 
     if($highestAction == "Enter Activity Attendance_leader") {
-        try {
-            $dataCheck = array("gibbonPersonID" => $gibbonPersonID, "gibbonActivityID" => $gibbonActivityID);
-            $sqlCheck = "SELECT role FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID";
-            $resultCheck = $connection2->prepare($sqlCheck);
-            $resultCheck->execute($dataCheck);
+        try {            
+            
+            $resultCheck = $container->get(ActivityStaffGateway::class)->selectStaffRoleByActivity($gibbonPersonID, $gibbonActivityID);
 
             if ($resultCheck->rowCount() > 0) {
                 $row = $resultCheck->fetch();
@@ -91,10 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $sessionAttendance = (isset($attendance[$i])) ? serialize($attendance[$i]) : '';
 
             try {
-                $data = array('gibbonActivityID' => $gibbonActivityID, 'date' => $sessionDate);
-                $sql = 'SELECT gibbonActivityAttendanceID FROM gibbonActivityAttendance WHERE gibbonActivityID=:gibbonActivityID AND date=:date';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $container->get(ActivityAttendanceGateway::class)->selectActivityAttendanceByActivity($gibbonActivityID, $sessionDate);
+                
             } catch (PDOException $e) {
                 $partialFail = true;
             }
@@ -109,7 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
                 try {
                     $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonIDTaker' => $gibbonPersonID, 'attendance' => $sessionAttendance, 'date' => $sessionDate);
-                    $sql = 'INSERT INTO gibbonActivityAttendance SET gibbonActivityID=:gibbonActivityID, gibbonPersonIDTaker=:gibbonPersonIDTaker, attendance=:attendance, date=:date ';
+                    $sql = 'INSERT INTO gibbonActivityAttendance 
+                    SET gibbonActivityID=:gibbonActivityID, gibbonPersonIDTaker=:gibbonPersonIDTaker, attendance=:attendance, date=:date ';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -140,3 +139,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         }
     }
 }
+ 

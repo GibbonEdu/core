@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
 $gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
@@ -156,8 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 }, array());
             }
 
-            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-            $result = $pdo->executeQuery(array(), $sql);
+            $result = $container->get(UserGateway::class)->selectUsers();
 
             if ($result->rowCount() > 0) {
                 $people['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
