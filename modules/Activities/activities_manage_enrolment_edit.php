@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
 
             $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-            $sql = 'SELECT gibbonActivity.*, gibbonActivityStudent.*, surname, preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityStudent.gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID';
+            $sql = 'SELECT gibbonActivity.*, gibbonActivityStudent.*, surname, preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice, gibbonActivityType.waitingList FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityStudent.gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -128,7 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $statuses = ['Accepted' => __('Accepted')];
             if ($enrolment == 'Competitive') {
-                $statuses['Waiting List'] = __('Waiting List');
+                if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
+                    $statuses['Waiting List'] = __('Waiting List');
+                }
             } else {
                 $statuses['Pending'] = __('Pending');
             }

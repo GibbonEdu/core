@@ -72,6 +72,7 @@ v27.0.00
         System: fixed incorrect directory separator character in XAMPP installation
         System: fixed Ivory Coast name and country code in list of countries
         Activities: fixed highlight colour for Waiting List activities in View Activities
+        Activities: fixed missing Waiting List option when adding activity enrolment
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Admissions: ensure form submission email goes to the admissions account email address rather than parent1
         Attendance: fixed handling of double periods in Set Future Absence tool

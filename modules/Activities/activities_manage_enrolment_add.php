@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
+        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice, gibbonActivityType.waitingList FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
