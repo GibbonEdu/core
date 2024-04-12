@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
             $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
             $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
             $event->setNotificationText($notificationString);
-            $event->setActionLink('/index.php?q=/modules/Admissions/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
+            $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
 
             // Notify Additional People
             foreach ($notificationList as $gibbonPersonIDNotify) {
