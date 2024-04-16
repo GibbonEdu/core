@@ -41,25 +41,27 @@ class ActivityAttendanceGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-    public function selectStudentAttendanceByActivity($gibbonActivityID) {
-
+    public function selectStudentAttendanceByActivity($gibbonActivityID)
+    {
         $data = ['gibbonActivityID' => $gibbonActivityID];
-
-        $sql = 'SELECT gibbonActivityAttendance.date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname 
-        FROM gibbonActivityAttendance, gibbonPerson 
-        WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID 
-        AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID';
+        $sql = 'SELECT gibbonActivityAttendance.date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID';
 
         return $this->db()->select($sql, $data);
-
     }
    
-    public function selectActivityAttendanceByActivity ($gibbonActivityID, $date) {
+    public function selectActivityAttendanceByActivity($gibbonActivityID, $date) 
+    {
         $data = ['gibbonActivityID' => $gibbonActivityID, 'date' => $date];
-
         $sql = 'SELECT gibbonActivityAttendanceID FROM gibbonActivityAttendance WHERE gibbonActivityID=:gibbonActivityID AND date=:date';
         
         return $this->db()->select($sql, $data);
     }
 
+    public function selectSortedStudentAttendanceByActivity($gibbonActivityID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = 'SELECT UNIX_TIMESTAMP(gibbonActivityAttendance.date) as date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID ORDER BY DATE ASC';
+
+        return $this->db()->select($sql, $data);
+    }
 }

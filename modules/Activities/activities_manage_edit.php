@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         'External' => __('External')
                     ]);
 
-            $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
+            $activityTypes = $activityTypeGateway->selectActivityTypeOptions()->fetchKeyPair();
 
             if (!empty($activityTypes)) {
                 $row = $form->addRow();

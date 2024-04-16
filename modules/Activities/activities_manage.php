@@ -19,15 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -53,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $yearGroups = getYearGroups($connection2);
 
     $activityGateway = $container->get(ActivityGateway::class);
+    $activitySlotGateway = $container->get(ActivitySlotGateway::class);
 
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria(true)
@@ -162,8 +164,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $table->addColumn('days', __('Days'))
         ->notSortable()
-        ->format(function($activity) use ($activityGateway) {
-            return implode(', ', array_map('__', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN)));
+        ->format(function($activity) use ($activitySlotGateway) {
+            return implode(', ', array_map('__', $activitySlotGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN)));
         });
 
     $table->addColumn('yearGroups', __('Years'))

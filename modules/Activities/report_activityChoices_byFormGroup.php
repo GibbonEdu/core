@@ -20,8 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -64,10 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo __('Report Data');
         echo '</h2>';
 
-            $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d'));
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $result = $container->get(UserGateway::class)->selectActiveStudentsByFormGroup($gibbonFormGroupID);
 
         if ($result->rowCount() < 1) {
             echo $page->getBlankSlate();
@@ -90,21 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
                 echo '<td>';
 
-
-                    $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlActivities = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days
-                        FROM gibbonActivity
-                        JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
-                        JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
-                        JOIN gibbonDaysOfWeek ON (gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID)
-                        LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
-                        WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID
-                        AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
-                        GROUP BY gibbonActivity.gibbonActivityID
-                        ORDER BY gibbonActivity.name";
-                    $resultActivities = $connection2->prepare($sqlActivities);
-                    $resultActivities->execute($dataActivities);
-
+                    $resultActivities = $container->get(ActivityGateway::class)->selectActivitiesByStudent($row['gibbonPersonID'], $session->get('gibbonSchoolYearID'));
+                    
                 if ($resultActivities->rowCount() > 0) {
                     echo '<table cellspacing="0" class="mini fullWidth">';
                     while ($activity = $resultActivities->fetch()) {

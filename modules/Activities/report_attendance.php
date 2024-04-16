@@ -20,8 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Activities\ActivityAttendanceGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -30,6 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+
+    $activityGateway = $container->get(ActivityGateway::class);
+
     //Proceed!
     $page->breadcrumbs->add(__('Attendance History by Activity'));
 
@@ -50,11 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_attendance.php");
 
-    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-    $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+    $results = $activityGateway->selectActivitiesBySchoolYear($session->get('gibbonSchoolYearID'));
+
     $row = $form->addRow();
         $row->addLabel('gibbonActivityID', __('Activity'));
-        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->required()->placeholder();
+        $row->addSelect('gibbonActivityID')->fromResults($results)->selected($gibbonActivityID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('allColumns', __('All Columns'))->description(__('Include empty columns with unrecorded attendance.'));
@@ -69,32 +76,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     // Cancel out early if we have no gibbonActivityID
     if (empty($gibbonActivityID)) {
         return;
-    }
+    }   
+        $studentResult = $container->get(UserGateway::class)->selectStudentsByActivity($session->get('gibbonSchoolYearID'),  $gibbonActivityID);
 
-
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
-        $studentResult = $connection2->prepare($sql);
-        $studentResult->execute($data);
-
-
-        $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = "SELECT gibbonSchoolYearTermIDList, maxParticipants, programStart, programEnd, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
-        $activityResult = $connection2->prepare($sql);
-        $activityResult->execute($data);
+        $activityResult = $container->get(ActivityStudentGateway::class)->selectActivityByStudents($gibbonActivityID);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
         echo $page->getBlankSlate();
 
         return;
     }
-
-
-        $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = 'SELECT gibbonActivityAttendance.date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID';
-        $attendanceResult = $connection2->prepare($sql);
-        $attendanceResult->execute($data);
-
+        $attendanceResult = $container->get(ActivityAttendanceGateway::class)->selectStudentAttendanceByActivity($gibbonActivityID);
+        
     // Gather the existing attendance data (by date and not index, should the time slots change)
     $sessionAttendanceData = array();
 

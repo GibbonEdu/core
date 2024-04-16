@@ -25,6 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 
 //Module includes
@@ -49,11 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_participants.php");
 
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+        $results = $container->get(ActivityGateway::class)->selectActivitiesBySchoolYear($session->get('gibbonSchoolYearID'));
+
         $row = $form->addRow();
             $row->addLabel('gibbonActivityID', __('Activity'));
-            $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->required()->placeholder();
+            $row->addSelect('gibbonActivityID')->fromResults($results)->selected($gibbonActivityID)->required()->placeholder();
 
         $row = $form->addRow();
             $row->addFooter();

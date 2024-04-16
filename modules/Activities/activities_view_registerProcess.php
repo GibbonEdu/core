@@ -314,19 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $spaces = $row['maxParticipants'] - $resultNumberRegistered->rowCount();
                                 if ($spaces > 0) {
                                     //Get top of waiting list
-                                    $dataBumps = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'));
-                                    $sqlBumps = "SELECT gibbonActivityStudentID, name, gibbonPerson.gibbonPersonID, surname, preferredName
-                                        FROM gibbonActivityStudent
-                                        JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID)
-                                        JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                    WHERE gibbonPerson.status='Full'
-                                        AND (dateStart IS NULL OR dateStart<=:today)
-                                        AND (dateEnd IS NULL  OR dateEnd>=:today)
-                                        AND gibbonActivityStudent.gibbonActivityID=:gibbonActivityID
-                                        AND gibbonActivityStudent.status='Waiting List'
-                                    ORDER BY timestamp ASC LIMIT 0, $spaces";
-                                    $resultBumps = $connection2->prepare($sqlBumps);
-                                    $resultBumps->execute($dataBumps);
+                                    $resultBumps = $container->get(ActivityStudentGateway::class)->selectStudentsInWaitingListByActivityForBump($gibbonActivityID, $spaces);
 
                                     //Bump students up
                                     while ($rowBumps = $resultBumps->fetch()) {

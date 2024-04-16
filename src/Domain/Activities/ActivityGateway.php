@@ -212,29 +212,6 @@ class ActivityGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function selectActivityEnrolmentByStudent($gibbonSchoolYearID, $gibbonPersonID)
-    {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonActivity.gibbonActivityID AS groupBy, gibbonActivityStudent.* FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID";
-
-        return $this->db()->select($sql, $data);
-    }
-
-    public function selectWeekdayNamesByActivity($gibbonActivityID)
-    {
-        $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = "SELECT DISTINCT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber";
-
-        return $this->db()->select($sql, $data);
-    }
-
-    public function selectActivityTypeOptions()
-    {
-        $sql = "SELECT name as value, name FROM gibbonActivityType ORDER BY name";
-
-        return $this->db()->select($sql);
-    }
-    
     public function selectActivitiesBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
@@ -395,4 +372,12 @@ class ActivityGateway extends QueryableGateway
         
         return $this->db()->select($sql, $data);
     }
+
+    public function selectActivitiesByStudent($gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonDaysOfWeek ON (gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID GROUP BY gibbonActivity.gibbonActivityID ORDER BY gibbonActivity.name";
+
+        return $this->db()->select($sql, $data);
+    }    
 }

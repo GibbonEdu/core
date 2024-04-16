@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityAttendanceGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
@@ -81,20 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // Get the recorded attendance
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT UNIX_TIMESTAMP(gibbonActivityAttendance.date) as date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID ORDER BY DATE ASC';
-            $resultAttendance = $connection2->prepare($sql);
-            $resultAttendance->execute($data);
+            $resultAttendance = $container->get(ActivityAttendanceGateway::class)->selectSortedStudentAttendanceByActivity($gibbonActivityID);
         } catch (PDOException $e) {
         }
         $sessions = $resultAttendance->fetchAll();
 
         // Get the time slots
         try {
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT nameShort, timeStart, timeEnd FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
-            $resultSlots = $connection2->prepare($sql);
-            $resultSlots->execute($data);
+            $resultSlots = $container->get(ActivityAttendanceGateway::class)->selectActivityTimeSlots($gibbonActivityID);
         } catch (PDOException $e) {
         }
 

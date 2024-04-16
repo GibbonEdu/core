@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
+use Gibbon\Domain\Activities\ActivityReportGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     if (!empty($gibbonPersonID)) {
         $settingGateway = $container->get(SettingGateway::class);
-        $activityTypes = $container->get(ActivityGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
+        $activityTypes = $container->get(ActivityTypeGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
         $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
         if ($dateType == 'Term') {
             $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');

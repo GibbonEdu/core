@@ -21,10 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\School\DaysOfWeekGateway;
-use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Days360;
 
 //Module includes
@@ -48,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $search = $_GET['search'] ?? '';
     
     $activityGateway = $container->get(ActivityGateway::class);
+    $activityTypeGateway = $container->get(ActivityTypeGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
 
     $form = Form::create('activity', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
@@ -79,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 'External'  => __('External')
             ]);
 
-    $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
+    $activityTypes = $activityTypeGateway->selectActivityTypeOptions()->fetchKeyPair();
 
     if (!empty($activityTypes)) {
         $row = $form->addRow();
