@@ -30,6 +30,7 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\Students\StudentEnrolmentGateway;
 use Gibbon\Domain\Activities\ActivityStudentGateway;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -241,8 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '</ul>';
                         echo '</div>';
                     } else if ($dateType == 'Date') {
-                        $sql = "SELECT gibbonActivityTypeID, name, maxPerStudent FROM gibbonActivityType WHERE access='Register' AND maxPerStudent > 0";
-                        $activitiesWithLimits = $pdo->select($sql);
+                        $activitiesWithLimits = $container->get(ActivityTypeGateway::class)->selectRegisterActivityType();
 
                         if ($activitiesWithLimits->rowCount() > 0) {
                             while ($activity = $activitiesWithLimits->fetch()) {

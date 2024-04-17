@@ -63,4 +63,11 @@ class ActivityTypeGateway extends QueryableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function selectRegisterActivityType()
+    {
+        $sql = "SELECT gibbonActivityTypeID, name, maxPerStudent FROM gibbonActivityType WHERE access='Register' AND maxPerStudent > 0";
+        
+        return $this->db()->select($sql);
+    }
 }

@@ -289,6 +289,14 @@ class ActivityGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getActivityInfo($gibbonActivityID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = 'SELECT gibbonActivity.name, description, programStart, programEnd, gibbonSchoolYearTermIDList, gibbonYearGroupIDList, gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name as schoolYearName FROM gibbonActivity, gibbonSchoolYear WHERE gibbonSchoolYear.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID AND gibbonActivityID=:gibbonActivityID';
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getActivityDuringTerm($gibbonSchoolYearID, $gibbonActivityID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonActivityID' => $gibbonActivityID];
