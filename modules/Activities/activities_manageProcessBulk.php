@@ -51,7 +51,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                 foreach ($activities AS $gibbonActivityID) { //For every activity to be copied
                     //Check existence of activity and fetch details
                     try {
-                        $result = $container->get(ActivityGateway::class)->selectActvity($gibbonActivityID);
+                        $result = $container->get(ActivityGateway::class)->selectBy(['gibbonActivityID'=>$gibbonActivityID]);
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }
@@ -79,7 +79,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
                         //Check and create staff
-                        $resultParticipants = $container->get(ActivityStaffGateway::class)->selectWhere(['gibbonActivityID' => $gibbonActivityID]);
+                        $resultParticipants = $container->get(ActivityStaffGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
 
 
                         while ($rowParticipants = $resultParticipants->fetch()) {
@@ -94,7 +94,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                         }
 
                         //Check and create slots
-                            $resultParticipants = $container->get(ActivitySlotGateway::class)->selectWhere(['gibbonActivityID' => $gibbonActivityID]);
+                            $resultParticipants = $container->get(ActivitySlotGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
 
                         while ($rowParticipants = $resultParticipants->fetch()) {
                             try {
@@ -110,7 +110,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                         //Deal with participants
                         if ($action == 'DuplicateParticipants') {
                             //Check and create staff
-                                $resultParticipants = $container->get(ActivityStudentGateway::class)->selectWhere(['gibbonActivityID' => $gibbonActivityID]);
+                                $resultParticipants = $container->get(ActivityStudentGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
                             
                             while ($rowParticipants = $resultParticipants->fetch()) {
                                 try {
@@ -130,7 +130,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                 foreach ($activities AS $gibbonActivityID) { //For every activity to be copied
                     //Check existence of activity and fetch details
                     try {
-                        $result = $container->get(ActivityGateway::class)->selectActvity($gibbonActivityID);
+                        $result = $container->get(ActivityGateway::class)->selectBy(['gibbonActivityID' => $gibbonActivityID]);
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }

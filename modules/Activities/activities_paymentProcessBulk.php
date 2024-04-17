@@ -123,9 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                                     while ($continue == false and $count < 100) {
                                         $key = $randStrGenerator->generate();
 
-                                            $resultUnique - $container->get(InvoiceGateway::class)->getByID($key);
+                                            $resultUnique = $container->get(InvoiceGateway::class)->getByID($key);
 
-                                        if ($resultUnique->rowCount() == 0) {
+                                        if (count($resultUnique) == 0) {
                                             $continue = true;
                                         }
                                         ++$count;

@@ -19,14 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\ActivityStaffGateway;
-use Gibbon\Domain\Activities\ActivitySlotGateway;
-use Gibbon\Domain\School\DaysOfWeekGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -92,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         'External' => __('External')
                     ]);
 
-            $activityTypes = $activityTypeGateway->selectActivityTypeOptions()->fetchKeyPair();
+            $activityTypes = $container->get(ActivityTypeGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
 
             if (!empty($activityTypes)) {
                 $row = $form->addRow();

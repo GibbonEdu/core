@@ -28,6 +28,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivityAttendanceGateway;
 
@@ -87,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // Get the time slots
         try {
-            $resultSlots = $container->get(ActivityAttendanceGateway::class)->selectActivityTimeSlots($gibbonActivityID);
+            $resultSlots = $container->get(ActivitySlotGateway::class)->selectActivityTimeSlots($gibbonActivityID);
         } catch (PDOException $e) {
         }
 
