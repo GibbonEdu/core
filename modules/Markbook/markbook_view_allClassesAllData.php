@@ -147,7 +147,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     //Get teacher list
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-	$canEditThisClass = (isset($teacherList[$session->get('gibbonPersonID')])) ?? ($highestAction2 == 'Edit Markbook_everything') ?? ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess));
+	$canEditThisClass = (isset($teacherList[$session->get('gibbonPersonID')])) ?: ($highestAction2 == 'Edit Markbook_everything') ?: ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess));
 
     // Get criteria filter values, including session defaults
     $search = $_GET['search'] ?? '';
