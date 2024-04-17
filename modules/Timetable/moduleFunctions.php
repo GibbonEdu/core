@@ -1445,7 +1445,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 
                 WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' 
                 GROUP BY gibbonTTDayRowClass.gibbonTTDayRowClassID 
-                ORDER BY timeStart, timeEnd";
+                ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC";
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
