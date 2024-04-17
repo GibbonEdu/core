@@ -139,11 +139,15 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     //Get class chooser
     echo classChooser($guid, $pdo, $gibbonCourseClassID);
 
-    $departmentAccess = $container->get(DepartmentGateway::class)->selectMemberOfDepartmentByRole($class['gibbonDepartmentID'], $session->get('gibbonPersonID'), ['Coordinator', 'Teacher (Curriculum)'])->fetch();
+    $departmentAccess = null;
+    if(isset($class['gibbonDepartmentID'])) 
+    {
+        $departmentAccess = $container->get(DepartmentGateway::class)->selectMemberOfDepartmentByRole($class['gibbonDepartmentID'], $session->get('gibbonPersonID'), ['Coordinator', 'Teacher (Curriculum)'])->fetch();
+    }
 
     //Get teacher list
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-	$canEditThisClass = (isset($teacherList[ $session->get('gibbonPersonID') ]) || $highestAction2 == 'Edit Markbook_everything' || ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess)));
+	$canEditThisClass = (isset($teacherList[$session->get('gibbonPersonID')])) ?? ($highestAction2 == 'Edit Markbook_everything') ?? ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess));
 
     // Get criteria filter values, including session defaults
     $search = $_GET['search'] ?? '';
@@ -157,8 +161,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
-	
-	
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $container->get(SettingGateway::class));
