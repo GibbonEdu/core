@@ -39,6 +39,7 @@ v27.0.00
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
+        Admissions: added a notification event for student form group changes
         Behaviour: added notifications for positive behaviour records
         Behaviour: added the ability to view other students involved in multiple behaviour records
         Behaviour: updated the view so that followups are displayed as conversational logs and stored in a separate table
