@@ -25,6 +25,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 
 require_once '../../gibbon.php';
 
@@ -170,6 +171,22 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         $event->addScope('gibbonYearGroupID', $gibbonYearGroupID);
                         $event->setNotificationText($notificationString);
                         $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
+
+                        // Head of Year
+                        $yearGroup = $container->get(YearGroupGateway::class)->getByID($gibbonYearGroupID);
+                        $event->addRecipient($yearGroup['gibbonPersonIDHOY']);
+
+                        // Form Tutor: original
+                        $formGroup = $container->get(FormGroupGateway::class)->getByID($gibbonFormGroupIDOriginal);
+                        $event->addRecipient($formGroup['gibbonPersonIDTutor']);
+                        $event->addRecipient($formGroup['gibbonPersonIDTutor2']);
+                        $event->addRecipient($formGroup['gibbonPersonIDTutor3']);
+
+                        // Form Tutor: new
+                        $formGroup = $container->get(FormGroupGateway::class)->getByID($gibbonFormGroupID);
+                        $event->addRecipient($formGroup['gibbonPersonIDTutor']);
+                        $event->addRecipient($formGroup['gibbonPersonIDTutor2']);
+                        $event->addRecipient($formGroup['gibbonPersonIDTutor3']);
 
                         // Add event listeners to the notification sender
                         $event->sendNotifications($pdo, $session);
