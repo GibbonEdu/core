@@ -19,12 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -175,11 +178,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 //Check for existence of behaviour record
-
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $result = $container->get(BehaviourGateway::class)->getBehaviourRecordToCheck($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                   
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The specified record cannot be found.'));
                 } else {
@@ -199,20 +199,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     //Lessons
                     $lessons = array();
-                    $minDate = date('Y-m-d', (time() - (24 * 60 * 60 * 30)));
 
-                        $dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $values['gibbonPersonID']);
-                        $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date DESC, timeStart";
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
+                    $resultSelect = $container->get(CourseGateway::class)->selectLessonByStudent($session->get('gibbonSchoolYearID'), $values['gibbonPersonID']);
+
                     while ($rowSelect = $resultSelect->fetch()) {
                         $show = true;
                         if ($highestAction == 'Manage Behaviour Records_my') {
-
-                                $dataShow = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                                $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
-                                $resultShow = $connection2->prepare($sqlShow);
-                                $resultShow->execute($dataShow);
+                            
+                                $resultShow = $container->get(CourseEnrolmentGateway::class)->selectBy(['gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID'], 'role' => 'Teacher']);
+                             
                             if ($resultShow->rowCount() != 1) {
                                 $show = false;
                             }

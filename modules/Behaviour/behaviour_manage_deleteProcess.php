@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -45,10 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             header("Location: {$URL}");
         } else {
             try {
-                $data = array('gibbonBehaviourID' => $gibbonBehaviourID);
-                $sql = 'SELECT * FROM gibbonBehaviour WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $container->get(BehaviourGateway::class)->selectBy(['gibbonBehaviourID' => $gibbonBehaviourID]);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

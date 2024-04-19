@@ -29,6 +29,7 @@ use Gibbon\Domain\IndividualNeeds\INGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 require_once '../../gibbon.php';
@@ -110,11 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } 
 
             // Attempt to notify tutor(s) and EA(s) of negative behaviour
-
-            $dataDetail = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-            $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
-            $resultDetail = $connection2->prepare($sqlDetail);
-            $resultDetail->execute($dataDetail);
+            $resultDetail = $container->get(FormGroupGateway::class)-> getTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
+  
         if ($resultDetail->rowCount() == 1) {
             $rowDetail = $resultDetail->fetch();
 

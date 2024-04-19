@@ -19,14 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -206,23 +208,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Lesson link
                 $lessons = array();
                 $minDate = date('Y-m-d', (strtotime($values['date']) - (24 * 60 * 60 * 30)));
-
-                    $dataSelect = array('date' => date('Y-m-d', strtotime($values['date'])), 'minDate' => $minDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $values['gibbonPersonID']);
-                    $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                    while ($rowSelect = $resultSelect->fetch()) {
+                $resultSelect = $container->get(CourseGateway::class)->selectLessonByStudentAndDate(date('Y-m-d', strtotime($values['date'])), $minDate, $session->get('gibbonSchoolYearID'), $values['gibbonPersonID']);
+                  
+                while ($rowSelect = $resultSelect->fetch()) {
                     $show = true;
                     if ($highestAction == 'Manage Behaviour Records_my') {
 
-                            $dataShow = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                            $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
-                            $resultShow = $connection2->prepare($sqlShow);
-                            $resultShow->execute($dataShow);
+                            $resultShow = $container->get(CourseEnrolmentGateway::class)->selectBy(['gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID'], 'role' => 'Teacher']);
+                            
                         if ($resultShow->rowCount() != 1) {
                             $show = false;
                         }
                     }
+
                     if ($show == true) {
                         $submission = '';
                         if ($rowSelect['homework'] == 'Y') {
