@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 include '../../gibbon.php';
 
@@ -44,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     } else {
         //Proceed!
         $bookingGateway = $container->get(FacilityBookingGateway::class);
+        $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
         $data = [
             'foreignKey'     => $_POST['foreignKey'] ?? null,
@@ -69,7 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $available = '';
             //Scroll through all dates
             foreach ($dates as $date) {
-                $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd']);
+                $gibbonCourseClassID = null;
+                $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd'], $gibbonCourseClassID);
+
+                if (!$available && !empty($gibbonCourseClassID)) {
+                    $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $date);
+
+                    if ($offTimetable) {
+                        $available = true;
+                    }
+                }
+
                 if ($available == false) {
                     ++$failCount;
                 } else {

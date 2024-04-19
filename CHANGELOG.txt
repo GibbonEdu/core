@@ -59,6 +59,7 @@ v27.0.00
         Students: added year group next to form group name in student history details
         Timetable: added basic information table to the View Timetable by Facility report
         Timetable: added timetable iCal Export buttons to staff and student profiles
+        Timetable: enabled facilities for Off Timetable classes to be re-booked in Manage Facility Bookings
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
         User Admin: increased the field length for Departure Reason to 100 characters
         System Admin: added an importer for Behaviour Records

@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -182,6 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 } else {
                     $rowSelect = $resultSelect->fetch();
 
+                    $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
                     $available = false;
 
                     $form = Form::create('spaceBookingStep1', $session->get('absoluteURL').'/modules/'.$session->get('module').'/spaceBooking_manage_addProcess.php');
@@ -201,10 +203,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
                     if ($repeat == 'No') {
-                        $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd);
+                        $gibbonCourseClassID = null;
+                        $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd, $gibbonCourseClassID);
+
+                        if (!$available && !empty($gibbonCourseClassID)) {
+                            $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $date);
+
+                            if ($offTimetable) {
+                                $available = true;
+                            }
+                        }
+
                         if ($available == true) {
                             $row = $form->addRow()->addClass('current');
-                            $row->addLabel('dates[]', Format::date($date))->description(__('Available'));
+                            $row->addLabel('dates[]', Format::date($date))->description(__('Available') . ($offTimetable? ' ('.__('Off Timetable').')' : ''));
                             $row->addCheckbox('dates[]')->setValue($date)->checked($date);
                         } else {
                             $row = $form->addRow()->addClass('error');
