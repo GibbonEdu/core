@@ -139,15 +139,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     //Get class chooser
     echo classChooser($guid, $pdo, $gibbonCourseClassID);
 
-    $departmentAccess = null;
-    if(isset($class['gibbonDepartmentID'])) 
-    {
-        $departmentAccess = $container->get(DepartmentGateway::class)->selectMemberOfDepartmentByRole($class['gibbonDepartmentID'], $session->get('gibbonPersonID'), ['Coordinator', 'Teacher (Curriculum)'])->fetch();
-    }
+    $departmentAccess = $container->get(DepartmentGateway::class)->selectMemberOfDepartmentByRole($class['gibbonDepartmentID'], $session->get('gibbonPersonID'), ['Coordinator', 'Teacher (Curriculum)'])->fetch();
 
     //Get teacher list
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-	$canEditThisClass = (isset($teacherList[$session->get('gibbonPersonID')])) || ($highestAction2 == 'Edit Markbook_everything') || ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess));
+	$canEditThisClass = (isset($teacherList[ $session->get('gibbonPersonID') ]) || $highestAction2 == 'Edit Markbook_everything' || ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess)));
 
     // Get criteria filter values, including session defaults
     $search = $_GET['search'] ?? '';
