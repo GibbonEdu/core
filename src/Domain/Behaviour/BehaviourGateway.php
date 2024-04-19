@@ -255,10 +255,10 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
     }
 
     public function selectBehavioursByCreator($gibbonSchoolYearID, $gibbonPersonIDCreator, $gibbonBehaviourID) {
-        $dataSelect = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonBehaviourID' => $gibbonBehaviourID];                
-        $sqlSelect = 'SELECT gibbonBehaviour.gibbonBehaviourID as value, CONCAT(gibbonPerson.firstName, " ", gibbonPerson.surname, "  (", DATE_FORMAT(gibbonBehaviour.date,  "%d/%c/%Y"), "), ", gibbonBehaviour.type, ", ", gibbonBehaviour.descriptor) FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID = gibbonPerson.gibbonPersonID) WHERE (gibbonBehaviour.gibbonBehaviourID != :gibbonBehaviourID) AND (gibbonBehaviour.gibbonPersonIDCreator = :gibbonPersonIDCreator) AND (gibbonSchoolYearID=:gibbonSchoolYearID) AND (gibbonBehaviour.date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) ORDER BY gibbonBehaviour.date DESC';
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonBehaviourID' => $gibbonBehaviourID];                
+        $sql = 'SELECT gibbonBehaviour.gibbonBehaviourID as value, CONCAT(gibbonPerson.firstName, " ", gibbonPerson.surname, "  (", DATE_FORMAT(gibbonBehaviour.date,  "%d/%c/%Y"), "), ", gibbonBehaviour.type, ", ", gibbonBehaviour.descriptor) FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID = gibbonPerson.gibbonPersonID) WHERE (gibbonBehaviour.gibbonBehaviourID != :gibbonBehaviourID) AND (gibbonBehaviour.gibbonPersonIDCreator = :gibbonPersonIDCreator) AND (gibbonSchoolYearID=:gibbonSchoolYearID) AND (gibbonBehaviour.date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) ORDER BY gibbonBehaviour.date DESC';
 
-        return $this->db()->select($sqlSelect, $dataSelect);
+        return $this->db()->select($sql, $data);
     }
 
     public function updateMultiIncidentIDByBehaviourID($gibbonBehaviourID, $gibbonMultiIncidentID)
@@ -267,5 +267,21 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
         $sql = 'UPDATE gibbonBehaviour SET gibbonMultiIncidentID=:gibbonMultiIncidentID WHERE gibbonBehaviourID=:gibbonBehaviourID';
                 
         return $this->db()->update($sql, $data);
+    }
+
+    public function getExistingBehaviourRecordByID($gibbonSchoolYearID, $gibbonBehaviourID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonBehaviour.gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getBehaviourRecordToCheck($gibbonSchoolYearID, $gibbonBehaviourID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonBehaviourID' => $gibbonBehaviourID];
+        $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID";
+
+        return $this->db()->select($sql, $data);
     }
 }

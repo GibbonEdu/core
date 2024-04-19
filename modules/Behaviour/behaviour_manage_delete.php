@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
@@ -40,10 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
-                $data = array('gibbonBehaviourID' => $gibbonBehaviourID);
-                $sql = 'SELECT * FROM gibbonBehaviour WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $result = $container->get(BehaviourGateway::class)->selectBy(['gibbonBehaviourID' => $gibbonBehaviourID]);
 
             if ($result->rowCount() != 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));

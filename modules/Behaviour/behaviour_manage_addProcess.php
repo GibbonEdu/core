@@ -26,7 +26,9 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
@@ -123,10 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 } 
 
                 // Attempt to notify tutor(s) and EA(s) of negative behaviour
-                $dataDetail = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
-                $resultDetail = $connection2->prepare($sqlDetail);
-                $resultDetail->execute($dataDetail);
+                $resultDetail = $container->get(FormGroupGateway::class)-> getTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                 if ($resultDetail->rowCount() == 1) {
                     $rowDetail = $resultDetail->fetch();
@@ -244,10 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 header("Location: {$URL}");
             } else {
                 try {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonBehaviour.gibbonPersonID=:gibbonPersonID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(BehaviourGateway::class)->getExistingBehaviourRecordByID($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $gibbonPersonID);
                 } catch (PDOException $e) {
                     $URL .= '&return=warning0&step=2';
                     header("Location: {$URL}");
