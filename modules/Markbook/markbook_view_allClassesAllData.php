@@ -157,8 +157,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
-	
-	
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $container->get(SettingGateway::class));
