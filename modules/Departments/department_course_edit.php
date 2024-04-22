@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,15 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonSchoolYear.name AS year, gibbonDepartment.name AS department, gibbonCourse.name AS course, description, gibbonCourse.gibbonSchoolYearID FROM gibbonCourse JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(CourseGateway::class)->getCourseInfoByCourseID($gibbonCourseID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $values = $result->fetch();
+            $values = $result;
 
             //Get role within learning area
             $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);

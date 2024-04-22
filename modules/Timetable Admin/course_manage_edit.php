@@ -19,13 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Http\Url;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -139,8 +140,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</h2>';
 
             $courseGateway = $container->get(CourseGateway::class);
+            $courseClassGateway = $container->get(CourseClassGateway::class);
 
-            $classes = $courseGateway->selectClassesByCourseID($gibbonCourseID);
+            $classes = $courseClassGateway->selectClassesByCourseID($gibbonCourseID);
 
             // DATA TABLE
             $table = DataTable::create('courseClassManage');

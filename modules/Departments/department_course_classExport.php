@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseClassPersonGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -44,31 +47,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         exit;
     } else {
 
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.name, gibbonCourseClass.name';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(CourseGateway::class)->selectCourseAndClassNameByCourseClassID($gibbonCourseClassID);
         if ($result->rowCount() < 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
             exit;
         } else {
             //Proceed!
-
-            $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d')];
-            $sql = "SELECT role, surname, preferredName, email, studentID, gibbonFormGroup.nameShort as formGroup
-                    FROM gibbonCourseClassPerson
-                    JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
-                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                    WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full'
-                    AND (dateStart IS NULL OR dateStart<=:today)
-                    AND (dateEnd IS NULL  OR dateEnd>=:today)
-                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND gibbonCourseClassPerson.role='Student'
-                    ORDER BY role DESC, surname, preferredName";
-
-            $result = $pdo->select($sql, $data);
+            $result = $container->get(CourseClassPersonGateway::class)->selectStudentsInEachClass($gibbonCourseClassID, $session->get('gibbonSchoolYearID'));
 
             $exp = new Gibbon\Excel();
             $exp->exportWithQuery($result, 'classList.xls');

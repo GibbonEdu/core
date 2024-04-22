@@ -19,19 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\DataSet;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\School\DaysOfWeekGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\School\DaysOfWeekGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
@@ -46,6 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $subGateway = $container->get(SubstituteGateway::class);
     $courseGateway = $container->get(CourseGateway::class);
+    $courseClassGateway = $container->get(CourseClassGateway::class);
+
+
 
     if (empty($gibbonStaffCoverageDateID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -83,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
 
     if ($coverage['foreignTable'] == 'gibbonTTDayRowClass') {
-        $details = $courseGateway->getCourseClassByID($times['gibbonCourseClassID']);
+        $details = $courseClassGateway->getCourseClassByID($times['gibbonCourseClassID']);
 
         $table->addColumn('class', __('Class'))
             ->format(function($coverage) {
