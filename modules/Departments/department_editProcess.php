@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 require_once '../../gibbon.php';
 
@@ -49,10 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
         } else {
             //Check access to specified course
             try {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+
+                $result = $container->get(DepartmentGateway::class)->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID]);
+                                
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

@@ -102,4 +102,12 @@ class DepartmentGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
+
+    public function getCourseByDepartment($gibbonDepartmentID, $gibbonCourseID)
+    {
+        $data = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
+        $sql = 'SELECT gibbonDepartment.name AS department, gibbonCourse.name, gibbonCourse.description, gibbonSchoolYear.name AS year, gibbonCourse.gibbonSchoolYearID, gibbonCourse.fields FROM gibbonDepartment JOIN gibbonCourse ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonCourseID=:gibbonCourseID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

@@ -25,6 +25,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Departments\DepartmentGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -96,12 +97,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
         //Print sidebar
         $sidebarExtra = '';
 
-
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE \'% - Left%\' ORDER BY course, class';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
+            $result = $container->get(CourseGateway::class)->selectClassesByStaff($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+           
         if ($result->rowCount() > 0) {
             $sidebarExtra .= '<div class="column-no-break">';
             $sidebarExtra .= "<h2 class='sidebar'>";
