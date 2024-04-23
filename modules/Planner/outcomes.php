@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Planner\OutcomeGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 $page->breadcrumbs->add(__('Manage Outcomes'));
 
@@ -51,12 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/outcomes.php');
 
-        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-        $row = $form->addRow();
+        $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();        $row = $form->addRow();
             $row->addLabel('filter2', __('Learning Areas'));
             $row->addSelect('filter2')
                 ->fromArray(array('' => __('All Learning Areas')))
-                ->fromQuery($pdo, $sql)
+                ->fromResults($results)
                 ->selected($filter2);
 
         $row = $form->addRow();

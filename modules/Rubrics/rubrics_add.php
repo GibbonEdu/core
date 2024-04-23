@@ -19,6 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Departments\DepartmentGateway;
+use Gibbon\Domain\Rubrics\RubricGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -84,16 +87,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             }
 
             if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                $data = array();
-                $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+
+                $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
+
             } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+
+                $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningAreaByStaff($session->get('gibbonPersonID'));
             }
 
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
-                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+                $row->addSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
@@ -103,8 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->required();
 
-            $sql = "SELECT DISTINCT category FROM gibbonRubric ORDER BY category";
-            $result = $pdo->executeQuery(array(), $sql);
+            $result = $container->get(RubricGateway::class)->selectDistinctRubricCategories();
+
             $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
 
             $row = $form->addRow();
@@ -119,10 +123,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $row->addLabel('gibbonYearGroupIDList[]', __('Year Groups'));
                 $row->addCheckboxYearGroup('gibbonYearGroupIDList[]')->addCheckAllNone()->checkAll();
 
-            $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+            $results = $container->get(GradeScaleGateway::class)->selectActiveGradeScales();
+
             $row = $form->addRow();
                 $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Link columns to grades on a scale?'));
-                $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->placeholder();
+                $row->addSelect('gibbonScaleID')->fromResults($results)->placeholder();
 
             $form->addRow()->addHeading('Rubric Design', __('Rubric Design'));
 

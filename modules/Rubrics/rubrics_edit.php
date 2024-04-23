@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Rubrics\RubricGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -153,10 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {
 
-                    $data = array('gibbonRubricID' => $gibbonRubricID);
-                    $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The specified record does not exist.'));
@@ -184,8 +184,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         $row->addTextField('scope')->required()->readOnly();
 
                     if ($values['scope'] == 'Learning Area') {
-                        $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
-                        $result = $pdo->executeQuery(array('gibbonDepartmentID' => $values['gibbonDepartmentID']), $sql);
+                        $result = $container->get(DepartmentGateway::class)->selectBy(['gibbonDepartmentID' => $values['gibbonDepartmentID']], ['name']);
+
                         $learningArea = ($result->rowCount() > 0)? $result->fetchColumn(0) : $values['gibbonDepartmentID'];
 
                         $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);
@@ -202,8 +202,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         $row->addLabel('active', __('Active'));
                         $row->addYesNo('active')->required();
 
-                    $sql = "SELECT DISTINCT category FROM gibbonRubric ORDER BY category";
-                    $result = $pdo->executeQuery(array(), $sql);
+                    $result = $container->get(RubricGateway::class)->selectDistinctRubricCategories();
+                    
                     $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
 
                     $row = $form->addRow();
@@ -217,9 +217,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $row = $form->addRow();
                         $row->addLabel('gibbonYearGroupIDList[]', __('Year Groups'));
                         $row->addCheckboxYearGroup('gibbonYearGroupIDList[]')->addCheckAllNone()->loadFromCSV($values);
+                        
+                    $result = $container->get(GradeScaleGateway::class)->selectBy(['gibbonScaleID' => $values['gibbonScaleID']], ['name']);
 
-                    $sql = "SELECT name FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID";
-                    $result = $pdo->executeQuery(array('gibbonScaleID' => $values['gibbonScaleID']), $sql);
                     $gradeScaleName = ($result->rowCount() > 0)? $result->fetchColumn(0) : $values['gibbonScaleID'];
 
                     $form->addHiddenValue('gibbonScaleID', $values['gibbonScaleID']);
