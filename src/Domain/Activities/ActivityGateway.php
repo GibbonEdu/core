@@ -167,10 +167,9 @@ class ActivityGateway extends QueryableGateway
             ->where("gibbonPerson.status = 'Full'")
             ->where('(dateStart IS NULL OR dateStart<=:today)')
             ->where('(dateEnd IS NULL OR dateEnd>=:today)')
-            ->bindValue('today', date('Y-m-d'))
+            ->bindValue('today', $date ?? date('Y-m-d'))
             ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
-            ->bindValue('date', $date ?? date('Y-m-d'))
             ->bindValue('dateType', $dateType);
 
         if ($dateType == 'Term') {
@@ -196,11 +195,37 @@ class ActivityGateway extends QueryableGateway
             ->where("gibbonPerson.status = 'Full'")
             ->where('(dateStart IS NULL OR dateStart<=:today)')
             ->where('(dateEnd IS NULL OR dateEnd>=:today)')
-            ->bindValue('today', date('Y-m-d'))
+            ->bindValue('today', $date ?? date('Y-m-d'))
             ->where('gibbonActivityStaff.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
-            ->bindValue('dateType', $dateType)
-            ->bindValue('date', $date ?? date('Y-m-d'));
+            ->bindValue('dateType', $dateType);
+
+        if ($dateType == 'Term') {
+            $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])
+                ->innerJoin('gibbonSchoolYearTerm', "FIND_IN_SET(gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)");
+        } else {
+            $query->cols(['gibbonActivity.programStart as dateStart', 'gibbonActivity.programEnd as dateEnd']);
+        }
+
+        return $this->runSelect($query);
+    }
+
+    public function selectActivitiesByFacility($gibbonSchoolYearID, $gibbonSpaceID, $dateType)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.provider', 'gibbonSpace.gibbonSpaceID', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonActivitySlot.locationExternal', 'gibbonSpace.name as space', 'gibbonDaysOfWeek.name as dayOfWeek',
+            ])
+            ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID')
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonActivity.active = 'Y'")
+            ->where('gibbonSpace.gibbonSpaceID=:gibbonSpaceID')
+            ->bindValue('gibbonSpaceID', $gibbonSpaceID);
 
         if ($dateType == 'Term') {
             $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])

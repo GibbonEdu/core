@@ -57,6 +57,7 @@ v27.0.00
         Staff: added a notification to inform staff of first aid qualification that are expiring soon
         Students: added an Upcoming Students option to the Students by House report
         Students: added year group next to form group name in student history details
+        Timetable: added activities to the timetable in View Timetable by Facility 
         Timetable: added basic information table to the View Timetable by Facility report
         Timetable: added timetable iCal Export buttons to staff and student profiles
         Timetable: enabled facilities for Off Timetable classes to be re-booked in Manage Facility Bookings
