@@ -430,10 +430,10 @@ class Form implements OutputableInterface
 
     /**
      * Loads an array of $key => $value pairs into any form elements with a matching name.
-     * @param   array  &$data
+     * @param   array  $data
      * @return  self
      */
-    public function loadAllValuesFrom(&$data)
+    public function loadAllValuesFrom($data)
     {
         foreach ($this->getRows() as $row) {
             $row->loadFrom($data);
