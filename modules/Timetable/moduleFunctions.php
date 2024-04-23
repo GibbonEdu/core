@@ -250,7 +250,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     $ssoGoogle = $settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
     $ssoGoogle = json_decode($ssoGoogle, true);
 
-    if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken')) {
+    if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) {
 
         $eventsSchool = array();
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
@@ -908,8 +908,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
                     $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
 
-                    $displayCalendars = $session->has('googleAPIAccessToken') || $session->has('microsoftAPIAccessToken');
-                    if ($session->has('calendarFeed') && $session->has('googleAPIAccessToken')) {
+                    $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
+                    if ($session->has('calendarFeed') && $session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) {
                         $checked = '';
                         if ($session->get('viewCalendarSchool') == 'Y') {
                             $checked = 'checked';

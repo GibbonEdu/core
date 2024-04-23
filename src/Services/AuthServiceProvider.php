@@ -90,11 +90,12 @@ class AuthServiceProvider extends AbstractServiceProvider
                 // Setup the Client
                 $client = new Google_Client();
                 $client->setApplicationName($ssoSettings['clientName']);
-                $client->setScopes(array('email', 'profile', 'https://www.googleapis.com/auth/calendar'));
+                $client->setScopes(['openid', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/calendar.readonly']);
                 $client->setClientId($ssoSettings['clientID']);
                 $client->setClientSecret($ssoSettings['clientSecret']);
                 $client->setRedirectUri($session->get('absoluteURL').'/login.php');
                 $client->setDeveloperKey($ssoSettings['developerKey']);
+                $client->setIncludeGrantedScopes(true);
                 $client->setAccessType('offline');
                 $client->setState(time());
 
