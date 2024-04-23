@@ -33,13 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $result = $container->get(GradeScaleGateway::class)->selectBy(['gibbonScaleID' => $values['gibbonScaleID']], ['name']);
+        $values = $container->get(GradeScaleGateway::class)->getByID($gibbonScaleID, ['name']);
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             $page->addError(__('The specified record does not exist.'));
         } else {
-            $values = $result->fetch();
-
             $page->breadcrumbs
                 ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
                 ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])

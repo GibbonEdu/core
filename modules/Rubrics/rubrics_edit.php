@@ -217,10 +217,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $row = $form->addRow();
                         $row->addLabel('gibbonYearGroupIDList[]', __('Year Groups'));
                         $row->addCheckboxYearGroup('gibbonYearGroupIDList[]')->addCheckAllNone()->loadFromCSV($values);
-                        
-                    $result = $container->get(GradeScaleGateway::class)->selectBy(['gibbonScaleID' => $values['gibbonScaleID']], ['name']);
 
-                    $gradeScaleName = ($result->rowCount() > 0)? $result->fetchColumn(0) : $values['gibbonScaleID'];
+                    $result = $container->get(GradeScaleGateway::class)->getByID($values['gibbonScaleID'], ['name']);
+
+
+                    $gradeScaleName = (!empty($result)) ? $result['name'] : $values['gibbonScaleID'];
 
                     $form->addHiddenValue('gibbonScaleID', $values['gibbonScaleID']);
                     $row = $form->addRow();
