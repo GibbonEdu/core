@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Library\LibraryGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -85,9 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('producer', __('Author/Brand'))->description(__('Who created the item?'));
         $row->addTextField('producer')->required()->maxLength(255);
 
+    $result = $container->get(LibraryGateway::class)->selectDistinctVendorList();
+    $vendors = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+
     $row = $form->addRow()->addClass('general');
         $row->addLabel('vendor', __('Vendor'))->description(__('Who supplied the item?'));
-        $row->addTextField('vendor')->maxLength(100);
+        $row->addTextField('vendor')->maxLength(100)->autocomplete($vendors);
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('purchaseDate', __('Purchase Date'));
@@ -126,9 +130,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('gibbonSpaceID', __('Location'));
         $row->addSelectSpace('gibbonSpaceID')->placeholder();
 
+    $result = $container->get(LibraryGateway::class)->selectDistinctLocationDetails();
+    $locationDetails = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+
     $row = $form->addRow()->addClass('general');
         $row->addLabel('locationDetail', __('Location Detail'))->description(__('Shelf, cabinet, sector, etc'));
-        $row->addTextField('locationDetail')->maxLength(255);
+        $row->addTextField('locationDetail')->maxLength(255)->autocomplete($locationDetails);
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('ownershipType', __('Ownership Type'));

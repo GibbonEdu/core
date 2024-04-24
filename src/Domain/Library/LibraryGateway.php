@@ -474,4 +474,19 @@ class LibraryGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectDistinctVendorList()
+    {
+        $data = [];
+        $sql = "SELECT DISTINCT vendor FROM gibbonLibraryItem ORDER BY vendor";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectDistinctLocationDetails()
+    {
+        $data = [];
+        $sql = "SELECT DISTINCT locationDetail FROM gibbonLibraryItem ORDER BY locationDetail";
+
+        return $this->db()->select($sql, $data);
+    }
 }
