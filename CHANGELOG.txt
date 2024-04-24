@@ -29,6 +29,7 @@ v27.0.00
     Changes With Important Notices
         System: updated Google OAuth Client SSO to handle granular permissions (required by Google for June 17, 2024)
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
+        System: in you use Gmail SMTP relay, be sure to update your settings to use an App Password
 
     Tweaks & Additions
         System: automatically hyperlink any urls included in Custom Field descriptions
