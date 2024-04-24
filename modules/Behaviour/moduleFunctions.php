@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
-function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
+function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gibbonPersonIDCreator)
 {
     global $session;
 
@@ -58,7 +58,18 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 ->sortBy('timestamp', 'DESC')
                 ->fromPOST($schoolYear['gibbonSchoolYearID']);
 
-            $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID);
+            if (empty($gibbonPersonIDCreator)) {              
+                $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID);
+            } else {
+                $result = $behaviourGateway->getBehaviourRecordsByPersonAndCreator($schoolYear['gibbonSchoolYearID'], $gibbonPersonID, $gibbonPersonIDCreator);
+
+                $behaviourRecords = $result->fetchAll();
+            }
+
+            // echo '<pre>';
+	        // print_r($behaviourRecords);
+	        // echo '</pre>';
+            // die(); 
 
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);
             $table->setTitle($schoolYear['name']);

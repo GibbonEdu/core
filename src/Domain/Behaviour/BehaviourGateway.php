@@ -230,6 +230,13 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
             return $this->runQuery($query, $criteria);
     }
 
+    public function getBehaviourRecordsByPersonAndCreator($gibbonSchoolYearID, $gibbonPersonID, $gibbonPersonIDCreator) {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator];
+        $sql = 'SELECT gibbonBehaviour.*, creator.title as titleCreator, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator FROM gibbonBehaviour JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND gibbonBehaviour.gibbonPersonIDCreator=:gibbonPersonIDCreator ORDER BY date DESC';
+        
+        return $this->db()->select($sql, $data);
+    }
+
     public function getBehaviourDetails($gibbonSchoolYearID, $gibbonBehaviourID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonBehaviourID' => $gibbonBehaviourID];
@@ -267,5 +274,14 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
         $sql = 'UPDATE gibbonBehaviour SET gibbonMultiIncidentID=:gibbonMultiIncidentID WHERE gibbonBehaviourID=:gibbonBehaviourID';
                 
         return $this->db()->update($sql, $data);
+    }
+
+    public function selectStudentsFromBehaviourByCreator($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' as roleCategory
+        FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonBehaviour.gibbonPersonIDCreator=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) GROUP BY gibbonPerson.gibbonPersonID, yearGroup, formGroup ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
     }
 }

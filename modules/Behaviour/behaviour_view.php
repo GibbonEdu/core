@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -75,6 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
+        } else if ($highestAction == 'View Behaviour Records_my') {
+            $students = $container->get(BehaviourGateway::class)->selectStudentsFromBehaviourByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
+
+            $table = DataTable::create('behaviour');
+            $table->setTitle( __('My Students'));
         } else {
             return;
         }
