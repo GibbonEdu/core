@@ -23,6 +23,7 @@ namespace Gibbon\Domain\Behaviour;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\SharedUserLogic;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
@@ -39,11 +40,12 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
     use TableAware;
     use Scrubbable;
     use ScrubByPerson;
+    use SharedUserLogic;
 
     private static $tableName = 'gibbonBehaviour';
     private static $primaryKey = 'gibbonBehaviourID';
 
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['gibbonBehaviour.gibbonBehaviourID','gibbonBehaviour.type', 'gibbonBehaviour.descriptor', 'gibbonBehaviour.level', 'gibbonBehaviour.date', 'gibbonBehaviour.timestamp', 'gibbonBehaviour.comment'];
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['descriptor' => null, 'level' => null, 'comment' => ''];

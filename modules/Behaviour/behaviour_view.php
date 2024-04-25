@@ -39,11 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
         $search = $_GET['search'] ?? '';
 
-        if ($highestAction == 'View Behaviour Records_all') {
+        if ($highestAction == 'View Behaviour Records_all' || $highestAction == 'View Behaviour Records_my') {
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Search'));
             $form->setClass('noIntBorder fullWidth');
-
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
             $row = $form->addRow();
@@ -76,11 +75,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
+
         } else if ($highestAction == 'View Behaviour Records_my') {
+            
+            $criteria = $studentGateway->newQueryCriteria(true)
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->fromPOST();
+
             $students = $container->get(BehaviourGateway::class)->selectStudentsFromBehaviourByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
 
-            $table = DataTable::create('behaviour');
+            //$students = $studentGateway->queryBehaviourBySchoolYearAndCreator($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+
+            // echo '<pre>';
+            // print_r($students);
+            // echo '</pre>';
+            // die();
+
+            $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle( __('My Students'));
+
         } else {
             return;
         }

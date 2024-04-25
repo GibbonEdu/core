@@ -65,12 +65,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
 
                 $behaviourRecords = $result->fetchAll();
             }
-
-            // echo '<pre>';
-	        // print_r($behaviourRecords);
-	        // echo '</pre>';
-            // die(); 
-
+            
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);
             $table->setTitle($schoolYear['name']);
 
@@ -97,37 +92,37 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
             $table->addMetaData('hidePagination', true);
 
             $table->addExpandableColumn('comment')
-                ->format(function($beahviour) {
+                ->format(function($behaviour) {
                     $output = '';
-                    if (!empty($beahviour['comment'])) {
+                    if (!empty($behaviour['comment'])) {
                         $output .= '<strong>'.__('Incident').'</strong><br/>';
-                        $output .= nl2br($beahviour['comment']).'<br/>';
+                        $output .= nl2br($behaviour['comment']).'<br/>';
                     }
-                    if (!empty($beahviour['followup'])) {
+                    if (!empty($behaviour['followup'])) {
                         $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                        $output .= nl2br($beahviour['followup']).'<br/>';
+                        $output .= nl2br($behaviour['followup']).'<br/>';
                     }
                     return $output;
                 });
 
             $table->addColumn('date', __('Date'))
                 ->context('primary')
-                ->format(function($beahviour) {
-                    if (substr($beahviour['timestamp'], 0, 10) > $beahviour['date']) {
-                        return __('Updated:').' '.Format::date($beahviour['timestamp']).'<br/>'
-                            . __('Incident:').' '.Format::date($beahviour['date']).'<br/>';
+                ->format(function($behaviour) {
+                    if (substr($behaviour['timestamp'], 0, 10) > $behaviour['date']) {
+                        return __('Updated:').' '.Format::date($behaviour['timestamp']).'<br/>'
+                            . __('Incident:').' '.Format::date($behaviour['date']).'<br/>';
                     } else {
-                        return Format::date($beahviour['timestamp']);
+                        return Format::date($behaviour['timestamp']);
                     }
                 });
 
             $table->addColumn('type', __('Type'))
                 ->context('secondary')
                 ->width('5%')
-                ->format(function($beahviour) use ($session) {
-                    if ($beahviour['type'] == 'Negative') {
+                ->format(function($behaviour) use ($session) {
+                    if ($behaviour['type'] == 'Negative') {
                         return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
-                    } elseif ($beahviour['type'] == 'Positive') {
+                    } elseif ($behaviour['type'] == 'Positive') {
                         return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
                     }
                 });
