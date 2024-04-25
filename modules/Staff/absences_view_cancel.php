@@ -21,11 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Staff\StaffCoverageGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Staff\View\StaffCard;
-use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Module\Staff\View\AbsenceView;
+use Gibbon\Module\Staff\Tables\AbsenceDates;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php') == false) {
     // Access denied
@@ -33,61 +33,74 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 } else {
     // Proceed!
     $page->breadcrumbs
-        ->add(__('My Coverage'), 'coverage_my.php')
-        ->add(__('Cancel Coverage Request'));
+        ->add(__('View Absences'), 'absences_view_byPerson.php')
+        ->add(__('Cancel Absence'));
 
     $page->return->addReturns([
-            'success1' => __('Your request was completed successfully.')
-        ]);
+        'success1' => __('Your request was completed successfully.')
+    ]);
 
-    $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
+    $highestAction = getHighestGroupedAction($guid, '/modules/Staff/absences_view_byPerson.php', $connection2);
+    if (empty($highestAction)) {
+        $page->addError(__('You do not have access to this action.'));
+        return;
+    }
 
-    $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
+    $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
+    $gibbonStaffAbsenceID = str_pad($gibbonStaffAbsenceID, 14, 0, STR_PAD_LEFT);
 
-    if (empty($gibbonStaffCoverageID)) {
+    $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+
+    if (empty($gibbonStaffAbsenceID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $coverage = $staffCoverageGateway->getCoverageDetailsByID($gibbonStaffCoverageID);
-    $coverageMode =  $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageMode');
-
-    if (empty($coverage) || ($coverage['status'] != 'Requested' && $coverage['status'] != 'Pending' && $coverage['status'] != 'Accepted')) {
+    $absence = $staffAbsenceGateway->getAbsenceDetailsByID($gibbonStaffAbsenceID);
+    if (empty($absence)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
-    if ($coverage['dateEnd'] < date('Y-m-d')) {
+    if ($absence['dateEnd'] < date('Y-m-d')) {
         $page->addError(__('Your request failed because the selected date is not in the future.'));
+        return;
+    }
+
+    if ($highestAction == 'View Absences_mine' && $absence['gibbonPersonID'] != $session->get('gibbonPersonID')) {
+        $page->addError(__('You do not have access to this action.'));
         return;
     }
 
     // Staff Card
     $staffCard = $container->get(StaffCard::class);
-    $staffCard->setPerson($coverage['gibbonPersonID'])->compose($page);
+    $staffCard->setPerson($absence['gibbonPersonID'])->compose($page);
+
+    // Absence Dates
+    $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true, false);
+    $page->write($table->getOutput());
 
     // Coverage Dates
-    $table = $container->get(CoverageDates::class)->create($gibbonStaffCoverageID);
-    $page->write($table->getOutput());
-    
-    // Coverage View Composer
-    $coverageView = $container->get(CoverageView::class);
-    $coverageView->setCoverage($gibbonStaffCoverageID)->compose($page);
+    if ($absence['coverageRequired'] == 'Y') {
+        $table = $container->get(CoverageDates::class)->createFromAbsence($gibbonStaffAbsenceID, $absence['status']);
+        $page->write($table->getOutput());
+    }
+
+    // Absence View Composer
+    $absenceView = $container->get(AbsenceView::class);
+    $absenceView->setAbsence($gibbonStaffAbsenceID, $session->get('gibbonPersonID'))->compose($page);
 
     // Form
-    $form = Form::create('staffCoverage', $session->get('absoluteURL').'/modules/Staff/coverage_view_cancelProcess.php');
+    $form = Form::create('staffAbsence', $session->get('absoluteURL').'/modules/Staff/absences_view_cancelProcess.php');
 
-    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
+    $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
-    $form->addRow()->addHeading('Cancel Coverage Request', __('Cancel Coverage Request'));
+    $form->addRow()->addHeading('Cancel Absence', __('Cancel Absence'));
 
-    if ($coverage['requestType'] == 'Individual' || $coverage['requestType'] == 'Assigned') {
-        $row = $form->addRow();
-            $row->addLabel('notesStatus', __('Reply'));
-            $row->addTextArea('notesStatus')->setRows(3);
-    }
+    $row = $form->addRow();
+        $row->addLabel('comment', __('Reply'));
+        $row->addTextArea('comment')->setRows(3);
 
     $row = $form->addRow();
         $row->addSubmit();

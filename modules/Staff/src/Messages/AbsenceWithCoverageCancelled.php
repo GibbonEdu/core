@@ -24,39 +24,41 @@ namespace Gibbon\Module\Staff\Messages;
 use Gibbon\Module\Staff\Message;
 use Gibbon\Services\Format;
 
-class CoverageCancelled extends Message
+class AbsenceWithCoverageCancelled extends Message
 {
+    protected $absence;
     protected $coverage;
     protected $dates;
+    protected $details;
 
-    public function __construct($coverage, $dates)
+    public function __construct($absence, $coverage, $dates)
     {
+        $this->absence = $absence;
         $this->coverage = $coverage;
         $this->dates = $dates;
+        $this->details = [
+            'name' => Format::name($absence['titleAbsence'], $absence['preferredNameAbsence'], $absence['surnameAbsence'], 'Staff', false, true),
+            'date' => Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']),
+            'time' => $absence['allDay'] == 'Y' ? __('All Day') : Format::timeRange($absence['timeStart'], $absence['timeEnd']),
+            'type' => trim($absence['type'].' '.$absence['reason']),
+        ];
     }
 
     public function via() : array
     {
-        return $this->coverage['urgent']
-            ? ['database', 'mail', 'sms']
+        return ($this->coverage['urgent'] ?? false)
+            ? ['sms', 'database', 'mail']
             : ['database', 'mail'];
     }
 
     public function getTitle() : string
     {
-        return __('Coverage Cancelled');
+        return __('Staff Absence Cancelled');
     }
 
     public function getText() : string
     {
-        $name = !empty($this->coverage['preferredNameAbsence'])
-            ? Format::name($this->coverage['titleAbsence'], $this->coverage['preferredNameAbsence'], $this->coverage['surnameAbsence'], 'Staff', false, true)
-            : Format::name($this->coverage['titleStatus'], $this->coverage['preferredNameStatus'], $this->coverage['surnameStatus'], 'Staff', false, true);
-            
-        return __("{name}'s coverage request for {date} has been cancelled.", [
-            'date' => Format::dateRangeReadable($this->coverage['dateStart'], $this->coverage['dateEnd']),
-            'name' => $name,
-        ]);
+        return __("{name}'s absence and coverage request on {date} for {type} has been cancelled.", $this->details);
     }
 
     public function getDetails() : array
@@ -69,12 +71,16 @@ class CoverageCancelled extends Message
                 $coverageDetails[$date['period']] = $date['contextName'].$notes;
             } else {
                 $dateReadable = Format::dateReadable($date['date']);
-                $coverageDetails[$dateReadable] = (!empty($date['surnameCoverage']) ? Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true) : '').$notes;
+                $coverageDetails[$dateReadable] = (!empty($date['surnameCoverage']) ? Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true) : __('Any available substitute')).$notes;
             }
         }
 
-        $details =  [
-            __('Comment') => $this->coverage['notesStatus'],
+        $details = [
+            __('Staff')      => $this->details['name'],
+            __('Type')       => $this->details['type'],
+            __('Date')       => $this->details['date'],
+            __('Time')       => $this->details['time'],
+            __('Comment')    => $this->absence['comment'],
         ];
 
         if (!empty($coverageDetails)) {
@@ -96,6 +102,6 @@ class CoverageCancelled extends Message
 
     public function getLink() : string
     {
-        return 'index.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffCoverageID='.$this->coverage['gibbonStaffCoverageID'];
+        return 'index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$this->absence['gibbonStaffAbsenceID'];
     }
 }

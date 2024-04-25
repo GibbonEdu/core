@@ -19,19 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
-use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\CoverageNotificationProcess;
-use Gibbon\Data\Validator;
+use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Module\Staff\AbsenceNotificationProcess;
 
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
+$gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_cancel.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_cancel.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_byPerson.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php') == false) {
@@ -40,72 +41,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     exit;
 } else {
     // Proceed!
+    $partialFail = false;
+
+    $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+    $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
-    $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
 
     $data = [
-        'timestampStatus' => date('Y-m-d H:i:s'),
-        'notesStatus'     => $_POST['notesStatus'] ?? '',
-        'status'          => 'Cancelled',
+        'comment' => $_POST['comment'] ?? '',
+        'status'  => 'Cancelled',
     ];
 
     // Validate the required values are present
-    if (empty($gibbonStaffCoverageID)) {
+    if (empty($gibbonStaffAbsenceID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     // Validate the database relationships exist
-    $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
-
-    if (empty($coverage)) {
+    $absence = $staffAbsenceGateway->getAbsenceDetailsByID($gibbonStaffAbsenceID);
+    if (empty($absence)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
-    // If the coverage is for a particular absence, ensure this exists
-    if (!empty($coverage['gibbonStaffAbsenceID'])) {
-        $absence = $container->get(StaffAbsenceGateway::class)->getByID($coverage['gibbonStaffAbsenceID']);
-        if (empty($absence)) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit;
-        }
-    }
-
     // Prevent two people cancelling at the same time (?)
-    if ($coverage['status'] == 'Cancelled') {
+    if ($absence['status'] == 'Cancelled') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     // Update the database
-    $updated = $staffCoverageGateway->update($gibbonStaffCoverageID, $data);
-
+    $updated = $staffAbsenceGateway->update($gibbonStaffAbsenceID, $data);
     if (!$updated) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
-    $partialFail = false;
+    // If the coverage is for a particular absence, ensure this exists
+    $coverageList = [];
+    if ($absence['coverageRequired'] == 'Y' || !empty($absence['coverage'])) {
+        $coverageDates = $staffCoverageGateway->selectCoverageByAbsenceID($gibbonStaffAbsenceID)->fetchAll();
 
-    $coverage = $staffCoverageGateway->getCoverageDetailsByID($gibbonStaffCoverageID);
-    $coverageDates = $staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID);
-
-    // Unlink any absence dates from the coverage request so they can be re-requested
-    foreach ($coverageDates as $coverageDate) {
-        $dateData = ['gibbonStaffAbsenceDateID' => null];
-        $partialFail &= !$staffCoverageDateGateway->update($coverageDate['gibbonStaffCoverageDateID'], $dateData);
+        // Set each coverage as cancelled
+        foreach ($coverageDates as $coverage) {
+            
+            $coverageList[] = $coverage['gibbonStaffCoverageID'];
+            $partialFail &= !$staffCoverageGateway->update($coverage['gibbonStaffCoverageID'], [
+                'gibbonPersonIDStatus' => $session->get('gibbonPersonID'),
+                'timestampStatus'      => date('Y-m-d H:i:s'),
+                'status'               => 'Cancelled',
+            ]);
+        }
     }
 
     // Send messages (Mail, SMS) to relevant users
-    if ($coverage['requestType'] == 'Assigned' || $coverage['requestType'] == 'Individual' || $coverage['status'] == 'Accepted') {
+    if (!empty($coverageList)) {
         $process = $container->get(CoverageNotificationProcess::class);
-        $process->startCoverageCancelled($gibbonStaffCoverageID);
+        $process->startAbsenceWithCoverageCancelled($gibbonStaffAbsenceID, $coverageList);
+    } else {
+        $process = $container->get(AbsenceNotificationProcess::class);
+        $process->startAbsenceCancelled($gibbonStaffAbsenceID);
     }
 
     $URLSuccess .= $partialFail

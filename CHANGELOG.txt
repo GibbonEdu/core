@@ -106,6 +106,7 @@ v27.0.00
         Staff: added anchor links for Job Openings page, enabling easier external linking
         Staff: added status filter to Staff Absence and Coverage Summaries to display only Full staff by default
         Staff: added a notification to inform staff of first aid qualification that are expiring soon
+        Staff: added the ability for staff members to cancel an absence before it occurs
         Students: added an Upcoming Students option to the Students by House report
         Students: added year group next to form group name in student history details
         Timetable: added activities to the timetable in View Timetable by Facility 

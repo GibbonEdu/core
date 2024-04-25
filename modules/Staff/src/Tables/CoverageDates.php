@@ -96,6 +96,11 @@ class CoverageDates
 
         $table = DataTable::create('staffCoverageDates')->withData($dates);
 
+        $table->modifyRows(function ($coverage, $row) {
+            if (!empty($coverage['status']) && $coverage['status'] == 'Cancelled') $row->addClass('dull');
+            return $row;
+        });
+
         $table->addMetaData('blankSlate', __('Coverage is required but has not been requested yet.'));
 
         $table->addColumn('date', __('Date'))
@@ -137,7 +142,7 @@ class CoverageDates
             ->addParam('date')
             ->format(function ($coverage, $actions) use ($canDelete, $canManage, $status) {
 
-                if ($canManage && $this->coverageMode == 'Assigned' && $coverage['absenceStatus'] == 'Approved') {
+                if ($canManage && $this->coverageMode == 'Assigned' && $coverage['absenceStatus'] == 'Approved' && $status != 'Declined' && $status != 'Cancelled') {
                     if (empty($coverage['gibbonPersonIDCoverage'])) {
                         $actions->addAction('assign', __('Assign'))
                             ->setURL('/modules/Staff/coverage_planner_assign.php')

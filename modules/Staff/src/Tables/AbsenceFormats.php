@@ -52,6 +52,10 @@ class AbsenceFormats
 
     public static function substituteDetails($coverage)
     {
+        if (!empty($coverage['status']) && $coverage['status'] == 'Cancelled') {
+            return Format::small(__('Cancelled'));
+        }
+
         if (empty($coverage['gibbonPersonIDCoverage'])) {
             if ($coverage['status'] == 'Pending' || $coverage['status'] == 'Requested') {
                 return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
@@ -110,6 +114,10 @@ class AbsenceFormats
     }
 
     public static function coverage($absence) {
+        if (!empty($absence['status']) && $absence['status'] == 'Cancelled' || $absence['coverage'] == 'Cancelled') {
+            return Format::small(__('Cancelled'));
+        }
+
         if (empty($absence['gibbonPersonIDCoverage']) && ($absence['coverage'] == 'Pending' || $absence['coverage'] == 'Declined')) {
             return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }
@@ -124,6 +132,10 @@ class AbsenceFormats
 
     public static function coverageList($absence)
     {
+        if (!empty($absence['status']) && $absence['status'] == 'Cancelled') {
+            return Format::small(__('Cancelled'));
+        }
+
         if (empty($absence['gibbonPersonIDCoverage']) && !empty($absence['coverage']) && ($absence['coverage'] == 'Pending' || $absence['coverage'] == 'Declined')) {
             return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }

@@ -104,6 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     $table->modifyRows(function ($absence, $row) {
         if ($absence['status'] == 'Pending Approval') $row->addClass('warning');
         if ($absence['status'] == 'Declined') $row->addClass('error');
+        if ($absence['status'] == 'Cancelled') $row->addClass('dull');
         return $row;
     });
 
