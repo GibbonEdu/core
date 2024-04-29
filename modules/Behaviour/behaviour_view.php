@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -38,11 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
         $search = $_GET['search'] ?? '';
 
-        if ($highestAction == 'View Behaviour Records_all') {
+        if ($highestAction == 'View Behaviour Records_all' || $highestAction == 'View Behaviour Records_my') {
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Search'));
             $form->setClass('noIntBorder fullWidth');
-
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
             $row = $form->addRow();
@@ -56,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         }
 
         $studentGateway = $container->get(StudentGateway::class);
+        $behaviourGateway = $container->get(BehaviourGateway::class);
 
         // DATA TABLE
         if ($highestAction == 'View Behaviour Records_all') {
@@ -65,7 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 ->sortBy(['surname', 'preferredName'])
                 ->fromPOST();
 
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), false);
+            $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
+
 
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle(__('Choose A Student'));
@@ -75,6 +77,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
+
+        } else if ($highestAction == 'View Behaviour Records_my') {
+            
+            $criteria = $studentGateway->newQueryCriteria(true)
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->fromPOST();
+
+            $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+
+            $table = DataTable::createPaginated('behaviour', $criteria);
+            $table->setTitle( __('My Students'));
+
         } else {
             return;
         }

@@ -2426,9 +2426,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             include './modules/Behaviour/moduleFunctions.php';
-
+                            
+                            $highestActionBehaviour = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_view.php', $connection2);
+                            
                             //Print assessments
-                            echo getBehaviourRecord($container, $gibbonPersonID);
+                            if ($highestActionBehaviour == 'View Behaviour Records_all') {
+                                echo getBehaviourRecord($container, $gibbonPersonID);
+                            } else {
+                                echo getBehaviourRecord($container, $gibbonPersonID, $session->get('gibbonPersonID'));
+                            }
                         }
                     }
 
