@@ -760,7 +760,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                                 echo "<div $styleAttainment title='".htmlPrep($attainmentDesc)."'>" . $attainment;
 
-                                if ($attainment !== '' && $attainment != __('Inc')) {
+                                if ($attainment !== '' &&  is_numeric(rtrim($attainment, "%"))) {
                                     @$totals['attainment'][$i]['total'] += floatval($attainment);
                                     @$totals['attainment'][$i]['count'] += 1;
                                 }

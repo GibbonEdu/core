@@ -812,7 +812,7 @@ class MarkbookView
         if ($result->rowCount() > 0) {
             while ($entry = $result->fetch()) {
                 // Exclude incomplete values -- maybe make this a setting later?
-                if ($entry['attainmentValue'] == 'Incomplete' || stripos($entry['attainmentValue'], 'Inc') !== false) {
+                if (!is_numeric(rtrim($entry['attainmentValue'], "%"))) {
                     continue;
                 }
 
