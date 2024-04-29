@@ -58,11 +58,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                 ->sortBy('timestamp', 'DESC')
                 ->fromPOST($schoolYear['gibbonSchoolYearID']);
 
-            if (empty($gibbonPersonIDCreator)) {              
-                $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID);
-            } else {
-                $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID, $gibbonPersonIDCreator);
-            }
+            $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID, $gibbonPersonIDCreator);
             
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);
             $table->setTitle($schoolYear['name']);
