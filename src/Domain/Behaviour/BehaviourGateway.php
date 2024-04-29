@@ -274,13 +274,6 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function getBehaviourRecordsByPersonAndCreator($gibbonSchoolYearID, $gibbonPersonID, $gibbonPersonIDCreator) {
-        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator];
-        $sql = 'SELECT gibbonBehaviour.*, creator.title as titleCreator, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator FROM gibbonBehaviour JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND gibbonBehaviour.gibbonPersonIDCreator=:gibbonPersonIDCreator ORDER BY date DESC';
-        
-        return $this->db()->select($sql, $data);
-    }
-
     public function getBehaviourDetails($gibbonSchoolYearID, $gibbonBehaviourID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonBehaviourID' => $gibbonBehaviourID];
