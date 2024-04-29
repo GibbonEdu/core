@@ -47,7 +47,7 @@ v27.0.00
         Behaviour: updated the view so that followups are displayed as conversational logs and stored in a separate table
         Behaviour: added the ability to able to link a behaviour record to some other existing behaviour record
         Behaviour: added positive behaviour records to the Daily Behaviour Summary CLI script
-        Behaviour-Add-a-new-permission-so-that-teachers-can-only-view-behaviours-created-by-them
+        Behaviour: added a my_permission so that teachers are restricted to only view behaviours created by them
         Finance: added a fees list and notes column to the Export option in Manage Invoices
         Library: added ui changes to Library module browsing through library shelves and improved search page
         Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
