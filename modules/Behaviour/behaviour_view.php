@@ -56,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         }
 
         $studentGateway = $container->get(StudentGateway::class);
+        $behaviourGateway = $container->get(BehaviourGateway::class);
 
         // DATA TABLE
         if ($highestAction == 'View Behaviour Records_all') {
@@ -65,7 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 ->sortBy(['surname', 'preferredName'])
                 ->fromPOST();
 
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), false);
+            $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
+
 
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle(__('Choose A Student'));
@@ -83,14 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
             ->sortBy(['surname', 'preferredName'])
             ->fromPOST();
 
-            $students = $container->get(BehaviourGateway::class)->selectStudentsFromBehaviourByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
-
-            //$students = $studentGateway->queryBehaviourBySchoolYearAndCreator($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
-
-            // echo '<pre>';
-            // print_r($students);
-            // echo '</pre>';
-            // die();
+            $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
 
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle( __('My Students'));

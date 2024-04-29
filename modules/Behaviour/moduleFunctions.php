@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
-function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gibbonPersonIDCreator)
+function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gibbonPersonIDCreator = null)
 {
     global $session;
 
@@ -61,9 +61,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
             if (empty($gibbonPersonIDCreator)) {              
                 $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID);
             } else {
-                $result = $behaviourGateway->getBehaviourRecordsByPersonAndCreator($schoolYear['gibbonSchoolYearID'], $gibbonPersonID, $gibbonPersonIDCreator);
-
-                $behaviourRecords = $result->fetchAll();
+                $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID, $gibbonPersonIDCreator);
             }
             
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);

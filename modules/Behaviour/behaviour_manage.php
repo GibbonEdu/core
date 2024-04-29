@@ -95,7 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->filterBy('type', $type)
             ->fromPOST();
 
-        if ($highestAction == 'Manage Behaviour Records_all') {
+        
+            if ($highestAction == 'Manage Behaviour Records_all') {
             $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
         } else if ($highestAction == 'Manage Behaviour Records_my') {
             $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));

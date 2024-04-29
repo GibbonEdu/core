@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             if ($highestAction == 'View Behaviour Records_my') {
                 echo getBehaviourRecord($container, $gibbonPersonID, $session->get('gibbonPersonID'));
             } else {
-                echo getBehaviourRecord($container, $gibbonPersonID, null);
+                echo getBehaviourRecord($container, $gibbonPersonID);
             }
         }
     }

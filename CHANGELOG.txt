@@ -46,6 +46,7 @@ v27.0.00
         Behaviour: updated the view so that followups are displayed as conversational logs and stored in a separate table
         Behaviour: added the ability to able to link a behaviour record to some other existing behaviour record
         Behaviour: added positive behaviour records to the Daily Behaviour Summary CLI script
+        Behaviour: Implemented the _my permission so that teachers/staff can only view the behaviours records created by them
         Library: added ui changes to Library module browsing through library shelves and improved search page
         Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
         Library: added autocomplete to the Vendor and Location Detail fields in Add/Edit under Manage Catalogue
