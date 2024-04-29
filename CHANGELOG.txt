@@ -29,6 +29,7 @@ v27.0.00
     Changes With Important Notices
         System: updated Google OAuth Client SSO to handle granular permissions (required by Google for June 17, 2024)
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
+        System: in you use Gmail SMTP relay, be sure to update your settings to use an App Password
 
     Tweaks & Additions
         System: automatically hyperlink any urls included in Custom Field descriptions
@@ -46,12 +47,15 @@ v27.0.00
         Behaviour: updated the view so that followups are displayed as conversational logs and stored in a separate table
         Behaviour: added the ability to able to link a behaviour record to some other existing behaviour record
         Behaviour: added positive behaviour records to the Daily Behaviour Summary CLI script
-        Behaviour: Implemented the _my permission so that teachers/staff can only view the behaviours records created by them
+        Behaviour-Add-a-new-permission-so-that-teachers-can-only-view-behaviours-created-by-them
+        Finance: added a fees list and notes column to the Export option in Manage Invoices
         Library: added ui changes to Library module browsing through library shelves and improved search page
         Library: added automatic shelf generation by search term, automatic shelf updates, and auto-shuffling
         Library: added autocomplete to the Vendor and Location Detail fields in Add/Edit under Manage Catalogue
+        Library: updated child records to use the same Vendor field as parent records in Manage Catalogue
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
         Messenger: added an index to the Message Target table to speed up the recipients query
+        Reports: updated report writing to also show left class enrolments with the Show Left Students tool
         Reports: added uploadable Image as a field type in Manage Criteria Types
         Reports: added a check for the correct .twig.html extension in Manage Assets
         School Admin: added the ability to toggle facilities between active and inactive
@@ -95,6 +99,7 @@ v27.0.00
         Reports: fixed students from non-reporting-cycle year groups displaying in Write Reports
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
+        System Admin: fixed category and module for Student Enrolment importer
 
     Deprecations
         System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated

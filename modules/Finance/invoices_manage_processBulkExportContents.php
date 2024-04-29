@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $style_head_fill = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
 
         //Auto set column widths
-        for($col = 'A'; $col !== 'I'; $col++)
+        for($col = 'A'; $col <= 'M'; $col++)
             $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __("Invoice Number"));
@@ -113,21 +113,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Schedule"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Total Value") . '(' . $session->get("currency") .')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Total Value") . ' (' . $session->get("currency") .')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __("Issue Date"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __('Fees') . ' (' . $session->get("currency") .')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Due Date"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Issue Date"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Date Paid"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Due Date"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(11, 1, __("Amount Paid") . " (" . $session->get("currency") . ")" );
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(11, 1, __("Date Paid"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_head_fill);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(12, 1, __("Amount Paid") . " (" . $session->get("currency") . ")" );
+        $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_head_fill);
+        $excel->getActiveSheet()->setCellValueByColumnAndRow(13, 1, __('Notes')  );
+        $excel->getActiveSheet()->getStyleByColumnAndRow(13, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(13, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
 
 		$r = 2;
@@ -136,17 +142,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		while ($row=$result->fetch()) {
 			$count++ ;
 			//Column A
-			$invoiceNumber = $container->get(SettingGateway::class)->getSettingByScope("Finance", "invoiceNumber" ) ;
-			if ($invoiceNumber=="Person ID + Invoice ID") {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0"));
+			$invoiceNumberSetting = $container->get(SettingGateway::class)->getSettingByScope("Finance", "invoiceNumber" ) ;
+			if ($invoiceNumberSetting=="Person ID + Invoice ID") {
+                $invoiceNumber = ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0");
+				
 			}
-			else if ($invoiceNumber=="Student ID + Invoice ID") {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, ltrim($row["studentID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0"));
+			else if ($invoiceNumberSetting=="Student ID + Invoice ID") {
+                $invoiceNumber = ltrim($row["studentID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0");
 			}
 			else {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, ltrim($row["gibbonFinanceInvoiceID"], "0"));
+                $invoiceNumber = ltrim($row["gibbonFinanceInvoiceID"], "0");
 			}
+            $excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $invoiceNumber);
             $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
+            
+            $excel->getActiveSheet()->getCell("A".$r)->getHyperlink()->setUrl($session->get('absoluteURL').'/report.php?q=/modules/Finance/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row["gibbonFinanceInvoiceID"].'&gibbonSchoolYearID='.$gibbonSchoolYearID.'&preview='.($row["status"]=="Pending" ? 'true' : ''));
+            $excel->getActiveSheet()->getStyle("A".$r)->getFont()->setUnderline(true);
 			//Column B
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, Format::name("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true));
             $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
@@ -171,16 +182,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			//Calculate total value
 			$totalFee=0 ;
 			$feeError = false ;
+            $fees = [];
 			$dataTotal=array("gibbonFinanceInvoiceID"=>$row["gibbonFinanceInvoiceID"]);
 			if ($row["status"]=="Pending") {
-				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2
+				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2, gibbonFinanceInvoiceFee.name, gibbonFinanceFeeCategory.name as category
 					FROM gibbonFinanceInvoiceFee
 						LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID)
+                        LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID=gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID)
 					WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 			}
 			else {
-				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2
+				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2, gibbonFinanceInvoiceFee.name, gibbonFinanceFeeCategory.name as category
 					FROM gibbonFinanceInvoiceFee
+                    LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID=gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID)
 					WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 			}
 			if (is_null($resultTotal=$pdo->executeQuery($dataTotal, $sqlTotal)))
@@ -189,12 +203,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 				$feeError = true;
 			}
 			while ($rowTotal = $resultTotal->fetch()) {
-				if (is_numeric($rowTotal["fee2"])) {
-					$totalFee+=$rowTotal["fee2"] ;
-				}
-				else {
-					$totalFee+=$rowTotal["fee"] ;
-				}
+				$actualFee = is_numeric($rowTotal["fee2"]) ? $rowTotal["fee2"] : $rowTotal["fee"];
+                $totalFee+=$actualFee;
+
+                $fees[] = $rowTotal['category'].': '.$rowTotal['name'].' = '.$actualFee;
 			}
 			$x = '';
 			if (! $feeError) {
@@ -202,21 +214,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $x);
 			}
             $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
-			//Column H
-		    $excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, Format::date($row["invoiceIssueDate"]));
+            //Column H
+		    $excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, implode("\n", $fees));
             $excel->getActiveSheet()->getStyleByColumnAndRow(8, $r)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow(8, $r)->getAlignment()->setWrapText(true);
+
 			//Column I
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, Format::date($row["invoiceDueDate"]));
+		    $excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, Format::date($row["invoiceIssueDate"]));
             $excel->getActiveSheet()->getStyleByColumnAndRow(9, $r)->applyFromArray($style_border);
-			//Column J
-            if ($row["paidDate"]!="")
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(10, $r, Format::date($row["paidDate"]));
-            else
-                $excel->getActiveSheet()->setCellValueByColumnAndRow(10, $r, '');
+			//Column K
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(10, $r, Format::date($row["invoiceDueDate"]));
             $excel->getActiveSheet()->getStyleByColumnAndRow(10, $r)->applyFromArray($style_border);
 			//Column K
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, number_format($row["paidAmount"], 2, ".", ""));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, !empty($row["paidDate"]) ? Format::date($row["paidDate"]) : '');
             $excel->getActiveSheet()->getStyleByColumnAndRow(11, $r)->applyFromArray($style_border);
+			//Column L
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ""));
+            $excel->getActiveSheet()->getStyleByColumnAndRow(12, $r)->applyFromArray($style_border);
+            //Column M
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(13, $r, strip_tags($row["notes"]));
+            $excel->getActiveSheet()->getStyleByColumnAndRow(13, $r)->applyFromArray($style_border);
 			$r++;
 		}
 

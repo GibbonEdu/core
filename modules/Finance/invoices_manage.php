@@ -130,13 +130,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $bulkActions = array('export' => __('Export'));
         switch($criteria->getFilterValue('status')) {
             case 'Pending':
-                $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')); break;
             case 'Issued - Overdue':
-                $bulkActions = array('reminders' => __('Issue Reminders'), 'paid' => __('Mark as Paid')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('reminders' => __('Issue Reminders'), 'paid' => __('Mark as Paid')); break;
             case 'Paid - Partial':
-                $bulkActions = array('reminders' => __('Issue Reminders')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('reminders' => __('Issue Reminders')); break;
             case 'Issued':
-                $bulkActions = array('paid' => __('Mark as Paid')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('paid' => __('Mark as Paid')); break;
         }
 
         $form->toggleVisibilityByClass('bulkPaid')->onSelect('action')->when('paid');
