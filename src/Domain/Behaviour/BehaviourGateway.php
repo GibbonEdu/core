@@ -23,7 +23,6 @@ namespace Gibbon\Domain\Behaviour;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
-use Gibbon\Domain\Traits\SharedUserLogic;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
