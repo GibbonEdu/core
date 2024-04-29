@@ -39,7 +39,6 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
     use TableAware;
     use Scrubbable;
     use ScrubByPerson;
-    use SharedUserLogic;
 
     private static $tableName = 'gibbonBehaviour';
     private static $primaryKey = 'gibbonBehaviourID';
