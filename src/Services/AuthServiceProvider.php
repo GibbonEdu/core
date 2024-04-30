@@ -203,6 +203,7 @@ class AuthServiceProvider extends AbstractServiceProvider
                     'urlAuthorize'              => $ssoSettings['authorizeEndpoint'],
                     'urlAccessToken'            => $ssoSettings['tokenEndpoint'],
                     'urlResourceOwnerDetails'   => $ssoSettings['userEndpoint'],
+                    'scopes'                    => $ssoSettings['scopes'] ?? 'openid profile offline_access email groups'
                 ]);
             } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
                 throw new OAuthLoginError($e->getMessage());
