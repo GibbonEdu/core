@@ -84,7 +84,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                         $contactMail = 'Y';
                     } else {
                         $contactCall = $_POST['contactCall'] ?? 'N';
-                        $contactSMS = $_POST['contactSMS'] ?? 'N;
+                        $contactSMS = $_POST['contactSMS'] ?? 'N';
                         $contactEmail = $_POST['contactEmail'] ?? 'N';
                         $contactMail = $_POST['contactMail'] ?? 'N';
                     }
