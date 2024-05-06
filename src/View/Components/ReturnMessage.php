@@ -59,6 +59,7 @@ class ReturnMessage
             'warning0' => __('Your optional extra data failed to save.'),
             'warning1' => __('Your request was successful, but some data was not properly saved.'),
             'warning2' => __('Your request was successful, but some data was not properly deleted.'),
+            'warning3' => __('Your request was successful but the emojis in your text body have been removed'),
         ]);
     }
 

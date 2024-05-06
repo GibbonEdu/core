@@ -70,6 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         $subject = $_POST['subject'] ?? '';
         $body = stripslashes($_POST['body'] ?? '');
 
+        $containsEmoji = hasEmojis($body);
+
+        if($containsEmoji) { 
+            $body = removeEmoji($body); 
+        }
+
         // Turn copy-pasted div breaks into paragraph breaks
         $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
 
@@ -110,6 +116,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
             if ($partialFail == true) {
                 $URL .= '&return=warning1';
+                header("Location: {$URL}");
+            }else if($containsEmoji) {
+                $URL .= '&return=warning3';
                 header("Location: {$URL}");
             } else {
                 //Success 0
