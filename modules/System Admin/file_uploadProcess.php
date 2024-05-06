@@ -31,7 +31,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_upload.php&step=3';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
     $gibbonCustomFieldID = $_POST['gibbonCustomFieldID'] ?? '';
     $overwrite = $_POST['overwrite'] ?? 'N';
+    $deleteFiles = $_POST['deleteFiles'] ?? 'N';
     $zoom = $_POST['zoom'] ?? '100';
     $focalX = $_POST['focalX'] ?? '50';
     $focalY = $_POST['focalY'] ?? '50';
@@ -116,10 +117,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             $existingFile = $userData['image_240'];
         }
 
-        // Optionally overwrite exiting files or skip them
-        if (!empty($existingFile) && $overwrite == 'Y') {
+        // Optionally overwrite and delete exiting files
+        if (!empty($existingFile) && $overwrite == 'Y' && $deleteFiles == 'Y') {
             unlink($absolutePath.'/'.$existingFile);
-        } elseif (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
+        }
+        
+        // Skip uploading files if the file exists and overwrite is not on
+        if (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
             unlink($file['absolutePath']);
             continue;
         }

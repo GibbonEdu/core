@@ -29,7 +29,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -195,6 +195,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         $row = $form->addRow();
             $row->addLabel('overwrite', __('Overwrite'))->description(__('Should uploaded files overwrite any existing files?'));
             $row->addYesNo('overwrite')->selected('Y');
+
+            $row = $form->addRow();
+            $row->addLabel('deleteFiles', __('Delete'))->description(__('Should original files be deleted from the server when overwriting files?'));
+            $row->addYesNo('deleteFiles')->selected('N');
     }
 
     // DATA TABLE

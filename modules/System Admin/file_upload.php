@@ -24,7 +24,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
