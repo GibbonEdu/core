@@ -71,6 +71,7 @@ v27.0.00
         Timetable: enabled facilities for Off Timetable classes to be re-booked in Manage Facility Bookings
         User Admin: added an option to disable the display of privacy options, so they can be managed internally
         User Admin: increased the field length for Departure Reason to 100 characters
+        System Admin: enabled Generic OAuth to specify the scopes and username field requested
         System Admin: added an importer for Behaviour Records
 
     Bug Fixes
