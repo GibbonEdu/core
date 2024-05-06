@@ -106,13 +106,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
         if (!empty($notify) || !empty($notificationList)) {
             // Create the notification body
             $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
-            $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
-                'student'   => $studentName,
-                'formGroup'   => $student['formGroup'],
-                'school'    => $session->get('organisationNameShort'),
-                'date'      => Format::date($data['dateEnd']),
-            ]);
-
+                
+            $today = date("Y-m-d"); 
+            if ($today > $data['dateEnd']) {
+                $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
+                    'student'   => $studentName,
+                    'formGroup'   => $student['formGroup'],
+                    'school'    => $session->get('organisationNameShort'),
+                    'date'      => Format::date($data['dateEnd']),
+                ]);
+            } else {
+                $notificationString = __('{student} {formGroup} will withdraw from {school}, effective from {date}.', [
+                    'student'   => $studentName,
+                    'formGroup'   => $student['formGroup'],
+                    'school'    => $session->get('organisationNameShort'),
+                    'date'      => Format::date($data['dateEnd']),
+                ]);
+            }
+            
             if (!empty($withdrawNote)) {
                 $notificationString .= '<br/><br/>'.__('Withdraw Note').': '.$withdrawNote;
             }

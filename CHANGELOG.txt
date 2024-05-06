@@ -89,6 +89,7 @@ v27.0.00
         Activities: fixed missing Waiting List option when adding activity enrolment
         Admissions: fixed Form Group at Entry field when not using it as Office Only
         Admissions: ensure form submission email goes to the admissions account email address rather than parent1
+        Admissions: fixed the tense of the notification string when a student withdraws from the school
         Attendance: fixed handling of double periods in Set Future Absence tool
         Attendance: fixed timestamp of attendance taken for double periods in Take Attendance by Class
         Attendance: fixed onsite school absences not showing blue in Attendance by Form Group
