@@ -59,6 +59,7 @@ class ClassGroupTable extends DataTable
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
+        $canEditEnrolment = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php');
 
         $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
             || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
@@ -76,6 +77,16 @@ class ClassGroupTable extends DataTable
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
+
+        if ($canEditEnrolment && count($participants) > 0) {
+            $this->addHeaderAction('edit', __('Edit Enrolment'))
+                ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonCourseID', $participants->getRow(0)['gibbonCourseID'] ?? '')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->displayLabel()
+                ->append('&nbsp;&nbsp;|&nbsp;&nbsp;');
+        }
 
         if ($canViewConfidential) {
             $this->addHeaderAction('export', __('Export to Excel'))
