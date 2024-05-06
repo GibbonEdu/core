@@ -47,14 +47,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $values = json_decode($values, true) ?? [];
 
     $data = [
-        'enabled'           => $_POST['enabled'] ?? 'N',
-        'clientName'        => $_POST['clientName'] ?? '',
-        'clientID'          => $_POST['clientID'] ?? '',
-        'clientSecret'      => $_POST['clientSecret'] ?? '',
-        'developerKey'      => $_POST['developerKey'] ?? '',
-        'authorizeEndpoint' => $_POST['authorizeEndpoint'] ?? '',
-        'tokenEndpoint'     => $_POST['tokenEndpoint'] ?? '',
-        'userEndpoint'      => $_POST['userEndpoint'] ?? '',
+        'enabled'            => $_POST['enabled'] ?? 'N',
+        'clientName'         => $_POST['clientName'] ?? '',
+        'clientID'           => $_POST['clientID'] ?? '',
+        'clientSecret'       => $_POST['clientSecret'] ?? '',
+        'developerKey'       => $_POST['developerKey'] ?? '',
+        'authorizeEndpoint'  => $_POST['authorizeEndpoint'] ?? '',
+        'tokenEndpoint'      => $_POST['tokenEndpoint'] ?? '',
+        'userEndpoint'       => $_POST['userEndpoint'] ?? '',
+        'scopes'             => $_POST['scopes'] ?? '',
+        'usernameAttribute'      => $_POST['usernameAttribute'] ?? '',
     ];
 
     $calendarFeed = $_POST['calendarFeed'] ?? '';
