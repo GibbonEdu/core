@@ -95,6 +95,7 @@ v27.0.00
         Attendance: fixed onsite school absences not showing blue in Attendance by Form Group
         Attendance: fixed Consecutive Absences report not returning any results
         Attendance: fixed checklist names for existing absences in Set Future Attendance
+        Attendance: fixed the attendance counts in Attendance Summary by Date when grouping by Form Group 
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
         Markbook: fixed the Markbook Entry importer so that it supports username, email or student ID
         Markbook: fixed the Term Added field in the Markbook Column importer

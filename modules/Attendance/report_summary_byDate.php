@@ -158,7 +158,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
 
             $dataSchoolDays = array( 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlSchoolDays = "SELECT COUNT(DISTINCT CASE WHEN date>=gibbonSchoolYear.firstDay AND date<=gibbonSchoolYear.lastDay THEN date END) as total, COUNT(DISTINCT CASE WHEN date>=:dateStart AND date <=:dateEnd THEN date END) as dateRange FROM gibbonAttendanceLogPerson, gibbonSchoolYearTerm, gibbonSchoolYear WHERE date>=gibbonSchoolYearTerm.firstDay AND date <= gibbonSchoolYearTerm.lastDay AND date <= NOW() AND gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID";
+            $sqlSchoolDays = "SELECT 
+                COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay AND gibbonAttendanceLogPerson.date<=gibbonSchoolYear.lastDay THEN gibbonAttendanceLogPerson.date END) as total, COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.date>=:dateStart AND gibbonAttendanceLogPerson.date <=:dateEnd THEN gibbonAttendanceLogPerson.date END) as dateRange 
+            FROM gibbonAttendanceLogPerson
+                JOIN gibbonSchoolYearTerm ON (gibbonAttendanceLogPerson.date>=gibbonSchoolYearTerm.firstDay AND gibbonAttendanceLogPerson.date <= gibbonSchoolYearTerm.lastDay)
+                JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID )
+                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID=gibbonSchoolYearTerm.gibbonSchoolYearTermID AND gibbonSchoolYearSpecialDay.date = gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+            WHERE  
+                gibbonAttendanceLogPerson.date <= NOW() 
+                AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonSchoolYearSpecialDay.gibbonSchoolYearSpecialDayID IS NULL";
 
             $resultSchoolDays = $connection2->prepare($sqlSchoolDays);
             $resultSchoolDays->execute($dataSchoolDays);
@@ -173,11 +182,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
         //Produce array of attendance data
         try {
-            $orderBy = 'ORDER BY surname, preferredName';
+            $orderBy = 'ORDER BY surname, preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken';
             if ($sort == 'preferredName')
-                $orderBy = 'ORDER BY preferredName, surname';
+                $orderBy = 'ORDER BY preferredName, surname, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken';
             if ($sort == 'formGroup')
-                $orderBy = ' ORDER BY LENGTH(formGroup), formGroup, surname, preferredName';
+                $orderBy = ' ORDER BY LENGTH(formGroup), formGroup, surname, preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken';
 
             if ($group == 'all') {
                 $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, gibbonAttendanceLogPerson.*, gibbonAttendanceCode.nameShort as code FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
@@ -188,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             }
             else if ($group == 'formGroup') {
                 $data['gibbonFormGroupID'] = $gibbonFormGroupID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, gibbonAttendanceLogPerson.*, gibbonAttendanceCode.nameShort as code FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID AND gibbonAttendanceLogPerson.context='Form Group'";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, gibbonAttendanceLogPerson.*, gibbonAttendanceCode.nameShort as code FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID AND (gibbonAttendanceLogPerson.context='Form Group' OR gibbonAttendanceLogPerson.context='Future' OR gibbonAttendanceLogPerson.context='Person' OR gibbonAttendanceLogPerson.context='Self Registration')";
             }
 
             if ( !empty($gibbonAttendanceCodeID) ) {
