@@ -70,8 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         $subject = $_POST['subject'] ?? '';
         $body = stripslashes($_POST['body'] ?? '');
 
+        //check for any emojis in the message
         $containsEmoji = hasEmojis($body);
 
+        //remove any emojis from the message
         if($containsEmoji) { 
             $body = removeEmoji($body); 
         }
