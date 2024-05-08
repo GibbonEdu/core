@@ -63,11 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     }
 
 	$row = $form->addRow();
-        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
-		$col = $row->addColumn('date1')->addClass('stacked');
-		$col->addDate('date1')->setValue(Format::date(date('Y-m-d')))->required();
-		$col->addDate('date2');
-		$col->addDate('date3');
+        $row->addLabel('dateStart', __('Publication Dates'))->description(__('Select the start and the end date.'));
+		$col = $row->addColumn('dateStart')->addClass('stacked');
+		$col->addDate('dateStart')->setValue(Format::date(date('Y-m-d')))->required();
+		$col->addDate('dateEnd')->required();
 
 	$form->addRow()->addHeading('Message Details', __('Message Details'));
 
