@@ -63,9 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     }
 
 	$row = $form->addRow();
-        $row->addLabel('dateStart', __('Publication Dates'))->description(__('Select the start and the end date.'));
+        $row->addLabel('datePublished', __('Publication Dates'))->description(__('Select the start and the end date.'));
 		$col = $row->addColumn('dateStart')->addClass('stacked');
-		$col->addDate('dateStart')->setValue(Format::date(date('Y-m-d')))->required();
+        $col->addLabel('dateStart', __('Start Date'));
+        $col->addDate('dateStart')->setValue(Format::date(date('Y-m-d')))->required();
+        $col->addLabel('dateEnd', __('End Date'));
 		$col->addDate('dateEnd')->required();
 
 	$form->addRow()->addHeading('Message Details', __('Message Details'));
