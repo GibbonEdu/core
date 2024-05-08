@@ -103,6 +103,7 @@ v27.0.00
         Messenger: fixed visual bug when messages are wider than the message wall
         Reports: fixed missing sequenceNumber in duplicated Reporting Cycles
         Reports: fixed students from non-reporting-cycle year groups displaying in Write Reports
+        School Admin: fixed missing Public Application Form setting in Admissions Settings page
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
         System Admin: fixed category and module for Student Enrolment importer
