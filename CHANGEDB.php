@@ -806,4 +806,7 @@ CREATE TABLE `gibbonBehaviourFollowUp` ( `gibbonBehaviourFollowUpID` INT(11) UNS
 ALTER TABLE `gibbonReportingCriteriaType` ADD `options` TEXT NULL AFTER `gibbonScaleID`;end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Student Form Group Changed', 'Admissions', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y');end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour'), 'View Behaviour Records_my', 0, 'Behaviour Records', 'Enables users to view the behaviour records created by them', 'behaviour_view.php,behaviour_view_details.php', 'behaviour_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+ALTER TABLE `gibbonMessenger` CHANGE `messageWall_date1` `messageWall_dateStart` date DEFAULT NULL;end
+ALTER TABLE `gibbonMessenger` CHANGE `messageWall_date2` `messageWall_dateEnd` date DEFAULT NULL;end
+ALTER TABLE `gibbonMessenger` DROP `messageWall_date3`;end
 ";

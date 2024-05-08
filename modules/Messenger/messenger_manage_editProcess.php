@@ -79,9 +79,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $data = [
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
-        'messageWall_date1' => !empty($_POST['date1']) ? Format::dateConvert($_POST['date1']) : null,
-        'messageWall_date2' => !empty($_POST['date2']) ? Format::dateConvert($_POST['date2']) : null,
-        'messageWall_date3' => !empty($_POST['date3']) ? Format::dateConvert($_POST['date3']) : null,
+        'messageWall_dateStart' => !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null,
+        'messageWall_dateEnd' => !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null,
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
         'confidential'      => $_POST['confidential'] ?? 'N',
