@@ -809,4 +809,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 ALTER TABLE `gibbonMessenger` CHANGE `messageWall_date1` `messageWall_dateStart` date DEFAULT NULL;end
 ALTER TABLE `gibbonMessenger` CHANGE `messageWall_date2` `messageWall_dateEnd` date DEFAULT NULL;end
 ALTER TABLE `gibbonMessenger` DROP `messageWall_date3`;end
+ALTER TABLE `gibbonMessenger` ADD `enableSharingLink` ENUM('N','Y') NOT NULL DEFAULT 'N';end
 ";
