@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\IndividualNeeds\INPersonDescriptorGateway;
 
 require_once '../../gibbon.php';
 
@@ -49,10 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
             $userFail = false;
             //Get each user's record
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT surname, preferredName, gibbonIN.* FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+
+                $result = $container->get(INGateway::class)->getINStudentByPersonID($gibbonPersonID);
+
             } catch (PDOException $e) {
                 $userFail = true;
                 $partialFail = true;
@@ -70,10 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
                 $descriptors = array();
                 $descriptorsCount = 0;
                 try {
-                    $dataDesciptors = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlDesciptors = 'SELECT * FROM gibbonINPersonDescriptor WHERE gibbonPersonID=:gibbonPersonID';
-                    $resultDesciptors = $connection2->prepare($sqlDesciptors);
-                    $resultDesciptors->execute($dataDesciptors);
+                    $resultDesciptors = $container->get(INPersonDescriptorGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID]);
                 } catch (PDOException $e) {
                     $partialFail = true;
                 }

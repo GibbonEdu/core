@@ -23,6 +23,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 
 $page->breadcrumbs->add(__('View Markbook'));
@@ -43,10 +45,7 @@ $page->write('<p>'.__("This page shows your children's academic results througho
 
 //Test data access field for permission
 
-    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-    $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
+    $result = $container->get(FamilyAdultGateway::class)->selectBy(['gibbonPersonID' => $session->get('gibbonPersonID'), 'childDataAccess' => 'Y']);
 
 if ($result->rowCount() < 1) {
     echo $page->getBlankSlate();
@@ -56,10 +55,9 @@ if ($result->rowCount() < 1) {
     $count = 0;
     $options = array();
     while ($row = $result->fetch()) {
-        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-        $resultChild = $connection2->prepare($sqlChild);
-        $resultChild->execute($dataChild);
+
+        $resultChild = $container->get(FamilyChildGateway::class)->selectChildByFamilyID($row['gibbonFamilyID'], $session->get('gibbonSchoolYearID'));
+
         while ($rowChild = $resultChild->fetch()) {
             $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
         }
@@ -98,10 +96,8 @@ if ($result->rowCount() < 1) {
 
     if (!empty($gibbonPersonID) and count($options) > 0) {
         //Confirm access to this student
-        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-        $resultChild = $connection2->prepare($sqlChild);
-        $resultChild->execute($dataChild);
+        
+        $resultChild = $container->get(FamilyChildGateway::class)->selectChildByFamilyAdultID($gibbonPersonID, $session->get('gibbonPersonID'));
         if ($resultChild->rowCount() < 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
