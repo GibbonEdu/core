@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['introduction' => 'HTML', 'postscript' => 'HTML']);
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $gibbonFormPageID = $_POST['gibbonFormPageID'] ?? '';

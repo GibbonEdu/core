@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";

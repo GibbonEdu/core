@@ -21,8 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\Builder\FormBuilder;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $urlParams = [
     'gibbonFormID'     => $_POST['gibbonFormID'] ?? '',

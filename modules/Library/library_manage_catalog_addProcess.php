@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['imageLink' => 'URL', 'fieldLink' => 'URL']);
 
 include './moduleFunctions.php';
 

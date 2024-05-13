@@ -26,7 +26,7 @@ use Gibbon\Domain\Library\LibraryTypeGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['imageLink' => 'URL', 'fieldLink' => 'URL']);
 
 include './moduleFunctions.php';
 
