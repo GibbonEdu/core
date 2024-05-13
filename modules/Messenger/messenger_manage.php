@@ -108,8 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $output = Format::date($values['timestamp']).'<br/>';
 
             if ($values['messageWall'] == 'Y') {
-                if (!empty($values['messageWall_dateStart'])) $output .= 'Start Date: '.Format::small(Format::date($values['messageWall_dateStart'])).'<br/>';
-                if (!empty($values['messageWall_dateEnd'])) $output .= 'End Date: '.Format::small(Format::date($values['messageWall_dateEnd'])).'<br/>';
+                $output .= Format::small(Format::dateRange($values['messageWall_dateStart'], $values['messageWall_dateEnd']));
             }
             return $output;
         });

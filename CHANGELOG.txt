@@ -58,7 +58,8 @@ v27.0.00
         Messenger: added search form and school year navigator to Manage Groups page for quicker group browsing
         Messenger: added an index to the Message Target table to speed up the recipients query
         Messenger: added the ability to post a Wall Message between a start date and an end date
-        Messenger: added the ability to remove emojis from the message body
+        Messenger: added the ability to optionally share a Send Report link with other users
+        Messenger: added the ability to detect and remove emojis from the message body
         Reports: updated report writing to also show left class enrolments with the Show Left Students tool
         Reports: added uploadable Image as a field type in Manage Criteria Types
         Reports: added a check for the correct .twig.html extension in Manage Assets

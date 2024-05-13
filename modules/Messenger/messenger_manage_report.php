@@ -44,10 +44,6 @@ else {
             ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
             ->add(__('View Send Report'));
 
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
-
         $nonConfirm = 0;
         $noConfirm = 0;
         $yesConfirm = 0;
@@ -91,7 +87,7 @@ else {
             };
 
             $sender = false;
-            if ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all' || $values['enableSharingLink'] == 'Y')  {
+            if ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all')  {
                 $sender = true;
             }
 
@@ -100,7 +96,7 @@ else {
                 return;
             }
 
-            if ($values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
+            if ($sender && $values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
                 $alertText = __('Email read receipts have been enabled for this message. You can use the Resend action along with the checkboxes next to recipients who have not yet confirmed to send a reminder to these users.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.');
 
                 if (!empty($values['emailReceiptText'])) {
@@ -108,9 +104,13 @@ else {
                 }
 
                 echo Format::alert($alertText, 'success');
-            } elseif ($values['email'] == 'Y' && $values['emailReceipt'] == 'N') {
+            } elseif ($sender && $values['email'] == 'Y' && $values['emailReceipt'] == 'N') {
                 echo Format::alert(__('Email read receipts have not been enabled for this message, however you can still use the Resend action to manually send messages.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.'), 'message');
             }
+
+            echo '<h2>';
+            echo __('Report Data');
+            echo '</h2>';
 
             // CONFIRMATION MODE
             if ($values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
@@ -136,6 +136,10 @@ else {
 
                 $form->setClass('noIntBorder fullWidth auto-submit pb-1');
 
+                $row = $form->addRow();
+                    $row->addLabel('subjectLabel', __('Message'));
+                    $row->addTextField('subject')->readonly()->setValue($values['subject']);
+
                 $confirmationOptions = [];
                 if ($parents) {
                     $confirmationOptions['One'] = __('At Least One Parent');
@@ -150,11 +154,11 @@ else {
                     $row->addLabel('confirmationMode', __('Confirmation Required By'));
                     $row->addSelect('confirmationMode')->fromArray($confirmationOptions)->selected($confirmationMode);
 
-                if ($values['enableSharingLink'] == 'Y') {
-                    $linkURL = Url::fromModuleRoute('Messenger', 'messenger_manage_report')->withQueryParams(['gibbonMessengerID' => $gibbonMessengerID, 'sidebar' => true])->withAbsoluteUrl(true);
+                if ($values['enableSharingLink'] == 'Y'  && $values['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+                    $linkURL = Url::fromModuleRoute('Messenger', 'messenger_manage_report')->withQueryParams(['gibbonMessengerID' => $gibbonMessengerID])->withAbsoluteUrl(true);
                     $row = $form->addRow();
-                        $row->addLabel('sharingLink', __('Link of Send Report'))->description(__('Right Click and Copy the link to share it with other users.'));
-                        $row->addContent('<h4>'.Format::link($linkURL, __("Link")).'</h4>');
+                        $row->addLabel('sharingLink', __('Shareable Send Report'))->description(__('You can copy this link to share it with other users.'));
+                        $row->addTextField('sharingLink')->setValue(urldecode($linkURL));
                     }
 
                 echo $form->getOutput();
@@ -202,8 +206,10 @@ else {
                         $form = BulkActionForm::create('resendByRecipient', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
                         $form->addHiddenValue('address', $session->get('address'));
 
-                        $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
+                        if ($sender) {
+                            $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
                             $row->addSubmit(__('Go'));
+                        }
 
                         $formGroups = $result->fetchAll(\PDO::FETCH_GROUP);
                         $countTotal = 0;
@@ -352,8 +358,10 @@ else {
 
                         $form->addHiddenValue('address', $session->get('address'));
 
-                        $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
+                        if ($sender) {
+                            $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
                             $row->addSubmit(__('Go'));
+                        }
 
                         $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
 

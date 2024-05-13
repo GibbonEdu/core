@@ -135,12 +135,18 @@ class MessageForm extends Form
             }
 
             $row = $form->addRow()->addClass('messageWall');
-                $row->addLabel('datePublisheds', __('Publication Dates'))->description(__('Select the start and the end date.'));
+                $row->addLabel('datePublished', __('Publication Dates'));
                 $col = $row->addColumn('dateStart')->addClass('stacked');
                 $col->addLabel('dateStart', __('Start Date'));
-                $col->addDate('dateStart')->setValue(Format::date($values['messageWall_dateStart'] ?? date('Y-m-d')))->required();
+                $col->addDate('dateStart')
+                    ->chainedTo('dateEnd')
+                    ->setValue(Format::date($values['messageWall_dateStart'] ?? ''))
+                    ->required();
                 $col->addLabel('dateEnd', __('End Date'));
-                $col->addDate('dateEnd')->setValue(Format::date($values['messageWall_dateEnd'] ?? ''))->required();
+                $col->addDate('dateEnd')
+                    ->chainedFrom('dateStart')
+                    ->setValue(Format::date($values['messageWall_dateEnd'] ?? ''))
+                    ->required();
         }
 
         // Delivery by SMS
@@ -238,7 +244,7 @@ class MessageForm extends Form
                     $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'])->readonly($sent);
 
                 $row = $form->addRow()->addClass('emailReceipt');
-                    $row->addLabel('enableSharingLink', __('Enable Sharing Send Report'))->description(__('The Link of the Send Report can be shared to other users if turned on'));
+                    $row->addLabel('enableSharingLink', __('Shareable Send Report'))->description(__('When enabled, you can share the Send Report for this message with other users.'));
                     $row->addYesNoRadio('enableSharingLink')->required()->checked($values['enableSharingLink'] ?? 'N');
             }
         }
