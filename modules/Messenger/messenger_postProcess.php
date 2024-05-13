@@ -84,10 +84,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         exit;
     }
 
-    // Check for any emojis in the message
+    // Check for any emojis in the message and remove them
     $containsEmoji = hasEmojis($data['body']);
-
-    // Remove any emojis from the message
     if($containsEmoji) { 
         $data['body'] = removeEmoji($data['body']);
     }
@@ -117,7 +115,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             exit;
         }
 
-        if($containsEmoji) {
+        if ($containsEmoji) {
             $URLSend .= '&return=warning3';
         }
         
@@ -130,9 +128,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     // Otherwise save any edits to targets
     $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
 
-    $URLEdit .= $partialFail
-        ? "&return=warning1"
-        : "&return=success0";
+    if ($partialFail) {
+        $URLEdit .= '&return=warning1';
+    } else {
+        $URLEdit .= $containsEmoji
+            ? "&return=warning3"
+            : "&return=success0";
+    }
 
     header("Location: {$URLEdit}") ;
 }

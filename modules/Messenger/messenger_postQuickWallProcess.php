@@ -65,11 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         $subject = $_POST['subject'] ?? '';
         $body = stripslashes($_POST['body'] ?? '');
 
-        //check for any emojis in the message
+        // Check for any emojis in the message and remove them
         $containsEmoji = hasEmojis($body);
-
-        //remove any emojis from the message
-        if($containsEmoji) { 
+        if ($containsEmoji) { 
             $body = removeEmoji($body); 
         }
 
@@ -114,13 +112,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
             if ($partialFail == true) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
-            }else if($containsEmoji) {
-                $URL .= '&return=warning3';
-                header("Location: {$URL}");
             } else {
-                //Success 0
                 $session->set('pageLoads', null);
-				$URL .= "&return=success0&editID=$AI";
+                $URL .= $containsEmoji
+                    ? "&return=warning3"
+                    : "&return=success0&editID=$AI";
+
                 header("Location: {$URL}");
             }
         }
