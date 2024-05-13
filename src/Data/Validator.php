@@ -80,7 +80,7 @@ class Validator
 
         // Check allowable fields for URLs
         foreach ($allowableTags as $field => $value) {
-            if (mb_stripos($value, 'URL') !== false) {
+            if (is_string($value) && strtoupper($value) == 'URL') {
                 $urls[$field] = $field;
             }
         }
