@@ -49,24 +49,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
             $messageWall = 'N';
         }
         $messageWallPin = ($messageWall == "Y" && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all") & !empty($_POST['messageWallPin'])) ? $_POST['messageWallPin'] : 'N' ;
-        $date1 = null;
-        if (isset($_POST['date1'])) {
-            if ($_POST['date1'] != '') {
-                $date1 = Format::dateConvert($_POST['date1']);
+        $dateStart = null;
+        if (isset($_POST['dateStart'])) {
+            if ($_POST['dateStart'] != '') {
+                $dateStart = Format::dateConvert($_POST['dateStart']);
             }
         }
-        $date2 = null;
-        if (isset($_POST['date2'])) {
-            if ($_POST['date2'] != '') {
-                $date2 = Format::dateConvert($_POST['date2']);
+        $dateEnd = null;
+        if (isset($_POST['dateEnd'])) {
+            if ($_POST['dateEnd'] != '') {
+                $dateEnd = Format::dateConvert($_POST['dateEnd']);
             }
         }
-        $date3 = null;
-        if (isset($_POST['date3'])) {
-            if ($_POST['date3'] != '') {
-                $date3 = Format::dateConvert($_POST['date3']);
-            }
-        }
+
         $subject = $_POST['subject'] ?? '';
         $body = stripslashes($_POST['body'] ?? '');
 
@@ -87,8 +82,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         } else {
             //Write to database
             try {
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'confidential' => 'N', 'timestamp' => date('Y-m-d H:i:s'));
-                $sql = 'INSERT INTO gibbonMessenger SET gibbonSchoolYearID=:gibbonSchoolYearID, email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, confidential=:confidential, timestamp=:timestamp';
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_dateStart' => $dateStart, 'messageWall_dateEnd' => $dateEnd, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'confidential' => 'N', 'timestamp' => date('Y-m-d H:i:s'));
+                $sql = 'INSERT INTO gibbonMessenger SET gibbonSchoolYearID=:gibbonSchoolYearID, email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_dateStart=:messageWall_dateStart, messageWall_dateEnd=:messageWall_dateEnd, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, confidential=:confidential, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

@@ -135,11 +135,12 @@ class MessageForm extends Form
             }
 
             $row = $form->addRow()->addClass('messageWall');
-                $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
-                $col = $row->addColumn('date1')->addClass('stacked');
-                $col->addDate('date1')->setValue(Format::date($values['messageWall_date1'] ?? date('Y-m-d')))->required();
-                $col->addDate('date2')->setValue(Format::date($values['messageWall_date2'] ?? ''));
-                $col->addDate('date3')->setValue(Format::date($values['messageWall_date3'] ?? ''));
+                $row->addLabel('datePublisheds', __('Publication Dates'))->description(__('Select the start and the end date.'));
+                $col = $row->addColumn('dateStart')->addClass('stacked');
+                $col->addLabel('dateStart', __('Start Date'));
+                $col->addDate('dateStart')->setValue(Format::date($values['messageWall_dateStart'] ?? date('Y-m-d')))->required();
+                $col->addLabel('dateEnd', __('End Date'));
+                $col->addDate('dateEnd')->setValue(Format::date($values['messageWall_dateEnd'] ?? ''))->required();
         }
 
         // Delivery by SMS
