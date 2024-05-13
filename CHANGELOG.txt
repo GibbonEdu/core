@@ -31,6 +31,9 @@ v27.0.00
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
         System: in you use Gmail SMTP relay, be sure to update your settings to use an App Password
 
+    Security
+        System: improved the input sanitization and output encoding or URLs
+
     Tweaks & Additions
         System: automatically hyperlink any urls included in Custom Field descriptions
         System: removed raw exception message output from the interface

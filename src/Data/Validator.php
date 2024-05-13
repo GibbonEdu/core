@@ -62,17 +62,26 @@ class Validator
     public function sanitize($input, $allowableTags = [], $utf8_encode = true)
     {
         $output = [];
+        $urls = [];
 
         // Default allowable tags
         $allowableTags['*CustomEditor'] = 'HTML';
 
         // Match wildcard * in allowable tags and add these fields to the list
         foreach ($allowableTags as $field => $value) {
-            if (stripos($field, '*') === false) continue;
+            if (mb_stripos($field, '*') === false) continue;
+
             if ($keys = $this->getWildcardArrayKeyMatches($input, $field)) {
                 foreach ($keys as $key) {
                     $allowableTags[$key] = $value;
                 }
+            }
+        }
+
+        // Check allowable fields for URLs
+        foreach ($allowableTags as $field => $value) {
+            if (mb_stripos($value, 'URL') !== false) {
+                $urls[$field] = $field;
             }
         }
 
@@ -89,8 +98,11 @@ class Validator
                 $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $value);
                 $value = preg_replace('/\\\\+0+/', '', $value);
 
-                // Sanitize HTML
-                if (!empty($allowableTags[$field])) {
+                if (!empty($urls[$field])) {
+                    // Sanitize URL
+                    $value = $this->sanitizeUrl($value);
+                } elseif (!empty($allowableTags[$field])) {
+                    // Sanitize HTML
                     if (strtoupper($allowableTags[$field]) == 'RAW') {
                         $output[$field] = $value;
                         continue;
@@ -110,6 +122,7 @@ class Validator
                         }
                     }
                 } else {
+                    // Sanitize all
                     $value = strip_tags($value);
                 }
 
@@ -173,6 +186,30 @@ class Validator
     public function sanitizeRichText($value)
     {
         return $this->sanitizeHTML($value, $this->allowableHTML);
+    }
+
+    /**
+     * Sanitize invalid characters in a URL.
+     *
+     * @param string $url
+     * @return string
+     */
+    public function sanitizeUrl($url)
+    {
+        if ($url === '') return $url;
+
+        // Replace and remove disallowed characters
+        $url = str_replace(' ', '%20', ltrim($url));
+        $url = str_replace('"', '%22', $url);
+	    $url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', $url);
+        $url = str_replace("'", '&#039;', $url);
+
+        // If there is no protocol, add a default one
+        if (mb_stripos($url, '://') === false) {
+            $url = 'https://'.$url;
+        }
+
+        return $url;
     }
 
     /**
