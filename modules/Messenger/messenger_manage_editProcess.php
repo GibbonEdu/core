@@ -89,6 +89,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         'confidential'      => $_POST['confidential'] ?? 'N',
         'includeSignature'  => $_POST['includeSignature'] ?? 'N',
         'timestamp'         => date('Y-m-d H:i:s'),
+        'enableSharingLink' => $_POST['enableSharingLink'] ?? 'N',
     ];
 
     if ($status == 'Draft') {

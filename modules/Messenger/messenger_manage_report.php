@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
@@ -90,8 +91,13 @@ else {
             };
 
             $sender = false;
-            if ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all') {
+            if ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all' || $values['enableSharingLink'] == 'Y')  {
                 $sender = true;
+            }
+
+            if ($highestAction != 'Manage Messages_all' && $values['gibbonPersonID'] != $session->get('gibbonPersonID') && $values['enableSharingLink'] == 'N') {
+                $page->addError(__("You do not have access to this action."));
+                return;
             }
 
             if ($values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
@@ -143,6 +149,13 @@ else {
                 $row = $form->addRow();
                     $row->addLabel('confirmationMode', __('Confirmation Required By'));
                     $row->addSelect('confirmationMode')->fromArray($confirmationOptions)->selected($confirmationMode);
+
+                if ($values['enableSharingLink'] == 'Y') {
+                    $linkURL = Url::fromModuleRoute('Messenger', 'messenger_manage_report')->withQueryParams(['gibbonMessengerID' => $gibbonMessengerID, 'sidebar' => true])->withAbsoluteUrl(true);
+                    $row = $form->addRow();
+                        $row->addLabel('sharingLink', __('Link of Send Report'))->description(__('Right Click and Copy the link to share it with other users.'));
+                        $row->addContent('<h4>'.Format::link($linkURL, __("Link")).'</h4>');
+                    }
 
                 echo $form->getOutput();
             }

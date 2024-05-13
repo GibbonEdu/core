@@ -236,6 +236,10 @@ class MessageForm extends Form
                 $row = $form->addRow()->addClass('emailReceipt');
                     $row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
                     $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'])->readonly($sent);
+
+                $row = $form->addRow()->addClass('emailReceipt');
+                    $row->addLabel('enableSharingLink', __('Enable Sharing Send Report'))->description(__('The Link of the Send Report can be shared to other users if turned on'));
+                    $row->addYesNoRadio('enableSharingLink')->required()->checked($values['enableSharingLink'] ?? 'N');
             }
         }
 
