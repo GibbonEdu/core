@@ -29,6 +29,9 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
+//Module includes
+include './moduleFunctions.php';
+
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_post.php&sidebar=true';
 $URLSend = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_send.php&sidebar=true';
@@ -81,6 +84,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         exit;
     }
 
+    // Check for any emojis in the message
+    $containsEmoji = hasEmojis($data['body']);
+
+    // Remove any emojis from the message
+    if($containsEmoji) { 
+        $data['body'] = removeEmoji($data['body']);
+    }
+
     // Insert the message and get the ID
     $gibbonMessengerID = $messengerGateway->insert($data);
     
@@ -106,6 +117,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             exit;
         }
 
+        if($containsEmoji) {
+            $URLSend .= '&return=warning3';
+        }
+        
         header("Location: {$URLSend}");
         exit;
     } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {

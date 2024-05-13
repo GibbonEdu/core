@@ -29,6 +29,9 @@ use Gibbon\Domain\Messenger\MessengerTargetGateway;
 
 require_once '../../gibbon.php';
 
+//Module includes
+include './moduleFunctions.php';
+
 $gibbonMessengerID = $_POST['gibbonMessengerID'] ?? '';
 $sendTestEmail = $_POST['sendTestEmail'] ?? '';
 $search = $_GET['search'] ?? '';
@@ -112,6 +115,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         exit;
     }
 
+    // Check for any emojis in the message
+    $containsEmoji = hasEmojis($data['body']);
+
+    // Remove any emojis from the message
+    if($containsEmoji) { 
+        $data['body'] = removeEmoji($data['body']);
+    }
+    
     // Write to database
     $updated = $messengerGateway->update($gibbonMessengerID, $data);
     if (!$updated) {
@@ -144,6 +155,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             exit;
         }
 
+        if($containsEmoji) {
+            $URLSend .= '&return=warning3';
+        }
+        
         header("Location: {$URLSend}");
         exit;
     } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {

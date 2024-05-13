@@ -823,7 +823,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
 
-        if (!isset($_GET['tab']) && !is_null($parentDashboardDefaultTabCount)) {
+        if (!isset($_GET['tab']) && !empty($parentDashboardDefaultTabCount)) {
             $defaultTab = $parentDashboardDefaultTabCount-1;
         }
         $return .= "<script type='text/javascript'>";
