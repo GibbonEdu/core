@@ -1,0 +1,77 @@
+{#<!--
+    Gibbon, Flexible & Open School System
+    Copyright (C) 2010, Ross Parker
+    
+    This is a Gibbon template file, written in HTML and Twig syntax.
+    For info about editing, see: https://twig.symfony.com/doc/2.x/
+    -->#}
+
+    <div class="scrollable-container overflow-auto" style="height: 300px;">
+
+        {% for post in stream %}
+
+            <div class="post flex bg-white p-2 sm:px-5 sm:py-3 font-sans border-b snap-start">
+                <section class="w-full">
+                    <div class="flex items-start mb-2">
+                        <aside class="w-8 sm:w-12 mr-3 sm:mr-4">
+                            <a class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-200 overflow-hidden flex items-start justify-center" href="{{ absoluteURL }}/index.php?q=/modules/Stream/stream.php">
+                                <img class="w-full" src="{{ absoluteURL }}/{{ post.image_240 }}" onerror="this.src='{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_125.jpg'" />
+                            </a>
+                        </aside>
+
+                        <header class="-mt-px mb-2 text-sm leading-none">
+                            <a class="font-semibold no-underline text-gray-800" href="{{ absoluteURL }}/index.php?q=/modules/Stream/stream.php">{{ formatUsing('name', post.title, post.preferredName, post.surname, 'Staff', false, true) }}</a>
+                                · 
+                            <span class="text-gray-600">{{ formatUsing('relativeTime', post.timestamp) }}</span>
+                        </header>
+                    </div>
+        
+                    <div class="text-gray-700 leading-tight text-sm sm:text-base sm:mr-3">
+                        {{ post.post|raw }}
+                    </div>
+
+                    {% set firstImage = null %}
+
+                    {% for attachment in post.attachments %}
+                        {% if attachment.type == 'Image' %}
+                            {% set firstImage = attachment %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if firstImage %}
+                        <div class="image-container mt-6 columns-1" style="column-fill: balance;">
+                            <a class="block w-full h-full" href="{{ absoluteURL }}/{{ firstImage.attachment }}" data-caption="{{ post.post|striptags }}">
+                                <img class="image-item w-full rounded-sm mb-3" src="{{ absoluteURL }}/{{ firstImage.attachment }}" data-caption="{{ post.post|striptags }}" style="break-inside: avoid;">
+                            </a>
+                        </div>
+                    {% endif %}
+        
+                    <footer></footer>
+                </section>
+            </div>
+        {% endfor %}
+    </div>
+   
+    <style>
+        .columns-1 {
+            columns: 1;
+        }
+    
+        @media (min-width:640px){
+            .sm\:columns-2 {
+                columns: 2;
+            }
+        }
+    
+        @media (min-width:1000px){
+            .lg\:columns-3 {
+                columns: 3;
+            }
+    
+            .lg\:columns-4 {
+                columns: 4;
+            }
+        }
+
+    </style>
+    
