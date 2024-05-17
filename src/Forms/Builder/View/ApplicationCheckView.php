@@ -52,7 +52,7 @@ class ApplicationCheckView extends AbstractFormView
         $col->addSubheading($this->getName());
 
         $list[__('Status')] = $data->getStatus();
-        $list[__('Date')] = Format::dateTimeIntlReadable($data->getResult('statusDate'));
+        $list[__('Date')] = Format::dateTimeIntl($data->getResult('statusDate'));
 
         $col->addContent(Format::listDetails($list));
 

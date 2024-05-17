@@ -45,7 +45,7 @@ config:
             &nbsp; {{ config.signatureTitle|default("Principal") }}
         </td>
         <td class="footer border" style="width:25%;font-size: 9.5pt;line-height:4.2;">
-            &nbsp; {{ formatUsing('dateIntlReadable', reportingCycle.dateEnd) }}
+            &nbsp; {{ formatUsing('dateIntl', reportingCycle.dateEnd) }}
         </td>
     </tr>
 </table>

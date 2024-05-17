@@ -129,7 +129,7 @@ if (!$proceed) {
         });
         $table->addColumn('formName', __('Application Form'));
         $table->addColumn('status', __('Status'))->translatable();
-        $table->addColumn('timestampCreated', __('Date'))->width('20%')->format(Format::using('dateTimeIntlReadable', 'timestampCreated'));
+        $table->addColumn('timestampCreated', __('Date'))->width('20%')->format(Format::using('dateTimeIntl', 'timestampCreated'));
 
         $table->modifyRows(function ($values, $row) {
             if ($values['status'] == 'Incomplete') $row->addClass('warning');

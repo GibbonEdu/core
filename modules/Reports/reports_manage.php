@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
         });
 
     $table->addColumn('accessDate', __('Go Live'))
-        ->format(Format::using('dateTimeIntlReadable', 'accessDate'));
+        ->format(Format::using('dateTimeIntl', 'accessDate'));
 
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)

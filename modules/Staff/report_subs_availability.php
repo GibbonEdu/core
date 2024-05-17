@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
     $table->setTitle(__('Substitute Availability'));
-    $table->setDescription(Format::dateIntlReadable($dateObject->format('Y-m-d'), 'EEEE, MMM d'));
+    $table->setDescription(Format::dateIntl($dateObject->format('Y-m-d'), Format::FULL));
 
     $table->addHeaderAction('calendar', __('Weekly').' '.__('View'))
         ->setIcon('planner')

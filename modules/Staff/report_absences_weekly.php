@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
         $table = DataTable::create('staffAbsences'.$date->format('D'));
         $table->setTitle(__(Format::dayOfWeekName($date->format('Y-m-d'))));
-        $table->setDescription(Format::dateIntlReadable($date->format('Y-m-d')));
+        $table->setDescription(Format::dateIntl($date->format('Y-m-d')));
 
         $canView = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any');
 

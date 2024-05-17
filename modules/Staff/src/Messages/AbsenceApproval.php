@@ -60,7 +60,7 @@ class AbsenceApproval extends Message
     public function getDetails() : array
     {
         return [
-            __($this->absence['status'])  => Format::dateTimeIntlReadable($this->absence['timestampApproval']),
+            __($this->absence['status'])  => Format::dateTimeIntl($this->absence['timestampApproval']),
             __('Reply') => $this->absence['notesApproval'],
         ];
     }

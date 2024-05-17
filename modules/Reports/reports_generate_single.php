@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway) {
             if ($report['archive']) {
                 $tag = '<span class="tag ml-2 '.($report['archive']['status'] == 'Final' ? 'success' : 'dull').'">'.__($report['archive']['status']).'</span>';
-                $title = Format::dateTimeIntlReadable($report['archive']['timestampModified']);
+                $title = Format::dateTimeIntl($report['archive']['timestampModified']);
                 $url = './modules/Reports/archive_byStudent_download.php?gibbonReportArchiveEntryID='.$report['archive']['gibbonReportArchiveEntryID'].'&gibbonPersonID='.$report['gibbonPersonID'];
                 return Format::link($url, $title).$tag;
             }

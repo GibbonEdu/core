@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
                 if ($archive) {
                     $tag = '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
                     $url = './modules/Reports/archive_byStudent_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'].'&gibbonPersonID='.$report['gibbonPersonID'];
-                    $title = Format::dateTimeIntlReadable($archive['timestampModified']);
+                    $title = Format::dateTimeIntl($archive['timestampModified']);
                     $output .= Format::link($url, $title).$tag;
                 }
 
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
                 if ($archive) {
                     $tag = '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
                     $url = './modules/Reports/archive_byReport_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'];
-                    $title = Format::dateTimeIntlReadable($archive['timestampModified']);
+                    $title = Format::dateTimeIntl($archive['timestampModified']);
                     return Format::link($url, $title).$tag;
                 }
 

@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
                 $tag = '<span class="tag success ml-2">'.__('Complete').'</span>';
                 $tag .= '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
                 $url = './modules/Reports/archive_byReport_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'];
-                $title = Format::dateTimeIntlReadable($archive['timestampModified']);
+                $title = Format::dateTimeIntl($archive['timestampModified']);
                 echo Format::link($url, $title).$tag;
             }
 

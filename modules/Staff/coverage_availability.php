@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $table->addMetaData('bulkActions', $col);
 
     $table->addColumn('date', __('Date'))
-        ->format(Format::using('dateIntlReadable', 'date'));
+        ->format(Format::using('dateIntl', 'date'));
 
     $table->addColumn('timeStart', __('Time'))->format(function ($date) {
         if ($date['allDay'] == 'N') {

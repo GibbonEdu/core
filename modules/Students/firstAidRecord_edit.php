@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             if (!empty($values['followUp'])) {
                 $row = $form->addRow();
                     $column = $row->addColumn();
-                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateIntlReadable($values['timestamp'], 'HH:mm, MMM dd yyyy')]));
+                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateTimeIntl($values['timestamp'])]));
                     $column->addContent($values['followUp'])->setClass('fullWidth');
             }
 

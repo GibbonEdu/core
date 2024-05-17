@@ -99,7 +99,7 @@ class CoverageDates
         $table->addMetaData('blankSlate', __('Coverage is required but has not been requested yet.'));
 
         $table->addColumn('date', __('Date'))
-            ->format(Format::using('dateIntlReadable', 'date'))
+            ->format(Format::using('dateIntl', 'date'))
             ->formatDetails(function ($coverage) {
                 return Format::small(Format::dayOfWeekName($coverage['date']));
             });

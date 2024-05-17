@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
         $table->addColumn('timestampModified', __('Last Created'))
             ->format(function ($report) {
                 $tag = '<span class="tag ml-2 success">'.__('Final').'</span>';
-                return Format::dateTimeIntlReadable($report['timestampModified']).$tag;
+                return Format::dateTimeIntl($report['timestampModified']).$tag;
             });
 
         $table->addActionColumn()
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
 
                 if ($archive) {
                     $tag = '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
-                    return Format::dateTimeIntlReadable($archive['timestampModified']).$tag;
+                    return Format::dateTimeIntl($archive['timestampModified']).$tag;
                 }
 
                 return '';

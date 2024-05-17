@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         if ($coverageByTimetable) {
             $table->addColumn('date', __('Date'))
-                ->format(Format::using('dateIntlReadable', 'date'))
+                ->format(Format::using('dateIntl', 'date'))
                 ->formatDetails(function ($coverage) {
                     return Format::small(Format::dayOfWeekName($coverage['date']));
                 });

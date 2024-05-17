@@ -221,7 +221,7 @@ class CoverageRequestForm
         });
 
         $table->addColumn('dateLabel', __('Date'))
-            ->format(Format::using('dateIntlReadable', 'date'))
+            ->format(Format::using('dateIntl', 'date'))
             ->formatDetails(function ($coverage) {
                 return Format::small(Format::dayOfWeekName($coverage['date']));
             });

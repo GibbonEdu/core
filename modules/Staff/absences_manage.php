@@ -43,6 +43,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
+
+
+    // $today = date('Y-m-d', strtotime('03/02/2024'));
+
+    // echo Format::dateIntl($today, Format::FULL).'<br/>';
+    // echo Format::dateIntl($today, Format::LONG).'<br/>';
+    // echo Format::dateIntl($today, Format::MEDIUM).'<br/>';
+    // echo Format::dateIntl($today, Format::SHORT).'<br/>';
+
+    // echo Format::dateIntl($today, Format::FULL_NO_YEAR).'<br/>';
+    // echo Format::dateIntl($today, Format::LONG_NO_YEAR).'<br/>';
+    // echo Format::dateIntl($today, Format::MEDIUM_NO_YEAR).'<br/>';
+    // echo Format::dateIntl($today, Format::SHORT_NO_YEAR).'<br/>';
+
     
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));

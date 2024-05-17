@@ -102,10 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $output = '';
         if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2br($person['description']).'<br/><br/>';
         if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2br($person['actionTaken']).'<br/><br/>';
-        if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateIntlReadable($person['timestamp'], 'HH:mm, MMM dd yyyy')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
+        if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeIntl($person['timestamp'])]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
         $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
         foreach ($resultLog AS $rowLog) {
-            $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateIntlReadable($rowLog['timestamp'], 'HH:mm, MMM dd yyyy')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
+            $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeIntl($rowLog['timestamp'])]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
         }
 
         return $output;
