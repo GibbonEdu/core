@@ -291,17 +291,26 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             }
         }
 
+        $session = $this->session;
         //Show custom sidebar content on homepage for logged in users
-        if ($this->session->get('address') == '' and $this->session->exists('username')) {
-            if (!$this->session->exists('index_customSidebar.php')) {
+        if ($session->get('address') == '' and  $session->exists('username')) {
+            $cacheLoad = false;
+            $caching = $this->getContainer()->get('config')->getConfig('caching');
+
+            if (!empty($caching) && is_numeric($caching)) {
+                $cacheLoad = $session->get('pageLoads') % intval($caching) == 0;
+            }
+
+            if ($cacheLoad || !$session->exists('index_customSidebar.php')) {
                 if (is_file('./index_customSidebar.php')) {
-                    $this->session->set('index_customSidebar.php', include './index_customSidebar.php');
+                    $session->set('index_customSidebar.php', include './index_customSidebar.php');
                 } else {
-                    $this->session->set('index_customSidebar.php', null);
+                    $session->set('index_customSidebar.php', null);
                 }
             }
-            if ($this->session->exists('index_customSidebar.php')) {
-                echo $this->session->get('index_customSidebar.php');
+
+            if ($session->exists('index_customSidebar.php')) {
+                echo  $session->get('index_customSidebar.php');              
             }
         }
 
