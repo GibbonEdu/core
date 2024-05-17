@@ -126,22 +126,27 @@ class Format
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
      * @param DateTime|string $dateString  The date string to format.
-     * @param string          $pattern     (Optional) The pattern string for Unicode formatting suppored by
+     * @param string          $pattern     (Optional) The pattern string for Unicode formatting supported by
      *                                     IntlDateFormatter::setPattern().
      *
      *                                     See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
      *                                     Default: 'MMM d, Y'
+     * @param string          $fallbackPattern (Optional) A fallback pattern string to use for the date using 
+     *                                     PHP's DateTime library if intl is not available.
+     *                                     Default: 'M d, Y'
      *
      * @return string  The formatted date string.
      */
-    public static function dateIntlReadable($dateString, $pattern = 'MMM d, yyyy'): string
+    public static function dateIntlReadable($dateString, $pattern = 'MMM d, yyyy', $fallbackPattern = 'M d, Y'): string
     {
         if (empty($dateString)) {
             return '';
         }
+
         if (!static::$intlFormatterAvailable) {
-            throw new \Exception('IntlDateFormatter not available.');
+            return static::date($dateString, $fallbackPattern);
         }
+
         $formatter = new \IntlDateFormatter(
             static::$settings['code'],
             \IntlDateFormatter::FULL,
@@ -184,7 +189,7 @@ class Format
      *
      * @return string  The formatted date string.
      */
-    public static function dateTimeIntlReadable($dateString, $pattern = 'MMM d, yyyy HH:mm'): string
+    public static function dateTimeIntlReadable($dateString, $pattern = 'MMM d, yyyy HH:mm', $fallbackPattern = 'M d, Y H:i:s'): string
     {
         return static::dateIntlReadable($dateString, $pattern);
     }
@@ -326,7 +331,7 @@ class Format
                 break;
             default:
                 $timeDifference = 0;
-                $time = static::dateReadable($dateString);
+                $time = static::dateIntlReadable($dateString);
         }
 
         if ($relativeString && $timeDifference > 0) {
