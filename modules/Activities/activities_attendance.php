@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
             $dateLabel = $col->addContent(
                 Format::dayOfWeekName($sessionDate, true) . '<br>' .
-                Format::dateIntl($sessionDate, Format::MEDIUM_NO_YEAR)
+                Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR)
             )->addClass('w-10 mx-auto whitespace-nowrap');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {

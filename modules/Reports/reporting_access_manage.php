@@ -93,10 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
         });
     $table->addColumn('roleName', __('Role'))->translatable();
     $table->addColumn('scopeName', __('Scope'));
-    $table->addColumn('dateStart', __('Start Date'))->format(Format::using('dateIntl', 'dateStart'));
-    $table->addColumn('dateEnd', __('End Date'))->format(Format::using('dateIntl', 'dateEnd'))
+    $table->addColumn('dateStart', __('Start Date'))->format(Format::using('dateReadable', 'dateStart'));
+    $table->addColumn('dateEnd', __('End Date'))->format(Format::using('dateReadable', 'dateEnd'))
         ->format(function ($values) {
-            $output = Format::dateIntl($values['dateEnd']);
+            $output = Format::dateReadable($values['dateEnd']);
             if (date('Y-m-d') > $values['dateEnd']) {
                 $output .= Format::tag(__('Ended'), 'dull ml-2');
             }

@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         ->getOutput();
 
     echo '<h2>'.__(Format::dayOfWeekName($date->format('Y-m-d'))).'</h2>';
-    echo '<p>'.Format::dateIntl($date->format('Y-m-d')).'</p>';
+    echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
 
     foreach ($times as $groupBy => $timeSlot) {
 

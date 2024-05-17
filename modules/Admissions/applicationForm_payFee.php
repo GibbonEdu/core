@@ -135,7 +135,7 @@ if (!$proceed) {
 
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
-            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeIntl($payment['timestamp'] ?? ''));
+            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));
 
             $row = $form->addRow();
             $row->addLabel('gatewayLabel', __('Payment Gateway'));
@@ -180,7 +180,7 @@ if (!$proceed) {
 
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
-            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeIntl($payment['timestamp'] ?? ''));
+            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));
 
             $row = $form->addRow();
             $row->addLabel('gatewayLabel', __('Payment Gateway'));

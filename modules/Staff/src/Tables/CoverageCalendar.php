@@ -107,7 +107,7 @@ class CoverageCalendar
 
                     $url = 'fullscreen.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffCoverageID='.$coverage['gibbonStaffCoverageID'].'&width=800&height=550';
 
-                    $params['title'] = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateIntl($day['date'], Format::MEDIUM);
+                    $params['title'] = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     $params['class'] = '';
                     if ($coverage['allDay'] == 'N') {
                         $params['class'] = $coverage['timeStart'] < '12:00:00' ? 'half-day-am' : 'half-day-pm';

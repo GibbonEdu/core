@@ -88,7 +88,7 @@ class AbsenceCalendar
                     if (empty($day) || $day['count'] <= 0) return '';
 
                     $url = 'fullscreen.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$day['absence']['gibbonStaffAbsenceID'].'&width=800&height=550';
-                    $title = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateIntl($day['date'], Format::MEDIUM);
+                    $title = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     $title .= '<br/>'.$day['absence']['type'];
                     $classes = ['thickbox'];
                     if ($day['absence']['allDay'] == 'N') {

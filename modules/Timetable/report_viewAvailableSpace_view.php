@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     // DATA TABLE
     $table = DataTable::create('facilityList');
-    $table->setTitle(Format::dateIntl($date). ' - '. $period);
+    $table->setTitle(Format::dateReadable($date). ' - '. $period);
     $table->setDescription(__('View Available Facilities'));
 
     $table->addColumn('name', __('Name'))

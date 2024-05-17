@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
     $table->setTitle(__('View'));
 
     $table->addColumn('reportIdentifier', __('Report'));
-    $table->addColumn('timestampModified', __('Date'))->format(Format::using('dateIntl', 'timestampModified'));
+    $table->addColumn('timestampModified', __('Date'))->format(Format::using('dateReadable', 'timestampModified'));
     $table->addColumn('readCount', __('Read'))
         ->width('30%')
         ->format(function ($report) use (&$page) {

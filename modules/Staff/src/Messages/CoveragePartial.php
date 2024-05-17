@@ -34,7 +34,7 @@ class CoveragePartial extends Message
         $this->coverage = $coverage;
 
         $this->uncoveredDates = array_map(function ($date) {
-            return Format::dateIntl($date, Format::MEDIUM_NO_YEAR);
+            return Format::dateReadable($date, Format::MEDIUM_NO_YEAR);
         }, $uncoveredDates);
     }
 

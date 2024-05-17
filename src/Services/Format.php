@@ -150,25 +150,24 @@ class Format
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
      * @param DateTime|string $dateString   The date string to format.
-     * @param int|string    $dateFormat     (Optional) An int to specify the date format used with IntlDateFormatter
+     * @param int|string     $dateFormat    (Optional) An int to specify the date format used with IntlDateFormatter
      *                                      If a string is passed, it will return a default format.
-     *
      *                                      See: https://www.php.net/manual/en/class.intldateformatter.php
      *                                      See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
      *                                      Default: \IntlDateFormatter::LONG
-     * @param int|string    $timeFormat     (Optional) An int to specify the time format used with IntlDateFormatter
+     * @param int|string     $timeFormat    (Optional) An int to specify the time format used with IntlDateFormatter
      *                                      Default: \IntlDateFormatter::NONE
      *
      * @return string  The formatted date string.
      */
-    public static function dateIntl($dateString, $dateFormat = null, $timeFormat = null) : string
+    public static function dateReadable($dateString, $dateFormat = null, $timeFormat = null) : string
     {
         if (empty($dateString)) {
             return '';
         }
 
         if (!static::$intlFormatterAvailable) {
-            return static::date($dateString, static::dateReadableFallback($dateFormat, $timeFormat));
+            return static::date($dateString, static::getDateFallback($dateFormat, $timeFormat));
         }
 
         $formatter = new \IntlDateFormatter(
@@ -177,7 +176,7 @@ class Format
             is_int($timeFormat) ? $timeFormat : \IntlDateFormatter::NONE,
             null,
             null,
-            static::dateReadablePattern($dateFormat)
+            static::getDatePattern($dateFormat)
         );
 
         return mb_convert_case(
@@ -186,7 +185,26 @@ class Format
         );
     }
 
-    protected static function dateReadablePattern($dateFormat = null)
+    /**
+     * A shortcut for formatting a YYYY-MM-DD date as a readable string with month names and times.
+     *
+     * @param DateTime|string $dateString  The date string to format.
+
+     * @return string  The formatted date string.
+     */
+    public static function dateTimeReadable($dateString) : string
+    {
+        return static::dateReadable($dateString, static::LONG, static::SHORT);
+    }
+
+    /**
+     * Gets a IntlDateFormatter pattern string for a given format constant.
+     * Extends the IntlDateFormatter options by adding NO_YEAR options.
+     *
+     * @param string|int    $dateFormat
+     * @return string       The IntlDateFormatter pattern string.
+     */
+    protected static function getDatePattern($dateFormat = null)
     {
         if (is_string($dateFormat) && !empty($dateFormat)) {
             return $dateFormat;
@@ -205,7 +223,15 @@ class Format
         return null;
     }
 
-    protected static function dateReadableFallback($dateFormat = null, $timeFormat = null)
+    /**
+     * Gets a generic format for DateTime classes, to be used as a fallback
+     * when IntlDateFormatter is not avaialble.
+     *
+     * @param string|int    $dateFormat
+     * @param string|int    $timeFormat
+     * @return string       The DateTime format string.
+     */
+    protected static function getDateFallback($dateFormat = null, $timeFormat = null)
     {
         switch ($dateFormat) {
             case static::FULL:
@@ -231,55 +257,6 @@ class Format
         }
 
         return $format;
-    }
-
-    /**
-     * Formats a YYYY-MM-DD date as a readable string with month names.
-     *
-     * @deprecated v27.0.00 Use dateIntl() instead.
-     * @param DateTime|string $dateString
-     * @return string
-     */
-    public static function dateReadable($dateString, $format = '%b %e, %Y')
-    {
-        if (empty($dateString)) {
-            return '';
-        }
-        $date = static::createDateTime($dateString);
-        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
-    }
-
-    /**
-     * Formats a YYYY-MM-DD date as a readable string with month names and times.
-     *
-     * @param DateTime|string $dateString  The date string to format.
-     * @param string          $pattern     (Optional) The pattern string for Unicode formatting suppored by
-     *                                     IntlDateFormatter::setPattern().
-     *
-     *                                     See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
-     *                                     Default: 'MMM d, Y'
-     *
-     * @return string  The formatted date string.
-     */
-    public static function dateTimeIntl($dateString, $dateFormat = null, $timeFormat = null): string
-    {
-        return static::dateIntl($dateString, $dateFormat ?? static::LONG, $timeFormat ?? static::SHORT);
-    }
-
-    /**
-     * Formats a YYYY-MM-DD date as a readable string with month names and times.
-     *
-     * @deprecated v27.0.00 Use dateTimeIntl() instead.
-     * @param DateTime|string $dateString
-     * @return string
-     */
-    public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
-    {
-        if (empty($dateString)) {
-            return '';
-        }
-        $date = static::createDateTime($dateString);
-        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
 
     /**
@@ -403,7 +380,7 @@ class Format
                 break;
             default:
                 $timeDifference = 0;
-                $time = static::dateIntl($dateString);
+                $time = static::dateReadable($dateString);
         }
 
         if ($relativeString && $timeDifference > 0) {
