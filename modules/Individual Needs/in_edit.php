@@ -24,10 +24,13 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\IndividualNeeds\INArchiveGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 //Module includes
@@ -58,16 +61,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 ->add(__('Edit Individual Needs Record'));
         }
 
+            $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
 
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.name AS yearGroup, gibbonFormGroup.nameShort AS formGroup, dateStart, dateEnd, image_240 FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $student = $result->fetch();
+            $student = $result;
 
             $search = $_GET['search'] ?? null;
             $allStudents = $_GET['allStudents'] ?? null;
@@ -98,15 +97,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
 
             // Grab IEP data
-            $data = array('gibbonPersonID' => $gibbonPersonID);
-            $sql = "SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID";
-            $result = $pdo->executeQuery($data, $sql);
+            $result = $container->get(INGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID]);
             $IEP = ($result->rowCount() > 0)? $result->fetch() : array();
 
             // Grab archived data
-            $data = array('gibbonPersonID' => $gibbonPersonID);
-            $sql = "SELECT gibbonINArchiveID as groupBy, gibbonINArchive.* FROM gibbonINArchive WHERE gibbonPersonID=:gibbonPersonID ORDER BY archiveTimestamp DESC";
-            $result = $pdo->executeQuery($data, $sql);
+            $result = $container->get(INArchiveGateway::class)->selectINArchivesByPersonID($gibbonPersonID);
             $archivedIEPs = ($result->rowCount() > 0)? $result->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE) : array();
 
             $gibbonINArchiveID = !empty($_POST['gibbonINArchiveID'])? $_POST['gibbonINArchiveID'] : '';

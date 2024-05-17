@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+
 include '../../gibbon.php';
 
 $gibbonPersonIDAssistant = $_GET['gibbonPersonIDAssistant'] ?? '';
@@ -43,10 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 header("Location: {$URL}");
             } else {
                 try {
-                    $data = array('gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDAssistant' => $gibbonPersonIDAssistant);
-                    $sql = 'SELECT * FROM gibbonINAssistant WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDAssistant=:gibbonPersonIDAssistant';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(INAssistantGateway::class)->selectBy(['gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDAssistant' => $gibbonPersonIDAssistant]);
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");

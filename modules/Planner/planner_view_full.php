@@ -19,19 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
-use Gibbon\Domain\System\HookGateway;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
-use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
-use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -104,11 +105,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     echo __('Your request failed because some required values were not unique.');
                     echo '</div>';
                 } else {
-
-                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
+                    
+                        $resultChild = $container->get(FamilyChildGateway::class)->selectChildByFamilyAdultID($gibbonPersonID, $session->get('gibbonPersonID'));
 
                     if ($resultChild->rowCount() < 1) {
                         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
