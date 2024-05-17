@@ -194,7 +194,7 @@ class Format
      */
     public static function dateTimeReadable($dateString) : string
     {
-        return static::dateReadable($dateString, static::LONG, static::SHORT);
+        return static::dateReadable($dateString, static::MEDIUM, static::SHORT);
     }
 
     /**
