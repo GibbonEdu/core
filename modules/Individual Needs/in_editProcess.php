@@ -19,10 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Data\Validator;
+use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 require_once '../../gibbon.php';
 
@@ -50,22 +53,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     } else {
         //Check access to specified student
         try {
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, dateStart, dateEnd, gibbonYearGroup.gibbonYearGroupID FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
+
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
             $partialFail = false;
-            $row = $result->fetch();
+            $row = $result;
 
             if ($highestAction == 'Individual Needs Records_viewEdit') {
                 //UPDATE STATUS
@@ -101,10 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Individual Needs', [], $customRequireFail);
 
                 try {
-                    $data = array('gibbonPersonID' => $gibbonPersonID);
-                    $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(INGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID]);
+                    
                 } catch (PDOException $e) {
                     $partialFail = true;
                 }
@@ -135,10 +134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     foreach ($staff as $t) {
                         //Check to see if person is already registered as an assistant
                         try {
-                            $dataGuest = array('gibbonPersonIDAssistant' => $t, 'gibbonPersonIDStudent' => $gibbonPersonID);
-                            $sqlGuest = 'SELECT * FROM gibbonINAssistant WHERE gibbonPersonIDAssistant=:gibbonPersonIDAssistant AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
-                            $resultGuest = $connection2->prepare($sqlGuest);
-                            $resultGuest->execute($dataGuest);
+                            $resultGuest = $container->get(INAssistantGateway::class)->selectBy(['gibbonPersonIDAssistant' => $t, 'gibbonPersonIDStudent' => $gibbonPersonID]);
+
                         } catch (PDOException $e) {
                             $partialFail = true;
                         }
@@ -158,10 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 //UPDATE IEP
                 $strategies = $_POST['strategies'] ?? '';
                 try {
-                    $data = array('gibbonPersonID' => $gibbonPersonID);
-                    $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(INGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID]);
+                    
                 } catch (PDOException $e) {
                     $partialFail = true;
                 }

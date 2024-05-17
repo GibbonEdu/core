@@ -45,5 +45,13 @@ class INArchiveGateway extends QueryableGateway implements ScrubbableGateway
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['strategies' => '','targets' => '','notes' => '','descriptors' => ''];
+
+    public function selectINArchivesByPersonID($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonINArchiveID as groupBy, gibbonINArchive.* FROM gibbonINArchive WHERE gibbonPersonID=:gibbonPersonID ORDER BY archiveTimestamp DESC";
+
+        return $this->db()->select($sql, $data);
+    }
     
 }

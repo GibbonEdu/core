@@ -20,9 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\IndividualNeeds\INGateway;
 
 //Module includes
@@ -63,15 +64,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     $form->addHiddenValue('address', $session->get('address'));
 
     //SELECT FROM ARRAY
-    $sql = "SELECT gibbonINDescriptorID as value, name FROM gibbonINDescriptor ORDER BY sequenceNumber";
+    $result = $container->get(INGateway::class)->selecINDescriptor();
+
     $row = $form->addRow();
     	$row->addLabel('gibbonINDescriptorID', __('Descriptor'));
-        $row->addSelect('gibbonINDescriptorID')->fromQuery($pdo, $sql)->selected($gibbonINDescriptorID)->placeholder();
+        $row->addSelect('gibbonINDescriptorID')->fromResults($result)->selected($gibbonINDescriptorID)->placeholder();
 
-    $sql = "SELECT gibbonAlertLevelID as value, name FROM gibbonAlertLevel ORDER BY sequenceNumber";
+    $result = $container->get(AlertLevelGateway::class)->selectAlertLevels();
+
     $row = $form->addRow();
         $row->addLabel('gibbonAlertLevelID', __('Alert Level'));
-        $row->addSelect('gibbonAlertLevelID')->fromQuery($pdo, $sql)->selected($gibbonAlertLevelID)->placeholder();
+        $row->addSelect('gibbonAlertLevelID')->fromResults($result)->selected($gibbonAlertLevelID)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
