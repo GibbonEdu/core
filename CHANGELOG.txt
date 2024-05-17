@@ -113,6 +113,7 @@ v27.0.00
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
         System Admin: fixed category and module for Student Enrolment importer
+        User Admin: fixed HTML being removed from Language Options blurb in Student Application Fomrm
 
     Deprecations
         System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated
