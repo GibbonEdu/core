@@ -149,13 +149,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         }
 
         if (!isSchoolOpen($guid, $date->format('Y-m-d'), $connection2)) {
-            echo '<h2>'.__(Format::dateIntlReadable($date->format('Y-m-d'), 'EEEE')).'</h2>';
+            echo '<h2>'.__(Format::dayOfWeekName($date->format('Y-m-d'))).'</h2>';
             echo Format::alert(__('School is closed on the specified day.'));
             continue;
         }
 
         $table = DataTable::create('staffAbsences'.$date->format('D'));
-        $table->setTitle(__(Format::dateIntlReadable($date->format('Y-m-d'), 'EEEE')));
+        $table->setTitle(__(Format::dayOfWeekName($date->format('Y-m-d'))));
         $table->setDescription(Format::dateIntlReadable($date->format('Y-m-d')));
 
         $canView = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any');

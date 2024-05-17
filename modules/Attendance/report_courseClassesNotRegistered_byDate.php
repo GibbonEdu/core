@@ -239,12 +239,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
-                                    echo Format::dateIntlReadable($date, 'dd').'<br/>';
-                                    echo "<span>".Format::dateIntlReadable($date, 'MMM').'</span>';
+                                    echo Format::date($date, 'd').'<br/>';
+                                    echo "<span>".Format::monthName($date, true).'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo Format::dateIntlReadable($date, 'dd').'<br/>';
-                                    echo "<span>".Format::dateIntlReadable($date, 'MMM').'</span>';
+                                    echo Format::date($date, 'd').'<br/>';
+                                    echo "<span>".Format::monthName($date, true).'</span>';
                                 }
                                 echo '</td>';
 

@@ -250,8 +250,8 @@ class AttendanceView
 
                 $output .= '<td class="' . $class . '">';
                 $output .= '<a href="' . $link . '" title="' . $linkTitle . '">';
-                $output .= Format::dateIntlReadable($currentDay, 'dd') . '<br/>';
-                $output .= '<span>' . Format::dateIntlReadable($currentDay, 'MMM') . '</span>';
+                $output .= Format::date($currentDay, 'd') . '<br/>';
+                $output .= '<span>' . Format::monthName($currentDay, true) . '</span>';
                 $output .= '</a>';
                 $output .= '</td>';
             }

@@ -79,7 +79,7 @@ class CoverageCalendar
             }
 
             $calendar[] = [
-                'name'  => Format::dateIntlReadable($month ,'MMM'),
+                'name'  => Format::monthName($month, true),
                 'days'  => $days,
             ];
         }
@@ -107,7 +107,7 @@ class CoverageCalendar
 
                     $url = 'fullscreen.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffCoverageID='.$coverage['gibbonStaffCoverageID'].'&width=800&height=550';
 
-                    $params['title'] = Format::dateIntlReadable($day['date'], 'EEEE').'<br/>'.Format::dateIntlReadable($day['date'], 'MMM d, yyyy');
+                    $params['title'] = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateIntlReadable($day['date'], 'MMM d, yyyy');
                     $params['class'] = '';
                     if ($coverage['allDay'] == 'N') {
                         $params['class'] = $coverage['timeStart'] < '12:00:00' ? 'half-day-am' : 'half-day-pm';

@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             $table->addColumn('date', __('Date'))
                 ->format(Format::using('dateIntlReadable', 'date'))
                 ->formatDetails(function ($coverage) {
-                    return Format::small(Format::dateIntlReadable($coverage['date'], 'EEEE'));
+                    return Format::small(Format::dayOfWeekName($coverage['date']));
                 });
 
             $table->addColumn('period', __('Period'))

@@ -38,7 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $date = isset($_REQUEST['date'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['date']) :new DateTimeImmutable();
+    
+    $date = !empty($_REQUEST['date'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['date']) : new DateTimeImmutable();
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         ->addClass('thickbox float-right mt-8')
         ->getOutput();
 
-    echo '<h2>'.__(Format::dateIntlReadable($date->format('Y-m-d'), 'EEEE')).'</h2>';
+    echo '<h2>'.__(Format::dayOfWeekName($date->format('Y-m-d'))).'</h2>';
     echo '<p>'.Format::dateIntlReadable($date->format('Y-m-d')).'</p>';
 
     foreach ($times as $groupBy => $timeSlot) {

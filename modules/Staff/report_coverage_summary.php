@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         $count = 0;
         foreach ($dateRange as $monthDate) {
-            $table->addColumn('month'.$count, Format::dateIntlReadable($monthDate, 'MMM'))->description(Format::dateIntlReadable($monthDate, 'yyyy'))
+            $table->addColumn('month'.$count, Format::monthName($monthDate, true))->description(Format::dateIntlReadable($monthDate, 'yyyy'))
                 ->notSortable()
                 ->format(function ($sub) use ($monthDate) {
                     $sum =  array_sum($sub['coverage'][$monthDate->format('Y-m')] ?? []);

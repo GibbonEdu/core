@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
             $dateLabel = $col->addContent(
-                Format::dateIntlReadable($sessionDate, 'EEE') . '<br>' .
+                Format::dayOfWeekName($sessionDate, true) . '<br>' .
                 Format::dateIntlReadable($sessionDate, 'MMM d')
             )->addClass('w-10 mx-auto whitespace-nowrap');
 

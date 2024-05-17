@@ -147,16 +147,8 @@ class Format
             return static::date($dateString, $fallbackPattern);
         }
 
-        $formatter = new \IntlDateFormatter(
-            static::$settings['code'],
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            null,
-            null,
-            $pattern,
-        );
         return mb_convert_case(
-            $formatter->format(static::createDateTime($dateString)),
+            static::getIntlFormatter($pattern)->format(static::createDateTime($dateString)),
             MB_CASE_TITLE,
         );
     }
@@ -243,7 +235,7 @@ class Format
         $endTime = $endDate->getTimestamp();
 
         if (static::$intlFormatterAvailable) {
-            $formatter = new \IntlDateFormatter(null, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
+            $formatter = static::getIntlFormatter();
 
             if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
                 $formatter->setPattern('MMM d, yyyy');
@@ -1072,6 +1064,10 @@ class Format
             return $dateOriginal;
         }
 
+        if (is_int($dateOriginal)) {
+            $expectedFormat = 'U';
+        }
+
         return !empty($expectedFormat)
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
@@ -1081,27 +1077,17 @@ class Format
      * Format a given datetime / timestamp into localized day of week name.
      *
      * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     * @param bool $short
      *
      * @return string|false
      */
-    public static function dayOfWeekName($datetime)
+    public static function dayOfWeekName($datetime, $short = false)
     {
         if (!static::$intlFormatterAvailable) {
-            return DateTime::createFromFormat('D', $datetime);
+            return static::createDateTime($datetime)->format($short ? 'D' : 'l');
         }
 
-        static $formatter;
-        if (!isset($formatter)) {
-            $formatter = new \IntlDateFormatter(
-                null,
-                \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                null,
-                null,
-                'EEEE'
-            );
-        }
-        return $formatter->format($datetime);
+        return static::getIntlFormatter($short ? 'EEE' : 'EEEE')->format(static::createDateTime($datetime));
     }
 
     /**
@@ -1109,27 +1095,17 @@ class Format
      * (i.e. from Jan to Sep).
      *
      * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     * @param bool $short
      *
      * @return string|false
      */
-    public static function monthName($datetime)
+    public static function monthName($datetime, $short = false)
     {
         if (!static::$intlFormatterAvailable) {
-            return DateTime::createFromFormat('M', $datetime);
+            return static::createDateTime($datetime)->format($short ? 'M' : 'F');
         }
 
-        static $formatter;
-        if (!isset($formatter)) {
-            $formatter = new \IntlDateFormatter(
-                null,
-                \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                null,
-                null,
-                'MMM'
-            );
-        }
-        return $formatter->format($datetime);
+        return static::getIntlFormatter($short ? 'MMM' : 'MMMM')->format(static::createDateTime($datetime));
     }
 
     /**
@@ -1143,20 +1119,26 @@ class Format
     public static function monthDigits($datetime)
     {
         if (!static::$intlFormatterAvailable) {
-            return DateTime::createFromFormat('m', $datetime);
+            return static::createDateTime($datetime)->format('m');
         }
 
+        return static::getIntlFormatter('MM')->format(static::createDateTime($datetime));
+    }
+
+    protected static function getIntlFormatter($pattern = null)
+    {
         static $formatter;
+
         if (!isset($formatter)) {
             $formatter = new \IntlDateFormatter(
-                null,
+                static::$settings['code'],
                 \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                null,
-                null,
-                'MM'
+                \IntlDateFormatter::FULL
             );
         }
-        return $formatter->format($datetime);
+
+        $formatter->setPattern($pattern);
+
+        return $formatter;
     }
 }

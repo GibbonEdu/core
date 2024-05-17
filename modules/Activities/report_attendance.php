@@ -219,12 +219,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
                 printf("<span title='%s'>%s <br/> %s</span><br/>&nbsp;<br/>",
                     $sessionAttendanceData[$sessionDate]['info'],
-                    Format::dateIntlReadable($sessionDate, 'EEE'),
+                    Format::dayOfWeekName($sessionDate, true),
                     Format::dateIntlReadable($sessionDate, 'MMM d')
                 );
             } else {
                 echo "<td style='color: #bbb; vertical-align:top; width: 50px; white-space: nowrap;'>";
-                echo Format::dateIntlReadable($sessionDate, 'EEE').' <br/> '.
+                echo Format::dayOfWeekName($sessionDate).' <br/> '.
                     Format::dateIntlReadable($sessionDate, 'MMM d').'<br/>&nbsp;<br/>';
             }
             echo '</td>';
