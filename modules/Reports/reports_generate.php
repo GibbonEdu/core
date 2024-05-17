@@ -60,8 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
                       .'<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
                       .'<span class="tag ml-2 message">'.__('Running').'</span></div>';
             }
-            
-            return !empty($report['timestampGenerated'])? Format::dateTimeReadable($report['timestampGenerated']) : '';
+
+            return !empty($report['timestampGenerated'])? Format::dateTimeIntlReadable($report['timestampGenerated']) : '';
         });
 
     $table->addActionColumn()

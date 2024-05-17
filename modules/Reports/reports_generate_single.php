@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
         ->add(__('Run'), 'reports_generate_batch.php', ['gibbonReportID' => $gibbonReportID])
         ->add(__('Single'));
 
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
@@ -106,14 +106,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway) {
             if ($report['archive']) {
                 $tag = '<span class="tag ml-2 '.($report['archive']['status'] == 'Final' ? 'success' : 'dull').'">'.__($report['archive']['status']).'</span>';
-                $title = Format::dateTimeReadable($report['archive']['timestampModified']);
+                $title = Format::dateTimeIntlReadable($report['archive']['timestampModified']);
                 $url = './modules/Reports/archive_byStudent_download.php?gibbonReportArchiveEntryID='.$report['archive']['gibbonReportArchiveEntryID'].'&gibbonPersonID='.$report['gibbonPersonID'];
                 return Format::link($url, $title).$tag;
             }
 
             return '';
         });
-    
+
     $debugMode = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'debugMode');
 
     $table->addActionColumn()
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
                         ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
                         ->addParam('gibbonReportArchiveEntryID', $report['archive']['gibbonReportArchiveEntryID'] ?? '')
                         ->setURL('/modules/Reports/archive_byStudent_download.php');
-                        
+
                 $actions->addAction('download', __('Download'))
                         ->directLink()
                         ->setIcon('download')

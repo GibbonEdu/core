@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                         $historyCount = 0;
                         for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
                             $date = $lastNSchoolDays[$i];
-                            
+
                             $link = $title = '';
                             if ($i > ( count($lastNSchoolDays) - 1)) {
                                 echo "<td class='highlightNoData'>";
@@ -211,12 +211,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                                 echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
-                                    echo Format::dateReadable($date, '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
+                                    echo Format::dateIntlReadable($date, 'dd').'<br/>';
+                                    echo "<span>".Format::dateIntlReadable($date, 'MMM').'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo Format::dateReadable($date, '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
+                                    echo Format::dateIntlReadable($date, 'dd').'<br/>';
+                                    echo "<span>".Format::dateIntlReadable($date, 'MMM').'</span>';
                                 }
                                 echo '</td>';
                             }
@@ -267,11 +267,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                         });
                         $logAll[$index] = current($logPerForm);
                     }
-            
+
                     usort($logAll, function ($a, $b) {
                         return $b['timestamp'] <=> $a['timestamp'];
                     });
-            
+
                     $finalLog = current($logAll);
                     $person = $container->get(UserGateway::class)->getByID($finalLog['gibbonPersonIDTaker'], ['preferredName', 'surname']);
 
@@ -281,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                         'time' => Format::time($finalLog['timestampTaken']),
                     ]), 'message');
                 }
-                
+
             }
             echo '</table>';
 

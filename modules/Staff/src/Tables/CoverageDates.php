@@ -99,9 +99,9 @@ class CoverageDates
         $table->addMetaData('blankSlate', __('Coverage is required but has not been requested yet.'));
 
         $table->addColumn('date', __('Date'))
-            ->format(Format::using('dateReadable', 'date'))
+            ->format(Format::using('dateIntlReadable', 'date'))
             ->formatDetails(function ($coverage) {
-                return Format::small(Format::dateReadable($coverage['date'], '%A'));
+                return Format::small(Format::dateIntlReadable($coverage['date'], 'EEEE'));
             });
 
         if ($coverageByTimetable) {
@@ -166,7 +166,7 @@ class CoverageDates
                             ->setURL('/modules/Staff/coverage_manage_edit_deleteProcess.php')
                             ->addConfirmation(__('Are you sure you wish to delete this record?'));
                     }
-                
+
                 });
         }
 

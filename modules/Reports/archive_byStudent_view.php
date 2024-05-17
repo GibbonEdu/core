@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         $table->addColumn('timestampModified', __('Date'))
             ->width('30%')
             ->format(function ($report) {
-                $output = Format::dateReadable($report['timestampModified']);
+                $output = Format::dateIntlReadable($report['timestampModified']);
                 if ($report['status'] == 'Draft') {
                     $output .= '<span class="tag ml-2 dull">'.__($report['status']).'</span>';
                 }

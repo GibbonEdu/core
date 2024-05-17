@@ -51,9 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     // DATA TABLE
     $substitute = $substituteGateway->selectBy(['gibbonPersonID'=> $gibbonPersonIDCoverage])->fetch();
     $person = $container->get(UserGateway::class)->getByID($gibbonPersonIDCoverage);
-    
 
-    
+
+
     $start = new DateTime(Format::dateConvert($request['dateStart']).' 00:00:00');
     $end = new DateTime(Format::dateConvert($request['dateEnd']).' 23:00:00');
 
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $dateRange = new DatePeriod($start, new DateInterval('P1D'), $end);
     foreach ($dateRange as $date) {
         if (!isSchoolOpen($guid, $date->format('Y-m-d'), $connection2)) continue;
-        
+
         $dates[] = ['date' => $date->format('Y-m-d')];
     }
 
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     });
 
     $table->addColumn('dateLabel', __('Date'))
-        ->format(Format::using('dateReadable', 'date'));
+        ->format(Format::using('dateIntlReadable', 'date'));
 
     $table->addCheckboxColumn('requestDates', 'date')
         ->width('15%')
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
                 foreach ($times as $time) {
                     // Handle full day and partial day unavailability
-                    if ($time['allDay'] == 'Y' 
+                    if ($time['allDay'] == 'Y'
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
                         && $time['timeStart'] < $request['timeEnd']

@@ -64,7 +64,7 @@ class AbsenceDates
         $connection2 = $this->db->getConnection();
 
         $absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($gibbonStaffAbsenceID);
-        $dates = $includeCoverage 
+        $dates = $includeCoverage
             ? $this->staffAbsenceDateGateway->selectDatesByAbsenceWithCoverage($gibbonStaffAbsenceID)->toDataSet()
             : $this->staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->toDataSet();
 
@@ -94,7 +94,7 @@ class AbsenceDates
         }
 
         $table->addColumn('date', $dateLabel)
-            ->format(Format::using('dateReadable', 'date'));
+            ->format(Format::using('dateIntlReadable', 'date'));
 
         $table->addColumn('timeStart', $timeLabel)
             ->format([AbsenceFormats::class, 'timeDetails']);
