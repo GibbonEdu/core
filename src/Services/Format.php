@@ -71,7 +71,8 @@ class Format
         static::$settings = array_replace(static::$settings, $settings);
         static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
 
-        if (static::$intlFormatterAvailable) {
+        // Generate best-fit date formats for this locale, if possible
+        if (static::$intlFormatterAvailable && class_exists('IntlDatePatternGenerator')) {
             $intlPatternGenerator = new \IntlDatePatternGenerator(static::$settings['code']);
             static::$settings['dateFormatIntlFull'] = $intlPatternGenerator->getBestPattern('EEEEMMMMd');
             static::$settings['dateFormatIntlLong'] = $intlPatternGenerator->getBestPattern('EEMMMMd');
