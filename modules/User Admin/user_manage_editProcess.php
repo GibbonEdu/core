@@ -30,7 +30,7 @@ use Gibbon\Domain\User\RoleGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL', 'attachment1' => 'Path']);
 
 //Module includes
 include './moduleFunctions.php';

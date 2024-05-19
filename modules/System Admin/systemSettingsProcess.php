@@ -25,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['indexText' => 'HTML', 'analytics' => 'RAW', 'emailLink' => 'URL', 'webLink' => 'URL']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['indexText' => 'HTML', 'analytics' => 'RAW', 'emailLink' => 'URL', 'webLink' => 'URL', 'organisationLogo' => 'Path']);
 include '../../config.php';
 
 // Module includes

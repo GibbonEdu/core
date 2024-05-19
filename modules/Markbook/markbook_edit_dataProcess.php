@@ -26,7 +26,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['attachment*' => 'Path']);
 
 $logGateway = $container->get(LogGateway::class);
 $settingGateway = $container->get(SettingGateway::class);

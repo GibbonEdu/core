@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     ->notSortable()
     ->format(function($values) use ($session) {
         $return = null;
-        $return .= ($values['logo'] != '') ? "<img class='user' style='max-width: 75px' src='".$session->get('absoluteURL').'/'.$values['logo']."'/>":"<img class='user' style='max-width: 75px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
+        $return .= ($values['logo'] != '') ? "<img class='user' style='max-width: 75px' src='".$session->get('absoluteURL').'/'.urlencode($values['logo'])."'/>":"<img class='user' style='max-width: 75px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
         return $return;
     });
     $table->addColumn('name', __('Name'));

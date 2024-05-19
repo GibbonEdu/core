@@ -29,7 +29,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['attachment*' => 'Path']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $address = $_POST['address'] ?? '';

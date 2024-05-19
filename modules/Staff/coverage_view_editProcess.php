@@ -25,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['text' => 'HTML', 'link' => 'URL']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['text' => 'HTML', 'link' => 'URL', 'attachment' => 'Path']);
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 

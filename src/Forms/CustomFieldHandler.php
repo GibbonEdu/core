@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\FileUploader;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\CustomFieldGateway;
@@ -39,6 +40,11 @@ class CustomFieldHandler
     protected $fileUploader;
 
     /**
+     * @var \Gibbon\Validator
+     */
+    protected $validator;
+
+    /**
      * @var string[][]
      */
     protected $contexts;
@@ -53,10 +59,11 @@ class CustomFieldHandler
      */
     protected $headings;
 
-    public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader)
+    public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader, Validator $validator)
     {
         $this->customFieldGateway = $customFieldGateway;
         $this->fileUploader = $fileUploader;
+        $this->validator = $validator;
 
         $this->contexts = [
             __('User Admin') => [
@@ -228,6 +235,8 @@ class CustomFieldHandler
 
                 // Upload the file, return the /uploads relative path
                 $fieldValue = $this->fileUploader->uploadFromPost($file, $fieldName);
+            } else {
+                $fieldValue = $this->validator->sanitizeUrl($fieldValue, false);
             }
         }
 

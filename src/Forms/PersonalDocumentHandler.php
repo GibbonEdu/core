@@ -23,6 +23,7 @@ namespace Gibbon\Forms;
 
 use Gibbon\View\View;
 use Gibbon\FileUploader;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
@@ -31,16 +32,18 @@ class PersonalDocumentHandler
 {
     protected $personalDocumentGateway;
     protected $fileUploader;
+    protected $validator;
     protected $settingGateway;
     protected $view;
 
     protected $documents;
     protected $fields;
 
-    public function __construct(PersonalDocumentGateway $personalDocumentGateway, FileUploader $fileUploader, View $view, SettingGateway $settingGateway)
+    public function __construct(PersonalDocumentGateway $personalDocumentGateway, FileUploader $fileUploader, Validator $validator, View $view, SettingGateway $settingGateway)
     {
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->fileUploader = $fileUploader;
+        $this->validator = $validator;
         $this->settingGateway = $settingGateway;
         $this->view = $view;
 
@@ -100,7 +103,7 @@ class PersonalDocumentHandler
                             $personalDocumentFail = true;
                         }
                     } else {
-                        $data[$field] = $attachment;
+                        $data[$field] = $this->validator->sanitizeUrl($attachment, false);
                     }
                 } else {
                     // Handle all other data

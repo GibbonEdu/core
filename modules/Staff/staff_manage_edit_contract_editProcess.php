@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['contractUpload' => 'Path']);
 
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $gibbonStaffContractID = $_GET['gibbonStaffContractID'] ?? '';
