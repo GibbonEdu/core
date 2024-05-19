@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['html' => 'HTML', 'link' => 'URL', 'content' => 'Path']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['html' => 'HTML', 'link' => 'URL']);
 
 $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];

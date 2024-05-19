@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML', 'attachment' => 'Path']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';

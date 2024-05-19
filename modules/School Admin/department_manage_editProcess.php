@@ -23,7 +23,7 @@ use Gibbon\Forms\CustomFieldHandler;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML', 'logo' => 'Path']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML']);
 
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_manage_edit.php&gibbonDepartmentID=$gibbonDepartmentID";

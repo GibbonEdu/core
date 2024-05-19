@@ -29,7 +29,7 @@ use Gibbon\Domain\System\AlertLevelGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['attachment' => 'Path']);
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
 $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';

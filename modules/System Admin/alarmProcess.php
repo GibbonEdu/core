@@ -25,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['attachmentCurrent' => 'Path']);
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
 

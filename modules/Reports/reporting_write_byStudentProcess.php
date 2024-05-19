@@ -58,7 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
     $fileUploader = $container->get(FileUploader::class);
-    $validator = $container->get(Validator::class);
     
     $values = $_POST['value'] ?? [];
 
@@ -123,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             if (!empty($_FILES['file'.$gibbonReportingCriteriaID]['tmp_name'])) {
                 $data['value'] = $fileUploader->uploadAndResizeImage($_FILES['file'.$gibbonReportingCriteriaID], 'reportFile', $criteriaOptions['imageSize'] ?? 1024, $criteriaOptions['imageQuality'] ?? 80);
             } else {
-                $data['value'] = $validator->sanitizeUrl($value, false);
+                $data['value'] = $value;
             }
         } else {
             $data['value'] = $value;

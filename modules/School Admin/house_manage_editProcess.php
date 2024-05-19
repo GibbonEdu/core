@@ -22,8 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['logo' => 'Path']);
-// $_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonHouseID = $_GET['gibbonHouseID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/house_manage_edit.php&gibbonHouseID='.$gibbonHouseID;
