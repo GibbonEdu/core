@@ -32,6 +32,10 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonTTID = $_POST['gibbonTTID'] ?? '';
 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
+// Filter valid colour values
+$color = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($color, 0, 7));
+$fontColor = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($fontColor, 0, 7));
+
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTID=$gibbonTTID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_add.php') == false) {
