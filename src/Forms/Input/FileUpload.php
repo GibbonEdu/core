@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 
 /**
  * TextField
@@ -196,12 +197,14 @@ class FileUpload extends Input
 
             foreach ($this->attachments as $attachmentName => $attachmentPath) {
 
+                $attachmentPath = (new Validator(''))->sanitizeUrl($attachmentPath, false);
+
                 if (!empty($attachmentPath)) {
                     $output .= '<div class="input-box rounded-sm standardWidth">';
 
                     $output .= '<div class="inline-label">';
                     $output .= __('Current attachment:').'<br/>';
-                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
+                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.urlencode($attachmentPath).'">'.basename($attachmentPath).'</a>';
 
                     global $session;
                     $absolutePath = $session->get('absolutePath');
@@ -211,7 +214,7 @@ class FileUpload extends Input
 
                     $output .= '</div>';
 
-                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.$attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.urlencode($attachmentPath)."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
 
                     if ($this->canDelete) {
                         $attachmentNameEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $attachmentName);

@@ -80,8 +80,8 @@ class Validator
 
         // Check allowable fields for URLs
         foreach ($allowableTags as $field => $value) {
-            if (is_string($value) && strtoupper($value) == 'URL') {
-                $urls[$field] = $field;
+            if (is_string($value) && (strtoupper($value) == 'URL' || strtoupper($value) == 'PATH')) {
+                $urls[$field] = strtoupper($value) == 'URL';
             }
         }
 
@@ -98,10 +98,10 @@ class Validator
                 $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $value);
                 $value = preg_replace('/\\\\+0+/', '', $value);
 
-                if (!empty($urls[$field])) {
+                if (isset($urls[$field])) {
                     // Sanitize URL
-                    $value = $this->sanitizeUrl($value);
-                } elseif (!empty($allowableTags[$field])) {
+                    $value = $this->sanitizeUrl($value, $urls[$field]);
+                } elseif (isset($allowableTags[$field])) {
                     // Sanitize HTML
                     if (strtoupper($allowableTags[$field]) == 'RAW') {
                         $output[$field] = $value;
@@ -194,7 +194,7 @@ class Validator
      * @param string $url
      * @return string
      */
-    public function sanitizeUrl($url)
+    public function sanitizeUrl($url, $protocol = true)
     {
         if ($url === '') return $url;
 
@@ -205,7 +205,7 @@ class Validator
         $url = str_replace("'", '&#039;', $url);
 
         // If there is no protocol, add a default one
-        if (mb_stripos($url, '://') === false) {
+        if ($protocol && mb_stripos($url, '://') === false) {
             $url = 'https://'.$url;
         }
 
