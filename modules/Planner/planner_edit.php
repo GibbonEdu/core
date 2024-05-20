@@ -203,14 +203,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('date', __('Date'));
                     $row->addDate('date')->required();
 
-                $nextTimeStart = (isset($nextTimeStart)) ? substr($nextTimeStart, 0, 5) : null;
+                $nextTimeStart = !empty($nextTimeStart) ? substr($nextTimeStart, 0, 5) : null;
                 $row = $form->addRow();
-                    $row->addLabel('timeStart', __('Start Time'))->description(__("Format: hh:mm (24hr)"));
+                    $row->addLabel('timeStart', __('Start Time'));
                     $row->addTime('timeStart')->required();
 
-                $nextTimeEnd = (isset($nextTimeEnd)) ? substr($nextTimeEnd, 0, 5) : null;
+                $nextTimeEnd = !empty($nextTimeEnd) ? substr($nextTimeEnd, 0, 5) : null;
                 $row = $form->addRow();
-                    $row->addLabel('timeEnd', __('End Time'))->description(__("Format: hh:mm (24hr)"));
+                    $row->addLabel('timeEnd', __('End Time'));
                     $row->addTime('timeEnd')->required();
 
 
@@ -263,8 +263,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
                     $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
-                $values['homeworkDueDate'] = substr(Format::date($values['homeworkDueDateTime'], 'Y-m-d H:i:s'), 0, 10);
-                $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
+                if (!empty($values['homeworkDueDateTime'])) {
+                    $values['homeworkDueDate'] = substr(Format::date($values['homeworkDueDateTime'], 'Y-m-d H:i:s'), 0, 10);
+                    $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
+                }
 
                 $row = $form->addRow()->addClass('homework');
                     $row->addLabel('homeworkDueDate', __('Due Date'))->description(__('Date is required, time is optional.'));

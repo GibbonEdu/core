@@ -305,36 +305,14 @@ class Format
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
 
-        if (static::$intlFormatterAvailable) {
-            $formatter = static::getIntlFormatter();
-
-            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $formatter->setPattern('MMM d, yyyy');
-                $output = $formatter->format($startTime);
-            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $formatter->setPattern('MMM d');
-                $output = $formatter->format($startTime) . ' - ';
-                $formatter->setPattern('d, yyyy');
-                $output .= $formatter->format($endTime);
-            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $formatter->setPattern('MMM d');
-                $output = $formatter->format($startTime) . ' - ';
-                $formatter->setPattern('MMM d, yyyy');
-                $output .= $formatter->format($endTime);
-            } else {
-                $formatter->setPattern('MMM d, yyyy');
-                $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
-            }
+        if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+            $output = static::dateReadable($startTime, static::MEDIUM);
+        } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+            $output = static::dateReadable($startTime, static::MEDIUM_NO_YEAR) . ' - ';
+            $output .= static::dateReadable($endTime, static::MEDIUM);
         } else {
-            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $output = $startDate->format('M j, Y');
-            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $output = $startDate->format('M j').' - '.$endDate->format('j, Y');
-            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $output = $startDate->format('M j').' - '.$endDate->format('M j, Y');
-            } else {
-                $output = $startDate->format('M j, Y').' - '.$endDate->format('M j, Y');
-            }
+            $output = static::dateReadable($startTime, static::MEDIUM) . ' - ';
+            $output .= static::dateReadable($endTime, static::MEDIUM);
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -536,7 +514,7 @@ class Format
      */
     public static function truncate($value, $length = 40)
     {
-        return strlen($value) > $length
+        return is_string($value) && strlen($value) > $length
             ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
             : $value;
     }

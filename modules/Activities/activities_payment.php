@@ -154,11 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo '<td>';
             $invoiceNumber = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'invoiceNumber');
             if ($invoiceNumber == 'Person ID + Invoice ID') {
-                echo ltrim($row['gibbonPersonID'], '0').'-'.ltrim($row['gibbonFinanceInvoiceID'], '0');
+                echo ltrim($row['gibbonPersonID'] ?? '', '0').'-'.ltrim($row['gibbonFinanceInvoiceID'] ?? '', '0');
             } elseif ($invoiceNumber == 'Student ID + Invoice ID') {
-                echo ltrim($row['studentID'], '0').'-'.ltrim($row['gibbonFinanceInvoiceID'], '0');
+                echo ltrim($row['studentID'] ?? '', '0').'-'.ltrim($row['gibbonFinanceInvoiceID'] ?? '', '0');
             } else {
-                echo ltrim($row['gibbonFinanceInvoiceID'], '0');
+                echo ltrim($row['gibbonFinanceInvoiceID'] ?? '', '0');
             }
             echo '</td>';
             echo '</tr>';

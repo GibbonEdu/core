@@ -391,7 +391,7 @@ else {
                                 $row->addContent($recipient['contactDetail']);
                                 $row->addContent(Format::yesNo($recipient['sent']));
                                 $row->addContent($confirmationIndicator($recipient));
-                                $row->addContent(Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
+                                $row->addContent(!empty($recipient['confirmedTimestamp']) ? Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5) : '');
 
                                 if ($sender == true && $recipient['contactType'] == 'Email') {
                                     $row->onlyIf($recipient['confirmed'] == 'N' || $values['emailReceipt'] == 'N')

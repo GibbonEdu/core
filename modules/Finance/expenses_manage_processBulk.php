@@ -35,7 +35,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error load
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $gibbonFinanceExpenseIDs = $_POST['gibbonFinanceExpenseIDs'] ?? '';
+        $gibbonFinanceExpenseIDs = $_POST['gibbonFinanceExpenseIDs'] ?? [];
         if (count($gibbonFinanceExpenseIDs) < 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
