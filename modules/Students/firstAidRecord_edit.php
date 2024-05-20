@@ -94,11 +94,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             $row = $form->addRow();
                 $row->addLabel('timeIn', __('Time In'));
-                $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->required()->readonly();
+                $row->addTime('timeIn')->setValue(!empty($values['timeIn']) ? substr($values['timeIn'], 0, 5) : '')->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('timeOut', __('Time Out'));
-                $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5))->chainedTo('timeIn')->readonly($mode != 'edit');
+                $row->addTime('timeOut')->setValue(!empty($values['timeOut']) ? substr($values['timeOut'], 0, 5) : '')->chainedTo('timeIn')->readonly($mode != 'edit');
 
             $row = $form->addRow();
                 $column = $row->addColumn();

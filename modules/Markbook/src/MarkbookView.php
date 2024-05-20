@@ -60,6 +60,7 @@ class MarkbookView
     protected $externalAssessmentFields;
     protected $personalizedTargets;
 
+    
     /**
      * Row data from gibbonMarkbookWeight
      * @var array
@@ -72,6 +73,12 @@ class MarkbookView
      */
     protected $weightedAverages;
 
+    /**
+     * Holds the sums for total and cumulative raw values from markbookEntry
+     * @var array
+     */
+    protected $rawAverages;
+    
     /**
      * SQL statements to be appended to the query to filter the current view
      * @var array

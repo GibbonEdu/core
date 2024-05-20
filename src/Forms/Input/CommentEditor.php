@@ -74,7 +74,7 @@ class CommentEditor extends TextArea
         $output = '';
 
         $maxlength = $this->getAttribute('maxlength') ?? 0;
-        $currentLength = strlen($this->getValue());
+        $currentLength = !empty($this->getValue()) ? strlen($this->getValue()) : 0;
 
         $this->setRows(5);
         $this->addClass('commentEditor characterCount w-full p-1 text-sm font-sans leading-tight');

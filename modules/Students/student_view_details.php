@@ -1622,7 +1622,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $rowFilter->addSelect('gibbonSchoolYearTermID')
                                             ->fromQueryChained($pdo, $sqlSelect, $dataSelect, 'gibbonSchoolYearID')
                                             ->placeholder()
-                                            ->selected($gibbonSchoolYearTermID);
+                                            ->selected($gibbonSchoolYearTermID ?? '');
                                 }
 
                                 $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
@@ -1994,7 +1994,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                                             if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                                             }
 
                                             echo '</table>';

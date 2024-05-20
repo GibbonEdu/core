@@ -40,9 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     echo '</h3>';
 
     //Get current filter values
-    $tags = (isset($_REQUEST['tag']))? trim($_REQUEST['tag']) : null;
+    $tags = isset($_REQUEST['tag'])? trim($_REQUEST['tag']) : '';
     $tags = preg_replace('/[^a-zA-Z0-9-_, \']/', '', $tags);
-    $tagsArray = (!empty($tags))? explode(',', $tags) : array();
+    $tagsArray = !empty($tags)? explode(',', $tags) : [];
 
     $category = (isset($_REQUEST['category']))? trim($_REQUEST['category']) : null;
     $purpose = (isset($_REQUEST['purpose']))? trim($_REQUEST['purpose']) : null;
