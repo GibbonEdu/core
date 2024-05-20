@@ -45,4 +45,12 @@ class ExternalAssessmentFieldGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectFieldsByExternalAssessmentAndStudent($gibbonExternalAssessmentID, $gibbonExternalAssessmentStudentID)
+    {
+        $data= ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID];
+        $sql = 'SELECT category, gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
+
+        return $this->db()->select($sql, $data);
+    }
 }

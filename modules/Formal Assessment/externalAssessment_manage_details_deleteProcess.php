@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -43,17 +45,14 @@ if ($gibbonPersonID == '' or $gibbonExternalAssessmentStudentID == '') { echo 'F
             header("Location: {$URL}");
         } else {
             try {
-                $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-                $sql = 'SELECT * FROM gibbonExternalAssessmentStudent WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $container->get(ExternalAssessmentStudentGateway::class)->getByID($gibbonExternalAssessmentStudentID);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
             }
 
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {

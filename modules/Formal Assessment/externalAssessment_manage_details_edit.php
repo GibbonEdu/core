@@ -19,6 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentFieldGateway;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentEntryGateway;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
+use Gibbon\Domain\School\ExternalAssessmentGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_edit.php') == false) {
@@ -40,16 +44,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     if ($gibbonExternalAssessmentStudentID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
+            $result = $container->get(ExternalAssessmentStudentGateway::class)->getStudentExternalAssessmentDetails( $gibbonExternalAssessmentStudentID);
 
-            $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-            $sql = 'SELECT gibbonExternalAssessmentStudent.*, gibbonExternalAssessment.name AS assessment, gibbonExternalAssessment.allowFileUpload FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $values = $result->fetch();
+            $values = $result;
 
             if ($search != '') {
                  $params = [
@@ -64,17 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             //Check for all fields
 
-                $dataCheck = array('gibbonExternalAssessmentID' => $values['gibbonExternalAssessmentID']);
-                $sqlCheck = 'SELECT * FROM gibbonExternalAssessmentField WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
-                $resultCheck = $connection2->prepare($sqlCheck);
-                $resultCheck->execute($dataCheck);
+                $resultCheck = $container->get(ExternalAssessmentFieldGateway::class)->selectBy(['gibbonExternalAssessmentID' => $values['gibbonExternalAssessmentID']]);
 
             while ($rowCheck = $resultCheck->fetch()) {
 
-                    $dataCheck2 = array('gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID'], 'gibbonExternalAssessmentStudentID' => $values['gibbonExternalAssessmentStudentID']);
-                    $sqlCheck2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry WHERE gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-                    $resultCheck2 = $connection2->prepare($sqlCheck2);
-                    $resultCheck2->execute($dataCheck2);
+                    $resultCheck2 = $container->get(ExternalAssessmentStudentEntryGateway::class)->selectBy(['gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID'], 'gibbonExternalAssessmentStudentID' => $values['gibbonExternalAssessmentStudentID']]);
 
                 if ($resultCheck2->rowCount() < 1) {
 
@@ -104,12 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $row->addLabel('file', __('Upload File'))->description(__('Use this to attach raw data, graphical summary, etc.'));
                 $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
             }
-
-
-                $dataField = array('gibbonExternalAssessmentID' => $values['gibbonExternalAssessmentID'], 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-                $sqlField = 'SELECT category, gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
-                $resultField = $connection2->prepare($sqlField);
-                $resultField->execute($dataField);
+            
+                $resultField = $container->get(ExternalAssessmentFieldGateway::class)-> selectFieldsByExternalAssessmentAndStudent($values['gibbonExternalAssessmentID'], $gibbonExternalAssessmentStudentID);
 
             if ($resultField->rowCount() <= 0) {
                 $form->addRow()->addAlert(__('There are no fields in this assessment.'), 'warning');
