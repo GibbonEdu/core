@@ -94,7 +94,7 @@ class AbsenceDates
         }
 
         $table->addColumn('date', $dateLabel)
-            ->format(Format::using('dateIntlReadable', 'date'));
+            ->format(Format::using('dateReadable', 'date'));
 
         $table->addColumn('timeStart', $timeLabel)
             ->format([AbsenceFormats::class, 'timeDetails']);

@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $table->addColumn('name', __('Name'))->width('30%');
     $table->addColumn('cycleNumber', __('Cycle'))->width('8%');
     $table->addColumn('yearGroups', __('Year Groups'))->width('15%');
-    $table->addColumn('dateStart', __('Start Date'))->format(Format::using('dateIntlReadable', 'dateStart'))->width('15%');
-    $table->addColumn('dateEnd', __('End Date'))->format(Format::using('dateIntlReadable', 'dateEnd'))->width('15%');
+    $table->addColumn('dateStart', __('Start Date'))->format(Format::using('dateReadable', 'dateStart'))->width('15%');
+    $table->addColumn('dateEnd', __('End Date'))->format(Format::using('dateReadable', 'dateEnd'))->width('15%');
 
     $table->addActionColumn()
         ->addParam('gibbonReportingCycleID')

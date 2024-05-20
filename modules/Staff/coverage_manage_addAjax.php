@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     });
 
     $table->addColumn('dateLabel', __('Date'))
-        ->format(Format::using('dateIntlReadable', 'date'));
+        ->format(Format::using('dateReadable', 'date'));
 
     $table->addCheckboxColumn('requestDates', 'date')
         ->width('15%')

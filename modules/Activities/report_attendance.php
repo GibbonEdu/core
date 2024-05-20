@@ -220,12 +220,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                 printf("<span title='%s'>%s <br/> %s</span><br/>&nbsp;<br/>",
                     $sessionAttendanceData[$sessionDate]['info'],
                     Format::dayOfWeekName($sessionDate, true),
-                    Format::dateIntlReadable($sessionDate, 'MMM d')
+                    Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR)
                 );
             } else {
                 echo "<td style='color: #bbb; vertical-align:top; width: 50px; white-space: nowrap;'>";
                 echo Format::dayOfWeekName($sessionDate).' <br/> '.
-                    Format::dateIntlReadable($sessionDate, 'MMM d').'<br/>&nbsp;<br/>';
+                    Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR).'<br/>&nbsp;<br/>';
             }
             echo '</td>';
         }

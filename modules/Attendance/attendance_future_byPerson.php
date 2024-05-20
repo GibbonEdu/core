@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     }
                 });
                 $table->addColumn('staff', __('Recorded By'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
-                $table->addColumn('timestamp', __('On'))->format(Format::using('dateIntlReadable', 'timestampTaken', 'HH:mm, MMM dd'));
+                $table->addColumn('timestamp', __('On'))->format(Format::using('dateTimeReadable', 'timestampTaken'));
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonIDList[0] ?? '')
@@ -387,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $row->addLabel('periodSelectContainer', __('Periods Absent'));
 
                 $table = $row->addTable('periodSelectContainer')->setClass('standardWidth');
-                $table->addHeaderRow()->addHeading(Format::dateIntlReadable(Format::dateConvert($date),'MMMM d, yyyy'));
+                $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date), Format::LONG));
 
                 foreach ($classes as $class) {
                     $name = $class['columnName'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];

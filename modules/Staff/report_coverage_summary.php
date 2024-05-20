@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
     // Translated array of months in the current school year
     foreach ($dateRange as $monthDate) {
-        $months[$monthDate->format('Y-m-d')] = Format::dateIntlReadable($monthDate->format('Y-m-d'), 'MMMM yyyy');
+        $months[$monthDate->format('Y-m-d')] = Format::monthName($monthDate->format('Y-m-d')).' '.$monthDate->format('Y');
     }
 
     // Setup the date range used for this report
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         $count = 0;
         foreach ($dateRange as $monthDate) {
-            $table->addColumn('month'.$count, Format::monthName($monthDate, true))->description(Format::dateIntlReadable($monthDate, 'yyyy'))
+            $table->addColumn('month'.$count, Format::monthName($monthDate, true))->description(Format::date($monthDate, 'Y'))
                 ->notSortable()
                 ->format(function ($sub) use ($monthDate) {
                     $sum =  array_sum($sub['coverage'][$monthDate->format('Y-m')] ?? []);
