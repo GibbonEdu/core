@@ -54,9 +54,9 @@ class Format
         'dateFormatFull'       => 'l, F j',
         'dateFormatLong'       => 'F j',
         'dateFormatMedium'     => 'M j',
-        'dateFormatIntlFull'   => 'EEEE MMMM d',
-        'dateFormatIntlLong'   => 'MMMM d',
-        'dateFormatIntlMedium' => 'MMM d',
+        'dateFormatIntlFull'   => 'EEEE, d MMMM',
+        'dateFormatIntlLong'   => 'd MMMM',
+        'dateFormatIntlMedium' => 'd MMM',
         'dateFormatGenerate'   => true,
     ];
 
@@ -78,6 +78,10 @@ class Format
             static::$settings['dateFormatIntlFull'] = $intlPatternGenerator->getBestPattern('EEEEMMMMd');
             static::$settings['dateFormatIntlLong'] = $intlPatternGenerator->getBestPattern('MMMMd');
             static::$settings['dateFormatIntlMedium'] = $intlPatternGenerator->getBestPattern('MMMd');
+        } else {
+            static::$settings['dateFormatIntlFull'] = static::$settings['code'] == 'en_GB' ? 'EEEE, d MMMM' : 'EEEE, MMMM d';
+            static::$settings['dateFormatIntlLong'] = static::$settings['code'] == 'en_GB' ? 'd MMMM' : 'MMMM d';
+            static::$settings['dateFormatIntlMedium'] = static::$settings['code'] == 'en_GB' ? 'd MMM' : 'MMM d';
         }
     }
 

@@ -82,106 +82,64 @@ class FormatTest extends TestCase
 
     public function testFormatsReadableDates()
     {
-        $this->assertEquals('18 May 2018', Format::dateReadable('2018-05-18'));
-        $this->assertEquals('18 May 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
-
-        //
-        // Verify fidelity of formatting output after dateReadable refactor.
-        //
+        
 
         $dateString = '2018-02-03 13:24';
 
-        // modules/Planner/units_edit_deploy.php
-        // modules/Staff/report_subs_availability.php
-        // modules/Staff/coverage_planner_assign.php
+        // Verify fidelity of formatting output using default en_GB locale
+
+        $this->assertEquals('18 May 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('18 May 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
         $this->assertEquals('Saturday, 3 February 2018', Format::dateReadable($dateString, Format::FULL));
-
-        // modules/Staff/report_subs_availabilityWeekly.php
         $this->assertEquals('Saturday, 3 February', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
-
-        // modules/Attendance/attendance_future_byPerson.php
         $this->assertEquals('3 February 2018', Format::dateReadable($dateString, Format::LONG));
-
-        // modules/Staff/src/Tables/AbsenceCalendar.php
-        // modules/Staff/report_absences_summary.php
-        // modules/Planner/units_edit_working.php
         $this->assertEquals('3 Feb 2018', Format::dateReadable($dateString, Format::MEDIUM));
-
-        // modules/Attendance/report_graph_byType.php
-        // modules/Reports/reporting_my.php
-        // modules/Activities/report_attendance.php
-        // modules/Activities/activities_attendance.php
-        // modules/Staff/src/Messages/CoveragePartial.php
-        // modules/Reports/templates/ui/reportingCycleHeader.twig.html
         $this->assertEquals('3 Feb', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
-
-        // modules/Attendance/attendance.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
-        // modules/Attendance/src/AttendanceView.php
         $this->assertEquals('03', Format::date($dateString, 'd'));
-
-        // modules/Staff/src/Forms/CoverageRequestForm.php
-        // modules/Staff/src/Tables/AbsenceCalendar.php
-        // modules/Staff/src/Tables/CoverageDates.php
-        // modules/Staff/src/Tables/CoverageCalendar.php
-        // modules/Staff/coverage_my.php
-        // modules/Staff/coverage_planner.php
-        // modules/Staff/report_absences_summary.php
-        // modules/Staff/report_absences_weekly.php
         $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
-
-        // modules/Activities/report_attendance.php
-        // modules/Activities/activities_attendance.php
         $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
-
-        // modules/Staff/report_absences_summary.php
-        // modules/Staff/report_coverage_summary.php
         $this->assertEquals('February', Format::monthName($dateString));
-
-        // modules/Attendance/attendance.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
-        // modules/Attendance/src/AttendanceView.php
-        // modules/Staff/src/Tables/AbsenceCalendar.php
-        // modules/Staff/src/Tables/CoverageCalendar.php
-        // modules/Staff/report_absences_summary.php
-        // modules/Staff/report_coverage_summary.php
         $this->assertEquals('Feb', Format::monthName($dateString, true));
-
-        // modules/Attendance/attendance_future_byPerson.php
-        // modules/Attendance/attendance_take_byPerson.php
-        // modules/Students/student_view_details.php
         $this->assertEquals('3 Feb 2018, 13:24', Format::dateTimeReadable($dateString));
-
-        // modules/Students/firstAidRecord_edit.php
-        // modules/Students/firstAidRecord.php
         $this->assertEquals('3 February 2018 At 13:24', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
-
-        // modules/Attendance/attendance_take_byPerson.php
         $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+
+        // Verify fidelity of formatting output using en_US locale
+
+        Format::setup(['code' => 'en_US']);
+
+        $this->assertEquals('May 18, 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('May 18, 2018, 1:24 Pm', Format::dateTimeReadable('2018-05-18 13:24'));
+        $this->assertEquals('Saturday, February 3, 2018', Format::dateReadable($dateString, Format::FULL));
+        $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
+        $this->assertEquals('February 3, 2018', Format::dateReadable($dateString, Format::LONG));
+        $this->assertEquals('Feb 3, 2018', Format::dateReadable($dateString, Format::MEDIUM));
+        $this->assertEquals('Feb 3', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
+        $this->assertEquals('03', Format::date($dateString, 'd'));
+        $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
+        $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
+        $this->assertEquals('February', Format::monthName($dateString));
+        $this->assertEquals('Feb', Format::monthName($dateString, true));
+        $this->assertEquals('Feb 3, 2018, 1:24 Pm', Format::dateTimeReadable($dateString));
+        $this->assertEquals('February 3, 2018 At 1:24 Pm', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
+        $this->assertEquals('1:24 Pm', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+
+        // Verify fidelity of formatting output using generic fallbacks 
 
         Format::$intlFormatterAvailable = false;
 
         $this->assertEquals('May 18 2018', Format::dateReadable('2018-05-18'));
         $this->assertEquals('May 18 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
-
         $this->assertEquals('Saturday, February 3 2018', Format::dateReadable($dateString, Format::FULL));
         $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
         $this->assertEquals('February 3 2018', Format::dateReadable($dateString, Format::LONG));
         $this->assertEquals('Feb 3 2018', Format::dateReadable($dateString, Format::MEDIUM));
         $this->assertEquals('Feb 3', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
-
         $this->assertEquals('03', Format::date($dateString, 'd'));
         $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
         $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
         $this->assertEquals('February', Format::monthName($dateString));
         $this->assertEquals('Feb', Format::monthName($dateString, true));
-
         $this->assertEquals('Feb 3 2018, 13:24', Format::dateTimeReadable($dateString));
         $this->assertEquals('February 3 2018, 13:24', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
         $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
