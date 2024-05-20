@@ -1011,7 +1011,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 $attainmentAverage = ($attainmentCount > 0 && $attainmentTotal > 0)? ($attainmentTotal / $attainmentCount) : '';
 
                 if ($columnFilter == 'raw' && $markbook->getSetting('enableRawAttainment') == 'Y') {
-                    echo '<td class="dataColumn dataDivider dataDividerTop">'.round($attainmentAverage, 1).'</td>';
+                    echo '<td class="dataColumn dataDivider dataDividerTop">'.round(floatval($attainmentAverage), 1).'</td>';
                 } else {
                     echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($attainmentAverage).'</td>';
                 }
