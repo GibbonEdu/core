@@ -112,6 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         if (empty($_POST['organisationLogo'])) {
             $partialFail = true;
         }
+    } else {
+        $_POST['organisationLogo'] = $settingGateway->getSettingByScope('System', 'organisationLogo');
     }
 
     // Update fields

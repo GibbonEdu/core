@@ -76,6 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
         if (empty($_POST['organisationLogo'])) {
             $partialFail = true;
         }
+    } else {
+        $_POST['organisationLogo'] = $settingGateway->getSettingByScope('System', 'organisationLogo');
     }
 
     // Move attached background file, if there is one
@@ -88,6 +90,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
         if (empty($_POST['organisationBackground'])) {
             $partialFail = true;
         }
+    } else {
+        $_POST['organisationBackground'] = !empty($_POST['organisationBackground'])
+            ? $settingGateway->getSettingByScope('System', 'organisationBackground')
+            : '';
     }
 
     // Update fields
