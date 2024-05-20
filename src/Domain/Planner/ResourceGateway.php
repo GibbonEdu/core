@@ -86,8 +86,8 @@ class ResourceGateway extends QueryableGateway
             },
             'gibbonYearGroupID' => function ($query, $gibbonYearGroupID) {
                 return $query
-                    ->where('gibbonYearGroupIDList LIKE :gibbonYearGroupIDList')
-                     ->bindValue('gibbonYearGroupIDList', '%$gibbonYearGroupID%');
+                    ->where('FIND_IN_SET(:gibbonYearGroupID, gibbonResource.gibbonYearGroupIDList)')
+                     ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
             }
         ]);
 
