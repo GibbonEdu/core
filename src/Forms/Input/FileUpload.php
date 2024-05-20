@@ -226,7 +226,7 @@ class FileUpload extends Input
                     $output .= '</div>';
                 }
 
-                $output .= '<input type="hidden" id="'.$attachmentName.'" name="'.$attachmentName.'" value="'.rawurlencode($attachmentPath).'">';
+                $output .= '<input type="hidden" id="'.$attachmentName.'" name="'.$attachmentName.'" value="'.rawurlencode($attachmentPath ?? '').'">';
             }
 
             if ($this->getAttribute('multiple') == true) {
