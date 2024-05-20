@@ -26,22 +26,22 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v21
- * @since   v21
+ * @version v27
+ * @since   v27
  */
-class ExternalAssessmentStudentGateway extends QueryableGateway
+class ExternalAssessmentFieldGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonExternalAssessmentStudent';
-    private static $primaryKey = 'gibbonExternalAssessmentStudentID';
+    private static $tableName = 'gibbonExternalAssessmentField';
+    private static $primaryKey = 'gibbonExternalAssessmentFieldID';
 
     private static $searchableColumns = [];
 
-    public function selectGCSEGradesByPersonID($gibbonPersonID)
+    public function selectFieldsByExternalAssessment($gibbonExternalAssessmentID)
     {
-        $data = ['gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='GCSE/iGCSE' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
+        $data = ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID];
+        $sql = 'SELECT category, gibbonExternalAssessmentField.*, gibbonScale.usage FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, gibbonExternalAssessmentField.order';
 
         return $this->db()->select($sql, $data);
     }
