@@ -941,13 +941,13 @@ class Format
 
         $path = (string) $path;
         if (preg_match('/^http[s]*/', $path)) {
-            return sprintf('<img class="%1$s" src="%2$s">', $class, $path);
+            return sprintf('<img class="%1$s" src="%2$s">', $class, rawurlencode($path));
         } else {
             if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
                 $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_240_square.jpg';
             }
 
-            return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+            return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.rawurlencode($path));
         }
     }
 
@@ -993,7 +993,7 @@ class Format
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
         }
 
-        return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+        return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.rawurlencode($path));
     }
 
     /**

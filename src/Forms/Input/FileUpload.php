@@ -202,7 +202,7 @@ class FileUpload extends Input
 
                     $output .= '<div class="inline-label">';
                     $output .= __('Current attachment:').'<br/>';
-                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
+                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.rawurlencode($attachmentPath).'">'.basename($attachmentPath).'</a>';
 
                     global $session;
                     $absolutePath = $session->get('absolutePath');
@@ -212,7 +212,7 @@ class FileUpload extends Input
 
                     $output .= '</div>';
 
-                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.$attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.rawurlencode($attachmentPath)."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
 
                     if ($this->canDelete) {
                         $attachmentNameEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $attachmentName);
@@ -226,7 +226,7 @@ class FileUpload extends Input
                     $output .= '</div>';
                 }
 
-                $output .= '<input type="hidden" id="'.$attachmentName.'" name="'.$attachmentName.'" value="'.$attachmentPath.'">';
+                $output .= '<input type="hidden" id="'.$attachmentName.'" name="'.$attachmentName.'" value="'.rawurlencode($attachmentPath).'">';
             }
 
             if ($this->getAttribute('multiple') == true) {
