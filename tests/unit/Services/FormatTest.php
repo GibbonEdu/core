@@ -81,70 +81,46 @@ class FormatTest extends TestCase
 
     public function testFormatsReadableDates()
     {
-        // $this->assertEquals('May 18, 2018', Format::dateReadable('2018-05-18'));
         $this->assertEquals('18 May 2018', Format::dateReadable('2018-05-18'));
-        // $this->assertEquals('May 18, 2018 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
         $this->assertEquals('18 May 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
 
         //
-        // Verify fidelity of formatting output before and after dateReadable refactor.
+        // Verify fidelity of formatting output after dateReadable refactor.
         //
 
         $dateString = '2018-02-03 13:24';
 
         // modules/Planner/units_edit_deploy.php
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('Sat  3 Feb, 2018', Format::dateReadable($dateString, '%a %e %b, %Y'));
-        $this->assertEquals('Sat 3 Feb, 2018', Format::dateReadable($dateString, 'E d MMM, yyyy'));
+        // modules/Staff/report_subs_availability.php
+        // modules/Staff/coverage_planner_assign.php
+        $this->assertEquals('Saturday, 3 February 2018', Format::dateReadable($dateString, Format::FULL));
 
-        // modules/Students/student_view_details.php
-        // $this->assertEquals('13:24, Feb 03 2018', Format::dateReadable($dateString, '%H:%M, %b %d %Y'));
-        $this->assertEquals('13:24, Feb 03 2018', Format::dateReadable($dateString, 'HH:mm, MMM dd yyyy'));
-
-        // modules/Attendance/attendance.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
-        // modules/Attendance/src/AttendanceView.php
-        // $this->assertEquals('03', Format::dateReadable($dateString, '%d'));
-        $this->assertEquals('03', Format::dateReadable($dateString, 'dd'));
-
-        // modules/Attendance/attendance.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
-        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
-        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
-        // modules/Attendance/src/AttendanceView.php
-        // modules/Staff/src/Tables/AbsenceCalendar.php
-        // modules/Staff/src/Tables/CoverageCalendar.php
-        // modules/Staff/report_absences_summary.php
-        // modules/Staff/report_coverage_summary.php
-        // $this->assertEquals('Feb', Format::dateReadable($dateString, '%b'));
-        $this->assertEquals('Feb', Format::dateReadable($dateString, 'MMM'));
+        // modules/Staff/report_subs_availabilityWeekly.php
+        $this->assertEquals('Saturday, 3 February', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
 
         // modules/Attendance/attendance_future_byPerson.php
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('February  3, 2018', Format::dateReadable($dateString, '%B %e, %Y'));
-        $this->assertEquals('February 3, 2018', Format::dateReadable($dateString, 'MMMM d, yyyy'));
+        $this->assertEquals('3 February 2018', Format::dateReadable($dateString, Format::LONG));
+
+        // modules/Staff/src/Tables/AbsenceCalendar.php
+        // modules/Staff/report_absences_summary.php
+        // modules/Planner/units_edit_working.php
+        $this->assertEquals('3 Feb 2018', Format::dateReadable($dateString, Format::MEDIUM));
 
         // modules/Attendance/report_graph_byType.php
-        // $this->assertEquals('Feb 03', Format::dateReadable($dateString, '%b %d'));
-        $this->assertEquals('3 Feb', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
-
         // modules/Reports/reporting_my.php
         // modules/Activities/report_attendance.php
         // modules/Activities/activities_attendance.php
         // modules/Staff/src/Messages/CoveragePartial.php
         // modules/Reports/templates/ui/reportingCycleHeader.twig.html
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('Feb  3', Format::dateReadable($dateString, '%b %e'));
         $this->assertEquals('3 Feb', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
 
-        // modules/Activities/report_attendance.php
-        // modules/Activities/activities_attendance.php
-        // $this->assertEquals('Sat', Format::dateReadable($dateString, '%a'));
-        $this->assertEquals('Sat', Format::dateReadable($dateString, 'EEE'));
+        // modules/Attendance/attendance.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
+        // modules/Attendance/src/AttendanceView.php
+        $this->assertEquals('03', Format::date($dateString, 'd'));
 
         // modules/Staff/src/Forms/CoverageRequestForm.php
         // modules/Staff/src/Tables/AbsenceCalendar.php
@@ -154,50 +130,38 @@ class FormatTest extends TestCase
         // modules/Staff/coverage_planner.php
         // modules/Staff/report_absences_summary.php
         // modules/Staff/report_absences_weekly.php
-        // $this->assertEquals('Saturday', Format::dateReadable($dateString, '%A'));
-        $this->assertEquals('Saturday', Format::dateReadable($dateString, 'EEEE'));
+        $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
 
-        // modules/Staff/src/Tables/AbsenceCalendar.php
-        // modules/Staff/report_absences_summary.php
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('Feb  3, 2018', Format::dateReadable($dateString, '%b %e, %Y'));
-        $this->assertEquals('3 Feb 2018', Format::dateReadable($dateString, Format::MEDIUM));
-
-        // modules/Staff/report_subs_availability.php
-        // modules/Staff/coverage_planner_assign.php
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('Saturday, Feb  3', Format::dateReadable($dateString, '%A, %b %e'));
-        $this->assertEquals('Saturday, Feb 3', Format::dateReadable($dateString, 'EEEE, MMM d'));
+        // modules/Activities/report_attendance.php
+        // modules/Activities/activities_attendance.php
+        $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
 
         // modules/Staff/report_absences_summary.php
         // modules/Staff/report_coverage_summary.php
-        // $this->assertEquals('February 2018', Format::dateReadable($dateString, '%B %Y'));
-        $this->assertEquals('February 2018', Format::dateReadable($dateString, 'MMMM yyyy'));
+        $this->assertEquals('February', Format::monthName($dateString));
 
-        // modules/Staff/report_subs_availabilityWeekly.php
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('Sat, Feb  3', Format::dateReadable($dateString, '%a, %b %e'));
-        $this->assertEquals('Sat, Feb 3', Format::dateReadable($dateString, 'EEE, MMM d'));
-
+        // modules/Attendance/attendance.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate_print.php
+        // modules/Attendance/report_courseClassesNotRegistered_byDate.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate_print.php
+        // modules/Attendance/report_formGroupsNotRegistered_byDate.php
+        // modules/Attendance/src/AttendanceView.php
+        // modules/Staff/src/Tables/AbsenceCalendar.php
+        // modules/Staff/src/Tables/CoverageCalendar.php
         // modules/Staff/report_absences_summary.php
-        // modules/Planner/units_edit_working.php
-        // Note: %e has a leading space for single digit days, but cannot do the same with intl date formats.
-        // $this->assertEquals('Sat  3 Feb, 2018', Format::dateReadable($dateString, '%a %e %b, %Y'));
-        $this->assertEquals('Sat 3 Feb, 2018', Format::dateReadable($dateString, 'EEE d MMM, yyyy'));
+        // modules/Staff/report_coverage_summary.php
+        $this->assertEquals('Feb', Format::monthName($dateString, true));
 
         // modules/Attendance/attendance_future_byPerson.php
         // modules/Attendance/attendance_take_byPerson.php
-        // $this->assertEquals('13:24, Feb 03', Format::dateTimeReadable($dateString, '%R, %b %d'));
-        // $this->assertEquals('13:24, Feb 03', Format::dateTimeReadable($dateString));
+        // modules/Students/student_view_details.php
         $this->assertEquals('3 Feb 2018, 13:24', Format::dateTimeReadable($dateString));
 
         // modules/Students/firstAidRecord_edit.php
         // modules/Students/firstAidRecord.php
-        // $this->assertEquals('13:24, Feb 03 2018', Format::dateTimeReadable($dateString, '%H:%M, %b %d %Y'));
         $this->assertEquals('3 February 2018 At 13:24', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
 
         // modules/Attendance/attendance_take_byPerson.php
-        // $this->assertEquals('13:24', Format::dateTimeReadable($dateString, '%H:%M'));
         $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
     }
 

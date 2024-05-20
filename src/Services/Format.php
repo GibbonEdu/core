@@ -152,10 +152,10 @@ class Format
      *
      * @param DateTime|string $dateString   The date string to format.
      * @param int|string     $dateFormat    (Optional) An int to specify the date format used with IntlDateFormatter
-     *                                      If a string is passed, it will return a default format.
+     *                                      If a string is passed, it will return the default format.
      *                                      See: https://www.php.net/manual/en/class.intldateformatter.php
      *                                      See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
-     *                                      Default: \IntlDateFormatter::LONG
+     *                                      Default: \IntlDateFormatter::MEDIUM
      * @param int|string     $timeFormat    (Optional) An int to specify the time format used with IntlDateFormatter
      *                                      Default: \IntlDateFormatter::NONE
      *
@@ -207,8 +207,8 @@ class Format
      */
     protected static function getDatePattern($dateFormat = null)
     {
-        if (is_string($dateFormat) && !empty($dateFormat)) {
-            return $dateFormat;
+        if (is_string($dateFormat)) {
+            return null;
         }
         
         switch ($dateFormat) {
@@ -226,7 +226,7 @@ class Format
 
     /**
      * Gets a generic format for DateTime classes, to be used as a fallback
-     * when IntlDateFormatter is not avaialble.
+     * when IntlDateFormatter is not available.
      *
      * @param string|int    $dateFormat
      * @param string|int    $timeFormat

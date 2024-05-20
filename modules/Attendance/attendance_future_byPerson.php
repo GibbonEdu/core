@@ -387,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $row->addLabel('periodSelectContainer', __('Periods Absent'));
 
                 $table = $row->addTable('periodSelectContainer')->setClass('standardWidth');
-                $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date),'MMMM d, yyyy'));
+                $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date), Format::LONG));
 
                 foreach ($classes as $class) {
                     $name = $class['columnName'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
