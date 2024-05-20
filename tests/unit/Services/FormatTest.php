@@ -30,6 +30,7 @@ class FormatTest extends TestCase
             'currency'                       => 'HKD $',
             'currencySymbol'                 => '$',
             'currencyName'                   => 'HKD',
+            'dateFormatGenerate'             => false,
         ];
 
         // Set the locale for the tests.
@@ -163,6 +164,28 @@ class FormatTest extends TestCase
 
         // modules/Attendance/attendance_take_byPerson.php
         $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+
+        Format::$intlFormatterAvailable = false;
+
+        $this->assertEquals('May 18 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('May 18 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
+
+        $this->assertEquals('Saturday, February 3 2018', Format::dateReadable($dateString, Format::FULL));
+        $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
+        $this->assertEquals('February 3 2018', Format::dateReadable($dateString, Format::LONG));
+        $this->assertEquals('Feb 3 2018', Format::dateReadable($dateString, Format::MEDIUM));
+        $this->assertEquals('Feb 3', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
+
+        $this->assertEquals('03', Format::date($dateString, 'd'));
+        $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
+        $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
+        $this->assertEquals('February', Format::monthName($dateString));
+        $this->assertEquals('Feb', Format::monthName($dateString, true));
+
+        $this->assertEquals('Feb 3 2018, 13:24', Format::dateTimeReadable($dateString));
+        $this->assertEquals('February 3 2018, 13:24', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
+        $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+        
     }
 
     public function testFormatsDateRanges()

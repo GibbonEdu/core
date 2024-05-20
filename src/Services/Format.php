@@ -52,14 +52,15 @@ class Format
         'dateTimeFormatPHP'    => 'd/m/Y H:i',
         'timeFormatPHP'        => 'H:i',
         'dateFormatFull'       => 'l, F j',
-        'dateFormatLong'       => 'D, M j',
+        'dateFormatLong'       => 'F j',
         'dateFormatMedium'     => 'M j',
         'dateFormatIntlFull'   => 'EEEE MMMM d',
-        'dateFormatIntlLong'   => 'EE MMMM d',
+        'dateFormatIntlLong'   => 'MMMM d',
         'dateFormatIntlMedium' => 'MMM d',
+        'dateFormatGenerate'   => true,
     ];
 
-    protected static $intlFormatterAvailable = false;
+    public static $intlFormatterAvailable = false;
 
     /**
      * Sets the internal formatting options from an array.
@@ -72,10 +73,10 @@ class Format
         static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
 
         // Generate best-fit date formats for this locale, if possible
-        if (static::$intlFormatterAvailable && class_exists('IntlDatePatternGenerator')) {
+        if (static::$settings['dateFormatGenerate'] && class_exists('IntlDatePatternGenerator')) {
             $intlPatternGenerator = new \IntlDatePatternGenerator(static::$settings['code']);
             static::$settings['dateFormatIntlFull'] = $intlPatternGenerator->getBestPattern('EEEEMMMMd');
-            static::$settings['dateFormatIntlLong'] = $intlPatternGenerator->getBestPattern('EEMMMMd');
+            static::$settings['dateFormatIntlLong'] = $intlPatternGenerator->getBestPattern('MMMMd');
             static::$settings['dateFormatIntlMedium'] = $intlPatternGenerator->getBestPattern('MMMd');
         }
     }
@@ -234,7 +235,14 @@ class Format
      */
     protected static function getDateFallback($dateFormat = null, $timeFormat = null)
     {
+        if (is_null($dateFormat)) {
+            $dateFormat = static::MEDIUM;
+        }
+
         switch ($dateFormat) {
+            case static::NONE:
+                $format = '';
+                break;
             case static::FULL:
             case static::FULL_NO_YEAR:
                 $format = static::$settings['dateFormatFull'];
@@ -247,14 +255,15 @@ class Format
                 $format = static::$settings['dateFormatMedium'];
         }
 
-        if ($dateFormat < 100) {
-            $format .= ', Y'; 
+        if ($dateFormat >= 0 && $dateFormat < 100) {
+            $format .= ' Y'; 
         }
 
-        if ($timeFormat != null) {
+        if ($timeFormat != null && $timeFormat != static::NONE) {
+            $format .= !empty($format) ? ', ' : '';
             $format .= $timeFormat == static::FULL
-                ? ' H:i:s'
-                : ' H:i';
+                ? 'H:i:s'
+                : 'H:i';
         }
 
         return $format;
