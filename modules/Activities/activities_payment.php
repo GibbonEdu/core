@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
         $form = Form::create('generateInvoices', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_paymentProcessBulk.php');
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
-        $form->setClass('w-full blank');
+        $form->setClass('w-full blank bulkActionForm');
         $form->addHiddenValue('address', $session->get('address'));
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             $row->addContent(Format::name('', $student['preferredName'], $student['surname'], 'Student', true));
             $row->addContent($student['name']);
             $row->addCurrency("payment[$gibbonActivityStudentID]")->required()->setValue($student['payment']);
-            $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
+            $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('bulkCheckbox');
         }
 
         echo $form->getOutput();
