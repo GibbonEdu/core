@@ -165,6 +165,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $count = $_POST['count'] ?? 0;
 
                 for ($i = 0; $i < $count; ++$i) {
+                    // Get the values of the current condition
+                    $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
+                    $condition = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
+                    if (empty($condition)) {
+                        $dataChanged = true;
+                    }
+
                     $data = [
                         'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
                         'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID,
@@ -189,13 +196,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         if (empty($data['attachment'])) {
                             $partialFail = true;
                         }
-                    }
-
-                    // Get the values of the current condition
-                    $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
-                    $condition = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
-                    if (empty($condition)) {
-                        $dataChanged = true;
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $data['attachment'] = empty($_POST["attachment$i"]) ? null : $condition['attachment'];
                     }
 
                     // Check for values that have changed

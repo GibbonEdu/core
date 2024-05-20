@@ -111,6 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         $data['gibbonReportingCriteriaID'] = $gibbonReportingCriteriaID;
         $data['value'] = $data['comment'] = $data['gibbonScaleGradeID'] = null;
 
+        $existing = $reportingValueGateway->selectBy(['gibbonReportingCriteriaID' => $data['gibbonReportingCriteriaID'], 'gibbonPersonIDStudent' => $data['gibbonPersonIDStudent']])->fetch();
+        
         $criteriaType = $reportingCriteriaGateway->getCriteriaTypeByID($gibbonReportingCriteriaID);
         $criteriaOptions = !empty($criteriaType['options']) ? json_decode($criteriaType['options'], true) : [];
         if ($criteriaType['valueType'] == 'Comment' || $criteriaType['valueType'] == 'Remark') {
@@ -122,13 +124,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             if (!empty($_FILES['file'.$gibbonReportingCriteriaID]['tmp_name'])) {
                 $data['value'] = $fileUploader->uploadAndResizeImage($_FILES['file'.$gibbonReportingCriteriaID], 'reportFile', $criteriaOptions['imageSize'] ?? 1024, $criteriaOptions['imageQuality'] ?? 80);
             } else {
-                $data['value'] = $value;
+                $data['value'] = empty($value) ? '' : $existing['value'];
             }
         } else {
             $data['value'] = $value;
         }
-
-        $existing = $reportingValueGateway->selectBy(['gibbonReportingCriteriaID' => $data['gibbonReportingCriteriaID'], 'gibbonPersonIDStudent' => $data['gibbonPersonIDStudent']])->fetch();
 
         if (!empty($existing)) {
             $updated = $reportingValueGateway->update($existing['gibbonReportingValueID'], $data + [

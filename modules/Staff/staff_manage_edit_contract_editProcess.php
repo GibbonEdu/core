@@ -81,7 +81,6 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $bonusPeriod = $_POST['bonusPeriod'] ?? '';
                 $education = $_POST['education'] ?? '';
                 $notes = $_POST['notes'] ?? '';
-                $contractUpload = $_POST['contractUpload'] ?? $row['contractUpload'];
 
                 $partialFail = false;
                 if (!empty($_FILES['file1']['tmp_name'])) {
@@ -97,6 +96,9 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                         $contractUpload = '';
                         $partialFail = true;
                     }
+                } else {
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $contractUpload = empty($_POST['contractUpload']) ? '' : $row['contractUpload'];
                 }
 
                 if ($title == '' or $status == '') {

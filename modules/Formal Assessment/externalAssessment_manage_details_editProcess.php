@@ -69,7 +69,6 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 }
                 $date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 
-                $attachment = $_POST['attachment'] ?? $row['attachment'];
                 //Move attached image  file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -82,6 +81,9 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                     if (empty($attachment)) {
                         $partialFail = true;
                     }
+                } else {
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                 }
 
                 if ($date == '') {

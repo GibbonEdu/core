@@ -95,6 +95,7 @@ class FileUpload extends Input
     }
 
     /**
+     * @deprecated v27 No longer needs separate scripts.
      * Set the URL to visit if the delete action is clicked.
      * @param  string  $actionURL
      */

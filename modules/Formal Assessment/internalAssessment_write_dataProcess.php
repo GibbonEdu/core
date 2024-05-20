@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
-                $attachmentCurrent = $_POST['attachment'] ?? '';
+
                 $name = $row['name'];
                 $count = $_POST['count'] ?? '';
                 $partialFail = false;
@@ -152,24 +152,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $time = time();
 
-                    $attachment = $_POST["attachment$i"] ?? '';
-
-                    //Move attached file, if there is one
-                    if ($uploadedResponse == 'Y') {
-                        if (!empty($_FILES["response$i"]['tmp_name'])) {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $session);
-
-                            $file = (isset($_FILES["response$i"]))? $_FILES["response$i"] : null;
-
-                            // Upload the file, return the /uploads relative path
-                            $attachment = $fileUploader->uploadFromPost($file, $name.'_Uploaded Response');
-
-                            if (empty($attachment)) {
-                                $partialFail = true;
-                            }
-                        }
-                    }
-
                     $selectFail = false;
                     try {
                         $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
@@ -181,7 +163,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $selectFail = true;
                     }
                     if (!($selectFail)) {
-                        if ($result->rowCount() < 1) {
+                        $entry = $result->rowCount() > 0 ? $result->fetch() : [];
+
+                        $attachment = $entry['response'] ?? null;
+
+                        //Move attached file, if there is one
+                        if ($uploadedResponse == 'Y') {
+                            if (!empty($_FILES["response$i"]['tmp_name'])) {
+                                $fileUploader = new Gibbon\FileUploader($pdo, $session);
+
+                                $file = (isset($_FILES["response$i"]))? $_FILES["response$i"] : null;
+
+                                // Upload the file, return the /uploads relative path
+                                $attachment = $fileUploader->uploadFromPost($file, $name.'_Uploaded Response');
+
+                                if (empty($attachment)) {
+                                    $partialFail = true;
+                                }
+                            } else {
+                                // Remove the attachment if it has been deleted, otherwise retain the original value
+                                $attachment = empty($_POST["attachment$i"]) ? null : $attachment;
+                            }
+                        }
+
+                        if (empty($entry)) {
                             try {
                                 $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'attainmentValue' => $attainmentValue, 'attainmentDescriptor' => $attainmentDescriptor, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'comment' => $commentValue, 'attachment' => $attachment, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit);
                                 $sql = 'INSERT INTO gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, effortValue=:effortValue, effortDescriptor=:effortDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
@@ -191,10 +196,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 $partialFail = true;
                             }
                         } else {
-                            $row = $result->fetch();
                             //Update
                             try {
-                                $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'attainmentValue' => $attainmentValue, 'attainmentDescriptor' => $attainmentDescriptor, 'comment' => $commentValue, 'attachment' => $attachment, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'gibbonInternalAssessmentEntryID' => $row['gibbonInternalAssessmentEntryID']);
+                                $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'attainmentValue' => $attainmentValue, 'attainmentDescriptor' => $attainmentDescriptor, 'comment' => $commentValue, 'attachment' => $attachment, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'gibbonInternalAssessmentEntryID' => $entry['gibbonInternalAssessmentEntryID']);
                                 $sql = 'UPDATE gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, effortValue=:effortValue, effortDescriptor=:effortDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentEntryID=:gibbonInternalAssessmentEntryID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
@@ -221,8 +225,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = $attachmentCurrent;
+                    $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                 }
+
                 $completeDate = $_POST['completeDate'] ?? '';
                 if ($completeDate == '') {
                     $completeDate = null;
