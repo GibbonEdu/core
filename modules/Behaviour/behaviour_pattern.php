@@ -63,14 +63,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addLabel('type', __('Type'));
             $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive') ])->placeholder()->selected($type);
 
-        if ($enableDescriptors == 'Y') {
-            $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
-            $negativeDescriptors = array_map('trim', explode(',', $negativeDescriptors));
+            if ($enableDescriptors == 'Y') {
+                $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
+                $negativeDescriptors = !empty($negativeDescriptors)? array_map('trim', explode(',', $negativeDescriptors)) : [];
+                $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
+                $positiveDescriptors = !empty($positiveDescriptors)? array_map('trim', explode(',', $positiveDescriptors)) : [];
 
-            $row = $form->addRow();
-                $row->addLabel('descriptor', __('Descriptor'));
-                $row->addSelect('descriptor')->fromArray($negativeDescriptors)->placeholder()->selected($descriptor);
-        }
+                $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
+                $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
+                $chainedTo = array_merge($chainedToNegative, $chainedToPositive);
+
+                $row = $form->addRow();
+                    $row->addLabel('descriptor', __('Descriptor'));
+                    $row->addSelect('descriptor')
+                        ->fromArray($positiveDescriptors)
+                        ->fromArray($negativeDescriptors)
+                        ->chainedTo('type', $chainedTo)
+                        ->placeholder()
+                        ->selected($descriptor);
+            }
 
         if ($enableLevels == 'Y') {
             $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
