@@ -42,6 +42,7 @@ v27.0.00
         System: added departments as one of the searchable options with the fast finder
         System: improved randomness of password salt generation
         System: added an IP address to failed login attempt notifications
+        System: added additional filtering for invalid characters in uploaded files
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
