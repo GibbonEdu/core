@@ -30,10 +30,10 @@ v27.0.00
         System: updated Google OAuth Client SSO to handle granular permissions (required by Google for June 17, 2024)
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
         System: updated date localisation to use the PHP Intl library, removed deprecated strftime
-        System: in you use Gmail SMTP relay, be sure to update your settings to use an App Password
+        System: if you use Gmail SMTP relay, be sure to update your settings to use an App Password (before June 17, 2024)
 
     Security
-        System: improved the input sanitization and output encoding or URLs
+        System: improved the input sanitization and output encoding of URLs
 
     Tweaks & Additions
         System: automatically hyperlink any urls included in Custom Field descriptions
@@ -118,7 +118,7 @@ v27.0.00
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
         System Admin: fixed category and module for Student Enrolment importer
-        User Admin: fixed HTML being removed from Language Options blurb in Student Application Fomrm
+        User Admin: fixed HTML being removed from Language Options blurb in Student Application Form
 
     Deprecations
         System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated
