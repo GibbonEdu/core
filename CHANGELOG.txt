@@ -106,6 +106,7 @@ v27.0.00
         Attendance: fixed the attendance counts in Attendance Summary by Date when grouping by Form Group 
         Behaviour: fixed descriptor dropdown for Positive types in Find Behaviour Patterns
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
+        Planner: fixed missing homeworkTimeCap field when duplicating a lesson plan
         Planner: fixed year group filter in View Resources
         Markbook: fixed the Markbook Entry importer so that it supports username, email or student ID
         Markbook: fixed the Term Added field in the Markbook Column importer
