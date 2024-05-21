@@ -148,6 +148,9 @@ class Format
      */
     public static function dateTime($dateString, $format = false)
     {
+        if (empty($dateString)) {
+            return '';
+        }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
@@ -282,6 +285,10 @@ class Format
      */
     public static function dateRange($dateFrom, $dateTo, $format = false)
     {
+        if (empty($dateFrom) || empty($dateTo)) {
+            return '';
+        }
+
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
     }
 
@@ -327,6 +334,10 @@ class Format
      */
     public static function dateFromTimestamp($timestamp, $format = false)
     {
+        if (empty($timestamp)) {
+            return '';
+        }
+
         $date = static::createDateTime($timestamp, 'U');
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
     }
@@ -395,6 +406,10 @@ class Format
      */
     public static function timestamp($dateString, $timezone = null)
     {
+        if (empty($dateString)) {
+            return '';
+        }
+
         if (is_string($dateString) && strlen($dateString) == 10) {
             $dateString .= ' 00:00:00';
         }
@@ -411,6 +426,10 @@ class Format
      */
     public static function time($timeString, $format = false)
     {
+        if (empty($timeString)) {
+            return '';
+        }
+
         $convertFormat = is_string($timeString) && strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
         $date = static::createDateTime($timeString, $convertFormat);
         return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
@@ -641,7 +660,12 @@ class Format
      */
     public static function age($dateString, $short = false)
     {
+        if (empty($dateString)) {
+            return '';
+        }
+        
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        
         if (!$date) {
             return __('Unknown');
         }
@@ -1044,6 +1068,10 @@ class Format
      */
     protected static function daysUntilNextBirthday(string $birthday): int
     {
+        if (empty($birthday)) {
+            return '';
+        }
+
         // DateTime of 00:00:00 today
         $today = new \DateTime('today');
 
