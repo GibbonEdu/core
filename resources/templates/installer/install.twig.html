@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block beforePage %}
 
-    {% if step < 1 %}
+    {% if step <= 1 %}
     <div class="shadow bg-white rounded max-w-4xl mx-auto pt-4 pb-6 px-8 mb-6">
         <h2>{{ __('Welcome To Gibbon') }}</h2>
 
