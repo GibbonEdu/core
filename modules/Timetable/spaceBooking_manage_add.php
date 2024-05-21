@@ -49,6 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $step = 1;
         }
 
+        $canOverride = $highestAction == 'Manage Facility Bookings_allBookings';
+
         //Step 1
         if ($step == 1) {
             echo '<h2>';
@@ -221,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         } else {
                             $row = $form->addRow()->addClass('error');
                             $row->addLabel('dates[]', Format::date($date))->description(__('Not Available'));
-                            $row->addCheckbox('dates[]')->setValue($date)->disabled();
+                            $row->addCheckbox('dates[]')->setValue($date)->disabled(!$canOverride);
                         }
                     } elseif ($repeat == 'Daily' and $repeatDaily >= 2 and $repeatDaily <= 20) {
                         $continue = true;
@@ -245,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled(!$canOverride);
                                 }
                             } else {
                                 ++$failCount;
@@ -277,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled(!$canOverride);
                                 }
                             } else {
                                 ++$failCount;
@@ -293,6 +295,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     }
 
                     if ($available == true) {
+
+                        if ($canOverride) {
+                            $row = $form->addRow();
+                                $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
+                                $row->addCheckbox('override')->setValue('Y');
+                        }
+                            
                         $row = $form->addRow();
                             $row->addSubmit();
                     } else {
