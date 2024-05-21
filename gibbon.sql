@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 20, 2023 at 05:05 AM
+-- Generation Time: May 21, 2024 at 02:17 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -180,7 +180,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000714, 0005, 'Form Group Summary', 0, 'Reports', 'Summarises gender and number of students across all form groups.', NULL, 'report_formGroupSummary.php', 'report_formGroupSummary.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000715, 0001, 'Manage Alert Levels', 0, 'People', 'Manage the alert levels which are used throughout the school to flag problems.', NULL, 'alertLevelSettings.php', 'alertLevelSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000716, 0011, 'Individual Needs Records_viewContribute', 1, 'Individual Needs', 'Allows users to contribute teaching strategies to IN records for all students', NULL, 'in_view.php, in_edit.php', 'in_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000717, 0001, 'Individual Needs Settings', 0, 'People', 'Allows admins to control the descriptors available for use in the Individual Needs module.', NULL, 'inSettings.php, inSettings_add.php, inSettings_edit.php, inSettings_delete.php', 'inSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000717, 0001, 'Individual Needs Settings', 0, 'Learn', 'Allows admins to control the descriptors available for use in the Individual Needs module.', NULL, 'inSettings.php, inSettings_add.php, inSettings_edit.php, inSettings_delete.php', 'inSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000718, 0011, 'Individual Needs Summary', 0, 'Individual Needs', 'Allows user to see a flexible summary of IN data.', NULL, 'in_summary.php', 'in_summary.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000719, 0119, 'Find Behaviour Patterns', 0, 'Behaviour Tracking', 'Allows user to spot students who are repeat or regular offenders.', NULL, 'behaviour_pattern.php', 'behaviour_pattern.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000720, 0130, 'Browse The Library', 0, 'Catalog', 'Search and view all borrowable items maintained by the library', NULL, 'library_browse.php', 'library_browse.php', 'N', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
@@ -407,7 +407,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000993, 0136, 'Duty Schedule_edit', 0, 'Reports', 'Manage the staff duty schedule.', NULL, 'staff_duty.php,staff_duty_edit.php', 'staff_duty.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000994, 0136, 'Duty Schedule_view', 0, 'Reports', 'View the staff duty schedule.', NULL, 'staff_duty.php', 'staff_duty.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000995, 0136, 'Daily Coverage Planner', 0, 'Coverage', '', NULL, 'coverage_planner.php,coverage_planner_assign.php,coverage_planner_unassign.php', 'coverage_planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000996, 0005, 'First Aid Record_viewOnlyAddNotes', 0, 'Medical', 'Allows user to view first aid records and add incident notes, but not add or edit records.', NULL, 'firstAidRecord.php,firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000996, 0005, 'First Aid Record_viewOnlyAddNotes', 0, 'Medical', 'Allows user to view first aid records and add incident notes, but not add or edit records.', NULL, 'firstAidRecord.php,firstAidRecord_edit.php', 'firstAidRecord.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000997, 0130, 'Manage Library Shelves', 0, 'Catalog', 'Allows user to manage shelves displaying library items for library browsing.', NULL, 'library_manage_shelves.php, library_manage_shelves_add.php, library_manage_shelves_edit.php, library_manage_shelves_delete.php', 'library_manage_shelves.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000998, 0119, 'View Behaviour Records_my', 0, 'Behaviour Records', 'Enables users to view the behaviour records created by them', NULL, 'behaviour_view.php,behaviour_view_details.php', 'behaviour_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -490,7 +492,7 @@ CREATE TABLE `gibbonActivityStudent` (
   `gibbonActivityStudentID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000',
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000',
-  `status` enum('Accepted','Pending','Waiting List','Not Accepted') NOT NULL DEFAULT 'Pending',
+  `status` enum('Accepted','Pending','Waiting List','Not Accepted','Left') NOT NULL DEFAULT 'Pending',
   `timestamp` datetime NOT NULL,
   `gibbonActivityIDBackup` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `invoiceGenerated` enum('N','Y') NOT NULL DEFAULT 'N',
@@ -894,8 +896,23 @@ CREATE TABLE `gibbonBehaviour` (
   `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `fields` text COLLATE utf8_unicode_ci
+  `fields` text COLLATE utf8_unicode_ci,
+  `gibbonMultiIncidentID` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonBehaviourFollowUp`
+--
+
+CREATE TABLE `gibbonBehaviourFollowUp` (
+  `gibbonBehaviourFollowUpID` int(11) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonBehaviourID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `followUp` text,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -984,7 +1001,6 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 ('Congo, the Democratic Republic of the', ''),
 ('Cook Islands', '682'),
 ('Costa Rica', '506'),
-('Cote D\'Ivoire', ''),
 ('Croatia', '385'),
 ('Cuba', '53'),
 ('Cyprus', '357'),
@@ -1037,6 +1053,7 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 ('Ireland', '353'),
 ('Israel', '972'),
 ('Italy', '39'),
+('Ivory Coast (Côte d\'Ivoire)', '225'),
 ('Jamaica', '1 876'),
 ('Japan', '81'),
 ('Jordan', '962'),
@@ -2827,6 +2844,35 @@ CREATE TABLE `gibbonLibraryItemEvent` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonLibraryShelf`
+--
+
+CREATE TABLE `gibbonLibraryShelf` (
+  `gibbonLibraryShelfID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `active` enum('Y','N') NOT NULL DEFAULT 'N',
+  `shuffle` enum('N','Y') NOT NULL DEFAULT 'N',
+  `field` varchar(90) NOT NULL,
+  `fieldValue` varchar(90) DEFAULT NULL,
+  `type` enum('Manual','Automatic') NOT NULL DEFAULT 'Manual',
+  `sequenceNumber` int(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonLibraryShelfItem`
+--
+
+CREATE TABLE `gibbonLibraryShelfItem` (
+  `gibbonLibraryShelfItemID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonLibraryItemID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonLibraryShelfID` int(6) UNSIGNED ZEROFILL NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonLibraryType`
 --
 
@@ -3017,9 +3063,8 @@ CREATE TABLE `gibbonMessenger` (
   `email` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWall` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWallPin` enum('N','Y') NOT NULL DEFAULT 'N',
-  `messageWall_date1` date DEFAULT NULL,
-  `messageWall_date2` date DEFAULT NULL,
-  `messageWall_date3` date DEFAULT NULL,
+  `messageWall_dateStart` date DEFAULT NULL,
+  `messageWall_dateEnd` date DEFAULT NULL,
   `sms` enum('N','Y') NOT NULL DEFAULT 'N',
   `subject` varchar(60) NOT NULL,
   `body` text NOT NULL,
@@ -3033,7 +3078,8 @@ CREATE TABLE `gibbonMessenger` (
   `individualNaming` enum('N','Y') NOT NULL DEFAULT 'N',
   `includeSignature` enum('N','Y') NOT NULL DEFAULT 'N',
   `smsReport` text NOT NULL,
-  `confidential` enum('N','Y') NOT NULL DEFAULT 'N'
+  `confidential` enum('N','Y') NOT NULL DEFAULT 'N',
+  `enableSharingLink` enum('N','Y') NOT NULL DEFAULT 'N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3225,7 +3271,12 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 (000034, 'Updated Timetable Subscriber', 'Timetable', 'View Timetable by Person', 'Core', 'All', 'Y'),
 (000035, 'New Investigation', 'Individual Needs', 'Manage Investigations', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
 (000036, 'Behaviour Record for IN Student', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
-(000037, 'Remove Stale Notifications', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y');
+(000037, 'Remove Stale Notifications', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y'),
+(000038, 'Activity Enrolment Added', 'Activities', 'View Activities', 'Core', 'All', 'Y'),
+(000039, 'Activity Enrolment Removed', 'Activities', 'View Activities', 'Core', 'All', 'Y'),
+(000040, 'Activity Status Changed', 'Activities', 'View Activities', 'Core', 'All', 'Y'),
+(000041, 'First Aid Qualification Expiry', 'Staff', 'Manage Staff', 'Core', 'All', 'Y'),
+(000042, 'Student Form Group Changed', 'Admissions', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y');
 
 -- --------------------------------------------------------
 
@@ -3781,7 +3832,8 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054063, 001, 0000993),
 (0000054064, 001, 0000994),
 (0000054065, 002, 0000994),
-(0000054066, 001, 0000995);
+(0000054066, 001, 0000995),
+(0000054067, 001, 0000997);
 
 -- --------------------------------------------------------
 
@@ -3859,7 +3911,7 @@ CREATE TABLE `gibbonPerson` (
   `gibbonSchoolYearIDClassOf` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `lastSchool` varchar(100) NOT NULL,
   `nextSchool` varchar(100) NOT NULL,
-  `departureReason` varchar(50) NOT NULL,
+  `departureReason` varchar(100) NOT NULL,
   `transport` varchar(255) NOT NULL,
   `transportNotes` text NOT NULL,
   `calendarFeedPersonal` text NOT NULL,
@@ -4388,16 +4440,17 @@ CREATE TABLE `gibbonReportingCriteriaType` (
   `defaultValue` varchar(255) DEFAULT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `characterLimit` int(6) DEFAULT NULL,
-  `gibbonScaleID` int(5) UNSIGNED ZEROFILL DEFAULT NULL
+  `gibbonScaleID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `options` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonReportingCriteriaType`
 --
 
-INSERT INTO `gibbonReportingCriteriaType` (`gibbonReportingCriteriaTypeID`, `name`, `valueType`, `defaultValue`, `active`, `characterLimit`, `gibbonScaleID`) VALUES
-(0000000001, 'Comment, Short', 'Comment', NULL, 'Y', 500, NULL),
-(0000000002, 'Comment, Long', 'Comment', NULL, 'Y', 1000, NULL);
+INSERT INTO `gibbonReportingCriteriaType` (`gibbonReportingCriteriaTypeID`, `name`, `valueType`, `defaultValue`, `active`, `characterLimit`, `gibbonScaleID`, `options`) VALUES
+(0000000001, 'Comment, Short', 'Comment', NULL, 'Y', 500, NULL, NULL),
+(0000000002, 'Comment, Long', 'Comment', NULL, 'Y', 1000, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -5113,8 +5166,8 @@ CREATE TABLE `gibbonSchoolYear` (
 --
 
 INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`) VALUES
-(025, '2023-2024', 'Current', 3, '2023-06-12', '2024-06-29'),
-(026, '2024-2025', 'Upcoming', 4, '2024-08-13', '2025-06-29');
+(025,'2024-2025','Current',3,'2024-05-20','2025-06-29'),
+(026,'2025-2026','Upcoming',4,'2025-08-11','2026-06-29');
 
 -- --------------------------------------------------------
 
@@ -5160,12 +5213,12 @@ CREATE TABLE `gibbonSchoolYearTerm` (
 --
 
 INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearID`, `sequenceNumber`, `name`, `nameShort`, `firstDay`, `lastDay`) VALUES
-(00034, 025, 31, 'Term 1', 'T1', '2023-06-12', '2023-12-24'),
-(00035, 025, 32, 'Term 2', 'T2', '2024-01-08', '2024-04-08'),
-(00036, 025, 33, 'Term 3', 'T3', '2024-04-16', '2024-06-29'),
-(00037, 026, 34, 'Term 1', 'T1', '2024-08-13', '2024-12-23'),
-(00038, 026, 35, 'Term 2', 'T2', '2025-01-07', '2025-03-30'),
-(00039, 026, 36, 'Term 3', 'T3', '2025-04-14', '2025-06-29');
+(00034,025,31,'Term 1','T1','2024-05-20','2024-12-30'),
+(00035,025,32,'Term 2','T2','2025-01-07','2025-04-13'),
+(00036,025,33,'Term 3','T3','2025-04-14','2025-06-29'),
+(00037,026,34,'Term 1','T1','2025-08-11','2025-12-28'),
+(00038,026,35,'Term 2','T2','2026-01-05','2026-04-05'),
+(00039,026,36,'Term 3','T3','2026-04-13','2026-06-29');
 
 -- --------------------------------------------------------
 
@@ -5521,7 +5574,8 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00353, 'Messenger', 'signatureTemplate', 'Signature Template', 'An HTML and Twig template used to add signatures to messages.', '----<br /><span style=\"font-weight: bold; color: #447caa;\">{{ preferredName }} {{ surname }}</span><br />{% if jobTitle is not empty %}<span style=\"font-style: italic;\">{{ jobTitle }}</span><br />{% endif %}{{ organisationName }}<br /></span>'),
 (00354, 'System', 'allowableIframeSources', 'Allowable iFrame Sources', 'A comma separated list of domains that are allowed in embedded iFrames. All others will be removed from HTML content.', 'youtube.com,youtu.be,m.youtube.com,google.com,docs.google.com,drive.google.com,vimeo.com,player.vimeo.com'),
 (00355, 'System', 'notificationIntervalStaff', 'Staff Notification Interval', 'Frequency of notification icon update in status tray, for staff users. In thousands of a second.', '10000'),
-(00356, 'System', 'notificationIntervalOther', 'Other Notification Interval', 'Frequency of notification icon update in status tray, for all non-staff users. In thousands of a second.', '60000');
+(00356, 'System', 'notificationIntervalOther', 'Other Notification Interval', 'Frequency of notification icon update in status tray, for all non-staff users. In thousands of a second.', '60000'),
+(00357, 'User Admin', 'privacyOptionVisibility', 'Display privacy options?', 'If enabled, privacy options can be selected by users through the Data Updater and Application Form. If not enabled, privacy options can only be changed by staff through Manage Users.', 'Y');
 
 -- --------------------------------------------------------
 
@@ -5533,6 +5587,7 @@ CREATE TABLE `gibbonSpace` (
   `gibbonSpaceID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `type` varchar(50) NOT NULL,
+  `active` enum('N','Y') NOT NULL DEFAULT 'Y',
   `capacity` int(5) NOT NULL,
   `computer` enum('N','Y') NOT NULL,
   `computerStudent` int(3) NOT NULL DEFAULT '0',
@@ -6399,6 +6454,13 @@ ALTER TABLE `gibbonBehaviour`
   ADD KEY `gibbonPersonID` (`gibbonPersonID`);
 
 --
+-- Indexes for table `gibbonBehaviourFollowUp`
+--
+ALTER TABLE `gibbonBehaviourFollowUp`
+  ADD PRIMARY KEY (`gibbonBehaviourFollowUpID`),
+  ADD KEY `gibbonBehaviourID` (`gibbonBehaviourID`);
+
+--
 -- Indexes for table `gibbonBehaviourLetter`
 --
 ALTER TABLE `gibbonBehaviourLetter`
@@ -6825,6 +6887,18 @@ ALTER TABLE `gibbonLibraryItemEvent`
   ADD PRIMARY KEY (`gibbonLibraryItemEventID`);
 
 --
+-- Indexes for table `gibbonLibraryShelf`
+--
+ALTER TABLE `gibbonLibraryShelf`
+  ADD PRIMARY KEY (`gibbonLibraryShelfID`);
+
+--
+-- Indexes for table `gibbonLibraryShelfItem`
+--
+ALTER TABLE `gibbonLibraryShelfItem`
+  ADD PRIMARY KEY (`gibbonLibraryShelfItemID`);
+
+--
 -- Indexes for table `gibbonLibraryType`
 --
 ALTER TABLE `gibbonLibraryType`
@@ -6895,7 +6969,8 @@ ALTER TABLE `gibbonMessengerReceipt`
 -- Indexes for table `gibbonMessengerTarget`
 --
 ALTER TABLE `gibbonMessengerTarget`
-  ADD PRIMARY KEY (`gibbonMessengerTargetID`);
+  ADD PRIMARY KEY (`gibbonMessengerTargetID`),
+  ADD KEY `gibbonMessengerID` (`gibbonMessengerID`,`gibbonMessengerTargetID`);
 
 --
 -- Indexes for table `gibbonMigration`
@@ -7530,7 +7605,7 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=997;
+  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=999;
 
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
@@ -7651,6 +7726,12 @@ ALTER TABLE `gibbonAttendanceLogPerson`
 --
 ALTER TABLE `gibbonBehaviour`
   MODIFY `gibbonBehaviourID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gibbonBehaviourFollowUp`
+--
+ALTER TABLE `gibbonBehaviourFollowUp`
+  MODIFY `gibbonBehaviourFollowUpID` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonBehaviourLetter`
@@ -8037,6 +8118,18 @@ ALTER TABLE `gibbonLibraryItemEvent`
   MODIFY `gibbonLibraryItemEventID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `gibbonLibraryShelf`
+--
+ALTER TABLE `gibbonLibraryShelf`
+  MODIFY `gibbonLibraryShelfID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gibbonLibraryShelfItem`
+--
+ALTER TABLE `gibbonLibraryShelfItem`
+  MODIFY `gibbonLibraryShelfItemID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `gibbonLibraryType`
 --
 ALTER TABLE `gibbonLibraryType`
@@ -8124,7 +8217,7 @@ ALTER TABLE `gibbonNotification`
 -- AUTO_INCREMENT for table `gibbonNotificationEvent`
 --
 ALTER TABLE `gibbonNotificationEvent`
-  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `gibbonNotificationListener`
@@ -8148,7 +8241,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54067;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54068;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
@@ -8430,7 +8523,7 @@ ALTER TABLE `gibbonSchoolYearTerm`
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=357;
+  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=358;
 
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
