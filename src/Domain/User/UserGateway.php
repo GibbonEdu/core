@@ -222,4 +222,12 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function getUserDetaislByID($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+		$sql = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

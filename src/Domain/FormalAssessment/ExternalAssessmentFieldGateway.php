@@ -26,8 +26,8 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v27
- * @since   v27
+ * @version v28
+ * @since   v28
  */
 class ExternalAssessmentFieldGateway extends QueryableGateway
 {

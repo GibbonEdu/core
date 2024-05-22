@@ -19,9 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,11 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 //Get teacher list
                 $teaching = false;
 
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-
+                $result = $container->get(CourseClassGateway::class)->selectTeacherListByClass($gibbonCourseClassID);
+                    
                 if ($result->rowCount() > 0) {
                     echo "<h3 style='margin-top: 0px'>";
                     echo __('Teachers');

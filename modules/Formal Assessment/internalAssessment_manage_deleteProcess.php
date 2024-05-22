@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -38,10 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            
+            $result = $container->get(InternalAssessmentColumnGateway::class)->selectBy(['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID]);
+            
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");

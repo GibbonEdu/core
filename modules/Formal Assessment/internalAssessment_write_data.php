@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -59,18 +60,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         } else {
             try {
                 if ($highestAction == 'Write Internal Assessments_all') {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+
+                    $result = $container->get(CourseClassGateway::class)->getCourseClass($gibbonCourseClassID);
+
                 } else {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
+
+                    $result = $container->get(CourseClassGateway::class)->getCourseClassByPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
                 }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+
             } catch (PDOException $e) {
             }
 
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
 
@@ -87,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $page->addError(__('The selected column does not exist, or you do not have access to it.'));
                 } else {
                     //Let's go!
-                    $class = $result->fetch();
+                    $class = $result;
                     $values = $result2->fetch();
 
                     $page->breadcrumbs

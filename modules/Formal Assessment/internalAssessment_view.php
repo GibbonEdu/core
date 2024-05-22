@@ -19,10 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -69,13 +72,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				echo '</h3>';
 
 				//Check for access
+					$resultCheck = $container->get(UserGateway::class)->getUserDetaislByID($gibbonPersonID);
 
-					$dataCheck = array('gibbonPersonID' => $gibbonPersonID);
-					$sqlCheck = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')";
-					$resultCheck = $connection2->prepare($sqlCheck);
-					$resultCheck->execute($dataCheck);
-
-				if ($resultCheck->rowCount() != 1) {
+				if (empty($resultCheck)) {
 					$page->addError(__('The selected record does not exist, or you do not have access to it.'));
 				} else {
 					echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
@@ -86,10 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
 			//Test data access field for permission
 
-				$data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-				$sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-				$result = $connection2->prepare($sql);
-				$result->execute($data);
+				$result = $container->get(FamilyAdultGateway::class)->selectBy(['gibbonPersonID' => $session->get('gibbonPersonID'), 'childDataAccess' => 'Y']);
 
 			if ($result->rowCount() < 1) {
 				echo $page->getBlankSlate();
@@ -97,10 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				//Get child list
 				$options = array();
 				while ($row = $result->fetch()) {
-						$dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-						$sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-						$resultChild = $connection2->prepare($sqlChild);
-						$resultChild->execute($dataChild);
+
+						$resultChild = $container->get(FamilyChildGateway::class)->selectChildrenByFamilyID($row['gibbonFamilyID'], $session->get('gibbonSchoolYearID'));
+
 					while ($rowChild = $resultChild->fetch()) {
 						$options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
 					}
@@ -139,11 +134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 if ($gibbonPersonID != '' and count($options) > 0) {
                     //Confirm access to this student
+						$resultChild = $container->get(FamilyChildGateway::class)->selectChildByFamilyAdultID($gibbonPersonID, $session->get('gibbonPersonID'));
 
-                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'date' => date('Y-m-d'));
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
                     if ($resultChild->rowCount() < 1) {
                     	$page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
