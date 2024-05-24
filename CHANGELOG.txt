@@ -31,6 +31,7 @@ v28.0.00
     Tweaks & Additions
         System: added Putonghua as a language option in dropdown menus
         Attendance: added an index to the attendance log to help speed up attendance pages
+        Markbook: updated markbook columns to grey out students who joined after the Go Live date
     
     Bug Fixes
         Admissions: fix "Do not include a second parent" being accidentally checked by default
