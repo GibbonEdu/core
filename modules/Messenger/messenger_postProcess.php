@@ -33,7 +33,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML'])
 include './moduleFunctions.php';
 
 $address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_post.php&sidebar=true';
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_post.php&sidebar=true';
 $URLSend = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_send.php&sidebar=true';
 $URLEdit = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true';
 
