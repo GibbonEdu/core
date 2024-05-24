@@ -34,7 +34,8 @@ v28.0.00
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
     
     Bug Fixes
-        Admissions: fix "Do not include a second parent" being accidentally checked by default
+        Admissions: fixed "Do not include a second parent" being accidentally checked by default
+        Messenger: fixed error redirect for New Message sending users to a non-existing page
 
 v27.0.00
 --------
