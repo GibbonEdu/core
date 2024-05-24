@@ -712,7 +712,36 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                 	$column = $markbook->getColumn( $i );
                     $columnClass = 'columnLabel';
-                    $newEnrollment = !empty($rowStudents['dateEnrolled']) && !empty($column->getData('completeDate')) && $rowStudents['dateEnrolled'] > $column->getData('completeDate');
+                    
+                    $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
+                    $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
+                    $resultEntry = $connection2->prepare($sqlEntry);
+                    $resultEntry->execute($dataEntry);
+
+                    $rowEntry = $resultEntry->rowCount() == 1 ? $resultEntry->fetch() : [];
+
+                    $newEnrollment = false;
+                    
+                    // Check if class enrolment date exists and is after the Go Live date for this column
+                    if (!empty($rowStudents['dateEnrolled']) && !empty($column->getData('completeDate')) && $rowStudents['dateEnrolled'] > $column->getData('completeDate')) {
+                        $newEnrollment = true;
+                    }
+                    
+                    // Check if student enrolment date is after the Go Live date for this column
+                    if (!empty($column->getData('completeDate')) && $rowStudents['dateStart'] > $column->getData('completeDate')) {
+                        $newEnrollment = true;
+                    }
+
+                    // Check if this student doesn't have an entry, and the Go Live date has passed
+                    if (empty($rowEntry) && !empty($column->getData('completeDate') && date('Y-m-d') >= $column->getData('completeDate'))) {
+                        $newEnrollment = true;
+                    }
+
+                    // Check if student does actually have data for this column
+                    if ($newEnrollment && (!empty($rowEntry['attainmentValue']) || !empty($rowEntry['effortValue']) || !empty($rowEntry['comment']) || !empty($rowEntry['response']))) {
+                        $newEnrollment = false;
+                    }
+                    
                     if ($newEnrollment) {
                         $columnClass .= ' dull';
                     }
@@ -722,13 +751,9 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
 
                     
-                        $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-                        $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
-                        $resultEntry = $connection2->prepare($sqlEntry);
-                        $resultEntry->execute($dataEntry);
-                    if ($resultEntry->rowCount() == 1) {
-                        $rowEntry = $resultEntry->fetch();
-
+                        
+                    if (!empty($rowEntry)) {
+                        
                         if ($enableModifiedAssessment == 'Y') {
                             echo "<td class='medColumn'>";
                                 echo $rowEntry['modifiedAssessment'];
@@ -902,10 +927,10 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         } else {
                             if (date('Y-m-d H:i:s') < $column->getData('homeworkDueDateTime') ) {
                                 echo "<span title='".__('Pending')."'>Pen</span>";
-                            } else if (!$newEnrollment) {
+                            } else  {
                                 if ($rowStudents['dateStart'] > $column->getData('lessonDate') ) {
                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
-                                } else {
+                                } else if (!$newEnrollment) {
                                     if ($column->getData('homeworkSubmissionRequired') == 'Required') {
                                         echo "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                                     } else {
