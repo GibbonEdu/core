@@ -817,4 +817,5 @@ ALTER TABLE `gibbonMessenger` ADD `enableSharingLink` ENUM('N','Y') NOT NULL DEF
 $sql[$count][0] = '28.0.00';
 $sql[$count][1] = "
 INSERT IGNORE INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Putonghua');end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX(`context`, `gibbonCourseClassID`);end
 ";
