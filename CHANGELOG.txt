@@ -29,6 +29,7 @@ v28.0.00
     Security
 
     Tweaks & Additions
+        System: added Putonghua as a language option in dropdown menus
     
     Bug Fixes
         Admissions: fix "Do not include a second parent" being accidentally checked by default
