@@ -715,10 +715,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     
                     $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
                     $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
-                    $resultEntry = $connection2->prepare($sqlEntry);
-                    $resultEntry->execute($dataEntry);
+                    $rowEntry = $pdo->selectOne($sqlEntry, $dataEntry);
+                    $rowWork = [];
 
-                    $rowEntry = $resultEntry->rowCount() == 1 ? $resultEntry->fetch() : [];
+                    if ($column->displaySubmission()) {
+                        $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
+                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+                        $rowWork = $pdo->selectOne($sqlWork, $dataWork);
+                    }
 
                     $newEnrollment = false;
                     
@@ -733,12 +737,12 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     }
 
                     // Check if this student doesn't have an entry, and the Go Live date has passed
-                    if (empty($rowEntry) && !empty($column->getData('completeDate') && date('Y-m-d') >= $column->getData('completeDate'))) {
+                    if (empty($rowEntry) && empty($rowWork) && !empty($column->getData('completeDate')) && date('Y-m-d') >= $column->getData('completeDate') && (empty($column->getData('lessonDate')) || $rowStudents['dateStart'] >= $column->getData('lessonDate') ) ) {
                         $newEnrollment = true;
                     }
 
                     // Check if student does actually have data for this column
-                    if ($newEnrollment && (!empty($rowEntry['attainmentValue']) || !empty($rowEntry['effortValue']) || !empty($rowEntry['comment']) || !empty($rowEntry['response']))) {
+                    if ($newEnrollment && (!empty($rowEntry['attainmentValue']) || !empty($rowEntry['effortValue']) || !empty($rowEntry['comment']) || !empty($rowEntry['response'])) || !empty($rowWork)) {
                         $newEnrollment = false;
                     }
                     
@@ -748,9 +752,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                 	echo "<td class='{$columnClass}' style='padding: 0 !important;'>";
                 	echo '<table class="columnLabels blank" cellspacing=0><tr>';
-
-
-                    
                         
                     if (!empty($rowEntry)) {
                         
@@ -893,13 +894,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                         echo "<td class='smallColumn'>";
                         
-                            $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
-                            $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                            $resultWork = $connection2->prepare($sqlWork);
-                            $resultWork->execute($dataWork);
-                        if ($resultWork->rowCount() > 0) {
-                            $rowWork = $resultWork->fetch();
-
+                        if (!empty($rowWork)) {
                             if ($rowWork['status'] == 'Exemption') {
                                 $linkText = __('Exe');
                             } elseif ($rowWork['version'] == 'Final') {
