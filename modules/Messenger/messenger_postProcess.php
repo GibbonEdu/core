@@ -115,6 +115,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             exit;
         }
 
+        if ($_POST["individuals"]=="Y") {
+            $partcipantCount = count($_POST["individualList"]);
+
+            if($partcipantCount > 50) {
+                $URLEdit.="&return=warning4";
+                header("Location: {$URLEdit}");
+                exit;
+            }
+        }
+        
         if ($containsEmoji) {
             $URLSend .= '&return=warning3';
         }
