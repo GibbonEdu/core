@@ -36,6 +36,7 @@ v28.0.00
     Bug Fixes
         Admissions: fixed "Do not include a second parent" being accidentally checked by default
         Messenger: fixed error redirect for New Message sending users to a non-existing page
+        FileUploader: fixed the error shown when the FileUploader did an exif data check for some images
 
 v27.0.00
 --------
