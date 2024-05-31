@@ -818,4 +818,5 @@ $sql[$count][0] = '28.0.00';
 $sql[$count][1] = "
 INSERT IGNORE INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Putonghua');end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX(`context`, `gibbonCourseClassID`);end
+INSERT INTO `gibbonLibraryType` (`name`, `active`, `fields`) VALUES ('Digital Publication', 'Y', '[{\"name\":\"URL Link\",\"description\":\"Paste the url link of the digital publication\",\"type\":\"Text\",\"options\":\"\",\"default\":\"\",\"required\":\"Y\"}]');end
 ";
