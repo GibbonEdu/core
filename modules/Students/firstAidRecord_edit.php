@@ -94,11 +94,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             $row = $form->addRow();
                 $row->addLabel('timeIn', __('Time In'));
-                $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->required()->readonly();
+                $row->addTime('timeIn')->setValue(!empty($values['timeIn']) ? substr($values['timeIn'], 0, 5) : '')->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('timeOut', __('Time Out'));
-                $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5))->chainedTo('timeIn')->readonly($mode != 'edit');
+                $row->addTime('timeOut')->setValue(!empty($values['timeOut']) ? substr($values['timeOut'], 0, 5) : '')->chainedTo('timeIn')->readonly($mode != 'edit');
 
             $row = $form->addRow();
                 $column = $row->addColumn();
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             if (!empty($values['followUp'])) {
                 $row = $form->addRow();
                     $column = $row->addColumn();
-                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateIntlReadable($values['timestamp'], 'HH:mm, MMM dd yyyy')]));
+                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateTimeReadable($values['timestamp'])]));
                     $column->addContent($values['followUp'])->setClass('fullWidth');
             }
 

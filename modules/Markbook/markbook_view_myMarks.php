@@ -442,7 +442,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                 $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                 if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                    renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                    renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                 }
 
                 echo '</table>';

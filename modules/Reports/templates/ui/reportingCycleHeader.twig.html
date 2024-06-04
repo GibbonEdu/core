@@ -20,7 +20,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% set dateClass = 'now'|date('Y-m-d') > milestone.milestoneDate ? 'bg-gray-400 text-gray-700' : 'text-gray-800' %}
 
         <div class="flex-1 flex flex-col justify-start p-4 {{ dateClass }} {{ not loop.last ? 'border-r' }}">
-            <div class="text-xl text-center font-light">{{ formatUsing('dateIntlReadable', milestone.milestoneDate, 'MMM d') }}</div>
+            <div class="text-xl text-center font-light">{{ formatUsing('dateReadable', milestone.milestoneDate, 102) }}</div>
             <div class="mt-4 text-xs text-center text-gray-600">{{ milestone.milestoneName }}</div>
         </div>
     {% endfor %}

@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         
         $dates = $_POST['dates'] ?? '';
         $repeat = $_POST['repeat'] ?? '';
+        $override = $_POST['override'] ?? 'N';
         $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;
         $repeatWeekly = $repeat == 'Weekly' ? $_POST['repeatWeekly'] : null;
 
@@ -72,13 +73,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             //Scroll through all dates
             foreach ($dates as $date) {
                 $gibbonCourseClassID = null;
-                $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd'], $gibbonCourseClassID);
+                if ($override) {
+                    $available = true;
+                } else {
+                    $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd'], $gibbonCourseClassID);
 
-                if (!$available && !empty($gibbonCourseClassID)) {
-                    $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $date);
+                    if (!$available && !empty($gibbonCourseClassID)) {
+                        $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $date);
 
-                    if ($offTimetable) {
-                        $available = true;
+                        if ($offTimetable) {
+                            $available = true;
+                        }
                     }
                 }
 

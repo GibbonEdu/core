@@ -509,7 +509,7 @@ if ($result->rowCount() < 1) {
                         $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                         if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                            renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                            renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                         }
 
                         echo '</table>';

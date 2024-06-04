@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         foreach ($lessons as $index => $lesson) {
 
-            $form->addRow()->addHeading(($index+1).'. '.Format::dateIntlReadable($lesson['date'], 'E d MMM, yyyy'))
+            $form->addRow()->addHeading(($index+1).'. '.Format::dateReadable($lesson['date'], Format::FULL))
                 ->append(Format::small($lesson['period'].' ('.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']).')'));
 
             $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');

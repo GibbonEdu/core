@@ -637,13 +637,13 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         try {
             if ($studentOrderBy == 'rollOrder') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$session->get('gibbonSchoolYearID') );
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder, dateEnrolled, dateUnenrolled FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
             } else if ($studentOrderBy == 'preferredName') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, dateEnrolled, dateUnenrolled FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
             } else {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, dateEnrolled, dateUnenrolled FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
             }
 
             $resultStudents = $connection2->prepare($sqlStudents);
@@ -712,19 +712,50 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
 
                 	$column = $markbook->getColumn( $i );
-
-                	echo "<td class='columnLabel' style='padding: 0 !important;'>";
-                	echo '<table class="columnLabels blank" cellspacing=0><tr>';
-
-
+                    $columnClass = 'columnLabel';
                     
-                        $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-                        $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
-                        $resultEntry = $connection2->prepare($sqlEntry);
-                        $resultEntry->execute($dataEntry);
-                    if ($resultEntry->rowCount() == 1) {
-                        $rowEntry = $resultEntry->fetch();
+                    $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
+                    $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
+                    $rowEntry = $pdo->selectOne($sqlEntry, $dataEntry);
+                    $rowWork = [];
 
+                    if ($column->displaySubmission()) {
+                        $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
+                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+                        $rowWork = $pdo->selectOne($sqlWork, $dataWork);
+                    }
+
+                    $newEnrollment = false;
+                    
+                    // Check if class enrolment date exists and is after the Go Live date for this column
+                    if (!empty($rowStudents['dateEnrolled']) && !empty($column->getData('completeDate')) && $rowStudents['dateEnrolled'] > $column->getData('completeDate')) {
+                        $newEnrollment = true;
+                    }
+                    
+                    // Check if student enrolment date is after the Go Live date for this column
+                    if (!empty($column->getData('completeDate')) && $rowStudents['dateStart'] > $column->getData('completeDate')) {
+                        $newEnrollment = true;
+                    }
+
+                    // Check if this student doesn't have an entry, and the Go Live date has passed
+                    if (empty($rowEntry) && empty($rowWork) && !empty($column->getData('completeDate')) && date('Y-m-d') >= $column->getData('completeDate') && (empty($column->getData('lessonDate')) || $rowStudents['dateStart'] >= $column->getData('lessonDate') ) ) {
+                        $newEnrollment = true;
+                    }
+
+                    // Check if student does actually have data for this column
+                    if ($newEnrollment && (!empty($rowEntry['attainmentValue']) || !empty($rowEntry['effortValue']) || !empty($rowEntry['comment']) || !empty($rowEntry['response'])) || !empty($rowWork)) {
+                        $newEnrollment = false;
+                    }
+                    
+                    if ($newEnrollment) {
+                        $columnClass .= ' dull';
+                    }
+
+                	echo "<td class='{$columnClass}' style='padding: 0 !important;'>";
+                	echo '<table class="columnLabels blank" cellspacing=0><tr>';
+                        
+                    if (!empty($rowEntry)) {
+                        
                         if ($enableModifiedAssessment == 'Y') {
                             echo "<td class='medColumn'>";
                                 echo $rowEntry['modifiedAssessment'];
@@ -861,13 +892,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     }
 
                     if ($column->displaySubmission()) {
-
                         echo "<td class='smallColumn'>";                       
                             $resultWork = $container->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($column->getData('gibbonPlannerEntryID'), $rowStudents['gibbonPersonID']);
 
                         if ($resultWork->rowCount() > 0) {
                             $rowWork = $resultWork->fetch();
-
+                        echo "<td class='smallColumn'>";
+                        
+                        if (!empty($rowWork)) {
                             if ($rowWork['status'] == 'Exemption') {
                                 $linkText = __('Exe');
                             } elseif ($rowWork['version'] == 'Final') {
@@ -895,10 +927,10 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         } else {
                             if (date('Y-m-d H:i:s') < $column->getData('homeworkDueDateTime') ) {
                                 echo "<span title='".__('Pending')."'>Pen</span>";
-                            } else {
+                            } else  {
                                 if ($rowStudents['dateStart'] > $column->getData('lessonDate') ) {
                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
-                                } else {
+                                } else if (!$newEnrollment) {
                                     if ($column->getData('homeworkSubmissionRequired') == 'Required') {
                                         echo "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                                     } else {
@@ -1009,7 +1041,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 $attainmentAverage = ($attainmentCount > 0 && $attainmentTotal > 0)? ($attainmentTotal / $attainmentCount) : '';
 
                 if ($columnFilter == 'raw' && $markbook->getSetting('enableRawAttainment') == 'Y') {
-                    echo '<td class="dataColumn dataDivider dataDividerTop">'.round($attainmentAverage, 1).'</td>';
+                    echo '<td class="dataColumn dataDivider dataDividerTop">'.round(floatval($attainmentAverage), 1).'</td>';
                 } else {
                     echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($attainmentAverage).'</td>';
                 }

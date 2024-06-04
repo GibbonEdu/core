@@ -1331,10 +1331,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $output = '';
                                 if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2br($person['description']).'<br/><br/>';
                                 if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2br($person['actionTaken']).'<br/><br/>';
-                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeIntlReadable($person['timestamp'], 'HH:mm, MMM dd yyyy')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
+                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'])]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
                                 $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
                                 foreach ($resultLog AS $rowLog) {
-                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeIntlReadable($rowLog['timestamp'], 'HH:mm, MMM dd yyyy')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
+                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'])]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
                                 }
 
                                 return $output;
@@ -1623,7 +1623,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $rowFilter->addSelect('gibbonSchoolYearTermID')
                                             ->fromQueryChained($pdo, $sqlSelect, $dataSelect, 'gibbonSchoolYearID')
                                             ->placeholder()
-                                            ->selected($gibbonSchoolYearTermID);
+                                            ->selected($gibbonSchoolYearTermID ?? '');
                                 }
 
                                 $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
@@ -1993,7 +1993,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                                             if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                                             }
 
                                             echo '</table>';
@@ -2113,7 +2113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {
-                                        $output = Format::dateIntlReadable($report['timestampModified']);
+                                        $output = Format::dateReadable($report['timestampModified']);
                                         if ($report['status'] == 'Draft') {
                                             $output .= '<span class="tag ml-2 dull">'.__($report['status']).'</span>';
                                         }

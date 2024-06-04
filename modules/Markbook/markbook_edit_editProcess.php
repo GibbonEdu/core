@@ -154,7 +154,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     }
                     $viewableStudents = $_POST['viewableStudents'] ?? '';
                     $viewableParents = $_POST['viewableParents'] ?? '';
-                    $attachment = $_POST['attachment'] ?? '';
                     $gibbonPersonIDLastEdit = $session->get('gibbonPersonID') ?? '';
 
                     $partialFail = false;
@@ -171,6 +170,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         if (empty($attachment)) {
                             $partialFail = true;
                         }
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                     }
 
                     if ($name == '' or $description == '' or $type == '' or $date == '' or $viewableStudents == '' or $viewableParents == '') {

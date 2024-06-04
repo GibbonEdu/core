@@ -108,10 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         // Function to display the updater info based on the cutoff date
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
         $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $session) {
-            $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
 
-            return empty($dateUpdated) || $dateCutoff > $date
+            return empty($dateUpdated) || $dateCutoff > DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated)
                 ? "<img title='".$title.' '.__('Update Required').': '.$dateDisplay."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png' width='18' />"
                 : "<img title='".$title.' '.__('Up to date').': '.$dateDisplay."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png' width='18' />";
         };

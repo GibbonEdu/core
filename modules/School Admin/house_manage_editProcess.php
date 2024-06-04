@@ -80,7 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
                     //Sort out logo
                     $imageFail = false;
-                    $logo = $_POST['logo'] ?? '';
                     if (!empty($_FILES['file1']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
@@ -92,6 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                         if (empty($logo)) {
                             $imageFail = true;
                         }
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $logo = empty($_POST['logo']) ? '' : $row['logo'];
                     }
 
                     //Write to database

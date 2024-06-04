@@ -103,7 +103,7 @@ class FileUploader
      * @since    v14
      * @param    string  $filename    Desired filename
      * @param    string  $sourcePath  Absolute path of the temp file to upload
-     * @param    string  $destinationFolder  Relativeto the /uploads folder
+     * @param    string  $destinationFolder  Relative to the /uploads folder
      * @return   string|bool          Resulting path of the uploaded file, FALSE on failure.
      */
     public function upload($filename, $sourcePath, $destinationFolder = '')
@@ -112,6 +112,8 @@ class FileUploader
 
         // Trim and remove excess path info
         $filename = basename($filename);
+        $filename = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filename);
+
         $destinationFolder = trim($destinationFolder, '/');
 
         // Check the existence of the temp file to upload

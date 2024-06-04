@@ -34,8 +34,10 @@ class HtmlRenderer implements ReportRendererInterface
 
     protected $absolutePath;
     protected $absoluteURL;
+    protected $customAssetPath;
 
     protected $mode = 0;
+    protected $microtime = 0;
 
     protected $preProcess = [];
     protected $postProcess = [];

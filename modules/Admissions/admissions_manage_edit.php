@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
                 : __('This account is not linked to a family.');
         });
 
-    $table->addColumn('created', __('Created'))->format(Format::using('dateIntlReadable', 'timestampCreated'));
+    $table->addColumn('created', __('Created'))->format(Format::using('dateReadable', 'timestampCreated'));
 
     $table->addColumn('active', __('Last Active'))->format(Format::using('relativeTime', 'timestampActive'));
 

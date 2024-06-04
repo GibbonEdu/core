@@ -19,6 +19,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v28.0.00
+--------
+
+    Headlines
+
+    Changes With Important Notices
+
+    Security
+
+    Tweaks & Additions
+        System: added Putonghua as a language option in dropdown menus
+        Attendance: added an index to the attendance log to help speed up attendance pages
+        Markbook: updated markbook columns to grey out students who joined after the Go Live date
+    
+    Bug Fixes
+        Admissions: fixed "Do not include a second parent" being accidentally checked by default
+        Messenger: fixed error redirect for New Message sending users to a non-existing page
+
 v27.0.00
 --------
 
@@ -28,11 +46,12 @@ v27.0.00
 
     Changes With Important Notices
         System: updated Google OAuth Client SSO to handle granular permissions (required by Google for June 17, 2024)
+        System: if you use Gmail SMTP relay, be sure to update your settings to use an App Password (before June 17, 2024)
         System: updated JQuery(2.2.4 -> 3.7.1) and JQuery Migrate(1.4.1 -> 3.4.0) files to latest versions
-        System: in you use Gmail SMTP relay, be sure to update your settings to use an App Password
+        System: updated date localisation to use the PHP Intl library, removed deprecated strftime
 
     Security
-        System: improved the input sanitization and output encoding or URLs
+        System: improved the input sanitization and output encoding of URLs
 
     Tweaks & Additions
         System: automatically hyperlink any urls included in Custom Field descriptions
@@ -41,6 +60,7 @@ v27.0.00
         System: added departments as one of the searchable options with the fast finder
         System: improved randomness of password salt generation
         System: added an IP address to failed login attempt notifications
+        System: added additional filtering for invalid characters in uploaded files
         Activities: added notification events for activity enrolment changes
         Activities: added a Left status to activity enrolment, to retain a history of previous enrolments
         Activities: added bulk actions to the activity enrolment page
@@ -102,7 +122,10 @@ v27.0.00
         Attendance: fixed Consecutive Absences report not returning any results
         Attendance: fixed checklist names for existing absences in Set Future Attendance
         Attendance: fixed the attendance counts in Attendance Summary by Date when grouping by Form Group 
+        Behaviour: fixed descriptor dropdown for Positive types in Find Behaviour Patterns
         Planner: fixed incorrect To Do list highlight when both teacher and student recorded homework exist
+        Planner: fixed missing homeworkTimeCap field when duplicating a lesson plan
+        Planner: fixed year group filter in View Resources
         Markbook: fixed the Markbook Entry importer so that it supports username, email or student ID
         Markbook: fixed the Term Added field in the Markbook Column importer
         Messenger: fixed blank read receipt text when editing a draft message
@@ -113,7 +136,7 @@ v27.0.00
         Staff: fixed My Coverage page showing coverage from past years
         Students: fixed the view all option in the Students by Form Group report
         System Admin: fixed category and module for Student Enrolment importer
-        User Admin: fixed HTML being removed from Language Options blurb in Student Application Fomrm
+        User Admin: fixed HTML being removed from Language Options blurb in Student Application Form
 
     Deprecations
         System: replaced session call through $gibbon->session to $session. "$gibbon->session" is now deprecated

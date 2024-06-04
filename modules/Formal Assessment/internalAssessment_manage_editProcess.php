@@ -115,7 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = $_POST['attachment'] ?? '';
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                 }
 
                 if ($name == '' or $description == '' or $type == '' or $viewableStudents == '' or $viewableParents == '') {

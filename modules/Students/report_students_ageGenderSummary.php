@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
     $everything = array();
     $count = 0;
     while ($rowList = $resultList->fetch()) {
-        if ($rowList['dob'] != '') {
+        if (!empty($rowList['dob'])) {
             $age = floor(($today - strtotime($rowList['dob'])) / 31556926);
             if (isset($ages[$age]) == false) {
                 $ages[$age] = $age;
@@ -119,6 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
                 echo "<td style='text-align: center'>";
                 $cellCount = 0;
                 foreach ($everything as $thing) {
+                    if (empty($thing[0])) continue;
                     if ($thing[2] == $years[$i - 1] and $thing[1] == 'M' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                         ++$cellCount;
                     }
@@ -130,6 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
                 echo "<td style='text-align: center'>";
                 $cellCount = 0;
                 foreach ($everything as $thing) {
+                    if (empty($thing[0])) continue;
                     if ($thing[2] == $years[$i - 1] and $thing[1] == 'F' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                         ++$cellCount;
                     }
@@ -142,6 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
             echo "<td style='text-align: center'>";
             $cellCount = 0;
             foreach ($everything as $thing) {
+                if (empty($thing[0])) continue;
                 if ($thing[1] == 'M' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                     ++$cellCount;
                 }
@@ -153,6 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
             echo "<td style='text-align: center'>";
             $cellCount = 0;
             foreach ($everything as $thing) {
+                if (empty($thing[0])) continue;
                 if ($thing[1] == 'F' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                     ++$cellCount;
                 }

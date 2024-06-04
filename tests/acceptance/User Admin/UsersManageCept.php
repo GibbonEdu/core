@@ -180,7 +180,7 @@ $I->see('Your request was completed successfully.', '.success');
 
 // Cleanup Files ------------------------------------------------
 
-$I->deleteFile('../'.$I->grabValueFrom('input[name="attachment1"]'));
+$I->deleteFile('../'.rawurldecode($I->grabValueFrom('input[name="attachment1"]')));
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));

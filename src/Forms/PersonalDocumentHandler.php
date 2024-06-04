@@ -99,8 +99,9 @@ class PersonalDocumentHandler
                         if (empty($value)) {
                             $personalDocumentFail = true;
                         }
-                    } else {
-                        $data[$field] = $attachment;
+                    } else if (empty($attachment)) {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $data[$field] = null;
                     }
                 } else {
                     // Handle all other data

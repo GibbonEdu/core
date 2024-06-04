@@ -64,6 +64,10 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                 $fontColor = $_POST['fontColor'] ?? '';
                 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
+                // Filter valid colour values
+                $color = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($color, 0, 7));
+                $fontColor = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($fontColor, 0, 7));
+
                 if ($name == '' or $nameShort == '' or $gibbonTTColumnID == '') {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");

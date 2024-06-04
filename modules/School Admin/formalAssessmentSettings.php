@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $primaryExternalAssessmentByYearGroup = unserialize($settingGateway->getSettingByScope('School Admin', 'primaryExternalAssessmentByYearGroup'));
 
     // Split the ID portion off of the ID-category pair, for the first dropdown
-    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (mb_strpos($v, '-') !== false? mb_substr($v, 0, mb_strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
+    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (!empty($v) && mb_strpos($v, '-') !== false? mb_substr($v, 0, mb_strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
 
     $sql = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
     $result = $pdo->executeQuery(array(), $sql);

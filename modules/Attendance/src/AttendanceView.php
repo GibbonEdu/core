@@ -50,6 +50,7 @@ class AttendanceView
      */
     protected $attendanceTypes = [];
     protected $attendanceTypesRestricted = [];
+    protected $userRoleIDs = [];
 
     /**
      * Attendance Reasons

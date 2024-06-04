@@ -92,8 +92,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 }
             }
 
-            $attachment1 = $_POST['attachment1'] ?? '';
-
             //Proceed!
             $title = $_POST['title'] ?? '';
             $surname = trim($_POST['surname'] ?? '');
@@ -352,6 +350,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 }
                             }
                         }
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $attachment1 = empty($_POST['attachment1']) ? '' : $row['image_240'];
                     }
 
                     // CUSTOM FIELDS

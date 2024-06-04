@@ -23,8 +23,8 @@ namespace Gibbon\Services;
 
 use DateTime;
 use DateTimeImmutable;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Http\Url;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Format values based on locale and system settings.
@@ -36,13 +36,31 @@ class Format
 {
     use FormatResolver;
 
+    public const NONE = -1;
+    public const FULL = 0;
+    public const LONG = 1;
+    public const MEDIUM = 2;
+    public const SHORT = 3;
+    
+    public const FULL_NO_YEAR = 100;
+    public const LONG_NO_YEAR = 101;
+    public const MEDIUM_NO_YEAR = 102;
+    public const SHORT_NO_YEAR = 103;
+
     protected static $settings = [
-        'dateFormatPHP'     => 'd/m/Y',
-        'dateTimeFormatPHP' => 'd/m/Y H:i',
-        'timeFormatPHP'     => 'H:i',
+        'dateFormatPHP'        => 'd/m/Y',
+        'dateTimeFormatPHP'    => 'd/m/Y H:i',
+        'timeFormatPHP'        => 'H:i',
+        'dateFormatFull'       => 'l, F j',
+        'dateFormatLong'       => 'F j',
+        'dateFormatMedium'     => 'M j',
+        'dateFormatIntlFull'   => 'EEEE, d MMMM',
+        'dateFormatIntlLong'   => 'd MMMM',
+        'dateFormatIntlMedium' => 'd MMM',
+        'dateFormatGenerate'   => true,
     ];
 
-    protected static $intlFormatterAvailable = false;
+    public static $intlFormatterAvailable = false;
 
     /**
      * Sets the internal formatting options from an array.
@@ -53,6 +71,18 @@ class Format
     {
         static::$settings = array_replace(static::$settings, $settings);
         static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
+
+        // Generate best-fit date formats for this locale, if possible
+        if (static::$settings['dateFormatGenerate'] && class_exists('IntlDatePatternGenerator')) {
+            $intlPatternGenerator = new \IntlDatePatternGenerator(static::$settings['code']);
+            static::$settings['dateFormatIntlFull'] = $intlPatternGenerator->getBestPattern('EEEEMMMMd');
+            static::$settings['dateFormatIntlLong'] = $intlPatternGenerator->getBestPattern('MMMMd');
+            static::$settings['dateFormatIntlMedium'] = $intlPatternGenerator->getBestPattern('MMMd');
+        } else {
+            static::$settings['dateFormatIntlFull'] = static::$settings['code'] == 'en_GB' ? 'EEEE, d MMMM' : 'EEEE, MMMM d';
+            static::$settings['dateFormatIntlLong'] = static::$settings['code'] == 'en_GB' ? 'd MMMM' : 'MMMM d';
+            static::$settings['dateFormatIntlMedium'] = static::$settings['code'] == 'en_GB' ? 'd MMM' : 'MMM d';
+        }
     }
 
     /**
@@ -90,7 +120,7 @@ class Format
         if (empty($dateString)) {
             return '';
         }
-        $date = static::createDateTime($dateString, strlen($dateString) == 10 ? 'Y-m-d' : null);
+        $date = static::createDateTime($dateString, is_string($dateString) && strlen($dateString) == 10 ? 'Y-m-d' : null);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
@@ -118,6 +148,9 @@ class Format
      */
     public static function dateTime($dateString, $format = false)
     {
+        if (empty($dateString)) {
+            return '';
+        }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
@@ -125,81 +158,122 @@ class Format
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
-     * @param DateTime|string $dateString  The date string to format.
-     * @param string          $pattern     (Optional) The pattern string for Unicode formatting supported by
-     *                                     IntlDateFormatter::setPattern().
-     *
-     *                                     See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
-     *                                     Default: 'MMM d, Y'
-     * @param string          $fallbackPattern (Optional) A fallback pattern string to use for the date using 
-     *                                     PHP's DateTime library if intl is not available.
-     *                                     Default: 'M d, Y'
+     * @param DateTime|string $dateString   The date string to format.
+     * @param int|string     $dateFormat    (Optional) An int to specify the date format used with IntlDateFormatter
+     *                                      If a string is passed, it will return the default format.
+     *                                      See: https://www.php.net/manual/en/class.intldateformatter.php
+     *                                      See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+     *                                      Default: \IntlDateFormatter::MEDIUM
+     * @param int|string     $timeFormat    (Optional) An int to specify the time format used with IntlDateFormatter
+     *                                      Default: \IntlDateFormatter::NONE
      *
      * @return string  The formatted date string.
      */
-    public static function dateIntlReadable($dateString, $pattern = 'MMM d, yyyy', $fallbackPattern = 'M d, Y'): string
+    public static function dateReadable($dateString, $dateFormat = null, $timeFormat = null) : string
     {
         if (empty($dateString)) {
             return '';
         }
 
         if (!static::$intlFormatterAvailable) {
-            return static::date($dateString, $fallbackPattern);
+            return static::date($dateString, static::getDateFallback($dateFormat, $timeFormat));
         }
 
+        $formatter = new \IntlDateFormatter(
+            static::$settings['code'],
+            is_int($dateFormat) && $dateFormat < 100 ? $dateFormat : \IntlDateFormatter::MEDIUM,
+            is_int($timeFormat) ? $timeFormat : \IntlDateFormatter::NONE,
+            null,
+            null,
+            static::getDatePattern($dateFormat)
+        );
+
         return mb_convert_case(
-            static::getIntlFormatter($pattern)->format(static::createDateTime($dateString)),
+            $formatter->format(static::createDateTime($dateString)),
             MB_CASE_TITLE,
         );
     }
 
     /**
-     * Formats a YYYY-MM-DD date as a readable string with month names.
-     *
-     * @deprecated v27.0.00 Use dateIntlReadable() instead.
-     * @param DateTime|string $dateString
-     * @return string
-     */
-    public static function dateReadable($dateString, $format = '%b %e, %Y')
-    {
-        if (empty($dateString)) {
-            return '';
-        }
-        $date = static::createDateTime($dateString);
-        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
-    }
-
-    /**
-     * Formats a YYYY-MM-DD date as a readable string with month names and times.
+     * A shortcut for formatting a YYYY-MM-DD date as a readable string with month names and times.
      *
      * @param DateTime|string $dateString  The date string to format.
-     * @param string          $pattern     (Optional) The pattern string for Unicode formatting suppored by
-     *                                     IntlDateFormatter::setPattern().
-     *
-     *                                     See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
-     *                                     Default: 'MMM d, Y'
-     *
+
      * @return string  The formatted date string.
      */
-    public static function dateTimeIntlReadable($dateString, $pattern = 'MMM d, yyyy HH:mm', $fallbackPattern = 'M d, Y H:i:s'): string
+    public static function dateTimeReadable($dateString) : string
     {
-        return static::dateIntlReadable($dateString, $pattern);
+        return static::dateReadable($dateString, static::MEDIUM, static::SHORT);
     }
 
     /**
-     * Formats a YYYY-MM-DD date as a readable string with month names and times.
+     * Gets a IntlDateFormatter pattern string for a given format constant.
+     * Extends the IntlDateFormatter options by adding NO_YEAR options.
      *
-     * @deprecated v27.0.00 Use dateTimeIntlReadable() instead.
-     * @param DateTime|string $dateString
-     * @return string
+     * @param string|int    $dateFormat
+     * @return string       The IntlDateFormatter pattern string.
      */
-    public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
+    protected static function getDatePattern($dateFormat = null)
     {
-        if (empty($dateString)) {
-            return '';
+        if (is_string($dateFormat)) {
+            return null;
         }
-        $date = static::createDateTime($dateString);
-        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
+        
+        switch ($dateFormat) {
+            case static::FULL_NO_YEAR:
+                return static::$settings['dateFormatIntlFull'];
+            case static::LONG_NO_YEAR:
+                return static::$settings['dateFormatIntlLong'];
+            case static::MEDIUM_NO_YEAR:
+            case static::SHORT_NO_YEAR:
+                return static::$settings['dateFormatIntlMedium'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a generic format for DateTime classes, to be used as a fallback
+     * when IntlDateFormatter is not available.
+     *
+     * @param string|int    $dateFormat
+     * @param string|int    $timeFormat
+     * @return string       The DateTime format string.
+     */
+    protected static function getDateFallback($dateFormat = null, $timeFormat = null)
+    {
+        if (is_null($dateFormat)) {
+            $dateFormat = static::MEDIUM;
+        }
+
+        switch ($dateFormat) {
+            case static::NONE:
+                $format = '';
+                break;
+            case static::FULL:
+            case static::FULL_NO_YEAR:
+                $format = static::$settings['dateFormatFull'];
+                break;
+            case static::LONG:
+            case static::LONG_NO_YEAR:
+                $format = static::$settings['dateFormatLong'];
+                break;
+            default:
+                $format = static::$settings['dateFormatMedium'];
+        }
+
+        if ($dateFormat >= 0 && $dateFormat < 100) {
+            $format .= ' Y'; 
+        }
+
+        if ($timeFormat != null && $timeFormat != static::NONE) {
+            $format .= !empty($format) ? ', ' : '';
+            $format .= $timeFormat == static::FULL
+                ? 'H:i:s'
+                : 'H:i';
+        }
+
+        return $format;
     }
 
     /**
@@ -211,6 +285,10 @@ class Format
      */
     public static function dateRange($dateFrom, $dateTo, $format = false)
     {
+        if (empty($dateFrom) || empty($dateTo)) {
+            return '';
+        }
+
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
     }
 
@@ -234,36 +312,14 @@ class Format
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
 
-        if (static::$intlFormatterAvailable) {
-            $formatter = static::getIntlFormatter();
-
-            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $formatter->setPattern('MMM d, yyyy');
-                $output = $formatter->format($startTime);
-            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $formatter->setPattern('MMM d');
-                $output = $formatter->format($startTime) . ' - ';
-                $formatter->setPattern('d, yyyy');
-                $output .= $formatter->format($endTime);
-            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $formatter->setPattern('MMM d');
-                $output = $formatter->format($startTime) . ' - ';
-                $formatter->setPattern('MMM d, yyyy');
-                $output .= $formatter->format($endTime);
-            } else {
-                $formatter->setPattern('MMM d, yyyy');
-                $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
-            }
+        if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+            $output = static::dateReadable($startTime, static::MEDIUM);
+        } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+            $output = static::dateReadable($startTime, static::MEDIUM_NO_YEAR) . ' - ';
+            $output .= static::dateReadable($endTime, static::MEDIUM);
         } else {
-            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $output = $startDate->format('M j, Y');
-            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $output = $startDate->format('M j').' - '.$endDate->format('j, Y');
-            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $output = $startDate->format('M j').' - '.$endDate->format('M j, Y');
-            } else {
-                $output = $startDate->format('M j, Y').' - '.$endDate->format('M j, Y');
-            }
+            $output = static::dateReadable($startTime, static::MEDIUM) . ' - ';
+            $output .= static::dateReadable($endTime, static::MEDIUM);
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -278,6 +334,10 @@ class Format
      */
     public static function dateFromTimestamp($timestamp, $format = false)
     {
+        if (empty($timestamp)) {
+            return '';
+        }
+
         $date = static::createDateTime($timestamp, 'U');
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
     }
@@ -293,7 +353,7 @@ class Format
         if (empty($dateString)) {
             return '';
         }
-        if (strlen($dateString) == 10) {
+        if (is_string($dateString) && strlen($dateString) == 10) {
             $dateString .= ' 00:00:00';
         }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
@@ -323,7 +383,7 @@ class Format
                 break;
             default:
                 $timeDifference = 0;
-                $time = static::dateIntlReadable($dateString);
+                $time = static::dateReadable($dateString);
         }
 
         if ($relativeString && $timeDifference > 0) {
@@ -346,7 +406,11 @@ class Format
      */
     public static function timestamp($dateString, $timezone = null)
     {
-        if (strlen($dateString) == 10) {
+        if (empty($dateString)) {
+            return '';
+        }
+
+        if (is_string($dateString) && strlen($dateString) == 10) {
             $dateString .= ' 00:00:00';
         }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s', $timezone);
@@ -362,7 +426,11 @@ class Format
      */
     public static function time($timeString, $format = false)
     {
-        $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
+        if (empty($timeString)) {
+            return '';
+        }
+
+        $convertFormat = is_string($timeString) && strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
         $date = static::createDateTime($timeString, $convertFormat);
         return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
     }
@@ -465,7 +533,7 @@ class Format
      */
     public static function truncate($value, $length = 40)
     {
-        return strlen($value) > $length
+        return is_string($value) && strlen($value) > $length
             ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
             : $value;
     }
@@ -592,7 +660,12 @@ class Format
      */
     public static function age($dateString, $short = false)
     {
+        if (empty($dateString)) {
+            return '';
+        }
+        
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        
         if (!$date) {
             return __('Unknown');
         }
@@ -995,6 +1068,10 @@ class Format
      */
     protected static function daysUntilNextBirthday(string $birthday): int
     {
+        if (empty($birthday)) {
+            return '';
+        }
+
         // DateTime of 00:00:00 today
         $today = new \DateTime('today');
 

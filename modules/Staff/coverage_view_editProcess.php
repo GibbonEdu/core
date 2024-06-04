@@ -70,15 +70,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
     }
 
     // File Upload
-    if ($type == 'File' && !empty($_FILES['file'])) {
-        // Upload the file, return the /uploads relative path
-        $fileUploader = new FileUploader($pdo, $session);
-        $content = $fileUploader->uploadFromPost($_FILES['file']);
-
-        if (empty($content)) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-            exit;
+    if ($type == 'File') {
+        if (!empty($_FILES['file'])) {
+            // Upload the file, return the /uploads relative path
+            $fileUploader = new FileUploader($pdo, $session);
+            $content = $fileUploader->uploadFromPost($_FILES['file']);
+    
+            if (empty($content)) {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+                exit;
+            }
+        } else {
+            // Remove the attachment if it has been deleted, otherwise retain the original value
+            $content = empty($_POST['attachment']) ? '' : $coverage['attachmentContent'];
         }
     }
 

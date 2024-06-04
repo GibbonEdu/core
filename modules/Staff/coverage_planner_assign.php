@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // DETAILS
     $table = DataTable::createDetails('coverage');
 
-    $table->addColumn('date', __('Date'))->format(Format::using('dateIntlReadable', ['date', 'EEEE, MMM d']));
+    $table->addColumn('date', __('Date'))->format(Format::using('dateReadable', ['date', Format::FULL]));
     $table->addColumn('period', __('Period'));
     $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
 

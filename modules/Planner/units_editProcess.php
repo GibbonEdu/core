@@ -109,7 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $content = $attachment;
                             }
                         } else {
-                            $attachment = $_POST['attachment'] ?? '';
+                            // Remove the attachment if it has been deleted, otherwise retain the original value
+                            $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                         }
 
                         //Update classes

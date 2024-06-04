@@ -292,26 +292,24 @@ class ImportType
             }
         }
 
-        uasort($importTypes, array('self', 'sortImportTypes'));
+        uasort($importTypes, function($a, $b)
+        {
+            if ($a->getDetail('grouping') != $b->getDetail('grouping')) {
+                return $a->getDetail('grouping') <=> $b->getDetail('grouping');
+            }
+    
+            if ($a->getDetail('category') != $b->getDetail('category')) {
+                return $a->getDetail('category') <=> $b->getDetail('category');
+            }
+    
+            if ($a->getDetail('name') != $b->getDetail('name')) {
+                return $a->getDetail('name') <=> $b->getDetail('name');
+            }
+    
+            return 0;
+        });
 
         return $importTypes;
-    }
-
-    protected static function sortImportTypes($a, $b)
-    {
-        if ($a->getDetail('grouping') != $b->getDetail('grouping')) {
-            return $a->getDetail('grouping') <=> $b->getDetail('grouping');
-        }
-
-        if ($a->getDetail('category') != $b->getDetail('category')) {
-            return $a->getDetail('category') <=> $b->getDetail('category');
-        }
-
-        if ($a->getDetail('name') != $b->getDetail('name')) {
-            return $a->getDetail('name') <=> $b->getDetail('name');
-        }
-
-        return 0;
     }
 
     /**
