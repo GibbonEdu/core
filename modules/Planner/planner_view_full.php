@@ -19,19 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
-use Gibbon\Domain\System\HookGateway;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
-use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
-use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -875,10 +876,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														</td>
 
 														<?php
-                                                        $dataVersion = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID'], 'gibbonPersonID' => $rowClass['gibbonPersonID']);
-                                                        $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                        $resultVersion = $connection2->prepare($sqlVersion);
-                                                        $resultVersion->execute($dataVersion);
+                                                        
+                                                        $resultVersion = $container->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($values['gibbonPlannerEntryID'], $rowClass['gibbonPersonID']);
+
 													    if ($resultVersion->rowCount() < 1) {
 														?>
 															<td colspan=4>

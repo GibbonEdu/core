@@ -70,10 +70,26 @@ class CourseClassGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectClassesByYearAndPerson($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class';
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectTeacherListByClass($gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectStudentListByClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonCourseClassPerson.reportable='Y' ORDER BY surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }

@@ -25,8 +25,8 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
@@ -35,18 +35,19 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\FirstAidGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
-use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 //Module includes for User Admin (for custom fields)
@@ -1931,10 +1932,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     } else {
                                                         echo '<td>';
                                                         $rowSub = $resultSub->fetch();
-                                                        $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_GET['gibbonPersonID']);
-                                                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                        $resultWork = $connection2->prepare($sqlWork);
-                                                        $resultWork->execute($dataWork);
+                                                        $resultWork = $container->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($rowEntry['gibbonPlannerEntryID'], $_GET['gibbonPersonID']);
+
                                                         if ($resultWork->rowCount() > 0) {
                                                             $rowWork = $resultWork->fetch();
 

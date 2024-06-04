@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 require_once '../../gibbon.php';
 
@@ -109,17 +110,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $lowestAcceptableAttainment = $_POST['lowestAcceptableAttainment'] ?? '';
                             $scaleAttainment = $_POST['scaleAttainment'] ?? '';
                             try {
-                                $dataScale = array('attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment);
-                                $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment';
-                                $resultScale = $connection2->prepare($sqlScale);
-                                $resultScale->execute($dataScale);
+                                $resultScale = $container->get(GradeScaleGateway::class)->getScaleGradeByScaleAttainmentAndValue($attainmentValue, $scaleAttainment);
+
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
-                            if ($resultScale->rowCount() != 1) {
+                            if (empty($resultScale)) {
                                 $partialFail = true;
                             } else {
-                                $rowScale = $resultScale->fetch();
+                                $rowScale = $resultScale;
                                 $sequence = $rowScale['sequenceNumber'];
                                 $attainmentDescriptor = $rowScale['descriptor'];
                             }
@@ -133,17 +132,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $lowestAcceptableEffort = $_POST['lowestAcceptableEffort'] ?? '';
                             $scaleEffort = $_POST['scaleEffort'] ?? '';
                             try {
-                                $dataScale = array('effortValue' => $effortValue, 'scaleEffort' => $scaleEffort);
-                                $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:effortValue AND gibbonScaleGrade.gibbonScaleID=:scaleEffort';
-                                $resultScale = $connection2->prepare($sqlScale);
-                                $resultScale->execute($dataScale);
+                                $resultScale = $container->get(GradeScaleGateway::class)->getScaleGradeByScaleEffortAndValue($effortValue, $scaleEffort);
+
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
-                            if ($resultScale->rowCount() != 1) {
+                            if (empty($resultScale)) {
                                 $partialFail = true;
                             } else {
-                                $rowScale = $resultScale->fetch();
+                                $rowScale = $resultScale;
                                 $sequence = $rowScale['sequenceNumber'];
                                 $effortDescriptor = $rowScale['descriptor'];
                             }
@@ -172,10 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $selectFail = false;
                     try {
-                        $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
-                        $sql = 'SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                        $result = $container->get(InternalAssessmentColumnGateway::class)->selectInternalAssessmentEntry($gibbonInternalAssessmentColumnID, $gibbonPersonIDStudent);
+
                     } catch (PDOException $e) {
                         $partialFail = true;
                         $selectFail = true;
