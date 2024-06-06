@@ -24,6 +24,7 @@ v27.0.01
 
     Bug Fixes
         Admissions: fixed "Do not include a second parent" being accidentally checked by default
+        Attendance: fixed handling of Count Class as School setting in Students Not Onsite/Students Not Present reports
         Messenger: fixed error redirect for New Message sending users to a non-existing page
 
 v27.0.00
