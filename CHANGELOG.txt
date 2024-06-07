@@ -23,6 +23,7 @@ v27.0.01
 --------
 
     Bug Fixes
+        Admissions: fixed "Do not include a second parent" being accidentally checked by default
 
 v27.0.00
 --------
