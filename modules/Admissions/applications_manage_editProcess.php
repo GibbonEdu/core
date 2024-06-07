@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         // Setup which processes are going to run, based on user-selected checkboxes
         foreach ($processes as $processName => $process) {
             $formBuilder->addConfig(['mode' => 'process', $processName.'Enabled' => $process['enabled'] ?? 'N']);
-            $formData->setResults($process['data'] ?? []);
+            $formData->addResults($process['data'] ?? []);
         }
 
         // Run any edit-related processes
