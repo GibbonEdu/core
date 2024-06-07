@@ -812,6 +812,11 @@ ALTER TABLE `gibbonMessenger` DROP `messageWall_date2`;end
 ALTER TABLE `gibbonMessenger` ADD `enableSharingLink` ENUM('N','Y') NOT NULL DEFAULT 'N';end
 ";
 
+//v27.0.01
+++$count;
+$sql[$count][0] = '27.0.01';
+$sql[$count][1] = "";
+
 //v28.0.00
 ++$count;
 $sql[$count][0] = '28.0.00';
