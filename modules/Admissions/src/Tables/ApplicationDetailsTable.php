@@ -36,6 +36,7 @@ use Gibbon\Contracts\Services\Session;
 class ApplicationDetailsTable extends DataTable
 {
     protected $view;
+    protected $session;
 
     public function __construct(Session $session)
     {
