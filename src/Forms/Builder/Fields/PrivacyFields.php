@@ -56,7 +56,7 @@ class PrivacyFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
-        $default = $field['defaultValue'] ?? null;
+        $default = $field['defaultValue'] ?? '';
 
         $row = $form->addRow();
 
