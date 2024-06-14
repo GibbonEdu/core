@@ -35,6 +35,8 @@ v28.0.00
         Reports: added a Progress by Department report for viewing class criteria progress
 
     Bug Fixes
+        Form Groups: fixed Year Group Summary list when looking at non-current school years
+        Timetable: fixed permission checking before displaying user status info in View Timetables list
     
 v27.0.01
 --------
