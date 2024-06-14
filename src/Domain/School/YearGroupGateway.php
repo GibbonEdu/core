@@ -73,18 +73,18 @@ class YearGroupGateway extends QueryableGateway
      *
      * @return array|false
      */
-    public function studentCountByYearGroup($gibbonYearGroupID)
+    public function studentCountByYearGroup($gibbonYearGroupID, $gibbonSchoolYearID)
     {
-        $data = array('gibbonYearGroupID' => $gibbonYearGroupID, 'today' => date('Y-m-d'));
+        $data = ['gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
         $sql = "SELECT count(*)
-            FROM gibbonStudentEnrolment
+                FROM gibbonStudentEnrolment
                 JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-            WHERE gibbonPerson.status='Full'
-                AND gibbonSchoolYear.status='Current'
+                WHERE gibbonPerson.status='Full'
                 AND (dateStart IS NULL OR dateStart<=:today)
                 AND (dateEnd IS NULL OR dateEnd>=:today)
                 AND gibbonYearGroupID=:gibbonYearGroupID
+                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 ";
 
         return $this->db()->selectOne($sql, $data);
