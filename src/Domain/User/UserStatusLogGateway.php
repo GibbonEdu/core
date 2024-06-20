@@ -44,8 +44,9 @@ class UserStatusLogGateway extends QueryableGateway
     public function queryStatusLogByPerson(QueryCriteria $criteria, $gibbonPersonID) {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonPersonStatusLogID', 'gibbonPersonID', 'statusOld', 'statusNew', 'reason', 'timestamp'])
+            ->cols(['gibbonPersonStatusLog.gibbonPersonStatusLogID', 'gibbonPersonStatusLog.gibbonPersonID', 'gibbonPersonStatusLog.statusOld', 'gibbonPersonStatusLog.statusNew', 'gibbonPersonStatusLog.reason', 'gibbonPersonStatusLog.timestamp', 'gibbonPersonStatusLog.gibbonPersonIDModified', 'modified.surname', 'modified.preferredName'])
             ->from('gibbonPersonStatusLog')
+            ->leftJoin('gibbonPerson as modified', 'modified.gibbonPersonID=gibbonPersonStatusLog.gibbonPersonIDModified')
             ->where('gibbonPersonStatusLog.gibbonPersonID = :gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID);
             

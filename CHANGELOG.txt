@@ -33,6 +33,7 @@ v28.0.00
         Attendance: added an index to the attendance log to help speed up attendance pages
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
         Reports: added a Progress by Department report for viewing class criteria progress
+        User Admin: added the names of users who made changes to the User Status Log
 
     Bug Fixes
         Form Groups: fixed Year Group Summary list when looking at non-current school years
