@@ -34,6 +34,7 @@ v28.0.00
         Activities: updated Activity Attendance to always count participants for dates in the past
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
         Reports: added a Progress by Department report for viewing class criteria progress
+        Students: added a notification event when student notes are edited
         User Admin: added the names of users who made changes to the User Status Log
 
     Bug Fixes
