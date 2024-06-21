@@ -104,7 +104,7 @@ class PersonalDocuments extends Input
 
             $output .= '</div>';
 
-            $output .= !empty($document['description']) ? '<p class="m-0 p-4 pb-0 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
+            $output .= !empty($document['description']) ? '<p class="m-0 p-0 -mt-2 ml-1 pl-12 pb-2 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
 
             $output .= '<div class="document-details border-t sm:grid grid-cols-2 grid-flow-col auto-rows-fr py-2" style="grid-template-rows: repeat('.(ceil(count($fields)/2)).',auto);">';
 

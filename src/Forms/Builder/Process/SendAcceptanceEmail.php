@@ -32,7 +32,8 @@ use Gibbon\Services\Format;
 
 class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = [''];
+    protected $requiredFields = ['email', 'parent1email', 'parent2email'];
+    protected $requiredFieldLogic = 'ANY';
 
     private $session;
     private $mail;

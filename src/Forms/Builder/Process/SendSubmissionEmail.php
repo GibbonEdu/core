@@ -33,7 +33,8 @@ use Gibbon\Http\Url;
 
 class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = [''];
+    protected $requiredFields = ['email', 'parent1email'];
+    protected $requiredFieldLogic = 'ANY';
 
     private $session;
     private $mail;

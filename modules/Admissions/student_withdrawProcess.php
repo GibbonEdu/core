@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
                 : __('Student Withdrawn');
 
             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $person['status'], 'statusNew' => $data['status'], 'reason' => $statusReason]);
+            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $person['status'], 'statusNew' => $data['status'], 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
         }
 
         $notify = $_POST['notify'] ?? [];

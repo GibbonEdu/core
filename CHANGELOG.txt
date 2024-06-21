@@ -31,11 +31,26 @@ v28.0.00
     Tweaks & Additions
         System: added Putonghua as a language option in dropdown menus
         Attendance: added an index to the attendance log to help speed up attendance pages
+        Activities: updated Activity Attendance to always count participants for dates in the past
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
-        Messenger: added the ability to limit individual messages to 50 people
-    
+        Messenger: limited the individual message target to a maximum of 50 people
+        Reports: added a Progress by Department report for viewing class criteria progress
+        Students: added a notification event when student notes are edited
+        User Admin: added the names of users who made changes to the User Status Log
+
     Bug Fixes
+        Form Groups: fixed Year Group Summary list when looking at non-current school years
+        Timetable: fixed permission checking before displaying user status info in View Timetables list
+    
+v27.0.01
+--------
+
+    Bug Fixes
+        Admissions: fixed submission emails and acceptance emails not sending as expected 
+        Admissions: fixed required field logic checking in Form Builder
         Admissions: fixed "Do not include a second parent" being accidentally checked by default
+        Admissions: fixed username and password missing from re-sent Acceptance Email
+        Attendance: fixed handling of Count Class as School setting in Students Not Onsite/Students Not Present reports
         Messenger: fixed error redirect for New Message sending users to a non-existing page
 
 v27.0.00

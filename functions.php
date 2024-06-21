@@ -573,7 +573,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
         $sqlYears = 'SELECT DISTINCT nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
         $resultYears = $connection2->query($sqlYears);
 
-        $years = explode(',', $ids);
+        $years = explode(',', $ids ?? '');
         if (count($years) > 0 and $years[0] != '') {
             if (count($years) == $resultYears->rowCount()) {
                 $output = '<i>' . __('All') . '</i>';
@@ -741,7 +741,7 @@ function getMaxUpload($multiple = false)
 //Encode strring using htmlentities with the ENT_QUOTES option
 function htmlPrep($str)
 {
-    return htmlentities($str, ENT_QUOTES, 'UTF-8');
+    return htmlentities($str ?? '', ENT_QUOTES, 'UTF-8');
 }
 
 /**

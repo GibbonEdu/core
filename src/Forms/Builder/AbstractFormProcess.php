@@ -73,6 +73,11 @@ abstract class AbstractFormProcess
         return $this->requiredFields ?? [];
     }
 
+    public function getRequiredFieldLogic() : string
+    {
+        return strtoupper($this->requiredFieldLogic ?? 'ALL');
+    }
+
     public function boot(FormDataInterface $formData)
     {
         $formData->setResult($this->getProcessName().'Result', false);
@@ -85,14 +90,27 @@ abstract class AbstractFormProcess
 
     public function verify(FormBuilderInterface $builder, FormDataInterface $formData = null)
     {
-        foreach ($this->getRequiredFields() as $fieldName) {
+        $fields = $this->getRequiredFields();
+        $logic = $this->getRequiredFieldLogic();
+
+        $missingFields = $missingValues = [];
+
+        foreach ($fields as $fieldName) {
             if (!$builder->hasField($fieldName)) {
-                throw new MissingFieldException($fieldName);
+                $missingFields[] = $fieldName;
             }
 
             if (!empty($formData) && !$formData->has($fieldName)) {
-                throw new MissingValueException($fieldName);
+                $missingValues[] = $fieldName;
             }
+        }
+
+        if (($logic == 'ALL' && !empty($missingFields)) || ($logic == 'ANY' && count($missingFields) >= count($fields))) {
+            throw new MissingFieldException(implode(',', $missingFields));
+        }
+
+        if (($logic == 'ALL' && !empty($missingValues)) || ($logic == 'ANY' && count($missingValues) >= count($fields))) {
+            throw new MissingValueException(implode(',', $missingValues));
         }
     }
 }

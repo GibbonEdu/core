@@ -36,16 +36,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         //Proceed!
         $page->breadcrumbs->add(__('View Form Groups'));
 
-        $gateway = $container->get(FormGroupGateway::class);
+        $formGroupGateway = $container->get(FormGroupGateway::class);
         if ($highestAction == "View Form Groups_all") {
-            $formGroups = $gateway->selectFormGroupsBySchoolYear($session->get('gibbonSchoolYearID'));
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYear($session->get('gibbonSchoolYearID'));
         }
         else {
-            $formGroups = $gateway->selectFormGroupsBySchoolYearMyChildren($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYearMyChildren($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
         }
 
-        $formatTutorsList = function($row) use ($gateway) {
-            $tutors = $gateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
+        $formatTutorsList = function($row) use ($formGroupGateway) {
+            $tutors = $formGroupGateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
             return Format::nameList($tutors, 'Staff', false, true);
@@ -89,8 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
                     }
                 });
             $table->addColumn('students', __('Students'))
-                ->format(function ($values) use ($yearGroupGateway) {
-                    return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID']);
+                ->format(function ($values) use ($yearGroupGateway, $session) {
+                    return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID'], $session->get('gibbonSchoolYearID'));
                 });
 
             echo $table->render($yearGroups);

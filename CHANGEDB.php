@@ -812,10 +812,19 @@ ALTER TABLE `gibbonMessenger` DROP `messageWall_date2`;end
 ALTER TABLE `gibbonMessenger` ADD `enableSharingLink` ENUM('N','Y') NOT NULL DEFAULT 'N';end
 ";
 
+//v27.0.01
+++$count;
+$sql[$count][0] = '27.0.01';
+$sql[$count][1] = "";
+
 //v28.0.00
 ++$count;
 $sql[$count][0] = '28.0.00';
 $sql[$count][1] = "
 INSERT IGNORE INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Putonghua');end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX(`context`, `gibbonCourseClassID`);end
+INSERT IGNORE INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports'), 'Progress by Department', 0, 'Progress', 'View report writing progress by department and class.', 'progress_byDepartment.php', 'progress_byDepartment.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Reports' AND gibbonAction.name='Progress by Department'));end
+ALTER TABLE `gibbonPersonStatusLog` ADD `gibbonPersonIDModified` INT(10) UNSIGNED ZEROFILL NULL AFTER `timestamp`;end
+UPDATE `gibbonNotificationEvent` SET event='Student Notes' WHERE event='New Student Note';end
 ";
