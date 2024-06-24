@@ -827,4 +827,5 @@ INSERT IGNORE INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `cate
 INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Reports' AND gibbonAction.name='Progress by Department'));end
 ALTER TABLE `gibbonPersonStatusLog` ADD `gibbonPersonIDModified` INT(10) UNSIGNED ZEROFILL NULL AFTER `timestamp`;end
 UPDATE `gibbonNotificationEvent` SET event='Student Notes' WHERE event='New Student Note';end
+ALTER TABLE `gibbonStaffAbsence` CHANGE `status` `status` ENUM('Pending Approval','Approved','Declined','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Approved';end
 ";
