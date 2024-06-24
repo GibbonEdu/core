@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_delete.php') == false) {
@@ -35,16 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     if ($gibbonExternalAssessmentStudentID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-            $sql = 'SELECT * FROM gibbonExternalAssessmentStudent WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowCount() != 1) {
+            $result = $container->get(ExternalAssessmentStudentGateway::class)->getByID($gibbonExternalAssessmentStudentID);
+           
+        if (empty($result)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $row = $result;
 
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/externalAssessment_manage_details_deleteProcess.php?gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents");
             echo $form->getOutput();

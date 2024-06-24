@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 
 require_once '../../gibbon.php';
 
@@ -45,10 +46,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             header("Location: {$URL}");
         } else {
             try {
-                $data = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                
+                $result = $container->get(InternalAssessmentColumnGateway::class)->selectBy(['gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'gibbonCourseClassID' => $gibbonCourseClassID]);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

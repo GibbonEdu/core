@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 
 require_once '../../gibbon.php';
 
@@ -46,21 +47,18 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-                $sql = 'SELECT * FROM gibbonExternalAssessmentStudent WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            try {                
+                $result = $container->get(ExternalAssessmentStudentGateway::class)->getByID($gibbonExternalAssessmentStudentID);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
             }
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $row = $result->fetch();
+                $row = $result;
 
                 //Validate Inputs
                 $count = 0;

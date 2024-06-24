@@ -19,9 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -56,10 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         }
         if ($gibbonCourseClassID == '') {
 
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $container->get(CourseClassGateway::class)->selectClassesByYearAndPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+
             if ($result->rowCount() > 0) {
                 $row = $result->fetch();
                 $gibbonCourseClassID = $row['gibbonCourseClassID'];
@@ -75,21 +78,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         else {
             try {
                 if ($highestAction == 'Write Internal Assessments_all') {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                    $result = $container->get(CourseClassGateway::class)->getCourseClass($gibbonCourseClassID);
+
                 } else {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
+                    $result = $container->get(CourseClassGateway::class)->getCourseClassByPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
                 }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
             } catch (PDOException $e) {
             }
-            if ($result->rowCount() != 1) {
+            if (empty($result)) {
                 $page->breadcrumbs->add(__('Write Internal Assessments'));
                 $page->addError(__('The specified record does not exist or you do not have access to it.'));
+
             } else {
-                $row = $result->fetch();
+                $row = $result;
                 $courseName = $row['courseName'] ?? '';
                 $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'] ?? '';
                 $page->breadcrumbs->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]));
@@ -97,11 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 //Get teacher list
                 $teaching = false;
 
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-
+                $result = $container->get(CourseClassGateway::class)->selectTeacherListByClass($gibbonCourseClassID);
+                    
                 if ($result->rowCount() > 0) {
                     echo "<h3 style='margin-top: 0px'>";
                     echo __('Teachers');
@@ -125,10 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 //Count number of columns
 
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(InternalAssessmentColumnGateway::class)->selectColumnsByClass($gibbonCourseClassID);
+                    
                 $columns = $result->rowCount();
                 if ($columns < 1) {
                     echo "<div class='warning'>";
@@ -159,10 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                         $limit = intval($x * $columnsPerPage);
 
-                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT '.$limit.', '.$columnsPerPage;
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
+                            $result = $container->get(InternalAssessmentColumnGateway::class)->selectLimitedColumns($gibbonCourseClassID, $limit, $columnsPerPage);
 
                         //Work out details for external assessment display
                         $externalAssessment = false;
@@ -330,13 +323,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     $leftBorder = true;
                                     echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
 
-                                        $dataScale = array('gibbonScaleID' => $attainmentID[$i]);
-                                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                        $resultScale = $connection2->prepare($sqlScale);
-                                        $resultScale->execute($dataScale);
+                                        $resultScale = $container->get(GradeScaleGateway::class)->getByID($attainmentID[$i]);
+                                        
                                     $scale = '';
-                                    if ($resultScale->rowCount() == 1) {
-                                        $rowScale = $resultScale->fetch();
+                                    if (!empty($resultScale)) {
+                                        $rowScale = $resultScale;
                                         $scale = ' - '.$rowScale['name'];
                                         if ($rowScale['usage'] != '') {
                                             $scale = $scale.': '.$rowScale['usage'];
@@ -358,13 +349,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     }
                                     echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
 
-                                        $dataScale = array('gibbonScaleID' => $effortID[$i]);
-                                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                        $resultScale = $connection2->prepare($sqlScale);
-                                        $resultScale->execute($dataScale);
+                                        $resultScale = $container->get(GradeScaleGateway::class)->getByID($effortID[$i]);
+
                                     $scale = '';
-                                    if ($resultScale->rowCount() == 1) {
-                                        $rowScale = $resultScale->fetch();
+                                    if (!empty($resultScale)) {
+                                        $rowScale = $resultScale;
                                         $scale = ' - '.$rowScale['name'];
                                         if ($rowScale['usage'] != '') {
                                             $scale = $scale.': '.$rowScale['usage'];
@@ -405,11 +394,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $count = 0;
                         $rowNum = 'odd';
 
+                            $resultStudents = $container->get(CourseClassGateway::class)->selectStudentListByClass($gibbonCourseClassID);
 
-                            $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonCourseClassPerson.reportable='Y' ORDER BY surname, preferredName";
-                            $resultStudents = $connection2->prepare($sqlStudents);
-                            $resultStudents->execute($dataStudents);
                         if ($resultStudents->rowCount() < 1) {
                             echo '<tr>';
                             echo '<td colspan='.($columns + 1).'>';
@@ -434,17 +420,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 if ($externalAssessment == true) {
                                     echo "<td style='text-align: center'>";
 
-                                        $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
-                                        $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
-                                            FROM gibbonExternalAssessmentStudentEntry
-                                                JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID)
-                                                JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
-                                            WHERE gibbonPersonID=:gibbonPersonID
-                                                AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID
-                                                AND NOT gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=''
-                                                ORDER BY date DESC";
-                                        $resultEntry = $connection2->prepare($sqlEntry);
-                                        $resultEntry->execute($dataEntry);
+                                        $resultEntry = $container->get(ExternalAssessmentStudentGateway::class)->selectStudentExternalAssessmentGrades($rowStudents['gibbonPersonID'], $externalAssessmentFields[0]);
+
                                     if ($resultEntry->rowCount() >= 1) {
                                         $rowEntry = $resultEntry->fetch();
                                         echo "<a title='".__($rowEntry['descriptor']).' | '.__('Test taken on').' '.Format::date($rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($rowEntry['value']).'</a>';
@@ -455,12 +432,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 for ($i = 0; $i < $columnsThisPage; ++$i) {
                                     $row = $result->fetch();
 
-                                        $dataEntry = array('gibbonInternalAssessmentColumnID' => $columnID[($i)], 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-                                        $sqlEntry = 'SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
-                                        $resultEntry = $connection2->prepare($sqlEntry);
-                                        $resultEntry->execute($dataEntry);
-                                    if ($resultEntry->rowCount() == 1) {
-                                        $rowEntry = $resultEntry->fetch();
+                                        $resultEntry = $container->get(InternalAssessmentColumnGateway::class)->getInternalAssessmentEntryByStudent($columnID[($i)], $rowStudents['gibbonPersonID']);
+
+                                    if (!empty($resultEntry)) {
+                                        $rowEntry = $resultEntry;
                                         $leftBorder = false;
 
                                         if ($attainmentOn[$i] == 'Y' and $attainmentID[$i] != '') {
@@ -566,10 +541,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                             }
                                             echo "<td style='$leftBorderStyle text-align: center;'>";
 
-                                                $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID[$i], 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
-                                                $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                $resultWork = $connection2->prepare($sqlWork);
-                                                $resultWork->execute($dataWork);
+                                                $resultWork = $container->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($gibbonPlannerEntryID[$i], $rowStudents['gibbonPersonID']);
+
                                             if ($resultWork->rowCount() > 0) {
                                                 $rowWork = $resultWork->fetch();
 
