@@ -185,10 +185,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             $fees = [];
 			$dataTotal=array("gibbonFinanceInvoiceID"=>$row["gibbonFinanceInvoiceID"]);
 			if ($row["status"]=="Pending") {
-				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2, gibbonFinanceInvoiceFee.name, gibbonFinanceFeeCategory.name as category
+				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2, gibbonFinanceFee.name, gibbonFinanceFeeCategory.name as category
 					FROM gibbonFinanceInvoiceFee
 						LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID)
-                        LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID=gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID)
+                        LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID=gibbonFinanceFee.gibbonFinanceFeeCategoryID)
 					WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 			}
 			else {
