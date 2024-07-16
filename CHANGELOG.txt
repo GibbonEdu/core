@@ -42,6 +42,8 @@ v28.0.00
         Finance: fixed bulk exporting invoice fees for Pending invoices
         Form Groups: fixed Year Group Summary list when looking at non-current school years
         Timetable: fixed permission checking before displaying user status info in View Timetables list
+        Fixing the search results on the Admission module (Manage Application).
+
     
 v27.0.01
 --------

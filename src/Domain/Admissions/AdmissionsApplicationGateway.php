@@ -38,7 +38,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
     private static $tableName = 'gibbonAdmissionsApplication';
     private static $primaryKey = 'gibbonAdmissionsApplicationID';
 
-    private static $searchableColumns = ['owner', 'gibbonAdmissionsApplicationID'];
+    private static $searchableColumns = ['owner', 'gibbonAdmissionsApplicationID', 'data'];
 
     /**
      * @param QueryCriteria $criteria
