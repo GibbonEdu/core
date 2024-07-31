@@ -37,6 +37,7 @@ v28.0.00
         Reports: added a Progress by Department report for viewing class criteria progress
         Students: added a notification event when student notes are edited
         User Admin: added the names of users who made changes to the User Status Log
+        User Admin: updated Manage Users to override required custom fields when manually editing a user
 
     Bug Fixes
         Finance: fixed bulk exporting invoice fees for Pending invoices

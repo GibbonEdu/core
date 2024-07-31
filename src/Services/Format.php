@@ -483,6 +483,8 @@ class Format
      */
     public static function yesNo($value, $translate = true)
     {
+        if (empty($value)) return '';
+        
         $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
 
         return $translate ? __($value) : $value;
