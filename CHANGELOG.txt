@@ -35,6 +35,7 @@ v28.0.00
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
         Messenger: limited the individual message target to a maximum of 50 people
         Reports: added a Progress by Department report for viewing class criteria progress
+        Staff: updated Manage Staff to override required custom fields when manually editing a staff member
         Students: added a notification event when student notes are edited
         User Admin: added the names of users who made changes to the User Status Log
         User Admin: updated Manage Users to override required custom fields when manually editing a user
