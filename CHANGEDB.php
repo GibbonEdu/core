@@ -828,4 +828,6 @@ INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES 
 ALTER TABLE `gibbonPersonStatusLog` ADD `gibbonPersonIDModified` INT(10) UNSIGNED ZEROFILL NULL AFTER `timestamp`;end
 UPDATE `gibbonNotificationEvent` SET event='Student Notes' WHERE event='New Student Note';end
 ALTER TABLE `gibbonStaffAbsence` CHANGE `status` `status` ENUM('Pending Approval','Approved','Declined','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Approved';end
+UPDATE gibbonCountry SET iddCountryCode='82' WHERE printable_name='Korea, Republic of';end
+UPDATE gibbonCountry SET iddCountryCode='850' WHERE printable_name='Korea, Democratic People\'s Republic of';end
 ";

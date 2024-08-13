@@ -30,6 +30,7 @@ v28.0.00
 
     Tweaks & Additions
         System: added Putonghua as a language option in dropdown menus
+        System: added IDD codes for Republic of Korea and Democratic People's Republic of Korea
         Attendance: added an index to the attendance log to help speed up attendance pages
         Activities: updated Activity Attendance to always count participants for dates in the past
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
