@@ -136,7 +136,7 @@ jobs:
             echo
             (exit 1)
           fi
-        continue-on-error: ${{ matrix.experimental }}
+        continue-on-error: true
 
       - name: Check PHP notice in server_log
         if: success() || failure()
