@@ -91,17 +91,17 @@ select[data-validation] option:first-child {
     outline-offset: -4px;
 }
 
-.experience-photo-container {
+.activity-photo-container {
     height: 36vw;
 }
 
-.experience-photo-container-lg {
+.activity-photo-container-lg {
     height: 64vw;
 }
 
 @media (min-width: 768px) {
-    .experience-photo-container,
-    .experience-photo-container-lg {
+    .activity-photo-container,
+    .activity-photo-container-lg {
         height: 25vw;
     }
     

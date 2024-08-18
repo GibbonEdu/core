@@ -57,6 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
         return $row;
     });
 
+    $table->addDraggableColumn('gibbonActivityCategoryID', $session->get('absoluteURL').'/modules/Activities/activities_categories_editOrderAjax.php');
+
     $table->addColumn('name', __('Name'))
         ->sortable(['gibbonActivityCategory.name'])
         ->context('primary')

@@ -17,13 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\EnrolmentGateway;
-use Gibbon\Domain\Activities\UnitPhotoGateway;
-use Gibbon\Domain\Activities\UnitBlockGateway;
-use Gibbon\Domain\Activities\UnitGateway;
-use Gibbon\Domain\Activities\StaffGateway;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
+use Gibbon\Domain\Activities\ActivityPhotoGateway;
+use Gibbon\Domain\Activities\ActivityStaffGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity.php') == false) {
     // Access denied
@@ -49,77 +46,75 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         return;
     }
 
-    $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/view.php', 'Deep Learning Events_signUp');
+    $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/view.php', 'View Activities_studentRegister');
     $canViewInactive = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php');
 
     // Check records exist and are available
-    $unitGateway = $container->get(UnitGateway::class);
+
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
-    $enrolmentGateway = $container->get(EnrolmentGateway::class);
-    $unitPhotoGateway = $container->get(UnitPhotoGateway::class);
-    $unitBlockGateway = $container->get(UnitBlockGateway::class);
-    $staffGateway = $container->get(StaffGateway::class);
+    // $enrolmentGateway = $container->get(EnrolmentGateway::class);
+    $activityPhotoGateway = $container->get(ActivityPhotoGateway::class);
+    $staffGateway = $container->get(ActivityStaffGateway::class);
 
     if (empty($gibbonActivityID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $experience = $activityGateway->getExperienceDetailsByID($gibbonActivityID);
-    $event = $categoryGateway->getCategoryDetailsByID($experience['gibbonActivityCategoryID'] ?? '');
+    $activity = $activityGateway->getActivityDetailsByID($gibbonActivityID);
+    $category = $categoryGateway->getCategoryDetailsByID($activity['gibbonActivityCategoryID'] ?? '');
 
-    if (empty($experience) || empty($event)) {
+    if (empty($activity) || empty($category)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
-    if (($experience['active'] != 'Y' || $event['active'] != 'Y') && !$canViewInactive) {
+    if (($activity['active'] != 'Y' || $category['active'] != 'Y') && !$canViewInactive) {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
 
-    if ($event['viewable'] != 'Y'  && !$canViewInactive) {
-        $page->addMessage(__m('This event is not viewable at this time. Please return to the Events page to explore a different event.'));
+    if ($category['viewable'] != 'Y'  && !$canViewInactive) {
+        $page->addMessage(__m('This activity is not viewable at this time. Please return to the categories page to explore a different activity.'));
         return;
     }
 
     // Get photos & blocks
-    $experience['photos'] = $unitPhotoGateway->selectPhotosByExperience($gibbonActivityID)->fetchAll();
-    $experience['blocks'] = $unitBlockGateway->selectBlocksByUnit($experience['deepLearningUnitID'])->fetchAll();
+    $activity['photos'] = $activityPhotoGateway->selectPhotosByActivity($gibbonActivityID)->fetchAll();
+    // $activity['blocks'] = $unitBlockGateway->selectBlocksByUnit($activity['deepLearningUnitID'])->fetchAll();
 
     // Check sign-up access
     $now = (new DateTime('now'))->format('U');
     $signUpIsOpen = false;
     $isPastEvent = false;
 
-    if (!empty($event['accessOpenDate']) && !empty($event['accessCloseDate'])) {
-        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $event['accessOpenDate'])->format('U');
-        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $event['accessCloseDate'])->format('U');
+    if (!empty($category['accessOpenDate']) && !empty($category['accessCloseDate'])) {
+        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $category['accessOpenDate'])->format('U');
+        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $category['accessCloseDate'])->format('U');
 
         $signUpIsOpen = $accessOpenDate <= $now && $accessCloseDate >= $now;
     }
 
-    if (!empty($event['endDate'])) {
-        $endDate = DateTime::createFromFormat('Y-m-d', $event['endDate'])->format('U');
+    if (!empty($category['endDate'])) {
+        $endDate = DateTime::createFromFormat('Y-m-d', $category['endDate'])->format('U');
         $isPastEvent = $now >= $endDate;
     }
 
-    $signUpEvent = $categoryGateway->getEventSignUpAccess($experience['gibbonActivityCategoryID'], $session->get('gibbonPersonID'));
-    $signUpExperience = $activityGateway->getExperienceSignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
+    $signUpEvent = $categoryGateway->getCategorySignUpAccess($activity['gibbonActivityCategoryID'], $session->get('gibbonPersonID'));
+    $signUpExperience = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
 
-    $enrolment = $enrolmentGateway->getExperienceDetailsByEnrolment($experience['gibbonActivityCategoryID'], $session->get('gibbonPersonID'), $gibbonActivityID);
+    // $enrolment = $enrolmentGateway->getActivityDetailsByEnrolment($activity['gibbonActivityCategoryID'], $session->get('gibbonPersonID'), $gibbonActivityID);
 
-    $canEditAll = getHighestGroupedAction($guid, '/modules/Activities/unit_manage_edit.php', $connection2) == 'Manage Units_all';
-    $canEditUnit = $unitGateway->getUnitEditAccess($experience['deepLearningUnitID'], $session->get('gibbonPersonID')) ?? 'N';
-    $isStaff = $staffGateway->getStaffExperienceAccess($gibbonActivityID, $session->get('gibbonPersonID'));
+    $canEdit = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php');
+    $isStaff = $staffGateway->getActivityAccessByStaff($gibbonActivityID, $session->get('gibbonPersonID'));
 
-    $page->writeFromTemplate('experience.twig.html', [
-        'event'      => $event,
-        'experience' => $experience,
+    $page->writeFromTemplate('activity.twig.html', [
+        'category'      => $category,
+        'activity'      => $activity,
 
-        'nextExperience' => $activityGateway->getNextExperienceByID($gibbonActivityCategoryID, $gibbonActivityID),
-        'prevExperience' => $activityGateway->getPreviousExperienceByID($gibbonActivityCategoryID, $gibbonActivityID),
+        'nextActivity' => $activityGateway->getNextActivityByID($gibbonActivityCategoryID, $gibbonActivityID),
+        'prevActivity' => $activityGateway->getPreviousActivityByID($gibbonActivityCategoryID, $gibbonActivityID),
 
         'canViewInactive' => $canViewInactive,
         'canSignUp'  => $canSignUp,
@@ -128,9 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
 
         'isPastEvent' => $isPastEvent,
         'isEnrolled' => !empty($enrolment) && $enrolment['gibbonActivityID'] == $gibbonActivityID,
-        'enrolment' => $enrolment,
+        // 'enrolment' => $enrolment,
 
-        'canEditUnit' => $canEditAll || (!empty($canEditUnit) && $canEditUnit == 'Y'),
+        'canEdit' => $canEdit,
         'isStaff' => !empty($isStaff),
     ]);
 }

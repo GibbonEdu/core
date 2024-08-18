@@ -31,12 +31,14 @@ class ActivityPhotoGateway extends QueryableGateway
     private static $primaryKey = 'gibbonActivityPhotoID';
     private static $searchableColumns = [''];
 
-    public function selectPhotosByUnit($gibbonActivityID)
+    public function selectPhotosByActivityCategory($gibbonActivityCategoryID)
     {
-        $data = ['gibbonActivityID' => $gibbonActivityID];
-        $sql = "SELECT gibbonActivityPhoto.gibbonActivityPhotoID, gibbonActivityPhoto.filePath, gibbonActivityPhoto.caption
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
+        $sql = "SELECT gibbonActivityPhoto.gibbonActivityID, gibbonActivityPhoto.gibbonActivityPhotoID, gibbonActivityPhoto.filePath, gibbonActivityPhoto.caption
                 FROM gibbonActivityPhoto
-                WHERE gibbonActivityPhoto.gibbonActivityID=:gibbonActivityID
+                JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityPhoto.gibbonActivityID)
+                WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID
+                AND gibbonActivityPhoto.sequenceNumber=1
                 ORDER BY gibbonActivityPhoto.sequenceNumber";
 
         return $this->db()->select($sql, $data);

@@ -59,9 +59,11 @@ class ActivityGateway extends QueryableGateway
                 "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status = 'Accepted' THEN gibbonActivityStudent.gibbonPersonID END) as enrolment",
                 "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status = 'Waiting List' THEN gibbonActivityStudent.gibbonPersonID END) as waiting",
                 "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status = 'Pending' THEN gibbonActivityStudent.gibbonPersonID END) as pending",
+                "gibbonActivityPhoto.filePath as headerImage"
             ])
             ->leftJoin('gibbonYearGroup', 'FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)')
             ->leftJoin('gibbonActivityType', 'gibbonActivity.type=gibbonActivityType.name')
+            ->leftJoin('gibbonActivityPhoto', 'gibbonActivity.gibbonActivityID=gibbonActivityPhoto.gibbonActivityID AND gibbonActivityPhoto.sequenceNumber=0')
             ->leftJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
@@ -283,7 +285,16 @@ class ActivityGateway extends QueryableGateway
     public function getActivityDetailsByID($gibbonActivityID)
     {
         $data = ['gibbonActivityID' => $gibbonActivityID];
-        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
+        $sql = 'SELECT gibbonActivity.*,
+                gibbonActivity.payment as cost,
+                gibbonActivity.paymentType as costType,
+                gibbonActivityType.access,
+                gibbonActivityType.maxPerStudent,
+                gibbonActivityType.enrolmentType,
+                gibbonActivityType.backupChoice 
+            FROM gibbonActivity 
+            LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)
+            WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID';
 
         return $this->db()->selectOne($sql, $data);
     }
@@ -332,6 +343,37 @@ class ActivityGateway extends QueryableGateway
         }
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getActivitySignUpAccess($gibbonActivityID, $gibbonPersonID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonStudentEnrolment.gibbonStudentEnrolmentID
+                FROM gibbonActivity
+                JOIN gibbonActivityCategory ON (gibbonActivity.gibbonActivityCategoryID=gibbonActivityCategory.gibbonActivityCategoryID)
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList))
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID
+                AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
+                GROUP BY gibbonActivity.gibbonActivityID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getNextActivityByID($gibbonActivityCategoryID, $gibbonActivityID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MIN(name) FROM gibbonActivity WHERE name > (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getPreviousActivityByID($gibbonActivityCategoryID, $gibbonActivityID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MAX(name) FROM gibbonActivity WHERE name < (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 
 }

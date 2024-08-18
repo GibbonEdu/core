@@ -150,7 +150,7 @@ class ActivityCategoryGateway extends QueryableGateway
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonStudentEnrolment.gibbonStudentEnrolmentID
                 FROM gibbonActivityCategory
-                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID)
                 WHERE gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID
                 AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
                 GROUP BY gibbonActivityCategory.gibbonActivityCategoryID";

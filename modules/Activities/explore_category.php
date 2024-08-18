@@ -66,10 +66,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_categor
         ->fromPOST();
 
     $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
+    // $photos = $categoryGateway->selectPhotosByActivityCategory($gibbonActivityCategoryID)->fetchGroupedUnique();
 
     $page->writeFromTemplate('activities.twig.html', [
         'category'        => $category,
         'activities'      => $activities->toArray(),
+        // 'photos'          => $photos,
         'canViewInactive' => $canViewInactive,
     ]);
 }

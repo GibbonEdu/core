@@ -25,14 +25,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {{- formatUsing('dateReadable', date, 102) -}}
                     {{- not loop.last ? ', ' -}}
                 {% endfor %}
-
-                &nbsp;&nbsp;•&nbsp;&nbsp;
-
-                {% if category.yearGroupCount >= 8 %}
-                    {{ __m('All Year Groups') }}
-                {% else %}
-                    {{ category.yearGroups|replace({'Y0':'Y'}) }}
-                {% endif %}
             </div>
         </div>
 
@@ -76,7 +68,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% if activities is not empty %}
     <section class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for activity in activities %}
-        <a class="flex flex-col justify-start relative " href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}">
+        <a class="flex flex-col justify-start relative " href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}">
             <div class="absolute top-0 left-0 w-full h-40 sm:h-48 lg:h-56 rounded flex justify-center items-center group transition-all duration-150 hover:bg-blur">
                 <div class="w-auto px-10 py-3 border border-white hover:bg-translucent hidden group-hover:block transition-all duration-150 rounded-sm text-center text-white text-base font-light">
                     {{ __('Learn More') }}

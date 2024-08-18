@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $row = $form->addRow();
             $customBlocks = $row->addCustomBlocks('photos', $session, true)
                 ->fromTemplate($blockTemplate)
-                ->settings(['inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true])
+                ->settings(['inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true, 'orderName' => 'photoOrder',])
                 ->placeholder(__('Photos will be listed here...'))
                 ->addToolInput($addBlockButton);
 
