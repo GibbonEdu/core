@@ -854,13 +854,8 @@ CREATE TABLE `gibbonActivityPhoto` (`gibbonActivityPhotoID` INT(12) UNSIGNED ZER
 ALTER TABLE `gibbonActivity`  ADD `gibbonActivityCategoryID` INT(8) UNSIGNED ZEROFILL NULL AFTER `gibbonSchoolYearID`;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities'), 'Explore Activities', 0, 'Activities', 'Allows users to explore available activities.', NULL, 'explore.php,explore_category.php,explore_activity.php', 'explore.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Explore Activities'));end
-SELECT NULL;end
-SELECT NULL;end
-SELECT NULL;end
-SELECT NULL;end
 UPDATE `gibbonModule` SET `entryURL`='explore.php' WHERE name='Activities';end
 ALTER TABLE `gibbonActivityCategory` ADD `sequenceNumber` INT(6) NOT NULL AFTER `backgroundImage`;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOxther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities'), 'Manage Categories', 0, 'Administration', 'Allows users to manage activity categories.', NULL, 'activities_categories.php,activities_categories_add.php,activities_categories_edit.php,activities_categories_delete.php', 'activities_categories.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Manage Categories'));end
-
 ";
