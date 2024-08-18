@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             // Update the photos
             $photos = $_POST['photos'] ?? [];
             $photoOrder = $_POST['photoOrder'] ?? [];
-            $photoSequence = max($photoOrder) + 1;
+            $photoSequence = !empty($photoOrder) ? max($photoOrder) + 1 : 0;
             $photoIDs = [];
 
             foreach ($photos as $index => $photo) {
