@@ -1,0 +1,44 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set photoCount = experience.photos|slice(0,6)|length %}
+
+<section class="w-full grid {{ photoCount == 1 ? 'grid-cols-2' : (photoCount > 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3' ) }} {{ photoCount <= 4 ? 'experience-photo-container grid-rows-2' : 'experience-photo-container-lg grid-rows-4 md:grid-rows-2' }} grid-flow-col gap-3 lg:gap-6">
+
+<div class="{{ photoCount == 0 ? 'col-span-3' : 'col-span-1' }} row-span-2 rounded overflow-hidden bg-gray-100" style="max-height: 34vw;">
+    {% if experience.headerImage %}
+        <img src="{{ absoluteURL }}/{{ experience.headerImage }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;">
+    {% endif %}
+</div>
+
+{% for index, photo in experience.photos|slice(0,6) %}
+
+    <div class="col-span-1 {{ (photoCount is odd and loop.last) or photoCount == 2 ? 'row-span-2' : 'row-span-1' }} rounded overflow-hidden bg-gray-100 relative" style="{{ (photoCount is odd and loop.last) or photoCount == 2 ? 'max-height: 34vw;' : 'max-height: 16vw;' }}">
+        {% if photo.filePath %}
+            <img src="{{ absoluteURL }}/{{ photo.filePath }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;" title="{{ photo.caption }}">
+        {% endif %}
+
+        {% if loop.last %}
+        <div class="hidden md:block absolute bottom-0 right-0 mb-6 mr-6">
+            <span class="tag text-white text-sm font-light" style="background: rgba(0,0,0,0.65)">
+                {% if experience.yearGroupCount >= 8 %}
+                    {{ __m('All Year Groups') }}
+                {% else %}
+                    {{ experience.yearGroups|replace({'Y0':'Y'}) }}
+                {% endif %}
+            </span>
+        </div>
+        {% endif %}
+
+    </div>
+
+{% endfor %}
+
+</section>
