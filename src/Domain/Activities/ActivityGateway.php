@@ -93,6 +93,11 @@ class ActivityGateway extends QueryableGateway
                     ->where('gibbonActivity.active = :active')
                     ->bindValue('active', $active);
             },
+            'category' => function ($query, $gibbonActivityCategoryID) {
+                return $query
+                    ->where('gibbonActivity.gibbonActivityCategoryID = :gibbonActivityCategoryID')
+                    ->bindValue('gibbonActivityCategoryID', $gibbonActivityCategoryID);
+            },
             'registration' => function ($query, $registration) {
                 return $query
                     ->where('gibbonActivity.registration = :registration')

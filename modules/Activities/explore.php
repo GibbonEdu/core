@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore.php') =
         ->sortBy(['gibbonActivityCategory.sequenceNumber'])
         ->fromPOST();
 
-    $categories = $categoryGateway->queryEvents($criteria, $session->get('gibbonSchoolYearID'));
+    $categories = $categoryGateway->queryCategories($criteria, $session->get('gibbonSchoolYearID'));
 
     $page->writeFromTemplate('categories.twig.html', [
         // 'welcomeText'     => $container->get(SettingGateway::class)->getSettingByScope('Activities', 'welcomeText'),

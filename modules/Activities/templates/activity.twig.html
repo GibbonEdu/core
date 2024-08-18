@@ -11,7 +11,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% if event %}
 <header class="mb-6 ">
     
-    <a class="block mb-6 relative rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ event.backgroundImage }}'); background-size: 150%; background-position: center;" href="{{ absoluteURL }}/index.php?q=/modules/Activities/view_event.php&sidebar=false&gibbonActivityCategoryID={{ event.gibbonActivityCategoryID }}">
+    <a class="block mb-6 relative rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ event.backgroundImage }}'); background-size: 150%; background-position: center;" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ event.gibbonActivityCategoryID }}">
         <div class="absolute w-full h-full rounded bg-blur bg-translucent-gray overflow-hidden">
         </div>
     
@@ -85,7 +85,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% if signUpIsOpen and signUpAccess and canSignUp %}
         <div class="mb-6 rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ activity.headerImage }}'); background-size: 150%; background-position: center;">
-            <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Activities/view_experience_signUp.php&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}&width=750&height=440" class="thickbox block px-10 py-4 rounded outline-inset bg-blue-500 bg-blur hover:bg-blur transition-all duration-300 text-center text-white text-xl font-light">
+            <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Activities/explore_experience_signUp.php&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}&width=750&height=440" class="thickbox block px-10 py-4 rounded outline-inset bg-blue-500 bg-blur hover:bg-blur transition-all duration-300 text-center text-white text-xl font-light">
                 {{ __m('Sign Up') }}
             </a>
         </div>
@@ -179,14 +179,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
             {{ __m('Previous') }}
         </div>
-        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/view_activity.php&sidebar=false&gibbonActivityCategoryID={{ prevactivity.gibbonActivityCategoryID }}&gibbonActivityID={{ prevactivity.gibbonActivityID }}">
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ prevactivity.gibbonActivityCategoryID }}&gibbonActivityID={{ prevactivity.gibbonActivityID }}">
             {{ prevactivity.name }}
         </a>
         {% else %}
         <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
             {{ __m('Back') }}
         </div>
-        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/view_event.php&sidebar=false&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}">
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}">
             {{ event.name }}
         </a>
         {% endif %}
@@ -196,14 +196,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
             {{ __m('Next') }}
         </div>
-        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/view_activity.php&sidebar=false&gibbonActivityCategoryID={{ nextactivity.gibbonActivityCategoryID }}&gibbonActivityID={{ nextactivity.gibbonActivityID }}">
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ nextactivity.gibbonActivityCategoryID }}&gibbonActivityID={{ nextactivity.gibbonActivityID }}">
             {{ nextactivity.name }}
         </a>
         {% else %}
         <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
             {{ __m('Back') }}
         </div>
-        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/view_event.php&sidebar=false&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}">
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ activity.gibbonActivityCategoryID }}">
             {{ event.name }}
         </a>
         {% endif %}

@@ -35,7 +35,7 @@ class ActivityCategoryGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryEvents(QueryCriteria $criteria, $gibbonSchoolYearID)
+    public function queryCategories(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -76,7 +76,7 @@ class ActivityCategoryGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryEventsByPerson(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
+    public function queryCategoriesByPerson(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
     {
         $query = $this
             ->newQuery()
@@ -110,7 +110,7 @@ class ActivityCategoryGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectAllEvents()
+    public function selectAllCategories()
     {
         $sql = "SELECT gibbonSchoolYear.name as groupBy, gibbonActivityCategory.gibbonActivityCategoryID as value, gibbonActivityCategory.name 
                 FROM gibbonActivityCategory
@@ -121,7 +121,7 @@ class ActivityCategoryGateway extends QueryableGateway
         return $this->db()->select($sql);
     }
 
-    public function selectEventsBySchoolYear($gibbonSchoolYearID)
+    public function selectCategoriesBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
         $sql = "SELECT gibbonActivityCategory.gibbonActivityCategoryID as value, gibbonActivityCategory.name 
@@ -133,35 +133,10 @@ class ActivityCategoryGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function getNextActiveEvent($gibbonSchoolYearID)
-    {
-        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
-        $sql = "SELECT MIN(gibbonActivityCategory.gibbonActivityCategoryID)
-                FROM gibbonActivityCategory
-                WHERE gibbonActivityCategory.active='Y'
-                AND gibbonActivityCategory.gibbonSchoolYearID=:gibbonSchoolYearID
-                GROUP BY gibbonActivityCategory.gibbonActivityCategoryID
-                ORDER BY gibbonActivityCategory.sequenceNumber, gibbonActivityCategory.name";
-
-        return $this->db()->selectOne($sql, $data);
-    }
-
-    public function selectYearGroupsByEvent($gibbonActivityCategoryID)
+    public function getCategoryDetailsByID($gibbonActivityCategoryID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
-        $sql = "SELECT gibbonYearGroup.gibbonYearGroupID as `value`, gibbonYearGroup.name
-                FROM gibbonActivityCategory
-                WHERE gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID
-                ORDER BY gibbonYearGroup.sequenceNumber, gibbonYearGroup.name";
-
-        return $this->db()->select($sql, $data);
-    }
-
-    public function getEventDetailsByID($gibbonActivityCategoryID)
-    {
-        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
-        $sql = "SELECT gibbonActivityCategory.*,
-                    gibbonSchoolYear.name as schoolYear
+        $sql = "SELECT gibbonActivityCategory.*, gibbonSchoolYear.name as schoolYear, (CASE WHEN CURRENT_TIMESTAMP >= gibbonActivityCategory.viewableDate THEN 'Y' ELSE 'N' END) as viewable
                 FROM gibbonActivityCategory
                 JOIN gibbonSchoolYear ON (gibbonActivityCategory.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
                 WHERE gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID
@@ -170,7 +145,7 @@ class ActivityCategoryGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function getEventSignUpAccess($gibbonActivityCategoryID, $gibbonPersonID)
+    public function getCategorySignUpAccess($gibbonActivityCategoryID, $gibbonPersonID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonStudentEnrolment.gibbonStudentEnrolmentID

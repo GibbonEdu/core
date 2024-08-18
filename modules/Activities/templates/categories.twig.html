@@ -43,7 +43,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </div>
 
             {% if viewable or canViewInactive %}
-                <a href="{{ absoluteURL }}/index.php?q=/modules/Activities/view_category.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}" class="py-2 border border-white hover:bg-translucent transition duration-100 rounded-sm text-center text-white text-base font-light">
+                <a href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}" class="py-2 border border-white hover:bg-translucent transition duration-100 rounded-sm text-center text-white text-base font-light">
                     {{ canViewInactive and not viewable ? __('Preview') : __('Explore') }}
                 </a>
             {% elseif date() >= date(category.endDate)  %}
@@ -61,16 +61,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
             
         </div>
-
-        <!-- <div class="absolute bottom-0 right-0 mb-6 mr-6">
-            <span class="tag text-white text-sm font-light" style="background: rgba(0,0,0,{{ hasBackground ? '0.65' : '0.2' }});">
-                {% if category.yearGroupCount >= 8 %}
-                    {{ __('All Year Groups') }}
-                {% else %}
-                    {{ category.yearGroups|replace({'Y0':'Y'}) }}
-                {% endif %}
-            </span>
-        </div> -->
         
     </div>
 
