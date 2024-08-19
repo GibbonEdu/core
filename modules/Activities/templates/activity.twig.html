@@ -35,8 +35,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% if canViewInactive and category.viewable != "Y" %}
 <section class="w-full mb-6 relative">
     <div class="w-full py-3 border border-gray-400 rounded text-center text-gray-700 text-lg font-thin">
-        {{ __m('This event is not visible to the public, and will be viewable on') }} <b>{{ category.viewableDate|date("M j \\a\\t g:ia") }}</b>.<br/> 
-        {{ __m('Some details seen here may not be finalised. Please do not share the event details until access is open to all users.') }}
+        {{ __m('This activity is not visible to the public.') }} 
+        {% if category.viewableDate %} {{ __m('It will be viewable on {date}', {'date': (category.viewableDate|date("M j \\a\\t g:ia")) }) }} {% endif %}<br/>
+        {{ __m('Some details seen here may not be finalised. Please do not share the activity details until access is open to all users.') }}
     </div>
 </section>
 {% endif %}

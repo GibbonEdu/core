@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_categor
     }
 
     if ($category['viewable'] != 'Y' && !$canViewInactive) {
-        $page->addMessage(__m('This event is not viewable at this time. Please return to the Events page to explore a different event.'));
+        $page->addMessage(__m('This activity is not viewable at this time. Please return to the categories page to explore a different activity.'));
         return;
     }
 
