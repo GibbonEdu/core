@@ -39,6 +39,7 @@ v28.0.00
         Staff: updated Manage Staff to override required custom fields when manually editing a staff member
         Staff: updated family page on Staff Profile to exclude personal details and addresses
         Students: added a notification event when student notes are edited
+        Students: removed birthday icon from student view of class lists
         User Admin: added the names of users who made changes to the User Status Log
         User Admin: updated Manage Users to override required custom fields when manually editing a user
 

@@ -1262,6 +1262,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         // Display attendance grid
                         $count = 0;
 
+                        $canViewConfidential = ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
+
                         foreach ($participants as $person) {
                             $form->addHiddenValue($count . '-gibbonPersonID', $person['gibbonPersonID']);
                             $form->addHiddenValue($count . '-prefilled', $person['log']['prefilled'] ?? '');
@@ -1275,9 +1277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "id='confidentialPlan$count'");
                             }
 
-                            $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
-                                || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
-                            if ($person['role'] == 'Student' && $canViewStudents) {
+                            if ($person['role'] == 'Student' && $canViewConfidential) {
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
 
