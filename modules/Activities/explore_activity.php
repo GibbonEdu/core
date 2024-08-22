@@ -21,6 +21,7 @@ use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityPhotoGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
+use Gibbon\Domain\Activities\ActivityStudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity.php') == false) {
     // Access denied
@@ -46,14 +47,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         return;
     }
 
-    $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/view.php', 'View Activities_studentRegister');
+    $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php', 'Explore Activities_studentRegister');
     $canViewInactive = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php');
 
     // Check records exist and are available
 
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
-    // $enrolmentGateway = $container->get(EnrolmentGateway::class);
+    $enrolmentGateway = $container->get(ActivityStudentGateway::class);
     $activityPhotoGateway = $container->get(ActivityPhotoGateway::class);
     $staffGateway = $container->get(ActivityStaffGateway::class);
 
@@ -101,8 +102,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         $isPastEvent = $now >= $endDate;
     }
 
-    $signUpEvent = $categoryGateway->getCategorySignUpAccess($activity['gibbonActivityCategoryID'], $session->get('gibbonPersonID'));
-    $signUpExperience = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
+    $signUpCategory = $categoryGateway->getCategorySignUpAccess($activity['gibbonActivityCategoryID'], $session->get('gibbonPersonID'));
+    $signUpActivity = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
+
+    // echo '<pre>';
+    // print_r("canSignUp = ".$canSignUp);
+    // print_r("signUpIsOpen = ".$signUpIsOpen);
+    // print_r("signUpCategory = ".$signUpCategory);
+    // print_r("signUpActivity = ".$signUpActivity);
+    // print_r("signUpAccess = ".(!empty($signUpCategory) && !empty($signUpActivity)) );
+    // echo '</pre>';
 
     // $enrolment = $enrolmentGateway->getActivityDetailsByEnrolment($activity['gibbonActivityCategoryID'], $session->get('gibbonPersonID'), $gibbonActivityID);
 
@@ -119,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         'canViewInactive' => $canViewInactive,
         'canSignUp'  => $canSignUp,
         'signUpIsOpen' => $signUpIsOpen,
-        'signUpAccess' => $signUpEvent && $signUpExperience,
+        'signUpAccess' => $signUpCategory && $signUpActivity,
 
         'isPastEvent' => $isPastEvent,
         'isEnrolled' => !empty($enrolment) && $enrolment['gibbonActivityID'] == $gibbonActivityID,

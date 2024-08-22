@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
-use Gibbon\Domain\Activities\ActivityCategoryGateway;
-use Gibbon\Domain\Activities\ChoiceGateway;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
+use Gibbon\Domain\Activities\ActivityChoiceGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -34,7 +34,7 @@ $params = [
 ];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&'.http_build_query($params);
-$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Activities/viewMyDL.php&'.http_build_query($params);
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_my.php&'.http_build_query($params);
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php') == false) {
     $URL .= '&return=error0';
@@ -44,16 +44,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     // Proceed!
     $partialFail = false;
 
-    $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
-    $choiceGateway = $container->get(ChoiceGateway::class);
+    $categoryGateway = $container->get(ActivityCategoryGateway::class);
+    $choiceGateway = $container->get(ActivityChoiceGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
     
     $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
     $choices = $_POST['choices'] ?? [];
 
     // Only users with manage permission can sign up a different user
-    $canManageChoice = isActionAccessible($guid, $connection2, '/modules/Activities/signUp_manage.php');
+    $canManageChoice = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php');
     if (!$canManageChoice) {
         $gibbonPersonID = $session->get('gibbonPersonID');
     }
@@ -66,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     }
 
     // Validate the database relationships exist
-    $event = $categoryGateway->getCategoryDetailsByID($params['gibbonActivityCategoryID']);
-    if (empty($event)) {
+    $category = $categoryGateway->getCategoryDetailsByID($params['gibbonActivityCategoryID'] ?? '');
+    if (empty($category)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
@@ -75,31 +75,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
 
     // Check that sign up is open based on the date
     $signUpIsOpen = false;
-    if (!empty($event['accessOpenDate']) && !empty($event['accessCloseDate'])) {
-        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $event['accessOpenDate'])->format('U');
-        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $event['accessCloseDate'])->format('U');
+    if (!empty($category['accessOpenDate']) && !empty($category['accessCloseDate'])) {
+        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $category['accessOpenDate'])->format('U');
+        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $category['accessCloseDate'])->format('U');
         $now = (new DateTime('now'))->format('U');
 
         $signUpIsOpen = $accessOpenDate <= $now && $accessCloseDate >= $now;
     }
 
-    // Check access based on year group
-    $signUpAccess = $categoryGateway->getEventSignUpAccess($params['gibbonActivityCategoryID'], $session->get('gibbonPersonID'));
+    // Check the student's sign up access based on their year group
+    $signUpCategory = $categoryGateway->getCategorySignUpAccess($params['gibbonActivityCategoryID'], $gibbonPersonID);
 
-    if (!$signUpIsOpen || !$signUpAccess) {
+    if (!$signUpIsOpen || !$signUpCategory) {
         $URL .= '&return=error4';
         header("Location: {$URL}");
         exit;
     }
 
     // Get experiences and choices
-    $experiences = $activityGateway->selectExperiencesByEventAndPerson($params['gibbonActivityCategoryID'], $gibbonPersonID)->fetchKeyPair();
+    $activities = $activityGateway->selectActivitiesByCategoryAndPerson($params['gibbonActivityCategoryID'], $gibbonPersonID)->fetchKeyPair();
     $choicesSelected = $choiceGateway->selectChoicesByPerson($params['gibbonActivityCategoryID'], $gibbonPersonID)->fetchGroupedUnique();
-    $signUpChoices = $settingGateway->getSettingByScope('Deep Learning', 'signUpChoices');
+    $signUpChoices = 3;
 
     // Lower the choice limit if there are less options
-    if (count($experiences) < $signUpChoices) {
-        $signUpChoices = count($experiences);
+    if (count($activities) < $signUpChoices) {
+        $signUpChoices = count($activities);
     }
 
     // Update the sign up choices
@@ -114,8 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
             exit;
         }
 
-        $signUpExperience = $activityGateway->getExperienceSignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
-        if (!$signUpExperience) {
+        $signUpActivity = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $gibbonPersonID);
+        if (!$signUpActivity) {
             $URL .= '&return=error5';
             header("Location: {$URL}");
             exit;
@@ -130,27 +130,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
 
         // Prepare data to insert or update
         $signUpData = [
-            'gibbonActivityID' => $gibbonActivityID,
-            'gibbonActivityCategoryID'      => $params['gibbonActivityCategoryID'],
+            'gibbonActivityID'         => $gibbonActivityID,
+            'gibbonActivityCategoryID' => $params['gibbonActivityCategoryID'],
             'gibbonPersonID'           => $gibbonPersonID,
             'choice'                   => $choice,
             'timestampModified'        => date('Y-m-d H:i:s'),
             'gibbonPersonIDModified'   => $session->get('gibbonPersonID'),
         ];
 
-        $deepLearningChoiceID = $choicesSelected[$choice]['deepLearningChoiceID'] ?? '';
+        $gibbonActivityChoiceID = $choicesSelected[$choice]['gibbonActivityChoiceID'] ?? '';
 
-        if (!empty($deepLearningChoiceID)) {
-            $partialFail &= !$choiceGateway->update($deepLearningChoiceID, $signUpData);
+        if (!empty($gibbonActivityChoiceID)) {
+            $partialFail &= !$choiceGateway->update($gibbonActivityChoiceID, $signUpData);
         } else {
             $signUpData['timestampCreated'] = date('Y-m-d H:i:s');
             $signUpData['gibbonPersonIDCreated'] = $session->get('gibbonPersonID');
 
-            $deepLearningChoiceID = $choiceGateway->insert($signUpData);
-            $partialFail &= !$deepLearningChoiceID;
+            $gibbonActivityChoiceID = $choiceGateway->insert($signUpData);
+            $partialFail &= !$gibbonActivityChoiceID;
         }
 
-        $choiceIDs[] = str_pad($deepLearningChoiceID, 12, '0', STR_PAD_LEFT);
+        $choiceIDs[] = str_pad($gibbonActivityChoiceID, 12, '0', STR_PAD_LEFT);
     }
 
     // Cleanup sign ups that have been deleted

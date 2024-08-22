@@ -34,13 +34,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
     $page->breadcrumbs->add(__('My Activities')); 
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+
     $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
+    $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php', 'Explore Activities_studentRegister');
+
+    $page->return->addReturns([
+        'success1' => __('Your activity choices have been successfully recorded. You can view your activities below.'),
+        'error4'   => __('Sign up is currently not available for this activity.'),
+        'error5'   => __('There was an error verifying your activity choices. Please try again.'),
+    ]);
 
     $activityGateway = $container->get(ActivityGateway::class);
     
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria()
-        ->sortBy('name')
+        ->sortBy('sequenceNumber')
         ->fromArray($_POST);
 
     $activities = $activityGateway->queryActivitiesByParticipant($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
@@ -48,9 +56,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
     // DATA TABLE
     $table = DataTable::createPaginated('myActivities', $criteria);
 
+    $table->addColumn('category', __('Category'))
+        ->width('15%')
+        ->format(function ($activity) {
+            return !empty($activity['category']) ? $activity['category'] : '';
+        });
+
     $table->addColumn('name', __('Activity'))
         ->format(function ($activity) {
-            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+            if (empty($activity['choices'])) {
+                return $activity['name'].'<br/>'.Format::small($activity['type']);
+            }
+            
+            $choices = explode(',', $activity['choices']);
+            return Format::small(__('Activity Choices')).':<br/>'.Format::list($choices, 'ol', 'ml-2 my-0 text-xs');
+            
         });
     $table->addColumn('role', __('Role'))
         ->format(function ($activity) {
@@ -58,13 +78,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
         });
 
     $table->addColumn('status', __('Status'))
+        ->width('12%')
         ->format(function ($activity) {
-            return !empty($activity['status']) ? $activity['status'] : '<i>'.__('N/A').'</i>';
+            if (empty($activity['status'])) return Format::small(__('N/A'));
+
+            return $activity['status'] == 'Pending' ? Format::tag($activity['status'], 'message') : $activity['status'];
         });
 
     $table->addActionColumn()
         ->addParam('gibbonActivityID')
-        ->format(function ($activity, $actions) use ($highestAction, $canAccessEnrolment) {
+        ->format(function ($activity, $actions) use ($highestAction, $canAccessEnrolment, $canSignUp) {
+            if (empty($activity['gibbonActivityID'])) {
+                // Check that sign up is open based on the date
+                $signUpIsOpen = false;
+
+                if (!empty($activity['accessOpenDate']) && !empty($activity['accessCloseDate'])) {
+                    $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $activity['accessOpenDate'])->format('U');
+                    $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $activity['accessCloseDate'])->format('U');
+                    $now = (new DateTime('now'))->format('U');
+
+                    $signUpIsOpen = $accessOpenDate <= $now && $accessCloseDate >= $now;
+                }
+
+                if ($signUpIsOpen && $canSignUp) {
+                    $actions->addAction('add', __('Sign Up'))
+                            ->setURL('/modules/Activities/explore_activity_signUp.php')
+                            ->addParam('gibbonActivityCategoryID', $activity['gibbonActivityCategoryID'])
+                            ->modalWindow(750, 440);
+                }
+
+                return;
+            }
+
             if ($activity['role'] == 'Organiser' &&  $canAccessEnrolment) {
                 $actions->addAction('enrolment', __('Enrolment'))
                     ->addParam('gibbonSchoolYearTermID', '')

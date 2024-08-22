@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\ChoiceGateway;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
+use Gibbon\Domain\Activities\ActivityChoiceGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php') == false) {
     // Access denied
@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
 
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
-    $choiceGateway = $container->get(ChoiceGateway::class);
+    $choiceGateway = $container->get(ActivityChoiceGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
 
     if (empty($gibbonActivityCategoryID)) {
@@ -41,45 +41,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         return;
     }
 
-    $event = $categoryGateway->getCategoryDetailsByID($gibbonActivityCategoryID);
+    $activity = $activityGateway->getActivityDetailsByID($gibbonActivityID);
+    $category = $categoryGateway->getCategoryDetailsByID($gibbonActivityCategoryID);
 
-    if (empty($event)) {
+    if (empty($category)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
     // Check that sign up is open based on the date
     $signUpIsOpen = false;
-    if (!empty($event['accessOpenDate']) && !empty($event['accessCloseDate'])) {
-        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $event['accessOpenDate'])->format('U');
-        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $event['accessCloseDate'])->format('U');
+    if (!empty($category['accessOpenDate']) && !empty($category['accessCloseDate'])) {
+        $accessOpenDate = DateTime::createFromFormat('Y-m-d H:i:s', $category['accessOpenDate'])->format('U');
+        $accessCloseDate = DateTime::createFromFormat('Y-m-d H:i:s', $category['accessCloseDate'])->format('U');
         $now = (new DateTime('now'))->format('U');
 
         $signUpIsOpen = $accessOpenDate <= $now && $accessCloseDate >= $now;
     }
 
     if (!$signUpIsOpen) {
-        $page->addError(__m('Sign up is currently not available for this Deep Learning event.'));
+        $page->addError(__m('Sign up is currently not available for this activity.'));
         return;
     }
     
     // Check the student's sign up access based on their year group
-    $signUpAccess = $categoryGateway->getEventSignUpAccess($gibbonActivityCategoryID, $session->get('gibbonPersonID'));
-    if (!$signUpAccess) {
-        $page->addError(__m('Sign up is currently not available for this Deep Learning event.'));
+    $signUpCategory = $categoryGateway->getCategorySignUpAccess($gibbonActivityCategoryID, $session->get('gibbonPersonID'));
+    $signUpActivity = $activityGateway->getActivitySignUpAccess($gibbonActivityID, $session->get('gibbonPersonID'));
+
+    if (!$signUpCategory || (!empty($activity) && !$signUpActivity)) {
+        $page->addError(__m('Sign up is currently not available for this activity.'));
         return;
     }
 
     // Get experiences
-    $experiences = $activityGateway->selectExperiencesByEventAndPerson($gibbonActivityCategoryID, $session->get('gibbonPersonID'))->fetchKeyPair();
+    $activities = $activityGateway->selectActivitiesByCategoryAndPerson($gibbonActivityCategoryID, $session->get('gibbonPersonID'))->fetchKeyPair();
     $choicesSelected = $choiceGateway->selectChoicesByPerson($gibbonActivityCategoryID, $session->get('gibbonPersonID'))->fetchGroupedUnique();
 
-    $signUpText = $settingGateway->getSettingByScope('Deep Learning', 'signUpText');
-    $signUpChoices = $settingGateway->getSettingByScope('Deep Learning', 'signUpChoices');
+    $signUpText = $settingGateway->getSettingByScope('Activities', 'signUpText');
+    $signUpChoices = 3;
 
     // Lower the choice limit if there are less options
-    if (count($experiences) < $signUpChoices) {
-        $signUpChoices = count($experiences);
+    if (count($activities) < $signUpChoices) {
+        $signUpChoices = count($activities);
     }
 
     $choiceList = [1 => __m('First Choice'), 2 => __m('Second Choice'), 3 => __m('Third Choice'), 4 => __m('Fourth Choice'), 5 => __m('Fifth Choice')];
@@ -91,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     
     // FORM
     $form = Form::create('event', $session->get('absoluteURL').'/modules/'.$session->get('module').'/explore_activity_signUpProcess.php');
-    $form->setTitle(__m("Deep Learning Sign Up"));
+    $form->setTitle(__('Activity Registration'));
     $form->setDescription($signUpText);
 
     $form->addHiddenValue('address', $session->get('address'));
@@ -103,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
         $row = $form->addRow();
         $row->addLabel("choices[{$i}]", $choiceList[$i] ?? $i);
         $row->addSelect("choices[{$i}]")
-            ->fromArray($experiences)
+            ->fromArray($activities)
             ->setID("choices{$i}")
             ->addClass('signUpChoice')
             ->required()

@@ -29,7 +29,7 @@ class ActivityChoiceGateway extends QueryableGateway
 
     private static $tableName = 'gibbonActivityChoice';
     private static $primaryKey = 'gibbonActivityChoiceID';
-    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'deepLearningEvent.name', 'deepLearningExperience.name'];
+    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonActivityCategory.name', 'gibbonActivity.name'];
 
     /**
      * @param QueryCriteria $criteria
@@ -42,9 +42,9 @@ class ActivityChoiceGateway extends QueryableGateway
             ->distinct()
             ->from($this->getTableName())
             ->cols([
-                'deepLearningEvent.deepLearningEventID',
-                'deepLearningEvent.name as eventName',
-                'deepLearningEvent.nameShort as eventNameShort',
+                'gibbonActivityCategory.gibbonActivityCategoryID',
+                'gibbonActivityCategory.name as eventName',
+                'gibbonActivityCategory.nameShort as eventNameShort',
                 'gibbonActivityChoice.gibbonPersonID',
                 'gibbonActivityChoice.timestampModified',
                 'gibbonPerson.preferredName',
@@ -52,29 +52,29 @@ class ActivityChoiceGateway extends QueryableGateway
                 'gibbonPerson.image_240',
                 'gibbonFormGroup.nameShort as formGroup',
                 'gibbonYearGroup.nameShort as yearGroup',
-                "GROUP_CONCAT(deepLearningExperience.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') as choices",
-                "GROUP_CONCAT(CONCAT(gibbonActivityChoice.choice, ':', deepLearningExperience.name) ORDER BY gibbonActivityChoice.choice SEPARATOR ',') as choiceList",
-                "(CASE WHEN deepLearningEnrolment.deepLearningEnrolmentID IS NOT NULL THEN enrolledExperience.name ELSE '' END) as enrolledExperience"
+                "GROUP_CONCAT(gibbonActivity.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') as choices",
+                "GROUP_CONCAT(CONCAT(gibbonActivityChoice.choice, ':', gibbonActivity.name) ORDER BY gibbonActivityChoice.choice SEPARATOR ',') as choiceList",
+                "(CASE WHEN gibbonActivityStudent.gibbonActivityStudentID IS NOT NULL THEN enrolledActivity.name ELSE '' END) as enrolledActivity"
                 
             ])
-            ->innerJoin('deepLearningExperience', 'deepLearningExperience.deepLearningExperienceID=gibbonActivityChoice.deepLearningExperienceID')
-            ->innerJoin('deepLearningEvent', 'deepLearningEvent.deepLearningEventID=deepLearningExperience.deepLearningEventID')
+            ->innerJoin('gibbonActivity', 'gibbonActivity.gibbonActivityID=gibbonActivityChoice.gibbonActivityID')
+            ->innerJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityChoice.gibbonPersonID')
-            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=deepLearningEvent.gibbonSchoolYearID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID')
             ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
-            ->leftJoin('deepLearningEnrolment', 'deepLearningEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND deepLearningEnrolment.deepLearningEventID=deepLearningEvent.deepLearningEventID')
-            ->leftJoin('deepLearningExperience as enrolledExperience', 'enrolledExperience.deepLearningExperienceID=deepLearningEnrolment.deepLearningExperienceID')
-            ->where('deepLearningEvent.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->leftJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonActivityStudent.gibbonActivityCategoryID=gibbonActivityCategory.gibbonActivityCategoryID')
+            ->leftJoin('gibbonActivity as enrolledActivity', 'enrolledActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->where('gibbonActivityCategory.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->groupBy(['gibbonActivityChoice.gibbonPersonID']);
 
 
         $criteria->addFilterRules([
-            'event' => function ($query, $deepLearningEventID) {
+            'event' => function ($query, $gibbonActivityCategoryID) {
                 return $query
-                    ->where('deepLearningEvent.deepLearningEventID = :deepLearningEventID')
-                    ->bindValue('deepLearningEventID', $deepLearningEventID);
+                    ->where('gibbonActivityCategory.gibbonActivityCategoryID = :gibbonActivityCategoryID')
+                    ->bindValue('gibbonActivityCategoryID', $gibbonActivityCategoryID);
             },
         ]);
 
@@ -92,21 +92,21 @@ class ActivityChoiceGateway extends QueryableGateway
             ->distinct()
             ->from($this->getTableName())
             ->cols([
-                'deepLearningEvent.deepLearningEventID',
-                'deepLearningEvent.name as eventName',
-                'deepLearningEvent.nameShort as eventNameShort',
+                'gibbonActivityCategory.gibbonActivityCategoryID',
+                'gibbonActivityCategory.name as eventName',
+                'gibbonActivityCategory.nameShort as eventNameShort',
                 'gibbonActivityChoice.gibbonPersonID',
                 'gibbonActivityChoice.timestampModified',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
                 'gibbonPerson.image_240',
-                "GROUP_CONCAT(deepLearningExperience.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') as choices",
+                "GROUP_CONCAT(gibbonActivity.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') as choices",
                 
             ])
-            ->innerJoin('deepLearningExperience', 'deepLearningExperience.deepLearningExperienceID=gibbonActivityChoice.deepLearningExperienceID')
-            ->innerJoin('deepLearningEvent', 'deepLearningEvent.deepLearningEventID=deepLearningExperience.deepLearningEventID')
+            ->innerJoin('gibbonActivity', 'gibbonActivity.gibbonActivityID=gibbonActivityChoice.gibbonActivityID')
+            ->innerJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityChoice.gibbonPersonID')
-            ->where('deepLearningEvent.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->where('gibbonActivityCategory.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonActivityChoice.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
@@ -115,17 +115,17 @@ class ActivityChoiceGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryNotSignedUpStudentsByEvent($criteria, $deepLearningEventID)
+    public function queryNotSignedUpStudentsByCategory($criteria, $gibbonActivityCategoryID)
     {
         $query = $this
             ->newQuery()
-            ->from('deepLearningEvent')
+            ->from('gibbonActivityCategory')
             ->cols([
                 'gibbonStudentEnrolment.gibbonPersonID as groupBy',
-                '0 as deepLearningExperienceID',
-                'deepLearningEvent.deepLearningEventID',
-                'deepLearningEvent.name as eventName',
-                'deepLearningEvent.nameShort as eventNameShort',
+                '0 as gibbonActivityID',
+                'gibbonActivityCategory.gibbonActivityCategoryID',
+                'gibbonActivityCategory.name as eventName',
+                'gibbonActivityCategory.nameShort as eventNameShort',
                 'gibbonStudentEnrolment.gibbonPersonID',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
@@ -135,17 +135,17 @@ class ActivityChoiceGateway extends QueryableGateway
                 'gibbonYearGroup.name as yearGroup',
                 'gibbonYearGroup.sequenceNumber as yearGroupSequence',
             ])
-            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=deepLearningEvent.gibbonSchoolYearID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
             ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
 
-            ->leftJoin('gibbonActivityChoice', 'gibbonActivityChoice.deepLearningEventID=deepLearningEvent.deepLearningEventID AND gibbonActivityChoice.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->leftJoin('deepLearningExperience', 'deepLearningExperience.deepLearningExperienceID=gibbonActivityChoice.deepLearningExperienceID')
+            ->leftJoin('gibbonActivityChoice', 'gibbonActivityChoice.gibbonActivityCategoryID=gibbonActivityCategory.gibbonActivityCategoryID AND gibbonActivityChoice.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonActivity', 'gibbonActivity.gibbonActivityID=gibbonActivityChoice.gibbonActivityID')
 
-            ->where('deepLearningEvent.deepLearningEventID=:deepLearningEventID')
-            ->bindValue('deepLearningEventID', $deepLearningEventID)
-            ->where('FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, deepLearningEvent.gibbonYearGroupIDList)')
+            ->where('gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID')
+            ->bindValue('gibbonActivityCategoryID', $gibbonActivityCategoryID)
+            ->where('FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivityCategory.gibbonYearGroupIDList)')
             ->where("gibbonPerson.status = 'Full'")
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
@@ -156,29 +156,29 @@ class ActivityChoiceGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectChoiceCountsByEvent($deepLearningEventID)
+    public function selectChoiceCountsByCategory($gibbonActivityCategoryID)
     {
-        $data = ['deepLearningEventID' => $deepLearningEventID, 'today' => date('Y-m-d')];
-        $sql = "SELECT deepLearningExperience.deepLearningExperienceID as groupBy,
-                    deepLearningExperience.deepLearningExperienceID,
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonActivity.gibbonActivityID as groupBy,
+                    gibbonActivity.gibbonActivityID,
                     COUNT(DISTINCT CASE WHEN gibbonActivityChoice.choice=1 AND gibbonPerson.gibbonPersonID IS NOT NULL THEN gibbonActivityChoice.gibbonActivityChoiceID END) as choice1,
                     COUNT(DISTINCT CASE WHEN gibbonActivityChoice.choice=2 AND gibbonPerson.gibbonPersonID IS NOT NULL THEN gibbonActivityChoice.gibbonActivityChoiceID END) as choice2,
                     COUNT(DISTINCT CASE WHEN gibbonActivityChoice.choice=3 AND gibbonPerson.gibbonPersonID IS NOT NULL THEN gibbonActivityChoice.gibbonActivityChoiceID END) as choice3,
                     COUNT(DISTINCT CASE WHEN gibbonActivityChoice.choice=4 AND gibbonPerson.gibbonPersonID IS NOT NULL THEN gibbonActivityChoice.gibbonActivityChoiceID END) as choice4,
                     COUNT(DISTINCT CASE WHEN gibbonActivityChoice.choice=5 AND gibbonPerson.gibbonPersonID IS NOT NULL THEN gibbonActivityChoice.gibbonActivityChoiceID END) as choice5
-                FROM deepLearningExperience
-                LEFT JOIN gibbonActivityChoice ON (gibbonActivityChoice.deepLearningExperienceID=deepLearningExperience.deepLearningExperienceID)
+                FROM gibbonActivity
+                LEFT JOIN gibbonActivityChoice ON (gibbonActivityChoice.gibbonActivityID=gibbonActivity.gibbonActivityID)
                 LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonActivityChoice.gibbonPersonID AND gibbonPerson.status = 'Full' AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today))
-                WHERE deepLearningExperience.deepLearningEventID=:deepLearningEventID
-                GROUP BY deepLearningExperience.deepLearningExperienceID";
+                WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID
+                GROUP BY gibbonActivity.gibbonActivityID";
 
         return $this->db()->select($sql, $data);
     }
 
-    public function selectChoicesByEvent($deepLearningEventID)
+    public function selectChoicesByCategory($gibbonActivityCategoryID)
     {
-        $data = ['deepLearningEventID' => $deepLearningEventID, 'today' => date('Y-m-d')];
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonActivityChoice.gibbonPersonID as groupBy,
                     gibbonActivityChoice.gibbonPersonID,
                     gibbonActivityChoice.timestampCreated,
@@ -186,18 +186,18 @@ class ActivityChoiceGateway extends QueryableGateway
                     gibbonPerson.preferredName,
                     gibbonFormGroup.name as formGroup,
                     gibbonYearGroup.sequenceNumber as yearGroupSequence,
-                    MIN(CASE WHEN gibbonActivityChoice.choice=1 THEN gibbonActivityChoice.deepLearningExperienceID END) as choice1,
-                    MIN(CASE WHEN gibbonActivityChoice.choice=2 THEN gibbonActivityChoice.deepLearningExperienceID END) as choice2,
-                    MIN(CASE WHEN gibbonActivityChoice.choice=3 THEN gibbonActivityChoice.deepLearningExperienceID END) as choice3,
-                    MIN(CASE WHEN gibbonActivityChoice.choice=4 THEN gibbonActivityChoice.deepLearningExperienceID END) as choice4,
-                    MIN(CASE WHEN gibbonActivityChoice.choice=5 THEN gibbonActivityChoice.deepLearningExperienceID END) as choice5
+                    MIN(CASE WHEN gibbonActivityChoice.choice=1 THEN gibbonActivityChoice.gibbonActivityID END) as choice1,
+                    MIN(CASE WHEN gibbonActivityChoice.choice=2 THEN gibbonActivityChoice.gibbonActivityID END) as choice2,
+                    MIN(CASE WHEN gibbonActivityChoice.choice=3 THEN gibbonActivityChoice.gibbonActivityID END) as choice3,
+                    MIN(CASE WHEN gibbonActivityChoice.choice=4 THEN gibbonActivityChoice.gibbonActivityID END) as choice4,
+                    MIN(CASE WHEN gibbonActivityChoice.choice=5 THEN gibbonActivityChoice.gibbonActivityID END) as choice5
                 FROM gibbonActivityChoice
-                JOIN deepLearningEvent ON (deepLearningEvent.deepLearningEventID=gibbonActivityChoice.deepLearningEventID)
+                JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivityChoice.gibbonActivityCategoryID)
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonActivityChoice.gibbonPersonID)
-                LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=deepLearningEvent.gibbonSchoolYearID)
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID)
                 LEFT JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                 LEFT JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
-                WHERE deepLearningEvent.deepLearningEventID=:deepLearningEventID
+                WHERE gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID
                 AND gibbonPerson.status = 'Full'
                 AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)
@@ -207,18 +207,18 @@ class ActivityChoiceGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectChoiceWeightingByEvent($deepLearningEventID)
+    public function selectChoiceWeightingByCategory($gibbonActivityCategoryID)
     {
-        $data = ['deepLearningEventID' => $deepLearningEventID];
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
         $sql = "SELECT gibbonActivityChoice.gibbonPersonID as groupBy,
                     gibbonActivityChoice.gibbonPersonID,
                     SUM(pastChoice.choice) as choiceCount,
-                    COUNT(DISTINCT pastChoice.deepLearningEventID) as eventCount
+                    COUNT(DISTINCT pastChoice.gibbonActivityCategoryID) as eventCount
                 FROM gibbonActivityChoice
-                JOIN deepLearningEvent ON (deepLearningEvent.deepLearningEventID=gibbonActivityChoice.deepLearningEventID)
-                LEFT JOIN deepLearningEnrolment AS pastEnrolment ON (pastEnrolment.gibbonPersonID=gibbonActivityChoice.gibbonPersonID AND pastEnrolment.deepLearningEventID<>deepLearningEvent.deepLearningEventID AND pastEnrolment.status='Confirmed')
+                JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivityChoice.gibbonActivityCategoryID)
+                LEFT JOIN gibbonActivityStudent AS pastEnrolment ON (pastEnrolment.gibbonPersonID=gibbonActivityChoice.gibbonPersonID AND pastEnrolment.gibbonActivityCategoryID<>gibbonActivityCategory.gibbonActivityCategoryID AND pastEnrolment.status='Confirmed')
                 LEFT JOIN gibbonActivityChoice as pastChoice ON (pastChoice.gibbonActivityChoiceID=pastEnrolment.gibbonActivityChoiceID AND pastChoice.gibbonPersonID=gibbonActivityChoice.gibbonPersonID )
-                WHERE deepLearningEvent.deepLearningEventID=:deepLearningEventID
+                WHERE gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID
                 AND gibbonActivityChoice.choice=1
                 GROUP BY gibbonActivityChoice.gibbonPersonID
                 ORDER BY choiceCount DESC";
@@ -231,38 +231,38 @@ class ActivityChoiceGateway extends QueryableGateway
         return $this->db()->selectOne("SELECT MAX(sequenceNumber) FROM gibbonYearGroup");
     }
 
-    public function selectChoicesByPerson($deepLearningEventID, $gibbonPersonID)
+    public function selectChoicesByPerson($gibbonActivityCategoryID, $gibbonPersonID)
     {
-        $data = ['deepLearningEventID' => $deepLearningEventID, 'gibbonPersonID' => $gibbonPersonID];
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonActivityChoice.choice as groupBy, gibbonActivityChoice.*
                 FROM gibbonActivityChoice
-                JOIN deepLearningExperience ON (deepLearningExperience.deepLearningExperienceID=gibbonActivityChoice.deepLearningExperienceID)
-                WHERE deepLearningExperience.deepLearningEventID=:deepLearningEventID
+                JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityChoice.gibbonActivityID)
+                WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID
                 AND gibbonActivityChoice.gibbonPersonID=:gibbonPersonID
                 ORDER BY gibbonActivityChoice.choice";
 
         return $this->db()->select($sql, $data);
     }
 
-    public function getChoiceByExperienceAndPerson($deepLearningExperienceID, $gibbonPersonID)
+    public function getChoiceByActivityAndPerson($gibbonActivityID, $gibbonPersonID)
     {
-        $data = ['deepLearningExperienceID' => $deepLearningExperienceID, 'gibbonPersonID' => $gibbonPersonID];
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT *
                 FROM gibbonActivityChoice
-                WHERE gibbonActivityChoice.deepLearningExperienceID=:deepLearningExperienceID
+                WHERE gibbonActivityChoice.gibbonActivityID=:gibbonActivityID
                 AND gibbonActivityChoice.gibbonPersonID=:gibbonPersonID
                 LIMIT 1";
 
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function deleteChoicesNotInList($deepLearningEventID, $gibbonPersonID, $choiceIDs)
+    public function deleteChoicesNotInList($gibbonActivityCategoryID, $gibbonPersonID, $choiceIDs)
     {
         $choiceIDs = is_array($choiceIDs) ? implode(',', $choiceIDs) : $choiceIDs;
 
-        $data = ['deepLearningEventID' => $deepLearningEventID, 'gibbonPersonID' => $gibbonPersonID, 'choiceIDs' => $choiceIDs];
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID, 'choiceIDs' => $choiceIDs];
         $sql = "DELETE FROM gibbonActivityChoice 
-                WHERE deepLearningEventID=:deepLearningEventID 
+                WHERE gibbonActivityCategoryID=:gibbonActivityCategoryID 
                 AND gibbonPersonID=:gibbonPersonID
                 AND NOT FIND_IN_SET(gibbonActivityChoiceID, :choiceIDs)";
 
