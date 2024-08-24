@@ -29,6 +29,7 @@ v28.0.00
     Security
 
     Tweaks & Additions
+        System: set Greek as an active language
         System: added Putonghua as a language option in dropdown menus
         System: added IDD codes for Republic of Korea and Democratic People's Republic of Korea
         Attendance: added an index to the attendance log to help speed up attendance pages

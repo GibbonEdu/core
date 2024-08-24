@@ -830,4 +830,5 @@ UPDATE `gibbonNotificationEvent` SET event='Student Notes' WHERE event='New Stud
 ALTER TABLE `gibbonStaffAbsence` CHANGE `status` `status` ENUM('Pending Approval','Approved','Declined','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Approved';end
 UPDATE gibbonCountry SET iddCountryCode='82' WHERE printable_name='Korea, Republic of';end
 UPDATE gibbonCountry SET iddCountryCode='850' WHERE printable_name='Korea, Democratic People\'s Republic of';end
+UPDATE `gibboni18n` SET `active` = 'Y' WHERE `code` = 'el_GR';end
 ";
