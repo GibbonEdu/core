@@ -184,6 +184,7 @@ class ActivityGateway extends QueryableGateway
                 'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonActivitySlot.locationExternal', 'gibbonSpace.name as space', 'gibbonDaysOfWeek.name as dayOfWeek',
             ])
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->innerJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
             ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
             ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
@@ -198,7 +199,8 @@ class ActivityGateway extends QueryableGateway
             ->bindValue('today', $date ?? date('Y-m-d'))
             ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
-            ->bindValue('dateType', $dateType);
+            ->bindValue('dateType', $dateType)
+            ->where('CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate');
 
         if ($dateType == 'Term') {
             $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])
@@ -270,8 +272,10 @@ class ActivityGateway extends QueryableGateway
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonActivity.gibbonActivityID AS groupBy, gibbonActivityStudent.* FROM gibbonActivityStudent 
                 JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
+                JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID)
                 WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID";
+                AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID
+                AND CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate";
 
         return $this->db()->select($sql, $data);
     }
@@ -303,6 +307,14 @@ class ActivityGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectActivitiesByCategoryAndSchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonActivity.gibbonActivityCategoryID, gibbonActivity.gibbonActivityID, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectActivitiesByCategoryAndPerson($gibbonActivityCategoryID, $gibbonPersonID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
@@ -328,11 +340,20 @@ class ActivityGateway extends QueryableGateway
                 gibbonActivityType.maxPerStudent,
                 gibbonActivityType.enrolmentType,
                 gibbonActivityType.backupChoice,
+                gibbonSpace.gibbonSpaceID,
+                gibbonActivitySlot.timeStart,
+                gibbonActivitySlot.timeEnd,
+                gibbonActivitySlot.locationExternal,
+                gibbonSpace.name as space,
+                gibbonDaysOfWeek.name as dayOfWeek,
                 GROUP_CONCAT(DISTINCT gibbonYearGroup.nameShort ORDER BY gibbonYearGroup.sequenceNumber SEPARATOR ', ') as yearGroups,
                 COUNT(DISTINCT gibbonYearGroup.gibbonYearGroupID) as yearGroupCount
             FROM gibbonActivity 
             LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList))
             LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)
+            LEFT JOIN gibbonActivitySlot ON (gibbonActivity.gibbonActivityID=gibbonActivitySlot.gibbonActivityID)
+            LEFT JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)
+            LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
             WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID
             GROUP BY gibbonActivity.gibbonActivityID";
 

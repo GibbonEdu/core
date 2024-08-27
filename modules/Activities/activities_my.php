@@ -104,6 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
                     $actions->addAction('add', __('Sign Up'))
                             ->setURL('/modules/Activities/explore_activity_signUp.php')
                             ->addParam('gibbonActivityCategoryID', $activity['gibbonActivityCategoryID'])
+                            ->setIcon('attendance')
                             ->modalWindow(750, 440);
                 }
 

@@ -45,6 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         //Get current role category
         $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
+        $gibbonPersonID = null;
+
+        //If student, set gibbonPersonID to self
+        if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
+            $gibbonPersonID = $session->get('gibbonPersonID');
+        }
+        
         //Check access controls
         $settingGateway = $container->get(SettingGateway::class);
 
@@ -69,12 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             }
 
-            $gibbonPersonID = null;
-
-            //If student, set gibbonPersonID to self
-            if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
-                $gibbonPersonID = $session->get('gibbonPersonID');
-            }
+           
             //IF PARENT, SET UP LIST OF CHILDREN
             $countChild = 0;
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {

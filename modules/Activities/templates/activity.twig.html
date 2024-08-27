@@ -121,12 +121,24 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
         </div>
 
-        {% if activity.location %}
+        <div class="mb-6 text-4xl normal-case font-thin">
+            <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
+                {{ __m('Time') }}
+            </h4>
+            {{ activity.dayOfWeek }}
+                
+            <div class="mt-0 text-sm font-normal text-gray-600 ">
+                {{ activity.timeStart|date("g:ia") }} - {{ activity.timeEnd|date("g:ia") }}
+            </div>
+
+        </div>
+
+        {% if activity.space or activity.locationExternal %}
         <div class="mb-6 text-xl normal-case">
             <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
                 {{ __m('Location') }}
             </h4>
-            {{ activity.location }}
+            {{ activity.space ? activity.space : activity.locationExternal }}
         </div>
         {% endif %}
 

@@ -63,11 +63,11 @@ class ActivityChoiceGateway extends QueryableGateway
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID')
             ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
-            ->leftJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonActivityStudent.gibbonActivityCategoryID=gibbonActivityCategory.gibbonActivityCategoryID')
+            ->leftJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->leftJoin('gibbonActivity as enrolledActivity', 'enrolledActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
             ->where('gibbonActivityCategory.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->groupBy(['gibbonActivityChoice.gibbonPersonID']);
+            ->groupBy(['gibbonActivityChoice.gibbonPersonID', 'gibbonActivityCategory.gibbonActivityCategoryID']);
 
 
         $criteria->addFilterRules([
