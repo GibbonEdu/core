@@ -115,7 +115,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% if activity.cost %}
                 {{ formatUsing('currency', activity.cost, false, 0) }}
                 
-                {%- if activity.costType -%}<div class="mt-0 text-sm font-normal text-gray-600 ">{{ activity.costType }}</div>{% endif %}
+                {%- if activity.costType -%}
+                    <div class="mt-0 text-sm font-normal text-gray-600 ">
+                    {{ activity.costType }}
+                    {% if activity.costStatus %}
+                    &nbsp;({{ activity.costStatus }})
+                    {% endif %}
+                    </div>
+                {% endif %}
             {% else %}
                 {{ __m('Free') }}
             {% endif %}

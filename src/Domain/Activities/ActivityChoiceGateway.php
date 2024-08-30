@@ -43,8 +43,8 @@ class ActivityChoiceGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonActivityCategory.gibbonActivityCategoryID',
-                'gibbonActivityCategory.name as eventName',
-                'gibbonActivityCategory.nameShort as eventNameShort',
+                'gibbonActivityCategory.name as categoryName',
+                'gibbonActivityCategory.nameShort as categoryNameShort',
                 'gibbonActivityChoice.gibbonPersonID',
                 'gibbonActivityChoice.timestampModified',
                 'gibbonPerson.preferredName',
@@ -71,7 +71,7 @@ class ActivityChoiceGateway extends QueryableGateway
 
 
         $criteria->addFilterRules([
-            'event' => function ($query, $gibbonActivityCategoryID) {
+            'category' => function ($query, $gibbonActivityCategoryID) {
                 return $query
                     ->where('gibbonActivityCategory.gibbonActivityCategoryID = :gibbonActivityCategoryID')
                     ->bindValue('gibbonActivityCategoryID', $gibbonActivityCategoryID);
@@ -93,8 +93,8 @@ class ActivityChoiceGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonActivityCategory.gibbonActivityCategoryID',
-                'gibbonActivityCategory.name as eventName',
-                'gibbonActivityCategory.nameShort as eventNameShort',
+                'gibbonActivityCategory.name as categoryName',
+                'gibbonActivityCategory.nameShort as categoryNameShort',
                 'gibbonActivityChoice.gibbonPersonID',
                 'gibbonActivityChoice.timestampModified',
                 'gibbonPerson.preferredName',
@@ -124,8 +124,8 @@ class ActivityChoiceGateway extends QueryableGateway
                 'gibbonStudentEnrolment.gibbonPersonID as groupBy',
                 '0 as gibbonActivityID',
                 'gibbonActivityCategory.gibbonActivityCategoryID',
-                'gibbonActivityCategory.name as eventName',
-                'gibbonActivityCategory.nameShort as eventNameShort',
+                'gibbonActivityCategory.name as categoryName',
+                'gibbonActivityCategory.nameShort as categoryNameShort',
                 'gibbonStudentEnrolment.gibbonPersonID',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
@@ -145,7 +145,6 @@ class ActivityChoiceGateway extends QueryableGateway
 
             ->where('gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID')
             ->bindValue('gibbonActivityCategoryID', $gibbonActivityCategoryID)
-            ->where('FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivityCategory.gibbonYearGroupIDList)')
             ->where("gibbonPerson.status = 'Full'")
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
@@ -213,10 +212,11 @@ class ActivityChoiceGateway extends QueryableGateway
         $sql = "SELECT gibbonActivityChoice.gibbonPersonID as groupBy,
                     gibbonActivityChoice.gibbonPersonID,
                     SUM(pastChoice.choice) as choiceCount,
-                    COUNT(DISTINCT pastChoice.gibbonActivityCategoryID) as eventCount
+                    COUNT(DISTINCT pastChoice.gibbonActivityCategoryID) as categoryCount
                 FROM gibbonActivityChoice
                 JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivityChoice.gibbonActivityCategoryID)
-                LEFT JOIN gibbonActivityStudent AS pastEnrolment ON (pastEnrolment.gibbonPersonID=gibbonActivityChoice.gibbonPersonID AND pastEnrolment.gibbonActivityCategoryID<>gibbonActivityCategory.gibbonActivityCategoryID AND pastEnrolment.status='Confirmed')
+                LEFT JOIN gibbonActivityStudent AS pastEnrolment ON (pastEnrolment.gibbonPersonID=gibbonActivityChoice.gibbonPersonID AND pastEnrolment.status='Confirmed')
+                LEFT JOIN gibbonActivity as pastActivity ON (pastActivity.gibbonActivityID=pastEnrolment.gibbonActivityID AND pastActivity.gibbonActivityCategoryID<>gibbonActivityCategory.gibbonActivityCategoryID)
                 LEFT JOIN gibbonActivityChoice as pastChoice ON (pastChoice.gibbonActivityChoiceID=pastEnrolment.gibbonActivityChoiceID AND pastChoice.gibbonPersonID=gibbonActivityChoice.gibbonPersonID )
                 WHERE gibbonActivityCategory.gibbonActivityCategoryID=:gibbonActivityCategoryID
                 AND gibbonActivityChoice.choice=1

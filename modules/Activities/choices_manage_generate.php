@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Forms\MultiPartForm;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Activities\ActivityCategoryGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Domain\Activities\ActivityChoiceGateway;
 use Gibbon\Module\Activities\EnrolmentGenerator;
-use Gibbon\Services\Format;
+use Gibbon\Domain\Activities\ActivityChoiceGateway;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_generate.php') == false) {
     // Access denied
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
 
     $page->breadcrumbs
         ->add(__('Manage Choices'), 'choices_manage.php')
-        ->add(__('Generate DL Groups'));
+        ->add(__('Generate Enrolment'));
      
     $page->return->addReturns([
         'error4' => __(''),
@@ -49,19 +49,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
 
     $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
-    $choiceGateway = $container->get(ActivityChoiceGateway::class);
+    $activityChoiceGateway = $container->get(ActivityChoiceGateway::class);
     
     $signUpChoices = 3;
     $choiceList = [1 => __('First Choice'), 2 => __('Second Choice'), 3 => __('Third Choice'), 4 => __('Fourth Choice'), 5 => __('Fifth Choice')];
 
-    $pageUrl = Url::fromModuleRoute('Deep Learning', 'choices_manage_generate.php')->withQueryParams($params);
+    $pageUrl = Url::fromModuleRoute('Activities', 'choices_manage_generate.php')->withQueryParams($params);
     
     // FORM
     $form = MultiPartForm::create('generate', (string)$pageUrl);
    
     $form->setCurrentPage($params['step']);
-    $form->addPage(1, __('Select an Event'), $pageUrl);
-    $form->addPage(2, __('Confirm Experiences'), $pageUrl);
+    $form->addPage(1, __('Select an Category'), $pageUrl);
+    $form->addPage(2, __('Confirm Activities'), $pageUrl);
     $form->addPage(3, __('Create Groups'), $pageUrl);
     $form->addPage(4, __('View Results'), $pageUrl);
 
@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
 
     if ($form->getCurrentPage() == 1) {
         // STEP 1
-        $categories = $categoryGateway->selectEventsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+        $categories = $categoryGateway->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
 
         $row = $form->addRow();
-        $row->addLabel('gibbonActivityCategoryID', __('Event'));
+        $row->addLabel('gibbonActivityCategoryID', __('Category'));
         $row->addSelect('gibbonActivityCategoryID')
             ->fromArray($categories)
             ->required()
@@ -89,55 +89,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
             return;
         }
 
-        $activities = $activityGateway->selectExperienceDetailsByEvent($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
-        $choiceCounts = $choiceGateway->selectChoiceCountsByEvent($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
+        $activities = $activityGateway->selectActivityDetailsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
+        $choiceCounts = $activityChoiceGateway->selectChoiceCountsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
 
         $table = $form->addRow()->addTable()->setClass('mini fullWidth');
         $table->addClass('bulkActionForm colorOddEven');
 
         $header = $table->addHeaderRow();
             $header->addTableCell(__('Include'));
-            $header->addTableCell(__('Experience'));
-            $header->addTableCell(__('Minimum Enrolment'));
+            $header->addTableCell(__('Activity'));
             $header->addTableCell(__('Maximum Enrolment'));
             for ($i = 1; $i <= $signUpChoices; $i++) {
                 $header->addTableCell($choiceList[$i]);
             }
         
-        $totalMin = $totalMax = $totalChoice = 0;
+        $totalMax = $totalChoice = 0;
 
         foreach ($activities as $activity) {
             $index = $activity['gibbonActivityID'];
-            $totalMin += $activity['enrolmentMin'] ?? 0;
-            $totalMax += $activity['enrolmentMax'] ?? 0;
+
+            $totalMax += $activity['maxParticipants'] ?? 0;
             $totalChoice += $choiceCounts[$index]['choice1'] ?? 0;
 
             $row = $table->addRow();
-            $row->addCheckbox("experience[{$index}][generate]")
+            $row->addCheckbox("activity[{$index}][generate]")
                 ->setClass('w-12 bulkCheckbox')
                 ->alignCenter()
                 ->setValue('Y')
                 ->checked('Y');
-            $row->addLabel("experience{$index}", $activity['name']);
-            $row->addNumber("experience[{$index}][enrolmentMin]")
+            $row->addLabel("activity{$index}", $activity['name']);
+            $row->addNumber("activity[{$index}][maxParticipants]")
                 ->setClass('w-24')
                 ->onlyInteger(true)
                 ->minimum(0)
                 ->maximum(999)
                 ->maxLength(3)
                 ->required()
-                ->setValue($activity['enrolmentMin']);
-            $row->addNumber("experience[{$index}][enrolmentMax]")
-                ->setClass('w-24')
-                ->onlyInteger(true)
-                ->minimum(0)
-                ->maximum(999)
-                ->maxLength(3)
-                ->required()
-                ->setValue($activity['enrolmentMax']);
+                ->setValue($activity['maxParticipants']);
 
                 for ($i = 1; $i <= $signUpChoices; $i++) {
-                $row->addTextField("experience[{$index}][choice{$i}]")
+                $row->addTextField("activity[{$index}][choice{$i}]")
                     ->setClass('w-24 text-black opacity-100')
                     ->readOnly()
                     ->disabled()
@@ -147,8 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
 
         $row = $table->addRow();
             $row->addTableCell();
-            $row->addTableCell(__('{count} Experience(s)', ['count' => count($activities)]));  
-            $row->addTableCell(__('Min').': '.$totalMin)->setClass('text-center');  
+            $row->addTableCell(__('{count} Activity(s)', ['count' => count($activities)]));   
             $row->addTableCell(__('Max').': '.$totalMax)->setClass('text-center');  
             $row->addTableCell(__('{count} Sign-up(s)', ['count' => $totalChoice]))->setClass('text-center');  
 
@@ -162,16 +152,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         $form->setClass('blank w-full');
         $form->setAction((string)$pageUrl->withQueryParam('sidebar', 'true'));
 
-        // Collect only the experiences that were submitted for generation
-        $activityList = array_filter($_POST['experience'] ?? [], function($item) {
+        // Collect only the activities that were submitted for generation
+        $activityList = array_filter($_POST['activity'] ?? [], function($item) {
             return !empty($item['generate']) && $item['generate'] == 'Y';
         });
 
-        // Use the generator class to handle turning choices into groups for each experience
+        // Use the generator class to handle turning choices into groups for each activity
         $generator = $container->get(EnrolmentGenerator::class);
 
         $generator
-            ->loadExperiences($params['gibbonActivityCategoryID'], $activityList)
+            ->loadActivities($params['gibbonActivityCategoryID'], $activityList)
             ->loadEnrolments($params['gibbonActivityCategoryID'])
             ->loadChoices($params['gibbonActivityCategoryID'])
             ->generateGroups();
@@ -179,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         // Display the drag-drop group editor
         $form->addRow()->addContent($page->fetchFromTemplate('generate.twig.html', [
             'signUpChoices' => $signUpChoices,
-            'experiences' => $generator->getExperiences(),
+            'activities' => $generator->getActivities(),
             'groups'      => $generator->getGroups(),
             'mode' => 'student',
         ]));
@@ -196,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         $form->addRow()->addContent(Format::alert(__('Enrolment generation has completed successfully, creating {total} enrolments with {unassigned} left unassigned.', $results), 'success'));
 
         if (!empty($results['error'])) {
-            $form->addRow()->addContent(Format::alert(__('There was an error creating {error} enrolments, which likely already have duplicate enrolments for this Deep Learning events.', $results), 'error'));
+            $form->addRow()->addContent(Format::alert(__('There was an error creating {error} enrolments, which likely already have duplicate enrolments for this Activities categories.', $results), 'error'));
         }
 
         $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full max-w-lg mx-auto');

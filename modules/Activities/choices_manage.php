@@ -73,13 +73,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage.
     // TABLE
     $table = DataTable::createPaginated('choices', $criteria);
 
-    // $table->addHeaderAction('generate', __('Generate Enrolments'))
-    //     ->setURL('/modules/Activities/choices_manage_generate.php')
-    //     ->addParam('gibbonActivityCategoryID', $params['gibbonActivityCategoryID'])
-    //     ->addParam('sidebar', 'false')
-    //     ->setIcon('run')
-    //     ->displayLabel()
-    //     ->append('&nbsp;|&nbsp;');
+    $table->addHeaderAction('generate', __('Generate Enrolments'))
+        ->setURL('/modules/Activities/choices_manage_generate.php')
+        ->addParam('gibbonActivityCategoryID', $params['gibbonActivityCategoryID'])
+        ->addParam('sidebar', 'false')
+        ->setIcon('run')
+        ->displayLabel()
+        ->append('&nbsp;|&nbsp;');
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Activities/choices_manage_addEdit.php')

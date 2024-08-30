@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityGateway;
@@ -37,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
 
     $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
     $canSignUp = isActionAccessible($guid, $connection2, '/modules/Activities/explore_activity_signUp.php', 'Explore Activities_studentRegister');
+    $canExplore = isActionAccessible($guid, $connection2, '/modules/Activities/explore.php');
 
     $page->return->addReturns([
         'success1' => __('Your activity choices have been successfully recorded. You can view your activities below.'),
@@ -58,12 +60,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
 
     $table->addColumn('category', __('Category'))
         ->width('15%')
-        ->format(function ($activity) {
-            return !empty($activity['category']) ? $activity['category'] : '';
+        ->format(function ($activity) use ($canExplore) {
+            $url = Url::fromModuleRoute('Activities', 'explore_category.php')->withQueryParams(['gibbonActivityCategoryID' => $activity['gibbonActivityCategoryID'], 'sidebar' => 'false']);
+                return $canExplore 
+                    ? Format::link($url, $activity['category'])
+                    : $activity['category'];
         });
 
     $table->addColumn('name', __('Activity'))
-        ->format(function ($activity) {
+        ->format(function ($activity) use ($canExplore) {
             if (empty($activity['choices'])) {
                 return $activity['name'].'<br/>'.Format::small($activity['type']);
             }
@@ -82,7 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
         ->format(function ($activity) {
             if (empty($activity['status'])) return Format::small(__('N/A'));
 
-            return $activity['status'] == 'Pending' ? Format::tag($activity['status'], 'message') : $activity['status'];
+            return $activity['status'] == 'Pending' 
+                        ? (!empty($activity['choices']) ? Format::tag($activity['status'], 'message')  : '')
+                        : $activity['status'];
         });
 
     $table->addActionColumn()
@@ -120,8 +127,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             }
 
             $actions->addAction('view', __('View Details'))
-                ->isModal(1000, 550)
-                ->setURL('/modules/Activities/activities_my_full.php');
+                // ->isModal(1000, 650)
+                ->addParam('sidebar', 'false')
+                ->setURL('/modules/Activities/explore_activity.php');
 
             if ($highestAction == "Enter Activity Attendance" || 
                ($highestAction == "Enter Activity Attendance_leader" && ($activity['role'] == 'Organiser' || $activity['role'] == 'Assistant' || $activity['role'] == 'Coach'))) {
