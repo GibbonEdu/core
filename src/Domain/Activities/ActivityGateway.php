@@ -135,14 +135,13 @@ class ActivityGateway extends QueryableGateway
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
-            ->innerJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
+            ->leftJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonActivityStudent.gibbonPersonID = :gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
-            ->where('gibbonActivity.active="Y" AND gibbonActivityCategory.active="Y"')
-            ->where('CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate')
-            ->where('CURRENT_TIMESTAMP >= gibbonActivityCategory.viewableDate');
+            ->where('gibbonActivity.active="Y"')
+            ->where('(gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR ((CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate AND CURRENT_TIMESTAMP >= gibbonActivityCategory.viewableDate) AND gibbonActivityCategory.active="Y"))');
 
         $query->unionAll()
             ->cols([
