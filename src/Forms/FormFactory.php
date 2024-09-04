@@ -440,7 +440,7 @@ class FormFactory implements FormFactoryInterface
             'uk_UA' => 'українська мова - Україна',
             'ur_PK' => 'پاکستان - اُردُو',
             'zh_CN' => '汉语 - 中国',
-            'zh_HK' => '體字 - 香港',
+            'zh_HK' => '繁體字 - 香港',
         );
 
         return $this->createSelect($name)->fromArray($languages);
