@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addTextArea('biography')->setRows(10);
 
     // Custom Fields
-    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Staff', []);
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Staff', ['requiredOverride' => 'N']);
 
     $row = $form->addRow();
         $row->addFooter();
