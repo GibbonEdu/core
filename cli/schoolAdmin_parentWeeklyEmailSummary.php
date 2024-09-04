@@ -99,6 +99,16 @@ foreach ($families as $gibbonFamilyID => $students) {
 
     foreach ($students as $student) {
 
+        // Check for send this week, and only proceed if no prior send
+        $parentContact1 = current($familyAdults);
+        $checkExistingSummary = $emailSummaryGateway->getWeeklySummaryDetailsByParent($gibbonSchoolYearID, $parentContact1['gibbonPersonID'], $student['gibbonPersonID']);
+
+        if (!empty($checkExistingSummary)) {
+            $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'duplicate key exists', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            continue;
+        }
+        
         // HOMEWORK
         $criteria = $plannerEntryGateway->newQueryCriteria(true)
             ->sortBy('homeworkDueDateTime', 'ASC')
@@ -171,16 +181,6 @@ foreach ($families as $gibbonFamilyID => $students) {
         if (!empty($formTutor)) {
             $replyTo = $formTutor['email'];
             $replyToName = Format::name($formTutor['title'], $formTutor['preferredName'], $formTutor['surname'], 'Staff');
-        }
-
-        // Check for send this week, and only proceed if no prior send
-        $parentContact1 = current($familyAdults);
-        $checkExistingSummary = $emailSummaryGateway->getWeeklySummaryDetailsByParent($gibbonSchoolYearID, $parentContact1['gibbonPersonID'], $student['gibbonPersonID']);
-
-        if (!empty($checkExistingSummary)) {
-            $sendReport['emailFailed']++;
-            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'duplicate key exists', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
-            continue;
         }
 
         // Make and store unique code for confirmation.
