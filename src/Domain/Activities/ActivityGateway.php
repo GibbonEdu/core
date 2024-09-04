@@ -155,7 +155,8 @@ class ActivityGateway extends QueryableGateway
             ->where('gibbonActivityStaff.gibbonPersonID = :gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->where('gibbonActivity.active="Y" AND gibbonActivityCategory.active="Y"')
-            ->where('gibbonActivityCategory.viewableDate IS NOT NULL');
+            ->where('gibbonActivityCategory.viewableDate IS NOT NULL')
+            ->groupBy(['gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.gibbonActivityID']);
 
         $query->unionAll()
             ->cols([
