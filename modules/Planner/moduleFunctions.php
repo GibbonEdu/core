@@ -407,8 +407,15 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
         // Show class picker in sidebar
         $courseGateway = $container->get(CourseGateway::class);
 
+        if (!empty($_GET['gibbonCourseID'])) {
+            $session->set('gibbonCourseIDUnitPlanner', $_GET['gibbonCourseID']);
+        }
+
         if ($highestAction == 'Unit Planner_all') {
-            $courses = $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
+            $courses = [
+                '--'.__('My Courses').'--' => $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair(),
+                '--'.__('All Courses').'--' => $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair(),
+            ];
         } elseif ($highestAction == 'Unit Planner_learningAreas') {
             $courses = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
         }

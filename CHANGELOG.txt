@@ -37,6 +37,7 @@ v28.0.00
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
         Messenger: limited the individual message target to a maximum of 50 people
         Messenger: updated preferences to ensure signatures are displayed on a white background
+        Planner: improved default selected course in Unit Planner sidebar menu
         Reports: added a Progress by Department report for viewing class criteria progress
         Staff: updated Manage Staff to override required custom fields when manually editing a staff member
         Staff: updated family page on Staff Profile to exclude personal details and addresses
