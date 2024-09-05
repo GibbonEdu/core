@@ -1143,8 +1143,9 @@ class Format
             return $dateOriginal;
         }
 
-        if (is_int($dateOriginal)) {
-            $expectedFormat = 'U';
+        if (is_int($dateOriginal) && empty($expectedFormat)) {
+            $dateOriginal = date('Y-m-d', $dateOriginal);
+            $expectedFormat = 'Y-m-d';
         }
 
         return !empty($expectedFormat)
