@@ -52,44 +52,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
         exit;
     }
 
-    $unassigned = [];
+    $assigned = [];
 
     // Update staffing
-    foreach ($staffingList as $gibbonPersonID => $gibbonActivityID) {
+    foreach ($staffingList as $gibbonPersonID => $personActivities) {
 
-        $staffing = $staffGateway->selectStaffByCategoryAndPerson($params['gibbonActivityCategoryID'], $gibbonPersonID)->fetch();
-
-        if (empty($gibbonActivityID)) {
-            if (!empty($staffing)) {
-                $unassigned[] = $gibbonPersonID;
+        foreach ($personActivities as $listIndex => $gibbonActivityID) {
+            if (empty($gibbonActivityID)) {
+                continue;
             }
-            continue;
-        }
 
-        if (!empty($staffing)) {
-            // Update and existing staffing
-            $data = [
-                'gibbonActivityID' => $gibbonActivityID,
-                'role'             => $roleList[$gibbonPersonID] ?? 'Assistant',
-            ];
+            $staffing = $staffGateway->selectBy(['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID])->fetch();
 
-            $updated = $staffGateway->update($staffing['gibbonActivityStaffID'], $data);
-        } else {
-            // Add a new staffing
-            $data = [
-                'gibbonActivityID' => $gibbonActivityID,
-                'gibbonPersonID'   => $gibbonPersonID,
-                'role'             => $roleList[$gibbonPersonID] ?? 'Assistant',
-            ];
+            if (!empty($staffing)) {
+                // Update and existing staffing
+                $updated = $staffGateway->update($staffing['gibbonActivityStaffID'], [
+                    'role' => $roleList[$gibbonPersonID][$listIndex] ?? 'Assistant',
+                ]);
+            } else {
+                // Add a new staffing
+                $inserted = $staffGateway->insert([
+                    'gibbonActivityID' => $gibbonActivityID,
+                    'gibbonPersonID'   => $gibbonPersonID,
+                    'role'             => $roleList[$gibbonPersonID][$listIndex] ?? 'Assistant',
+                ]);
+                $partialFail &= !$inserted;
+            }
 
-            $inserted = $staffGateway->insert($data);
-            $partialFail &= !$inserted;
+            $assigned[$gibbonActivityID][] = $gibbonPersonID;
         }
     }
 
     // Remove staffing that have been unassigned
-    foreach ($unassigned as $gibbonPersonID) {
-        $staffGateway->deleteStaffByCategory($params['gibbonActivityCategoryID'], $gibbonPersonID);
+    $activitiesByCategory = $activityGateway->selectActivitiesByCategory($params['gibbonActivityCategoryID'])->fetchKeyPair();
+
+    foreach ($activitiesByCategory as $gibbonActivityID => $activityName) {
+        $staffList = $assigned[$gibbonActivityID] ?? [];
+        $staffGateway->deleteStaffNotInList($gibbonActivityID, $staffList);
     }
 
     $URL .= $partialFail

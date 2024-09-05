@@ -74,21 +74,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     // Get staffing
 
     $activities = $activityGateway->selectActivityDetailsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
-    $staffing = $staffGateway->selectStaffByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
+    $staffing = $staffGateway->selectStaffByCategory($params['gibbonActivityCategoryID'])->fetchGrouped();
 
     $criteria = $staffGateway->newQueryCriteria();
     $unassigned = $staffGateway->queryUnassignedStaffByCategory($criteria, $params['gibbonActivityCategoryID'])->toArray();
 
-    $staffing = array_merge($staffing, $unassigned);
+    $groups = [0 => $unassigned];
 
-    $groups = [];
-
-    foreach ($staffing as $person) {
-        if (!empty($person['type']) && $person['type'] == 'Teaching') {
-            $person['type'] = 'Teacher';
-        }
-
-        $groups[$person['gibbonActivityID']][$person['gibbonPersonID']] = $person;
+    foreach ($staffing as $gibbonPersonID => $personActivities) {
+        foreach ($personActivities as $person) {
+            if (!empty($person['type']) && $person['type'] == 'Teaching') {
+                $person['type'] = 'Teacher';
+            }
+        
+            $groups[$person['gibbonActivityID']][$person['gibbonPersonID']] = $person;
+        }   
     }
 
     // FORM

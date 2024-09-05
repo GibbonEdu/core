@@ -152,14 +152,12 @@ class ActivityStaffGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function deleteStaffByCategory($gibbonActivityCategoryID, $gibbonPersonID)
+    public function deleteStaffNotInList($gibbonActivityID, $personIDList)
     {
-        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "DELETE gibbonActivityStaff 
-                FROM gibbonActivityStaff 
-                JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) 
-                WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID 
-                AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID";
+        $personIDList = is_array($personIDList) ? implode(',', $personIDList) : $personIDList;
+
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'personIDList' => $personIDList];
+        $sql = "DELETE FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND NOT FIND_IN_SET(gibbonPersonID, :personIDList)";
 
         return $this->db()->delete($sql, $data);
     }

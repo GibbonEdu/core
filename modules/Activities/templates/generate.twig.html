@@ -125,15 +125,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     style="max-width: 18rem;" data-person="{{ person.gibbonPersonID }}" data-preferredName="{{ person.preferredName }}"
     data-surname="{{ person.surname }}">
 
-    <input type="hidden" name="person[{{ person.gibbonPersonID }}]" value="{{ person.gibbonActivityID ?? 0 }}">
+    <input type="hidden" name="person[{{ person.gibbonPersonID }}][{{ person.gibbonActivityID ?? 0 }}]" value="{{ person.gibbonActivityID ?? 0 }}">
 
     <div>{{ person.preferredName }} {{ person.surname }}</div>
 
     {% set role = person.role ?? person.type ?? '' %}
 
-    <span class="personType ml-2 text-xxs tag {{ person.type == 'Teacher' ? 'message' : 'bg-purple-200 text-purple-700'}} hidden">{{ person.type }}</span>
+    <span class="personType ml-2 text-xxs tag {{ person.type == 'Teaching' ? 'message' : 'bg-purple-200 text-purple-700'}} hidden">{{ person.type }}</span>
 
-    <select name="role[{{ person.gibbonPersonID }}]" class="ml-2 text-xxs py-1 px-2 h-6 message border-0 hidden">
+    <select name="role[{{ person.gibbonPersonID }}][{{ person.gibbonActivityID ?? 0 }}]" class="ml-2 text-xxs py-1 px-2 h-6 message border-0 hidden">
         <option value="Organiser" {{ person.role == 'Organiser' ? 'selected' }}>{{ __('Organiser') }}</option>
         <option value="Coach" {{ role == 'Coach' ? 'selected' }}>{{ __('Coach') }}</option>
         <option value="Assistant" {{ role == 'Assistant' ? 'selected' }}>{{ __('Assistant') }}</option>
