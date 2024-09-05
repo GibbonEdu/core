@@ -407,8 +407,8 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
         // Show class picker in sidebar
         $courseGateway = $container->get(CourseGateway::class);
 
-        if (!empty($_GET['gibbonCourseID'])) {
-            $session->set('gibbonCourseIDUnitPlanner', $_GET['gibbonCourseID']);
+        if (!empty($_GET['courseName'])) {
+            $session->set('courseNameUnitPlanner', $_GET['courseName']);
         }
 
         if ($highestAction == 'Unit Planner_all') {

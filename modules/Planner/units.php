@@ -48,14 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
     // School Year Info
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $gibbonCourseID = $_GET['gibbonCourseID'] ?? $session->get('gibbonCourseIDUnitPlanner') ?? null;
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
 
     if (empty($gibbonSchoolYearID)) {
         $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 
-    $courseName = $_GET['courseName'] ?? '';
+    $courseName = $_GET['courseName'] ?? $session->get('courseNameUnitPlanner') ?? '';
 
     if (empty($gibbonCourseID) && !empty($courseName)) {
         $row = $container->get(CourseGateway::class)->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $courseName])->fetch();
