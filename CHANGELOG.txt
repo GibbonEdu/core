@@ -47,6 +47,7 @@ v28.0.00
         User Admin: updated Manage Users to override required custom fields when manually editing a user
 
     Bug Fixes
+        Admissions: fixed the search results on the Manage Application page to include json data
         Finance: fixed bulk exporting invoice fees for Pending invoices
         Form Groups: fixed Year Group Summary list when looking at non-current school years
         Timetable: fixed permission checking before displaying user status info in View Timetables list
