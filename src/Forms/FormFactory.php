@@ -505,6 +505,7 @@ class FormFactory implements FormFactoryInterface
                 'MAD' => 'Moroccan Dirham (MAD)',
                 'NAD N$' => 'Namibian Dollar (N$)',
                 'NPR ₨' => 'Nepalese Rupee (₨)',
+                'NIO C$' => 'Nicaraguan Córdoba (C$)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'OMR ر.ع.' => 'Omani Rial (ر.ع.)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
