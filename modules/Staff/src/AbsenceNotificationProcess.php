@@ -30,6 +30,7 @@ use Gibbon\Module\Staff\Messages\NewAbsence;
 use Gibbon\Module\Staff\Messages\AbsenceApproval;
 use Gibbon\Module\Staff\Messages\AbsencePendingApproval;
 use Gibbon\Module\Staff\Messages\NewAbsencePendingApproval;
+use Gibbon\Module\Staff\Messages\AbsenceCancelled;
 
 /**
  * AbsenceNotificationProcess
@@ -128,6 +129,35 @@ class AbsenceNotificationProcess extends BackgroundProcess
         $this->messageSender->send($message, [$absence['gibbonPersonID']]);
 
         return $sent;
+    }
+
+    /**
+     * Sends a message to relevant users when an absence has been cancelled.
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @return array
+     */
+    public function runAbsenceCancelled($gibbonStaffAbsenceID)
+    {
+        $absence = $this->getAbsenceDetailsByID($gibbonStaffAbsenceID);
+        if (empty($absence)) return false;
+
+        // Target the absence message to the selected staff
+        $message = new AbsenceCancelled($absence);
+        $recipients = !empty($absence['notificationList']) ? json_decode($absence['notificationList']) : [];
+
+        // Add the absence approver, if there is one
+        if (!empty($absence['gibbonPersonIDApproval'])) {
+            $recipients[] = $absence['gibbonPersonIDApproval'];
+        }
+
+        // Add the notification group members, if selected
+        if (!empty($absence['gibbonGroupID'])) {
+            $groupRecipients = $this->groupGateway->selectPersonIDsByGroup($absence['gibbonGroupID'])->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $recipients = array_merge($recipients, $groupRecipients);
+        }
+
+        return $this->messageSender->send($message, $recipients, $absence['gibbonPersonID']);
     }
 
     /**

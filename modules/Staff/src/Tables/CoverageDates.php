@@ -96,6 +96,11 @@ class CoverageDates
 
         $table = DataTable::create('staffCoverageDates')->withData($dates);
 
+        $table->modifyRows(function ($coverage, $row) {
+            if (!empty($coverage['status']) && $coverage['status'] == 'Cancelled') $row->addClass('dull');
+            return $row;
+        });
+
         $table->addMetaData('blankSlate', __('Coverage is required but has not been requested yet.'));
 
         $table->addColumn('date', __('Date'))
@@ -130,45 +135,52 @@ class CoverageDates
         // ACTIONS
         $canDelete = count($dates) > 1;
 
-        if ($canManage) {
-            $table->addActionColumn()
-                ->addParam('gibbonStaffCoverageID')
-                ->addParam('gibbonStaffCoverageDateID')
-                ->addParam('gibbonCourseClassID')
-                ->addParam('date')
-                ->format(function ($coverage, $actions) use ($canDelete) {
+        $table->addActionColumn()
+            ->addParam('gibbonStaffCoverageID')
+            ->addParam('gibbonStaffCoverageDateID')
+            ->addParam('gibbonCourseClassID')
+            ->addParam('date')
+            ->format(function ($coverage, $actions) use ($canDelete, $canManage, $status) {
 
-                    if ($this->coverageMode == 'Assigned' && $coverage['absenceStatus'] == 'Approved') {
-                        if (empty($coverage['gibbonPersonIDCoverage'])) {
-                            $actions->addAction('assign', __('Assign'))
-                                ->setURL('/modules/Staff/coverage_planner_assign.php')
-                                ->setIcon('attendance')
-                                ->addClass('mr-1 -mt-px')
-                                ->modalWindow(900, 700)
-                                ->append('<img src="themes/Default/img/page_new.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
-                        } else {
-                            $actions->addAction('cancel', __('Unassign'))
-                                ->setURL('/modules/Staff/coverage_planner_unassign.php')
-                                ->setIcon('attendance')
-                                ->addClass('mr-1 -mt-px')
-                                ->modalWindow(650, 250)
-                                ->append('<img src="themes/Default/img/iconCross.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
-                        }
+                if ($canManage && $this->coverageMode == 'Assigned' && $coverage['absenceStatus'] == 'Approved' && $status != 'Declined' && $status != 'Cancelled') {
+                    if (empty($coverage['gibbonPersonIDCoverage'])) {
+                        $actions->addAction('assign', __('Assign'))
+                            ->setURL('/modules/Staff/coverage_planner_assign.php')
+                            ->setIcon('attendance')
+                            ->addClass('mr-1 -mt-px')
+                            ->modalWindow(900, 700)
+                            ->append('<img src="themes/Default/img/page_new.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
+                    } else {
+                        $actions->addAction('cancel', __('Unassign'))
+                            ->setURL('/modules/Staff/coverage_planner_unassign.php')
+                            ->setIcon('attendance')
+                            ->addClass('mr-1 -mt-px')
+                            ->modalWindow(650, 250)
+                            ->append('<img src="themes/Default/img/iconCross.png" class="w-4 h-4 absolute ml-4 mt-4 pointer-events-none">');
                     }
+                }
 
+                if ($canManage && $canDelete) {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_manage_edit_edit.php');
+                }
 
-                    if ($canDelete) {
-                        $actions->addAction('deleteInstant', __('Delete'))
-                            ->setIcon('garbage')
-                            ->isDirect()
-                            ->setURL('/modules/Staff/coverage_manage_edit_deleteProcess.php')
-                            ->addConfirmation(__('Are you sure you wish to delete this record?'));
-                    }
+                if ($canManage && $canDelete) {
+                    $actions->addAction('deleteInstant', __('Delete'))
+                        ->setIcon('garbage')
+                        ->isDirect()
+                        ->setURL('/modules/Staff/coverage_manage_edit_deleteProcess.php')
+                        ->addConfirmation(__('Are you sure you wish to delete this record?'));
+                }
 
-                });
-        }
+                if ($status != 'Declined' && $status != 'Cancelled' && ($coverage['date'] >= date('Y-m-d'))) {
+                    $actions->addAction('cancel', __('Cancel'))
+                        ->setIcon('iconCross')
+                        ->setURL('/modules/Staff/coverage_view_cancel.php');
+                }
+            
+            });
+        
 
         return $table;
     }

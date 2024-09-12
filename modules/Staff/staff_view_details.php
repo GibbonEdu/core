@@ -393,6 +393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         echo $page->fetchFromTemplate('profile/family.twig.html', [
                             'families' => $families,
+                            'fullDetails' => false,
                         ]);
                     } elseif ($subpage == 'Facilities') {
                         $staffFacilityGateway = $container->get(StaffFacilityGateway::class);

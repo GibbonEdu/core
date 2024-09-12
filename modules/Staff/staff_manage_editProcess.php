@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 }
 
                 $customRequireFail = false;
-                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', [], $customRequireFail);
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', ['requiredOverride' => 'N'], $customRequireFail);
 
                 if ($customRequireFail) {
                     $URL .= '&return=error1';

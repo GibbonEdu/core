@@ -392,6 +392,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $formData = $container->get(FormSessionStorage::class);
             $formData->load('plannerAdd');
+
+            if (!empty($nextDate)) {
+                $formData->addData(['date' => $nextDate, 'timeStart' => $nextTimeStart, 'timeEnd' => $nextTimeEnd]);
+            }
             
             $form->loadAllValuesFrom($formData->getData());
             $form->enableAutoSave($formId, $autoSaveUrl);

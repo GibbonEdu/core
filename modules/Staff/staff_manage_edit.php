@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextArea('biography')->setRows(10);
 
                 // Custom Fields
-                $customFieldHandler->addCustomFieldsToForm($form, 'Staff', [], $values['fields']);
+                $customFieldHandler->addCustomFieldsToForm($form, 'Staff', ['requiredOverride' => 'N'], $values['fields']);
 
                 $row = $form->addRow();
                     $row->addFooter();

@@ -110,6 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         );
     }
 
+    $today = date('Y-m-d');
     $activity = $activityResult->fetch();
     $activity['participants'] = $studentResult->rowCount();
 
@@ -296,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row->addContent(__('Total students:'))->addClass('text-right w-56 h-8 absolute left-0 ml-px');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
+            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate]) || $sessionDate <= $today
                 ? $attendanceCount[$sessionDate].' / '.$activity['participants']
                 : '');
         }

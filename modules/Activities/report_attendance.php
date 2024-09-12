@@ -105,6 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         );
     }
 
+    $today = date('Y-m-d');
     $activity = $activityResult->fetch();
     $activity['participants'] = $studentResult->rowCount();
 
@@ -269,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             echo '<td>';
-            if (!empty($attendanceCount[$sessionDate])) {
+            if (!empty($attendanceCount[$sessionDate]) || $sessionDate <= $today) {
                 echo $attendanceCount[$sessionDate].' / '.$activity['participants'];
             }
             echo '</td>';

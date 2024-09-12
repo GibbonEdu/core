@@ -29,12 +29,32 @@ v28.0.00
     Security
 
     Tweaks & Additions
+        System: set Greek as an active language
         System: added Putonghua as a language option in dropdown menus
+        System: added IDD codes for Republic of Korea and Democratic People's Republic of Korea
+        System: added Nicaraguan Córdoba C$ as a currency option
         Attendance: added an index to the attendance log to help speed up attendance pages
+        Activities: updated Activity Attendance to always count participants for dates in the past
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
+        Messenger: limited the individual message target to a maximum of 50 people
+        Messenger: updated preferences to ensure signatures are displayed on a white background
+        Planner: improved default selected course in Unit Planner sidebar menu
+        Planner: added an Add Block to All option in Deploy Working Copy
         Reports: added a Progress by Department report for viewing class criteria progress
+        Staff: updated Manage Staff to override required custom fields when manually editing a staff member
+        Staff: updated family page on Staff Profile to exclude personal details and addresses
+        Students: added a notification event when student notes are edited
+        Students: removed birthday icon from student view of class lists
+        User Admin: added the names of users who made changes to the User Status Log
+        User Admin: updated Manage Users to override required custom fields when manually editing a user
 
     Bug Fixes
+        Admissions: fixed the search results on the Manage Application page to include json data
+        Finance: fixed bulk exporting invoice fees for Pending invoices
+        Form Groups: fixed Year Group Summary list when looking at non-current school years
+        Planner: fixed next lesson plan date not auto populating in Add Lesson Plan
+        Timetable: fixed permission checking before displaying user status info in View Timetables list
+        System Admin: fixed the sanitization rules for application form fields to allow HTML
     
 v27.0.01
 --------
@@ -100,6 +120,7 @@ v27.0.00
         Staff: added anchor links for Job Openings page, enabling easier external linking
         Staff: added status filter to Staff Absence and Coverage Summaries to display only Full staff by default
         Staff: added a notification to inform staff of first aid qualification that are expiring soon
+        Staff: added the ability for staff members to cancel an absence before it occurs
         Students: added an Upcoming Students option to the Students by House report
         Students: added year group next to form group name in student history details
         Timetable: added activities to the timetable in View Timetable by Facility 

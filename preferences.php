@@ -185,7 +185,7 @@ if (!$session->exists("username")) {
             include_once($session->get('absolutePath').'/modules/Messenger/src/Signature.php');
             $signature = $container->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('bg-white');
                 $row->addContent($signature.'<br/>');
         }
 

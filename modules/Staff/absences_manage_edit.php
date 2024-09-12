@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     if ($type['requiresApproval'] == 'Y') {
         $approver = '';
-        if (!empty($values['gibbonPersonIDApproval'])) {
+        if (!empty($values['gibbonPersonIDApproval']) && $values['status'] != 'Cancelled') {
             $approver = $container->get(UserGateway::class)->getByID($values['gibbonPersonIDApproval']);
             $approver = Format::small(__('By').' '.Format::nameList([$approver], 'Staff'));
         }

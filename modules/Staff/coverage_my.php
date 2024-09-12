@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
                    
-                if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] >= date('Y-m-d'))) {
+                if (($coverage['status'] == 'Requested' || $coverage['status'] == 'Accepted' || $coverage['status'] == 'Pending') && ($coverage['dateEnd'] >= date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_cancel.php');

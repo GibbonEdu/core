@@ -358,6 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     // CUSTOM FIELDS
                     $customRequireFail = false;
                     $params = compact('student', 'staff', 'parent', 'other');
+                    $params['requiredOverride'] = 'N';
                     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
 
                     // PERSONAL DOCUMENTS
@@ -385,7 +386,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $statusReason = $_POST['statusReason'] ?? '';
 
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason]);
+                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
 
                         //Deal with change to privacy settings

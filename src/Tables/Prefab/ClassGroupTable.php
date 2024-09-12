@@ -117,14 +117,14 @@ class ClassGroupTable extends DataTable
 
         $this->addColumn('image_240')
             ->setClass('relative')
-            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+            ->format(function ($person) use ($canViewStaff, $canViewStudents, $canViewConfidential) {
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
-                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                $icon = $canViewConfidential ? Format::userBirthdayIcon($person['dob'], $person['preferredName']) : '';
 
                 if ($person['role'] == 'Student') {
                     $url = Url::fromModuleRoute('Students', 'student_view_details')
                         ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
-                    return $canViewStudents
+                    return $canViewStudents && $canViewConfidential
                         ? Format::link($url, $photo).$icon
                         : $photo.$icon;
                 } else {
@@ -138,12 +138,12 @@ class ClassGroupTable extends DataTable
 
         $this->addColumn('name')
             ->setClass('text-xs font-bold mt-1')
-            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+            ->format(function ($person) use ($canViewStaff, $canViewStudents, $canViewConfidential) {
                 if ($person['role'] == 'Student') {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
                     $url = Url::fromModuleRoute('Students', 'student_view_details')
                         ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
-                    $canViewProfile = $canViewStudents;
+                    $canViewProfile = $canViewStudents && $canViewConfidential;
                 } else {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, false);
                     $url = Url::fromModuleRoute('Staff', 'staff_view_details')

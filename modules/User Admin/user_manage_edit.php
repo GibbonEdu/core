@@ -560,6 +560,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             // CUSTOM FIELDS
             $params = compact('student', 'staff', 'parent', 'other');
+            $params['requiredOverride'] = 'N';
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
             $row = $form->addRow();

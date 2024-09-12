@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
@@ -49,13 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
     }
 
     $coverage = $staffCoverageGateway->getCoverageDetailsByID($gibbonStaffCoverageID);
+    $coverageMode =  $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageMode');
 
-    if (empty($coverage) || ($coverage['status'] != 'Requested' && $coverage['status'] != 'Accepted')) {
+    if (empty($coverage) || ($coverage['status'] != 'Requested' && $coverage['status'] != 'Pending' && $coverage['status'] != 'Accepted')) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
-    if ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] < date('Y-m-d')) {
+    if ($coverage['dateEnd'] < date('Y-m-d')) {
         $page->addError(__('Your request failed because the selected date is not in the future.'));
         return;
     }
@@ -81,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
 
     $form->addRow()->addHeading('Cancel Coverage Request', __('Cancel Coverage Request'));
 
-    if ($coverage['requestType'] == 'Individual') {
+    if ($coverage['requestType'] == 'Individual' || $coverage['requestType'] == 'Assigned') {
         $row = $form->addRow();
             $row->addLabel('notesStatus', __('Reply'));
             $row->addTextArea('notesStatus')->setRows(3);

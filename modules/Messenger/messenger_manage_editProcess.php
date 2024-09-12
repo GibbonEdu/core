@@ -153,6 +153,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             exit;
         }
 
+        if ($_POST["individuals"]=="Y") {
+            $partcipantCount = count($_POST["individualList"]);
+
+            if($partcipantCount > 50) {
+                $URL.="&return=warning4";
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+
         if ($containsEmoji) {
             $URLSend .= '&return=warning3';
         }

@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         return;
     }
 
-    $courseName = $_GET['courseName'] ?? '';
+    $courseName = $_GET['courseName'] ?? $session->get('courseNameUnitPlanner') ?? '';
 
     if (empty($gibbonCourseID) && !empty($courseName)) {
         $row = $container->get(CourseGateway::class)->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $courseName])->fetch();
@@ -63,32 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     }
 
     if (empty($gibbonCourseID)) {
-        try {
-            if ($highestAction == 'Unit Planner_all') {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
-            } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort";
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-        }
-        if ($result->rowCount() > 0) {
-            $row = $result->fetch();
-            $gibbonCourseID = $row['gibbonCourseID'];
-        }
+        $courseList = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
+        $gibbonCourseID = key($courseList);
     }
+    
     if ($gibbonCourseID != '') {
-
-        $data = array('gibbonCourseID' => $gibbonCourseID);
-        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-        }
+        $row = $container->get(CourseGateway::class)->getByID($gibbonCourseID);
     }
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['courseName' => $row['nameShort'] ?? '']);

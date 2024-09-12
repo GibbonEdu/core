@@ -135,7 +135,7 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
             ->innerJoin('gibbonPerson', 'gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where('FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList)')
             ->bindValue('gibbonFamilyIDList', $gibbonFamilyIDList)
-            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+            ->orderBy(['gibbonFamilyAdult.contactPriority', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
 
         return $this->runSelect($query);
     }

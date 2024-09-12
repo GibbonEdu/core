@@ -296,6 +296,10 @@ class CustomFieldHandler
                     $fieldValue = explode(',', $fieldValue);
                 }
 
+                if (!empty($params['requiredOverride'])) {
+                    $field['required'] = $params['requiredOverride'];
+                }
+
                 $name = $prefix.$field['gibbonCustomFieldID'];
                 $row = $table->addRow()->addClass($params['class'] ?? '')->setHeading($heading);
 
