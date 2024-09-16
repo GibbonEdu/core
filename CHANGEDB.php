@@ -832,3 +832,26 @@ UPDATE gibbonCountry SET iddCountryCode='82' WHERE printable_name='Korea, Republ
 UPDATE gibbonCountry SET iddCountryCode='850' WHERE printable_name='Korea, Democratic People\'s Republic of';end
 UPDATE `gibboni18n` SET `active` = 'Y' WHERE `code` = 'el_GR';end
 ";
+
+//v28.0.01
+++$ount;
+$sql[$count[0]] = '28.0.01';
+$sql[$count[1]] = "
+ALTER TABLE `gibboncourse` ADD COLUMN `gibbonSchoolYearTermIDList` TEXT NOT NULL AFTER `gibbonYearGroupIDList`;end
+CREATE TABLE `gibboncourseclassslot` (
+  `gibbonCourseClassSlotID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
+  `gibbonSpaceID` int(10) unsigned zerofill DEFAULT NULL,
+  `locationExternal` varchar(50) NOT NULL,
+  `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL,
+  `timeStart` time NOT NULL,
+  `timeEnd` time NOT NULL,
+  PRIMARY KEY (`gibbonCourseClassSlotID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1535 DEFAULT CHARSET=utf8;end
+ CREATE TABLE `gibboncourseclassslotexception` (
+  `gibbonCourseClassSlotExceptionID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonCourseClassSlotID` int(12) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`gibbonCourseClassSlotExceptionID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1564 DEFAULT CHARSET=utf8;end
+";
