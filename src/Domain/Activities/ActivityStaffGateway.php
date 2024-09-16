@@ -120,6 +120,19 @@ class ActivityStaffGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectStaffByActivity($gibbonActivityID) {
+        $gibbonActivityID = is_array($gibbonActivityID) ? $gibbonActivityID : [$gibbonActivityID];
+        $data = ['gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT gibbonActivity.*, gibbonActivityStaff.gibbonPersonID, gibbonActivityStaff.role 
+            FROM gibbonActivity 
+            JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) 
+            WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID 
+            AND gibbonActivityStaff.role='Organiser' AND active='Y' 
+            ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectActivityOrganiserByPerson($gibbonActivityID, $gibbonPersonID) {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID];
         $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND active='Y' ORDER BY name";

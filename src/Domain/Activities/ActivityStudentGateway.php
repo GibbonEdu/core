@@ -172,7 +172,7 @@ class ActivityStudentGateway extends QueryableGateway
     public function getEnrolmentByCategoryAndPerson($gibbonActivityCategoryID, $gibbonPersonID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT gibbonActivityStudent.*
+        $sql = "SELECT gibbonActivityStudent.*, gibbonActivity.name as activityName
                 FROM gibbonActivityStudent
                 JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
                 WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID

@@ -137,12 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
         }
 
         if (!empty($change)) {
-            $changeList[] = __('{student} ({formGroup}) - <i>{change} {activity} ({status})</i>', [
+            $changeList[] = __('{student} ({formGroup}) - <i>{change} {activity}</i>', [
                 'student'    => Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true),
                 'formGroup'  => $student['formGroup'],
                 'change'     => $change,
                 'activity' => $activityName ?? __('Unknown'),
-                'status'     => $data['status'] ?? $enrolment['status'] ?? __('Removed'),
             ]);
         }
     }
@@ -155,22 +154,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     }
 
     // Raise a new notification category
-    // if (!empty($changeList)) {
-    //     $event = new NotificationEvent('Activities', 'Enrolment Changes');
-    //     $event->setNotificationText(__('{person} has made the following changes to {category} enrolment:', [
-    //         'person' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
-    //         'category' => $categoryDetails['name'] ?? __('Activities'),
-    //     ]).'<br/>'.Format::list($changeList));
+    if (!empty($changeList)) {
+        $event = new NotificationEvent('Activities', 'Activity Status Changed');
+        $event->setNotificationText(__('{person} has made the following changes to {category} enrolment:', [
+            'person' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
+            'category' => $categoryDetails['name'] ?? __('Activities'),
+        ]).'<br/>'.Format::list($changeList));
 
-    //     // Notify trip leaders
-    //     $staff = $container->get(ActivityStaffGateway::class)->selectTripLeadersByActivity($activities);
-    //     foreach ($staff as $person) {
-    //         $event->addRecipient($person['gibbonPersonID']);
-    //     }
+        // Notify activity leaders
+        $staff = $container->get(ActivityStaffGateway::class)->selectStaffByActivity($activities);
+        foreach ($staff as $person) {
+            $event->addRecipient($person['gibbonPersonID']);
+        }
 
-    //     $event->setActionLink("/index.php?q=/modules/Activities/report_overview.php&gibbonActivityCategoryID=".$params['gibbonActivityCategoryID']);
-    //     $event->sendNotifications($pdo, $session);
-    // }
+        $event->setActionLink("/index.php?q=/modules/Activities/report_overview.php&gibbonActivityCategoryID=".$params['gibbonActivityCategoryID']);
+        $event->sendNotifications($pdo, $session);
+    }
     
 
     $URL .= $partialFail

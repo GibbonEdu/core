@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     // Raise a new notification event
-    $event = new NotificationEvent('Activities', 'Activity Enrolment Removed');
+    $event = new NotificationEvent('Activities', 'Activity Status Changed');
     
     if ($action == 'Mark as Accepted') {
         $notificationText =  __('The following participants have been set to {status} in {name}', ['name' => $activity['name'], 'status' => __('Accepted') ]).':<br/>'.Format::list($students);
