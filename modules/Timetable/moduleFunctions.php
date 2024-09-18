@@ -1124,8 +1124,8 @@ function renderTT_old($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title 
         "}" .
         "})();" .
         "</script>";
-    $timetableJS .= '<script type="text/javascript" src="/resources/assets/timetable/util.js"></script>';
-    $timetableJS .= '<script type="text/javascript" src="/resources/assets/timetable/weekly-schedule.min.js"></script>';
+    $timetableJS .= '<script type="text/javascript" src="resources/assets/timetable/util.js"></script>';
+    $timetableJS .= '<script type="text/javascript" src="resources/assets/timetable/weekly-schedule.min.js"></script>';
     return $output . $timetableJS;
 }
 
