@@ -16,6 +16,14 @@
                 <a data-log="{{searchItemViewer.tooltip(item) }}">
                     <img src="{{ "?" in item.imageLocation ? item.imageLocation ~ "&fife=w200" : item.imageLocation }}" class="transition shadow-xl ease-out duration-300 border-2 border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64">
                 </a>
+			{% else %}
+				<a data-log="{{searchItemViewer.tooltip(item) }}">
+                    <!-- <div class="bg-gray-350 items-center justify-center transition shadow-xl ease-out duration-300 border-2 border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64"> -->
+					<div class="bg-gray-300 flex flex-col items-center justify-center transition shadow-xl ease-out duration-300 border-2 border-transparent hover hover:border-purple-600 transform hover:-translate-y-1 hover:scale-105 hover:shadow-2xl w-40 h-64">
+						<p class="text-center font-bold">{{ item.name }}</p>
+						<p class="text-center text-sm text-gray-600">{{ item.producer }}</p>
+					</div>
+                </a>
             {% endif %}
         {% endfor %}
         </div>
