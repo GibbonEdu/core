@@ -107,6 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->width('25%')
         ->format(function ($person) {
             return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, false, ['subpage' => 'Reports']);
+        })
+        ->formatDetails(function ($person) {
+            return Format::small($person['email'] ?? '');
         });
 
     $table->addColumn('timestampModified', __('Last Created'))
