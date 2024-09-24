@@ -50,6 +50,7 @@ v28.0.00
 
     Bug Fixes
         Admissions: fixed the search results on the Manage Application page to include json data
+        Behaviour: fixed users notified of behaviour records unable to add follow up
         Finance: fixed bulk exporting invoice fees for Pending invoices
         Form Groups: fixed Year Group Summary list when looking at non-current school years
         Planner: fixed next lesson plan date not auto populating in Add Lesson Plan

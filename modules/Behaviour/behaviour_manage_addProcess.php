@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
                     $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
+                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
                     // Raise a new notification event
                     $event = new NotificationEvent('Behaviour', $type == 'Positive' ? 'New Positive Record' : 'New Negative Record');

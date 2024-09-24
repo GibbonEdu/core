@@ -62,17 +62,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
-                if ($highestAction == 'Manage Behaviour Records_all') {
-                    $values = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
-                } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $values = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
-                }
+            if ($highestAction == 'Manage Behaviour Records_all') {
+                $values = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                $canEdit = true;
+            } elseif ($highestAction == 'Manage Behaviour Records_my') {
+                $values = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
+                $canEdit = true;
+            }
+
+            if (empty($values)) {
+                $values = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                $canEdit = false;
+            }
             
             if (empty($values)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 //Let's go!
-                $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+                $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 
@@ -86,11 +93,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         ->setURL('/modules/Behaviour/behaviour_manage.php')
                         ->setIcon('search')
                         ->displayLabel()
-                        ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+                        ->addParam('gibbonPersonID', $gibbonPersonID)
                         ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
                         ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
                         ->addParam('type', $_GET['type'])
                         ->prepend((!empty($policyLink)) ? ' | ' : '');
+                }
+
+                if (!empty($gibbonPersonID)) {
+                    $form->addHeaderAction('view', __('View Behaviour Records'))
+                        ->setURL('/modules/Behaviour/behaviour_view_details.php')
+                        ->displayLabel()
+                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                        ->prepend('&nbsp; | &nbsp;');
                 }
             
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
@@ -101,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 if(!empty($values['gibbonMultiIncidentID'])) {
                     $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
-            }
+            
 
                 //Student
                 $row = $form->addRow();
@@ -111,17 +126,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 //Other Students
                 if (!empty($values['gibbonMultiIncidentID'])) {
-                $row = $form->addRow();
+                    $row = $form->addRow();
                     $row->addLabel('otherStudents0', __('Other Students Involved'));
                     $col = $row->addColumn()->addClass('flex flex-col pl-6');
 
                     foreach ($students as $i => $student) {
                         if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
-                        $url = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
-                        $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)).'</b>');
+                            $url = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
+                            $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)).'</b>');
+                        }
                     }
                 }
-            }
 
                 //Date
                 $row = $form->addRow();
@@ -143,13 +158,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     }
                     $descriptors = (!empty($descriptors))? explode(',', $descriptors) : array();
 
-                    $row = $form->addRow();
-                		$row->addLabel('descriptor', __('Descriptor'));
-                        $row->addSelect('descriptor')
-                            ->fromArray($descriptors)
-                            ->selected($values['descriptor'])
-                            ->required()
-                            ->placeholder();
+                        $row = $form->addRow();
+                            $row->addLabel('descriptor', __('Descriptor'));
+                            $row->addSelect('descriptor')
+                                ->fromArray($descriptors)
+                                ->selected($values['descriptor'])
+                                ->required()
+                                ->readOnly(!$canEdit)
+                                ->placeholder();
                 }
 
                 //Level
@@ -166,10 +182,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $form->addRow()->addHeading('Details', __('Details'));
 
                 //Incident
-                $row = $form->addRow();
+                if ($canEdit) {
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addLabel('comment', __('Incident'));
+                        $column->addTextArea('comment')->setRows(5)->setClass('fullWidth')->setValue($values['comment']);
+
+                } else {
+                    $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('comment', __('Incident'));
-                    $column->addTextArea('comment')->setRows(5)->setClass('fullWidth')->setValue($values['comment']);
+                    $column->addContent('<p>'.$values['comment'].'</p>');
+                }
 
                 $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
@@ -242,23 +266,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     }
                 }
                 
-                $row = $form->addRow();
-                    $row->addLabel('gibbonPlannerEntryID', __('Link To Lesson?'))->description(__('From last 30 days'));
-                    $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons ?? [])->placeholder()->selected($values['gibbonPlannerEntryID']);
+                if ($canEdit) {
+                    $row = $form->addRow();
+                        $row->addLabel('gibbonPlannerEntryID', __('Link To Lesson?'))->description(__('From last 30 days'));
+                        $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons ?? [])->placeholder()->selected($values['gibbonPlannerEntryID']);
 
-                //Behaviour link
-                if(empty($values['gibbonMultiIncidentID'])) {
+                    //Behaviour link
+                    if(empty($values['gibbonMultiIncidentID'])) {
 
-                $resultSelect = $behaviourGateway->selectBehavioursByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'), $gibbonBehaviourID);
-                $behaviours = $resultSelect->fetchKeyPair();
+                    $resultSelect = $behaviourGateway->selectBehavioursByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'), $gibbonBehaviourID);
+                    $behaviours = $resultSelect->fetchKeyPair();
 
-                $row = $form->addRow();
-                    $row->addLabel('gibbonBehaviourLinkToID', __('Link To Other Existing Behaviour'))->description(__('From last 30 days'));
-                    $row->addSelect('gibbonBehaviourLinkToID')->fromArray($behaviours)->placeholder();
+                    $row = $form->addRow();
+                        $row->addLabel('gibbonBehaviourLinkToID', __('Link To Other Existing Behaviour'))->description(__('From last 30 days'));
+                        $row->addSelect('gibbonBehaviourLinkToID')->fromArray($behaviours)->placeholder();
+                    }
+                
+                    // CUSTOM FIELDS
+                    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', [], $values['fields']);
+
                 }
-
-                // CUSTOM FIELDS
-                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', [], $values['fields']);
                 
                 $row = $form->addRow();
                     $row->addFooter();
@@ -268,4 +295,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
         }
     }
-?>
+}
+
