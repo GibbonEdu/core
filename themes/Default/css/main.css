@@ -1332,6 +1332,10 @@ table.smallIntBorder td.noPadding {
 }
 
 .body-gradient-purple {
+    background: linear-gradient(to left top, rgb(68, 34, 109), rgb(124, 53, 155), rgb(158, 83, 219), rgb(169, 126, 221)) no-repeat fixed;
+}
+
+.body-gradient-fuchsia {
     background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;
 }
 

@@ -39,4 +39,5 @@ $themeColours = [
     'orange' => __('Orange'),
     'red'    => __('Red'),
     'pink'   => __('Pink'),
+    // 'violet'   => __('Violet'),
 ];
