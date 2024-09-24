@@ -66,10 +66,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, gibbonCourse.fields FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonCourseID' => $gibbonCourseID);
+        $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, gibbonSchoolYearTermIDList, gibbonCourse.fields FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
@@ -77,58 +77,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_editProcess.php?gibbonCourseID='.$gibbonCourseID);
-			$form->setFactory(DatabaseFormFactory::create($pdo));
+            $form = Form::create('action', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/course_manage_editProcess.php?gibbonCourseID=' . $gibbonCourseID);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $session->get('address'));
-			$form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
+            $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
 
             $row = $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
-			$row = $form->addRow();
-				$row->addLabel('schoolYearName', __('School Year'));
-				$row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
+            $row = $form->addRow();
+            $row->addLabel('schoolYearName', __('School Year'));
+            $row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
 
-			$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-			$row = $form->addRow();
-				$row->addLabel('gibbonDepartmentID', __('Learning Area'));
-				$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql)->placeholder();
+            $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+            $row = $form->addRow();
+            $row->addLabel('gibbonDepartmentID', __('Learning Area'));
+            $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql)->placeholder();
 
-			$row = $form->addRow();
-				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-				$row->addTextField('name')->required()->maxLength(60);
+            $row = $form->addRow();
+            $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+            $row->addTextField('name')->required()->maxLength(60);
 
-			$row = $form->addRow();
-				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->required()->maxLength(12);
+            $row = $form->addRow();
+            $row->addLabel('nameShort', __('Short Name'));
+            $row->addTextField('nameShort')->required()->maxLength(12);
 
             $row = $form->addRow()->addHeading('Display Information', __('Display Information'));
 
-			$row = $form->addRow();
-				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
-				$row->addNumber('orderBy')->maxLength(3);
+            $row = $form->addRow();
+            $row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
+            $row->addNumber('orderBy')->maxLength(3);
 
-			$row = $form->addRow();
-				$column = $row->addColumn('blurb');
-				$column->addLabel('description', __('Blurb'));
-				$column->addEditor('description', $guid)->setRows(10);
+            $row = $form->addRow();
+            $column = $row->addColumn('blurb');
+            $column->addLabel('description', __('Blurb'));
+            $column->addEditor('description', $guid)->setRows(10);
 
-			$row = $form->addRow();
-				$row->addLabel('map', __('Include In Curriculum Map'));
-                $row->addYesNo('map')->required();
+            $row = $form->addRow();
+            $row->addLabel('map', __('Include In Curriculum Map'));
+            $row->addYesNo('map')->required();
 
             $row = $form->addRow()->addHeading('Configure', __('Configure'));
 
-			$row = $form->addRow();
-				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
-				$row->addCheckboxYearGroup('gibbonYearGroupIDList')->loadFromCSV($values);
+            $row = $form->addRow();
+            $row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
+            $row->addCheckboxYearGroup('gibbonYearGroupIDList')->loadFromCSV($values)->required();
+
+            $row = $form->addRow();
+            $row->addLabel('gibbonSchoolYearTermIDList', __('Terms'))->description(__('Terms in which the course will run.'));
+            $row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $session->get('gibbonSchoolYearID'))->loadFromCSV($values)->required();
 
             // Custom Fields
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Course', [], $values['fields']);
 
-			$row = $form->addRow();
-				$row->addFooter();
-                $row->addSubmit();
+            $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
 
             $form->loadAllValuesFrom($values);
 
@@ -161,14 +165,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $table->addColumn('studentsTotal', __('Students'))
                 ->description(__('Total'))
                 ->format(function ($values) {
-                   $return = $values['studentsTotal'];
-                   if (is_numeric($values['enrolmentMin']) && $values['studentsTotal'] < $values['enrolmentMin']) {
-                       $return .= Format::tag(__('Under Enrolled'), 'warning ml-2');
-                   }
-                   if (is_numeric($values['enrolmentMax']) && $values['studentsTotal'] > $values['enrolmentMax']) {
-                       $return .= Format::tag(__('Over Enrolled'), 'error ml-2');
-                   }
-                   return $return;
+                    $return = $values['studentsTotal'];
+                    if (is_numeric($values['enrolmentMin']) && $values['studentsTotal'] < $values['enrolmentMin']) {
+                        $return .= Format::tag(__('Under Enrolled'), 'warning ml-2');
+                    }
+                    if (is_numeric($values['enrolmentMax']) && $values['studentsTotal'] > $values['enrolmentMax']) {
+                        $return .= Format::tag(__('Over Enrolled'), 'error ml-2');
+                    }
+                    return $return;
                 });
 
             $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
@@ -189,6 +193,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     $actions->addAction('enrolment', __('Enrolment'))
                         ->setIcon('attendance')
                         ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php');
+                    $actions->addAction('exception', __('Exception'))
+                        ->setIcon('exception')
+                        ->setURL('/modules/Timetable Admin/courseException_manage_class_edit.php');
                 });
 
             echo $table->render($classes->toDataSet());

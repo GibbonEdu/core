@@ -326,6 +326,9 @@ $page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'core'           => 'resources/assets/js/core.min.js',
+    // 'timetable-util'           => 'resources/assets/timetable/util.js',
+    // 'timetable-weekly'           => 'resources/assets/timetable/weekly-schedule.min.js',
+
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
@@ -389,6 +392,7 @@ if (!empty($backgroundImage)) {
 
 $page->stylesheets->add('theme-dev', 'resources/assets/css/theme.min.css');
 $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
+$page->stylesheets->add('timetable', 'resources/assets/timetable/timetable.css');
 
 /**
  * USER CONFIGURATION

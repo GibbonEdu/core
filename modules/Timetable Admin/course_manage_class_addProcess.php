@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\Timetable\CourseClassSlotGateway;
 
 include '../../gibbon.php';
 
@@ -35,7 +37,7 @@ $attendance = $_POST['attendance'] ?? 'N';
 $enrolmentMin = (!empty($_POST['enrolmentMin']) && is_numeric($_POST['enrolmentMin'])) ? $_POST['enrolmentMin'] : null;
 $enrolmentMax = (!empty($_POST['enrolmentMax']) && is_numeric($_POST['enrolmentMax'])) ? $_POST['enrolmentMax'] : null;
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/course_manage_class_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_add.php') == false) {
     $URL .= '&return=error0';
@@ -74,10 +76,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'enrolmentMin' => $enrolmentMin, 'enrolmentMax' => $enrolmentMax, 'fields' => $fields);
-                $sql = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance, enrolmentMin=:enrolmentMin, enrolmentMax=:enrolmentMax, fields=:fields';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+
+                $courseClassGateway = $container->get(CourseClassGateway::class);
+                $data = [
+                    'gibbonCourseID' => $gibbonCourseID,
+                    'name' => $name,
+                    'nameShort' => $nameShort,
+                    'reportable' => $reportable,
+                    'attendance' => $attendance,
+                    'enrolmentMin' => $enrolmentMin,
+                    'enrolmentMax' => $enrolmentMax,
+                    'fields' => $fields,
+                ];
+
+                $gibbonCourseClassID = $courseClassGateway->insert($data);
+
+                if (!$gibbonCourseClassID) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                $ccSlotGateway = $container->get(CourseClassSlotGateway::class);
+
+                $timeSlotOrder = $_POST['order'] ?? [];
+
+                foreach ($timeSlotOrder as $order) {
+
+                    $slot = $_POST['timeSlots'][$order];
+
+                    if (empty($slot['gibbonDaysOfWeekID']) || empty($slot['timeStart']) || empty('timeEnd')) {
+                        continue;
+                    }
+
+                    //If start is after end, swap times.
+                    if ($slot['timeStart'] > $slot['timeEnd']) {
+                        $temp = $slot['timeStart'];
+                        $slot['timeStart'] = $slot['timeEnd'];
+                        $slot['timeEnd'] = $temp;
+                    }
+
+                    $slot['gibbonCourseClassID'] = $gibbonCourseClassID;
+
+                    $type = $slot['location'] ?? 'Internal';
+                    if ($type == 'Internal') {
+                        $slot['locationExternal'] = '';
+                    } else {
+                        $slot['gibbonSpaceID'] = null;
+                    }
+
+                    unset($slot['location']);
+
+                    $insert = $ccSlotGateway->insert($slot);
+                }
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");

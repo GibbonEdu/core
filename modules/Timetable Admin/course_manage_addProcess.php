@@ -34,8 +34,9 @@ $description = $_POST['description'] ?? '';
 $map = $_POST['map'] ?? 'N';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
+$gibbonSchoolYearTermIDList = implode(',', $_POST['gibbonSchoolYearTermIDList'] ?? []);
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -74,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'fields' => $fields);
-                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList, fields=:fields';
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList, 'fields' => $fields);
+                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, fields=:fields';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

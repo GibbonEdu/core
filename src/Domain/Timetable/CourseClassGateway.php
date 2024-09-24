@@ -37,4 +37,56 @@ class CourseClassGateway extends QueryableGateway
     private static $primaryKey = 'gibbonCourseClassID';
 
     private static $searchableColumns = ['gibbonCourseClass.name', 'gibbonCourseClass.nameShort'];
+
+    public function selectActiveEnrolledActivities($gibbonSchoolYearID, $gibbonPersonID, $dateType, $date)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCourseClass.gibbonCourseClassID',
+                'gibbonCourse.gibbonCourseID',
+                'gibbonCourse.nameShort as course',
+                'gibbonCourseClass.nameShort AS class',
+                'gibbonCourse.gibbonYearGroupIDList',
+                'gibbonSpace.phoneInternal',
+                'gibbonPerson.gibbonPersonID',
+                'gibbonCourseClassSlot.gibbonCourseClassSlotID',
+                'gibbonCourseClassSlot.timeStart',
+                'gibbonCourseClassSlot.timeEnd',
+                'gibbonSpace.name AS roomName',
+                'gibbonDaysOfWeek.name as dayOfWeek',
+                // '(CASE WHEN gibbonStaffCoverage.gibbonPersonID=:gibbonPersonID THEN 1 ELSE 0 END) as coverageStatus'
+            ])
+            ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+            ->leftJoin('gibbonCourseClassSlot', 'gibbonCourseClassSlot.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+            ->innerJoin('gibbonDaysOfWeek', 'gibbonCourseClassSlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
+            ->innerJoin('gibbonCourseClassPerson', "gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID")
+            ->innerJoin('gibbonPerson', "gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID")
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonCourseClassSlot.gibbonSpaceID')
+            ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->where('gibbonDaysOfWeek.nameShort=:today')
+            ->bindValue('today', $date)
+            ->where("gibbonDaysOfWeek.schoolDay='Y'");
+        // ->bindValue('dateType', $dateType);
+
+        return $this->runSelect($query);
+    }
+
+    public function selectCourseClassExceptionsByID($gibbonCourseClassID)
+    {
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+        $sql = "SELECT gibbonCourseClassSlotExceptionID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonDaysOfWeek.nameShort, gibbonDaysOfWeek.name , CONCAT(TIME_FORMAT(gibbonCourseClassSlot.timeStart, '%H:%i'), ' - ' ,TIME_FORMAT(gibbonCourseClassSlot.timeEnd, '%H:%i')) as slot
+                FROM gibbonCourseClassSlotException
+                JOIN gibbonPerson ON (gibbonCourseClassSlotException.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonCourseClassSlot ON (gibbonCourseClassSlot.gibbonCourseClassSlotID=gibbonCourseClassSlotException.gibbonCourseClassSlotID)
+                JOIN gibbonDaysOfWeek ON gibbonDaysOfWeek.gibbonDaysOfWeekID = gibbonCourseClassSlot.gibbonDaysOfWeekID 
+                WHERE gibbonCourseClassSlot.gibbonCourseClassID=:gibbonCourseClassID
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }
