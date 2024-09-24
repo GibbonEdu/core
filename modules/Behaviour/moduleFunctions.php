@@ -147,8 +147,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                     ->addParam('type', '')
                     ->addParam('gibbonBehaviourID')
                     ->format(function ($person, $actions) use ($session, $highestAction) {
-                        if ($highestAction == 'Manage Behaviour Records_all'
-                        || ($highestAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
+                        if ($highestAction == 'Manage Behaviour Records_all' || $highestAction == 'Manage Behaviour Records_my') {
                             $actions->addAction('edit', __('Edit'))
                                 ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
                         }

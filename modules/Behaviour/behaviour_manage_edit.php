@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $canEdit = true;
             }
 
-            if (empty($values)) {
+            if (empty($values) && ($highestAction == 'Manage Behaviour Records_all' || $highestAction == 'Manage Behaviour Records_my')) {
                 $values = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
                 $canEdit = false;
             }
