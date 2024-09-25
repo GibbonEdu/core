@@ -326,6 +326,8 @@ $page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'core'           => 'resources/assets/js/core.min.js',
+    'htmx'           => 'lib/htmx/htmx.min.js',
+    
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
@@ -347,7 +349,8 @@ $page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
 $page->scripts->addMultiple([
     'thickbox' => 'lib/thickbox/thickbox-compressed.js',
     'tinymce'  => 'lib/tinymce/tinymce.min.js',
-], ['context' => 'foot']);
+    'alpine'   => 'lib/htmx/alpine.min.js',
+], ['context' => 'foot', 'type' => 'defer']);
 
 // Set page scripts: foot - core
 $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
@@ -468,19 +471,11 @@ if ($isLoggedIn) {
 }
 
 /**
- * MENU ITEMS & FAST FINDER
+ * MENU ITEMS 
  *
  * TODO: Move this somewhere more sensible.
  */
 if ($isLoggedIn && !$upgrade) {
-    if ($cacheLoad || !$session->has('fastFinder')) {
-        $templateData = getFastFinder($connection2, $guid);
-        $templateData['enrolmentCount'] = $container->get(StudentGateway::class)->getStudentEnrolmentCount($session->get('gibbonSchoolYearID'));
-
-        $fastFinder = $page->fetchFromTemplate('finder.twig.html', $templateData);
-        $session->set('fastFinder', $fastFinder);
-    }
-
     /**
      * @var ModuleGateway
      */
@@ -571,7 +566,6 @@ if ($isLoggedIn) {
     $page->addData([
         'menuMain'       => $session->get('menuMainItems', []),
         'menuModule'     => $session->get('menuModuleItems', []),
-        'fastFinder'     => $session->get('fastFinder'),
     ]);
 }
 

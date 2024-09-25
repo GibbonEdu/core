@@ -34,11 +34,11 @@ Main Menu: Displays the top-level categories and active modules.
         {% endfor %}
     {% endif %}
 
-    <li class=" notificationTray flex-grow">
+    <li class=" notificationTray flex-grow relative">
         <div class="flex flex-row-reverse items-center">
 
-            <div id="finderTray" class="mr-2 w-auto sm:w-full max-w-sm" style="min-width: 240px;">
-                {{ fastFinder|raw }}
+            <div id="finderTray" class="mr-4 w-auto sm:w-full max-w-sm">
+                {{ include('finder.twig.html') }}
             </div>
 
             {{ include('tray.twig.html') }}

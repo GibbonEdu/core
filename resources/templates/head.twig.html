@@ -42,7 +42,7 @@ all stylesheets and scripts with a 'head' context.
         {% if asset.type == 'inline' %}
             <script type="text/javascript">{{ asset.src|raw }}</script>
         {% else %}
-            <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}.{{ cacheString }}"></script>
+            <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}.{{ cacheString }}" {{ asset.type == 'defer' ? 'defer' }}></script>
         {% endif %}
     {% endfor %}
 
