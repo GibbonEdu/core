@@ -245,7 +245,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     foreach ($resultSet as $type => $results) {
         foreach ($results as $token) {
 
-            if ($outputCount > 40) {
+            if ($outputCount > 30) {
                 $output .= '<span class="block px-4 py-2 text-sm italic text-gray-800">'.__('+{n} More Results', ['n' => $resultCount - $outputCount]).'</span>';
                 break 2;
             }
@@ -274,7 +274,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
 
             $name = preg_replace('/'.$searchTerm.'/i', '<strong>$0</strong>', $name);
 
-            $output .= '<a href="'.($URL ?? '').'" class="block cursor-pointer px-4 py-2 text-sm text-gray-800 hover:bg-gray-300 hover:text-gray-900" role="menuitem" tabindex="-1" id="menu-item-0">'.htmlPrep(__($type)).' - '.$name.'</a>';
+            $output .= '<a href="'.($URL ?? '').'" class="block cursor-pointer px-4 py-2 text-sm text-gray-800 hover:bg-indigo-600 hover:text-white" role="menuitem" tabindex="-1" id="menu-item-0">'.htmlPrep(__($type)).' - '.$name.'</a>';
             $outputCount++;
             
         }

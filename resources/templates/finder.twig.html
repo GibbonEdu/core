@@ -52,6 +52,7 @@ Fast Finder
         @click="open = true"
         >
 
+        {% if roleCategory == 'Staff' %}
         <select name="searchType" class="w-20 h-10 text-white font-bold hidden sm:block"
             hx-post="index_fastFinder_ajax.php" 
             hx-target="#search-results" 
@@ -66,6 +67,9 @@ Fast Finder
             <option value="facilities">{{ __('Facility') }}</option>
             <option value="actions">{{ __('Action') }}</option>
         </select>
+        {% else %}
+        <input name="searchType" type="hidden" value="all">
+        {% endif %}
     </div>
 
     <div id="search-wrap" 

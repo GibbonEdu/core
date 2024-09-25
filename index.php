@@ -710,9 +710,10 @@ if ($isLoggedIn) {
     $header = $container->get(Gibbon\UI\Components\Header::class);
 
     $page->addData([
-        'currentUser'       => $header->getUserDetails(),
-        'minorLinks'        => $header->getMinorLinks(),
-        'statusTray'        => $header->getStatusTray(),
+        'currentUser'  => $header->getUserDetails(),
+        'minorLinks'   => $header->getMinorLinks(),
+        'statusTray'   => $header->getStatusTray(),
+        'roleCategory' => $session->get('gibbonRoleIDCurrentCategory'),
     ]);
 }
 
