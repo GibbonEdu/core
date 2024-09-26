@@ -169,9 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     // Handle activities with no time slots or start/end, but don't return because there can still be previous records
     if (empty($activityWeekDays) || empty($activityTimespan)) {
-        echo "<div class='error'>";
-        echo __('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.');
-        echo '</div>';
+        echo Format::alert(__('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.'), 'error');
     }
 
     if (count($activitySessions) <= 0) {
