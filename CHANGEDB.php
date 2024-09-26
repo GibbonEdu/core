@@ -831,5 +831,5 @@ ALTER TABLE `gibbonStaffAbsence` CHANGE `status` `status` ENUM('Pending Approval
 UPDATE gibbonCountry SET iddCountryCode='82' WHERE printable_name='Korea, Republic of';end
 UPDATE gibbonCountry SET iddCountryCode='850' WHERE printable_name='Korea, Democratic People\'s Republic of';end
 UPDATE `gibboni18n` SET `active` = 'Y' WHERE `code` = 'el_GR';end
-UPDATE gibbonModule SET author=‘Gibbon Foundation’, url=‘https://gibbonedu.org’ WHERE type=‘Core’;end
+UPDATE gibbonModule SET author='Gibbon Foundation', url='https://gibbonedu.org' WHERE type='Core';end
 ";
