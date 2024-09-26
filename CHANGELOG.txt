@@ -42,6 +42,7 @@ v28.0.00
         Planner: improved default selected course in Unit Planner sidebar menu
         Planner: added an Add Block to All option in Deploy Working Copy
         Reports: added a Progress by Department report for viewing class criteria progress
+        Rubrics: allowed HTML in Rubrics cells
         Staff: updated Manage Staff to override required custom fields when manually editing a staff member
         Staff: updated family page on Staff Profile to exclude personal details and addresses
         Students: added a notification event when student notes are edited
