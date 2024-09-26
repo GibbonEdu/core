@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $statusCheck = checkUploadsFolderStatus($session->get('absoluteURL'));
     if (!$statusCheck) {
         echo Format::alert(__('The system check has detected that your uploads folder may be publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
-            'documentation' => Format::link('https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config', __('Post-Install and Server Config')),
+            'documentation' => Format::link('https://docs.gibbonedu.org/introduction/post-installation', __('Post-Install and Server Config')),
         ]), 'error');
     }
 

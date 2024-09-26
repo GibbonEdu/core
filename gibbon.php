@@ -32,7 +32,7 @@ register_shutdown_function(function () {
 
 // Check for the autoloader file
 if (!file_exists(__DIR__.'/vendor/autoload.php')) {
-    $message = 'Fatal Error: Missing composer autoloader. Your vendor folder is likely not installed. If you are running cutting edge code, navigate to your base dir in a terminal window and run the "composer install" command. See the Cutting Edge Code documentation for more information: https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/cutting-edge-code/';
+    $message = 'Fatal Error: Missing composer autoloader. Your vendor folder is likely not installed. If you are running cutting edge code, navigate to your base dir in a terminal window and run the "composer install" command. See the Cutting Edge Code documentation for more information: https://docs.gibbonedu.org/introduction/installation-options/cutting-edge-code';
     include __DIR__.'/error.php';
     exit;
 }

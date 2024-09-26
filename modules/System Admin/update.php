@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         if ($updater->isComposerUpdateRequired()) {
             echo Format::alert('<b>'.__('Composer Update Required').'</b>: '.__('The updater has detected a change in the composer.lock file. In the command line, navigate to your Gibbon base path and run the {composer} command. Visit the {docsLink} page in the docs for more information about using composer.<br/><br/>Once you have updated composer, click {updateLink} to dismiss this message. ', [
                 'composer' => '<code class="bg-gray-800 text-white rounded px-1 py-px">composer install --no-dev</code>',
-                'docsLink' => Format::link('https://docs.gibbonedu.org/developers/getting-started/developer-workflow/', __('Developer Workflow')),
+                'docsLink' => Format::link('https://docs.gibbonedu.org/development/getting-started/developer-workflow', __('Developer Workflow')),
                 'updateLink' => Format::link('./modules/System Admin/updateComposerProcess.php', __('Update')),
             ]), 'error');
         }
