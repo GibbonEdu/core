@@ -34,6 +34,7 @@ v28.0.00
         System: added IDD codes for Republic of Korea and Democratic People's Republic of Korea
         System: added Nicaraguan Córdoba C$ as a currency option
         System: refactored the Fast Finder using HTMX and Alpine
+        System: updated Core modules to have Gibbon Foundation as author
         Attendance: added an index to the attendance log to help speed up attendance pages
         Activities: updated Activity Attendance to always count participants for dates in the past
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
