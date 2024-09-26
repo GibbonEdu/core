@@ -51,9 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
 
         if (!($allActivityAccess == 'View' or $allActivityAccess == 'Register')) {
-            echo "<div class='error'>";
-            echo __('Activity listing is currently closed.');
-            echo '</div>';
+            echo Format::alert(__('Activity listing is currently closed.'), 'error');
         } else {
             if ($allActivityAccess == 'View') {
                 echo "<div class='warning'>";

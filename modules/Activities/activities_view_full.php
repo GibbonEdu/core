@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
 
         if (!($access == 'View' or $access == 'Register')) {
-            echo "<div class='error'>";
-            echo __('Activity listing is currently closed.');
-            echo '</div>';
+            echo Format::alert(__('Activity listing is currently closed.'), 'error');
         } else {
             //Should we show date as term or date?
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');

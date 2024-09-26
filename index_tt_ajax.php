@@ -53,9 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     if ($tt != false) {
         $output .= $tt;
     } else {
-        $output .= "<div class='error'>";
-        $output .= __('There is no information for the date specified.');
-        $output .= '</div>';
+        echo Format::alert(__('There is no information for the date specified.'), 'error');
     }
 }
 
