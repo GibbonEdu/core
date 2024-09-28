@@ -194,6 +194,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     $settingGateway = $container->get(SettingGateway::class);
     $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
     $ssoMicrosoft = json_decode($ssoMicrosoft, true);
+    $calendarEventsCache = 'calendarEvents-'.date('W', $startDayStamp).'-'.substr($xml, 0, 24);
 
     if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
         $eventsSchool = array();
@@ -221,13 +222,19 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
         $getEventsUrl = '/me/calendarView?'.http_build_query($queryParams);
 
-        $events = $graph->createRequest('GET', $getEventsUrl)
-            // Add the user's timezone to the Prefer header
-            ->addHeaders(array(
-            'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
-            ))
-            ->setReturnType(Event::class)
-            ->execute();
+        if ($session->has($calendarEventsCache)) {
+            $events = $session->get($calendarEventsCache);
+        } else {
+            $events = $graph->createRequest('GET', $getEventsUrl)
+                // Add the user's timezone to the Prefer header
+                ->addHeaders(array(
+                'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
+                ))
+                ->setReturnType(Event::class)
+                ->execute();
+
+            $session->set($calendarEventsCache, $events);
+        }
 
         foreach ($events as $event) {
             $properties = $event->getProperties();
@@ -250,6 +257,8 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     $ssoGoogle = $settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
     $ssoGoogle = json_decode($ssoGoogle, true);
 
+    
+
     if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) {
 
         $eventsSchool = array();
@@ -260,11 +269,18 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $getFail = empty($service);
 
         $calendarListEntry = array();
-        try {
-            $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
-            $calendarListEntry = $service->events->listEvents($xml, $optParams);
-        } catch (Exception $e) {
-            $getFail = true;
+
+        if ($session->has($calendarEventsCache)) {
+            $calendarListEntry = $session->get($calendarEventsCache);
+        } else {
+            try {
+                $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
+                $calendarListEntry = $service->events->listEvents($xml, $optParams);
+            } catch (Exception $e) {
+                $getFail = true;
+            }
+
+            $session->set($calendarEventsCache, $calendarListEntry);
         }
 
         if ($getFail) {
@@ -442,9 +458,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             while ($row = $result->fetch()) {
                 $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
                 $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
-                $output .= "<input name='schoolCalendar' value='".($session->get('viewCalendarSchool') == 'Y' ? 'Y' : '')."' type='hidden'>";
-                $output .= "<input name='personalCalendar' value='".($session->get('viewCalendarPersonal') == 'Y' ? 'Y' : '')."' type='hidden'>";
-                $output .= "<input name='spaceBookingCalendar' value='".($session->get('viewCalendarSpaceBooking') == 'Y' ? 'Y' : '')."' type='hidden'>";
+                $output .= "<input name='schoolCalendar' value='".($session->get('viewCalendarSchool') == 'Y' ? 'Y' : 'N')."' type='hidden'>";
+                $output .= "<input name='personalCalendar' value='".($session->get('viewCalendarPersonal') == 'Y' ? 'Y' : 'N')."' type='hidden'>";
+                $output .= "<input name='spaceBookingCalendar' value='".($session->get('viewCalendarSpaceBooking') == 'Y' ? 'Y' : 'N')."' type='hidden'>";
                 $output .= "<input name='fromTT' value='Y' type='hidden'>";
                 $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
                 $output .= '</form>';
@@ -484,20 +500,25 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $urlParams = [
                 'q'                    => $q,
+                'gibbonPersonID'       => $gibbonPersonID,
                 'gibbonTTID'           => $row['gibbonTTID'],
                 'schoolCalendar'       => $session->get('viewCalendarSchool'),
                 'personalCalendar'     => $session->get('viewCalendarPersonal'),
                 'spaceBookingCalendar' => $session->get('viewCalendarSpaceBooking'),
+                'narrow'               => $narrow,
                 'fromTT'               => 'Y',
             ];
 
             $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($urlParams);
 
+            $output .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
+
             $output .= "<form x-data='{ ttDate: \"\" }'
                         hx-post='".$apiEndpoint."' 
                         hx-trigger='click from:(button), change from:(#ttDateChooser)'
-                        hx-target='#tt' 
+                        hx-target='closest #tt' 
                         hx-include='[name=\"ttDateChooser\"]'
+                        hx-indicator='#indicator'
                         >";
 
             $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
@@ -510,6 +531,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
             $output .= "<button type='button' class='float-left rounded-r h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
                 x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline'>".__('Next Week')."</span> →</button>";
+
+            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
             $output .= "</div>";
 
             $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border font-sans h-10 w-36 px-3'> ";
@@ -888,13 +911,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         >";
 
                     $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
-                    if (true || $session->has('calendarFeed') && $session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) {
+                    if ($displayCalendars && $session->has('calendarFeed')) {
                         $checked = $session->get('viewCalendarSchool') == 'Y' ? 'checked' : '';
                         $output .= "<span class='ttSchoolCalendar rounded-sm'>".__('School Calendar');
                         $output .= "<input $checked class='ml-2' type='checkbox' name='schoolCalendar' value='Y' class='ttCheckbox' />";
                         $output .= '</span>';
                     }
-                    if (true || $displayCalendars) {
+                    if ($displayCalendars && $session->has('calendarFeedPersonal')) {
                         $checked = $session->get('viewCalendarPersonal') == 'Y' ? 'checked' : '';
                         $output .= "<span class='ttPersonalCalendar rounded-sm'>".__('Personal Calendar');
                         $output .= "<input $checked class='ml-2' type='checkbox' name='personalCalendar' value='Y' class='ttCheckbox' />";
@@ -992,24 +1015,24 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $output .= "<td style='vertical-align: top; width: 70px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
                 $output .= "<span style='font-size: 80%'><b>".sprintf(__('All Day%1$s Events'), '<br/>').'</b></span>';
                 $output .= '</td>';
-                $output .= "<td colspan=$daysInWeek style='vertical-align: top; width: 70px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
+                $output .= "<td colspan=$daysInWeek style='vertical-align: top; width: 50px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
                 $output .= '</td>';
                 $output .= '</tr>';
             }
 
             $output .= "<tr style='height:".(ceil($diffTime / 60) + 14)."px'>";
-            $output .= "<td class='ttTime' style='height: 300px; width: 75px; max-width: 75px; text-align: center; vertical-align: top'>";
+            $output .= "<td class='ttTime' style='height: 300px; width: 55px; max-width: 55px; text-align: center; vertical-align: top'>";
             $output .= "<div style='position: relative;'>";
             $countTime = 0;
             $time = $timeStart;
-            $output .= "<div $title style='z-index: ".$zCount."; position: absolute; top: -3px; width: 100%; min-width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+            $output .= "<div $title style='z-index: ".$zCount."; position: absolute; top: -3px; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
             $output .= substr($time, 0, 5).'<br/>';
             $output .= '</div>';
             $time = date('H:i:s', strtotime($time) + 3600);
             $spinControl = 0;
             while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
                 ++$countTime;
-                $output .= "<div $title style='z-index: $zCount; position: absolute; top:".(($countTime * 60) - 5)."px ; width: 100%; min-width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+                $output .= "<div $title style='z-index: $zCount; position: absolute; top:".(($countTime * 60) - 5)."px ; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
                 $output .= substr($time, 0, 5).'<br/>';
                 $output .= '</div>';
                 $time = date('H:i:s', strtotime($time) + 3600);
@@ -1080,6 +1103,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= '</tr>';
             $output .= '</table>';
+            $output .= '</div>';
+
             $output .= '</div>';
         }
     }

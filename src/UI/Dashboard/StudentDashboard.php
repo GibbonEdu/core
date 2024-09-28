@@ -227,16 +227,12 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             $jsonQuery = [
                 'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
                 'ttDate' => $_POST['ttDate'] ?? '',
-                'fromTT' => $_POST['fromTT'] ?? '',
-                'personalCalendar' => $_POST['personalCalendar'] ?? '',
-                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
-                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
             ];
 
             $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($jsonQuery);
             
             $timetable .= '<h2>'.__('My Timetable').'</h2>';
-            $timetable .= "<div id='tt' name='tt' hx-get='".$apiEndpoint."' hx-trigger='load' style='width: 100%; min-height: 40px; text-align: center'>";
+            $timetable .= "<div hx-get='".$apiEndpoint."' hx-trigger='load' style='width: 100%; min-height: 40px; text-align: center'>";
             $timetable .= "<img style='margin: 10px 0 5px 0' src='".$this->session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
             $timetable .= '</div>';
         }

@@ -38,6 +38,8 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 //Setup variables
 $output = '';
 $id = $_REQUEST['gibbonTTID'] ?? '';
+$gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+$narrow = $_REQUEST['narrow'] ?? 'trim';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     //Acess denied
@@ -54,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
     }
 
-    $tt = renderTT($guid, $connection2, $session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
+    $tt = renderTT($guid, $connection2, $gibbonPersonID, $id, false, $ttDate, '', '', $narrow);
     if ($tt != false) {
         $output .= $tt;
     } else {
