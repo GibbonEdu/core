@@ -18,6 +18,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Initialize all legacy Thickbox links as HTMX AJAX calls
+Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
+    element.setAttribute('hx-boost', 'true');
+    element.setAttribute('hx-target', '#modalContent');
+    element.setAttribute('hx-push-url', 'false');
+    element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
+    element.classList.remove('thickbox');
+
+    if (element.getAttribute('href').includes('_delete')) {
+        element.setAttribute('x-on:click', "modalType = 'delete'");
+    }
+});
+
+
 $(document).ready(function(){
 
     $(document).trigger('gibbon-setup');
