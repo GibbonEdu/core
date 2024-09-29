@@ -12,8 +12,8 @@ $addFormValues = array(
     'sequenceNumber'     => '900',
     'name'               => 'Test Term 1',
     'nameShort'          => 'TT1',
-    'firstDay'           => '01/01/2020',
-    'lastDay'            => '30/12/2020',
+    'firstDay'           => '2001-01-01',
+    'lastDay'            => '2001-12-31',
 );
 $I->selectFromDropdown('gibbonSchoolYearID', -1);
 
@@ -32,8 +32,8 @@ $editFormValues = array(
     'sequenceNumber'     => '999',
     'name'               => 'Test Term 2',
     'nameShort'          => 'TT2',
-    'firstDay'           => '01/01/1920',
-    'lastDay'            => '30/12/1920',
+    'firstDay'           => '2020-01-01',
+    'lastDay'            => '2020-12-31',
 );
 $I->selectFromDropdown('gibbonSchoolYearID', 2);
 

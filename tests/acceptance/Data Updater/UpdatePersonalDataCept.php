@@ -58,7 +58,7 @@ $editFormValues = array(
     'preferredName'             => 'Student',
     'officialName'              => 'Student A. TestUser',
     'nameInCharacters'          => 'TM',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
 
     'emergency1Name'            => 'Emergency Person 1',
     'emergency1Relationship'    => 'Doctor',
@@ -152,7 +152,7 @@ $editFormValues = array(
     'preferredName'             => 'Student',
     'officialName'              => 'Student B. TestUser',
     'nameInCharacters'          => 'TM',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
 
     'emergency1Name'            => 'Emergency Person 1',
     'emergency1Relationship'    => 'Doctor',

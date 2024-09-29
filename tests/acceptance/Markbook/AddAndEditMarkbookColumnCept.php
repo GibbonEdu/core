@@ -44,7 +44,7 @@ $formValues = array(
     'uploadedResponse'         => 'N',
     'viewableStudents'         => 'N',
     'viewableParents'          => 'N',
-    'completeDate'             => '01/01/2021',
+    'completeDate'             => '2001-01-01',
 );
 
 $I->attachFile('file', 'attachment.jpg');
@@ -77,7 +77,7 @@ $editFormValues = array(
     'uploadedResponse'         => 'Y',
     'viewableStudents'         => 'Y',
     'viewableParents'          => 'Y',
-    'completeDate'             => '02/02/2022',
+    'completeDate'             => '2001-01-01',
 );
 
 $I->selectOption('gibbonScaleIDAttainment', '00007');
@@ -122,7 +122,7 @@ $I->seeOptionIsSelected('1-effortValue', 'Late');
 $I->seeInField('comment1', 'Test comment.');
 $I->seeFieldIsNotEmpty('#attachment1');
 
-$I->seeInField('completeDate', '02/02/2022');
+$I->seeInField('completeDate', '2001-01-01');
 
 // Delete Markbook -----------------------------------------------
 

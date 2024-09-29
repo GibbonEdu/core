@@ -60,7 +60,7 @@ class Date extends TextField
      */
     public function setValue($value = '')
     {
-        if (stripos('/', $value) !== false) {
+        if (stripos($value, '/') !== false) {
             $value = Format::dateConvert($value);
         }
 
@@ -75,8 +75,7 @@ class Date extends TextField
      */
     public function setDateFromValue($value)
     {
-        $this->setValue($value);
-        return $this;
+        return $this->setValue($value);
     }
 
     /**
