@@ -58,6 +58,8 @@ v28.0.00
         Form Groups: fixed Year Group Summary list when looking at non-current school years
         Planner: fixed next lesson plan date not auto populating in Add Lesson Plan
         Reports: fixed Send Report option to enable sending to students without needing parent details
+        Reports: fixed Scan Asset Directories not working on Windows servers 
+        Reports: fixed Scan Asset Directories failing to create template folder if it does not exist
         Timetable: fixed permission checking before displaying user status info in View Timetables list
         System Admin: fixed the sanitization rules for application form fields to allow HTML
     

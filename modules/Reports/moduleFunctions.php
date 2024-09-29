@@ -26,6 +26,9 @@ function parseComponent($directoryPath, $filePath, $templateType = 'Additional',
 {
     if (empty($yaml)) $yaml = new Yaml();
 
+    $directoryPath = str_replace('\\', '/', $directoryPath);
+    $filePath = str_replace('\\', '/', $filePath);
+
     $filename = str_replace($directoryPath.'/', '', $filePath);
     $fileContents = file_get_contents($filePath);
 
