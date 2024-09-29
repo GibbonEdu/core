@@ -235,6 +235,11 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
+    public function createToggle($name)
+    {
+        return (new Input\Toggle($name));
+    }
+
     /**
      * {@inheritDoc}
      */
