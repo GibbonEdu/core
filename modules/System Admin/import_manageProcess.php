@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     $_POST['importCustomFolderLocation'] = '/'.trim($_POST['importCustomFolderLocation'], '/');
 
     if (!is_dir($session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'])) {
-        mkdir($session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'], 0755);
+        mkdir($session->get('absolutePath').'/uploads/'.$_POST['importCustomFolderLocation'], 0755, true);
     }
 
     foreach ($settingsToUpdate as $scope => $settings) {

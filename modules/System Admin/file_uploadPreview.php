@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
 
     $tempDirectoryPath = $session->get('absolutePath').'/uploads/temp';
     if (!is_dir($tempDirectoryPath)) {
-        mkdir($tempDirectoryPath, 0755);
+        mkdir($tempDirectoryPath, 0755, true);
     }
 
     $userGateway = $container->get(UserGateway::class);
