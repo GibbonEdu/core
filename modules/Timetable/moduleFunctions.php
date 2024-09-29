@@ -194,7 +194,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     $settingGateway = $container->get(SettingGateway::class);
     $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
     $ssoMicrosoft = json_decode($ssoMicrosoft, true);
-    $calendarEventsCache = 'calendarEvents-'.date('W', $startDayStamp).'-'.substr($xml, 0, 24);
+    $calendarEventsCache = 'calendarCache-'.date('W', $startDayStamp).'-'.substr($xml, 0, 24);
+
+    if ($session->has($calendarEventsCache)) {
+        return $session->get($calendarEventsCache);
+    }
 
     if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
         $eventsSchool = array();
@@ -222,19 +226,13 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
         $getEventsUrl = '/me/calendarView?'.http_build_query($queryParams);
 
-        if ($session->has($calendarEventsCache)) {
-            $events = $session->get($calendarEventsCache);
-        } else {
-            $events = $graph->createRequest('GET', $getEventsUrl)
-                // Add the user's timezone to the Prefer header
-                ->addHeaders(array(
-                'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
-                ))
-                ->setReturnType(Event::class)
-                ->execute();
-
-            $session->set($calendarEventsCache, $events);
-        }
+        $events = $graph->createRequest('GET', $getEventsUrl)
+            // Add the user's timezone to the Prefer header
+            ->addHeaders(array(
+            'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
+            ))
+            ->setReturnType(Event::class)
+            ->execute();
 
         foreach ($events as $event) {
             $properties = $event->getProperties();
@@ -270,17 +268,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
         $calendarListEntry = array();
 
-        if ($session->has($calendarEventsCache)) {
-            $calendarListEntry = $session->get($calendarEventsCache);
-        } else {
-            try {
-                $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
-                $calendarListEntry = $service->events->listEvents($xml, $optParams);
-            } catch (Exception $e) {
-                $getFail = true;
-            }
-
-            $session->set($calendarEventsCache, $calendarListEntry);
+        try {
+            $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
+            $calendarListEntry = $service->events->listEvents($xml, $optParams);
+        } catch (Exception $e) {
+            $getFail = true;
         }
 
         if ($getFail) {
@@ -349,6 +341,8 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     } else {
         $eventsSchool = false;
     }
+
+    $session->set($calendarEventsCache, $eventsSchool);
 
     return $eventsSchool;
 }

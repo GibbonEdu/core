@@ -42,8 +42,8 @@ $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID')
 $narrow = $_REQUEST['narrow'] ?? 'trim';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
-    //Acess denied
-    $page->addError(__('Your request failed because you do not have access to this action.'));
+    // Access denied
+    echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
