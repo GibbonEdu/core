@@ -38,7 +38,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="./resources/assets/css/theme.min.css" type="text/css" media="all">
     </head>
 
-    <body class="h-screen flex flex-col font-sans body-gradient-purple m-0 p-0" style="background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;">
+    <body class="h-screen flex flex-col font-sans body-gradient-purple m-0 p-0" style="background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed;">
 
         <div class="px-4 sm:px-6 lg:px-12 pb-24">
             <div id="header" class="relative flex justify-between items-center">

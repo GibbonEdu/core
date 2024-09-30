@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// @tailwind base;
+@tailwind base;
 
 *,
 :after,
@@ -63,7 +63,7 @@ hr {
  --------------------------------------------------------------------------
 */
 .alert {
-    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply shadow border-l-8 p-3 my-3 text-xs;
     @apply bg-gray-100 border-gray-600 text-gray-600;
 }
 
@@ -77,7 +77,7 @@ hr {
 }
 
 .warning {
-    @apply bg-orange-300 border-orange-700 text-orange-700;
+    @apply bg-orange-200 border-orange-700 text-orange-700;
 }
 
 .past,
@@ -94,11 +94,11 @@ hr {
 }
 
 .selected {
-    @apply bg-purple-200 border-purple-700 text-purple-700;
+    @apply bg-purple-200 border-purple-800 text-purple-800;
 }
 
 div.message, div.success, div.warning, div.error, div.exception, div.dull {
-    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply shadow border-l-8 p-3 my-3 text-xs;
 }
 
 div.message a, div.success a, div.warning a, div.error a, div.exception a, div.dull a {
@@ -130,7 +130,7 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 */
 
 .LV_validation_message {
-    @apply absolute right-0 px-1 mt-2 mr-1 text-xs font-bold leading-relaxed bg-white z-10 pointer-events-none whitespace-no-wrap;
+    @apply absolute right-0 px-1 mt-2 mr-1 text-xs font-bold leading-relaxed bg-white z-10 pointer-events-none whitespace-nowrap;
 }
 
 select + .LV_validation_message {
@@ -177,7 +177,7 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-    @apply shadow-outline border-blue-500;
+    @apply outline-none ring border-blue-500;
 
 }
 

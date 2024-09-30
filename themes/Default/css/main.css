@@ -746,12 +746,12 @@ span.ttSchoolCalendar {
     color: #fff;
     font-weight: bold;
     margin: 0px -2px 0px 5px;
-    background-color: rgb(51, 153, 0);
+    background-color: rgb(18, 138, 0);
     padding: 5px 7px;
     border: 1px solid #555;
 }
 div.ttSchoolCalendar {
-    background-color: rgb(51, 153, 0);
+    background-color: rgb(18, 138, 0);
     color: #fff;
     font-weight: bold;
 }
@@ -772,12 +772,12 @@ span.ttSpaceBookingCalendar {
     color: #fff;
     font-weight: bold;
     margin: 0px -2px 0px 5px;
-    background-color: #e5760d;
+    background-color: #f0851f;
     padding: 5px 7px;
     border: 1px solid #555;
 }
 div.ttSpaceBookingCalendar {
-    background-color: #e5760d;
+    background-color: #f0851f;
     color: #fff;
     font-weight: bold;
 }
@@ -1332,6 +1332,10 @@ table.smallIntBorder td.noPadding {
 }
 
 .body-gradient-purple {
+    background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed;
+}
+
+.body-gradient-fuchsia {
     background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;
 }
 
