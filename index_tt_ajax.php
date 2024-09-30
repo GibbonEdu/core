@@ -37,19 +37,26 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-$id = $_POST['gibbonTTID'] ?? '';
+$id = $_REQUEST['gibbonTTID'] ?? '';
+$gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+$narrow = $_REQUEST['narrow'] ?? 'trim';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
-    //Acess denied
-    $page->addError(__('Your request failed because you do not have access to this action.'));
+    // Access denied
+    echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
-    if (!empty($_POST['ttDate'])) {
-        $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+
+    if (!empty($_REQUEST['ttDateNav'])) {
+        $ttDate = Format::timestamp($_REQUEST['ttDateNav']);
+    } elseif (!empty($_REQUEST['ttDateChooser'])) {
+        $ttDate = Format::timestamp($_REQUEST['ttDateChooser']);
+    } elseif (!empty($_REQUEST['ttDate'])) {
+        $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
     }
 
-    $tt = renderTT($guid, $connection2, $session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
+    $tt = renderTT($guid, $connection2, $gibbonPersonID, $id, false, $ttDate, '', '', $narrow);
     if ($tt != false) {
         $output .= $tt;
     } else {
