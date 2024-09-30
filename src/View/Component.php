@@ -21,6 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
+/**
+ * A utility class for simple templates written in pure PHP. Template files can
+ * be placed next to classes, with paths provided as a class namespace.
+ */
 class Component
 {
     /**
@@ -31,17 +35,17 @@ class Component
     /**
      * @var array
      */
-    private static $parameters = [];
+    private static $environment = [];
 
     /**
-     * Template constructor.
+     * Provide a template path and set of environment variables for rendered templates.
      * @param string $path
-     * @param array $parameters
+     * @param array $environment
      */
-    public static function withEnvironment(string $path = '', array $parameters = [])
+    public static function withEnvironment(string $path = '', array $environment = [])
     {
         static::$path = rtrim($path, '/').'/';
-        static::$parameters = $parameters;
+        static::$environment = $environment;
     }
 
     /**
@@ -54,13 +58,13 @@ class Component
     {
         static::$path = empty(static::$path) ? realpath(__DIR__.'/../').'/' : static::$path;
 
-        $view = str_replace(['Gibbon\\', '\\'], ['', '/'], $view);
+        $view = str_replace(['Gibbon\\', '\\', '..'], ['', '/', ''], $view);
 
         if (!file_exists($file = static::$path.$view.'.template.php')) {
             throw new \Exception(sprintf('The component %s could not be found.', $file));
         }
 
-        extract(array_merge($context, static::$parameters));
+        extract(array_merge($context, static::$environment));
 
         ob_start();
 
