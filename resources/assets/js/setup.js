@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Initialize all legacy Thickbox links as HTMX AJAX calls
 Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
+    if (element.nodeName != 'A') return;
+    
     element.setAttribute('hx-boost', 'true');
     element.setAttribute('hx-target', '#modalContent');
     element.setAttribute('hx-push-url', 'false');

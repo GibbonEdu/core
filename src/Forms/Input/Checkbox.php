@@ -285,6 +285,8 @@ class Checkbox extends Input
 
                     if ($value != 'on') $this->setValue($value);
 
+                    $this->addClass('w-4 h-4');
+
                     if ($this->inline) {
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
                         $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
@@ -298,7 +300,7 @@ class Checkbox extends Input
                         $output .= '</div>';
                     } else {
                         $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
-                        $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
+                        $output .= '<label class="leading-compact mr-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                         $output .= '</div>';
                     }

@@ -95,6 +95,16 @@ class Toggle extends Input
     }
 
     /**
+     * Helper class for radio element replacement.
+     * @param   mixed  $value
+     * @return  self
+     */
+    public function placeholder($value = '')
+    {
+        return $this;
+    }
+
+    /**
      * Sets the labels used for on/off the toggle states.
      * @param   string  $value
      * @return  self
