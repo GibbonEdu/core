@@ -23,6 +23,8 @@ Theme fundamentals based on Mollio, copyright Daemon Pty Limited 2006, http://ww
 Used under "GNU Creative Commons License", http://creativecommons.org/licenses/GPL/2.0/
 */
 
+[x-cloak] { display: none !important; }
+
 /* LAYOUT */
 
 div.trail {

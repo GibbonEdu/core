@@ -301,9 +301,6 @@ $javascriptConfig = [
             'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
             'firstDay' => $session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
         ],
-        'thickbox' => [
-            'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
-        ],
         'tinymce' => [
             'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
         ]
@@ -344,11 +341,9 @@ if($datepickerLocale !== 'en-US'){
 }
 
 // Set page scripts: foot - misc
-$thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
-$page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
 $page->scripts->addMultiple([
-    'thickbox' => 'lib/thickbox/thickbox-compressed.js',
     'tinymce'  => 'lib/tinymce/tinymce.min.js',
+    'alpineFocus'   => 'lib/htmx/alpine.focus.min.js',
     'alpine'   => 'lib/htmx/alpine.min.js',
 ], ['context' => 'foot', 'type' => 'defer']);
 
@@ -369,7 +364,6 @@ $page->addHeadExtra($session->get('analytics'));
 $page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
-    'thickbox'     => 'lib/thickbox/thickbox.css',
 ], ['weight' => -1]);
 
 // Add right-to-left stylesheet

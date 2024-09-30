@@ -65,6 +65,9 @@ v28.0.00
         Reports: fixed Scan Asset Directories failing to create template folder if it does not exist
         Timetable: fixed permission checking before displaying user status info in View Timetables list
         System Admin: fixed the sanitization rules for application form fields to allow HTML
+
+    Deprecations
+        System: replaced the legacy Thickbox library with an AJAX-based modal window
     
 v27.0.01
 --------

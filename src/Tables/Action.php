@@ -246,9 +246,11 @@ class Action extends WebLink
     {
         $this->modal = true;
 
-        $this->addClass('thickbox underline')
-            ->addParam('width', $width)
-            ->addParam('height', $height);
+        $this->setAttribute('hx-boost', 'true')
+            ->setAttribute('hx-target', '#modalContent')
+            ->setAttribute('hx-push-url', 'false')
+            ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
+            ->setAttribute('x-on:click', "modalType = '{$this->name}'");
 
         return $this;
     }
@@ -326,8 +328,7 @@ class Action extends WebLink
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         } else if ($this->modal) {
             $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
-                ->withQueryParams($queryParams)
-                ->withFragment(ltrim($this->urlFragment ?? '', '#')));
+                ->withQueryParams($queryParams));
         } else {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)
