@@ -22,7 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * This injects all of Tailwind's utility classes, generated based on your
  * config file.
  */
+
  @tailwind utilities;
+ /* @tailwind components; */
 
 /*
  --------------------------------------------------------------------------
@@ -30,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
 */
 
-@responsive {
+@layer utilities {
     .column-1 {
         column-count: 1;
         column-gap: 1.5rem;
@@ -64,7 +66,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
 */
 
-@responsive {
+@layer utilities {
     .text-xxs {
         font-size: 0.65rem;
     }
@@ -102,7 +104,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     min-height: 50vh;
 }
 
-@responsive {
+@layer utilities {
     .w-content {
         width: 72%;
     }
@@ -110,14 +112,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     .w-sidebar {
         width: 28%;
     }
-}
-
-/*
- --------------------------------------------------------------------------
-  Effects
- --------------------------------------------------------------------------
-*/
-
-.shadow-container {
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
 }

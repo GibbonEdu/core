@@ -18,7 +18,7 @@ TODO: add template variable details.
         {% endblock head %}
     </head>
     <body x-data="{ modalOpen: false, modalType: 'none' }"
-        class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: linear-gradient(to left top, rgb(68, 34, 109), rgb(124, 53, 155), rgb(158, 83, 219), rgb(169, 126, 221)) no-repeat fixed;' : '' }}">
+        class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed' : '' }}">
         <a id="top"></a>
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
 

@@ -274,7 +274,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
 
             $name = preg_replace('/'.$searchTerm.'/i', '<strong>$0</strong>', $name);
 
-            $output .= '<a href="'.($URL ?? '').'" class="block cursor-pointer px-4 py-2 text-sm text-gray-800 hover:bg-indigo-600 hover:text-white" role="menuitem" tabindex="-1" id="menu-item-0">'.htmlPrep(__($type)).' - '.$name.'</a>';
+            $output .= '<a href="'.($URL ?? '').'" class="block cursor-pointer px-4 py-2 text-sm text-gray-800 hover:bg-indigo-500 hover:text-white" role="menuitem" tabindex="-1" id="menu-item-0">'.htmlPrep(__($type)).' - '.$name.'</a>';
             $outputCount++;
             
         }
