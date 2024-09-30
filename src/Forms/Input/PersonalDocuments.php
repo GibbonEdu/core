@@ -128,7 +128,7 @@ class PersonalDocuments extends Input
                     case 'documentType':
                         $label = $row->addLabel($field, __('Residency/Visa Type'));
                         $input = !empty($this->residencyStatus)
-                            ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()
+                            ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()->required($document['required'] == 'Y' && $index == 0)
                             : $row->addTextField($field)->maxLength(60)->required($document['required'] == 'Y');
                         break;
                     case 'country':

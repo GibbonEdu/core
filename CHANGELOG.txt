@@ -51,6 +51,7 @@ v28.0.00
         Students: removed birthday icon from student view of class lists
         User Admin: added the names of users who made changes to the User Status Log
         User Admin: updated Manage Users to override required custom fields when manually editing a user
+        User Admin: updated Personal Documents to enable required Residency/Visa dropdown
 
     Bug Fixes
         Admissions: fixed the search results on the Manage Application page to include json data
