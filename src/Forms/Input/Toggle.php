@@ -52,6 +52,19 @@ class Toggle extends Input
     }
 
     /**
+     * Set the input's value.
+     * @param  string  $value
+     * @return $this
+     */
+    public function setValue($value = '')
+    {
+        $value = $value == $this->onValue ? $this->onValue : $this->offValue;
+        
+        $this->setAttribute('value', $value);
+        return $this;
+    }
+
+    /**
      * Sets the state of the toggle input.
      * @param   mixed  $value
      * @return  self

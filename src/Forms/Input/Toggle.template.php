@@ -1,6 +1,6 @@
 <div x-data="{ 'toggle': '<?= $element['value']; ?>', 'onValue': '<?= $onValue; ?>', toggleSwitch() { this.toggle == this.onValue ? this.toggle = '<?= $offValue; ?>' :  this.toggle = '<?= $onValue; ?>' } }" class="flex items-center justify-end mx-1" x-id="['toggle-label']">
 
-    <input id="<?= $element['id']; ?>" type="hidden" name="<?= $element['name']; ?>" :value="toggle" value="<?= $element['value']; ?>" x-model="toggle; $dispatch('change')">
+    <input id="<?= $element['id']; ?>" type="hidden" name="<?= $element['name']; ?>" :value="toggle" value="<?= $element['value'] ?? $offValue; ?>" x-model="toggle; $dispatch('change')">
     
     <label id="<?= $element['id']; ?>Label" for="<?= $element['id']; ?>" @click="$refs.toggle.click(); $refs.toggle.focus()" :id="$id('toggle-label')" class="text-gray-900 font-medium" >
         <span x-text="toggle == onValue ? '<?= $onLabel; ?>' : '<?= $offLabel; ?>'">
