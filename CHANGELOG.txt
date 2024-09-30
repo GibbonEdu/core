@@ -36,6 +36,7 @@ v28.0.00
         System: refactored the Fast Finder using HTMX and Alpine
         System: updated Core modules to have Gibbon Foundation as author
         Attendance: added an index to the attendance log to help speed up attendance pages
+        Attendance: added an indicator to Student Not Present/Onsite when attendance logs conflict
         Activities: updated Activity Attendance to always count participants for dates in the past
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
         Messenger: limited the individual message target to a maximum of 50 people

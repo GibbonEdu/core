@@ -405,6 +405,24 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    function selectNonAbsentAttendanceLogsByDate($gibbonPersonIDList, $date)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonIDList) ? implode(',', $gibbonPersonIDList) : $gibbonPersonIDList;
+
+        $data = ['gibbonPersonIDList' => $gibbonPersonIDList, 'date' => $date];
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID, GROUP_CONCAT(DISTINCT type SEPARATOR ',') 
+                FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE date=:date
+                AND gibbonAttendanceLogPerson.context='Class'
+                AND gibbonAttendanceLogPerson.type<>'Absent'
+                AND FIND_IN_SET(gibbonAttendanceLogPerson.gibbonPersonID, :gibbonPersonIDList)
+                GROUP BY gibbonAttendanceLogPerson.gibbonPersonID
+                ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectAdHocAttendanceStudents($gibbonSchoolYearID, $target, $targetID, $currentDate)
     {
         switch ($target) {

@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (empty($log['timestampTaken'])) return Format::small(__('N/A'));
 
                         return $currentDate != substr($log['timestampTaken'], 0, 10)
-                            ? Format::dateReadable($log['timestampTaken'], Format::MEDIUM, Format::SHORT)
-                            : Format::dateReadable($log['timestampTaken'], Format::NONE, Format::SHORT);
+                            ? Format::dateReadable($log['timestampTaken'])
+                            : Format::dateReadable($log['timestampTaken']);
                     });
 
                 $table->addColumn('direction', __('Attendance'))
@@ -196,12 +196,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 // Class Attendance
                 if ($countClassAsSchool == 'N') {
-                    if ($classLogCount > 0) {
-                        $classTable = clone $table;
-                        $classTable->setTitle(__('Class Attendance'));
+                    $classTable = clone $table;
+                    $classTable->setTitle(__('Class Attendance'));
 
-                        echo $classTable->render($classLogs);
-                    }
+                    echo $classTable->render($classLogs);
                 }
                 echo '<br/>';
 
