@@ -94,7 +94,7 @@ hr {
 }
 
 .selected {
-    @apply bg-purple-200 border-purple-700 text-purple-700;
+    @apply bg-purple-200 border-purple-800 text-purple-800;
 }
 
 div.message, div.success, div.warning, div.error, div.exception, div.dull {
