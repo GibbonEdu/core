@@ -52,8 +52,8 @@ class Component
      */
     public static function render(string $view, array $context = []): string
     {
-        static::$path = !empty(static::$path) ?: realpath(__DIR__.'/../').'/';
-        
+        static::$path = empty(static::$path) ? realpath(__DIR__.'/../').'/' : static::$path;
+
         $view = str_replace(['Gibbon\\', '\\'], ['', '/'], $view);
 
         if (!file_exists($file = static::$path.$view.'.template.php')) {

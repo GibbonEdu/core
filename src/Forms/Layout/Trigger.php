@@ -57,7 +57,7 @@ class Trigger implements OutputableInterface
     public function onSelect($name)
     {
         $this->elementType = 'select';
-        $this->sourceSelector = 'select[name="'.$name.'"]';
+        $this->sourceSelector = 'select[name="'.$name.'"],[type="hidden"][name="'.$name.'"]';
         $this->sourceValueSelector = $this->sourceSelector;
 
         return $this;

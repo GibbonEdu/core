@@ -342,7 +342,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createYesNo($name)
     {
-        return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+        return $this->createToggle($name);
     }
 
     public function createYesNoRadio($name)

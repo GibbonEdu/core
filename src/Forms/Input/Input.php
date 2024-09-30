@@ -87,7 +87,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      * @return bool
      */
     public function isValidatable() {
-        return !empty($this->getID()) && !$this->getReadonly();
+        return !empty($this->getID()) && !$this->getReadonly() && !$this instanceof Toggle;
     }
 
     /**
