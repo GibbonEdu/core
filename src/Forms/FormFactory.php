@@ -235,6 +235,11 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
+    public function createToggle($name)
+    {
+        return (new Input\Toggle($name));
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -337,12 +342,12 @@ class FormFactory implements FormFactoryInterface
 
     public function createYesNo($name)
     {
-        return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+        return $this->createToggle($name)->setYesNo();
     }
 
     public function createYesNoRadio($name)
     {
-        return $this->createRadio($name)->fromArray(array('Y' => __('Yes'), 'N' => __('No') ))->inline(true);
+        return $this->createToggle($name)->setYesNo();
     }
 
     public function createCheckAll($name = 'checkall')

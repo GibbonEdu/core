@@ -168,7 +168,7 @@ trait BasicAttributesTrait
      * Get the internal collection of attributes.
      * @return  array
      */
-    protected function getAttributeArray()
+    public function getAttributeArray()
     {
         return $this->attributes;
     }

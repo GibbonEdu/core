@@ -13,7 +13,7 @@ $I->selectFromDropdown('gibbonCourseClassID', 2);
 $I->fillField('name', 'Testing Markbook');
 $I->fillField('timeStart', '09:00');
 $I->fillField('timeEnd', '10:00');
-$I->selectOption('markbook', 'Y');
+$I->fillField('markbook', 'Y');
 $I->click('Submit');
 
 // Verify Linked Lesson ---------------------------------------
@@ -30,10 +30,10 @@ $I->seeInField('name', 'Testing Markbook');
 $I->fillField('description', 'Linked to Planner Lesson');
 $I->selectFromDropdown('type', 2);
 $I->seeInField('date', $date);
-$I->selectOption('attainment', 'Y');
-$I->selectOption('effort', 'N');
-$I->selectOption('viewableStudents', 'N');
-$I->selectOption('viewableParents', 'N');
+$I->fillField('attainment', 'Y');
+$I->fillField('effort', 'N');
+$I->fillField('viewableStudents', 'N');
+$I->fillField('viewableParents', 'N');
 $I->click('Submit');
 
 // Verify Column ------------------------------------------------
