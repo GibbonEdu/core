@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                         $row->addLabel('date', __('Date'));
                         $row->addDate('date')->setValue(Format::date($date))->required();
                 } else {
-                    $form->addHiddenValue('date', Format::date($date));
+                    $form->addHiddenValue('date', $date);
                 }
 
                 $form->addRow()->addHeading('Assessment', __('Assessment'));
