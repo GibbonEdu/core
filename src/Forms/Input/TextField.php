@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Element;
+use Gibbon\View\Component;
 
 /**
  * TextField
@@ -128,21 +129,13 @@ class TextField extends Input
      */
     protected function getElement()
     {
-        $output = '<input type="text" '.$this->getAttributeString().'>';
-
-        if (!empty($this->autocomplete)) {
-            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str ?? ''))); }, $this->autocomplete));
-            $output .= '<script type="text/javascript">';
-            $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
-            $output .= '</script>';
-        }
-
-        if (!empty($this->unique)) {
-            $output .= '<script type="text/javascript">
-                $("#'.$this->getID().'").gibbonUniquenessCheck('.json_encode($this->unique).');
-            </script>';
-        }
-
-        return $output;
+        return Component::render(TextField::class, [
+            'element'      => $this->getAttributeArray(),
+            'attributes'   => $this->getAttributeString(),
+            'unique'       => $this->unique ? json_encode($this->unique) : '',
+            'autocomplete' => $this->autocomplete
+                ? implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str ?? ''))); }, $this->autocomplete))
+                : '',
+        ]);
     }
 }

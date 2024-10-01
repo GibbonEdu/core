@@ -23,6 +23,7 @@ namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\View\Component;
 
 /**
  * Select
@@ -34,7 +35,7 @@ class Select extends Input
 {
     use MultipleOptionsTrait;
 
-    protected $placeholder;
+    protected $placeholder = null;
     protected $selected = null;
     protected $hasSelected = false;
 
@@ -172,8 +173,6 @@ class Select extends Input
      */
     protected function getElement()
     {
-        $output = '';
-
         if ($this->getReadonly()) {
             $options = [];
             $selected = is_array($this->selected)? $this->selected : [$this->selected];
@@ -197,49 +196,42 @@ class Select extends Input
             }
         }
 
-        $output .= '<select '.$this->getAttributeString().'>';
+        if (!isset($this->placeholder) && $this->getOptionCount() == 0) {
+            $this->placeholder('');
+        }
 
         if ($this->getRequired() && $this->placeholder === '') {
             $this->placeholder('Please select...');
         }
 
-        if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
-            // Add a placeholder only if the first option is not already blank
-            if (count($this->getOptions()) == 0 || key($this->getOptions()) !== '') {
-                $output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
-            }
-
-            if ($this->getRequired() && !empty($this->placeholder)) {
-                $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
-            }
+        if ($this->getRequired() && !empty($this->placeholder) && $this->getAttribute('multiple') == false) {
+            $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
         }
 
+        $options = [];
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
-            foreach ($this->getOptions() as $value => $label) {
-                if (is_array($label)) {
-                    $output .= '<optgroup label="-- '.$value.' --">';
-                    foreach ($label as $subvalue => $sublabel) {
-                        $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
-                        $class = (!empty($this->chainedToValues[$subvalue]))? ' class="'.$this->chainedToValues[$subvalue].'" ' : '';
-                        $output .= '<option value="'.$subvalue.'" '.$selected.$class.'>'.$sublabel.'</option>';
-                    }
-                    $output .= '</optgroup>';
-                } else {
-                    $selected = ($this->isOptionSelected($value))? 'selected' : '';
-                    $class = (!empty($this->chainedToValues[$value]))? ' class="'.$this->chainedToValues[$value].'" ' : '';
-                    $output .= '<option value="'.$value.'" '.$selected.$class.'>'.$label.'</option>';
+            foreach ($this->getOptions() as $key => $items) {
+                $optLabel = is_array($items) ? $key : '';
+                $optGroup = is_array($items) ? $items : [$key => $items];
+
+                foreach ($optGroup as $value => $label) {
+                    $options[$optLabel][$value] = [
+                        'value' => $value,
+                        'label' => $label,
+                        'selected' => $this->isOptionSelected($value) ? 'selected' : '',
+                        'class' => !empty($this->chainedToValues[$value]) ? $this->chainedToValues[$value] : '',
+                    ];
                 }
             }
         }
 
-        $output .= '</select>';
-
-        if (!empty($this->chainedToID)) {
-            $output .= '<script type="text/javascript">';
-            $output .= '$(function() {$("#'.$this->getID().'").chainedTo("#'.$this->chainedToID.'");});';
-            $output .= '</script>';
-        }
-
-        return $output;
+        return Component::render(Select::class, [
+            'element'     => $this->getAttributeArray(),
+            'attributes'  => $this->getAttributeString(),
+            'placeholder' => $this->placeholder,
+            'chainedToID' => $this->chainedToID,
+            'options'     => $options,
+            
+        ]);
     }
 }

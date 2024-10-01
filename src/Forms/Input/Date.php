@@ -23,6 +23,7 @@ namespace Gibbon\Forms\Input;
 
 use DateTime;
 use Gibbon\Services\Format;
+use Gibbon\View\Component;
 
 /**
  * Date
@@ -172,5 +173,11 @@ class Date extends TextField
         $output = '<input type="date" '.$this->getAttributeString().' maxlength="10">';
 
         return $output;
+
+        return Component::render(Date::class, [
+            'element'     => $this->getAttributeArray(),
+            'attributes'  => $this->getAttributeString(),
+            
+        ]);
     }
 }

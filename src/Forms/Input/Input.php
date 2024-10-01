@@ -50,7 +50,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     {
         $this->setID($name);
         $this->setName($name);
-        $this->setClass('standardWidth');
+        // $this->setClass('standardWidth');
     }
 
     /**

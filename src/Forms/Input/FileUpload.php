@@ -200,7 +200,7 @@ class FileUpload extends Input
 
                 if (!empty($attachmentPath)) {
 
-                    $output .= '<div class="input-box rounded-sm standardWidth">';
+                    $output .= '<div class="input-box rounded-md w-full">';
 
                     $output .= '<div class="inline-label">';
                     $output .= __('Current attachment:').'<br/>';
