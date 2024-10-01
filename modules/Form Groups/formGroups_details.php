@@ -25,6 +25,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\FormGroupTable;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php') == false) {
     // Access denied
@@ -44,37 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $gibbonFormGroupID);
                 if ($highestAction == "View Form Groups_all") {
-                    $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-                        FROM gibbonFormGroup
-                            JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                            LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
-                        WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonFormGroupID=:gibbonFormGroupID';
+
+                    $result = $container->get(FormGroupGateway::class)->getFormGroupDetailsBySchoolYear($session->get('gibbonSchoolYearID'), $gibbonFormGroupID);
                 }
                 else {
-                    $data['gibbonPersonID'] = $session->get('gibbonPersonID');
-                    $data['today'] = date('Y-m-d');
-                    $sql = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroup.gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-                        FROM gibbonFormGroup
-                            JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                            JOIN (
-                                SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment
-                                JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-                                ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
-                            ) AS students ON (students.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                            JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=students.gibbonPersonID)
-                            JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                            LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
-                        WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
-                            AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID";
+                    $result = $container->get(FormGroupGateway::class)->getFormGroupDetailsByFamilyAdult($session->get('gibbonSchoolYearID'), $gibbonFormGroupID, $session->get('gibbonPersonID'));
                 }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
             } catch (PDOException $e) {
             }
 
