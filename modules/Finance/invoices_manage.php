@@ -143,12 +143,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $col = $form->createBulkActionColumn($bulkActions);
             $col->addSelectPaymentMethod('paymentType')
-                ->setClass('bulkPaid shortWidth displayNone')
+                ->setClass('bulkPaid shortWidth hidden')
                 ->required()
                 ->addValidationOption('onlyOnSubmit: true')
                 ->placeholder(__('Payment Type').'...');
             $col->addDate('paidDate')
-                ->setClass('bulkPaid shortWidth displayNone')
+                ->setClass('bulkPaid shortWidth hidden')
                 ->required()
                 ->addValidationOption('onlyOnSubmit: true')
                 ->placeholder(__('Date Paid'));

@@ -38,6 +38,9 @@ body {
     font-family: Helvetica, Arial, sans-serif;
 }
 
+[x-cloak] { 
+    display: none !important;
+}
 
 /*
  --------------------------------------------------------------------------
@@ -215,10 +218,6 @@ input.button:hover, a.button:hover, button.button:hover {
     .column.inline {
         @apply flex flex-row justify-between items-center;
     }
-}
-
-.column.inline.displayNone {
-    @apply hidden;
 }
 
 .column.stacked {

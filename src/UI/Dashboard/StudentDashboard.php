@@ -200,7 +200,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
                             }
                         }
                         $planner .= '</td>';
-                        $planner .= '<td class="wordWrap break-words">';
+                        $planner .= '<td class="break-words">';
                         $planner .= Format::truncate($row['summary'], 360);
                         $planner .= '</td>';
                         $planner .= '<td>';

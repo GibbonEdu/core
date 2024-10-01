@@ -219,7 +219,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         $plannerOutput .= '<td>';
                         $plannerOutput .= '<b>'.$row['course'].'.'.$row['class'].'</b><br/>';
                         $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td id="wordWrap">';
+                        $plannerOutput .= '<td id="break-words">';
                         $plannerOutput .= $row['name'].'<br/>';
                         $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonCourseClassID']);
                         if (isset($unit[0])) {

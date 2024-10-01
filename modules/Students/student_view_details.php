@@ -1643,7 +1643,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
                                 $form->addHiddenValue('details', 'No');
                                 $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)->inline(true)
-                                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="text-xs italic displayInlineBlock">', '</span>');
+                                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="text-xs italic inline-block">', '</span>');
 
                                 $rowFilter = $form->addRow();
                                     $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
