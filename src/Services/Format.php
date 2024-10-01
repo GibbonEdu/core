@@ -120,6 +120,11 @@ class Format
         if (empty($dateString)) {
             return '';
         }
+
+        if (stripos($dateString, '/') !== false) {
+            return $dateString;
+        }
+
         $date = static::createDateTime($dateString, is_string($dateString) && strlen($dateString) == 10 ? 'Y-m-d' : null);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
@@ -135,6 +140,11 @@ class Format
         if (empty($dateString)) {
             return '';
         }
+
+        if (stripos($dateString, '-') === 4) {
+            return $dateString;
+        }
+
         $date = static::createDateTime($dateString, static::$settings['dateFormatPHP']);
         return $date ? $date->format('Y-m-d') : $dateString;
     }

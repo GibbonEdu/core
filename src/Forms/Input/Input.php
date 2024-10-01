@@ -25,6 +25,7 @@ use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\RowDependancyInterface;
 use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\Traits\InputAttributesTrait;
+use Gibbon\Forms\Input\Date;
 
 /**
  * Abstract base class for form input elements.
@@ -87,7 +88,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      * @return bool
      */
     public function isValidatable() {
-        return !empty($this->getID()) && !$this->getReadonly() && !$this instanceof Toggle;
+        return !empty($this->getID()) && !$this->getReadonly() && !$this instanceof Toggle && !$this instanceof Date;
     }
 
     /**

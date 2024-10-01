@@ -202,7 +202,7 @@ class CustomField extends Input
 
             case 'Date':
             case 'date':
-                $this->customField->setDateFromValue($value);
+                $this->customField->setValue($value);
                 break;
 
             case 'image':

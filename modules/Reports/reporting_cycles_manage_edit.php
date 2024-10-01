@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     // Add existing milestones
     $milestones = json_decode($values['milestones'], true);
     foreach ($milestones ?? [] as $index => $milestone) {
-        $milestone['milestoneDate'] = Format::date($milestone['milestoneDate']);
+        $milestone['milestoneDate'] = $milestone['milestoneDate'];
         $customBlocks->addBlock($index, $milestone);
     }
 
@@ -123,14 +123,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     echo $form->getOutput();
 }
-?>
-
-<script>
-$(document).ready(function () {
-    $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
-});
-$(document).on('click', '.addBlock', function () {
-    $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
-});
-</script>
-

@@ -101,10 +101,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     echo $form->getOutput();
 }
-?>
-
-<script>
-$(document).on('click', '.addBlock', function () {
-    $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
-});
-</script>

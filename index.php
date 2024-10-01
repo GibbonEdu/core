@@ -260,19 +260,9 @@ if ($isLoggedIn) {
 /**
  * LOCALE
  *
- * Sets the i18n locale for jQuery UI DatePicker (if the file exists, otherwise
- * falls back to en-GB)
+ * Allow the URL to override system default from the i18l param
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
-$localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
-$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/datepicker-%1$s.js';
-
-$datepickerLocale = 'en-GB';
-if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
-    $datepickerLocale = $localeCode;
-} elseif (is_file(sprintf($localePath, $localeCodeShort))) {
-    $datepickerLocale = $localeCodeShort;
-}
 
 // Allow the URL to override system default from the i18l param
 if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
@@ -296,11 +286,6 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
  */
 $javascriptConfig = [
     'config' => [
-        'datepicker' => [
-            'locale' => $datepickerLocale,
-            'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
-            'firstDay' => $session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
-        ],
         'tinymce' => [
             'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
         ]
@@ -334,11 +319,6 @@ $page->scripts->addMultiple([
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
-
-//This sets the default for en-US, or changes for none en-US
-if($datepickerLocale !== 'en-US'){
-    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/datepicker-'.$datepickerLocale.'.js');
-}
 
 // Set page scripts: foot - misc
 $page->scripts->addMultiple([
