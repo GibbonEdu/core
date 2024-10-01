@@ -27,7 +27,7 @@ Used under "GNU Creative Commons License", http://creativecommons.org/licenses/G
 
 /* LAYOUT */
 
-div.trail {
+/* div.trail {
     text-align: left;
     font-size: 70%;
     margin: 10px 0px 10px -18px;
@@ -49,7 +49,7 @@ div.trailHead a {
 
 div.trailEnd {
     padding-left: 3px;
-}
+} */
 
 
 
@@ -330,7 +330,7 @@ table.blank > tbody > tr > td {
 }
 
 /* FORMS */
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+/* input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 textarea {
     -webkit-appearance: none;
     -webkit-border-radius: 0.125rem;
@@ -481,7 +481,7 @@ textarea[disabled] {
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: 0.45;
-}
+} */
 
 /* PAGINATION */
 .paginationTop {
@@ -876,7 +876,7 @@ span.small {
     font-size: 100%;
 }
 
-input.standardWidth,
+/* input.standardWidth,
 textarea.standardWidth,
 select.standardWidth,
 div.standardWidth,
@@ -885,8 +885,8 @@ table.standardWidth {
 }
 .fullWidth {
     width: 100%;
-}
-div.blockOuter {
+} */
+/* div.blockOuter {
     text-align: center;
 }
 h1.bigTop,
@@ -896,7 +896,7 @@ h4.bigTop,
 h5.bigTop,
 h6.bigTop {
     margin-top: 50px !important;
-}
+} */
 
 /* v13 NEW CLASSES */
 td.wordWrap {
@@ -907,17 +907,17 @@ td.wordWrap {
 
 /* v14 NEW CLASSES */
 
-select[multiple] {
+/* select[multiple] {
     height: auto;
-}
-
+} */
+/* 
 .shortWidth {
     width: 148px;
 }
 
 .mediumWidth {
     width: 230px;
-}
+} */
 
 table tr.heading td {
     padding: 15px 5px 15px 5px;
@@ -1163,7 +1163,7 @@ table.smallIntBorder td.noPadding {
     top: 18px;
 }
 
-.dataTable select.filters,
+/* .dataTable select.filters,
 .dataTable select.limit {
     -webkit-appearance: none;
 }
@@ -1175,7 +1175,7 @@ table.smallIntBorder td.noPadding {
     border: 5px solid transparent;
     border-top: 5px solid #666666;
     position: absolute;
-}
+} */
 
 
 .dataTable .expandable,

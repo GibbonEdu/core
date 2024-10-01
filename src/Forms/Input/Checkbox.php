@@ -285,7 +285,7 @@ class Checkbox extends Input
 
                     if ($value != 'on') $this->setValue($value);
 
-                    $this->addClass('w-4 h-4');
+                    $this->addClass('h-4 w-4 rounded border-gray-400 text-blue-500 focus:ring-blue-600');
 
                     if ($this->inline) {
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
