@@ -275,7 +275,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 }
 
                 $row = $form->addRow();
-                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
+                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-50')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
                     $row->addSubmit(__('Login'));
 
                 echo $form->getOutput();

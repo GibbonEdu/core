@@ -286,7 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             ->addDetails()
             ->addClass('border bg-gray-100 rounded mb-2 p-2')
             ->addClass($proof['status'] == 'Done' || $proof['status'] == 'Accepted' ? 'success bg-green-100' : '')
-            ->addClass($proof['status'] == 'Edited' ? 'message bg-blue-100' : '')
+            ->addClass($proof['status'] == 'Edited' ? 'message bg-blue-50' : '')
             ->setID('student'.str_pad($criteria['gibbonPersonIDStudent'], 10, '0', STR_PAD_LEFT))
             ->summary($summaryText)
             ->opened(empty($proof['status']) || ($proofReview && $proof['status'] == 'Edited'));
@@ -408,15 +408,15 @@ $('input.statusInput').change(function() {
     var details = $(this).parents('details').first();
 
     if ($(this).val() == 'Done' || $(this).val() == 'Accepted') {
-        details.removeClass('message bg-blue-100').removeClass('error bg-red-100');
+        details.removeClass('message bg-blue-50').removeClass('error bg-red-100');
         details.addClass('success bg-green-100');
         details.find('textarea').attr('readonly', true);
     } else if ($(this).val() == 'Edited' || $(this).val() == 'Revised') {
         details.removeClass('success bg-green-100').removeClass('error bg-red-100');
-        details.addClass('message bg-blue-100');
+        details.addClass('message bg-blue-50');
         details.find('textarea').attr('readonly', false);
     } else if ($(this).val() == 'Declined') {
-        details.removeClass('success bg-green-100').removeClass('message bg-blue-100');
+        details.removeClass('success bg-green-100').removeClass('message bg-blue-50');
         details.addClass('error bg-red-100');
         details.find('textarea').attr('readonly', false);
     }

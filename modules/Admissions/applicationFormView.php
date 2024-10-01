@@ -198,7 +198,7 @@ if (!$proceed) {
     // Display all available public forms
     $firstForm = current($forms);
     foreach ($forms as $index => $applicationForm) {
-        $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
+        $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-50 mb-2');
 
         $row = $table->addRow();
             $row->addLabel('gibbonFormID'.$index, __($applicationForm['name']))->description($applicationForm['description'])->setClass('block w-full p-6 font-medium text-sm text-gray-700');

@@ -75,7 +75,7 @@ class ClassGroupTable extends DataTable
 
         $this->setTitle(__('Participants'));
 
-        $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
+        $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
 
         if ($canEditEnrolment && count($participants) > 0) {

@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                         ->description($description)
                         ->alignLeft()
                         ->setLabelClass('w-full p-4')
-                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-100');
+                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-50');
                 }
             }
         }
