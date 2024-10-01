@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Rubrics\RubricGateway;
 
 require_once '../../gibbon.php';
 
@@ -56,14 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             } else {
                 try {
                     if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID);
-                        $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
+
+                        $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
+
                     } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
+
+                        $result = $container->get(RubricGateway::class)->selectLARubricsByStaffAndDepartment($gibbonRubricID, $session->get('gibbonPersonID'));
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     } else {
                         //Write to database
                         try {
-                            $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonRubricID' => $gibbonRubricID);
+                            $data = ['scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonRubricID' => $gibbonRubricID];
                             $sql = 'UPDATE gibbonRubric SET scope=:scope, gibbonDepartmentID=:gibbonDepartmentID, name=:name, active=:active, category=:category, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonScaleID=:gibbonScaleID WHERE gibbonRubricID=:gibbonRubricID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);

@@ -25,8 +25,8 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
@@ -35,16 +35,17 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\FirstAidGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
-use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
+use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -1597,12 +1598,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $form->addHiddenValue('search', $search);
                                 $form->addHiddenValue('subpage', 'Markbook');
 
-                                $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+                                $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
                                 $rowFilter = $form->addRow();
                                     $rowFilter->addLabel('gibbonDepartmentID', __('Learning Areas'));
                                     $rowFilter->addSelect('gibbonDepartmentID')
                                         ->fromArray(array('*' => __('All Learning Areas')))
-                                        ->fromQuery($pdo, $sqlSelect)
+                                        ->fromResults($results)
                                         ->selected($gibbonDepartmentID);
 
                                 $dataSelect = array('gibbonPersonID' => $gibbonPersonID);

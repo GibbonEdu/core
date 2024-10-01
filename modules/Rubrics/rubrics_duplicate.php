@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Rubrics\RubricGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -57,11 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
             if ($gibbonRubricID == '') {
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {
-
-                    $data = array('gibbonRubricID' => $gibbonRubricID);
-                    $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                
+                    $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The specified record does not exist.'));
@@ -99,16 +98,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
 					}
 
 					if ($highestAction == 'Manage Rubrics_viewEditAll') {
-						$data = array();
-						$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+						
+                        $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
+
 					} else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-						$data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-						$sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+						$results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningAreaByStaff($session->get('gibbonPersonID'));
 					}
 
 					$row = $form->addRow()->addClass('learningAreaRow');
 						$row->addLabel('gibbonDepartmentID', __('Learning Area'));
-						$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+						$row->addSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
 
 					$row = $form->addRow();
 						$row->addLabel('name', __('Name'));

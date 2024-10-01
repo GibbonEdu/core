@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Rubrics\RubricGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php') == false) {
     // Access denied
@@ -57,12 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         $row->addLabel('search', __('Search For'))->description(__('Rubric name.'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
-    $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+    $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
     $row = $form->addRow();
         $row->addLabel('filter2', __('Learning Areas'));
         $row->addSelect('filter2')
             ->fromArray(array('' => __('All Learning Areas')))
-            ->fromQuery($pdo, $sql)
+            ->fromResults($results)
             ->selected($department);
 
     $row = $form->addRow();

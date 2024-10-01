@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -86,8 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                         $row->addTextField('scope')->required()->readOnly();
 
                     if ($values['scope'] == 'Learning Area') {
-                        $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
-                        $result = $pdo->executeQuery(array('gibbonDepartmentID' => $values['gibbonDepartmentID']), $sql);
+                        
+                        $result = $container->get(DepartmentGateway::class)->selectBy(['gibbonDepartmentID' => $values['gibbonDepartmentID']], ['name']);
+
                         $learningArea = ($result->rowCount() > 0)? $result->fetchColumn(0) : $values['gibbonDepartmentID'];
 
                         $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);

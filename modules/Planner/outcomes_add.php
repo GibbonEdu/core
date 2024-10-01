@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -78,20 +79,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 			}
 
 			if ($highestAction == 'Manage Outcomes_viewEditAll') {
-				$data = array();
-				$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+				
+                $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
+                
 			} elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-				$data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-				$sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+				$results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningAreaByStaff($session->get('gibbonPersonID'));
 			}
-
 
             if ($highestAction == 'Manage Outcomes_viewEditAll') {
                 $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
             }
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
-                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+                $row->addSelect('gibbonDepartmentID')->fromResults($results)->required()->placeholder();
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'));

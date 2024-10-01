@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\Rubrics\RubricGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -33,10 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data3 = array('gibbonRubricID' => $gibbonRubricID);
-            $sql3 = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
-            $result3 = $connection2->prepare($sql3);
-            $result3->execute($data3);
+            $result3 = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
 
         if ($result3->rowCount() != 1) {
             $page->addError(__('The specified record does not exist.'));
