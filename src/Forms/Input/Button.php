@@ -23,6 +23,7 @@ namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Traits\InputAttributesTrait;
 use Gibbon\Forms\Layout\Element;
+use Gibbon\View\Component;
 
 /**
  * Button
@@ -34,15 +35,15 @@ class Button extends Element
 {
     use InputAttributesTrait;
     
-    private $onclick;
+    private $type;
 
-    public function __construct($name, $onClick)
+    public function __construct($name, $type = 'button', $onClick = null, $id = null)
     {
         $this->setName($name);
-        $this->onClick($onClick);
         $this->setValue($name);
-        $this->setID($name);
-        $this->addClass('button');
+        $this->setID($id ?? $name);
+        $this->onClick($onClick);
+        $this->type = $type;
     }
 
     public function onClick($value)
@@ -53,7 +54,8 @@ class Button extends Element
 
     protected function getElement()
     {
-        $output = '<button type="button" '.$this->getAttributeString().'>'.$this->getValue().'</button>';
-        return $output;
+        return Component::render(Button::class, $this->getAttributeArray() + [
+            'type' => $this->type,
+        ]);
     }
 }

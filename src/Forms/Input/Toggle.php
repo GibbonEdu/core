@@ -127,8 +127,7 @@ class Toggle extends Input
      */
     protected function getElement()
     {
-        return Component::render(Toggle::class, [
-            'element'  => $this->getAttributeArray(),
+        return Component::render(Toggle::class, $this->getAttributeArray() + [
             'onValue'  => $this->onValue,
             'offValue' => $this->offValue,
             'onLabel'  => $this->onLabel,

@@ -168,16 +168,7 @@ class Date extends TextField
     protected function getElement()
     {
         $this->setAttribute('autocomplete', 'off');
-        $this->addClass('border h-10 font-sans');
 
-        $output = '<input type="date" '.$this->getAttributeString().' maxlength="10">';
-
-        return $output;
-
-        return Component::render(Date::class, [
-            'element'     => $this->getAttributeArray(),
-            'attributes'  => $this->getAttributeString(),
-            
-        ]);
+        return Component::render(Date::class, $this->getAttributeArray() + []);
     }
 }

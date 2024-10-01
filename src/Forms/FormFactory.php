@@ -255,12 +255,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createButton($label = 'Button', $onClick = '', $id = null)
     {
-        $button = new Input\Button($label, $onClick);
-        if(!empty($id)) {
-            $button->setID($id)->setName($id);
-        }
-
-        return $button;
+        return new Input\Button($label, 'button', $onClick, $id);
     }
 
     public function createCustomBlocks($name, Session $session, bool $canDelete = true)
@@ -300,10 +295,9 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
-    public function createSubmit($label = 'Submit', $class = '')
+    public function createSubmit($label = 'Submit', $class = 'text-right')
     {
-        $content = sprintf('<input type="submit" value="%1$s" class="%2$s">', __($label), $class);
-        return $this->createContent($content)->setClass('right');
+        return (new Input\Button($label, 'submit'))->addClass($class);
     }
 
     public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())
@@ -311,14 +305,14 @@ class FormFactory implements FormFactoryInterface
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
         $clearURL = Url::fromRoute()->withQueryParams($parameters);
-        $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
+        $clearLink = sprintf('<a href="%s" class="right px-3 py-2 text-xs font-medium text-gray-600">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createSubmit('Go')->prepend($clearLink);
     }
 
     public function createConfirmSubmit($label = 'Yes', $cancel = false)
     {
-        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
+        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right px-3 py-2 text-xs font-medium text-gray-600">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
         return $this->createSubmit($label)->prepend($cancelLink);
     }
 

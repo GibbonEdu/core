@@ -225,13 +225,10 @@ class Select extends Input
             }
         }
 
-        return Component::render(Select::class, [
-            'element'     => $this->getAttributeArray(),
-            'attributes'  => $this->getAttributeString(),
+        return Component::render(Select::class, $this->getAttributeArray() + [
             'placeholder' => $this->placeholder,
             'chainedToID' => $this->chainedToID,
             'options'     => $options,
-            
         ]);
     }
 }

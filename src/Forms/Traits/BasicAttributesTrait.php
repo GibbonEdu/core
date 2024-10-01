@@ -29,7 +29,7 @@ namespace Gibbon\Forms\Traits;
  */
 trait BasicAttributesTrait
 {
-    private $attributes = array();
+    private $attributes = [];
 
     /**
      * Set the id attribute.
@@ -170,20 +170,24 @@ trait BasicAttributesTrait
      */
     public function getAttributeArray()
     {
-        return $this->attributes;
+        return array_merge(['id' => '', 'name' => '', 'class' => '', 'attributes' => $this->getAttributeString(false, 'class')], $this->attributes);
     }
 
     /**
      * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
-     * @param   array|bool  $filter  Return a filtered subset of attributes by name.
+     * @param   array|string  $filter  Return a filtered subset of attributes by name.
      * @return  string
      */
-    public function getAttributeString($filter = false)
+    public function getAttributeString($filter = '', string $exclude = '')
     {
-        $attributes = $this->getAttributeArray();
-        if ($filter !== false) {
+        $attributes = $this->attributes;
+        if (!empty($filter)) {
             $filter = is_string($filter)? explode(',', $filter) : $filter;
             $attributes = array_intersect_key($attributes, array_flip($filter));
+        }
+
+        if (!empty($exclude) && isset($attributes[$exclude])) {
+            unset($attributes[$exclude]);
         }
 
         $output = implode(' ', array_map(

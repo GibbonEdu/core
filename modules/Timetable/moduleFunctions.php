@@ -538,7 +538,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<div>";
             $output .= "<button type='button' class='ttNav inline rounded-l p-2 -mr-px text-base border border-gray-500 text-gray-600 bg-white font-semibold hover:bg-gray-400 hover:text-gray-700'
                     x-on:click='ttRefresh=true'><img class='h-3 mt-1' src='".$session->get('absoluteURL')."/themes/Default/img/refresh.png'></button>";
-            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border rounded-r font-sans w-40 px-3'> ";
+            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border rounded-r text-sm font-sans h-10 w-40 px-3'> ";
             $output .= "</div>";
 
             $output .= '</nav>';
@@ -2123,7 +2123,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline'>".__('Next Week')."</span> →</button>";
         $output .= "</div>";
 
-        $output .= "<input x-model='ttDate' name='ttDate' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10  type='date' required class='self-end border font-sans h-10 w-36 px-3'> ";
+        $output .= "<input x-model='ttDate' name='ttDate' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10  type='date' required class='self-end border rounded-md text-sm font-sans h-10 w-40 px-3'> ";
         $output .= '</nav>';
 
         $output .= '</form>';
