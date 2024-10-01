@@ -19,12 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
+use Gibbon\Domain\Departments\DepartmentStaffGateway;
+use Gibbon\Domain\Departments\DepartmentResourceGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,10 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
-            $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(DepartmentGateway::class)->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID]);
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record does not exist.'));
@@ -80,15 +81,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             echo $table->render([$row]);
 
             //Print staff
-            $dataStaff = array('gibbonDepartmentID' => $gibbonDepartmentID);
-            $sqlStaff = "SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle, FIND_IN_SET(role, 'Manager,Assistant Coordinator,Coordinator,Director') as roleOrder
-            FROM gibbonDepartmentStaff 
-            JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-            WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID 
-            ORDER BY roleOrder DESC, surname, preferredName";
+            $result = $container->get(DepartmentStaffGateway::class)->seletStaffListByDepartment($gibbonDepartmentID);
 
-            $staff = $pdo->select($sqlStaff, $dataStaff)->toDataSet();
+            $staff = $result->toDataSet();
 
             // Data Table
             $gridRenderer = new GridView($container->get('twig'));
@@ -153,16 +148,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             //Print current course list
 
-                $dataCourse = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                $sqlCourse = "SELECT gibbonCourse.* FROM gibbonCourse
-                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                    WHERE gibbonDepartmentID=:gibbonDepartmentID
-                    AND gibbonYearGroupIDList <> ''
-                    AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
-                    GROUP BY gibbonCourse.gibbonCourseID
-                    ORDER BY nameShort, name";
-                $resultCourse = $connection2->prepare($sqlCourse);
-                $resultCourse->execute($dataCourse);
+                
+                $resultCourse = $container->get(CourseGateway::class)->selectCurrentCoursesByDepartment($gibbonDepartmentID);
 
             if ($resultCourse->rowCount() > 0) {
                 $sidebarExtra .= '<div class="column-no-break">';
@@ -186,14 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             //Print other courses
             if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonSchoolYear.name AS year, gibbonCourse.gibbonCourseID as value, gibbonCourse.name AS name
-                        FROM gibbonCourse
-                        JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                        WHERE gibbonDepartmentID=:gibbonDepartmentID
-                        AND NOT gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
-                        ORDER BY sequenceNumber, gibbonCourse.nameShort, name";
-                $result = $pdo->executeQuery($data, $sql);
+                 
+                $result = $container->get(CourseGateway::class)->selectCourseListByOtherDepartment($gibbonDepartmentID, $session->get('gibbonSchoolYearID'));
 
                 $courses = ($result->rowCount() > 0)? $result->fetchAll() : array();
                 $courses = array_reduce($courses, function($carry, $item) {
@@ -224,12 +205,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             //Print useful reading
-
-                $dataReading = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                $sqlReading = 'SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=:gibbonDepartmentID ORDER BY name';
-                $resultReading = $connection2->prepare($sqlReading);
-                $resultReading->execute($dataReading);
-
+            $resultReading = $container->get(DepartmentResourceGateway::class)->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID]);
+    
             if ($resultReading->rowCount() > 0 or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
                 $sidebarExtra .= '<div class="column-no-break">';
                 $sidebarExtra .= '<h4>';

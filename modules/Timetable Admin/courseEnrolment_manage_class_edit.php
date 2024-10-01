@@ -26,8 +26,9 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
     // Access denied
@@ -44,9 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     } else {
         $userGateway = $container->get(UserGateway::class);
         $courseGateway = $container->get(CourseGateway::class);
+        $courseClassGateway = $container->get(CourseClassGateway::class);
         $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
 
-        $values = $courseGateway->getCourseClassByID($gibbonCourseClassID);
+        $values = $courseClassGateway->getCourseClassByID($gibbonCourseClassID);
 
         if (empty($values)) {
             $page->addError(__('The specified record cannot be found.'));

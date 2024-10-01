@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Departments\DepartmentGateway;
+use Gibbon\Domain\Departments\DepartmentResourceGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,10 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
-            $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+			$result = $container->get(DepartmentGateway::class)->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID]);
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
@@ -67,10 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 				$form->addRow()->addEditor('blurb', $guid)->setRows(20)->setValue($values['blurb']);
 
 				$form->addRow()->addHeading('Current Resources', __('Current Resources'));
-
-				$data = array('gibbonDepartmentID' => $gibbonDepartmentID);
-				$sql = 'SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=:gibbonDepartmentID ORDER BY name';
-				$result = $pdo->executeQuery($data, $sql);
+				
+				$result = $container->get(DepartmentResourceGateway::class)->selectBy(['gibbonDepartmentID' => $gibbonDepartmentID]);
 
 				if ($result->rowCount() == 0) {
 					$form->addRow()->addAlert(__('There are no records to display.'), 'error');

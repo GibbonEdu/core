@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Departments\DepartmentResourceGateway;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -40,10 +42,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonDepartmentResourceID' => $gibbonDepartmentResourceID, 'gibbonDepartmentID' => $gibbonDepartmentID);
-            $sql = 'SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentResourceID=:gibbonDepartmentResourceID AND gibbonDepartmentID=:gibbonDepartmentID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+
+            $result = $container->get(DepartmentResourceGateway::class)->selectBy(['gibbonDepartmentResourceID' => $gibbonDepartmentResourceID, 'gibbonDepartmentID' => $gibbonDepartmentID]);
+            
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
