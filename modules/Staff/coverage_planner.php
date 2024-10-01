@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php';
 
     $form = Form::create('dateNav', $link);
-    $form->setClass('blank fullWidth');
+    $form->setClass('blank w-full');
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addClass('flex flex-wrap');

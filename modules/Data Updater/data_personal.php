@@ -450,7 +450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 $adressee = Format::name($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
                                 $row = $table->addRow()->addClass('address');
-                                $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
+                                $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('w-full');
                                 $row->addCheckbox($addressCount.'-matchAddress')->setValue($rowAddress['gibbonPersonID']);
 
                                 $addressCount++;

@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             $table->addColumn('familyAdults', __('Adults'))
                 ->notSortable()
                 ->format(function($row) use ($dataChecker, $requiredUpdatesByType) {
-                    $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    $output = '<table class="smallIntBorder w-full colorOddEven" cellspacing=0>';
                     foreach ($row['familyAdults'] as $adult) {
                         $output .= '<tr>';
                         $output .= '<td style="width:90%">'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</td>';
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             $table->addColumn('familyChildren', __('Children'))
                 ->notSortable()
                 ->format(function($row) use ($dataChecker, $requiredUpdatesByType) {
-                    $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    $output = '<table class="smallIntBorder w-full colorOddEven" cellspacing=0>';
                     foreach ($row['familyChildren'] as $child) {
                         $output .= '<tr>';
                         $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';

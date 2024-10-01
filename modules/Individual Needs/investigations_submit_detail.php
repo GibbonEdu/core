@@ -78,13 +78,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs be investigated?'));;
-            	$column->addTextArea('reason')->setRows(5)->setClass('fullWidth')->required()->readonly();
+            	$column->addTextArea('reason')->setRows(5)->setClass('w-full')->required()->readonly();
 
             //Strategies Tried
             $row = $form->addRow();
             	$column = $row->addColumn();
             	$column->addLabel('strategiesTried', __('Strategies Tried'));
-            	$column->addTextArea('strategiesTried')->setRows(5)->setClass('fullWidth')->readonly();
+            	$column->addTextArea('strategiesTried')->setRows(5)->setClass('w-full')->readonly();
 
             //Parents Informed?
             $row = $form->addRow();
@@ -98,12 +98,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $row = $form->addRow()->addClass('parentsInformedYes');
             	$column = $row->addColumn();
             	$column->addLabel('parentsResponseYes', __('Parent Response'));
-            	$column->addTextArea('parentsResponseYes')->setName('parentsResponse')->setRows(5)->setClass('fullWidth')->readonly();
+            	$column->addTextArea('parentsResponseYes')->setName('parentsResponse')->setRows(5)->setClass('w-full')->readonly();
 
             $row = $form->addRow()->addClass('parentsInformedNo');
                 $column = $row->addColumn();
                 $column->addLabel('parentsResponseNo', __('Reason'))->description(__('Reasons why parents are not aware of the situation.'));
-                $column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('fullWidth')->readonly()->required();
+                $column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('w-full')->readonly()->required();
 
             $form->addRow()->addHeading('Contributor Input', __('Contributor Input'));
 
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $row = $form->addRow();
             	$column = $row->addColumn();
             	$column->addLabel('comment', __('Comment'));
-            	$column->addTextArea('comment')->setRows(5)->setClass('fullWidth');
+            	$column->addTextArea('comment')->setRows(5)->setClass('w-full');
 
             $row = $form->addRow();
             	$row->addFooter();

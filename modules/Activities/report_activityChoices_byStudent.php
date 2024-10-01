@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $form = Form::create('action', $session->get('absoluteURL')."/index.php", "get");
     $form->setTitle(__('Choose Student'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityChoices_byStudent.php");

@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             });
 
             $form->addRow()->addHeading($courseName);
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven w-full standardForm');
 
             $header = $table->addHeaderRow();
                 $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($optionsSelected))->setClass();
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
     }
 
-    $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven w-full standardForm');
 
     $row = $table->addRow();
         $row->addFooter();

@@ -256,7 +256,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                     $lastColumnValue = $importType->getPrimaryKey();
                 }
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
 
                 $row = $table->addRow();
                 $row->addLabel('syncField', __('Sync').'?')->description(__('Only rows with a matching database ID will be imported.'));
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
             // COLUMN SELECTION
             if (!empty($importType->getAllFields())) {
-                $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+                $table = $form->addRow()->addTable()->setClass('colorOddEven w-full');
 
                 $header = $table->addHeaderRow();
                 $header->addContent(__('Field Name'));
@@ -382,7 +382,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             $form->addRow()->addContent('&nbsp;');
 
             // CSV PREVIEW
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
 
             $row = $table->addRow();
             $row->addLabel('csvData', __('Data'));
@@ -523,7 +523,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $form->addHiddenValue('filename', $_POST['filename'] ?? '');
 
                 // CSV PREVIEW
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
 
                 $row = $table->addRow();
                 $row->addLabel('csvData', __('Data'));

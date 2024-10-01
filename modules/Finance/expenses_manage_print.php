@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             echo '</div>';
 
                             ?>
-							<table class='smallIntBorder fullWidth' cellspacing='0'>
+							<table class='smallIntBorder w-full' cellspacing='0'>
 								<tr class='break'>
 									<td colspan=2>
 										<h3><?php echo __('Basic Information') ?></h3>

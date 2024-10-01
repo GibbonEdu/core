@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     $gibbonRoleID = isset($_GET['gibbonRoleID'])? $_GET['gibbonRoleID'] : '';
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/permission_manage.php');
 
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
         while ($rowModules = $resultModules->fetch()) {
             $form->addRow()->addHeading($rowModules['name'], __($rowModules['name']));
-            $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
+            $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight w-full');
 
             
                 $dataActions = array('gibbonModuleID' => $rowModules['gibbonModuleID']);

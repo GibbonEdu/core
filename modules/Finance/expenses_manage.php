@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         echo '</h3>';
 
                         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-                        $form->setClass('noIntBorder fullWidth');
+                        $form->setClass('noIntBorder w-full');
 
                         $form->addHiddenValue('q', '/modules/Finance/expenses_manage.php');
                         $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 $row->addSubmit(__('Go'));
                         }
 
-                        $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+                        $table = $form->addRow()->addTable()->setClass('colorOddEven w-full');
 
                         $header = $table->addHeaderRow();
                             $header->addContent(__('Title'))->append('<br/><small><i>'.__('Budget').'</i></small>');
@@ -302,10 +302,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                             $row = $table->addRow()->addClass($rowClass);
                                 $row->addContent($expense['title'])
                                     ->wrap('<b>', '</b>')
-                                    ->append('<br/><span class="small emphasis">'.$expense['budget'].'</span>');
+                                    ->append('<br/><span class="text-xs italic">'.$expense['budget'].'</span>');
                                 $row->addContent(Format::name('', $expense['preferredName'], $expense['surname'], 'Staff', false, true));
                                 $row->addContent(__($expense['status']))
-                                    ->append('<br/><span class="small emphasis">'.__($expense['paymentReimbursementStatus']).'</span>');
+                                    ->append('<br/><span class="text-xs italic">'.__($expense['paymentReimbursementStatus']).'</span>');
                                 $row->addContent(number_format($expense['cost'], 2, '.', ','));
                                 $row->addContent(Format::date(substr($expense['timestampCreator'], 0, 10)));
 

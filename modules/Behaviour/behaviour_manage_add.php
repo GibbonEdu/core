@@ -148,13 +148,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('comment', __('Incident'));
-            	$column->addTextArea('comment')->setRows(5)->setClass('fullWidth');
+            	$column->addTextArea('comment')->setRows(5)->setClass('w-full');
 
             //Follow Up
             $row = $form->addRow();
             	$column = $row->addColumn();
             	$column->addLabel('followup', __('Follow Up'));
-            	$column->addTextArea('followUp')->setRows(5)->setClass('fullWidth');
+            	$column->addTextArea('followUp')->setRows(5)->setClass('w-full');
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);

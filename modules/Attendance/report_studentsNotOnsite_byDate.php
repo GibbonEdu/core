@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose Date'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', "/modules/" . $session->get('module') . "/report_studentsNotOnsite_byDate.php");
 

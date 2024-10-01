@@ -65,7 +65,7 @@ class Table implements OutputableInterface, ValidatableInterface
     {
         $this->factory = $factory;
         $this->setID($id);
-        $this->setClass('fullWidth formTable');
+        $this->setClass('w-full formTable');
     }
 
     /**

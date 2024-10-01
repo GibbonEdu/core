@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php','get');
             $form->setTitle(__('Filter & Search'));
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
 
             $form->addHiddenValue('q', "/modules/".$session->get('module')."/activities_view.php");
 
@@ -308,7 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $table->addColumn('name', __('Activity'))
                     ->context('primary')
                     ->format(function ($activity) {
-                        return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+                        return $activity['name'].'<br/><span class="text-xs italic">'.$activity['type'].'</span>';
                     });
 
                 $table->addColumn('provider', __('Provider'))
@@ -336,7 +336,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $output .= Format::dateRangeReadable($activity['programStart'], $activity['programEnd']);
                         }
 
-                        $output .= '<br/><span class="small emphasis">';
+                        $output .= '<br/><span class="text-xs italic">';
                         $output .= implode(', ', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
                         $output .= '</span>';
 

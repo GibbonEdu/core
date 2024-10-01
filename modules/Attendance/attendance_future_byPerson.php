@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $form = Form::create('attendanceSearch',$session->get('absoluteURL') . '/index.php','GET');
     $form->setTitle(__('Choose Student'));
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q','/modules/'.$session->get('module').'/attendance_future_byPerson.php');
 

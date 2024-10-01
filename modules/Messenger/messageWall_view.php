@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     }
 
 	$form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php');
-	$form->setClass('blank fullWidth');
+	$form->setClass('blank w-full');
 
 	$form->addHiddenValue('address', $session->get('address'));
 

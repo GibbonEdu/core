@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
 
             $form = Form::createTable('updateFinance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_finance_manage_editProcess.php?gibbonFinanceInvoiceeUpdateID='.$gibbonFinanceInvoiceeUpdateID);
 
-            $form->setClass('fullWidth colorOddEven');
+            $form->setClass('w-full colorOddEven');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonFinanceInvoiceeID', $oldValues['gibbonFinanceInvoiceeID']);
 

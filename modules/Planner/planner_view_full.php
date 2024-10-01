@@ -1032,7 +1032,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										<tr >
 											<td>
 												<b><?php echo __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]) ?></b><br/>
-												<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
+												<span class="italic small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
 											</td>
 											<td >
 												<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5); } ?>
@@ -1232,7 +1232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         // ATTENDANCE FORM
                         $form = Form::create('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
-                        $form->setClass('noIntBorder fullWidth');
+                        $form->setClass('noIntBorder w-full');
                         $form->setAutocomplete('off');
                         $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
 
@@ -1344,7 +1344,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         if (!empty($guests)) {
                             $form = Form::create('plannerGuests', '');
-                            $form->setClass('noIntBorder fullWidth');
+                            $form->setClass('noIntBorder w-full');
                             $form->setTitle(__('Guests'));
 
                             $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');

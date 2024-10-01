@@ -312,7 +312,7 @@ if ($proceed == false) {
         $row = $form->addRow()->setClass('senDetailsRow');
             $column = $row->addColumn();
             $column->addLabel('senDetails', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
-            $column->addTextArea('senDetails')->setRows(5)->required()->setClass('fullWidth');
+            $column->addTextArea('senDetails')->setRows(5)->required()->setClass('w-full');
 
     } else {
         $form->addHiddenValue('sen', 'N');
@@ -326,7 +326,7 @@ if ($proceed == false) {
 
     $col = $form->addRow()->setClass('medicalDetailsRow')->addColumn();
         $col->addLabel('medicalInformation', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
-        $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
+        $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('w-full');
 
     // STUDENT EDUCATION
     $heading = $form->addRow()->addSubheading(__('Student Education'));
@@ -720,7 +720,7 @@ if ($proceed == false) {
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
-                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('w-full');
         }
     }
 

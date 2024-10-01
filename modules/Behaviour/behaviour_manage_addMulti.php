@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $col->addLabel('comment', __('Incident'));
         $col->addTextArea('comment')
             ->setRows(5)
-            ->setClass('fullWidth');
+            ->setClass('w-full');
 
     //Follow Up
     $row = $form->addRow();
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $col->addLabel('followup', __('Follow Up'));
         $col->addTextArea('followUp')
             ->setRows(5)
-            ->setClass('fullWidth');
+            ->setClass('w-full');
 
     // CUSTOM FIELDS
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);

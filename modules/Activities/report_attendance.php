@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_attendance.php");
 
@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         echo '<th>';
         echo __('Attendance');
         echo '</th>';
-        echo "<th class='emphasis subdued' style='text-align:right'>";
+        echo "<th class='italic subdued' style='text-align:right'>";
         printf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions));
         echo '</th>';
         echo '</tr>';

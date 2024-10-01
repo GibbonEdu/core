@@ -150,12 +150,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('education', __('Education Benefits'));
-                $column->addTextArea('education')->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('education')->setRows(5)->setClass('w-full');
 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('notes', __('Notes'));
-                $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('notes')->setRows(5)->setClass('w-full');
 
             $fileUploader = new Gibbon\FileUploader($pdo, $session);
             $row = $form->addRow();

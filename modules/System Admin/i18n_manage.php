@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $form = Form::create('i18n_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/i18n_manageProcess.php');
     $form->setTitle(__('Installed'));
-    $form->setClass('fullWidth');
+    $form->setClass('w-full');
     $form->addHiddenValue('address', $session->get('address'));
     $form->setClass('w-full blank');
 
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             }
         });
 
-    $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth standardForm');
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full standardForm');
     $table->addRow()->addSubmit();
 
     $installedCount = array_reduce($languages->toArray(), function ($count, $i18n) {

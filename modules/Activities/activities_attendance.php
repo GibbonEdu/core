@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $header->addContent(__('Student'))->addClass('w-56 py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
-                ->addClass('emphasis subdued right');
+                ->addClass('italic subdued right');
 
         $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600 -mt-1')
             ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
@@ -302,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full doublescroll-wrapper')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
-                ->wrap('<span class="small emphasis">', '</span>');
+                ->wrap('<span class="text-xs italic">', '</span>');
             $row->addSubmit();
 
         echo $form->getOutput();

@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     // DATE SELECTOR
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php');
-    $form->setClass('blank fullWidth');
+    $form->setClass('blank w-full');
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addClass('flex flex-wrap');

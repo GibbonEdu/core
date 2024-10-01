@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $header->addContent(__('Form Group'));
         $header->addContent(__('Student'));
         $header->addContent(__('Activity'));
-        $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$session->get('currency').'</span>');
+        $header->addContent(__('Cost'))->append('<br/><span class="text-xs italic">'.$session->get('currency').'</span>');
         $header->addCheckbox('checkall')->setClass('floatNone textCenter checkall');
 
         while ($student = $result->fetch()) {

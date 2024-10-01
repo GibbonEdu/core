@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
-                $form->setClass('noIntBorder fullWidth');
+                $form->setClass('noIntBorder w-full');
 
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('q', '/modules/'.$session->get('module').'/planner_deadlines.php');

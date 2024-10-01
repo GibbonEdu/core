@@ -139,7 +139,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form = Form::create('loginFormOAuth2', '#');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setTitle(__('Single Sign-on'));
-                $form->setClass('blank fullWidth loginTableOAuth2');
+                $form->setClass('blank w-full loginTableOAuth2');
 
                 $view = $this->getContainer()->get(View::class);
 
@@ -208,7 +208,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
-                $form->setClass('noIntBorder fullWidth');
+                $form->setClass('noIntBorder w-full');
                 $form->addHiddenValue('address', $this->session->get('address'));
                 $form->addHiddenValue('method', 'default');
 
@@ -222,7 +222,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                     $form = Form::create('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
                     $form->setAutocomplete(false);
-                    $form->setClass('noIntBorder fullWidth');
+                    $form->setClass('noIntBorder w-full');
                     $form->addHiddenValue('address', $this->session->get('address'));
                     $form->addHiddenValue('method', 'mfa');
                     $form->addHiddenValue('mfaFormNonce', $nonce);
@@ -236,7 +236,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         $row->addTextField('username')
                             ->required()
                             ->maxLength(50)
-                            ->setClass('fullWidth')
+                            ->setClass('w-full')
                             ->setAria('label', __('Username or email'))
                             ->placeholder(__('Username or email'))
                             ->addValidationOption('onlyOnSubmit: true');
@@ -246,7 +246,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         $row->addPassword('password')
                             ->required()
                             ->maxLength(30)
-                            ->setClass('fullWidth')
+                            ->setClass('w-full')
                             ->setAria('label', __('Password'))
                             ->placeholder(__('Password'))
                             ->addValidationOption('onlyOnSubmit: true');
@@ -254,7 +254,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->setClass('loginOptions');
                         $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
                         $row->addSelectSchoolYear('gibbonSchoolYearID')
-                            ->setClass('fullWidth')
+                            ->setClass('w-full')
                             ->setAria('label', __('School Year'))
                             ->placeholder(null)
                             ->selected($this->session->get('gibbonSchoolYearID'));
@@ -262,7 +262,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->setClass('loginOptions');
                         $row->addContent(sprintf($loginIcon, 'language', __('Language')));
                         $row->addSelectI18n('gibboni18nID')
-                            ->setClass('fullWidth')
+                            ->setClass('w-full')
                             ->setAria('label', __('Language'))
                             ->placeholder(null)
                             ->selected($this->session->get('i18n')['gibboni18nID']);
@@ -679,7 +679,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setAutocomplete(false);
-                    $form->setClass('noIntBorder fullWidth');
+                    $form->setClass('noIntBorder w-full');
                     $form->addHiddenValue('address', $this->session->get('address'));
 
                     $status = 'All';
@@ -738,7 +738,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form->setClass('smallIntBorder w-full');
 
                 $row = $form->addRow();
-                    $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('fullWidth');
+                    $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('w-full');
                     $row->addSubmit(__('Go'));
 
                 $output .= $form->getOutput();

@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/Reports/archive_byReport_view.php');

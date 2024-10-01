@@ -142,7 +142,7 @@ TODO: add template variable details.
                 <div class="relative text-sm text-gray-700 px-6 lg:px-12 mt-4 pt-2 pb-6 leading-normal border-t border-gray-300 {{ rightToLeft ? 'text-right' : 'text-left' }}">
                     {{ include('footer.twig.html') }}
 
-                    <img class="absolute top-0 -mt-1 hidden sm:block w-32 {{ rightToLeft ? 'left-0 sm:ml-0 md:ml-16' : 'right-0 sm:mr-0 md:mr-16' }}" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
+                    <img class="absolute top-0 -mt-1 hidden sm:block w-32 {{ rightToLeft ? 'left-0 sm:ml-0 md:ml-16' : 'right-0 sm:mr-0 md:mr-16' }}" alt="Logo text-xs" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
                 </div>
             {% endblock %}
 

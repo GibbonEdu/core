@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('comment', __('Incident'));
-                        $column->addTextArea('comment')->setRows(5)->setClass('fullWidth')->setValue($values['comment']);
+                        $column->addTextArea('comment')->setRows(5)->setClass('w-full')->setValue($values['comment']);
 
                 } else {
                     $row = $form->addRow();
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')));
-                    $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+                    $column->addTextArea('followUp')->setRows(8)->setClass('w-full');
                 
                 //Lesson link
                 $lessons = array();

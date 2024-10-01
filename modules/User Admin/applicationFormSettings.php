@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow();
-        $row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+        $row->addContent('<span class="italic small">* '.__('denotes a required field').'</span>');
         $row->addSubmit();
 
     echo $form->getOutput();

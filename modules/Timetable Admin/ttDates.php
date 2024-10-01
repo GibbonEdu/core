@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
                 $count = 1;
 
-                $table = $form->addRow()->addTable()->setClass('fullWidth');
+                $table = $form->addRow()->addTable()->setClass('w-full');
                 $row = $table->addHeaderRow();
 
                 for ($i = 1; $i < 8; ++$i) {
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)
                     WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonTT.name, gibbonTTDay.name";
 
-            $table = $form->addRow()->addTable()->setClass('fullWidth smallIntBorder');
+            $table = $form->addRow()->addTable()->setClass('w-full smallIntBorder');
             $row = $table->addRow();
                 $row->addLabel('gibbonTTDayID', __('Day'));
                 $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->addClass('mediumWidth');

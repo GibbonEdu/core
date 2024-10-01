@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     $form = Form::create('action', $session->get('absoluteURL')."/index.php?q=/modules/".$session->get('module')."/scopeAndSequence.php");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $options = array();
     

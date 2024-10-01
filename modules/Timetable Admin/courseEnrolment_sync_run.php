@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     // Checkall options
     $row = $form->addRow()->addContent('<h4>'.__('Options').'</h4>');
-    $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
 
     $row = $table->addRow();
         $row->addLabel('includeStudents', __('Include Students'));
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             $enrolableCount += $enrolmentResult->rowCount();
 
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven w-full standardForm');
             $header = $table->addHeaderRow();
                 $header->addCheckbox('checkall'.$classMap['gibbonYearGroupID'])->checked(true);
                 $header->addContent(__('Name'));
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     // Only display a submit button if a sync is required
     if ($enrolableCount > 0) {
-        $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+        $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven w-full standardForm');
         $table->addRow()->addSubmit(__('Proceed'));
     }
 

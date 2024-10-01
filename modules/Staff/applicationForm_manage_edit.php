@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('notes', __('Notes'));
-                $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('notes')->setRows(5)->setClass('w-full');
 
             $form->addRow()->addHeading('Job Related Information', __('Job Related Information'));
 

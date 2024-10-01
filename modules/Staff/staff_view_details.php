@@ -527,7 +527,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         $table->addColumn('name', __('Activity'))
                             ->format(function ($activity) {
-                                return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+                                return $activity['name'].'<br/><span class="text-xs italic">'.$activity['type'].'</span>';
                             });
                         $table->addColumn('role', __('Role'))
                             ->format(function ($activity) {

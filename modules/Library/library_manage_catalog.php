@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
         $form->setTitle(__('Search & Filter'));
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_manage_catalog.php");
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         $col = $form->addRow()->setClass('advancedOptions hidden')->addColumn();
             $col->addLabel('everything', __('All Fields'));
-            $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
+            $col->addTextField('everything')->setClass('w-full')->setValue($everything);
 
         $row = $form->addRow();
         $row->addAdvancedOptionsToggle();

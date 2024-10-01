@@ -868,10 +868,7 @@ div.resourceAddSlider {
 }
 
 /* v12 NEW CLASSES */
-p.emphasis,
-span.emphasis {
-    font-style: italic;
-}
+
 span.small {
     font-size: 100%;
 }
@@ -883,7 +880,7 @@ div.standardWidth,
 table.standardWidth {
     width: 300px;
 }
-.fullWidth {
+.w-full {
     width: 100%;
 } */
 /* div.blockOuter {
@@ -1041,7 +1038,7 @@ td.standardWidth {
 }
 
 /* Fixes an odd colspan-related width bug in Chrome */
-td.fullWidth[colspan] {
+td.w-full[colspan] {
     width: auto;
 }
 

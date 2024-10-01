@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_courseClassesNotRegistered_byDate.php");
 
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_courseClassesNotRegistered_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             echo '</div>';
 
-            echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
+            echo "<table cellspacing='0' class='w-full colorOddEven'>";
             echo "<tr class='head'>";
             echo '<th width="140px">';
             echo __('Class');

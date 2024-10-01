@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Reports/progress_byProofReading.php');
 

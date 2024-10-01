@@ -91,7 +91,7 @@ else {
 
         $form = Form::create('action', $session->get('absoluteURL').'/passwordResetProcess.php?'.http_build_query($urlParams));
 
-        $form->setClass('smallIntBorder fullWidth standardForm');
+        $form->setClass('smallIntBorder w-full standardForm');
         $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));

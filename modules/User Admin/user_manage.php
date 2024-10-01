@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/user_manage.php');
 

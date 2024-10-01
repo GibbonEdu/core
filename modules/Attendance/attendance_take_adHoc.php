@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $form = Form::create('filter', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Choose Students'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Attendance/attendance_take_adHoc.php');
 

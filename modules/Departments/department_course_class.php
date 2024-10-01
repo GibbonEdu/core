@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                         ->fromQuery($pdo, $sql, $data)
                         ->selected($gibbonCourseClassID)
                         ->placeholder()
-                        ->setClass('fullWidth');
+                        ->setClass('w-full');
                     $row->addSubmit(__('Go'));
 
                 $sidebarExtra .= $form->getOutput();

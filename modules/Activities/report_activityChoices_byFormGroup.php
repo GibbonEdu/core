@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityChoices_byFormGroup.php");
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         if ($result->rowCount() < 1) {
             echo $page->getBlankSlate();
         } else {
-            echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
+            echo "<table cellspacing='0' class='w-full colorOddEven'>";
             echo "<tr class='head'>";
             echo '<th>';
             echo __('Student');
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     $resultActivities->execute($dataActivities);
 
                 if ($resultActivities->rowCount() > 0) {
-                    echo '<table cellspacing="0" class="mini fullWidth">';
+                    echo '<table cellspacing="0" class="mini w-full">';
                     while ($activity = $resultActivities->fetch()) {
                         $timespan = getActivityTimespan($connection2, $activity['gibbonActivityID'], $activity['gibbonSchoolYearTermIDList']);
                         $timeStatus = '';
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         echo '</td>';
                         echo '<td width="15%">';
                         if (!empty($timeStatus)) {
-                            echo '<span class="emphasis" title="'.Format::dateRangeReadable('@'.$timespan['start'], '@'.$timespan['end']).'">';
+                            echo '<span class="italic" title="'.Format::dateRangeReadable('@'.$timespan['start'], '@'.$timespan['end']).'">';
                             echo (time() < $timespan['start'])? __('Upcoming') : (time() > $timespan['end']? __('Ended') : __('Current'));
                             echo '</span>';
                         } else {

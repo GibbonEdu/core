@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         ->fromPOST();
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setTitle(__('Search'));
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/messenger_manage.php');

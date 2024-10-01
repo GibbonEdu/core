@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     // DATE SELECTOR
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
-    $form->setClass('blank fullWidth');
+    $form->setClass('blank w-full');
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addClass('flex flex-wrap');

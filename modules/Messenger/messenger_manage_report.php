@@ -134,7 +134,7 @@ else {
                 $form->addHiddenValue('search', $search);
                 $form->addHiddenValue('sidebar', 'true');
 
-                $form->setClass('noIntBorder fullWidth auto-submit pb-1');
+                $form->setClass('noIntBorder w-full auto-submit pb-1');
 
                 $row = $form->addRow();
                     $row->addLabel('subjectLabel', __('Message'));
@@ -248,7 +248,7 @@ else {
                             if (empty($recipients)) continue;
 
                             $form->addRow()->addHeading($formGroupName);
-                            $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+                            $table = $form->addRow()->addTable()->setClass('colorOddEven w-full');
 
                             $header = $table->addHeaderRow();
                                 $header->addContent(__('Total Count'));
@@ -334,7 +334,7 @@ else {
                         }
 
                         if ($countTotal == 0) {
-                            $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+                            $table = $form->addRow()->addTable()->setClass('colorOddEven w-full');
                             $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(8);
                         }
 
@@ -363,7 +363,7 @@ else {
                             $row->addSubmit(__('Go'));
                         }
 
-                        $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+                        $table = $form->addRow()->addTable()->setClass('colorOddEven w-full');
 
                         $header = $table->addHeaderRow();
                             $header->addContent();

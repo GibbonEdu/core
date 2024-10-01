@@ -75,13 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('fullWidth blank border-transparent mb-6');
+    $form->setClass('w-full blank border-transparent mb-6');
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
     $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
 
     $row = $form->addRow()->addClass('grid sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4');
-        $row->addTextField('everything')->setClass('fullWidth sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
+        $row->addTextField('everything')->setClass('w-full sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
         $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
 
     $row = $form->addRow();
@@ -90,23 +90,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $col = $row->addColumn()->setClass('quarterWidth');
         $col->addLabel('name', __('Title'));
         $col->setClass('');
-        $col->addTextField('name')->setClass('fullWidth')->setValue($name);
+        $col->addTextField('name')->setClass('w-full')->setValue($name);
 
     $col = $row->addColumn()->setClass('quarterWidth');
         $col->addLabel('producer', __('Author/Producer'));
-        $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
+        $col->addTextField('producer')->setClass('w-full')->setValue($producer);
 
     $form->toggleVisibilityByClass('allLocations')->onCheckbox('locationToggle')->when('on');
 
     $col = $row->addColumn()->setClass('allLocations quarterWidth');
         $col->addLabel('location', __('Location'));
-        $col->addSelectSpace('location')->setClass('fullWidth')->setValue($location)->placeHolder()->selected($location);
+        $col->addSelectSpace('location')->setClass('w-full')->setValue($location)->placeHolder()->selected($location);
 
     $col = $row->addColumn()->setClass('quarterWidth');
         $col->addLabel('type', __('Type'));
         $col->addSelect('type')
         ->fromArray($types)
-        ->setClass('fullWidth')
+        ->setClass('w-full')
         ->selected($type)
         ->placeholder();
 
@@ -115,14 +115,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $col->addSelect('collection')
         ->fromArray($collections)
         ->chainedTo('type', $collectionsChained)
-        ->setClass('fullWidth')
+        ->setClass('w-full')
         ->selected($collection)
         ->placeholder();
         
-    $col = $row->addColumn()->setClass('fullWidth');
+    $col = $row->addColumn()->setClass('w-full');
         $col->addLabel('readerAge', __('Readers Age'));
         $ageArray=range(2,21);
-        $col->addSelect('readerAge')->fromArray($ageArray)->setClass('fullWidth')->selected($readerAge)->placeholder();
+        $col->addSelect('readerAge')->fromArray($ageArray)->setClass('w-full')->selected($readerAge)->placeholder();
 
 	$locationToggle = 'on';
     $col = $row->addColumn()->setClass('quarterWidth');

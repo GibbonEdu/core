@@ -49,7 +49,7 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
         $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
             ->selected($gibbonCourseClassID)
             ->placeholder()
-            ->setClass('fullWidth');
+            ->setClass('w-full');
         $row->addSubmit(__('Go'));
 
     $output .= $form->getOutput();
@@ -75,7 +75,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
 
@@ -170,7 +170,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     if (!empty($search)) {
         $clearURL = $session->get('absoluteURL').'/index.php?q='.$session->get('address');
-        $clearLink = sprintf('<a href="%s" class="small" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
+        $clearLink = sprintf('<a href="%s" class="text-xs" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
 
         $form->addRow()->addContent($clearLink)->addClass('right');
     }
