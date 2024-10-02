@@ -115,6 +115,7 @@ class Toggle extends Input
         $this->offValue = 'N';
         $this->onLabel = __('Yes');
         $this->offLabel = __('No');
+        $this->setValue('Y');
 
         return $this;
     }
