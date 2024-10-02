@@ -188,6 +188,7 @@ class FormFactory implements FormFactoryInterface
     public function createURL($name)
     {
         return (new Input\TextField($name) )
+            ->setType('url')
             ->placeholder('http://')
             ->addValidation(
                 'Validate.Format',

@@ -196,6 +196,15 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
     @apply shadow-none;
 }
 
+.input-icon {
+    background-position: right .5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
 .button {
     @apply py-2 px-2 border text-gray-700 text-xs font-bold leading-normal ;
 }

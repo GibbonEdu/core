@@ -35,6 +35,18 @@ class TextField extends Input
     protected $unique;
 
     /**
+     * Create an HTML form input.
+     * @param  string  $name
+     */
+    public function __construct($name)
+    {
+        $this->setAttribute('type', 'text');
+
+        parent::__construct($name);
+    }
+
+    
+    /**
      * Set a max character count for this text field.
      * @param   string  $value
      * @return  self
@@ -57,6 +69,18 @@ class TextField extends Input
     public function placeholder($value = '')
     {
         $this->setAttribute('placeholder', $value);
+
+        return $this;
+    }
+
+    /**
+     * Sets the input type that is used, such as url or email.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setType($value = '')
+    {
+        $this->setAttribute('type', $value);
 
         return $this;
     }

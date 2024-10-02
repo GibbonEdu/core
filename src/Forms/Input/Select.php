@@ -203,6 +203,10 @@ class Select extends Input
         if ($this->getRequired() && $this->placeholder === '') {
             $this->placeholder('Please select...');
         }
+        
+        if (key($this->getOptions()) === '' && $this->placeholder === '') {
+            $this->placeholder(null);
+        }
 
         if ($this->getRequired() && !empty($this->placeholder) && $this->getAttribute('multiple') == false) {
             $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
