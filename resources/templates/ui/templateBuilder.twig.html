@@ -141,10 +141,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     var reloadDragDropState = function(table, tableSelector) {
         $(table).load('./fullscreen.php?q=/modules/Reports/templates_manage_edit.php&gibbonReportTemplateID={{ gibbonReportTemplateID }} #'+tableSelector, {}, function(responseText, textStatus, jqXHR) {
-            console.log('reloaded');
-            tb_init('a.thickbox');
             $('#'+tableSelector+' table[data-drag-url]').each(DraggableDataTable);
             $('#'+tableSelector).droppable(DroppableDataTable);
+            htmx.process(this);
         });
     };
 

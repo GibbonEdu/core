@@ -743,8 +743,8 @@ DataTable.prototype.refresh = function() {
 
     $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) {
         $('.bulkActionPanel').addClass('hidden');
-        tb_init('a.thickbox');
         clearTimeout(submitted);
+        htmx.process(this);
     });
 };
 
