@@ -27,6 +27,7 @@ use Gibbon\Tables\DataTable;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use Gibbon\Http\Url;
 
 /**
  * AbsenceCalendar
@@ -87,7 +88,8 @@ class AbsenceCalendar
                     $day = $month['days'][$dayCount] ?? null;
                     if (empty($day) || $day['count'] <= 0) return '';
 
-                    $url = 'fullscreen.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$day['absence']['gibbonStaffAbsenceID'].'&width=800&height=550';
+                    $url = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'absences_view_details.php')->withQueryParams(['gibbonStaffAbsenceID' => $day['absence']['gibbonStaffAbsenceID']]);
+
                     $title = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     $title .= '<br/>'.$day['absence']['type'];
                     $classes = ['thickbox'];

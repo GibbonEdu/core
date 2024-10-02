@@ -121,7 +121,7 @@ class Format
             return '';
         }
 
-        if (stripos($dateString, '/') !== false) {
+        if (is_string($dateString) && stripos($dateString, '/') !== false) {
             return $dateString;
         }
 
@@ -141,7 +141,7 @@ class Format
             return '';
         }
 
-        if (stripos($dateString, '-') === 4) {
+        if (is_string($dateString) && stripos($dateString, '-') === 4) {
             return $dateString;
         }
 

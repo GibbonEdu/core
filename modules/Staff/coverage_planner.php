@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     $page->breadcrumbs->add(__('Daily Coverage Planner'));
 
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    
-    $date = !empty($_REQUEST['date'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['date']) : new DateTimeImmutable();
+    $date = !empty($_REQUEST['date'])? DateTimeImmutable::createFromFormat('Y-m-d', $_REQUEST['date']) : new DateTimeImmutable();
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
@@ -54,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
     $row = $form->addRow()->addClass('flex flex-wrap');
 
-    $lastDay = $date->modify('-1 day')->format($dateFormat);
-    $thisDay = (new DateTime('Today'))->format($dateFormat);
-    $nextDay = $date->modify('+1 day')->format($dateFormat);
+    $lastDay = $date->modify('-1 day')->format('Y-m-d');
+    $thisDay = (new DateTime('Today'))->format('Y-m-d');
+    $nextDay = $date->modify('+1 day')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
         $col->addButton(__('Previous Day'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastDay}'");
@@ -64,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         $col->addButton(__('Next Day'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('date')->setValue($date->format($dateFormat))->setClass('shortWidth');
+        $col->addDate('date')->setValue($date->format('Y-m-d'))->setClass('shortWidth');
         $col->addSubmit(__('Go'));
 
     echo $form->getOutput();

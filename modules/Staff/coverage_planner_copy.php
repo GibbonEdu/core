@@ -31,7 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 } else {
     // Proceed!
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
     $date = isset($_REQUEST['date'])? DateTimeImmutable::createFromFormat('Y-m-d', $_REQUEST['date']) :new DateTimeImmutable();
     
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);

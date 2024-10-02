@@ -37,8 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     $page->scripts->add('chart');
 
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['dateStart']) :new DateTimeImmutable();
+    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat('Y-m-d', $_REQUEST['dateStart']) :new DateTimeImmutable();
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
@@ -52,9 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $row = $form->addRow()->addClass('flex flex-wrap');
 
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php';
-    $lastWeek = $date->modify('-1 week')->format($dateFormat);
-    $thisWeek = (new DateTime('Today'))->format($dateFormat);
-    $nextWeek = $date->modify('+1 week')->format($dateFormat);
+    $lastWeek = $date->modify('-1 week')->format('Y-m-d');
+    $thisWeek = (new DateTime('Today'))->format('Y-m-d');
+    $nextWeek = $date->modify('+1 week')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
         $col->addButton(__('Last Week'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
@@ -62,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('dateStart')->setValue($date->format($dateFormat))->setClass('shortWidth');
+        $col->addDate('dateStart')->setValue($date->format('Y-m-d'))->setClass('shortWidth');
         $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
