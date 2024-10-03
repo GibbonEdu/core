@@ -9,13 +9,13 @@
     </label>
     
     <button type="button" role="switch" x-ref="toggle" x-model="toggle" @click="toggleSwitch()"
-        class="relative ml-4 inline-flex w-16 rounded-full border py-1 transition duration-300 ease-in-out" 
+        class="relative ml-4 inline-flex w-16 rounded-full border border-gray-400 py-1 transition duration-300 ease-in-out" 
         :class="toggle == onValue ? 'border-blue-500 bg-blue-400' : 'bg-gray-300'" >
         
         <span aria-hidden="true" :class="toggle == onValue ? 'border-blue-500' : ''" 
             style="<?= $value == $onValue ? 'transform: translate(2.15rem)' : 'transform: translate(0.25rem)'; ?>;"
             :style="toggle == onValue ? 'transform: translate(2.15rem);' : 'transform: translate(0.25rem);'" 
-            class="border bg-white h-6 w-6 rounded-full transition duration-300 ease-in-out" >
+            class="border border-gray-400 bg-white h-6 w-6 rounded-full transition duration-300 ease-in-out" >
         </span>
     </button>
 </div>

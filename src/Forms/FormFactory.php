@@ -328,7 +328,7 @@ class FormFactory implements FormFactoryInterface
     {
         $content = '';
         if ($required) {
-            $content = '<span class="text-xs text-gray-600">* '.__('denotes a required field').'</span>';
+            // $content = '<span class="text-xs text-gray-600">* '.__('denotes a required field').'</span>';
         }
         return $this->createContent($content);
     }

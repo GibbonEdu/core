@@ -130,48 +130,6 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 }
 
 
-/*
- --------------------------------------------------------------------------
-  Live Validation
- --------------------------------------------------------------------------
-*/
-
-.LV_validation_message {
-    @apply absolute right-0 px-1 mt-2 mr-1 text-xs font-bold leading-relaxed bg-white z-10 pointer-events-none whitespace-nowrap;
-}
-
-select + .LV_validation_message {
-    @apply mr-4;
-}
-
-input[type="checkbox"] + .LV_validation_message {
-    @apply static m-0 ml-2 bg-transparent;
-}
-
-.tinymce + .LV_validation_message {
-    @apply top-auto bottom-0 mb-2;
-}
-
-.token-input-list-facebook ~ .LV_validation_message {
-    @apply top-0;
-}
-
-.LV_valid {
-    @apply text-green-700;
-}
-
-.LV_invalid {
-    @apply text-red-700;
-}
-
-.LV_invalid_field {
-    @apply border border-red-700;
-}
-
-.LV_validation_message:empty,
-.LV_invalid ~ .LV_invalid {
-    @apply hidden;
-}
 
 /*
  --------------------------------------------------------------------------
@@ -232,6 +190,49 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
     input, select, option, textarea {
         font-size: initial !important;
     }
+}
+
+/* [multiple], [type="date"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="search"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], input:where(:not([type])), select, textarea {
+    @apply border-gray-400;
+} */
+
+/*
+ --------------------------------------------------------------------------
+  Live Validation
+ --------------------------------------------------------------------------
+*/
+
+.LV_validation_message {
+    @apply absolute left-0 mt-10 text-xs font-bold leading-relaxed z-10 pointer-events-none whitespace-nowrap;
+}
+
+input[type="checkbox"] + .LV_validation_message {
+    @apply static m-0 ml-2 bg-transparent;
+}
+
+.tinymce + .LV_validation_message {
+    @apply top-auto bottom-0 mb-2;
+}
+
+.token-input-list-facebook ~ .LV_validation_message {
+    @apply top-0;
+}
+
+.LV_valid {
+    @apply text-green-700;
+}
+
+.LV_invalid {
+    @apply text-red-700;
+}
+
+.LV_invalid_field {
+    @apply border border-red-700;
+}
+
+.LV_validation_message:empty,
+.LV_invalid ~ .LV_invalid {
+    @apply hidden;
 }
 
 /*

@@ -35,6 +35,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     protected $row;
     protected $tag = 'h3';
     protected $id;
+    protected $headingClass;
 
     /**
      * Add a generic heading element.
@@ -54,8 +55,9 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     public function setRow($row)
     {
         $this->row = $row;
+        $this->headingClass = $row->getClass();
 
-        $this->row->addClass($this->tag == 'h3' ? 'break top-0 z-10' : 'm-0 p-0');
+        $this->row->addClass($this->tag == 'h3' ? 'break top-0 z-10 text-sm text-gray-600 font-light ' : 'm-0 p-0 text-sm text-gray-600 font-light');
 
         $headingID = preg_replace('/[^a-zA-Z0-9]/', '', substr($this->id, 0, 60)); 
         $this->row->setID($headingID);
@@ -68,12 +70,17 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
         return $this->tag;
     }
 
+    public function getHeadingClass()
+    {
+        return $this->headingClass;
+    }
+
     /**
      * Get the content text of the element.
      * @return  string
      */
     protected function getElement()
     {
-        return sprintf('<%1$s class="m-0 p-0">%2$s</%1$s>', $this->tag ?? 'h3', $this->content);
+        return sprintf('<%1$s class="m-0 p-0 pb-2 font-semibold text-gray-950 text-2xl/8 sm:text-xl/8">%2$s</%1$s>', $this->tag ?? 'h3', $this->content);
     }
 }

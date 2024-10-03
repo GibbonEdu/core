@@ -88,12 +88,12 @@ ol {
     margin: 0 0 1px;
     font-size: 13px;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1:not([class]),
+h2:not([class]),
+h3:not([class]),
+h4:not([class]),
+h5:not([class]),
+h6:not([class]) {
     margin: 20px 0 10px 0;
     color: #444;
     background-color: none;
@@ -102,11 +102,11 @@ h6 {
     text-transform: uppercase;
     padding-bottom: 5px;
 }
-h1 {
+h1:not([class]) {
     font-size: 17pt;
 }
 
-h2 {
+h2:not([class]) {
     font-size: 14pt;
 }
 #sidebar h2,
@@ -120,16 +120,16 @@ div.sidebarExtra h2 {
     margin-bottom: 0;
 }
 
-h3 {
+h3:not([class]) {
     font-size: 13pt;
 }
-h4 {
+h4:not([class]) {
     margin-top: 30px;
     margin-bottom: 10px;
     font-size: 11pt;
 }
-h5,
-h6 {
+h5:not([class]),
+h6:not([class]) {
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 11pt;

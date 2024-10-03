@@ -155,7 +155,7 @@ class TextField extends Input
     {
         return Component::render(TextField::class, $this->getAttributeArray() + [
             'unique'       => $this->unique ? json_encode($this->unique) : '',
-            'autocomplete' => $this->autocomplete
+            'autocompleteList' => $this->autocomplete
                 ? implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str ?? ''))); }, $this->autocomplete))
                 : '',
         ]);
