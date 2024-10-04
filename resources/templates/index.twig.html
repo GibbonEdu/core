@@ -11,7 +11,7 @@ TODO: add template variable details.
 -->#}
 
 <!DOCTYPE html>
-<html lang="{{ lang }}" dir="{{ rightToLeft ? 'rtl' : 'ltr' }}">
+<html lang="{{ lang }}" dir="{{ rightToLeft ? 'rtl' : 'ltr' }}" style="scroll-behavior: smooth;">
     <head>
         {% block head %}
         {{ include('head.twig.html') }}
@@ -40,7 +40,7 @@ TODO: add template variable details.
 
                         <div class="group relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}">
 
-                            <a href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
+                            <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll" href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
                             {% if currentUser.image_240 %}
                                 <img class="w-full -mt-1" src="{{ absoluteURL }}/{{ currentUser.image_240 }}" />
                             {% else %}
@@ -88,7 +88,7 @@ TODO: add template variable details.
                 {% block beforePage %}
                 {% endblock beforePage %}
 
-                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
+                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix htmx-swap-fade">
 
                     <div class="block lg:hidden w-full shadow bg-white rounded px-4 mx-4 sm:mx-0 mb-4">
                         {% for type, alerts in page.alerts %}
@@ -110,15 +110,18 @@ TODO: add template variable details.
                         {{ include('navigation.twig.html') }}
                     {% endif %}
 
-                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} ">
+                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }}">
 
-                        {% block page %}
+                        <div id="content-inner" class="htmx-fade">
 
-                            {{ include('page.twig.html') }}
+                            {% block page %}
 
-                            {{ content|join("\n")|raw }}
-                            
-                        {% endblock %}
+                                {{ include('page.twig.html') }}
+
+                                {{ content|join("\n")|raw }}
+                                
+                            {% endblock %}
+                        </div>
                     </div>
 
                 </div>

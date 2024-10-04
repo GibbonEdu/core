@@ -332,7 +332,7 @@ $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptCon
 $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
-$page->scripts->register('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
+$page->scripts->add('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
 $page->scripts->register('instascan', 'lib/instascan/instascan.min.js', ['context' => 'head']);
 
 // Set system analytics code from session cache
@@ -466,6 +466,7 @@ if ($isLoggedIn && !$upgrade) {
         }
 
         // Update the menu items to indicate the current active action
+        $menuItemActive = '';
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
@@ -474,11 +475,13 @@ if ($isLoggedIn && !$upgrade) {
                     $item['moduleName'],
                     preg_replace('/\.php$/i', '', $item['entryURL'])
                 );
+                $menuItemActive = $item['active'] ? $item['actionName'] : $menuItemActive;
             }
         }
 
         $session->set('menuModuleItems', $menuModuleItems);
         $session->set('menuModuleName', $currentModule);
+        $session->set('menuItemActive', $menuItemActive);
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
@@ -540,6 +543,7 @@ if ($isLoggedIn) {
     $page->addData([
         'menuMain'       => $session->get('menuMainItems', []),
         'menuModule'     => $session->get('menuModuleItems', []),
+        'menuItemActive' => $session->get('menuItemActive', []),
     ]);
 }
 
