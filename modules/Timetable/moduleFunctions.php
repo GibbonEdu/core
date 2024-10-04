@@ -535,8 +535,12 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
             $output .= "</div>";
 
-            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border font-sans h-10 w-36 px-3'> ";
-            
+            $output .= "<div>";
+            $output .= "<button type='button' class='ttNav inline rounded-l p-2 -mr-px text-base border border-gray-500 text-gray-600 bg-white font-semibold hover:bg-gray-400 hover:text-gray-700'
+                    x-on:click='ttRefresh=true'><img class='h-3 mt-1' src='".$session->get('absoluteURL')."/themes/Default/img/refresh.png'></button>";
+            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border rounded-r font-sans w-40 px-3'> ";
+            $output .= "</div>";
+
             $output .= '</nav>';
 
             $output .= '</form>';
@@ -912,9 +916,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         hx-swap='outerHTML' 
                         hx-vals='{\"ttCheckbox\": \"true\", \"edit\": \"".$edit."\"}'
                     >";
-
-                    $output .= "<button type='button' class='ttNav inline align-middle rounded h-6 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700'
-                    x-on:click='ttRefresh=true'><img class='h-3 mt-1' src='".$session->get('absoluteURL')."/themes/Default/img/refresh.png'></button>";
 
                     $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
                     if ($displayCalendars && $session->has('calendarFeed')) {
