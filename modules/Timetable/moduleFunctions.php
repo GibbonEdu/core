@@ -196,7 +196,9 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     $ssoMicrosoft = json_decode($ssoMicrosoft, true);
     $calendarEventsCache = 'calendarCache-'.date('W', $startDayStamp).'-'.substr($xml, 0, 24);
 
-    if ($session->has($calendarEventsCache)) {
+    $calendarRefresh = $_REQUEST['ttCalendarRefresh'] ?? false;
+
+    if ($session->has($calendarEventsCache) && (empty($calendarRefresh) || $calendarRefresh == 'false')) {
         return $session->get($calendarEventsCache);
     }
 
@@ -505,31 +507,36 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($urlParams);
 
-            $output .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
+            $output .= "<div id='tt' name='tt' x-data='{ ttDate: \"\", ttRefresh: false }' style='width: 100%; min-height: 40px; text-align: center'>";
 
-            $output .= "<form x-data='{ ttDate: \"\" }'
+            $output .= "<form
                         hx-post='".$apiEndpoint."' 
-                        hx-trigger='click from:(button), change from:(#ttDateChooser)'
+                        hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
                         hx-target='closest #tt' 
-                        hx-include='[name=\"ttDateChooser\"]'
+                        hx-select='#tt'
+                        hx-swap='outerHTML' 
                         hx-indicator='#indicator'
+                        hx-include='[name=\"ttDateChooser\"],[name=\"ttCalendarRefresh\"]'
+                        hx-vals='js:{\"edit\": \"".$edit."\"}'
                         >";
 
             $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
             $output .= "<input type='hidden' name='ttDateNav' x-model='ttDate'>";
+            $output .= "<input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>";
 
             $output .= "<div>";
-            $output .= "<button type='button' class='float-left rounded-l h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700'
+            $output .= "<button type='button' class='ttNav float-left rounded-l h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700'
                 x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>← <span class='hidden sm:inline'>".__('Last Week')."</span></button>";
-            $output .= "<button type='button' class='float-left h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
+            $output .= "<button type='button' class='ttNav float-left h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
                 x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
-            $output .= "<button type='button' class='float-left rounded-r h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
+            $output .= "<button type='button' class='ttNav float-left rounded-r h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
                 x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline'>".__('Next Week')."</span> →</button>";
 
             $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
             $output .= "</div>";
 
             $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border font-sans h-10 w-36 px-3'> ";
+            
             $output .= '</nav>';
 
             $output .= '</form>';
@@ -718,7 +725,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
                     ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
                     ->filterBy('status', 'Accepted');
-                $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
+                $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
                 $staffCoverage = [];
 
                 foreach ($coverageList as $coverage) {
@@ -900,9 +907,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $output .= "<form class='py-2'
                         hx-post='".$apiEndpoint->withQueryParam('ttDate', date($session->get('i18n')['dateFormatPHP'], $startDayStamp))."' 
                         hx-trigger='change'
-                        hx-target='#tt' 
-                        hx-vals='{\"ttCheckbox\": \"true\"}'
-                        >";
+                        hx-target='closest #tt' 
+                        hx-select='#tt'
+                        hx-swap='outerHTML' 
+                        hx-vals='{\"ttCheckbox\": \"true\", \"edit\": \"".$edit."\"}'
+                    >";
+
+                    $output .= "<button type='button' class='ttNav inline align-middle rounded h-6 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700'
+                    x-on:click='ttRefresh=true'><img class='h-3 mt-1' src='".$session->get('absoluteURL')."/themes/Default/img/refresh.png'></button>";
 
                     $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
                     if ($displayCalendars && $session->has('calendarFeed')) {
