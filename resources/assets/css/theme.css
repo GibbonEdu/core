@@ -208,6 +208,7 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
 
 input[type="checkbox"] + .LV_validation_message {
     @apply static m-0 ml-2 bg-transparent;
+    width: auto !important;
 }
 
 .tinymce + .LV_validation_message {
@@ -223,16 +224,33 @@ input[type="checkbox"] + .LV_validation_message {
 }
 
 .LV_invalid {
-    @apply text-red-700;
+    @apply text-red-700 hover:text-red-700;
 }
 
 .LV_invalid_field {
-    @apply border border-red-700;
+    @apply border border-red-700  hover:border-red-700;
 }
 
 .LV_validation_message:empty,
 .LV_invalid ~ .LV_invalid {
     @apply hidden;
+}
+
+.standardForm .LV_invalid::before {
+    content: "";
+    background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22rgb(197%2048%2048)%22%20class%3D%22size-4%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M8%2015A7%207%200%201%200%208%201a7%207%200%200%200%200%2014Zm2.78-4.22a.75.75%200%200%201-1.06%200L8%209.06l-1.72%201.72a.75.75%200%201%201-1.06-1.06L6.94%208%205.22%206.28a.75.75%200%200%201%201.06-1.06L8%206.94l1.72-1.72a.75.75%200%201%201%201.06%201.06L9.06%208l1.72%201.72a.75.75%200%200%201%200%201.06Z%22%20clip-rule%3D%22evenodd%22%20%2F%3E%3C%2Fsvg%3E');
+    top: -1.95rem;
+    right: -1.75rem;
+    position: absolute;
+    color: rgb(197 48 48/var(--tw-text-opacity));
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.standardForm .LV_validation_message {
+    display: block;
+    width: 100%;
+    margin-top: 0px !important;
 }
 
 /*

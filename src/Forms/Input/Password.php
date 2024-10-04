@@ -23,6 +23,7 @@ namespace Gibbon\Forms\Input;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\View\Component;
 
 /**
  * Password
@@ -100,8 +101,6 @@ class Password extends TextField
      */
     protected function getElement()
     {
-        $output = '<input type="password" '.$this->getAttributeString().' autocomplete="off">';
-
-        return $output;
+        return Component::render(Password::class, $this->getAttributeArray() + []);
     }
 }
