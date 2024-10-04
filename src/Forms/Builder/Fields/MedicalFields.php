@@ -110,7 +110,7 @@ class MedicalFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'medical':
                 $row->addLabel('medical', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('medical')->required($required)->selected($default)->placeholder();
+                $row->addYesNo('medical')->required($required)->selected($default ?? 'N')->placeholder();
                 break;
 
             case 'medicalInformation':

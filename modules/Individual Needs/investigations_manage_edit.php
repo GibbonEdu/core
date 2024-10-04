@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     //Parents Informed?
                     $row = $form->addRow();
                         $row->addLabel('parentsInformed', __('Parents Informed?'))->description(__('For example, via a phone call, email, Markbook, meeting or other means.'));
-                        $row->addYesNo('parentsInformed')->required()->readonly(!$canEdit || $investigation['status'] != 'Referral')->placeholder();
+                        $row->addYesNo('parentsInformed')->required()->readonly(!$canEdit || $investigation['status'] != 'Referral')->placeholder()->selected('N');
 
                     $form->toggleVisibilityByClass('parentsInformedYes')->onSelect('parentsInformed')->when('Y');
                     $form->toggleVisibilityByClass('parentsInformedNo')->onSelect('parentsInformed')->when('N');
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                         if ($isTutor && $investigation['status'] == 'Referral') {
                             $row = $form->addRow();
                                 $row->addLabel('resolvable', __('Resolvable?'))->description(__('Is form tutor able to resolve without further input? If no, further investigation will be launched.'));
-                                $row->addYesNo('resolvable')->required()->placeholder();
+                                $row->addYesNo('resolvable')->required()->placeholder()->selected('N');
 
                                 $form->toggleVisibilityByClass('resolutionDetails')->onSelect('resolvable')->when('Y');
                         }

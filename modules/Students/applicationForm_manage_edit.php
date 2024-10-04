@@ -420,7 +420,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder();
+            $row->addYesNo('sen')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 

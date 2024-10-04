@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
         $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
-            $row->addYesNo('coverageRequired')->required()->placeholder();
+            $row->addYesNo('coverageRequired')->required()->placeholder()->selected('N');
 
         $form->addRow()->setClass('hidden coverageRequestForm p-0');
 

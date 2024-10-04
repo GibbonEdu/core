@@ -305,7 +305,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder();
+            $row->addYesNo('sen')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
@@ -320,7 +320,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
-        $row->addYesNo('medical')->required()->placeholder();
+        $row->addYesNo('medical')->required()->placeholder()->selected('N');
 
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
 
