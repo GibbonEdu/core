@@ -44,7 +44,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     {% block header %}
-        <header class="relative flex justify-between {{ newLayout ? 'mx-auto max-w-4xl' }}">
+        <header class="relative flex justify-between {{ newLayout ? '' }}">
             {% if form.getHeader %}
                 <h2>{{ form.getTitle }}</h2>
                 <div class="linkTop">
@@ -64,9 +64,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
     {% if form.getRows|length > 0 %}
-    <section class="flex flex-col xl:flex-row gap-4 font-sans text-xs text-gray-700 relative " style="" cellspacing="0">
+    <section class="w-full grid grid-cols-5 2xl:grid-cols-7 gap-4 font-sans text-xs text-gray-700  " style="" cellspacing="0">
 
-        <div class="{{ newLayout and metaSidebar ? 'flex-1 max-w-4xl' : 'w-full' }}">
+        <div class="{{ newLayout and metaSidebar ? 'col-span-5' : 'col-span-7' }}">
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
             
@@ -74,7 +74,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <div class="{{ ((rows|first).getElements|first).class }} mb-6 border rounded-lg border-gray-400   {{ "noIntBorder" in form.getClass ? 'bg-blue-50 p-4' : 'bg-gray-50' }}  {{ newLayout ? 'sm:py-6 sm:px-6' : ''}}" >
             {% endif %}
 
-            <!-- {{ sectionLoop.first and newLayout ? 'border-t-8 border-t-purple-400' : newLayout ? 'border-t-8 border-t-gray-400' }} -->
             {% for num, row in rows %}
 
                 {% set rowLoop = loop %}
@@ -88,7 +87,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endif %}
 
 
-                <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id")|raw }}>
+                <div id="{{ row.getID }}" class="{{ newLayout ? 'px-6 py-4' : 'p-2' }} gap-4 {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id")|raw }}>
 
                 {% if "draggableRow" in row.getClass %}
                     <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>
@@ -102,9 +101,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                         {% set class = 'w-full sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
-                        {% set class = loop.last and loop.length == 2 ? 'flex-1 flex justify-end' : 'w-full ' %}
+                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end' : 'w-full ' %}
                     {% elseif loop.last and loop.length == 2 and renderStyle == 'flex' %}
-                        {% set class = 'flex-1 flex justify-end items-center' %}
+                        {% set class = 'flex-1 relative flex justify-end' %}
                     {% else %}
                         {% set class = loop.last and loop.length > 2 ? 'flex-1' : 'flex-grow' %}
                     {% endif %}
@@ -113,13 +112,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {% set class = class ~ " lg:w-2/5" %}
                     {% endif %}
 
-                    {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
-                        {% set class = class ~ " px-6 pt-4 pb-4 " %}
-                    {% elseif "standardForm" in form.getClass %}
-                        {% set class = class ~ " px-6 py-4" %}
-                    {% elseif "blank" not in form.getClass %}
-                        {% set class = class ~ " px-2 py-2" %}
-                    {% endif %}
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
                     <div class="{{ class }} {{ hasClass ? element.getClass : '' }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
@@ -144,9 +136,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         </div>
 
-        {% if metaSidebar %}
-        <aside class="w-1/4 max-w-sm h-min bg-gray-50 rounded-lg border border-gray-400">
+        {% if metaSidebar  %}
 
+        <aside class="hidden 2xl:block col-span-2 h-min bg-gray-50 rounded-lg border border-gray-400">
+            
             <div class="px-6 py-4 border-b">
                 <label for="lessonDetailsTemplate" class="font-medium mt-4 sm:my-0 text-base/7 sm:text-sm/6 text-gray-800 ">Test Field</label> 
 

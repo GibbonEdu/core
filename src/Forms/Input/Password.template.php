@@ -1,5 +1,5 @@
 
-<div x-data="{ show: true }">
+<div x-data="{ show: true }" class="flex-grow relative flex">
 <input :type="show ? 'password' : 'text'" <?= $attributes; ?> autocomplete="off" 
     class="<?= $class; ?> w-full min-w-0 rounded-md py-2  placeholder:text-gray-400  sm:text-sm sm:leading-6 <?= $type != 'text' ? 'input-icon' : ''; ?>
     

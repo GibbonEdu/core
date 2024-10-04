@@ -34,6 +34,9 @@ class Toggle extends Input
     protected $onValue = '1';
     protected $offValue = '0';
 
+    protected $toggleType = 'OnOff';
+    protected $toggleSize = 'md';
+
     protected $onLabel;
     protected $offLabel;
 
@@ -61,6 +64,18 @@ class Toggle extends Input
         $value = $value == $this->onValue ? $this->onValue : $this->offValue;
         
         $this->setAttribute('value', $value);
+        return $this;
+    }
+    
+    /**
+     * Set the toggle's size
+     * @param  string  $value
+     * @return $this
+     */
+    public function setSize($value = '')
+    {
+        $this->toggleSize = $value;
+
         return $this;
     }
 
@@ -111,6 +126,7 @@ class Toggle extends Input
      */
     public function setYesNo()
     {
+        $this->toggleType = 'YesNo';
         $this->onValue = 'Y';
         $this->offValue = 'N';
         $this->onLabel = __('Yes');
@@ -120,6 +136,22 @@ class Toggle extends Input
         return $this;
     }
 
+    /**
+     * Sets the labels used for on/off the toggle states.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setActiveInactive()
+    {
+        $this->toggleType = 'ActiveInactive';
+        $this->onValue = 'Y';
+        $this->offValue = 'N';
+        $this->onLabel = __('Active');
+        $this->offLabel = __('Inactive');
+        $this->setValue('Y');
+
+        return $this;
+    }
 
     /**
      * Gets the HTML output for this form element.
@@ -128,10 +160,12 @@ class Toggle extends Input
     protected function getElement()
     {
         return Component::render(Toggle::class, $this->getAttributeArray() + [
-            'onValue'  => $this->onValue,
-            'offValue' => $this->offValue,
-            'onLabel'  => $this->onLabel,
-            'offLabel' => $this->offLabel,
+            'toggleType' => $this->toggleType,
+            'toggleSize' => $this->toggleSize,
+            'onValue'    => $this->onValue,
+            'offValue'   => $this->offValue,
+            'onLabel'    => $this->onLabel,
+            'offLabel'   => $this->offLabel,
         ]);
     }
 }

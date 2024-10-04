@@ -93,7 +93,8 @@ class TextField extends Input
     public function autocomplete($value = '')
     {
         $this->autocomplete = (is_array($value))? $value : array($value);
-        $this->setAttribute('autocomplete', 'on');
+        // $this->setAttribute('autocomplete', 'on');
+        $this->setAttribute('list', $this->getID().'DataList');
 
         return $this;
     }
@@ -156,7 +157,7 @@ class TextField extends Input
         return Component::render(TextField::class, $this->getAttributeArray() + [
             'unique'       => $this->unique ? json_encode($this->unique) : '',
             'autocompleteList' => $this->autocomplete
-                ? implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str ?? ''))); }, $this->autocomplete))
+                ? $this->autocomplete
                 : '',
         ]);
     }

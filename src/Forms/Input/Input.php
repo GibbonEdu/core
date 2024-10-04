@@ -115,8 +115,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      */
     public function getOutput()
     {
-        $class = $this instanceof Checkbox ? 'inline flex-1 relative' : 'flex-1 relative';
-        return $this->prepended."<div class='{$class}'>".$this->getElement()."</div>".$this->appended;
+        return $this->prepended.$this->getElement().$this->appended;
     }
 
     /**
