@@ -47,7 +47,7 @@ class Label extends Element implements RowDependancyInterface
     {
         $this->label = $label;
         $this->setAttribute('for', $for);
-        $this->addClass('font-medium mt-4 sm:my-0 text-base/7 sm:text-sm/6 text-gray-800');
+        $this->addClass('font-medium my-0 text-base/6 sm:text-sm/6 text-gray-800');
     }
 
     /**
@@ -171,6 +171,7 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
         
+        $this->addClass('-mt-1');
         $output .= '<label '.$this->getAttributeString().'>';
         $output .= $this->label;
         
@@ -195,7 +196,7 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<br/><span class="text-sm sm:text-xs text-gray-600 font-light mt-1 sm:mt-0">';
+            $output .= '<br/><span class="text-sm sm:text-xs text-gray-600 font-light">';
             $output .= $this->getDescription();
             $output .= '</span>';
         }

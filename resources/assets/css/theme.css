@@ -70,7 +70,7 @@ hr {
  --------------------------------------------------------------------------
 */
 .alert {
-    @apply shadow border-l-8 p-3 my-3 text-xs;
+    @apply my-4 p-4 text-xs rounded border p-4 text-xs relative;
     @apply bg-gray-100 border-gray-600 text-gray-600;
 }
 
@@ -78,13 +78,52 @@ hr {
     @apply bg-blue-100 border-blue-700 text-blue-700;
 }
 
+div.message:not(.tag)::before {
+    content: "";
+    background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%221.5%22%20stroke%3D%22rgb(29%2078%20216)%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22m11.25%2011.25.041-.02a.75.75%200%200%201%201.063.852l-.708%202.836a.75.75%200%200%200%201.063.853l.041-.021M21%2012a9%209%200%201%201-18%200%209%209%200%200%201%2018%200Zm-9-3.75h.008v.008H12V8.25Z%22%20%2F%3E%3C%2Fsvg%3E');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 35%;
+    position: absolute;
+    height: 100%;
+    width: 4rem;
+    left: 1rem;
+    top: 0;
+}
+
 .current,
 .success {
-    @apply bg-green-200 border-green-700 text-green-700;
+    @apply bg-green-100 border-green-700 text-green-700;
+}
+
+div.success:not(.tag)::before {
+    content: "";
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0icmdiKDIxIDEyOCA2MSkiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTkgMTIuNzUgMTEuMjUgMTUgMTUgOS43NU0yMSAxMmE5IDkgMCAxIDEtMTggMCA5IDkgMCAwIDEgMTggMFoiIC8+Cjwvc3ZnPgo=');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 35%;
+    position: absolute;
+    height: 100%;
+    width: 4rem;
+    left: 1rem;
+    top: 0;
 }
 
 .warning {
-    @apply bg-orange-200 border-orange-700 text-orange-700;
+    @apply bg-orange-100 border-orange-700 text-orange-700;
+}
+
+div.warning:not(.tag)::before {
+    content: "";
+    background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%221.5%22%20stroke%3D%22rgb(194%2065%2012)%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M12%209v3.75m-9.303%203.376c-.866%201.5.217%203.374%201.948%203.374h14.71c1.73%200%202.813-1.874%201.948-3.374L13.949%203.378c-.866-1.5-3.032-1.5-3.898%200L2.697%2016.126ZM12%2015.75h.007v.008H12v-.008Z%22%20%2F%3E%3C%2Fsvg%3E');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 35%;
+    position: absolute;
+    height: 100%;
+    width: 4rem;
+    left: 1rem;
+    top: 0;
 }
 
 .past,
@@ -92,8 +131,34 @@ hr {
     @apply bg-red-200 border-red-700 text-red-700;
 }
 
+div.error:not(.tag)::before {
+    content: "";
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0icmdiKDE5NyA0OCA0OCkiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTEyIDl2My43NW0wLTEwLjAzNkExMS45NTkgMTEuOTU5IDAgMCAxIDMuNTk4IDYgMTEuOTkgMTEuOTkgMCAwIDAgMyA5Ljc1YzAgNS41OTIgMy44MjQgMTAuMjkgOSAxMS42MjIgNS4xNzYtMS4zMzIgOS02LjAzIDktMTEuNjIyIDAtMS4zMS0uMjEtMi41Ny0uNTk4LTMuNzVoLS4xNTJjLTMuMTk2IDAtNi4xLTEuMjUtOC4yNS0zLjI4NlptMCAxMy4wMzZoLjAwOHYuMDA4SDEydi0uMDA4WiIgLz4KPC9zdmc+Cg==');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 35%;
+    position: absolute;
+    height: 100%;
+    width: 4rem;
+    left: 1rem;
+    top: 0;
+}
+
 .exception {
     @apply bg-gray-100 border-gray-800 text-gray-800;
+}
+
+div.exception:not(.tag)::before {
+    content: "";
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iaHNsKDAgMyUgMjMlKSI+CiAgPHBhdGggc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNMTcuMjUgNi43NSAyMi41IDEybC01LjI1IDUuMjVtLTEwLjUgMEwxLjUgMTJsNS4yNS01LjI1bTcuNS0zLTQuNSAxNi41IiAvPgo8L3N2Zz4K');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 35%;
+    position: absolute;
+    height: 100%;
+    width: 4rem;
+    left: 1rem;
+    top: 0;
 }
 
 .dull {
@@ -104,8 +169,12 @@ hr {
     @apply bg-purple-200 border-purple-800 text-purple-800;
 }
 
+div.message:not(.tag), div.warning:not(.tag), div.exception:not(.tag), div.success:not(.tag), div.error:not(.tag) {
+    @apply pl-14;
+}
+
 div.message, div.success, div.warning, div.error, div.exception, div.dull {
-    @apply shadow border-l-8 p-3 my-3 text-xs;
+    @apply rounded border my-4 p-4 text-xs relative;
 }
 
 div.message a, div.success a, div.warning a, div.error a, div.exception a, div.dull a {
@@ -240,7 +309,7 @@ input[type="checkbox"] + .LV_validation_message {
     content: "";
     background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22rgb(197%2048%2048)%22%20class%3D%22size-4%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M8%2015A7%207%200%201%200%208%201a7%207%200%200%200%200%2014Zm2.78-4.22a.75.75%200%200%201-1.06%200L8%209.06l-1.72%201.72a.75.75%200%201%201-1.06-1.06L6.94%208%205.22%206.28a.75.75%200%200%201%201.06-1.06L8%206.94l1.72-1.72a.75.75%200%201%201%201.06%201.06L9.06%208l1.72%201.72a.75.75%200%200%201%200%201.06Z%22%20clip-rule%3D%22evenodd%22%20%2F%3E%3C%2Fsvg%3E');
     top: -1.75rem;
-    right: -1.75rem;
+    right: 0.5rem;
     position: absolute;
     color: rgb(197 48 48/var(--tw-text-opacity));
     width: 1.2rem;

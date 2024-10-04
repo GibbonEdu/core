@@ -2,7 +2,7 @@
 
     <input id="<?= $id; ?>" type="hidden" name="<?= $name; ?>" :value="toggle" value="<?= $value ?? $offValue; ?>" x-model="toggle; $dispatch('change')">
     
-    <label id="<?= $id; ?>Label" for="<?= $id; ?>" @click="$refs.toggle.click(); $refs.toggle.focus()" :id="$id('toggle-label')" class="text-gray-900 font-medium" >
+    <label id="<?= $id; ?>Label" for="<?= $id; ?>" @click="$refs.toggle.click(); $refs.toggle.focus()" :id="$id('toggle-label')" class="text-gray-900 font-medium text-xs" >
         <span x-text="toggle == onValue ? '<?= $onLabel; ?>' : '<?= $offLabel; ?>'">
             <?= $value == $onValue ? $onLabel : $offLabel; ?>
         </span>

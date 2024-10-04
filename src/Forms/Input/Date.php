@@ -104,9 +104,9 @@ class Date extends TextField
     {
         global $session;
 
-        if (stristr($label->getDescription(), 'Format') === false) {
-            return __('Format').': '.$session->get('i18n')['dateFormat'];
-        }
+        // if (stristr($label->getDescription(), 'Format') === false) {
+        //     return __('Format').': '.$session->get('i18n')['dateFormat'];
+        // }
 
         return false;
     }
