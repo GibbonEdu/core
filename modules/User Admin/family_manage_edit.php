@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/' . $session->get('module') . '/family_manage_edit_deleteChild.php');
 
-                    $actions->addAction('changePassword', __('Change Password'))
+                    $actions->addAction('changePassword', __('Password'))
                         ->setIcon('key')
                         ->setURL('/modules/' . $session->get('module') . '/user_manage_password.php');
                 });
@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/' . $session->get('module') . '/family_manage_edit_deleteAdult.php');
 
-                    $actions->addAction('changePassword', __('Change Password'))
+                    $actions->addAction('changePassword', __('Password'))
                         ->setIcon('key')
                         ->setURL('/modules/' . $session->get('module') . '/user_manage_password.php');
                 });

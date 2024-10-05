@@ -24,7 +24,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% block header %}
     
             {% if table.getHeader %}
-            <div class="linkTop mt-0">
+            <div class="linkTop mt-0 flex justify-end gap-2">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}
@@ -96,7 +96,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
 
-                                    <div class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}">
+                                    <div class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }} flex justify-end gap-2">
                                         {% for actionName, action in actions %}
                                             {% do action.addClass('p-3 sm:p-0') %}
                                             {{ action.getOutput(rowData.data, column.getParams)|raw }}

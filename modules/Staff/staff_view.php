@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 ->addParam('allStaff', $urlParams['allStaff'])
                 ->addParam('search', $criteria->getSearchText(true))
                 ->format(function ($person, $actions) {
-                    $actions->addAction('view', __('View Details'))
+                    $actions->addAction('profile', __('View'))
                             ->setURL('/modules/Staff/staff_view_details.php');
                 });
         }

@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->addParam('sort', $sort)
                 ->addParam('allStudents', $canViewFullProfile ? $allStudents : '')
                 ->format(function ($row, $actions) {
-                    $actions->addAction('view', __('View Details'))
+                    $actions->addAction('profile', __('View'))
                         ->setURL('/modules/Students/student_view_details.php');
                 });
     

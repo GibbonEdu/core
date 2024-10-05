@@ -23,6 +23,7 @@ namespace Gibbon\Tables;
 
 use Gibbon\Forms\Layout\WebLink;
 use Gibbon\Http\Url;
+use Gibbon\View\Component;
 
 /**
  * Action link representation for HTML listings.
@@ -342,6 +343,12 @@ class Action extends WebLink
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         }
 
-        return parent::getOutput();
+        // return parent::getOutput();
+
+        return Component::render(Action::class, $this->getAttributeArray() + [
+            'action' => $this->name,
+            'icon'   => $this->icon,
+            'label'  => $this->label,
+        ]);
     }
 }

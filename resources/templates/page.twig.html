@@ -93,7 +93,7 @@ all stylesheets and scripts with a 'head' context.
 
     {% if page.navigator.actions %}
 
-    <div class="linkTop mt-0">
+    <div class="linkTop mt-0 flex justify-end gap-2">
         {% for action in page.navigator.actions %}
             {{ action.getOutput|raw }}
 
