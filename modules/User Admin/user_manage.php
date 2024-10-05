@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
                         ->setURL('/modules/User Admin/user_manage_delete.php');
             }
 
-            $actions->addAction('password', __('Password'))
+            $actions->addAction('password', __('Change Password'))
                     ->setURL('/modules/User Admin/user_manage_password.php')
                     ->setIcon('key');
         });

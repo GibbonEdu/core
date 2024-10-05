@@ -596,9 +596,9 @@ a.edButtonHTML,
 
 .ui-tooltip,
 .arrow:after {
-    background: rgba(25, 25, 25, 0.9) !important;
+    background: hsl(0 3% 23%) !important;
     border: none !important;
-    box-shadow: 2px 2px 4px rgba(25, 25, 25, 0.9) !important;
+    box-shadow: 1px 1px 2px rgba(25, 25, 25, 0.4) !important;
 }
 .ui-tooltip {
     padding: 10px 20px !important;

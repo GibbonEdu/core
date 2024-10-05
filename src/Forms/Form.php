@@ -74,7 +74,7 @@ class Form implements OutputableInterface
      * @param    string  $class
      * @return   object  Form object
      */
-    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder w-full standardForm')
+    public static function create($id, $action, $method = 'post', $class = 'standardForm')
     {
         global $container;
 

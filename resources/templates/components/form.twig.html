@@ -9,12 +9,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% set isBlank = "blank" in form.getClass %}
-{% set standardLayout = ("standardForm" in form.getClass) and not isBlank %}
+{% set standardLayout = ("standardForm" in form.getClass or "smallIntBorder" in form.getClass) and not isBlank %}
 {% set useSections = standardLayout and "noIntBorder" not in form.getClass %}
 {% set useMetaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
 
-{% if standardLayout and form.getAction != 'ajax' %}
-    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:1s" x-data="{'show': true, 'saving': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
+{% if standardLayout and form.getAction != 'ajax' and form.getAction %}
+    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
 
     <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
         <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
@@ -73,9 +73,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
     {% if form.getRows|length > 0 %}
-    <section class="w-full grid grid-cols-5 2xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-2' }}" style="" cellspacing="0">
+    <section class="w-full grid grid-cols-5 2xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0">
 
-        <div class="{{ standardLayout and metaSidebar ? 'col-span-6' : 'col-span-8' }}">
+        <div class="{{ standardLayout and useMetaSidebar ? 'col-span-6' : 'col-span-8' }}">
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
 

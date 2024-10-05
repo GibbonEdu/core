@@ -8,7 +8,7 @@
     }
 ?>
 
-<a <?= $attributes; ?>
+<a <?= $attributes; ?> title="<?= !$displayLabel ? $label : ''; ?>"
     class="inline-flex items-center align-middle rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm border border-gray-400 hover:bg-gray-100 <?= $hoverClass; ?> <?= $displayLabel ? 'text-gray-600 lg:text-gray-500' : 'text-gray-600'; ?>">
 
     <?php $svgClass = 'h-5 w-5'.($displayLabel ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
