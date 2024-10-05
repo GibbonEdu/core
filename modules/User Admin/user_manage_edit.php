@@ -253,21 +253,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row->addLabel('emailAlternate', __('Alternate Email'));
                 $row->addEmail('emailAlternate');
 
+            $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
+
             $row = $form->addRow();
+                $row->addLabel('showAddresses', __('Enter Personal Address?'));
+                $row->addYesNo('showAddresses')->setValue($addressSet ?? 'N');
+
+            $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
+
+            $row = $form->addRow()->addClass('address');
             $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
                 ->append('<ol>')
                 ->append('<li>'.__('If the user is not in a family.').'</li>')
                 ->append('<li>'.__('If the user\'s family does not have a home address set.').'</li>')
                 ->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
                 ->append('</ol>');
-
-            $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
-
-            $row = $form->addRow();
-                $row->addLabel('showAddresses', __('Enter Personal Address?'));
-                $row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
-
-            $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
             $row = $form->addRow()->addClass('address');
                 $row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));

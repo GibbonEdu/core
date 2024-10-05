@@ -127,10 +127,7 @@ class Toggle extends Input
     public function setYesNo()
     {
         $this->toggleType = 'YesNo';
-        $this->onValue = 'Y';
-        $this->offValue = 'N';
-        $this->onLabel = __('Yes');
-        $this->offLabel = __('No');
+        $this->setToggle('Y', __('Yes'), 'N', __('No'));
         $this->setValue('Y');
 
         return $this;
@@ -144,11 +141,25 @@ class Toggle extends Input
     public function setActiveInactive()
     {
         $this->toggleType = 'ActiveInactive';
-        $this->onValue = 'Y';
-        $this->offValue = 'N';
-        $this->onLabel = __('Active');
-        $this->offLabel = __('Inactive');
+        $this->setToggle('Y', __('Active'), 'N', __('Inactive'));
         $this->setValue('Y');
+
+        return $this;
+    }
+
+    /**
+     * Sets the labels used for on/off the toggle states.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setToggle($onValue, $onLabel, $offValue, $offLabel, $toggleType = '')
+    {
+        $this->toggleType = $toggleType;
+        $this->onValue = $onValue;
+        $this->offValue = $offValue;
+        $this->onLabel = $onLabel;
+        $this->offLabel = $offLabel;
+        $this->setValue($offValue);
 
         return $this;
     }

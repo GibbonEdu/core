@@ -929,7 +929,7 @@ table.columnHighlight .hover:not(:first-child) {
 .input-box {
     float: right;
     display: table;
-    border: 1px solid #bfbfbf;
+    border: 1px solid #b1afaf;
     background-color: #ffffff;
     box-sizing: border-box;
 }
@@ -944,7 +944,7 @@ table.columnHighlight .hover:not(:first-child) {
 
 .input-box .inline-button {
     display: table-cell;
-    border-left: 1px solid #bfbfbf;
+    border-left: 1px solid #b1afaf;
     background: #fafafa;
     background: -moz-linear-gradient(top, #fbfbfb, #fafafa);
     width: 48px;

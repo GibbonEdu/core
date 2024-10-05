@@ -1,5 +1,12 @@
+<?php 
+    if ($group == 'left') $groupClass = 'rounded-l-md -mr-px';
+    elseif ($group == 'right') $groupClass = 'rounded-r-md -ml-px';
+    elseif ($group == 'middle') $groupClass = 'rounded-none';
+    else $groupClass = 'rounded-md';
+?>
+
 <select <?= $attributes; ?> 
-    class="<?= $class; ?> w-full min-w-0 rounded-md border py-2 text-gray-900  placeholder:text-gray-400 
+    class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-0 border py-2 text-gray-900  placeholder:text-gray-400 
     focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6" >
 
     <?php if (isset($placeholder) && empty($multiple)) { ?>

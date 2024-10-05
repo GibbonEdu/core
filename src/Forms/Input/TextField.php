@@ -33,6 +33,7 @@ class TextField extends Input
 {
     protected $autocomplete;
     protected $unique;
+    protected $group;
 
     /**
      * Create an HTML form input.
@@ -147,6 +148,18 @@ class TextField extends Input
         return false;
     }
 
+    /**
+     * Create a button group by setting the alignment of this button.
+     *
+     * @param string $value     One of: left, middle, right
+     * @return self
+     */
+    public function groupAlign($value)
+    {
+        $this->group = $value;
+        return $this;
+    }
+
 
     /**
      * Gets the HTML output for this form element.
@@ -155,7 +168,8 @@ class TextField extends Input
     protected function getElement()
     {
         return Component::render(TextField::class, $this->getAttributeArray() + [
-            'unique'       => $this->unique ? json_encode($this->unique) : '',
+            'group'            => $this->group,
+            'unique'           => $this->unique ? json_encode($this->unique) : '',
             'autocompleteList' => $this->autocomplete
                 ? $this->autocomplete
                 : '',

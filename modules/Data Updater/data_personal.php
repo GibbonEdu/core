@@ -397,12 +397,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     $row = $form->addRow()->onlyIf($isVisible('address1'));
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
-                        $row->addCheckbox('showAddresses')
-                            ->setValue('Yes')
-                            ->checked($addressSet)
+                        $row->addYesNo('showAddresses')
+                            ->setValue($addressSet ?? 'N')
                             ->setDisabled(isset($requiredFields['address1']) && $requiredFields['address1'] == 'readonly');
 
-                    $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
+                    $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
 
                     $row = $form->addRow()->onlyIf($isVisible('address1'))->addClass('address');
                     $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')

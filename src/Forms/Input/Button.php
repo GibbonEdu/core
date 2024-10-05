@@ -36,6 +36,8 @@ class Button extends Element
     use InputAttributesTrait;
     
     private $type;
+    private $icon;
+    private $group;
 
     public function __construct($name, $type = 'button', $onClick = null, $id = null)
     {
@@ -46,9 +48,54 @@ class Button extends Element
         $this->type = $type;
     }
 
+    /**
+     * Sets an onClick behaviour for the button.
+     *
+     * Deprecated. Use Alpine @click behaviours instead.
+     * 
+     * @deprecated v28
+     * @param string $value
+     * @return self
+     */
     public function onClick($value)
     {
         $this->setAttribute('onClick', $value);
+        return $this;
+    }
+
+    /**
+     * Determines the button type and how it will render.
+     *
+     * @param string $value     One of: button, input, submit.
+     * @return self
+     */
+    public function setType($value)
+    {
+        $this->type = $value;
+        return $this;
+    }
+
+    /**
+     * Sets an icon to display inside the button.
+     *
+     * @param string $value  
+     * @return self
+     */
+    public function setIcon($value)
+    {
+        $this->icon = $value;
+        return $this;
+    }
+
+    /**
+     * Create a button group by setting the alignment of this button.
+     *
+     * @param string $value     One of: left, middle, right
+     * @return self
+     */
+    public function groupAlign($value)
+    {
+        $this->group = $value;
         return $this;
     }
 
@@ -56,6 +103,8 @@ class Button extends Element
     {
         return Component::render(Button::class, $this->getAttributeArray() + [
             'type' => $this->type,
+            'icon' => $this->icon,
+            'group' => $this->group,
         ]);
     }
 }

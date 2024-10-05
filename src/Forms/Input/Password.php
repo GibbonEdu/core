@@ -73,13 +73,14 @@ class Password extends TextField
     public function addGeneratePasswordButton($form, $sourceField = 'passwordNew', $confirmField = 'passwordConfirm')
     {
         $button = $form->getFactory()->createButton(__('Generate'));
-        $button->setClass('generatePassword -ml-px rounded-l-0 rounded-r')
+        $button->addClass('generatePassword')
+            ->groupAlign('right')
             ->addData('source', $sourceField)
             ->addData('confirm', $confirmField)
             ->addData('alert', __('Copy this password if required:'))
             ->setTabIndex(-1);
 
-        $this->append($button->getOutput());
+        $this->groupAlign('left')->append($button->getOutput());
 
         return $this;
     }
@@ -101,6 +102,8 @@ class Password extends TextField
      */
     protected function getElement()
     {
-        return Component::render(Password::class, $this->getAttributeArray() + []);
+        return Component::render(Password::class, $this->getAttributeArray() + [
+            'group' => $this->group,
+        ]);
     }
 }

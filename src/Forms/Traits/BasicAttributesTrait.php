@@ -30,6 +30,7 @@ namespace Gibbon\Forms\Traits;
 trait BasicAttributesTrait
 {
     private $attributes = [];
+    private $attributeDefaults = ['id' => '', 'name' => '', 'class' => '', 'disabled' => '', 'readonly' => ''];
 
     /**
      * Set the id attribute.
@@ -148,7 +149,7 @@ trait BasicAttributesTrait
      * @param  string  $key
      * @param  mixed   $value
      */
-    protected function setAttribute($key, $value)
+    public function setAttribute($key, $value = '')
     {
         $this->attributes[$key] = $value;
         return $this;
@@ -159,9 +160,9 @@ trait BasicAttributesTrait
      * @param   string  $key
      * @return  mixed
      */
-    protected function getAttribute($key)
+    public function getAttribute($key)
     {
-        return (isset($this->attributes[$key]))? $this->attributes[$key] : null;
+        return $this->attributes[$key] ?? null;
     }
 
     /**
@@ -170,7 +171,7 @@ trait BasicAttributesTrait
      */
     public function getAttributeArray()
     {
-        return array_merge(['id' => '', 'name' => '', 'class' => '', 'attributes' => $this->getAttributeString(false, 'class')], $this->attributes);
+        return array_merge($this->attributeDefaults, ['attributes' => $this->getAttributeString(false, 'class')], $this->attributes);
     }
 
     /**

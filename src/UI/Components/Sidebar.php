@@ -140,6 +140,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setTitle(__('Single Sign-on'));
                 $form->setClass('blank w-full loginTableOAuth2');
+                $form->setAttribute('x-data', "{'options': false}");
 
                 $view = $this->getContainer()->get(View::class);
 
@@ -148,43 +149,58 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'google', 'options' => '']),
                         'service'    => 'google',
                         'clientName' => __('Google'),
-                    ]));
+                    ]))->addClass('flex-1');
                 }
                 if ($microsoftSettings['enabled'] == 'Y') {
                     $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
                         'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'microsoft', 'options' => '']),
                         'service'    => 'microsoft',
                         'clientName' => __('Microsoft'),
-                    ]));
+                    ]))->addClass('flex-1');
                 }
                 if ($genericSSOSettings['enabled'] == 'Y') {
                     $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
                         'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'oauth', 'options' => '']),
                         'service'    => 'other',
                         'clientName' => $genericSSOSettings['clientName'],
-                    ]));
+                    ]))->addClass('flex-1');
                 }
 
-                $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
+                $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                $row->addButton('')
+                    ->setID('schoolYearLabel')
+                    ->setIcon('calendar')
+                    ->groupAlign('left')
+                    ->setAria('label', __('School Year'))
+                    ->setClass('text-sm py-2')
+                    ->setAttribute('tabindex', -1);
+                $row->addSelectSchoolYear('gibbonSchoolYearID')
+                    ->groupAlign('right')
+                    ->setClass('w-full flex-grow py-2')
+                    ->setAria('label', __('School Year'))
+                    ->placeholder(null)
+                    ->selected($this->session->get('gibbonSchoolYearID'));
 
-                $row = $form->addRow()->setClass('loginOptionsOAuth2');
-                    $row->addContent(sprintf($loginIcon, 'planner', __('School Year')))->setClass('flex-none');
-                    $row->addSelectSchoolYear('gibbonSchoolYearIDOAuth2')
-                        ->setClass('w-full p-1')
+                $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                    $row->addButton('')
+                        ->setID('languageLabel')
+                        ->setIcon('language')
+                        ->groupAlign('left')
+                        ->setAria('label', __('Language'))
+                        ->setClass('text-sm py-2')
+                        ->setAttribute('tabindex', -1);
+                    $row->addSelectI18n('gibboni18nID')
+                        ->groupAlign('right')
+                        ->setClass('w-full flex-grow py-2')
+                        ->setAria('label', __('Language'))
                         ->placeholder(null)
-                        ->selected($this->session->get('gibbonSchoolYearID'));
+                        ->selected($this->session->get('i18n')['gibboni18nID']);
 
-                $row = $form->addRow()->setClass('loginOptionsOAuth2');
-                    $row->addContent(sprintf($loginIcon, 'language', __('Language')))->setClass('flex-none');
-                    $row->addSelectI18n('gibboni18nIDOAuth2')
-                        ->setClass('w-full p-1')
-                        ->placeholder(null)
-                        ->selected($this->session->get('i18n')['gibboni18nID'] ?? '');
-
-                $row = $form->addRow();
-                    $row->addContent('<a class="showOAuth2Options" onclick="false" href="#">'.__('Options').'</a>')
-                        ->wrap('<span class="small">', '</span>')
-                        ->setClass('right');
+                    $row = $form->addRow()->addClass('flex justify-end items-center');
+                    $row->addToggle('optionsSSO')
+                        ->setToggle('Y', __('Options'), 'N', __('Options'))
+                        ->setSize('sm')
+                        ->setAttribute('@click', 'options = !options');
 
                 echo $form->getOutput();
 
@@ -204,15 +220,14 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
 
-                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
+                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) )
+                    ->setAttribute('x-data', "{'options': false}");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
-                $form->setClass('noIntBorder w-full');
+                $form->setClass('blank w-full');
                 $form->addHiddenValue('address', $this->session->get('address'));
                 $form->addHiddenValue('method', 'default');
-
-                $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
                 $loginMethod = $_GET['method'] ?? '';
 
@@ -222,7 +237,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                     $form = Form::create('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
                     $form->setAutocomplete(false);
-                    $form->setClass('noIntBorder w-full');
+                    $form->setClass('blank w-full');
                     $form->addHiddenValue('address', $this->session->get('address'));
                     $form->addHiddenValue('method', 'mfa');
                     $form->addHiddenValue('mfaFormNonce', $nonce);
@@ -231,63 +246,86 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         $col->addLabel('mfaCode', __('Multi Factor Authentication Code'));
                         $col->addNumber('mfaCode');
                 } else {
-                    $row = $form->addRow();
-                        $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
+                    $row = $form->addRow()->addClass('flex items-center justify-between');
+                        $row->addButton('')
+                            ->setID('usernameLabel')
+                            ->setIcon('username')
+                            ->groupAlign('left')
+                            ->setAria('label', __('Username or email'))
+                            ->setClass('text-sm py-2')
+                            ->setAttribute('tabindex', -1);
                         $row->addTextField('username')
+                            ->groupAlign('right')
                             ->required()
                             ->maxLength(50)
-                            ->setClass('w-full')
+                            ->setClass('w-full flex-grow py-2')
                             ->setAria('label', __('Username or email'))
                             ->placeholder(__('Username or email'))
                             ->addValidationOption('onlyOnSubmit: true');
 
-                    $row = $form->addRow();
-                        $row->addContent(sprintf($loginIcon, 'key', __('Password')));
+                    $row = $form->addRow()->addClass('flex items-center justify-between');
+                        $row->addButton('')
+                            ->setID('passwordLabel')
+                            ->setIcon('password')
+                            ->groupAlign('left')
+                            ->setAria('label', __('Password'))
+                            ->setClass('text-sm py-2')
+                            ->setAttribute('tabindex', -1);
                         $row->addPassword('password')
+                            ->groupAlign('right')
                             ->required()
                             ->maxLength(30)
-                            ->setClass('w-full')
+                            ->setClass('w-full flex-grow py-2')
                             ->setAria('label', __('Password'))
                             ->placeholder(__('Password'))
                             ->addValidationOption('onlyOnSubmit: true');
 
-                    $row = $form->addRow()->setClass('loginOptions');
-                        $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
+                    $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                        $row->addButton('')
+                            ->setID('schoolYearLabel')
+                            ->setIcon('calendar')
+                            ->groupAlign('left')
+                            ->setAria('label', __('School Year'))
+                            ->setClass('text-sm py-2')
+                            ->setAttribute('tabindex', -1);
                         $row->addSelectSchoolYear('gibbonSchoolYearID')
-                            ->setClass('w-full')
+                            ->groupAlign('right')
+                            ->setClass('w-full flex-grow py-2')
                             ->setAria('label', __('School Year'))
                             ->placeholder(null)
                             ->selected($this->session->get('gibbonSchoolYearID'));
 
-                    $row = $form->addRow()->setClass('loginOptions');
-                        $row->addContent(sprintf($loginIcon, 'language', __('Language')));
+                    $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                        $row->addButton('')
+                            ->setID('languageLabel')
+                            ->setIcon('language')
+                            ->groupAlign('left')
+                            ->setAria('label', __('Language'))
+                            ->setClass('text-sm py-2')
+                            ->setAttribute('tabindex', -1);
                         $row->addSelectI18n('gibboni18nID')
-                            ->setClass('w-full')
+                            ->groupAlign('right')
+                            ->setClass('w-full flex-grow py-2')
                             ->setAria('label', __('Language'))
                             ->placeholder(null)
                             ->selected($this->session->get('i18n')['gibboni18nID']);
 
-                    $row = $form->addRow();
-                        $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
-                            ->append(' . <a href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
+                    $row = $form->addRow()->addClass('flex justify-between items-center py-2');
+                        $row->addContent('<a class="text-xs font-semibold text-gray-700 hover:text-blue-600 hover:underline" href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
                             ->wrap('<span class="small">', '</span>')
-                            ->setClass('right');
+                            ->setClass('flex-1');
+                        $row->addToggle('optionsSSO')
+                            ->setToggle('Y', __('Options'), 'N', __('Options'))
+                            ->setSize('sm')
+                            ->setAttribute('@click', 'options = !options');
                 }
 
-                $row = $form->addRow();
-                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-50')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
-                    $row->addSubmit(__('Login'));
+                $row = $form->addRow()->setClass('flex justify-end items-center');
+                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('flex-1 mt-1')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
+                    $row->addSubmit(__('Login'))->addClass('flex-1 mt-1');
 
                 echo $form->getOutput();
                 echo '</div>';
-
-                // Control the show/hide for login options
-                echo "<script type='text/javascript'>";
-                    echo '$(".loginOptions").hide();';
-                    echo '$(".show_hide").click(function(){';
-                    echo '$(".loginOptions").fadeToggle(1000);';
-                    echo '});';
-                echo '</script>';
             }
         }
 

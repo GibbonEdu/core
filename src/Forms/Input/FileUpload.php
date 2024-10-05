@@ -243,7 +243,7 @@ class FileUpload extends Input
             }
         }
 
-        $this->addClass('w-full rounded-md border border-gray-500 font-sans p-2 text-gray-900  placeholder:text-gray-400');
+        $this->addClass('w-full rounded-md bg-white border border-gray-500 font-sans p-2 text-sm text-gray-900  placeholder:text-gray-400');
 
         $output .= '<input type="file" '.$this->getAttributeString().'>';
 

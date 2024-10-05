@@ -8,19 +8,21 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% set standardLayout = "standardForm" in form.getClass and "blank" not in form.getClass %}
-{% set metaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
+{% set isBlank = "blank" in form.getClass %}
+{% set standardLayout = ("standardForm" in form.getClass) and not isBlank %}
+{% set useSections = standardLayout and "noIntBorder" not in form.getClass %}
+{% set useMetaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
 
 {% if standardLayout and form.getAction != 'ajax' %}
-<form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:1s" x-data="{'show': true, 'saving': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
-{% else %}
-<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)"></form>
-{% endif %}
+    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:1s" x-data="{'show': true, 'saving': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
 
     <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
         <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
         <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
     </div>
+{% elseif form.getAction != 'ajax' %}
+    <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)" >
+{% endif %}
 
     {% if form.hasPages %}
         <ul class="multiPartForm my-6">
@@ -67,42 +69,43 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and "blank" not in form.getClass ? 'flex' : 'table' %}
+    {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and not isBlank ? 'flex' : 'table' %}
 
 
     {% if form.getRows|length > 0 %}
-    <section class="w-full grid grid-cols-5 2xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  " style="" cellspacing="0">
+    <section class="w-full grid grid-cols-5 2xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-2' }}" style="" cellspacing="0">
 
         <div class="{{ standardLayout and metaSidebar ? 'col-span-6' : 'col-span-8' }}">
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
 
-            {% if "blank" not in form.getClass %}
-            <div class="{{ ((rows|first).getElements|first).class }} mb-6 border rounded border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ "noIntBorder" in form.getClass ? 'bg-blue-50 p-4' : 'bg-gray-50' }}  {{ section == 'submit' ? ' sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
+            {% if useSections %}
+            <div class="{{ ((rows|first).getElements|first).class }} mb-6 rounded bg-gray-50 border border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? ' sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
             {% endif %}
 
             {% for num, row in rows %}
 
                 {% set rowLoop = loop %}
-                {% if true or renderStyle == 'flex' %}
-                    {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
+
+                {% if not isBlank %}
+                    {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-4' %}
                     {% set rowClass = section == 'submit' ? rowClass ~ ' sm:items-center' : rowClass ~ ' sm:items-start' %}
                 {% endif %}
 
+
                 {% set firstElement = (row.getElements|first) %}
                 {% if firstElement.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') and firstElement.getTag == 'h3' %}
-                    {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' ' : rowClass ~ ' ' %}
+                    {% set rowClass = useSections ? rowClass ~ ' ' : rowClass ~ ' ' %}
                 {% endif %}
 
 
-                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : 'p-2' }} gap-2 sm:gap-4 {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id")|raw }}>
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : '' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id,x-show,x-cloak")|raw }}>
 
                 {% if "draggableRow" in row.getClass %}
                     <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>
                 {% endif %}
         
                 {% for element in row.getElements %}
-                    {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
 
                     {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
                         {% set class = 'flex-grow justify-center' %}
@@ -113,7 +116,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% elseif loop.last and loop.length == 2 and renderStyle == 'flex' %}
                         {% set class = 'flex-1 relative flex justify-end' %}
                     {% else %}
-                        {% set class = loop.last and loop.length > 2 ? 'flex-1' : 'flex-grow' %}
+                        {% set class = loop.last and loop.length > 2 ? 'flex-1' : not isBlank ? 'flex-1' : '' %}
                     {% endif %}
 
                     {% if renderStyle == 'table' and element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
@@ -122,7 +125,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
-                    <div class="{{ class }} {{ hasClass ? element.getClass : '' }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                    <div class="{{ class }} {{ hasClass ? element.getClass : '' }}" >
                         {{ element.getOutput|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
@@ -136,7 +139,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 </div>
             {% endfor %}
 
-            {% if "blank" not in form.getClass %}
+            {% if useSections %}
             </div>
             {% endif %}
 
@@ -144,7 +147,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         </div>
 
-        {% if metaSidebar  %}
+        {% if useMetaSidebar  %}
 
         <aside class="hidden 2xl:block col-span-2 h-min">
             
@@ -178,6 +181,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endfor %}
     </script>
 
-{% if form.getAction %}
+{% if form.getAction != 'ajax' %}
 </form>
 {% endif %}
