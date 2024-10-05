@@ -324,13 +324,12 @@ class FormFactory implements FormFactoryInterface
                 ->setClass('left');
     }
 
-    public function createFooter($required = true)
+    public function createFooter($quicksave = true)
     {
-        $content = '';
-        if ($required) {
-            // $content = '<span class="text-xs text-gray-600">* '.__('denotes a required field').'</span>';
-        }
-        return $this->createContent($content);
+        $content = $quicksave
+            ? __('Press {shortcut} to quick save', ['shortcut' => '<kbd class="bg-white">⌘ Cmd</kbd> + <kbd class="bg-white">S</kbd>'])
+            : '';
+        return $this->createContent($content)->wrap('<span class="text-xs text-gray-600">', '</span>');
     }
 
     /* PRE-DEFINED INPUT --------------------------- */

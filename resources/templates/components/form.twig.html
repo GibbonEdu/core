@@ -8,12 +8,19 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% if form.getAction != 'ajax' %}
-<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+{% set standardLayout = "standardForm" in form.getClass and "blank" not in form.getClass %}
+{% set metaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
+
+{% if standardLayout and form.getAction != 'ajax' %}
+<form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:1s" x-data="{'show': true, 'saving': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
+{% else %}
+<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)"></form>
 {% endif %}
 
-    {% set newLayout = "standardForm" in form.getClass and "blank" not in form.getClass %}
-    {% set metaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
+    <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
+        <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
+        <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
+    </div>
 
     {% if form.hasPages %}
         <ul class="multiPartForm my-6">
@@ -44,7 +51,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     {% block header %}
-        <header class="relative flex justify-between {{ newLayout ? '' }}">
+        <header class="relative flex justify-between {{ standardLayout ? '' }}">
             {% if form.getHeader %}
                 <h2>{{ form.getTitle }}</h2>
                 <div class="linkTop flex justify-end gap-2">
@@ -66,19 +73,20 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if form.getRows|length > 0 %}
     <section class="w-full grid grid-cols-5 2xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  " style="" cellspacing="0">
 
-        <div class="{{ newLayout and metaSidebar ? 'col-span-6' : 'col-span-8' }}">
+        <div class="{{ standardLayout and metaSidebar ? 'col-span-6' : 'col-span-8' }}">
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
-            
-            {% if "sticky" not in (rows|first).class and "blank" not in form.getClass %}
-            <div class="{{ ((rows|first).getElements|first).class }} mb-6 border rounded border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ "noIntBorder" in form.getClass ? 'bg-blue-50 p-4' : 'bg-gray-50' }}  {{ newLayout ? 'px-4 py-2 sm:py-3 sm:px-8' : ''}}" >
+
+            {% if "blank" not in form.getClass %}
+            <div class="{{ ((rows|first).getElements|first).class }} mb-6 border rounded border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ "noIntBorder" in form.getClass ? 'bg-blue-50 p-4' : 'bg-gray-50' }}  {{ section == 'submit' ? ' sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
             {% endif %}
 
             {% for num, row in rows %}
 
                 {% set rowLoop = loop %}
                 {% if true or renderStyle == 'flex' %}
-                    {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-start content-center p-0' %}
+                    {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
+                    {% set rowClass = section == 'submit' ? rowClass ~ ' sm:items-center' : rowClass ~ ' sm:items-start' %}
                 {% endif %}
 
                 {% set firstElement = (row.getElements|first) %}
@@ -87,7 +95,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endif %}
 
 
-                <div id="{{ row.getID }}" class="{{ newLayout ? ' py-4' : 'p-2' }} gap-2 sm:gap-4 {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id")|raw }}>
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : 'p-2' }} gap-2 sm:gap-4 {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id")|raw }}>
 
                 {% if "draggableRow" in row.getClass %}
                     <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>
@@ -128,7 +136,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 </div>
             {% endfor %}
 
-            {% if "sticky" not in (rows|first).class and "blank" not in form.getClass %}
+            {% if "blank" not in form.getClass %}
             </div>
             {% endif %}
 
@@ -138,18 +146,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% if metaSidebar  %}
 
-        <aside class="hidden 2xl:block col-span-2 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
+        <aside class="hidden 2xl:block col-span-2 h-min">
             
-            <div class="px-6 py-4 border-b">
-                <label for="lessonDetailsTemplate" class="font-medium mt-4 sm:my-0 text-base/7 sm:text-sm/6 text-gray-800 ">Test Field</label> 
+            {% if false  %}
+            <div class="bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
 
             </div>
-            <div class="px-6 py-4 border-b">
-                <label for="lessonDetailsTemplate" class="font-medium mt-4 sm:my-0 text-base/7 sm:text-sm/6 text-gray-800 ">Created On</label> 
-            </div>
-            <div class="px-6 py-4 ">
-                <label for="lessonDetailsTemplate" class="font-medium mt-4 sm:my-0 text-base/7 sm:text-sm/6 text-gray-800 ">Last Modified</label>
-            </div>
+            {% endif %}
 
         </aside>
         {% endif %}
@@ -162,6 +165,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     <script type="text/javascript">
+        {% if standardLayout and form.getAction != 'ajax' %}
+        $(document).keydown(function(event) {
+            if (!((String.fromCharCode(event.which).toLowerCase() == 's' || event.keyCode == 13) && event.metaKey) && !(event.which == 19)) return true;
+            event.preventDefault();
+            return false;
+        });
+        {% endif %}
+
         {% for code in javascript %}
             {{ code|raw }}
         {% endfor %}

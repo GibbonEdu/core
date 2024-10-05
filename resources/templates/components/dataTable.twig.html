@@ -96,7 +96,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
 
-                                    <div  {{ actions|length > 1 ? 'x-cloak="mobile" :class="{\'block\': open, \'hidden sm:flex\': !open}"' }} class="{{ column.getClass() }} {{ actions|length == 1 ? 'justify-center sm:justify-end' : 'justify-end sm:flex absolute sm:static top-0 right-0 p-2 -mr-1 -mt-3 rounded-lg shadow sm:shadow-none bg-white sm:bg-transparent sm:m-0 sm:p-0 z-10' }} flex  gap-2" >
+                                    <div  {{ actions|length > 1 ? 'x-cloak="mobile" :class="{\'block\': open, \'hidden sm:flex\': !open}"' }} class="{{ column.getClass() }} {{ actions|length == 1 ? 'justify-center sm:justify-start' : 'justify-start sm:flex absolute sm:static top-0 right-0 p-2 -mr-1 -mt-3 rounded-lg shadow sm:shadow-none bg-white sm:bg-transparent sm:m-0 sm:p-0 z-10' }} flex  gap-2" >
                                         {% for actionName, action in actions %}
                                             {% do action.displayLabel(loop.first) %}
                                             {{ action.getOutput(rowData.data, column.getParams)|raw }}

@@ -72,6 +72,10 @@ hr {
     @apply text-xs;
 }
 
+kbd {
+    @apply px-2 py-1.5 text-xs font-sans font-normal text-gray-800 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500;
+}
+
 /*
  --------------------------------------------------------------------------
   Alerts
@@ -169,19 +173,37 @@ div.exception:not(.tag)::before {
     top: 0;
 }
 
+
+.magic {
+    @apply bg-purple-100 border-purple-800 text-purple-800;
+}
+
+div.magic:not(.tag)::before {
+    content: "";
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0icmdiKDkzIDQ1IDE3MCkiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTkuODEzIDE1LjkwNCA5IDE4Ljc1bC0uODEzLTIuODQ2YTQuNSA0LjUgMCAwIDAtMy4wOS0zLjA5TDIuMjUgMTJsMi44NDYtLjgxM2E0LjUgNC41IDAgMCAwIDMuMDktMy4wOUw5IDUuMjVsLjgxMyAyLjg0NmE0LjUgNC41IDAgMCAwIDMuMDkgMy4wOUwxNS43NSAxMmwtMi44NDYuODEzYTQuNSA0LjUgMCAwIDAtMy4wOSAzLjA5Wk0xOC4yNTkgOC43MTUgMTggOS43NWwtLjI1OS0xLjAzNWEzLjM3NSAzLjM3NSAwIDAgMC0yLjQ1NS0yLjQ1NkwxNC4yNSA2bDEuMDM2LS4yNTlhMy4zNzUgMy4zNzUgMCAwIDAgMi40NTUtMi40NTZMMTggMi4yNWwuMjU5IDEuMDM1YTMuMzc1IDMuMzc1IDAgMCAwIDIuNDU2IDIuNDU2TDIxLjc1IDZsLTEuMDM1LjI1OWEzLjM3NSAzLjM3NSAwIDAgMC0yLjQ1NiAyLjQ1NlpNMTYuODk0IDIwLjU2NyAxNi41IDIxLjc1bC0uMzk0LTEuMTgzYTIuMjUgMi4yNSAwIDAgMC0xLjQyMy0xLjQyM0wxMy41IDE4Ljc1bDEuMTgzLS4zOTRhMi4yNSAyLjI1IDAgMCAwIDEuNDIzLTEuNDIzbC4zOTQtMS4xODMuMzk0IDEuMTgzYTIuMjUgMi4yNSAwIDAgMCAxLjQyMyAxLjQyM2wxLjE4My4zOTQtMS4xODMuMzk0YTIuMjUgMi4yNSAwIDAgMC0xLjQyMyAxLjQyM1oiIC8+Cjwvc3ZnPgo=');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 35%;
+    position: absolute;
+    height: 100%;
+    width: 4rem;
+    left: 1rem;
+    top: 0;
+}
+
 .dull {
-    @apply bg-gray-200 text-gray-600;
+    @apply bg-gray-300 text-gray-600;
 }
 
 .selected {
     @apply bg-purple-200 border-purple-800 text-purple-800;
 }
 
-div.message:not(.tag), div.warning:not(.tag), div.exception:not(.tag), div.success:not(.tag), div.error:not(.tag) {
+div.message:not(.tag), div.warning:not(.tag), div.exception:not(.tag), div.success:not(.tag), div.error:not(.tag), div.magic:not(.tag) {
     @apply pl-14;
 }
 
-div.message, div.success, div.warning, div.error, div.exception, div.dull {
+div.message, div.success, div.warning, div.error, div.exception, div.dull, div.magic {
     @apply rounded border my-4 p-4 text-xs relative border-opacity-15;
 }
 
@@ -195,7 +217,7 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 }
 
 .tag {
-    @apply inline-block rounded-sm px-2 text-xs font-medium font-sans leading-loose border border-opacity-15;
+    @apply inline-block rounded px-2 text-xs font-medium font-sans leading-loose border border-opacity-15;
 }
 
 .bg-stripe {

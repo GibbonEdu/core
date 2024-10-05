@@ -702,6 +702,9 @@ function msort($array, $id = 'id', $sort_ascending = true)
 /**
  * Returns preformatted HTML indicator of max file upload size
  *
+ * Deprecated. Built into FileUpload class now.
+ * 
+ * @deprecated v28
  * @since 2013
  * @version v26
  *
@@ -709,33 +712,7 @@ function msort($array, $id = 'id', $sort_ascending = true)
  */
 function getMaxUpload($multiple = false)
 {
-    // For backwards compatibilty
-    global $guid;
-    if ($multiple === $guid) {
-        $multiple = func_get_args()[1] ?? false;
-    }
-
-    $output = '';
-    $post = substr(ini_get('post_max_size'), 0, (strlen(ini_get('post_max_size')) - 1));
-    $file = substr(ini_get('upload_max_filesize'), 0, (strlen(ini_get('upload_max_filesize')) - 1));
-
-    $output .= "<div style='margin-top: 10px; font-style: italic; color: #c00'>";
-    if ($multiple == true) {
-        if ($post < $file) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post) . '<br/>';
-        } else {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file) . '<br/>';
-        }
-    } else {
-        if ($post < $file) {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $post) . '<br/>';
-        } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $file) . '<br/>';
-        }
-    }
-    $output .= '</div>';
-
-    return $output;
+    return '';
 }
 
 //Encode strring using htmlentities with the ENT_QUOTES option

@@ -244,20 +244,35 @@ class Form implements OutputableInterface
         });
     }
 
+    /**
+     * Get the total number of rows in a form.
+     * @return  array
+     */
+    public function getRowCount()
+    {
+        return count($this->rows);
+    }
+
+    /**
+     * Gets the rows in the form, grouped by heading.
+     *
+     * @return array
+     */
     public function getRowsByHeading()
     {
-        $rowCount = count($this->rows);
-        return array_reduce($this->rows, function ($group, $row) use (&$rowCount) {
-
-            if (($row->getHeading() == 'submit' && $rowCount > 10) || $row->getID() == 'stickySubmit') {
-                $row->addClass('sticky -bottom-px bg-gray-100 border rounded-md -mt-px mb-px px-4 z-50');
-            }
+        return array_reduce($this->rows, function ($group, $row) {
             $group[$row->getHeading()][] = $row;
             return $group;
         }, []);
     }
 
-    public function hasHeading($heading)
+    /**
+     * Checks whether a given heading exists in the form. Used by the form builder.
+     *
+     * @param string $heading
+     * @return bool
+     */
+    public function hasHeading(string $heading)
     {
         return count(array_filter($this->rows, function ($row) use ($heading) {
             return $row->getHeading() == $heading;
