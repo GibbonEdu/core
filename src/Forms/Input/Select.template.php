@@ -1,7 +1,7 @@
 <?php 
     if ($group == 'left') $groupClass = 'rounded-l-md -mr-px';
     elseif ($group == 'right') $groupClass = 'rounded-r-md -ml-px';
-    elseif ($group == 'middle') $groupClass = 'rounded-none';
+    elseif ($group == 'middle') $groupClass = '';
     else $groupClass = 'rounded-md';
 ?>
 

@@ -99,7 +99,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endif %}
 
 
-                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : '' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id,x-show,x-cloak")|raw }}>
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id,x-show,x-cloak")|raw }}>
 
                 {% if "draggableRow" in row.getClass %}
                     <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>

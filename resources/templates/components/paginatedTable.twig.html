@@ -74,10 +74,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block footer %}
     {% if dataSet.getResultCount > dataSet.getPageSize %}
-    <div class="flex flex-col sm:flex-row sm:items-end justify-end mt-2">
-        {{ block('pagination') }}
+    <div class="flex items-start justify-between">
+
+        <div class="flex items-start mt-2 {{ dataSet.getTotalCount > 0 ? 'h-10' : '' }}">
+            {{ block('pageCount') }}
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-end justify-end mt-2">
+            {{ block('pagination') }}
+        </div>
     </div>
     {% endif %}
+    
 {% endblock footer %}
 
 
