@@ -9,9 +9,9 @@
 ?>
 
 <a <?= $attributes; ?>
-    class="inline-flex items-center align-middle whitespace-nowrap rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-500 shadow-sm border border-gray-400 hover:bg-gray-100 <?= $hoverClass; ?>">
+    class="inline-flex items-center align-middle rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm border border-gray-400 hover:bg-gray-100 <?= $hoverClass; ?> <?= $displayLabel ? 'text-gray-600 lg:text-gray-500' : 'text-gray-600'; ?>">
 
-    <?php $svgClass = ' md:-ml-0.5 md:mr-1.5  h-5 w-5'; ?>
+    <?php $svgClass = 'h-5 w-5'.($displayLabel ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
 
     <?php if ($action == 'edit' || $icon == 'config') { ?>
         <svg class="<?= $svgClass; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -170,7 +170,9 @@
         </svg> -->
     <?php } ?>
 
-    <span class="hidden md:block text-gray-800">
+    <?php if ($displayLabel) { ?>
+    <span class="hidden lg:block text-gray-800 whitespace-nowrap">
         <?= $label; ?>
     </span>
+    <?php } ?>
 </a>

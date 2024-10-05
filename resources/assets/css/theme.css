@@ -38,9 +38,17 @@ body {
     font-family: Helvetica, Arial, sans-serif;
 }
 
-[x-cloak] { 
+[x-cloak=""] { 
     display: none !important;
 }
+
+/* hidden on mobile/smaller screens */
+@media screen and (max-width: 768px) {
+    [x-cloak="mobile"] { 
+        display: none !important;
+    }
+}
+
 
 /*
  --------------------------------------------------------------------------

@@ -349,6 +349,7 @@ class Action extends WebLink
             'action' => $this->name,
             'icon'   => $this->icon,
             'label'  => $this->label,
+            'displayLabel'  => $this->displayLabel,
         ]);
     }
 }

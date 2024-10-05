@@ -92,20 +92,22 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                             {% if column.getID == "actions" %} 
                                 {% block actions %}
-                                <nav class="relative group">
+                                <nav class="relative " x-data="{ open: false }" x-on:keydown.escape.prevent.stop="open = false" @click.outside="open = false">
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
 
-                                    <div class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }} flex justify-end gap-2">
+                                    <div  {{ actions|length > 1 ? 'x-cloak="mobile" :class="{\'block\': open, \'hidden sm:flex\': !open}"' }} class="{{ column.getClass() }} {{ actions|length == 1 ? 'justify-center sm:justify-end' : 'justify-end sm:flex absolute sm:static top-0 right-0 p-2 -mr-1 -mt-3 rounded-lg shadow sm:shadow-none bg-white sm:bg-transparent sm:m-0 sm:p-0 z-10' }} flex  gap-2" >
                                         {% for actionName, action in actions %}
-                                            {% do action.addClass('p-3 sm:p-0') %}
+                                            {% do action.displayLabel(loop.first) %}
                                             {{ action.getOutput(rowData.data, column.getParams)|raw }}
                                         {% endfor %}
                                     </div>
 
                                     {% if actions|length > 1 %}
-                                    <button class="block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray-300 text-2xl text-gray-600 font-sans font-bold leading-none" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
-                                        <span class="block -mt-3">...</span>
+                                    <button type="button" @click="open = true" class="block sm:hidden rounded-md mx-auto my-1 p-1 shadow-sm bg-white border border-gray-400 hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-sans font-bold leading-none" >
+                                        <svg class="pointer-events-none block w-6 h-6" viewBox="0 0 20 20" fill="currentColor" >
+                                        <path d="M3 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM8.5 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM15.5 8.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" />
+                                        </svg>  
                                     </button>
                                     {% endif %}
                                 </nav>
