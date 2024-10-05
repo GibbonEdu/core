@@ -133,7 +133,7 @@ div.warning:not(.tag)::before {
 
 div.error:not(.tag)::before {
     content: "";
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0icmdiKDE5NyA0OCA0OCkiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTEyIDl2My43NW0wLTEwLjAzNkExMS45NTkgMTEuOTU5IDAgMCAxIDMuNTk4IDYgMTEuOTkgMTEuOTkgMCAwIDAgMyA5Ljc1YzAgNS41OTIgMy44MjQgMTAuMjkgOSAxMS42MjIgNS4xNzYtMS4zMzIgOS02LjAzIDktMTEuNjIyIDAtMS4zMS0uMjEtMi41Ny0uNTk4LTMuNzVoLS4xNTJjLTMuMTk2IDAtNi4xLTEuMjUtOC4yNS0zLjI4NlptMCAxMy4wMzZoLjAwOHYuMDA4SDEydi0uMDA4WiIgLz4KPC9zdmc+Cg==');
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0icmdiKDE5NyA0OCA0OCkiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0ibTkuNzUgOS43NSA0LjUgNC41bTAtNC41LTQuNSA0LjVNMjEgMTJhOSA5IDAgMSAxLTE4IDAgOSA5IDAgMCAxIDE4IDBaIiAvPgo8L3N2Zz4=');
     background-position: left center;
     background-repeat: no-repeat;
     background-size: 35%;
@@ -162,7 +162,7 @@ div.exception:not(.tag)::before {
 }
 
 .dull {
-    @apply bg-gray-300 text-gray-600;
+    @apply bg-gray-200 text-gray-600;
 }
 
 .selected {
@@ -174,7 +174,7 @@ div.message:not(.tag), div.warning:not(.tag), div.exception:not(.tag), div.succe
 }
 
 div.message, div.success, div.warning, div.error, div.exception, div.dull {
-    @apply rounded border my-4 p-4 text-xs relative;
+    @apply rounded border my-4 p-4 text-xs relative border-opacity-15;
 }
 
 div.message a, div.success a, div.warning a, div.error a, div.exception a, div.dull a {
@@ -187,7 +187,7 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 }
 
 .tag {
-    @apply inline-block rounded-sm px-2 text-xs font-medium font-sans leading-loose ;
+    @apply inline-block rounded-sm px-2 text-xs font-medium font-sans leading-loose border border-opacity-15;
 }
 
 .bg-stripe {

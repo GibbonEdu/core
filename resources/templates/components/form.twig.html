@@ -71,7 +71,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set sectionLoop = loop %}
             
             {% if "sticky" not in (rows|first).class and "blank" not in form.getClass %}
-            <div class="{{ ((rows|first).getElements|first).class }} mb-6 border rounded-lg border-gray-400 {{ not sectionLoop.last ? 'border-t-8 focus-within:border-t-blue-500 transition' }} {{ "noIntBorder" in form.getClass ? 'bg-blue-50 p-4' : 'bg-gray-50' }}  {{ newLayout ? 'px-4 py-2 sm:py-3 sm:px-8' : ''}}" >
+            <div class="{{ ((rows|first).getElements|first).class }} mb-6 border rounded border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ "noIntBorder" in form.getClass ? 'bg-blue-50 p-4' : 'bg-gray-50' }}  {{ newLayout ? 'px-4 py-2 sm:py-3 sm:px-8' : ''}}" >
             {% endif %}
 
             {% for num, row in rows %}
@@ -138,7 +138,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% if metaSidebar  %}
 
-        <aside class="hidden 2xl:block col-span-2 h-min bg-gray-50 rounded-lg border border-gray-400 border-t-8 border-t-gray-400">
+        <aside class="hidden 2xl:block col-span-2 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
             
             <div class="px-6 py-4 border-b">
                 <label for="lessonDetailsTemplate" class="font-medium mt-4 sm:my-0 text-base/7 sm:text-sm/6 text-gray-800 ">Test Field</label> 

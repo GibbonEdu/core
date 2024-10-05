@@ -196,9 +196,9 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<br/><span class="text-sm sm:text-xs text-gray-600 font-light">';
+            $output .= '<div class="mt-1 sm:mt-2 text-sm sm:text-xs text-gray-600 font-light">';
             $output .= $this->getDescription();
-            $output .= '</span>';
+            $output .= '</div>';
         }
 
         $output .= '</label>';
