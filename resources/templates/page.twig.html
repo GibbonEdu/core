@@ -57,7 +57,7 @@ all stylesheets and scripts with a 'head' context.
 
     {% if page.navigator.schoolYears %}
     
-    {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose text-xxs' %}
+    {% set buttonStyle = 'border -ml-px px-2 py-2 font-bold leading-loose text-xxs' %}
     {% set schoolYears = page.navigator.schoolYears %}
 
     <div class="flex-1">
@@ -78,7 +78,7 @@ all stylesheets and scripts with a 'head' context.
             {{ __('Prev') }}
         </button>
 
-        <select hx-get="{{ absoluteURL }}/index.php?q={{ address }}" hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" name="gibbonSchoolYearID" class="bg-gray-200 border-gray-500 border-r-0 {{ buttonStyle }}">
+        <select hx-get="{{ absoluteURL }}/index.php?q={{ address }}" hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" name="gibbonSchoolYearID" class="bg-gray-200 text-gray-600 border-gray-500 border-r-0 {{ buttonStyle }}">
         {%- for value, name in schoolYears.years -%}
             <option value="{{ value }}" {{ schoolYears.current.gibbonSchoolYearID == value ? 'selected' : ''}}>{{ name }}</option>
         {%- endfor -%}

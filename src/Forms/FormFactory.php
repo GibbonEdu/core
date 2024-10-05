@@ -324,12 +324,9 @@ class FormFactory implements FormFactoryInterface
                 ->setClass('left');
     }
 
-    public function createFooter($quicksave = true)
+    public function createFooter($required = true)
     {
-        $content = $quicksave
-            ? __('Press {shortcut} to {action}', ['shortcut' => '<kbd class="bg-white">⌘ Cmd</kbd> + <kbd class="bg-white">S</kbd>', 'action' => __('quick save')])
-            : '';
-        return $this->createContent($content)->wrap('<span class="text-xs text-gray-600">', '</span>');
+        return $this->createContent('');
     }
 
     /* PRE-DEFINED INPUT --------------------------- */
