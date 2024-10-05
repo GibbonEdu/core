@@ -277,7 +277,7 @@ class FileUploader
         }
 
         $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize, $quality);
-
+        
         return $this->uploadFromPost($file, $filenameChange);
     }
 
@@ -350,8 +350,8 @@ class FileUploader
             imagecopyresampled($dst, $src, $destX, $destY, $srcX, $srcY, $destWidth, $destHeight, $srcWidth, $srcHeight);
 
             // Handle Exif rotation
-            if (function_exists('exif_read_data')) {
-                $exif = exif_read_data($sourcePath);
+            if (function_exists('exif_read_data') && in_array($extension, ['jpg', 'jpeg'])) {
+                $exif = @exif_read_data($sourcePath);
                 if (!empty($exif['Orientation'])) {
                     switch ($exif['Orientation']) {
                         case 3:
