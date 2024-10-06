@@ -11,7 +11,7 @@
 <a <?= $attributes; ?> title="<?= !$displayLabel ? $label : ''; ?>"
     class="inline-flex items-center align-middle rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm border border-gray-400 hover:bg-gray-100 <?= $hoverClass; ?> <?= $displayLabel ? 'text-gray-600 lg:text-gray-500' : 'text-gray-600'; ?>">
 
-    <?php $svgClass = 'h-5 w-5'.($displayLabel ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
+    <?php $svgClass = 'w-6 h-6 sm:h-5 sm:w-5'.($displayLabel ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
 
     <?php if ($action == 'edit' || $icon == 'config') { ?>
         <svg class="<?= $svgClass; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -135,15 +135,14 @@
         <path fill-rule="evenodd" d="M8 7a5 5 0 1 1 3.61 4.804l-1.903 1.903A1 1 0 0 1 9 14H8v1a1 1 0 0 1-1 1H6v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-2a1 1 0 0 1 .293-.707L8.196 8.39A5.002 5.002 0 0 1 8 7Zm5-3a.75.75 0 0 0 0 1.5A1.5 1.5 0 0 1 14.5 7 .75.75 0 0 0 16 7a3 3 0 0 0-3-3Z" clip-rule="evenodd" />
         </svg>
 
-
-    <?php } elseif ($action == 'favourite' || $action == 'bookmark' || $icon == 'gift') { ?>
-        <svg class="<?= $svgClass; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path fill-rule="evenodd" d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 0 0 1.075.676L10 15.082l5.925 2.844A.75.75 0 0 0 17 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0 0 10 2Z" clip-rule="evenodd" />
-        </svg>
-
-    <?php } elseif ($action == 'unfavourite' || $action == 'unbookmark') { ?>
+    <?php } elseif ($action == 'unfavourite' || $icon == 'unbookmark' ) { ?>
         <svg class="<?= $svgClass; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
         <path d="M17 4.517v9.301L5.433 2.252a41.44 41.44 0 0 1 9.637.058C16.194 2.45 17 3.414 17 4.517ZM3 17.25V6.182l10.654 10.654L10 15.082l-5.925 2.844A.75.75 0 0 1 3 17.25ZM3.28 2.22a.75.75 0 0 0-1.06 1.06l14.5 14.5a.75.75 0 1 0 1.06-1.06L3.28 2.22Z" />
+        </svg>
+
+    <?php } elseif ($action == 'favourite' || $icon == 'bookmark' || $icon == 'gift') { ?>
+        <svg class="<?= $svgClass; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 0 0 1.075.676L10 15.082l5.925 2.844A.75.75 0 0 0 17 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0 0 10 2Z" clip-rule="evenodd" />
         </svg>
 
     <?php } elseif ($action == 'calendar' || $icon == 'planner') { ?>

@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             return $output;
         });
 
-    $table->addColumn('username', __('Username'))->context('primary');
+    $table->addColumn('username', __('Username'));
 
     // ACTIONS
     $table->addActionColumn()
