@@ -206,7 +206,7 @@ table {
 table th {
     padding: 1rem 0.75rem;
     border-bottom: 1px solid #ccc;
-    background-color: #ebebeb;
+    background-color: #f3f4f6;
     text-align: left;
 }
 table .heading td:not(:first-child) {

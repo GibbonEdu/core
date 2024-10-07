@@ -24,7 +24,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% block header %}
     
             {% if table.getHeader %}
-            <div class="linkTop mt-0 flex justify-end gap-2">
+            <div class="linkTop mt-0 flex justify-end gap-2 mb-2">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}

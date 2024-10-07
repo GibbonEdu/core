@@ -30,7 +30,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
 {% block header %}
-    <div class="flex items-end justify-between mb-2" style="min-height:50px;">
+    <div class="flex items-end justify-between" style="min-height:50px;">
         <div class="flex items-end pb-2 {{ dataSet.getTotalCount > 0 ? 'h-10' : '' }}">
             {{ block('pageCount') }}
         </div>
