@@ -322,8 +322,7 @@ class Action extends WebLink
             $this->setAttribute('hx-boost', 'true')
                 ->setAttribute('hx-target', '#content-inner')
                 ->setAttribute('hx-select', '#content-inner')
-                // ->setAttribute('x-on:htmx:after-on-load', 'window.scrollTo({top: 0, behavior: "smooth"})')
-                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0.1s');
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
         }
 
         if ($this->url instanceof Url) {

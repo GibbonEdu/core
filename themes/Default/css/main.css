@@ -27,8 +27,8 @@ Used under "GNU Creative Commons License", http://creativecommons.org/licenses/G
 
 .htmx-fade.htmx-swapping {
     opacity: 0;
-    transition: opacity 0.08s ease-out;
-  }
+    transition: opacity 0.2s ease-out;
+}
 
 /* LAYOUT */
 
