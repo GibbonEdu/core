@@ -25,11 +25,6 @@ Used under "GNU Creative Commons License", http://creativecommons.org/licenses/G
 
 [x-cloak] { display: none !important; }
 
-.htmx-fade.htmx-swapping {
-    opacity: 0;
-    transition: opacity 0.2s ease-out;
-}
-
 /* LAYOUT */
 
 div.trail {
