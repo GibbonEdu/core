@@ -188,7 +188,9 @@ try {
 
         // Show success message if the installation is a complete success.
         if ($message === null) {
-            $absoluteURL = $session->get('absoluteURL');
+            if (!$absoluteURL = $installer->getSetting('absoluteURL')) {
+                $absoluteURL = $session->get('absoluteURL', InstallController::guessAbsoluteUrl());
+            }
             $page->addSuccess(sprintf(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>'));
             echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
         }

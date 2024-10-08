@@ -223,7 +223,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
-        $form->setClass('smallIntBorder standardForm w-full');
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(1);
 
@@ -358,6 +358,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 2]));
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(2);
 
@@ -483,6 +484,7 @@ class InstallController
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 3]));
         $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(3);
 
@@ -853,6 +855,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', "./install.php?step=4");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(4);
 
