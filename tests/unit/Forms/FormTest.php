@@ -49,7 +49,13 @@ class FormTest extends TestCase
         $container->share('twig', function () {
             $absolutePath = realpath(__DIR__ . '/../../../');
             $loader = new \Twig\Loader\FilesystemLoader($absolutePath.'/resources/templates');
-            return new \Twig\Environment($loader);
+
+            $twig = new \Twig\Environment($loader);
+            $twig->addFunction(new \Twig\TwigFunction('__', function ($string, $domain = null) {
+                return $string;
+            }));
+
+            return $twig;
         });
 
         $service = new ViewServiceProvider();
