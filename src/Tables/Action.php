@@ -318,6 +318,13 @@ class Action extends WebLink
             $queryParams[$key] = $value;
         }
 
+        if (!$this->external && !$this->direct && !$this->modal) {
+            $this->setAttribute('hx-boost', 'true')
+                ->setAttribute('hx-target', '#content-inner')
+                ->setAttribute('hx-select', '#content-inner')
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
+        }
+
         if ($this->url instanceof Url) {
             $this->setAttribute('href', (string)$this->url);
         } elseif ($this->external) {
