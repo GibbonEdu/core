@@ -33,7 +33,6 @@ Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
     }
 });
 
-
 $(document).ready(function(){
 
     $(document).trigger('gibbon-setup');

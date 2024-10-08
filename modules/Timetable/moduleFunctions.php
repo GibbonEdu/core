@@ -535,10 +535,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
             $output .= "</div>";
 
-            $output .= "<div>";
-            $output .= "<button type='button' class='ttNav inline rounded-l p-2 -mr-px text-base border border-gray-500 text-gray-600 bg-white font-semibold hover:bg-gray-400 hover:text-gray-700'
-                    x-on:click='ttRefresh=true'><img class='h-3 mt-1' src='".$session->get('absoluteURL')."/themes/Default/img/refresh.png'></button>";
-            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='self-end border rounded-r text-sm font-sans h-10 w-40 px-3'> ";
+            $output .= "<div class='inline-flex'>";
+            $output .= "<button type='button' class='ttNav inline-flex items-center rounded-l p-2 -mr-px text-base border border-gray-500 text-gray-600 bg-white font-semibold hover:bg-gray-400 hover:text-gray-700'
+                    x-on:click='ttRefresh=true'>";
+            $output .= '<svg class="h-4" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                <path fill-rule="evenodd" d="M13.836 2.477a.75.75 0 0 1 .75.75v3.182a.75.75 0 0 1-.75.75h-3.182a.75.75 0 0 1 0-1.5h1.37l-.84-.841a4.5 4.5 0 0 0-7.08.932.75.75 0 0 1-1.3-.75 6 6 0 0 1 9.44-1.242l.842.84V3.227a.75.75 0 0 1 .75-.75Zm-.911 7.5A.75.75 0 0 1 13.199 11a6 6 0 0 1-9.44 1.241l-.84-.84v1.371a.75.75 0 0 1-1.5 0V9.591a.75.75 0 0 1 .75-.75H5.35a.75.75 0 0 1 0 1.5H3.98l.841.841a4.5 4.5 0 0 0 7.08-.932.75.75 0 0 1 1.025-.273Z" clip-rule="evenodd" />
+                </svg>';
+            $output .= "</button>";
+            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='inline-flex border rounded-r text-sm font-sans h-10 w-40 px-3'> ";
             $output .= "</div>";
 
             $output .= '</nav>';

@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\View\Component;
+
 /**
  * Time
  *
@@ -144,10 +146,7 @@ class Time extends TextField
             'maxTime' => $this->max,
         ];
 
-        $output = '';
-        $output = '<input type="text" '.$this->getAttributeString().' maxlength="5">';
-
-        $output .= '<script type="text/javascript">';
+        $output = '<script type="text/javascript">';
         $output .= '$("#'.$this->getID().'").timepicker('.json_encode($jsonData).');';
         if (!empty($this->chained)) {
             // On change, update this time and set duration
@@ -158,6 +157,12 @@ class Time extends TextField
         }
         $output .= '</script>';
 
-        return $output;
+        return Component::render(Time::class, $this->getAttributeArray() + [
+            'group'            => $this->group,
+            'unique'           => $this->unique ? json_encode($this->unique) : '',
+            'autocompleteList' => $this->autocomplete
+                ? $this->autocomplete
+                : '',
+        ]).$output;
     }
 }
