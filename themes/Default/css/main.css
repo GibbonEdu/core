@@ -81,12 +81,12 @@ a img {
 /* TYPOGRAPHY */
 p {
     margin: 0px 0px 15px 0px;
-    font-size: 13px;
+    font-size: 14px;
 }
 ul,
 ol {
     margin: 0 0 1px;
-    font-size: 13px;
+    font-size: 14px;
 }
 h1:not([class]),
 h2:not([class]),
@@ -520,7 +520,7 @@ a.edButtonHTML,
 }
 
 ul.ui-tabs-nav {
-    font-size: 13px;
+    font-size: 14px;
     border-radius: 0px !important ;
     background: none !important ;
     border: none !important ;

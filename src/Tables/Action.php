@@ -129,7 +129,7 @@ class Action extends WebLink
                             break;
             case 'import':  $this->setIcon('upload');
                             break;
-            case 'view':    $this->setIcon('zoom');
+            case 'view':    $this->setIcon('view');
                             break;
             case 'accept':   $this->setIcon('iconTick');
                             break;
