@@ -252,6 +252,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->setIcon('username')
                             ->groupAlign('left')
                             ->setAria('label', __('Username or email'))
+                            ->setTitle(__('Username or email'))
                             ->setClass('text-sm py-2')
                             ->setAttribute('tabindex', -1);
                         $row->addTextField('username')
@@ -269,6 +270,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->setIcon('password')
                             ->groupAlign('left')
                             ->setAria('label', __('Password'))
+                            ->setTitle(__('Password'))
                             ->setClass('text-sm py-2')
                             ->setAttribute('tabindex', -1);
                         $row->addPassword('password')
@@ -286,6 +288,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->setIcon('calendar')
                             ->groupAlign('left')
                             ->setAria('label', __('School Year'))
+                            ->setTitle(__('School Year'))
                             ->setClass('text-sm py-2')
                             ->setAttribute('tabindex', -1);
                         $row->addSelectSchoolYear('gibbonSchoolYearID')
@@ -301,6 +304,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->setIcon('language')
                             ->groupAlign('left')
                             ->setAria('label', __('Language'))
+                            ->setTitle(__('Language'))
                             ->setClass('text-sm py-2')
                             ->setAttribute('tabindex', -1);
                         $row->addSelectI18n('gibboni18nID')

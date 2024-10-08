@@ -19,14 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
