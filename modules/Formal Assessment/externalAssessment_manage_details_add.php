@@ -20,9 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentFieldGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\DataSet;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\School\ExternalAssessmentGateway;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentEntryGateway;
+use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
     // Access denied
@@ -49,18 +54,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     } else {
         try {
             if ($allStudents != 'on') {
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.name AS yearGroup, gibbonFormGroup.nameShort AS formGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
+                $result = $container->get(UserGateway::class)->getUserDetails($gibbonPersonID, $session->get('gibbonSchoolYearID'));
+
             } else {
-                $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS formGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                $result = $container->get(UserGateway::class)->getUserByPersonID($gibbonPersonID);
             }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+          
         } catch (PDOException $e) {
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             echo $page->getBlankSlate();
         } else {
             if ($search != '') {
@@ -73,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     ->setURL('/modules/Formal Assessment/externalAssessment_details.php')
                     ->addParams($params);
             }
-            $row = $result->fetch();
+            $row = $result;
 
             // DISPLAY STUDENT DATA
             $table = DataTable::createDetails('personal');
@@ -100,10 +103,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                 $form->addRow()->addHeading('Assessment Type', __('Assessment Type'));
 
-                $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
+                $result = $container->get(ExternalAssessmentGateway::class)->selectActiveExternalAssessments();
+
                 $row = $form->addRow();
                     $row->addLabel('gibbonExternalAssessmentID', __('Choose Assessment'));
-                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->required()->placeholder();
+                    $row->addSelect('gibbonExternalAssessmentID')->fromResults($result)->required()->placeholder();
 
                 $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
                 $row = $form->addRow()->addClass('copyToGCSE');
@@ -126,11 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $copyToGCSECheck = $_GET['copyToGCSECheck'] ?? null;
                 $copyToIBCheck = $_GET['copyToIBCheck'] ?? null;
 
-
-                    $dataSelect = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
-                    $sqlSelect = "SELECT * FROM gibbonExternalAssessment WHERE active='Y' AND gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY name";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
+                $resultSelect = $container->get(ExternalAssessmentGateway::class)->selectBy(['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'active' => 'Y']);
 
                 if ($resultSelect->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
@@ -141,17 +141,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     if ($copyToGCSECheck == 'Y') {
                         $grades = array();
 
-                            $dataCopy = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlCopy = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='Cognitive Abilities Test' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
-                            $resultCopy = $connection2->prepare($sqlCopy);
-                            $resultCopy->execute($dataCopy);
+                        $resultCopy = $container->get(ExternalAssessmentGateway::class)->selectCATGradesByPersonID( $gibbonPersonID);
+                        
                         if ($resultCopy->rowCount() > 0) {
                             $rowCopy = $resultCopy->fetch();
 
-                                $dataCopy2 = array('category' => '%GCSE Target Grades', 'gibbonExternalAssessmentStudentID' => $rowCopy['gibbonExternalAssessmentStudentID']);
-                                $sqlCopy2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) WHERE category LIKE :category AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonScaleGradeID IS NULL) ORDER BY name';
-                                $resultCopy2 = $connection2->prepare($sqlCopy2);
-                                $resultCopy2->execute($dataCopy2);
+                                $resultCopy2 = $container->get(ExternalAssessmentStudentEntryGateway::class)->selectGCSEGradesByStudentID($rowCopy['gibbonExternalAssessmentStudentID']);
+
                             while ($rowCopy2 = $resultCopy2->fetch()) {
                                 $grades[$rowCopy2['name']][0] = $rowCopy2['gibbonScaleGradeID'];
                             }
@@ -165,24 +161,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         $countWeighted = 0;
                         $total = 0;
                         try {
-                            $dataCopy = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlCopy = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='GCSE/iGCSE' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
-                            $resultCopy = $connection2->prepare($sqlCopy);
-                            $resultCopy->execute($dataCopy);
+
+                            $resultCopy = $container->get(ExternalAssessmentStudentGateway::class)->selectGCSEGradesByPersonID($gibbonPersonID);
+
                         } catch (PDOException $e) {
                         }
 
                         if ($resultCopy->rowCount() > 0) {
                             $rowCopy = $resultCopy->fetch();
                             try {
-                                $dataCopy2 = array('gibbonExternalAssessmentStudentID' => $rowCopy['gibbonExternalAssessmentStudentID']);
                                 if ($copyToIBCheck == 'Target') {
-                                    $sqlCopy2 = "SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE category LIKE '%Target Grade' AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID IS NULL) ORDER BY name";
+                                    $resultCopy2 = $container->get(ExternalAssessmentStudentEntryGateway::class)->selectTargetGradesByExternalAssessmentStudentID($rowCopy['gibbonExternalAssessmentStudentID']);
                                 } elseif ($copyToIBCheck == 'Final') {
-                                    $sqlCopy2 = "SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE category LIKE '%Final Grade' AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID IS NULL) ORDER BY name";
+                                    $resultCopy2 = $container->get(ExternalAssessmentStudentEntryGateway::class)->selectFinalGradesByExternalAssessmentStudentID($rowCopy['gibbonExternalAssessmentStudentID']);
                                 }
-                                $resultCopy2 = $connection2->prepare($sqlCopy2);
-                                $resultCopy2->execute($dataCopy2);
                             } catch (PDOException $e) {
                             }
                             while ($rowCopy2 = $resultCopy2->fetch()) {
@@ -348,11 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         $row->addFileUpload('file');
                     }
 
-
-                        $dataField = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
-                        $sqlField = 'SELECT category, gibbonExternalAssessmentField.*, gibbonScale.usage FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, gibbonExternalAssessmentField.order';
-                        $resultField = $connection2->prepare($sqlField);
-                        $resultField->execute($dataField);
+                    $resultField = $container->get(ExternalAssessmentFieldGateway::class)->selectFieldsByExternalAssessment($gibbonExternalAssessmentID);
 
                     if ($resultField->rowCount() <= 0) {
                         $form->addRow()->addAlert(__('There are no fields in this assessment.'), 'warning');

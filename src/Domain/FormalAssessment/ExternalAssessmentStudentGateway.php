@@ -37,4 +37,28 @@ class ExternalAssessmentStudentGateway extends QueryableGateway
     private static $primaryKey = 'gibbonExternalAssessmentStudentID';
 
     private static $searchableColumns = [];
+
+    public function selectGCSEGradesByPersonID($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='GCSE/iGCSE' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getStudentExternalAssessmentDetails($gibbonExternalAssessmentStudentID)
+    {
+        $data = ['gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID];
+        $sql = 'SELECT gibbonExternalAssessmentStudent.*, gibbonExternalAssessment.name AS assessment, gibbonExternalAssessment.allowFileUpload FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectStudentExternalAssessmentGrades($gibbonPersonID, $gibbonExternalAssessmentFieldID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID];
+        $sql = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND NOT gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID='' ORDER BY date DESC";
+
+        return $this->db()->select($sql, $data);
+    }
 }

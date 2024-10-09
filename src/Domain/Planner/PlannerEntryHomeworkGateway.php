@@ -39,4 +39,11 @@ class PlannerEntryHomeworkGateway extends QueryableGateway
     private static $primaryKey = 'gibbonPlannerEntryHomeworkID';
     private static $searchableColumns = [];
 
+    public function selectHomeworkByStudent($gibbonPlannerEntryID, $gibbonPersonID)
+    {
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+
+        return $this->db()->select($sql, $data);
+    }
 }

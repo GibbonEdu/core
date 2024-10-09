@@ -23,16 +23,17 @@ namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
+use League\Container\ContainerAwareTrait;
+use Gibbon\Domain\System\AlertLevelGateway;
+use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\System\SettingGateway;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
 /**
  * Parent Dashboard View Composer
@@ -485,10 +486,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $rowSub = $resultSub->fetch();
 
                             try {
-                                $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $gibbonPersonID);
-                                $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                $resultWork = $connection2->prepare($sqlWork);
-                                $resultWork->execute($dataWork);
+                                $resultWork = $this->getContainer()->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($rowEntry['gibbonPlannerEntryID'], $gibbonPersonID);
                             } catch (\PDOException $e) {
                             }
                             if ($resultWork->rowCount() > 0) {
