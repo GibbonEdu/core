@@ -273,9 +273,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 }
             }
             if ($classes == false) {
-                $plannerOutput .= "<div style='margin-top: 2px' class='message'>";
-                $plannerOutput .= __('There are no records to display.');
-                $plannerOutput .= '</div>';
+                $plannerOutput .= Format::alert(__('There are no records to display.'), 'empty');
             }
         }
 
@@ -557,9 +555,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $gradesOutput .= '</table>';
             }
             if ($grades == false) {
-                $gradesOutput .= "<div style='margin-top: 2px' class='message'>";
-                $gradesOutput .= __('There are no records to display.');
-                $gradesOutput .= '</div>';
+                $gradesOutput .= Format::alert(__('There are no records to display.'), 'empty');
             }
         }
 

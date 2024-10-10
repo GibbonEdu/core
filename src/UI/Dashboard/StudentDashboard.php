@@ -123,9 +123,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             $planner .= __("Today's Lessons");
             $planner .= '</h2>';
             if ($result->rowCount() < 1) {
-                $planner .= "<div class='message'>";
-                $planner .= __('There are no records to display.');
-                $planner .= '</div>';
+                $planner .= Format::alert(__('There are no records to display.'), 'empty');
             } else {
                 $planner .= "<div class='linkTop'>";
                 $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner')."'>".__('View Planner').'</a>';
