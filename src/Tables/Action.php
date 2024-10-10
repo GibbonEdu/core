@@ -321,8 +321,8 @@ class Action extends WebLink
 
         if (!$this->external && !$this->direct && !$this->modal) {
             $this->setAttribute('hx-boost', 'true')
-                ->setAttribute('hx-target', '#content-inner')
-                ->setAttribute('hx-select', '#content-inner')
+                ->setAttribute('hx-target', '#content-wrap')
+                ->setAttribute('hx-select', '#content-wrap')
                 ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
         }
 

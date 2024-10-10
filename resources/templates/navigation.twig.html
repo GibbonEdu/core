@@ -63,7 +63,7 @@ collapsed drop-down list in 'mini' view-mode.
                     <ul class="list-none m-0 mb-6">
                     {% for item in items %}
                         <li class="-mx-2 px-3 py-1 -my-1 text-sm leading-normal lg:leading-normal rounded-sm " :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-'}) }}' ) ? 'text-gray-800 bg-transparent-300 font-semibold':'' ] ">
-                            <a hx-boost="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:window:top swap:0s" 
+                            <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:window:top swap:0s" 
                             @click="menuItemActive = '{{ item.actionName|replace({' ': '-'}) }}'"
                             href="{{ item.url }}" class="block  text-gray-700 hover:underline">
                                 {{ __(item.name, item.textDomain) }}

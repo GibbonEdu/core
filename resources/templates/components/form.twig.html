@@ -8,9 +8,8 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% set isBlank = "blank" in form.getClass %}
-{% set standardLayout = ("standardForm" in form.getClass or "smallIntBorder" in form.getClass) and not isBlank %}
-{% set useSections = standardLayout and "noIntBorder" not in form.getClass %}
+{% set standardLayout = "noIntBorder" not in form.getClass and "blank" not in form.getClass %}
+{% set useSections = "noIntBorder" not in form.getClass %}
 {% set useMetaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
 {% set useAutosave = "standardForm" in form.getClass and form.getAction != 'ajax' and form.getAction %}
 
@@ -70,9 +69,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and not isBlank ? 'flex' : 'table' %}
-
-
     {% if form.getRows|length > 0 %}
     <section class="w-full grid grid-cols-5 2xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0">
 
@@ -88,10 +84,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 {% set rowLoop = loop %}
 
-                {% if not isBlank %}
-                    {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-4' %}
-                    {% set rowClass = section == 'submit' ? rowClass ~ ' sm:items-center' : rowClass ~ ' sm:items-start' %}
-                {% endif %}
+                {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-4' %}
+                {% set rowClass = section == 'submit' ? rowClass ~ ' sm:items-center' : rowClass ~ ' sm:items-start' %}
 
 
                 {% set firstElement = (row.getElements|first) %}
@@ -120,16 +114,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
                         {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end' : 'w-full ' %}
-                    {% elseif loop.last and loop.length == 2 and renderStyle == 'flex' %}
+                    {% elseif loop.last and loop.length == 2 %}
                         {% set class = 'flex-1 relative flex justify-end' %}
                     {% else %}
-                        {% set class = loop.last and loop.length > 2 ? 'flex-1' : not isBlank ? 'flex-1' : '' %}
+                        {% set class = loop.last and loop.length > 2 ? 'flex-1' : '' %}
                     {% endif %}
-
-                    {% if renderStyle == 'table' and element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                        {% set class = class ~ " lg:w-2/5" %}
-                    {% endif %}
-
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
                     <div class="{{ class }} {{ hasClass ? element.getClass : '' }}" >
