@@ -235,9 +235,10 @@ class Checkbox extends Input
         if (!empty($this->options) && is_array($this->options)) {
             $optionGroups = !is_array(current($this->options))?  ['' => $this->options] : $this->options;
             
-
             foreach ($optionGroups as $group => $optionsList) {
                 foreach ($optionsList as $value => $label) {
+                    $this->setValue($value);
+
                     $options[$group][$value] = [
                         'value'    => $value,
                         'label'    => $label,

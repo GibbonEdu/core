@@ -19,20 +19,20 @@
 
         <?php $itemId = $hasMultiple ? $identifier.$count : $identifier; ?>
         <?php $itemClass = 'h-4 w-4 rounded text-blue-500 focus:ring-blue-600'; ?>
-
+        
         <?php if ($inline) { ?>
-            <input type="checkbox" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" <?= $attributes; ?> value="<?= $checkbox['value']; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
+            <input type="checkbox" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" <?= $attributes; ?> <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
             <label for="<?= $itemId; ?>" class="flex-1 text-left text-sm"><?= $checkbox['label']; ?></label>
 
         <?php } elseif ($align == 'right') { ?>
             
             <div class="inline-flex gap-2 justify-center items-center text-right">
             <label class="leading-compact flex-1 text-sm" for="<?= $itemId; ?>"><?= $checkbox['label']; ?></label>
-            <input type="checkbox" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" <?= $attributes; ?> value="<?= $checkbox['value']; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
+            <input type="checkbox" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" <?= $attributes; ?> <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
             </div>
         <?php } else { ?>
             <div class="inline-flex gap-2 justify-center items-center text-left">
-            <input type="checkbox" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" <?= $attributes; ?> value="<?= $checkbox['value']; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
+            <input type="checkbox" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" <?= $attributes; ?> <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
             <label class="leading-compact flex-1 text-sm" for="<?= $itemId; ?>"><?= $checkbox['label']; ?></label>
             </div>
         <?php } ?>
