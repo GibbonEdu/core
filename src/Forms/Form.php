@@ -26,6 +26,7 @@ use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\View\FormBlankView;
 
 /**
  * Form
@@ -83,6 +84,16 @@ class Form implements OutputableInterface
             ->setClass($class)
             ->setAction($action)
             ->setMethod($method);
+
+        return $form;
+    }
+
+    public static function createBlank($id, $action, $method = 'post', $class = 'smallIntBorder w-full')
+    {
+        global $container;
+
+        $form = static::create($id, $action, $method, $class);
+        $form->setRenderer($container->get(FormBlankView::class));
 
         return $form;
     }

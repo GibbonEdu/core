@@ -136,10 +136,10 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             if ($googleSettings['enabled'] == 'Y' || $microsoftSettings['enabled'] == 'Y' || $genericSSOSettings['enabled'] == 'Y') {
                 echo '<div class="column-no-break">';
 
-                $form = Form::create('loginFormOAuth2', '#');
+                $form = Form::createBlank('loginFormOAuth2', '#');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setTitle(__('Single Sign-on'));
-                $form->setClass('blank w-full loginTableOAuth2');
+                $form->setClass('loginTableOAuth2');
                 $form->setAttribute('x-data', "{'options': false}");
 
                 $view = $this->getContainer()->get(View::class);
@@ -166,7 +166,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     ]))->addClass('flex-1');
                 }
 
-                $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                 $row->addButton('')
                     ->setID('schoolYearLabel')
                     ->setIcon('calendar')
@@ -181,7 +181,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     ->placeholder(null)
                     ->selected($this->session->get('gibbonSchoolYearID'));
 
-                $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                     $row->addButton('')
                         ->setID('languageLabel')
                         ->setIcon('language')
@@ -220,12 +220,11 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
 
-                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) )
+                $form = Form::createBlank('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) )
                     ->setAttribute('x-data', "{'options': false}");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
-                $form->setClass('blank w-full');
                 $form->addHiddenValue('address', $this->session->get('address'));
                 $form->addHiddenValue('method', 'default');
 
@@ -235,9 +234,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $nonce = hash('sha256', $guid.time());
                     $this->session->set('mfaFormNonce', $nonce);
 
-                    $form = Form::create('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
+                    $form = Form::createBlank('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
                     $form->setAutocomplete(false);
-                    $form->setClass('blank w-full');
                     $form->addHiddenValue('address', $this->session->get('address'));
                     $form->addHiddenValue('method', 'mfa');
                     $form->addHiddenValue('mfaFormNonce', $nonce);
@@ -282,7 +280,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->placeholder(__('Password'))
                             ->addValidationOption('onlyOnSubmit: true');
 
-                    $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                    $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                         $row->addButton('')
                             ->setID('schoolYearLabel')
                             ->setIcon('calendar')
@@ -298,7 +296,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             ->placeholder(null)
                             ->selected($this->session->get('gibbonSchoolYearID'));
 
-                    $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-cloak', 'on');
+                    $row = $form->addRow()->setClass('flex items-center justify-between')->setAttribute('x-show', 'options')->setAttribute('x-transition')->setAttribute('x-cloak', 'on');
                         $row->addButton('')
                             ->setID('languageLabel')
                             ->setIcon('language')
@@ -318,7 +316,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         $row->addContent('<a class="text-xs font-semibold text-gray-700 hover:text-blue-600 hover:underline" href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
                             ->wrap('<span class="small">', '</span>')
                             ->setClass('flex-1');
-                        $row->addToggle('optionsSSO')
+                        $row->addToggle('options')
                             ->setToggle('Y', __('Options'), 'N', __('Options'))
                             ->setSize('sm')
                             ->setAttribute('@click', 'options = !options');

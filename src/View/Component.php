@@ -64,12 +64,21 @@ class Component
             throw new \Exception(sprintf('The component %s could not be found.', $file));
         }
 
-        extract(array_merge($context, static::$environment));
+        extract(static::safeExtract(array_merge($context, static::$environment)));
 
         ob_start();
 
         include($file);
 
         return ob_get_clean();
+    }
+
+    private static function safeExtract($array)
+    {
+        $safeKeys = array_map(function ($key) {
+            return preg_replace('/[^a-zA-Z0-9]/', '_', $key);
+        }, array_keys($array));
+
+        return array_combine($safeKeys, array_values($array));
     }
 }
