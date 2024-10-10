@@ -245,13 +245,7 @@ class Action extends WebLink
      */
     public function modalWindow($width = 650, $height = 650)
     {
-        $this->modal = true;
-
-        $this->setAttribute('hx-boost', 'true')
-            ->setAttribute('hx-target', '#modalContent')
-            ->setAttribute('hx-push-url', 'false')
-            ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
-            ->setAttribute('x-on:click', "modalType = '{$this->name}'");
+        $this->modal = !empty($width);
 
         return $this;
     }
@@ -319,7 +313,13 @@ class Action extends WebLink
             $queryParams[$key] = $value;
         }
 
-        if (!$this->external && !$this->direct && !$this->modal) {
+        if ($this->modal) {
+            $this->setAttribute('hx-boost', 'true')
+                ->setAttribute('hx-target', '#modalContent')
+                ->setAttribute('hx-push-url', 'false')
+                ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
+                ->setAttribute('x-on:click', "modalType = '{$this->name}'");
+        } elseif (!$this->external && !$this->direct && $this->url != '#') {
             $this->setAttribute('hx-boost', 'true')
                 ->setAttribute('hx-target', '#content-wrap')
                 ->setAttribute('hx-select', '#content-wrap')
@@ -337,7 +337,7 @@ class Action extends WebLink
         } else if ($this->modal) {
             $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
                 ->withQueryParams($queryParams));
-        } else {
+        } else if ($this->url != '#') {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));

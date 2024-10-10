@@ -9,7 +9,7 @@
 ?>
 
 <a <?= $attributes; ?> title="<?= !$displayLabel ? $label : ''; ?>"
-    class="inline-flex items-center align-middle rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm border border-gray-400 hover:bg-gray-100 <?= $hoverClass; ?> <?= $displayLabel ? 'text-gray-600 lg:text-gray-500' : 'text-gray-600'; ?>">
+    class="<?= $class; ?> inline-flex items-center align-middle rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm border border-gray-400 hover:bg-gray-100 <?= $hoverClass; ?> <?= $displayLabel ? 'text-gray-600 lg:text-gray-500' : 'text-gray-600'; ?>">
 
     <?php $svgClass = 'w-6 h-6 sm:h-5 sm:w-5'.($displayLabel ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
 
@@ -84,7 +84,7 @@
         <path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clip-rule="evenodd" />
         </svg>
 
-    <?php } elseif ($action == 'archive' || $icon == 'delivery2') { ?>
+    <?php } elseif ($action == 'archive' || $action == 'quicksave' || $icon == 'delivery2') { ?>
         <svg class="<?= $svgClass; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
         <path fill-rule="evenodd" d="M2 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2Zm0 4.5h16l-.811 7.71a2 2 0 0 1-1.99 1.79H4.802a2 2 0 0 1-1.99-1.79L2 7.5ZM10 9a.75.75 0 0 1 .75.75v2.546l.943-1.048a.75.75 0 1 1 1.114 1.004l-2.25 2.5a.75.75 0 0 1-1.114 0l-2.25-2.5a.75.75 0 1 1 1.114-1.004l.943 1.048V9.75A.75.75 0 0 1 10 9Z" clip-rule="evenodd" />
         </svg>

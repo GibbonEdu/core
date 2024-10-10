@@ -21,14 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Column;
 use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\FormFactoryInterface;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Http\Url;
 use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Action;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * FormFactory
@@ -130,6 +131,11 @@ class FormFactory implements FormFactoryInterface
     public function createWebLink($content = '')
     {
     	return new Layout\WebLink($content);
+    }
+
+    public function createAction($name, $label = '')
+    {
+    	return new Action($name, $label);
     }
 
     /* BASIC INPUT --------------------------- */
