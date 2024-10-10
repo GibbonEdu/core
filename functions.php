@@ -362,8 +362,8 @@ function getFastFinder($connection2, $guid)
 {
     global $session;
 
-    $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
-    $form->setClass('blank w-full');
+    $form = Form::createBlank('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
+    $form->setClass('w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
 

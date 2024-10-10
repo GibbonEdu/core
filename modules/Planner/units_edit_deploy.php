@@ -109,11 +109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         $lessonTimes = $plannerEntryGateway->queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
 
-        $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
+        $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
         $form->setTitle(__('Step 1 - Select Lessons'));
         $form->setDescription(__('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.'));
 
-        $form->setClass('w-full blank bulkActionForm');
+        $form->setClass('bulkActionForm');
 
         $table = $form->addRow()->addDataTable('lessons', $criteria)->withData($lessonTimes);
         $table->addMetaData('hidePagination', true);

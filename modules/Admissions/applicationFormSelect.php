@@ -82,8 +82,7 @@ if ($proceed == false) {
     } 
     
     // FORM
-    $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
-    $form->setClass('w-full blank');
+    $form = Form::createBlank('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
     $form->setTitle(__($welcomeHeading, ['organisationNameShort' => $session->get('organisationNameShort')]));
     $form->setDescription(__($welcomeText));
     

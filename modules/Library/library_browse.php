@@ -73,9 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }, array());
 
 
-    $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
+    $form = Form::createBlank('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('w-full blank border-transparent mb-6');
+    $form->setClass('mb-6');
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
     $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');

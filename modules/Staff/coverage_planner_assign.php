@@ -122,10 +122,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
         ->fromPOST();
 
     // FORM
-    $form = Form::create('staffCoverage', $session->get('absoluteURL').'/modules/Staff/coverage_planner_assignProcess.php');
+    $form = Form::createBlank('staffCoverage', $session->get('absoluteURL').'/modules/Staff/coverage_planner_assignProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('blank bulkActionForm');
+    $form->setClass('bulkActionForm');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $coverage['gibbonStaffCoverageID']);

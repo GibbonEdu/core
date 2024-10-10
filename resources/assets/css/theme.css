@@ -192,7 +192,7 @@ div.magic:not(.tag)::before {
 }
 
 .empty {
-    @apply bg-gray-50 border-gray-600 text-gray-600;
+    @apply bg-gray-50 border-gray-800 text-gray-600;
 }
 
 div.empty:not(.tag)::before {
@@ -306,6 +306,12 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
     input, select, option, textarea {
         font-size: initial !important;
     }
+}
+
+input[type="checkbox"] {
+    max-width: 1rem;
+    max-height: 1rem;
+    padding: 0 !important;
 }
 
 /* [multiple], [type="date"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="search"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], input:where(:not([type])), select, textarea {

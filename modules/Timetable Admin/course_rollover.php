@@ -138,8 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     return $currentCourse;
                 }, $currentCourses);
 
-                $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
-                $form->setClass('w-full blank');
+                $form = Form::createBlank('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
 
                 $form->addHiddenValue('nextYear', $nextYearID);
 

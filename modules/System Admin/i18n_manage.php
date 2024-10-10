@@ -54,11 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         $i18n['isInstalled'] = i18nFileExists($session->get('absolutePath'), $i18n['code']);
     });
 
-    $form = Form::create('i18n_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/i18n_manageProcess.php');
+    $form = Form::createBlank('i18n_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/i18n_manageProcess.php');
     $form->setTitle(__('Installed'));
-    $form->setClass('w-full');
     $form->addHiddenValue('address', $session->get('address'));
-    $form->setClass('w-full blank');
 
     // DATA TABLE
     $table = $form->addRow()->addDataTable('i18n_installed', $criteria)->withData($languages);

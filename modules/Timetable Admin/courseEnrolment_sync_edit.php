@@ -42,8 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         return;
     }
 
-    $form = Form::create('courseEnrolmentSyncEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_addEditProcess.php');
-    $form->setClass('w-full blank');
+    $form = Form::createBlank('courseEnrolmentSyncEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_addEditProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));

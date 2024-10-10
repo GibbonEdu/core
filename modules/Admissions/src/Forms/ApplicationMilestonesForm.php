@@ -61,12 +61,11 @@ class ApplicationMilestonesForm extends Form
         $milestonesData = json_decode($milestones ?? '', true);
 
         // Build the form
-        $form = Form::create('applicationMilestones', $action);
+        $form = Form::createBlank('applicationMilestones', $action);
 
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);
         $form->addHiddenValue('tab', 1);
-        $form->setClass('w-full blank');
 
         $col = $form->addRow()->addColumn();
 

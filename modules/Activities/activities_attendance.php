@@ -175,8 +175,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     if (count($activitySessions) <= 0) {
         echo $page->getBlankSlate();
     } else {
-        $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
-        $form->setClass('blank block w-full');
+        $form = Form::createBlank('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
+        $form->setClass('block w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));

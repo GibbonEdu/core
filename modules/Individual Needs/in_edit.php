@@ -122,8 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     return $item['archiveTitle'].' ('.Format::date(substr($item['archiveTimestamp'], 0, 10)).')';
                 }, $archivedIEPs);
 
-                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-                $form->setClass('blank w-full');
+                $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
                 $form->addHiddenValue('address', $session->get('address'));
 
                 $col = $form->addRow()->addColumn()->addClass('flex justify-end items-center');
@@ -148,10 +147,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             echo $table->render([$student]);
 
-            $form = Form::create('individualNeeds', $session->get('absoluteURL').'/modules/'.$session->get('module')."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+            $form = Form::createBlank('individualNeeds', $session->get('absoluteURL').'/modules/'.$session->get('module')."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('w-full blank');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 

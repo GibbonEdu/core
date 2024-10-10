@@ -46,8 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     // DATE SELECTOR
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php';
 
-    $form = Form::create('dateNav', $link);
-    $form->setClass('blank w-full');
+    $form = Form::createBlank('dateNav', $link);
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addClass('flex flex-wrap');
@@ -57,13 +56,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     $nextDay = $date->modify('+1 day')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
-        $col->addButton(__('Previous Day'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastDay}'");
-        $col->addButton(__('Today'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisDay}'");
-        $col->addButton(__('Next Day'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextDay}'");
+        $col->addButton(__('Previous Day'))->groupAlign('left')->onClick("window.location.href='{$link}&date={$lastDay}'");
+        $col->addButton(__('Today'))->groupAlign('middle')->onClick("window.location.href='{$link}&date={$thisDay}'");
+        $col->addButton(__('Next Day'))->groupAlign('right')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('date')->setValue($date->format('Y-m-d'))->setClass('shortWidth');
-        $col->addSubmit(__('Go'));
+        $col->addDate('date')->setValue($date->format('Y-m-d'))->setClass('shortWidth')->groupAlign('left');
+        $col->addSubmit(__('Go'))->groupAlign('right');
 
     echo $form->getOutput();
 

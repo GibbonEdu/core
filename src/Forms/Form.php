@@ -88,7 +88,7 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public static function createBlank($id, $action, $method = 'post', $class = 'smallIntBorder w-full')
+    public static function createBlank($id, $action, $method = 'post', $class = '')
     {
         global $container;
 

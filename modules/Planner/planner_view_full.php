@@ -465,8 +465,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
 
                         // LESSON CONTENTS
-                        $form = Form::create('smartBlockCompletion', $session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
-                        $form->setClass('blank');
+                        $form = Form::createBlank('smartBlockCompletion', $session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
 
                         $form->setTitle(__('Lesson Content'));
                         $description = '';

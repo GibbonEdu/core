@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $permissionsArray = ($resultPermissions->rowCount() > 0)? $resultPermissions->fetchAll() : array();
         $totalCount = 0;
 
-        $form = Form::create('permissions', $session->get('absoluteURL').'/modules/'.$session->get('module').'/permission_manageProcess.php');
-        $form->setClass('w-full blank overflow-x-auto');
+        $form = Form::createBlank('permissions', $session->get('absoluteURL').'/modules/'.$session->get('module').'/permission_manageProcess.php');
+        $form->setClass('overflow-x-auto');
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
         $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
