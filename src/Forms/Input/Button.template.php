@@ -1,10 +1,3 @@
-<?php 
-    if ($group == 'left') $groupClass = 'rounded-l-md -mr-px';
-    elseif ($group == 'right') $groupClass = 'rounded-r-md -ml-px';
-    elseif ($group == 'middle') $groupClass = 'rounded-none';
-    else $groupClass = 'rounded-md';
-?>
-    
 <?php if ($type == 'blank') { ?>
 
     <button type="button" <?= $attributes; ?> class="<?= $class; ?> "><?= $value; ?></button>

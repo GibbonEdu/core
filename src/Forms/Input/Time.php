@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\View\Component;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 
 /**
  * Time
@@ -33,6 +34,8 @@ use Gibbon\View\Component;
  */
 class Time extends TextField
 {
+    use ButtonGroupTrait;
+    
     protected $format = 'H:i'; // Default to 24 hour clock
     protected $min;
     protected $max;
@@ -158,7 +161,7 @@ class Time extends TextField
         $output .= '</script>';
 
         return Component::render(Time::class, $this->getAttributeArray() + [
-            'group'            => $this->group,
+            'groupClass'       => $this->getGroupClass(),
             'unique'           => $this->unique ? json_encode($this->unique) : '',
             'autocompleteList' => $this->autocomplete
                 ? $this->autocomplete

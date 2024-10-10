@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Element;
 use Gibbon\View\Component;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 
 /**
  * TextField
@@ -31,9 +32,10 @@ use Gibbon\View\Component;
  */
 class TextField extends Input
 {
+    use ButtonGroupTrait;
+    
     protected $autocomplete;
     protected $unique;
-    protected $group;
 
     /**
      * Create an HTML form input.
@@ -149,26 +151,13 @@ class TextField extends Input
     }
 
     /**
-     * Create a button group by setting the alignment of this button.
-     *
-     * @param string $value     One of: left, middle, right
-     * @return self
-     */
-    public function groupAlign($value)
-    {
-        $this->group = $value;
-        return $this;
-    }
-
-
-    /**
      * Gets the HTML output for this form element.
      * @return  string
      */
     protected function getElement()
     {
         return Component::render(TextField::class, $this->getAttributeArray() + [
-            'group'            => $this->group,
+            'groupClass'       => $this->getGroupClass(),
             'unique'           => $this->unique ? json_encode($this->unique) : '',
             'autocompleteList' => $this->autocomplete
                 ? $this->autocomplete

@@ -21,9 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Traits\InputAttributesTrait;
-use Gibbon\Forms\Layout\Element;
 use Gibbon\View\Component;
+use Gibbon\Forms\Layout\Element;
+use Gibbon\Forms\Traits\InputAttributesTrait;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 
 /**
  * Button
@@ -33,11 +34,11 @@ use Gibbon\View\Component;
  */
 class Button extends Element
 {
+    use ButtonGroupTrait;
     use InputAttributesTrait;
     
     private $type;
     private $icon;
-    private $group;
 
     public function __construct($name, $type = 'button', $onClick = null, $id = null)
     {
@@ -86,25 +87,13 @@ class Button extends Element
         $this->icon = $value;
         return $this;
     }
-
-    /**
-     * Create a button group by setting the alignment of this button.
-     *
-     * @param string $value     One of: left, middle, right
-     * @return self
-     */
-    public function groupAlign($value)
-    {
-        $this->group = $value;
-        return $this;
-    }
-
+ 
     protected function getElement()
     {
         return Component::render(Button::class, $this->getAttributeArray() + [
-            'type' => $this->type,
-            'icon' => $this->icon,
-            'group' => $this->group,
+            'groupClass' => $this->getGroupClass(),
+            'type'       => $this->type,
+            'icon'       => $this->icon,
         ]);
     }
 }

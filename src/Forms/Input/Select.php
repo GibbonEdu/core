@@ -24,6 +24,7 @@ namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\View\Component;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 
 /**
  * Select
@@ -33,12 +34,12 @@ use Gibbon\View\Component;
  */
 class Select extends Input
 {
+    use ButtonGroupTrait;
     use MultipleOptionsTrait;
 
     protected $placeholder = null;
     protected $selected = null;
     protected $hasSelected = false;
-    protected $group;
 
     protected $chainedToID;
     protected $chainedToValues = [];
@@ -149,18 +150,6 @@ class Select extends Input
     }
 
     /**
-     * Create a button group by setting the alignment of this button.
-     *
-     * @param string $value     One of: left, middle, right
-     * @return self
-     */
-    public function groupAlign($value)
-    {
-        $this->group = $value;
-        return $this;
-    }
-
-    /**
      * Return true if the value passed in is in the array of selected options.
      * @param   string  $value
      * @return  bool
@@ -243,10 +232,10 @@ class Select extends Input
         }
 
         return Component::render(Select::class, $this->getAttributeArray() + [
+            'groupClass'  => $this->getGroupClass(),
             'placeholder' => $this->placeholder,
             'chainedToID' => $this->chainedToID,
             'options'     => $options,
-            'group'       => $this->group,
         ]);
     }
 }

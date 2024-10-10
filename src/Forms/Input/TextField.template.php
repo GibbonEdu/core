@@ -1,9 +1,3 @@
-<?php 
-    if ($group == 'left') $groupClass = 'rounded-l-md -mr-px';
-    elseif ($group == 'right') $groupClass = 'rounded-r-md -ml-px';
-    elseif ($group == 'middle') $groupClass = 'rounded-none';
-    else $groupClass = 'rounded-md';
-?>
 <div class="flex-grow relative flex">
     <input type="<?= $type ?? 'text'; ?>" <?= $attributes; ?> 
         class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-0 py-2  placeholder:text-gray-400  sm:text-sm sm:leading-6 <?= $type != 'text' ? 'input-icon' : ''; ?>

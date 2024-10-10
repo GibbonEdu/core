@@ -24,6 +24,7 @@ namespace Gibbon\Forms\Input;
 use DateTime;
 use Gibbon\Services\Format;
 use Gibbon\View\Component;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 
 /**
  * Date
@@ -33,6 +34,8 @@ use Gibbon\View\Component;
  */
 class Date extends TextField
 {
+    use ButtonGroupTrait;
+    
     protected $min;
     protected $max;
     protected $from;
@@ -169,6 +172,8 @@ class Date extends TextField
     {
         $this->setAttribute('autocomplete', 'off');
 
-        return Component::render(Date::class, $this->getAttributeArray() + []);
+        return Component::render(Date::class, $this->getAttributeArray() + [
+            'groupClass' => $this->getGroupClass(),
+        ]);
     }
 }
