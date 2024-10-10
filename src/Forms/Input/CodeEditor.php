@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Input\Input;
+use Gibbon\View\Component;
 
 /**
  * CodeEditor
@@ -64,66 +65,11 @@ class CodeEditor extends Input
         $text = $this->getAttribute('value');
         $this->setAttribute('value', '');
 
-        $output = '<textarea '.$this->getAttributeString().' style="display: none;">';
-        $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
-        $output .= '</textarea>';
-
-        $output .= '<div id="editor" class="w-full" style="height: '.$this->height.'px;">';
-        $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
-        $output .= '</div>';
-
-        $output .= '<script src="./lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>';
-
-        if ($this->autocomplete) {
-            $output .= '<script src="./lib/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>';
-        }
-        
-        $output .= '<script>';
-        if ($this->autocomplete) {
-            $output .= 'var languageTools = ace.require("ace/ext/language_tools");';
-        }
-
-        $output .= '
-            var editor = ace.edit("editor");
-            editor.getSession().setUseWrapMode(true);
-            editor.getSession().on("change", function(e) {
-                $("#'.$this->getID().'").val(editor.getSession().getValue());
-            });';
-
-        if ($this->mode == 'twig') {
-            $output .= 'editor.getSession().setMode("ace/mode/twig");';
-        } elseif ($this->mode == 'mysql') {
-            $output .= 'editor.getSession().setMode("ace/mode/mysql");';
-        } else {
-            $output .= 'editor.getSession().setMode("ace/mode/html");';
-        }
-
-        if ($this->autocomplete) {
-            $output .= 'editor.setOptions({
-                enableBasicAutocompletion: false,
-                enableSnippets: true,
-                enableLiveAutocompletion: true
-            });
-
-            var staticWordCompleter = {
-                getCompletions: function(editor, session, pos, prefix, callback) {
-                    var wordList = '.json_encode($this->autocomplete).';
-                    callback(null, wordList.map(function(word) {
-                        return {
-                            caption: word,
-                            value: word,
-                            meta: "static"
-                        };
-                    }));
-                }
-            }
-            
-            languageTools.addCompleter(staticWordCompleter);
-            ';
-        }
-
-        $output .= '</script>';
-
-        return $output;
+        return Component::render(CodeEditor::class, $this->getAttributeArray() + [
+            'text'         => $text,
+            'mode'         => $this->mode,
+            'height'       => $this->height,
+            'autocomplete' => $this->autocomplete,
+        ]);
     }
 }

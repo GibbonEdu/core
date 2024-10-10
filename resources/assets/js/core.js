@@ -55,7 +55,7 @@ jQuery(function($){
     $(document).on('click', '.checkall[type="checkbox"]', function () {
         var checkall = this;
         var checked = checkall.checked;
-        var parent = checkall.closest('fieldset, .bulkActionForm');
+        var parent = checkall.parentElement.parentElement.closest('.checkboxGroup, .bulkActionForm');
 
         parent.querySelectorAll('input[type="checkbox"]').forEach(function (element, index, elements) {
             if (element === checkall) return;
@@ -168,22 +168,6 @@ jQuery(function($){
                 }
             }
         });
-    });
-
-    /**
-    * Color Picker. Chain the color select to the text field.
-    */
-    $('.colorPicker').each(function () {
-        var item = this;
-        var target = $(item).data('for');
-
-        $(item).change(function () {
-            $("#" + target).val($(this).val());
-        }); 
-
-        $("#" + target).on('input', function () {
-            $(item).val($(this).val());
-        }); 
     });
 
     /**

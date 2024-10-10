@@ -113,7 +113,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                         {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
-                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end' : 'w-full ' %}
+                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end' : 'flex-1' %}
                     {% elseif loop.last and loop.length == 2 %}
                         {% set class = 'flex-1 relative flex justify-end' %}
                     {% else %}
@@ -121,7 +121,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% endif %}
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
-                    <div class="{{ class }} {{ hasClass ? element.getClass : '' }}" >
+                    <div class="{{ class }} {{ hasClass ? element.getClass|default('flex-1') : 'flex-1' }}" >
                         {{ element.getOutput|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}

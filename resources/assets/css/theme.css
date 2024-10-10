@@ -314,6 +314,18 @@ input[type="checkbox"] {
     padding: 0 !important;
 }
 
+input[type="color"]::-webkit-color-swatch-wrapper,
+input[type="color"]::-moz-color-swatch-wrapper {
+    padding: 0 !important;
+    background-color: unset;
+}
+
+input[type="color"]::-webkit-color-swatch,
+input[type="color"]::-moz-color-swatch {
+    @apply border rounded-md;
+    background-color: unset;
+}
+
 /* [multiple], [type="date"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="search"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], input:where(:not([type])), select, textarea {
     @apply border-gray-400;
 } */

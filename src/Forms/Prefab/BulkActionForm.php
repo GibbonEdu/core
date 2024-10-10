@@ -24,6 +24,7 @@ namespace Gibbon\Forms\Prefab;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Forms\FormRenderer;
+use Gibbon\Forms\View\FormBlankView;
 
 /**
  * BulkActionForm
@@ -38,6 +39,7 @@ class BulkActionForm extends Form
         global $container;
 
         $form = $container->get(BulkActionForm::class)
+            ->setRenderer($container->get(FormBlankView::class))
             ->setID($id)
             ->setClass($class)
             ->setAction($action)
