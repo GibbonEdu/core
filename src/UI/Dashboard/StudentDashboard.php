@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
+use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\OutputableInterface;
@@ -46,15 +47,17 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
     protected $session;
     protected $settingGateway;
 
-    public function __construct(
-        Connection $db,
-        Session $session,
-        SettingGateway $settingGateway
-    )
+    /**
+     * @var View
+     */
+    private $view;
+
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway, View $view)
     {
         $this->db = $db;
         $this->session = $session;
         $this->settingGateway = $settingGateway;
+        $this->view = $view;
     }
 
     public function getOutput()
@@ -120,7 +123,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             $planner .= __("Today's Lessons");
             $planner .= '</h2>';
             if ($result->rowCount() < 1) {
-                $planner .= "<div class='warning'>";
+                $planner .= "<div class='message'>";
                 $planner .= __('There are no records to display.');
                 $planner .= '</div>';
             } else {
@@ -237,77 +240,47 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             $timetable .= '</div>';
         }
 
-        //GET HOOKS INTO DASHBOARD
+        // TABS
+        $tabs = [];
+
+        if (!empty($planner) || !empty($timetable)) {
+            $tabs['planner'] = [
+                'label' =>  __('Planner'),
+                'content' => $planner.$timetable,
+            ];
+        }
+
+        // Dashboard Hooks
         $hooks = $this->getContainer()->get(HookGateway::class)->getAccessibleHooksByType('Student Dashboard', $this->session->get('gibbonRoleIDCurrent'));
+        foreach ($hooks as $hookData) {
 
-        if ($planner == false and $timetable == false and count($hooks) < 1) {
-            $return .= "<div class='warning'>";
-            $return .= __('There are no records to display.');
-            $return .= '</div>';
-        } else {
-            $studentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'studentDashboardDefaultTab');
-            $studentDashboardDefaultTabCount = null;
+            // Set the module for this hook for translations
+            $this->session->set('module', $hookData['sourceModuleName']);
+            $include = $this->session->get('absolutePath').'/modules/'.$hookData['sourceModuleName'].'/'.$hookData['sourceModuleInclude'];
 
-            $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
-            $return .= '<ul>';
-            $tabCount = 1;
-            if ($planner != false or $timetable != false) {
-                $return .= "<li><a href='#tabs".$tabCount."'>".__('Planner').'</a></li>';
-                if ($studentDashboardDefaultTab == 'Planner')
-                    $studentDashboardDefaultTabCount = $tabCount;
-                ++$tabCount;
+            if (!file_exists($include)) {
+                $hookOutput = Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
+            } else {
+                $hookOutput = include $include;
             }
-            foreach ($hooks as $hook) {
-                $return .= "<li><a href='#tabs".$tabCount."'>".__($hook['name'], [], $hook['sourceModuleName']).'</a></li>';
-                if ($studentDashboardDefaultTab == $hook['name'])
-                    $studentDashboardDefaultTabCount = $tabCount;
-                ++$tabCount;
-            }
-            $return .= '</ul>';
 
-            $tabCount = 1;
-            if ($planner != false or $timetable != false) {
-                $return .= "<div id='tabs".$tabCount."'>";
-                $return .= $planner;
-                $return .= $timetable;
-                $return .= '</div>';
-                ++$tabCount;
-            }
-            foreach ($hooks as $hook) {
-                // Set the module for this hook for translations
-                $this->session->set('module', $hook['sourceModuleName']);
-
-                $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
-                $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
-                if (!file_exists($include)) {
-                    $return .= "<div class='error'>";
-                    $return .= __('The selected page cannot be displayed due to a hook error.');
-                    $return .= '</div>';
-                } else {
-                    $return .= include $include;
-                }
-                ++$tabCount;
-                $return .= '</div>';
-            }
-            $return .= '</div>';
+            $tabs[$hookData['name']] = [
+                'label'   => __($hookData['name'], [], $hookData['sourceModuleName']),
+                'content' => $hookOutput,
+            ];
         }
 
-        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
+        // Set the default tab
+        $studentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'studentDashboardDefaultTab');
+        $defaultTab = !isset($_GET['tab']) && !empty($studentDashboardDefaultTab)
+            ? array_search($studentDashboardDefaultTab, array_keys($tabs))+1
+            : preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 1);
 
-        if (!isset($_GET['tab']) && !is_null($studentDashboardDefaultTabCount)) {
-            $defaultTab = $studentDashboardDefaultTabCount-1;
-        }
-        $return .= "<script type='text/javascript'>";
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '</script>';
+        $return .= $this->view->fetchFromTemplate('ui/tabs.twig.html', [
+            'selected' => $defaultTab ?? 1,
+            'tabs'     => $tabs,
+            'outset'   => true,
+        ]);
 
         return $return;
     }

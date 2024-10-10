@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
+use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Database\Connection;
@@ -48,11 +49,17 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
     protected $session;
     protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
+    /**
+     * @var View
+     */
+    private $view;
+
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway, View $view)
     {
         $this->db = $db;
         $this->session = $session;
         $this->settingGateway = $settingGateway;
+        $this->view = $view;
     }
 
     public function getOutput()
@@ -266,7 +273,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 }
             }
             if ($classes == false) {
-                $plannerOutput .= "<div style='margin-top: 2px' class='warning'>";
+                $plannerOutput .= "<div style='margin-top: 2px' class='message'>";
                 $plannerOutput .= __('There are no records to display.');
                 $plannerOutput .= '</div>';
             }
@@ -550,7 +557,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $gradesOutput .= '</table>';
             }
             if ($grades == false) {
-                $gradesOutput .= "<div style='margin-top: 2px' class='warning'>";
+                $gradesOutput .= "<div style='margin-top: 2px' class='message'>";
                 $gradesOutput .= __('There are no records to display.');
                 $gradesOutput .= '</div>';
             }
@@ -739,104 +746,61 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             }
         }
 
-        // GET HOOKS INTO DASHBOARD
+        // TABS
+        $tabs = [];
+
+        if (!empty($plannerOutput) || !empty($gradesOutput) || !empty($deadlinesOutput)) {
+            $tabs['planner'] = [
+                'label' =>  __('Planner'),
+                'content' => $plannerOutput.$gradesOutput.$deadlinesOutput,
+            ];
+        }
+
+        if (!empty($timetableOutput)) {
+            $tabs['timetable'] = [
+                'label' =>  __('Timetable'),
+                'content' => $timetableOutput,
+            ];
+        }
+        
+        if (!empty($activitiesOutput)) {
+            $tabs['activities'] = [
+                'label' =>  __('Activities'),
+                'content' => $activitiesOutput,
+            ];
+        }
+
+        // Dashboard Hooks
         $hooks = $this->getContainer()->get(HookGateway::class)->getAccessibleHooksByType('Parental Dashboard', $this->session->get('gibbonRoleIDCurrent'));
+        foreach ($hooks as $hookData) {
 
-        if ($classes == false and $grades == false and $deadlines == false and $timetable == false and $activities == false and count($hooks) < 1) {
-            $return .= "<div class='warning'>";
-            $return .= __('There are no records to display.');
-            $return .= '</div>';
-        } else {
-            $parentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'parentDashboardDefaultTab');
-            $parentDashboardDefaultTabCount = null;
+            // Set the module for this hook for translations
+            $this->session->set('module', $hookData['sourceModuleName']);
+            $include = $this->session->get('absolutePath').'/modules/'.$hookData['sourceModuleName'].'/'.$hookData['sourceModuleInclude'];
 
-            $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
-            $return .= '<ul>';
-            $tabCountExtraReset = 0;
-            if ($classes != false or $grades != false or $deadlines != false) {
-                $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Learning').'</a></li>';
-                $tabCountExtraReset++;
-                if ($parentDashboardDefaultTab == 'Planner')
-                    $parentDashboardDefaultTabCount = $tabCountExtraReset;
+            if (!file_exists($include)) {
+                $hookOutput = Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
+            } else {
+                $hookOutput = include $include;
             }
-            if ($timetable != false) {
-                $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Timetable').'</a></li>';
-                $tabCountExtraReset++;
-                if ($parentDashboardDefaultTab == 'Timetable')
-                    $parentDashboardDefaultTabCount = $tabCountExtraReset;
-            }
-            if ($activities != false) {
-                $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Activities').'</a></li>';
-                $tabCountExtraReset++;
-                if ($parentDashboardDefaultTab == 'Activities')
-                    $parentDashboardDefaultTabCount = $tabCountExtraReset;
-            }
-            $tabCountExtra = $tabCountExtraReset;
-            foreach ($hooks as $hook) {
-                ++$tabCountExtra;
-                $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($hook['name'], [], $hook['sourceModuleName']).'</a></li>';
-            }
-            $return .= '</ul>';
 
-            $tabCountExtraReset = 0;
-            if ($classes != false or $grades != false or $deadlines != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
-                $return .= $plannerOutput;
-                $return .= $gradesOutput;
-                $return .= $deadlinesOutput;
-                $return .= '</div>';
-                $tabCountExtraReset++;
-            }
-            if ($timetable != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
-                $return .= $timetableOutput;
-                $return .= '</div>';
-                $tabCountExtraReset++;
-            }
-            if ($activities != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
-                $return .= $activitiesOutput;
-                $return .= '</div>';
-                $tabCountExtraReset++;
-            }
-            $tabCountExtra = $tabCountExtraReset;
-            foreach ($hooks as $hook) {
-                // Set the module for this hook for translations
-                $this->session->set('module', $hook['sourceModuleName']);
-
-                if ($parentDashboardDefaultTab == $hook['name'])
-                    $parentDashboardDefaultTabCount = $tabCountExtra+1;
-                ++$tabCountExtra;
-                $return .= "<div style='min-height: 100px' id='tabs".$tabCountExtra."'>";
-                $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
-                if (!file_exists($include)) {
-                    $return .= "<div class='error'>";
-                    $return .= __('The selected page cannot be displayed due to a hook error.');
-                    $return .= '</div>';
-                } else {
-                    $return .= include $include;
-                }
-                $return .= '</div>';
-            }
-            $return .= '</div>';
+            $tabs[$hookData['name']] = [
+                'label'   => __($hookData['name'], [], $hookData['sourceModuleName']),
+                'content' => $hookOutput,
+            ];
         }
 
-        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
+        // Set the default tab
+        $parentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'parentDashboardDefaultTab');
+        $defaultTab = !isset($_GET['tab']) && !empty($parentDashboardDefaultTab)
+            ? array_search($parentDashboardDefaultTab, array_keys($tabs))+1
+            : preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 1);
 
-        if (!isset($_GET['tab']) && !empty($parentDashboardDefaultTabCount)) {
-            $defaultTab = $parentDashboardDefaultTabCount-1;
-        }
-        $return .= "<script type='text/javascript'>";
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '</script>';
+        $return .= $this->view->fetchFromTemplate('ui/tabs.twig.html', [
+            'selected' => $defaultTab ?? 1,
+            'tabs'     => $tabs,
+            'outset'   => false,
+        ]);
 
         return $return;
     }

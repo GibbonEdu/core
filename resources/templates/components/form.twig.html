@@ -117,7 +117,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
                         {% set class = 'flex-grow justify-center' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                        {% set class = 'w-full sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
+                        {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
                         {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end' : 'w-full ' %}
                     {% elseif loop.last and loop.length == 2 and renderStyle == 'flex' %}

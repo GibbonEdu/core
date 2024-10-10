@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
+use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\OutputableInterface;
@@ -69,18 +70,25 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
      */
     private $settingGateway;
 
+    /**
+     * @var View
+     */
+    private $view;
+
     public function __construct(
         Connection $db,
         Session $session,
         FormGroupTable $formGroupTable,
         EnrolmentTable $enrolmentTable,
-        SettingGateway $settingGateway
+        SettingGateway $settingGateway,
+        View $view
     ) {
         $this->db = $db;
         $this->session = $session;
         $this->formGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
         $this->settingGateway = $settingGateway;
+        $this->view = $view;
     }
 
     public function getOutput()
@@ -155,7 +163,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         $planner .= __("Today's Lessons");
         $planner .= '</h2>';
         if ($result->rowCount() < 1) {
-            $planner .= "<div class='warning'>";
+            $planner .= "<div class='message'>";
             $planner .= __('There are no records to display.');
             $planner .= '</div>';
         } else {
@@ -440,122 +448,67 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
             ++$formGroupCount;
         }
 
-        // GET HOOKS INTO DASHBOARD
+        // TABS
+        $tabs = [];
+
+        if (!empty($planner) || !empty($timetable)) {
+            $tabs['planner'] = [
+                'label' =>  __('Planner'),
+                'content' => $planner.$timetable,
+            ];
+        }
+
+        if (count($formGroups) > 0) {
+            foreach ($formGroups as $index => $formGroup) {
+                $tabs['formGroup'.$index] = [
+                    'label'   => $formGroup[1],
+                    'content' => $formGroup[2],
+                ];
+                $tabs['formGroupBehaviour'.$index] = [
+                    'label'   => $formGroup[1].' '.__('Behaviour'),
+                    'content' => $formGroup[3],
+                ];
+            }
+        }
+
+        if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_left.php') || isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new.php')) {
+            $tabs['enrolment'] = [
+                'label'   => __('Enrolment'),
+                'content' => $this->enrolmentTable->getOutput(),
+            ];
+        }
+
+        // Dashboard Hooks
         $hooks = $this->getContainer()->get(HookGateway::class)->getAccessibleHooksByType('Staff Dashboard', $this->session->get('gibbonRoleIDCurrent'));
+        foreach ($hooks as $hookData) {
 
-        if ($planner == false and $timetable == false and count($hooks) < 1) {
-            $return .= "<div class='warning'>";
-            $return .= __('There are no records to display.');
-            $return .= '</div>';
-        } else {
-            $staffDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'staffDashboardDefaultTab');
-            $staffDashboardDefaultTabCount = null;
+            // Set the module for this hook for translations
+            $this->session->set('module', $hookData['sourceModuleName']);
+            $include = $this->session->get('absolutePath').'/modules/'.$hookData['sourceModuleName'].'/'.$hookData['sourceModuleInclude'];
 
-            $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
-            $return .= '<ul>';
-            $tabCount = 1;
-            if ($planner != false or $timetable != false) {
-                $return .= "<li><a href='#tabs".$tabCount."'>".__('Planner').'</a></li>';
-                if ($staffDashboardDefaultTab == 'Planner')
-                    $staffDashboardDefaultTabCount = $tabCount;
-                ++$tabCount;
-            }
-            if (count($formGroups) > 0) {
-                foreach ($formGroups as $formGroup) {
-                    $return .= "<li><a href='#tabs".$tabCount."'>".$formGroup[1].'</a></li>';
-                    ++$tabCount;
-                    if ($behaviourView) {
-                        $return .= "<li><a href='#tabs".$tabCount."'>".$formGroup[1].' '.__('Behaviour').'</a></li>';
-                        ++$tabCount;
-                    }
-                }
+            if (!file_exists($include)) {
+                $hookOutput = Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
+            } else {
+                $hookOutput = include $include;
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_left.php') || isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new.php')) {
-                $return .= "<li><a href='#tabs".$tabCount."'>".__('Enrolment').'</a></li>';
-                if ($staffDashboardDefaultTab == 'Enrolment') {
-                    $staffDashboardDefaultTabCount = $tabCount;
-                }
-                ++$tabCount;
-            }
-
-            foreach ($hooks as $hook) {
-                $return .= "<li><a href='#tabs".$tabCount."'>".__($hook['name'], [], $hook['sourceModuleName']).'</a></li>';
-                if ($staffDashboardDefaultTab == $hook['name'])
-                    $staffDashboardDefaultTabCount = $tabCount;
-                ++$tabCount;
-            }
-            $return .= '</ul>';
-
-            $tabCount = 1;
-            if ($planner != false or $timetable != false) {
-                $return .= "<div id='tabs".$tabCount."'>";
-                $return .= $planner;
-                $return .= $timetable;
-                $return .= '</div>';
-                ++$tabCount;
-            }
-
-            if (count($formGroups) > 0) {
-                foreach ($formGroups as $formGroup) {
-                    $return .= "<div id='tabs".$tabCount."'>";
-                    $return .= $formGroup[2];
-                    $return .= '</div>';
-                    ++$tabCount;
-
-                    if ($behaviourView) {
-                        $return .= "<div id='tabs".$tabCount."'>";
-                        $return .= $formGroup[3];
-                        $return .= '</div>';
-                        ++$tabCount;
-                    }
-                }
-            }
-
-            // Enrolment tab
-            if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_left.php') || isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new.php')) {
-                $return .= "<div id='tabs".$tabCount."'>";
-                $return .= $this->enrolmentTable->getOutput();
-                $return .= '</div>';
-                ++$tabCount;
-            }
-
-            foreach ($hooks as $hook) {
-                // Set the module for this hook for translations
-                $this->session->set('module', $hook['sourceModuleName']);
-
-                $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
-                $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
-                if (!file_exists($include)) {
-                    $return .= "<div class='error'>";
-                    $return .= __('The selected page cannot be displayed due to a hook error.');
-                    $return .= '</div>';
-                } else {
-                    $return .= include $include;
-                }
-                ++$tabCount;
-                $return .= '</div>';
-            }
-            $return .= '</div>';
+            $tabs[$hookData['name']] = [
+                'label'   => __($hookData['name'], [], $hookData['sourceModuleName']),
+                'content' => $hookOutput,
+            ];
         }
+        
+        // Set the default tab
+        $staffDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'staffDashboardDefaultTab');
+        $defaultTab = !isset($_GET['tab']) && !empty($staffDashboardDefaultTab)
+            ? array_search($staffDashboardDefaultTab, array_keys($tabs))+1
+            : preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 1);
 
-        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
-
-        if (!isset($_GET['tab']) && !empty($staffDashboardDefaultTabCount)) {
-            $defaultTab = $staffDashboardDefaultTabCount-1;
-        }
-
-        $return .= "<script type='text/javascript'>";
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '</script>';
+        $return .= $this->view->fetchFromTemplate('ui/tabs.twig.html', [
+            'selected' => $defaultTab ?? 1,
+            'tabs'     => $tabs,
+            'outset'   => true,
+        ]);
 
         return $return;
     }

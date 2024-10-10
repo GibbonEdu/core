@@ -34,7 +34,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock header %}
     </header>
 
-    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' : 'overflow-x-auto xl:overflow-x-unset' }}">
+    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' : '' }}">
 
    
     {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
@@ -47,8 +47,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% block tableInner %}
     
-        <table class="{{ class }} w-full mb-2" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
-            <thead>
+        <table class="{{ class }} w-full mb-2 relative" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
+            <thead class="sticky top-0 z-20">
             {% for rowIndex, headerRow in headers %}
 
                 <tr class="head text-xs">
@@ -96,7 +96,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
 
-                                    <div  {{ actions|length > 1 ? 'x-cloak="mobile" :class="{\'block\': open, \'hidden sm:flex\': !open}"' }} class="{{ column.getClass() }} {{ actions|length == 1 ? 'justify-center sm:justify-start' : 'justify-start sm:flex absolute sm:static top-0 right-0 p-4 -mr-1 -mt-5 rounded-lg ring ring-2 ring-inset ring-blue-500 sm:ring-0 shadow sm:shadow-none bg-white sm:bg-transparent sm:m-0 sm:p-0 z-10' }} flex  gap-4 sm:gap-2" >
+                                    <div  {{ actions|length > 1 ? 'x-cloak="mobile" :class="{\'block\': open, \'hidden sm:flex\': !open}"' }} class="{{ column.getClass() }} {{ actions|length == 1 ? 'justify-center sm:justify-start' : 'justify-start sm:flex absolute sm:static top-0 right-0 p-4 -mr-1 -mt-5 rounded-lg ring ring-2 ring-inset ring-blue-500 sm:ring-0 shadow sm:shadow-none bg-white sm:bg-transparent sm:m-0 sm:p-0' }} flex  gap-4 sm:gap-2" >
                                         {% for actionName, action in actions %}
                                             {% do action.displayLabel(loop.first) %}
                                             {{ action.getOutput(rowData.data, column.getParams)|raw }}
