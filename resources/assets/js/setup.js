@@ -33,7 +33,7 @@ Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
     }
 });
 
-$(document).ready(function(){
+htmx.onLoad(function (content) {
 
     $(document).trigger('gibbon-setup');
 
@@ -66,6 +66,11 @@ $(document).ready(function(){
 
     // Initialize latex
     $(".latex").latex();
+
+    document.dispatchEvent(new Event('tinymceSetup'));
+    
+    // Unload tinymce if it exists, via ajax
+    if (tinymce) tinymce.remove();
 
     // Initialize tinymce
     tinymce.init({
@@ -113,15 +118,5 @@ $(document).ready(function(){
         ],
     });
 
-    // Sticky Observer
-    const el = document.querySelector(".submitRow.sticky");
-    const observer = new IntersectionObserver( 
-        function([e]) { 
-            e.target.classList.toggle("shadow-top", e.intersectionRatio < 1);
-            e.target.classList.toggle("bg-gray-300", e.intersectionRatio < 1);
-        },
-        { threshold: [1] }
-    );
-
-    if (el != undefined) observer.observe(el);
+    
 });

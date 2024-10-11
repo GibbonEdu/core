@@ -130,7 +130,8 @@ Rich Text Editor
 </div>
 
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('tinymceSetup', function (event) {
+
     {% if tinymceInit %}
         tinyMCE.execCommand('mceAddControl', false, '{{ id }}');
     {% endif %}
