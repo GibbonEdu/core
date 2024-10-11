@@ -470,6 +470,16 @@ input[type="checkbox"] + .LV_validation_message {
     @apply bg-gray-100;
 }
 
+.navigation-link::after {
+    @apply bg-purple-600 rounded-md;
+    content: "";
+    position: absolute;
+    height: 1.25rem;
+    left: calc(0.5rem*-1);
+    top: calc(50% - 0.625rem);
+    width: 0.25rem;
+}
+
 /*
  --------------------------------------------------------------------------
   Thickbox

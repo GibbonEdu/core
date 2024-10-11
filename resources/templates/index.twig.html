@@ -109,7 +109,7 @@ TODO: add template variable details.
                         </div>
 
                     {% if sidebar and (sidebarContents or menuModule) %}
-                        <div id="sidebar" class="w-full lg:w-sidebar lg:max-w-xs {{ sidebarPos == 'left' and not rightToLeft ? 'lg:mr-6' : 'lg:ml-6' }}">
+                        <div id="sidebar" class="w-full lg:max-w-72 xl:max-w-xs {{ sidebarPos == 'left' and not rightToLeft ? 'lg:mr-6' : 'lg:ml-6' }}">
                             {% block sidebar %}
                             {{ include('navigation.twig.html') }}
                             {% endblock sidebar %}

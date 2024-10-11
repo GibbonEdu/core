@@ -56,16 +56,16 @@ collapsed drop-down list in 'mini' view-mode.
 
             {% for categoryName, items in menuModule %}
                 <li class="w-full column-no-break p-0">
-                    <h5 class="m-0 mb-1 text-sm px-1 pt-2 pb-1 text-{{ themeColour }}-600 border-b-0 uppercase">
+                    <h5 class="m-0 mb-1 text-sm px-px pt-2 pb-1 text-{{ themeColour }}-600 border-b-0 uppercase">
                         {{ __(categoryName, (items|first).textDomain) }}
                     </h5>
                     
                     <ul class="list-none m-0 mb-6">
                     {% for item in items %}
-                        <li class="-mx-2 px-3 py-1 -my-1 text-sm leading-normal lg:leading-normal rounded-sm " :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-'}) }}' ) ? 'text-gray-800 bg-transparent-300 font-semibold':'' ] ">
+                        <li class="-mx-4 -my-1">
                             <a @click="moduleMenu = false" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:window:top swap:0s" 
                             @click="menuItemActive = '{{ item.actionName|replace({' ': '-'}) }}'"
-                            href="{{ item.url }}" class="block  text-gray-700 hover:underline">
+                            href="{{ item.url }}" class="block relative text-gray-700 no-underline px-3 py-1  text-sm leading-normal lg:leading-normal rounded transition cursor-pointer hover:bg-gray-200" :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-'}) }}' ) ? 'navigation-link text-gray-800 bg-gray-300 font-semibold' : '' ] ">
                                 {{ __(item.name, item.textDomain) }}
                             </a>
                         </li>
