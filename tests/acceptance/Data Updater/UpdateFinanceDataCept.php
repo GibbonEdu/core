@@ -18,7 +18,7 @@ $I->see('Update Data');
 
 $I->selectOption('invoiceTo', 'Family');
 
-$I->click('#content form[method="post"] input[type=submit]');
+$I->click('#content form[method="post"] [type=submit]');
 $I->seeSuccessMessage();
 
 $gibbonFinanceInvoiceeID = $I->grabValueFromURL('gibbonFinanceInvoiceeID');
@@ -77,7 +77,7 @@ $I->amOnModulePage('Data Updater', 'data_finance.php', ['gibbonFinanceInvoiceeID
 
 $I->selectOption('invoiceTo', 'Family');
 
-$I->click('#content form[method="post"] input[type=submit]');
+$I->click('#content form[method="post"] [type=submit]');
 $I->seeSuccessMessage();
 
 $gibbonFinanceInvoiceeUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
