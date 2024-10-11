@@ -74,7 +74,7 @@ class FormRenderer implements FormRendererInterface
             $output .= '<h2>'.$title.'</h2>';
         }
 
-        $output .= '<form '.$form->getAttributeString().' onsubmit="gibbonFormSubmitted(this)">';
+        $output .= '<form '.$form->getAttributeString().'>';
 
         // Output hidden values
         foreach ($form->getHiddenValues() as $values) {

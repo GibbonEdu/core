@@ -46,7 +46,7 @@ class ExpandableColumn extends Column
         $table->addMetaData('allowHTML', [$id]);
 
         $table->modifyRows(function ($data, $row, $columnCount) {
-            return $row->setAttribute('x-data', '{expanded: false}');
+            return $row->setAttribute('x-data', $this->expanded ? '{expanded: true}' : '{expanded: false}');
         });
     }
 

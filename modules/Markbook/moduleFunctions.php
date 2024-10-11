@@ -40,17 +40,20 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     $output .= __('Choose A Class');
     $output .= '</h2>';
 
-    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::createBlank('searchForm', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
-    $form->setClass('smallIntBorder w-full');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('flex');
         $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
             ->selected($gibbonCourseClassID)
             ->placeholder()
-            ->setClass('w-full');
-        $row->addSubmit(__('Go'));
+            ->groupAlign('left')
+            ->setClass('flex-grow');
+        $row->addSubmit(__('Go'))
+            ->setType('quickSubmit')
+            ->groupAlign('right')
+            ->setClass('flex');
 
     $output .= $form->getOutput();
     $output .= '</div>';

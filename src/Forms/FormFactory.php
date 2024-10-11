@@ -302,9 +302,9 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
-    public function createSubmit($label = 'Submit', $class = 'text-right')
+    public function createSubmit($label = 'Submit', $id = null)
     {
-        return (new Input\Button($label, 'submit'))->addClass($class);
+        return (new Input\Button($label, 'submit', null, $id))->setClass('text-right');
     }
 
     public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())

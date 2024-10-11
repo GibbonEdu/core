@@ -14,14 +14,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set useAutosave = "standardForm" in form.getClass and form.getAction != 'ajax' and form.getAction %}
 
 {% if useAutosave %}
-    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
+    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'submitting': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
 
     <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
         <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
         <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
     </div>
 {% elseif form.getAction != 'ajax' %}
-    <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)" x-data="{'advancedOptions': false}">
+    <form {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'submitting': false}">
 {% endif %}
 
     {% if form.hasPages %}
@@ -107,7 +107,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
                         {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end items-center' : 'flex-1' %}
-                    {% elseif loop.last and loop.length == 2 %}
+                    {% elseif loop.last and (loop.length == 2 or "noIntBorder" in form.getClass) %}
                         {% set class = 'flex-1 relative flex justify-end items-center' %}
                     {% else %}
                         {% set class = 'flex-1' %}

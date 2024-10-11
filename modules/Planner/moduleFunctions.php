@@ -297,27 +297,30 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $output = '<div class="column-no-break">';
 
         // Date Chooser
-        $form = Form::create('dateChooser', $session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::createBlank('dateChooser', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
         $form->setTitle(__('Choose A Date'));
-        $form->setClass('smallIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/Planner/planner.php');
         $form->addHiddenValue('search', $gibbonPersonID);
+        $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('flex');
             $row->addDate('dateHuman', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
-                ->setValue(Format::date($dateStamp ? date('Y-m-d', $dateStamp) : ''))
+                ->setValue(date('Y-m-d', $dateStamp))
                 ->setID('dateHuman')
-                ->setClass('float-none w-full');
-            $row->addSubmit(__('Go'));
+                ->setClass('flex-grow')
+                ->groupAlign('left');
+            $row->addSubmit(__('Go'), 'planner1')
+                ->setType('quickSubmit')
+                ->groupAlign('right')
+                ->setClass('flex');
 
         $output .= $form->getOutput();
 
         // Class Chooser
-        $form = Form::create('classChooser', $session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::createBlank('classChooser', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose A Class'));
-        $form->setClass('smallIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/Planner/planner.php');
         $form->addHiddenValue('search', $gibbonPersonID);
@@ -345,14 +348,18 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             }
         }
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('flex');
             $row->addSelect('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
                 ->setID('gibbonCourseClassIDSidebar')
                 ->fromArray($classes)
                 ->selected($gibbonCourseClassID)
                 ->placeholder()
-                ->setClass('float-none w-full');
-            $row->addSubmit(__('Go'));
+                ->setClass('flex-grow')
+                ->groupAlign('left');
+            $row->addSubmit(__('Go'), 'planner2')
+                ->setType('quickSubmit')
+                ->groupAlign('right')
+                ->setClass('flex');
 
         $output .= $form->getOutput();
         $output .= '</div>';
@@ -422,22 +429,25 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
             ];
         }
 
-        $form = Form::create('courseChooser', $session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::createBlank('courseChooser', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
         $form->setTitle(__('Choose A Course'));
-        $form->setClass('smallIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/Planner/units.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
         $form->addHiddenValue('viewBy', 'class');
 
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('flex');
             $row->addSelect('gibbonCourseID')
                 ->setID('gibbonCourseIDSidebar')
                 ->fromArray($courses)
                 ->selected($gibbonCourseID)
                 ->placeholder()
-                ->setClass('float-none w-full');
-            $row->addSubmit(__('Go'));
+                ->groupAlign('left')
+                ->setClass('flex-grow');
+            $row->addSubmit(__('Go'), 'units')
+                ->setType('quickSubmit')
+                ->groupAlign('right')
+                ->setClass('flex');
 
         $output .= $form->getOutput();
     }

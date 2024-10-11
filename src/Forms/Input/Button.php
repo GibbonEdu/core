@@ -39,6 +39,7 @@ class Button extends Element
     
     private $type;
     private $icon;
+    private $size;
 
     public function __construct($name, $type = 'button', $onClick = null, $id = null)
     {
@@ -87,6 +88,18 @@ class Button extends Element
         $this->icon = $value;
         return $this;
     }
+
+    /**
+     * Sets a display size for the button.
+     *
+     * @param string $value     One of: sm, md, ld
+     * @return self
+     */
+    public function setSize($value)
+    {
+        $this->size = $value;
+        return $this;
+    }
  
     protected function getElement()
     {
@@ -94,6 +107,7 @@ class Button extends Element
             'groupClass' => $this->getGroupClass(),
             'type'       => $this->type,
             'icon'       => $this->icon,
+            'size'       => $this->size,
         ]);
     }
 }

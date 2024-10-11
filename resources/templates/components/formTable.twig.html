@@ -10,7 +10,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% do form.addClass('formTable')%}
 
-<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+<form {{ form.getAttributeString|raw }}>
 
     {% if form.getTitle %}
         <h2>{{ form.getTitle }}</h2>
@@ -38,6 +38,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set class = ' bg-gray-300' %}
             {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                 {% set class = '-mb-1 sm:mb-0' %}
+            {% elseif loop.last and loop.length == 1 %}
+                {% set class = 'flex-1 relative flex justify-end items-center' %}
             {% endif %}
 
             <td class="{{ class }} {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>

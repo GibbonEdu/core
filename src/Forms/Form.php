@@ -375,6 +375,21 @@ class Form implements OutputableInterface
     }
 
     /**
+     * Enables submitting the form and reloading without a page refresh.
+     * @return self
+     */
+    public function enableQuickSubmit()
+    {     
+        return $this->setAttribute('hx-get', $this->getAction())
+            ->setAttribute('hx-trigger', 'submit')
+            ->setAttribute('hx-select', '#content-wrap')
+            ->setAttribute('hx-target', '#content-wrap')
+            ->setAttribute('hx-swap', 'outerHTML swap:0.2s')
+            ->setAttribute('x-on:htmx:before-request', 'submitting = true')
+            ->setAttribute('x-on:htmx:after-swap', 'submitting = false');
+    }
+
+    /**
      * Adds a Trigger object that injects javascript to respond to form events.
      * @param  string  $selector
      * @param  object  $trigger

@@ -127,14 +127,14 @@ else {
                 }
 
                 // Auto-submitting form to select the confirmation mode
-                $form = Form::create('filters', $session->get('absoluteURL') . '/index.php', 'get');
+                $form = Form::create('filters', $session->get('absoluteURL') . '/index.php', 'get')->enableQuickSubmit()->setAttribute('hx-trigger', 'change from:#confirmationMode');
 
                 $form->addHiddenValue('q', '/modules/Messenger/messenger_manage_report.php');
                 $form->addHiddenValue('gibbonMessengerID', $gibbonMessengerID);
                 $form->addHiddenValue('search', $search);
                 $form->addHiddenValue('sidebar', 'true');
 
-                $form->setClass('noIntBorder w-full auto-submit pb-1');
+                $form->setClass('noIntBorder w-full pb-1');
 
                 $row = $form->addRow();
                     $row->addLabel('subjectLabel', __('Message'));

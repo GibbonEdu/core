@@ -190,13 +190,6 @@ jQuery(function ($) {
             },
         });
     });
-
-    /**
-     * Forms: Expandable Rows
-     */
-    $(document).on("change", ".auto-submit", function () {
-        $(this).parents("form").submit();
-    });
 });
 
 htmx.onLoad(function (content) {
@@ -1027,20 +1020,6 @@ MultiSelect.prototype.sortSelect = function (list, sortValues) {
 $.prototype.gibbonMultiSelect = function (name) {
     this.gibbonMultiSelect = new MultiSelect(this, name);
 };
-
-/**
- * Disable the submit button once a form has started submitting.
- * Add a spinning indicator for forms that take longer than 0.5s to submit.
- */
-function gibbonFormSubmitted(form) {
-    var submitButton = $('input[type="submit"]', $(form));
-    submitButton.prop("disabled", true);
-    if ($(form).hasClass("standardForm") || $(form).hasClass("formTable")) {
-        setTimeout(function () {
-            submitButton.wrap('<span class="submitted"></span>');
-        }, 500);
-    }
-}
 
 function debounce(func, timeout) {
     timeout = timeout || 300;
