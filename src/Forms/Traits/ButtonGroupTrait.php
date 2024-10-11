@@ -29,7 +29,7 @@ namespace Gibbon\Forms\Traits;
  */
 trait ButtonGroupTrait
 {
-    private $group;
+    protected $group;
 
     /**
      * Create a button group by setting the alignment of this button.
