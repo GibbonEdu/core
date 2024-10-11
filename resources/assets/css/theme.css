@@ -257,6 +257,12 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
     @apply border-gray-400 bg-white rounded-sm outline-none py-2 px-2;
 } */
 
+.w-available {
+    width: fit-content;
+    width: -moz-available;
+    width: -webkit-fill-available;
+}
+
 select {
     padding-right: 1.8rem;
 }

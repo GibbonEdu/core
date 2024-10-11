@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Services\ViewServiceProvider;
 use League\Container\Container;
+use Gibbon\Forms\View\FormView;
 
 /**
  * @covers Form
@@ -143,7 +144,7 @@ class FormTest extends TestCase
             ->setID('testID')
             ->setAction('testAction');
 
-        $newRenderer = FormRenderer::create();
+        $newRenderer = $this->container->get(FormView::class);
         $form->setRenderer($newRenderer);
 
         $this->assertSame($newRenderer, $form->getRenderer());
