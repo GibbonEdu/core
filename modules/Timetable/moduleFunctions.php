@@ -542,7 +542,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             </svg>';
             $output .= "</button>";
 
-            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
+            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 inline-block align-middle w-5 h-5 opacity-0"></span>';
             $output .= "</div>";
 
             $output .= "<div class='inline-flex'>";

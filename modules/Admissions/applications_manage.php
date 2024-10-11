@@ -93,8 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')
-            ->displayLabel()
-            ->append(' | ');
+            ->displayLabel();
     }
 
     $table->addHeaderAction('add', __('Add'))
