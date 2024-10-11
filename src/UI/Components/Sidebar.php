@@ -579,7 +579,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
             if ($result->rowCount() > 0) {
                 echo '<div class="column-no-break" id="myClasses">';
-                echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
+                echo "<h2 style='margin-bottom: 10px'>";
                 echo __('My Classes');
                 echo '</h2>';
 
@@ -654,41 +654,38 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             }
         }
 
-        //Show tag cloud
-        if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') && !function_exists('makeBlock')) {
-            include_once './modules/Planner/moduleFunctions.php';
-            echo '<div class="column-no-break">';
-            echo "<h2 class='sidebar'>";
-            echo __('Resource Tags');
-            echo '</h2>';
-            echo getResourcesTagCloud($guid, $connection2, 20);
-            echo "<p style='margin-bototm: 20px; text-align: right'>";
-            echo "<a href='".Url::fromModuleRoute('Planner', 'resources_view')."'>".__('View Resources').'</a>';
-            echo '</p>';
-            echo '</div>';
-        }
-
         //Show role switcher if user has more than one role
         if ($this->session->exists('username')) {
             if (count($this->session->get('gibbonRoleIDAll', [])) > 1 and $this->session->get('address') == '') {
                 echo '<div class="column-no-break">';
-                echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
+                echo "<h2 class='uppercase text-base mt-4 mb-2 text-gray-800'>";
                 echo __('Role Switcher');
                 echo '</h2>';
 
-                echo '<p>';
+                echo '<p class="text-xs text-gray-700">';
                 echo __('You have multiple roles within the system. Use the list below to switch role:');
                 echo '</p>';
 
-                echo '<ul>';
-                for ($i = 0; $i < count($this->session->get('gibbonRoleIDAll', [])); ++$i) {
-                    if ($this->session->get('gibbonRoleIDAll')[$i][0] == $this->session->get('gibbonRoleIDCurrent')) {
-                        echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$this->session->get('gibbonRoleIDAll')[$i][0]."'>".__($this->session->get('gibbonRoleIDAll')[$i][1]).'</a> <i>'.__('(Active)').'</i></li>';
-                    } else {
-                        echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$this->session->get('gibbonRoleIDAll')[$i][0]."'>".__($this->session->get('gibbonRoleIDAll')[$i][1]).'</a></li>';
-                    }
-                }
-                echo '</ul>';
+                $form = Form::createBlank('roleSwitcher', $this->session->get('absoluteURL').'/roleSwitcherProcess.php', 'get');
+                $form->setAutocomplete(false);
+                $form->setClass('max-w-full');
+                $form->addHiddenValue('address', $this->session->get('address'));
+
+                $roles = $this->session->get('gibbonRoleIDAll', []);
+                $row = $form->addRow()->addClass('flex');
+                    $row->addSelect('gibbonRoleID')
+                        ->fromArray(array_combine(array_column($roles, 0), array_column($roles, 1)))
+                        ->placeholder(null)
+                        ->addClass('flex-grow')
+                        ->groupAlign('left')
+                        ->selected($this->session->get('gibbonRoleIDCurrent'));
+                    $row->addSubmit(__('Switch'), 'roleSwitch')
+                        ->setType('quickSubmit')
+                        ->groupAlign('right')
+                        ->setClass('flex');
+
+                echo $form->getOutput();
+
                 echo '</div>';
             }
         }
@@ -696,11 +693,10 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         //Show year switcher if user is staff and has access to multiple years
         if ($this->session->exists('username') && $this->category == 'Staff' && $this->session->get('address') == '') {
             //Check for multiple-year login
-
-                $data = array('gibbonRoleID' => $this->session->get('gibbonRoleIDCurrent'));
-                $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $data = array('gibbonRoleID' => $this->session->get('gibbonRoleIDCurrent'));
+            $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
             //Test to see if username exists and is unique
             if ($result->rowCount() == 1) {
@@ -708,16 +704,15 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 if ($row['futureYearsLogin'] == 'Y' || $row['pastYearsLogin'] == 'Y') {
 
                     echo '<div class="column-no-break">';
-                    echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
+                    echo "<h2 class='uppercase text-base mt-4 mb-2 text-gray-800'>";
                     echo __('Year Switcher');
                     echo '</h2>';
 
                     //Add year Switcher
-                    $form = Form::create('yearSwitcher', $this->session->get('absoluteURL').'/yearSwitcherProcess.php');
-
+                    $form = Form::createBlank('yearSwitcher', $this->session->get('absoluteURL').'/yearSwitcherProcess.php', 'post')->enableQuickSubmit();
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setAutocomplete(false);
-                    $form->setClass('noIntBorder w-full');
+                    $form->setClass('max-w-full');
                     $form->addHiddenValue('address', $this->session->get('address'));
 
                     $status = 'All';
@@ -727,15 +722,16 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     else if ($row['futureYearsLogin'] == 'N' && $row['pastYearsLogin'] == 'Y') {
                         $status = 'Recent';
                     }
-                    $row = $form->addRow();
-                        $row->addLabel('gibbonSchoolYearID', __('Year'));
+                    $row = $form->addRow()->addClass('flex');
                         $row->addSelectSchoolYear('gibbonSchoolYearID', $status)
                             ->placeholder(null)
+                            ->addClass('flex-grow')
+                            ->groupAlign('left')
                             ->selected($this->session->get('gibbonSchoolYearID'));
-
-                    $row = $form->addRow();
-                        $row->addFooter(false);
-                        $row->addSubmit(__('Switch'));
+                        $row->addSubmit(__('Switch'), 'yearSwitch')
+                            ->setType('quickSubmit')
+                            ->groupAlign('right')
+                            ->setClass('flex');
 
                     echo $form->getOutput();
 

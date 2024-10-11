@@ -144,7 +144,7 @@ class FormTest extends TestCase
             ->setID('testID')
             ->setAction('testAction');
 
-        $newRenderer = $this->container->get(FormView::class);
+        $newRenderer = $this->createMock(FormView::class);
         $form->setRenderer($newRenderer);
 
         $this->assertSame($newRenderer, $form->getRenderer());

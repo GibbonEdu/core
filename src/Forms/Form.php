@@ -395,11 +395,11 @@ class Form implements OutputableInterface
      */
     public function enableQuickSubmit()
     {     
-        return $this->setAttribute('hx-get', $this->getAction())
+        return $this->setAttribute($this->getMethod() == 'post' ? 'hx-post' : 'hx-get', $this->getAction())
             ->setAttribute('hx-trigger', 'submit')
             ->setAttribute('hx-select', '#content-wrap')
             ->setAttribute('hx-target', '#content-wrap')
-            ->setAttribute('hx-swap', 'outerHTML swap:0.2s')
+            ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0.2s')
             ->setAttribute('x-on:htmx:before-request', 'submitting = true')
             ->setAttribute('x-on:htmx:after-swap', 'submitting = false');
     }

@@ -109,12 +109,12 @@ h1:not([class]) {
 h2:not([class]) {
     font-size: 14pt;
 }
-#sidebar h2,
+/* #sidebar h2,
 div.sidebarExtra h2 {
     font-size: 14pt;
     border-left: none;
     background: none;
-}
+} */
 
 #sidebar p:last-of-type {
     margin-bottom: 0;
