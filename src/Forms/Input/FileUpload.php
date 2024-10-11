@@ -214,14 +214,19 @@ class FileUpload extends Input
 
                     $output .= '</div>';
 
-                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.$attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+                    $output .=  "<a download title='".__('Download')."' class='inline-button text-gray-600' href='".$this->absoluteURL.$attachmentPath."'>";
+                    $output .= '<svg class="w-6 h-6 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" /><path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" /></svg></a>';
 
                     if ($this->canDelete) {
                         $attachmentNameEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $attachmentName);
                         if (!empty($this->deleteAction)) {
-                            $output .=  "<a class='inline-button' href='".$this->absoluteURL.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
+                            $output .=  "<a title='".__('Delete')."' class='inline-button text-gray-600' href='".$this->absoluteURL.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'>";
+                            $output .= '<svg class="w-6 h-6 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" /></svg>';
+                        $output .=  "</a>";
                         } else {
-                            $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"#".$attachmentNameEscaped."\").val(\"\"); $(\"#".$idEscaped."\").show(); $(\"#".$idEscaped." + .max-upload\").show(); $(\"#".$idEscaped."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                            $output .= "<div class='inline-button text-gray-600' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"#".$attachmentNameEscaped."\").val(\"\"); $(\"#".$idEscaped."\").show(); $(\"#".$idEscaped." + .max-upload\").show(); $(\"#".$idEscaped."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'>";
+                            
+                            $output .= '<svg class="w-6 h-6 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" /></svg></div>';
                         }
                     }
 
