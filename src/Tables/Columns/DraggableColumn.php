@@ -46,10 +46,6 @@ class DraggableColumn extends Column
             return '<div class="drag-handle w-2 h-6 ml-3 px-px border-4 border-dotted cursor-move"></div><input type="hidden" name="order[]" value="'.$values[$id].'">';
         });
 
-        $this->modifyCells(function ($values, $cell) use ($id) {
-            return $cell->addClass('draggable border-r-0')->addData('drag-id', $values[$id] ?? '');
-        });
-
         $table->addMetaData('draggable', ['url' => $ajaxURL, 'data' => json_encode($data)]);
     }
 

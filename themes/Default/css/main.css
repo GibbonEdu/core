@@ -1047,30 +1047,35 @@ table.smallIntBorder td.noPadding {
 }
 
 .dataTable .expander {
-    display: block;
-    padding: 15px 10px;
     cursor: pointer;
+    position: relative;
 }
 
 .dataTable .expander:before {
     content: "";
-    border: solid #999;
-    border-width: 0 2px 2px 0;
-    display: inline-block;
-    padding: 4px;
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0icmdiKDEyMywgMTI5LCAxNDIpIj4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04LjIyIDUuMjJhLjc1Ljc1IDAgMCAxIDEuMDYgMGw0LjI1IDQuMjVhLjc1Ljc1IDAgMCAxIDAgMS4wNmwtNC4yNSA0LjI1YS43NS43NSAwIDAgMS0xLjA2LTEuMDZMMTEuOTQgMTAgOC4yMiA2LjI4YS43NS43NSAwIDAgMSAwLTEuMDZaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPgo=');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 95%;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0.5;
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
     transition: transform 0.2s;
     pointer-events: none;
 }
 
 .dataTable .expander:hover:before {
-    border-color: #444;
+    opacity: 1;
 }
 
 .dataTable .expander.expanded:before {
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
 }
 
 @-moz-keyframes spin {

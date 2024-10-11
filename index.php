@@ -321,9 +321,10 @@ $page->scripts->addMultiple([
 
 // Set page scripts: foot - misc
 $page->scripts->addMultiple([
-    'tinymce'  => 'lib/tinymce/tinymce.min.js',
-    'alpineFocus'   => 'lib/htmx/alpine.focus.min.js',
-    'alpine'   => 'lib/htmx/alpine.min.js',
+    'tinymce'        => 'lib/tinymce/tinymce.min.js',
+    'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
+    'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
+    'alpine'         => 'lib/htmx/alpine.min.js',
 ], ['context' => 'foot', 'type' => 'defer']);
 
 // Set page scripts: foot - core

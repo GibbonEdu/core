@@ -192,14 +192,6 @@ jQuery(function ($) {
     });
 
     /**
-     * Data Table: Expandable Rows
-     */
-    $(document).on("click", ".dataTable .expander", function () {
-        $(this).toggleClass("expanded");
-        $(this).parent().closest("tr").next("tr").toggle();
-    });
-
-    /**
      * Forms: Expandable Rows
      */
     $(document).on("change", ".auto-submit", function () {
