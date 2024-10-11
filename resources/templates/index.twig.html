@@ -38,9 +38,9 @@ TODO: add template variable details.
                             {{ currentUser.name }}
                         </a>
 
-                        <div class="group relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}">
+                        <div class="relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}" x-data="{menuOpen: false}" @mouseleave="menuOpen = false" @click.outside="menuOpen = false">
 
-                            <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
+                            <a @mouseenter="menuOpen = true" @click="menuOpen = !menuOpen" :class="{'ring-opacity-75': menuOpen, 'ring-opacity-25': !menuOpen}" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 ring-white ring-2 cursor-pointer">
                             {% if currentUser.image_240 %}
                                 <img class="w-full -mt-1" src="{{ absoluteURL }}/{{ currentUser.image_240 }}" />
                             {% else %}
@@ -48,12 +48,22 @@ TODO: add template variable details.
                             {% endif %}
                             </a>
 
-                            <ul class="list-none m-0 bg-gray-800 hidden group-hover:block absolute w-48 mt-1 p-1 z-50 cursor-pointer {{ rightToLeft ? 'left-0' : 'right-0' }}">
+                            <ul x-cloak x-show="menuOpen" x-transition:enter.duration.250ms x-transition:leave.duration.100ms class="list-none m-0 bg-black bg-opacity-75 backdrop-blur-lg backdrop-contrast-125 backdrop-saturate-150 absolute rounded-md w-48 mt-1 p-1 sm:p-1.5 z-50 cursor-pointer {{ rightToLeft ? 'left-0' : 'right-0' }}">
                                 {% for link in minorLinks|reverse %}
-                                <li class="hover:bg-{{ themeColour }}-700">
-                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-1 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
+                                <li class="hover:bg-{{ themeColour }}-700 rounded">
+                                    <a @click="menuOpen = false" href="{{ link.url }}" class="flex justify-between items-center text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-1 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                         {{- link.name|raw -}}
+
+                                        {% if link.target == '_blank' %}
+                                        <svg class="h-4 w-4  pointer-events-none text-white text-opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M6.22 8.72a.75.75 0 0 0 1.06 1.06l5.22-5.22v1.69a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75h-3.5a.75.75 0 0 0 0 1.5h1.69L6.22 8.72Z" />
+                                            <path d="M3.5 6.75c0-.69.56-1.25 1.25-1.25H7A.75.75 0 0 0 7 4H4.75A2.75 2.75 0 0 0 2 6.75v4.5A2.75 2.75 0 0 0 4.75 14h4.5A2.75 2.75 0 0 0 12 11.25V9a.75.75 0 0 0-1.5 0v2.25c0 .69-.56 1.25-1.25 1.25h-4.5c-.69 0-1.25-.56-1.25-1.25v-4.5Z" />
+                                            </svg>
+                                        {% endif %}
+
                                     </a>
+
+                                    
                                 </li>
                                 {% endfor %}
                             </ul>
