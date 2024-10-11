@@ -307,7 +307,7 @@ $page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'htmx'           => 'lib/htmx/htmx.min.js',
-    'core'           => 'resources/assets/js/core.js',
+    'core'           => 'resources/assets/js/core.min.js',
     
 ], ['context' => 'head']);
 

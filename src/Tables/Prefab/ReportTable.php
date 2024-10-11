@@ -56,9 +56,7 @@ class ReportTable extends DataTable
             ->addParam('search', $criteria->getSearchText(true))
             ->setTarget('_blank')
             ->displayLabel()
-            ->directLink()
-            ->addClass('mr-2 underline')
-            ->append(' | ');
+            ->directLink();
 
         $table->addHeaderAction('export', __('Export'))
             ->setURL('/export.php')
@@ -66,8 +64,7 @@ class ReportTable extends DataTable
             ->addParam('format', 'export')
             ->addParam('search', $criteria->getSearchText(true))
             ->displayLabel()
-            ->directLink()
-            ->addClass('mr-2 underline');
+            ->directLink();
 
         return $table;
     }

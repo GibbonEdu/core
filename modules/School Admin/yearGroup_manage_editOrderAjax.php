@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 } else {
     // Proceed!
     $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $order = $_POST['order'] ?? [];
 
     if (empty($order)) {
         exit;
