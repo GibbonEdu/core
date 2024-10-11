@@ -85,6 +85,11 @@ class Form implements OutputableInterface
             ->setAction($action)
             ->setMethod($method);
 
+        // Enable quick save by default on edit and settings pages
+        if (stripos($action, 'editProcess') !== false || stripos($action, 'settingsProcess') !== false) {
+            $form->enableQuickSave();
+        }
+
         return $form;
     }
 
@@ -371,6 +376,16 @@ class Form implements OutputableInterface
     {
         $keydownJS = "gibbonFormSubmitQuiet($('#$formId'), '$autoSaveUrl')";
         $this->setAttribute('onkeydown', $keydownJS);
+        return $this;
+    }
+
+    /**
+     * Enables submitting the form and reloading without a page refresh.
+     * @return self
+     */
+    public function enableQuickSave()
+    {
+        $this->renderer->addData('quickSave', true);
         return $this;
     }
 

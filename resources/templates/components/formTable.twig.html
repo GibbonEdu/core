@@ -10,7 +10,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% do form.addClass('formTable')%}
 
-<form {{ form.getAttributeString|raw }}>
+<form {{ form.getAttributeString|raw }} x-data="{'submitting': false}">
 
     {% if form.getTitle %}
         <h2>{{ form.getTitle }}</h2>
