@@ -478,7 +478,8 @@ if ($isLoggedIn && !$upgrade) {
                 $menuItemActive = $item['active'] ? $item['actionName'] : $menuItemActive;
             }
         }
-
+        
+        
         $session->set('menuModuleItems', $menuModuleItems);
         $session->set('menuModuleName', $currentModule);
         $session->set('menuItemActive', $menuItemActive);
@@ -543,7 +544,8 @@ if ($isLoggedIn) {
     $page->addData([
         'menuMain'       => $session->get('menuMainItems', []),
         'menuModule'     => $session->get('menuModuleItems', []),
-        'menuItemActive' => $session->get('menuItemActive', []),
+        'menuModuleName' => $session->get('menuModuleName', ''),
+        'menuItemActive' => $session->get('menuItemActive', ''),
     ]);
 }
 

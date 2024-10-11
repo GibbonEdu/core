@@ -1,6 +1,6 @@
 <?php if ($type == 'blank') { ?>
 
-    <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> items-center "><?= $value; ?></button>
+    <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> "><?= $value; ?></button>
 
 <?php } elseif ($type == 'submit') { ?>
 
@@ -18,7 +18,7 @@
 
 <?php } elseif ($type == 'button') { ?>
 
-    <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> items-center border border-gray-500 px-4 py-2 text-sm font-semibold shadow-sm text-gray-800 hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 bg-gray-100">
+    <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> flex items-center border border-gray-500 px-4 py-2 text-sm/6 font-semibold shadow-sm text-gray-800 hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 bg-gray-100">
 
     <?php $svgClass = 'text-gray-600 block m-0.5 h-5 w-5'.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
 

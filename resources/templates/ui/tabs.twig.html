@@ -29,15 +29,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div x-ref="tabButtons" @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()" class="flex items-end overflow-x-auto " role="tablist" aria-label="tab options">
         {% for tabID, tab in tabs %}
   
-        <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-500 z-10' : 'text-gray-600 hover:text-gray-900 border border-transparent'" class="h-min px-2.5 sm:px-4 py-2 font-semibold bg-white rounded-t-md  border-b-0 whitespace-nowrap" role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">{{ tab.label }}</button>
+        <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-400 z-10 bg-white' : 'text-gray-700 hover:text-gray-900 border border-transparent bg-transparent'" class="h-min px-2.5 sm:px-4 py-2 font-semibold rounded-t-md  border-b-0 whitespace-nowrap" role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">{{ tab.label }}</button>
  
         {% endfor %}
 
     </div>
 
-    <div class="absolute -mt-px {{ outset ? '-mx-8' }} left-0 border-b border-gray-500 dark:border-gray-700" style="width: {{ outset ? 'calc(100% + 4rem)' : '100%' }}"></div>
+    <div class="absolute -mt-px {{ outset ? '-mx-8' }} left-0 border-b border-gray-400 dark:border-gray-700" style="width: {{ outset ? 'calc(100% + 4rem)' : '100%' }}"></div>
 
-    <div role="tabpanels" class="pt-4">
+    <div role="tabpanels" class="pt-4 {{ outset ? '-mx-8 pb-6 px-8 rounded bg-white' }}">
         {% for tabID, tab in tabs %}
         <div :id="$id(tabId + '-content')" x-show="tabContentActive($el)" class="relative"  :aria-labelledby="$id(tabId + '-content')" role="tabpanel">
            {{ tab.content|raw }}

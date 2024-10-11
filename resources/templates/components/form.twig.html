@@ -113,7 +113,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% endif %}
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
-                    <div class="{{ class }} {{ hasClass ? element.getClass|default('flex-1') : 'flex-1' }}" >
+                    <div class="{{ class }} {{ hasClass ? element.getClass|default('flex-1') : 'flex-1' }} break-words" >
                         {{ element.getOutput|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
