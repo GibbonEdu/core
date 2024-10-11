@@ -104,7 +104,7 @@ class Toggle extends Input
      * @param   mixed  $value
      * @return  self
      */
-    public function inline($value)
+    public function inline($value = true)
     {
         return $this;
     }

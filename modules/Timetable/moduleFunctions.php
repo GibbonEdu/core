@@ -525,12 +525,22 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>";
 
             $output .= "<div>";
-            $output .= "<button type='button' class='ttNav float-left rounded-l h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>← <span class='hidden sm:inline'>".__('Last Week')."</span></button>";
-            $output .= "<button type='button' class='ttNav float-left h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
+            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700'
+                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
+            $output .= '<svg class="inline-block h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+            </svg>';
+            $output .=" <span class='hidden sm:inline ml-1'>".__('Last Week')."</span></button>";
+
+            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
                 x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
-            $output .= "<button type='button' class='ttNav float-left rounded-r h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline'>".__('Next Week')."</span> →</button>";
+
+            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs border border-gray-500 text-gray-600 bg-gray-200 font-semibold hover:bg-gray-400 hover:text-gray-700 -ml-px'
+                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1'>".__('Next Week')."</span>";
+            $output .= '<svg class="inline-block h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>';
+            $output .= "</button>";
 
             $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
             $output .= "</div>";
