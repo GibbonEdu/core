@@ -325,9 +325,9 @@ class FormFactory implements FormFactoryInterface
 
     public function createAdvancedOptionsToggle()
     {
-        return $this->createContent('<a class="button rounded-sm" onclick="false" data-toggle=".advancedOptions">'.__('Advanced Options').'</a>')
-                ->wrap('<span class="small">', '</span>')
-                ->setClass('left');
+        return $this->createButton(__('Advanced Options'))
+            ->setAttribute('@click', 'advancedOptions = !advancedOptions')
+            ->setClass('text-xs bg-transparent');
     }
 
     public function createFooter($required = true)

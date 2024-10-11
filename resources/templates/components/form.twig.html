@@ -21,7 +21,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
     </div>
 {% elseif form.getAction != 'ajax' %}
-    <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)" >
+    <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)" x-data="{'advancedOptions': false}">
 {% endif %}
 
     {% if form.hasPages %}
@@ -87,7 +87,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-4' %}
                 {% set rowClass = section == 'submit' ? rowClass ~ ' sm:items-center' : rowClass ~ ' sm:items-start' %}
 
-                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString("data-drag-id,x-show,x-cloak")|raw }}>
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
   
                 {% if useAutosave and section == 'submit' %}
                     <span class="text-xs text-gray-600">
@@ -106,9 +106,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                         {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
-                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end' : 'flex-1' %}
+                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end items-center' : 'flex-1' %}
                     {% elseif loop.last and loop.length == 2 %}
-                        {% set class = 'flex-1 relative flex justify-end' %}
+                        {% set class = 'flex-1 relative flex justify-end items-center' %}
                     {% else %}
                         {% set class = 'flex-1' %}
                     {% endif %}

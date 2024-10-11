@@ -179,7 +179,7 @@ trait BasicAttributesTrait
      * @param   array|string  $filter  Return a filtered subset of attributes by name.
      * @return  string
      */
-    public function getAttributeString($filter = '', string $exclude = '')
+    public function getAttributeString($filter = '', $exclude = '')
     {
         $attributes = $this->attributes;
         if (!empty($filter)) {
@@ -188,7 +188,8 @@ trait BasicAttributesTrait
         }
 
         if (!empty($exclude) && isset($attributes[$exclude])) {
-            unset($attributes[$exclude]);
+            $exclude = is_string($exclude)? explode(',', $exclude) : $exclude;
+            $attributes = array_diff_key($attributes, array_flip($exclude));
         }
 
         $output = implode(' ', array_map(

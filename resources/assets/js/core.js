@@ -21,20 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 jQuery(function($){
 
     /**
-     * Generic toggle switch
-     */
-    $(document).on('click', "[data-toggle]", function () {
-        var toggle = $(this).data('toggle');
-        if ($(toggle).hasClass('hidden')) {
-            $(toggle).removeClass('hidden');
-            $(this).addClass('active');
-        } else {
-            $(toggle).addClass('hidden');
-            $(this).removeClass('active');
-        }
-    });
-
-    /**
      * Sidebar toggle switch
      */
     $('#sidebarToggle').click(function() {
@@ -171,11 +157,6 @@ jQuery(function($){
     });
 
     /**
-    * Data Table: Simple Drag-Drop
-    */
-    $('.dataTable table[data-drag-url]').each(DraggableDataTable);
-
-    /**
     * Data Table: Expandable Rows
     */
     $(document).on('click', '.dataTable .expander', function () {
@@ -189,6 +170,13 @@ jQuery(function($){
     $(document).on('change', '.auto-submit', function () {
         $(this).parents('form').submit();
     });
+});
+
+htmx.onLoad(function(content) {
+    /**
+    * Data Table: Simple Drag-Drop
+    */
+    $('.dataTable table[data-drag-url]').each(DraggableDataTable);
 });
 
 var DraggableDataTable = function () {

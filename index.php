@@ -306,8 +306,8 @@ $page->scripts->addMultiple([
     'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
-    'core'           => 'resources/assets/js/core.min.js',
     'htmx'           => 'lib/htmx/htmx.min.js',
+    'core'           => 'resources/assets/js/core.js',
     
 ], ['context' => 'head']);
 
