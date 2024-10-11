@@ -94,8 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 ->setIcon('copy')
                 ->onCLick('return confirm("'.__('Are you sure you want to do this? All courses and classes, but not their participants, will be copied.').'");')
                 ->displayLabel()
-                ->directLink()
-                ->append(' | ');
+                ->directLink();
         }
 
         $table->addHeaderAction('add', __('Add'))

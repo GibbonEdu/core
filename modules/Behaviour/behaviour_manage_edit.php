@@ -104,8 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $form->addHeaderAction('view', __('View Behaviour Records'))
                         ->setURL('/modules/Behaviour/behaviour_view_details.php')
                         ->displayLabel()
-                        ->addParam('gibbonPersonID', $gibbonPersonID)
-                        ->prepend('&nbsp; | &nbsp;');
+                        ->addParam('gibbonPersonID', $gibbonPersonID);
                 }
             
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");

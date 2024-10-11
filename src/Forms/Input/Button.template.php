@@ -9,7 +9,7 @@
     </button>
 <?php } elseif ($type == 'quickSubmit') { ?>
 
-    <button type="submit" <?= $attributes; ?>  :class="{'submitted': submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-500 bg-gray-100 hover:bg-gray-200" >
+    <button type="submit" <?= $attributes; ?>  @click="submitting = true" :class="{'submitted': submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-500 bg-gray-100 hover:bg-gray-200" >
     <span :class="{'opacity-0': submitting}"><?= $value; ?></span>
     </button>
 <?php } elseif ($type == 'input') { ?>

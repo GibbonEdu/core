@@ -111,7 +111,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $result = $pdo->executeQuery($data, $sql);
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');
+        $col->addContent(__('Term').':');
         $col->addSelect('gibbonSchoolYearTermID')
             ->fromArray(array('-1' => __('All Terms')))
             ->fromArray($terms)
@@ -139,7 +139,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             'surname'       => __('Surname'),
             'preferredName' => __('Preferred Name'),
         );
-        $col->addContent(__('Sort By').':')->prepend('&nbsp;&nbsp;');
+        $col->addContent(__('Sort By').':');
         $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('shortWidth');
 
         $session->set('markbookOrderBy', $selectOrderBy);
@@ -157,14 +157,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $filters['marked'] = __('Marked');
     $filters['unmarked'] = __('Unmarked');
 
-    $col->addContent(__('Show').':')->prepend('&nbsp;&nbsp;');
+    $col->addContent(__('Show').':');
     $col->addSelect('markbookFilter')
         ->fromArray($filters)
         ->selected($selectFilter)
         ->setClass('shortWidth');
 
     // CLASS
-    $col->addContent(__('Class').':')->prepend('&nbsp;&nbsp;');
+    $col->addContent(__('Class').':');
     $col->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
         ->setClass('mediumWidth')
         ->selected($gibbonCourseClassID);

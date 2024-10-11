@@ -84,8 +84,7 @@ class ClassGroupTable extends DataTable
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonCourseID', $participants->getRow(0)['gibbonCourseID'] ?? '')
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
-                ->displayLabel()
-                ->append('&nbsp;&nbsp;|&nbsp;&nbsp;');
+                ->displayLabel();
         }
 
         if ($canViewConfidential) {

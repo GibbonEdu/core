@@ -170,8 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $table->addHeaderAction('criteria', __('Manage Criteria Types'))
             ->setIcon('markbook')
             ->setURL('/modules/Reports/criteriaTypes_manage.php')
-            ->displayLabel()
-            ->prepend(' | ');
+            ->displayLabel();
 
     if (empty($scopeTypeID)) {
         $table->addColumn('scopeTypeName', $reportingScope['scopeType'])

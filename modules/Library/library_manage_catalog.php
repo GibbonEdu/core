@@ -139,8 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->addParam('status', $status)
         ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
         ->addParam('typeSpecificFields', $typeSpecificFields)
-        ->displayLabel()
-        ->prepend(' | ');
+        ->displayLabel();
 
     $table->addColumn('id', __('School ID'))
         ->description(__('Type'))

@@ -129,8 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     ->setIcon('print')
                     ->setTarget('_blank')
                     ->directLink()
-                    ->displayLabel()
-                    ->prepend(' | ');
+                    ->displayLabel();
 
                 if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                     $table->addHeaderAction('export', __('Export'))
@@ -138,8 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                         ->setURL('/modules/Timetable/tt_manage_subscription.php')
                         ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
                         ->setIcon('download')
-                        ->displayLabel()
-                        ->prepend(' | ');
+                        ->displayLabel();
                 }
 
 

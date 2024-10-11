@@ -302,8 +302,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                     ->setURL('/modules/Attendance/attendance_take_byFormGroup.php')
                     ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
-                    ->displayLabel()
-                    ->append(' | ');
+                    ->displayLabel();
             }
 
             $formGroupTable->addHeaderAction('export', __('Export to Excel'))

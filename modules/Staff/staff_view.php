@@ -179,8 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Staff/staff_manage_add.php')
                 ->addParam('search', $urlParams['search'])
-                ->displayLabel()
-                ->prepend('&nbsp; | &nbsp;');
+                ->displayLabel();
         }
 
         $table->addMetaData('filterOptions', [

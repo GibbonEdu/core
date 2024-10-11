@@ -499,8 +499,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     ->addParam('date', $values['date'])
                                     ->addParam('subView', $subView)
                                     ->displayLabel()
-                                    ->prepend(__('Smart Blocks').': ')
-                                    ->append(' | ');
+                                    ->prepend(__('Smart Blocks').': ');
 
                                 $form->addHeaderAction('unit', __m('Edit Unit'))
                                     ->setURL('/modules/Planner/units_edit_working.php')

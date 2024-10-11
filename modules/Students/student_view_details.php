@@ -570,8 +570,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
                                     ->addParam('type', $role)
                                     ->addParam('allUsers', $allStudents)
-                                    ->displayLabel()
-                                    ->append(' | ');
+                                    ->displayLabel();
                                 }
                             }
 
@@ -592,8 +591,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->setURL('/modules/Timetable/tt_manage_subscription.php')
                                     ->addParam('gibbonPersonID', $gibbonPersonID)
                                     ->setIcon('download')
-                                    ->displayLabel()
-                                    ->prepend(' | ');
+                                    ->displayLabel();
                             }
 
                             echo $table->render([['' => '']]);

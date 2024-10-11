@@ -83,8 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             ->setURL('/modules/Messenger/messenger_postQuickWall.php')
             ->setIcon('page_new')
             ->addParam('search', $search)
-            ->displayLabel()
-            ->prepend(' | ');
+            ->displayLabel();
     }
 
     $table->modifyRows(function($values, $row) {

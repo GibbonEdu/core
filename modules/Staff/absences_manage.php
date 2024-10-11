@@ -112,8 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         $table->addHeaderAction('view', __('View'))
             ->setIcon('planner')
             ->setURL('/modules/Staff/report_absences_summary.php')
-            ->displayLabel()
-            ->append('&nbsp;|&nbsp;');
+            ->displayLabel();
     }
 
     $table->addHeaderAction('add', __('New Absence'))

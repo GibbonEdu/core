@@ -71,8 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $form->addHeaderAction('back', __('Back to Search Results'))
                 ->setURL('/modules/Staff/applicationForm_manage.php')
                 ->addParam('search', $search)
-                ->displayLabel()
-                ->append(' | ');
+                ->displayLabel();
             }
 
             $form->addHeaderAction('print', __('Print'))

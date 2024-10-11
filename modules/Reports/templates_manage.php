@@ -47,8 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Reports/templates_manage_add.php')
-        ->displayLabel()
-        ->append(' | ');
+        ->displayLabel();
 
     $table->addHeaderAction('fonts', __('Manage Assets'))
         ->setIcon('delivery2')
