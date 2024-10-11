@@ -22,8 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Prefab;
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\FormFactory;
-use Gibbon\Forms\FormRenderer;
 use Gibbon\Forms\View\FormBlankView;
 
 /**
