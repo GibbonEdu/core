@@ -33,6 +33,25 @@ Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
     }
 });
 
+// Enable preventing page navigation from hx-boosted links
+if (!document.body.hasAttribute('hx-loaded')) {
+    document.body.setAttribute('hx-loaded', true);
+    document.body.addEventListener('htmx:confirm', function(evt) {
+        if (!evt.detail.elt.hasAttribute('hx-boost')) return;
+
+        evt.preventDefault();
+    
+        if (window.onbeforeunload != null) {
+            if (window.confirm(Gibbon.config.htmx.unload_confirm)) {
+                window.onbeforeunload = null;
+                evt.detail.issueRequest(true);
+            }
+        } else {
+            evt.detail.issueRequest(true);
+        }
+    }, false);
+}
+
 htmx.onLoad(function (content) {
 
     $(document).trigger('gibbon-setup');

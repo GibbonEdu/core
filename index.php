@@ -287,7 +287,10 @@ $javascriptConfig = [
     'config' => [
         'tinymce' => [
             'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
-        ]
+        ],
+        'htmx' => [
+            'unload_confirm' => __("Are you sure you want to leave this page? Information you've entered may not be saved."),
+        ],
     ],
 ];
 

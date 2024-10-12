@@ -95,6 +95,7 @@ class Form implements OutputableInterface
             $form->enableQuickSave();
         }
 
+        // Add meta sidebar by default
         if ($form->checkActionList($action, ['addProcess', 'addMultipleProcess', 'editProcess', 'duplicate'])) {
             $form->addMeta()->addDefaultContent($action);
         }
@@ -104,20 +105,24 @@ class Form implements OutputableInterface
 
     public static function createBlank($id, $action, $method = 'post', $class = '')
     {
-        global $container;
-
         $form = static::create($id, $action, $method, $class);
-        $form->setRenderer($container->get(FormBlankView::class));
+        $form->renderer->setTemplate('components/formBlank.twig.html');
+
+        return $form;
+    }
+
+    public static function createSearch($id, $action, $method = 'post', $class = '')
+    {
+        $form = static::create($id, $action, $method, $class);
+        $form->renderer->setTemplate('components/formSearch.twig.html');
 
         return $form;
     }
 
     public static function createTable($id, $action, $method = 'post', $class = 'smallIntBorder w-full')
     {
-        global $container;
-
         $form = static::create($id, $action, $method, $class);
-        $form->setRenderer($container->get(FormTableView::class));
+        $form->renderer->setTemplate('components/formTable.twig.html');
 
         return $form;
     }

@@ -12,7 +12,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set useSections = "noIntBorder" not in form.getClass %}
 
 {% if quickSave and form.getAction %}
-    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'submitting': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
+    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'submitting': false, 'showTimeout': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout);" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000); $dispatch('saved');">
 
     <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
         <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
@@ -68,9 +68,28 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endfor %}
 
     {% if form.getRows|length > 0 %}
-    <section class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0">
+    <section id="form" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
+        {% if "noIntBorder" not in form.getClass%}
+        x-data="{changed: false, 
+            checkInput(formElement) {  
+                document.getElementById(formElement.id).addEventListener('input', (evt) => {
+                    this.changed = true;
+                    window.onbeforeunload = function(event) {
+                        if (event.target.activeElement.value=='Submit' || event.target.activeElement.value=='Next') return;
+                        return Gibbon.config.htmx.unload_confirm;
+                    };
+                });
+            },
+            afterSave() {
+                this.changed = false;
+                window.onbeforeunload = null;
+            },
+        }" x-init="checkInput($el)" @saved.window="afterSave()"
+        {% endif %}
+        >
 
         <div class="{{ standardLayout and form.hasMeta ? 'col-span-6' : 'col-span-8' }}">
+
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
 
@@ -114,6 +133,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
                     {% set class = hasClass ? class ~ ' ' ~  element.getClass : class %}
                     <div class="{{ class }} {{ 'flex-' not in class ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
+
+                        {% if standardLayout and element.getAttribute('id') == 'Submit' %}
+                            <span x-cloak x-show="changed" class="tag message mr-4 whitespace-nowrap">{{ __('Unsaved Changes') }}</span>
+                        {% endif %}
+
                         {{ element.getOutput|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
@@ -137,7 +161,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% if form.hasMeta and form.getMeta.getElementCount > 0 %}
         <aside class="hidden xl:flex flex-col col-span-2 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
             {% for element in form.getMeta.getElements %}
-
                 {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
             
                 <div class="p-4 {{ not loop.last ? 'border-b'}} {{ hasClass ? element.getClass }}" 
