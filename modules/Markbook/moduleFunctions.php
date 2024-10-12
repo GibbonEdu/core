@@ -72,22 +72,22 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $output = '';
 
-    $output .= "<h3 style='margin-top: 0px'>";
-    $output .= __('Choose Class');
-    $output .= '</h3>';
+    // $output .= "<h3 style='margin-top: 0px'>";
+    // $output .= __('Choose Class');
+    // $output .= '</h3>';
 
-    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
 
-    $col = $form->addRow()->addColumn()->addClass('inline right');
+    $col = $form->addRow();
 
     // SEARCH
     $search = $_GET['search'] ?? '';
 
-    $col->addContent(__('Search').':');
+    $col->addContent(__('Search').':')->setClass('flex-shrink');
     $col->addTextField('search')
         ->setClass('shortWidth')
         ->setValue($search);
@@ -111,7 +111,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $result = $pdo->executeQuery($data, $sql);
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':');
+        $col->addContent(__('Term').':')->setClass('flex-shrink');
         $col->addSelect('gibbonSchoolYearTermID')
             ->fromArray(array('-1' => __('All Terms')))
             ->fromArray($terms)
@@ -139,7 +139,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             'surname'       => __('Surname'),
             'preferredName' => __('Preferred Name'),
         );
-        $col->addContent(__('Sort By').':');
+        $col->addContent(__('Sort By').':')->setClass('flex-shrink');
         $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('shortWidth');
 
         $session->set('markbookOrderBy', $selectOrderBy);
@@ -157,19 +157,19 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $filters['marked'] = __('Marked');
     $filters['unmarked'] = __('Unmarked');
 
-    $col->addContent(__('Show').':');
+    $col->addContent(__('Show').':')->setClass('flex-shrink');
     $col->addSelect('markbookFilter')
         ->fromArray($filters)
         ->selected($selectFilter)
         ->setClass('shortWidth');
 
     // CLASS
-    $col->addContent(__('Class').':');
+    $col->addContent(__('Class').':')->setClass('flex-shrink');
     $col->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
         ->setClass('mediumWidth')
         ->selected($gibbonCourseClassID);
 
-    $col->addSubmit(__('Go'));
+    $col->addSubmit(__('Go'))->setClass('max-w-24');
 
     if (!empty($search)) {
         $clearURL = $session->get('absoluteURL').'/index.php?q='.$session->get('address');

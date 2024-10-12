@@ -26,6 +26,8 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Markbook\MarkbookView;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 
 // Lock the file so other scripts cannot call it
 if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') ) return;
@@ -124,17 +126,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         'courseClass' => Format::courseClassName($class['course'], $class['class']),
     ]));
 
-    //Add multiple columns
-    if ($multiAdd) {
-        $params = [
-            "gibbonCourseClassID" => $gibbonCourseClassID
-        ];
-        $page->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
-            ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
-            ->addParams($params)
-            ->setIcon('page_new_multi')
-            ->displayLabel();
-    }
 
     //Get class chooser
     echo classChooser($guid, $pdo, $gibbonCourseClassID);
@@ -181,22 +172,100 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     // Load the columns for the current page
     $markbook->loadColumnsFromDataSet($columns);
 
-    if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
-        echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-			if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-	            if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
-	                echo " | <a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$session->get('gibbonThemeName')."/img/run.png'/></a>";
-	            }
-	        }
-		}
-        echo '</div>';
 
-        echo "<div class='warning'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+    // Display Pagination
+    echo "<div class='linkTop flex justify-between items-center mt-4'>";
+    
+    // Print table header info
+    echo '<p class="pr-4 text-xs text-gray-600">';
+        if (!empty($teacherList)) {
+            echo '<span class="text-sm font-semibold text-gray-800">'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</span>.<br/>';
+        }
+        if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
+            echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, use the Newer and Older links.');
+        } else {
+            echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
+        }
+        
+        if ($markbook->hasExternalAssessments() == true) {
+            echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
+        }
+    echo '</p>';
+
+    // Display the Top Links
+    if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+        echo '<script>
+            function resetOrder(){
+                $( "#dialog" ).dialog();
+            }
+            function resetOrderAction(order){
+                if(order==1){
+                    window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=1";
+                }else if(order==2){
+                    window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=2";
+                }
+            }
+        </script>';
+        echo '<div id="dialog" title="'.__('Reset Order').'" style="display:none;">
+            '.__('Are you sure you want to reset the ordering of all the columns in this class?').'<br>
+            <button onclick="resetOrderAction(1)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by entry order').'</button><br>
+            <button onclick="resetOrderAction(2)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by date').'</button>
+        </div>';
+
+        $form = Form::create('links', '');
+
+        $form->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Markbook/markbook_edit_add.php')
+            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+            ->displayLabel();
+
+        if ($multiAdd) {
+            $form->addHeaderAction('addMulti', __('Add Multiple'))
+                ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->setIcon('page_new_multi')
+                ->displayLabel();
+        }
+
+        $form->addHeaderAction('target', __('Targets'))
+            ->setURL('/modules/Markbook/markbook_edit_targets.php')
+            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+            ->displayLabel();
+
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
+            $form->addHeaderAction('config', __('Weightings'))
+                ->setURL('/modules/Markbook/weighting_manage.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->displayLabel();
+        }
+
+        if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
+            $form->addHeaderAction('refresh', __('Reset Order'))
+                ->onClick('resetOrder()')
+                ->setURL('#')
+                ->displayLabel();
+        }
+
+        if ($markbook->getColumnCountTotal() > 0) {
+            $form->addHeaderAction('export', __('Export'))
+                ->setURL('/modules/Markbook/markbook_viewExportAll.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->addParam('return', 'markbook_view.php')
+                ->directLink()
+                ->displayLabel();
+        }
+
+        echo $form->getOutput();
+    }
+    echo '</div>';
+
+    if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
+        echo Format::alert(__('There are no records to display.'), 'empty');
+        return;
     } else {
+
+        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') ) {
+
         // Cache all personalized target data
         $markbook->cachePersonalizedTargets( $gibbonCourseClassID );
 
@@ -211,31 +280,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
         }
 
-        echo '<h3>';
-        echo __('Results');
-        echo '</h3>';
-
-        // Print table header info
-        echo '<p>';
-            if (!empty($teacherList)) {
-                echo '<b>'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</b>. ';
-            }
-            if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
-                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, use the Newer and Older links.');
-            } else {
-                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
-            }
-            
-            if ($markbook->hasExternalAssessments() == true) {
-                echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
-            }
-        echo '</p>';
-
-        // Display Pagination
-        echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') ) {
-
-        	echo "<div style='padding-top: 16px; margin-right: 10px; text-align: left; width: 300px; float: left;'>";
+        	echo "<div class='flex-grow text-left py-1 text-sm'>";
 
 	        	echo ( ($session->get('markbookTerm') == -1)? __("All Terms") : $session->get('markbookTermName') ) ." : ";
 
@@ -261,46 +306,10 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 	        echo '</div>';
         }
 
-        // Display the Top Links
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a> | ";
-			echo '<script>
-					function resetOrder(){
-					    $( "#dialog" ).dialog();
-					}
-					function resetOrderAction(order){
-						if(order==1){
-							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=1";
-						}else if(order==2){
-							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=2";
-						}
-					}
-				</script>';
-			echo '<div id="dialog" title="'.__('Reset Order').'" style="display:none;">
-                      '.__('Are you sure you want to reset the ordering of all the columns in this class?').'<br>
-                      <button onclick="resetOrderAction(1)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by entry order').'</button><br>
-                      <button onclick="resetOrderAction(2)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by date').'</button>
-                    </div>';
-			echo "<a href='#' onclick='resetOrder()'>".__('Reset Order')."<img title='".__('Reset Order')."' src='./themes/".$session->get('gibbonThemeName')."/img/reincarnate.png'/></a> | ";
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Targets')."<img title='".__('Set Personalised Attainment Targets')."' src='./themes/".$session->get('gibbonThemeName')."/img/target.png'/></a> | ";
-            if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
-                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$session->get('gibbonThemeName')."/img/run.png'/></a> | ";
-                }
-            }
-            echo "<a href='".$session->get('absoluteURL')."/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".__('Export to Excel')."<img title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
-
-        } else {
-            echo '<br clear="both"/>';
-        }
-        echo '</div>';
-
         // Check to see if we have no columns to display. This can happen if the page number is incorrect.
         // Do this here so users still have access to buttons.
         if ($markbook->getColumnCountThisPage() <= 0) {
-            echo "<div class='warning'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo Format::alert(__('There are no records to display.'), 'empty');
             return;
         }
 
