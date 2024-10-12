@@ -148,7 +148,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     $output .= $dashboardContents;
                 }
                 $output .= '</div>';
-                $output .= '</section>';
+                $output .= '</section><br class="clearfix"/>';
             }
         }
 
@@ -796,7 +796,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             'selected' => $defaultTab ?? 1,
             'tabs'     => $tabs,
             'outset'   => false,
-            'icons'    => true,
+            
         ]);
 
         return $return;

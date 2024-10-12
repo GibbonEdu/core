@@ -65,7 +65,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         $output = '<h2>'.
             __('Student Dashboard').
             '</h2>'.
-            "<div class='w-full'>";
+            "<div class='w-full' style='height:calc(100% - 6rem)'>";
 
         $dashboardContents = $this->renderDashboard();
 

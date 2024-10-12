@@ -96,7 +96,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         $output = '<h2>'.
             __('Staff Dashboard').
             '</h2>'.
-            "<div class='w-full'>";
+            "<div class='w-full' style='height:calc(100% - 6rem)'>";
 
         $dashboardContents = $this->renderDashboard();
 

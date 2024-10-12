@@ -1,11 +1,10 @@
-<?php $groupClass .= !empty($groupAlign) ? ' text-sm/6' : 'text-sm'; ?>
+<?php $groupClass .= !empty($groupAlign) ? ' text-sm/6' : ' text-sm'; ?>
 
 <?php if ($type == 'blank') { ?>
 
     <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> "><?= $value; ?></button>
 
 <?php } elseif ($type == 'submit') { ?>
-
     <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, 'border-gray-800 bg-gray-800 hover:bg-gray-900' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-8 py-2 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-800 bg-gray-800 hover:bg-gray-900" />
     <span :class="{'opacity-0': submitting}"><?= $value; ?></span>
     </button>
