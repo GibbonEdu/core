@@ -41,7 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if dataSet.getTotalCount > 0 and not hidePagination %}
     <div class="flex flex-wrap sm:flex-no-wrap items-stretch justify-between">
         <div class="flex items-stretch h-full">
-            {% if pageSize %}
+            {% if pageSize and dataSet.getResultCount > 20 %}
             <div class="relative inline-flex -mr-1 mb-2">
                 <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
                 {{ pageSize|raw }}

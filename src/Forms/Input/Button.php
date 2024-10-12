@@ -104,6 +104,7 @@ class Button extends Element
     protected function getElement()
     {
         return Component::render(Button::class, $this->getAttributeArray() + [
+            'groupAlign' => $this->getGroupAlign(),
             'groupClass' => $this->getGroupClass(),
             'type'       => $this->type,
             'icon'       => $this->icon,

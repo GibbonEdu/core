@@ -95,7 +95,7 @@ class Form implements OutputableInterface
             $form->enableQuickSave();
         }
 
-        if ($form->checkActionList($action, ['addProcess', 'editProcess', 'duplicate'])) {
+        if ($form->checkActionList($action, ['addProcess', 'addMultipleProcess', 'editProcess', 'duplicate'])) {
             $form->addMeta()->addDefaultContent($action);
         }
 

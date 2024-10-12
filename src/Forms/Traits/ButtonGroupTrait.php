@@ -58,4 +58,9 @@ trait ButtonGroupTrait
         else return 'rounded-md';
     }
 
+    public function getGroupAlign()
+    {
+        return $this->group;
+    }
+
 }

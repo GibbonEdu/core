@@ -74,20 +74,20 @@ all stylesheets and scripts with a 'head' context.
             {% endfor %}
         </div>
 
-        <button hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" hx-get="{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.previous.gibbonSchoolYearID }}&{{ schoolYears.params|url_encode }}" type="button" class="rounded-l px-2 py-1 text-gray-600 bg-gray-200 border-gray-500 {{ schoolYears.previous is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" {{ schoolYears.previous is empty ? 'disabled'}}>
+        <button hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" hx-get="{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.previous.gibbonSchoolYearID }}&{{ schoolYears.params|url_encode }}" type="button" class="rounded-l px-2 py-1 text-gray-600 bg-gray-100 border-gray-400 {{ schoolYears.previous is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" {{ schoolYears.previous is empty ? 'disabled'}}>
             <span class="sr-only">{{ __('Prev') }}</span>
             <svg class="block h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                 <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
             </svg>
         </button>
 
-        <select hx-get="{{ absoluteURL }}/index.php?q={{ address }}" hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" name="gibbonSchoolYearID" class="bg-gray-200 text-gray-600 border-gray-500 border-r-0 pl-3 pr-6 py-2 {{ buttonStyle }}">
+        <select hx-get="{{ absoluteURL }}/index.php?q={{ address }}" hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" name="gibbonSchoolYearID" class="bg-gray-100 text-gray-600 border-gray-400 border-r-0 pl-3 pr-6 py-2 {{ buttonStyle }}">
         {%- for value, name in schoolYears.years -%}
             <option value="{{ value }}" {{ schoolYears.current.gibbonSchoolYearID == value ? 'selected' : ''}}>{{ name }}</option>
         {%- endfor -%}
         </select>
 
-        <button hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" hx-get="{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.next.gibbonSchoolYearID }}&{{ schoolYears.params|url_encode }}" type="button" class="rounded-r px-2 py-1 text-gray-600 bg-gray-200 border-gray-500 {{ schoolYears.next is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" {{ schoolYears.next is empty ? 'disabled'}}>
+        <button hx-push-url="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll" hx-get="{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.next.gibbonSchoolYearID }}&{{ schoolYears.params|url_encode }}" type="button" class="rounded-r px-2 py-1 text-gray-600 bg-gray-100 border-gray-400 {{ schoolYears.next is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" {{ schoolYears.next is empty ? 'disabled'}}>
             <span class="sr-only">{{ __('Next') }}</span>
             <svg class="block h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                 <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />

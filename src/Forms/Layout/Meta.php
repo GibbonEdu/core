@@ -52,14 +52,22 @@ class Meta extends Row
     {
         $iconClass = 'inline-block align-text-bottom text-gray-500 w-6 h-6 sm:h-5 sm:w-5 mr-2';
 
-        if (stripos($action, 'addProcess') !== false) {
+        if ($this->checkActionList($action, ['addProcess'])) {
             $icon = '<svg class="'.$iconClass.'" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
             </svg>';
             $row = $this->addRow()->addClass('text-sm');
             $row->addContent($icon . __('Adding'))->wrap('<h3 class="text-base font-semibold text-gray-800 mt-0 ">', '</h3>');
             $row->addContent(__('You are creating a new record and it has not been saved yet.').'<br/><br/>'.__('Press Submit to save your data.'))->wrap('<p class="mt-2 mb-0">', '</p>');
-        } elseif (stripos($action, 'editProcess') !== false) {
+        }if ($this->checkActionList($action, ['addMultipleProcess'])) {
+            $icon = '<svg class="'.$iconClass.'" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M13.4,17.8c2.8,0,5.1-2.3,5.1-5.1s-2.3-5.1-5.1-5.1-5.1,2.3-5.1,5.1,2.3,5.1,5.1,5.1ZM13.9,10.6c0-.3-.2-.5-.5-.5s-.5.2-.5.5v1.6h-1.6c-.3,0-.5.2-.5.5s.2.5.5.5h1.6v1.6c0,.3.2.5.5.5s.5-.2.5-.5v-1.6h1.6c.3,0,.5-.2.5-.5s-.2-.5-.5-.5h-1.6v-1.6Z"/>
+                <path fill-rule="evenodd" d="M11.7,6.7c-.3-2.6-2.5-4.6-5.1-4.6S1.4,4.5,1.4,7.3s2.3,5.1,5.1,5.1.4,0,.6,0c.1-2.7,2-4.9,4.5-5.7ZM6.6,9.9c-.3,0-.5-.2-.5-.5v-1.6h-1.6c-.3,0-.5-.2-.5-.5s.2-.5.5-.5h1.6v-1.6c0-.3.2-.5.5-.5s.5.2.5.5v1.6h1.6c.3,0,.5.2.5.5s-.2.5-.5.5h-1.6v1.6c0,.3-.2.5-.5.5Z"/>
+            </svg>';
+            $row = $this->addRow()->addClass('text-sm');
+            $row->addContent($icon . __('Adding Multiple'))->wrap('<h3 class="text-base font-semibold text-gray-800 mt-0 ">', '</h3>');
+            $row->addContent(__('You are creating multiple new records that share similar data.').'<br/><br/>'.__('Press Submit to save your data.'))->wrap('<p class="mt-2 mb-0">', '</p>');
+        } elseif ($this->checkActionList($action, ['editProcess'])) {
             $icon = '<svg class="'.$iconClass.'" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
             <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
@@ -67,7 +75,7 @@ class Meta extends Row
             $row = $this->addRow()->addClass('text-sm');
             $row->addContent($icon . __('Editing'))->wrap('<h3 class="text-base font-semibold text-gray-800 mt-0 ">', '</h3>');
             $row->addContent(__('Press Submit to save your data.'))->wrap('<p class="mt-2 mb-0">', '</p>');
-        } elseif (stripos($action, 'duplicate') !== false) {
+        } elseif ($this->checkActionList($action, ['duplicate'])) {
             $icon = '<svg class="'.$iconClass.'" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path d="M7 3.5A1.5 1.5 0 0 1 8.5 2h3.879a1.5 1.5 0 0 1 1.06.44l3.122 3.12A1.5 1.5 0 0 1 17 6.622V12.5a1.5 1.5 0 0 1-1.5 1.5h-1v-3.379a3 3 0 0 0-.879-2.121L10.5 5.379A3 3 0 0 0 8.379 4.5H7v-1Z" />
             <path d="M4.5 6A1.5 1.5 0 0 0 3 7.5v9A1.5 1.5 0 0 0 4.5 18h7a1.5 1.5 0 0 0 1.5-1.5v-5.879a1.5 1.5 0 0 0-.44-1.06L9.44 6.439A1.5 1.5 0 0 0 8.378 6H4.5Z" />
@@ -78,6 +86,14 @@ class Meta extends Row
         }
 
         return $this;
+    }
+
+    protected function checkActionList($actionString, $validActions)
+    {
+        foreach ($validActions as $action) {
+            if (stripos($actionString, $action) !== false) return true;
+        }
+        return false;
     }
 
     /**

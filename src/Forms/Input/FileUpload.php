@@ -202,7 +202,7 @@ class FileUpload extends Input
 
                     $output .= '<div class="input-box rounded-md w-full">';
 
-                    $output .= '<div class="inline-label">';
+                    $output .= '<div class="inline-label text-xs">';
                     $output .= __('Current attachment:').'<br/>';
                     $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
 
@@ -248,7 +248,7 @@ class FileUpload extends Input
             }
         }
 
-        $this->addClass('w-full rounded-md bg-white border border-gray-500 font-sans p-2 text-sm text-gray-900  placeholder:text-gray-400');
+        $this->addClass('w-full rounded-md bg-white border border-gray-400 font-sans p-2 text-sm text-gray-900  placeholder:text-gray-400');
 
         $output .= '<input type="file" '.$this->getAttributeString().'>';
 
