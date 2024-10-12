@@ -181,7 +181,7 @@ table tr {
     text-align: center;
 }
 table td:first-child {
-    text-align: left;
+    /* text-align: left; */
     border-left: 0;
 }
 
@@ -257,7 +257,7 @@ table.smallIntBorder td {
     padding: 0.5rem !important ;
 }
 table.smallIntBorder td:last-child {
-    text-align: left;
+    /* text-align: left; */
 }
 tr.break td {
     background-color: #eaebec;

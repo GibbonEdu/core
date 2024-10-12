@@ -152,9 +152,9 @@ class Toggle extends Input
      * @param   string  $value
      * @return  self
      */
-    public function setToggle($onValue, $onLabel, $offValue, $offLabel, $toggleType = '')
+    public function setToggle($onValue, $onLabel, $offValue, $offLabel, $toggleType = null)
     {
-        $this->toggleType = $toggleType;
+        $this->toggleType = $toggleType ?? $this->toggleType;
         $this->onValue = $onValue;
         $this->offValue = $offValue;
         $this->onLabel = $onLabel;

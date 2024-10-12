@@ -14,9 +14,9 @@
 
     <button type="button" role="switch" x-ref="toggle" x-model="toggle" @click="toggleSwitch()"
         class="relative ml-2 inline-flex w-8 rounded-full border border-gray-500 py-0.5 transition duration-300 ease-in-out <?= $disabledClass ?>" 
-        :class="toggle == onValue ? 'border-blue-500 bg-blue-400' : '<?= $toggleType== 'ActiveInactive' ? 'bg-red-300 border-red-600' : 'bg-gray-300' ?>'" >
+        :class="toggle == onValue ? 'border-blue-500 bg-blue-400' : 'bg-gray-300'" >
         
-        <span aria-hidden="true" :class="toggle == onValue ? 'border-blue-500' : '<?= $toggleType== 'ActiveInactive' ? 'border-red-600' : 'border-gray-500' ?>'" 
+        <span aria-hidden="true" :class="toggle == onValue ? 'border-blue-500' : 'border-gray-500'" 
             style="<?= $value == $onValue ? 'transform: translate(0.95rem)' : 'transform: translate(0.2rem)'; ?>;"
             :style="toggle == onValue ? 'transform: translate(0.95rem);' : 'transform: translate(0.2rem);'" 
             class="border bg-white h-3 w-3 rounded-full transition duration-300 ease-in-out <?= $disabledClass ?>" >
@@ -25,11 +25,12 @@
 
     <?php } else { ?>
 
+        
     <button type="button" role="switch" x-ref="toggle" x-model="toggle" @click="toggleSwitch()"
         class="relative ml-4 inline-flex w-16 rounded-full border border-gray-500 py-1 transition duration-300 ease-in-out <?= $disabledClass ?>" 
-        :class="toggle == onValue ? 'border-blue-500 bg-blue-400' : '<?= $toggleType== 'ActiveInactive' ? 'bg-red-300 border-red-600' : 'bg-gray-300' ?>'" >
+        :class="toggle == onValue ? 'border-blue-500 bg-blue-400' : '<?= $toggleType == 'ActiveInactive' ? 'bg-red-300 border-red-600' : 'bg-gray-300' ?>'" >
         
-        <span aria-hidden="true" :class="toggle == onValue ? 'border-blue-500' : '<?= $toggleType== 'ActiveInactive' ? 'border-red-600' : 'border-gray-500' ?>'" 
+        <span aria-hidden="true" :class="toggle == onValue ? 'border-blue-500' : '<?= $toggleType == 'ActiveInactive' ? 'border-red-600' : 'border-gray-500' ?>'" 
             style="<?= $value == $onValue ? 'transform: translate(2.15rem)' : 'transform: translate(0.25rem)'; ?>;"
             :style="toggle == onValue ? 'transform: translate(2.15rem);' : 'transform: translate(0.25rem);'" 
             class="border bg-white h-6 w-6 rounded-full transition duration-300 ease-in-out <?= $disabledClass ?>" >
@@ -37,6 +38,4 @@
     </button>
 
     <?php }  ?>
-    
-
 </div>

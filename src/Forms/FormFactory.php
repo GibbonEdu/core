@@ -24,6 +24,7 @@ namespace Gibbon\Forms;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Column;
+use Gibbon\Forms\Layout\Meta;
 use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\FormFactoryInterface;
@@ -66,6 +67,14 @@ class FormFactory implements FormFactoryInterface
     public function createColumn($id = ''): Column
     {
         return new Layout\Column($this, $id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createMeta(): Meta
+    {
+        return new Layout\Meta($this);
     }
 
     public function createTable($id = '')

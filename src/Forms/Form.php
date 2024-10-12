@@ -22,11 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Tables\Action;
+use Gibbon\Forms\View\FormBlankView;
 use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
-use Gibbon\Forms\View\FormBlankView;
+use League\Container\ContainerAwareTrait;
 
 /**
  * Form
@@ -37,11 +38,15 @@ use Gibbon\Forms\View\FormBlankView;
 class Form implements OutputableInterface
 {
     use BasicAttributesTrait;
+    use ContainerAwareTrait;
 
     protected $title;
     protected $description;
     protected $factory;
     protected $renderer;
+
+    protected $meta;
+    protected $metaData = [];
 
     protected $rows = [];
     protected $triggers = [];
@@ -86,12 +91,12 @@ class Form implements OutputableInterface
             ->setMethod($method);
 
         // Enable quick save by default on edit and settings pages
-        if (stripos($action, 'editProcess') !== false || stripos($action, 'settingsProcess') !== false) {
+        if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
             $form->enableQuickSave();
         }
 
-        if (stripos($action, 'addProcess') !== false || stripos($action, 'editProcess') !== false) {
-            $form->renderer->addData('metaSidebar', true);
+        if ($form->checkActionList($action, ['addProcess', 'editProcess', 'duplicate'])) {
+            $form->addMeta()->addDefaultContent($action);
         }
 
         return $form;
@@ -115,6 +120,14 @@ class Form implements OutputableInterface
         $form->setRenderer($container->get(FormTableView::class));
 
         return $form;
+    }
+
+    protected function checkActionList($actionString, $validActions)
+    {
+        foreach ($validActions as $action) {
+            if (stripos($actionString, $action) !== false) return true;
+        }
+        return false;
     }
 
     /**
@@ -298,6 +311,39 @@ class Form implements OutputableInterface
             return $row->getHeading() == $heading;
         }));
     }
+
+    /**
+     * Adds a Meta object to the form and returns it.
+     * @param  string  $id
+     * @return object Meta
+     */
+    public function addMeta()
+    {
+        if (empty($this->meta)) {
+            $this->meta = $this->factory->createMeta();
+        }
+
+        return $this->meta;
+    }
+
+    /**
+     * Get the Meta object, if it exists.
+     * @return  object|null
+     */
+    public function getMeta()
+    {
+        return !empty($this->meta)? $this->meta : null;
+    }
+
+    /**
+     * Gets whether the Meta object exists.
+     * @return  object|null
+     */
+    public function hasMeta()
+    {
+        return !empty($this->meta);
+    }
+
 
     /**
      * Adds an input type=hidden value to the form.
@@ -497,6 +543,10 @@ class Form implements OutputableInterface
     {
         foreach ($this->getRows() as $row) {
             $row->loadFrom($data);
+        }
+
+        if ($this->hasMeta()) {
+            $this->getMeta()->loadFrom($data);
         }
 
         return $this;

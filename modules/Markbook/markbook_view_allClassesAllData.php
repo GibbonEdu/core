@@ -673,7 +673,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 ++$count;
 
                 echo "<tr >";
-                echo '<td class="firstColumn '.($count % 2 == 0 ? 'odd' : 'even').'">';
+                echo '<td class="firstColumn text-left '.($count % 2 == 0 ? 'odd' : 'even').'">';
 
                 if ($studentOrderBy == 'rollOrder' && !empty($rowStudents['rollOrder']) ) {
                     echo $rowStudents['rollOrder'].') ';

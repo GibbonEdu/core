@@ -70,7 +70,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if form.getRows|length > 0 %}
     <section class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0">
 
-        <div class="{{ standardLayout and metaSidebar ? 'col-span-6' : 'col-span-8' }}">
+        <div class="{{ standardLayout and form.hasMeta ? 'col-span-6' : 'col-span-8' }}">
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
 
@@ -132,19 +132,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
 
         {% endfor %}
-
         </div>
 
-        {% if metaSidebar  %}
+        {% if form.hasMeta and form.getMeta.getElementCount > 0 %}
+        <aside class="hidden xl:flex flex-col col-span-2 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
+            {% for element in form.getMeta.getElements %}
 
-        <aside class="hidden xl:block col-span-2 h-min">
+                {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
             
-            {% if false  %}
-            <div class="bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
-
-            </div>
-            {% endif %}
-
+                <div class="p-4 {{ not loop.last ? 'border-b'}} {{ hasClass ? element.getClass }}" 
+                    {{ element.getAttributeString('', 'id,class')|raw }}>
+                    {{ element.getOutput|raw }}
+                </div>
+            {% endfor %}
         </aside>
         {% endif %}
 
