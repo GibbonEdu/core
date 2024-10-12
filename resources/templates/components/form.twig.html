@@ -10,7 +10,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% set standardLayout = "noIntBorder" not in form.getClass and "blank" not in form.getClass %}
 {% set useSections = "noIntBorder" not in form.getClass %}
-{% set useMetaSidebar = "standardForm" in form.getClass and "noIntBorder" not in form.getClass %}
 
 {% if quickSave and form.getAction %}
     <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'submitting': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout)" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000)">
@@ -71,12 +70,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if form.getRows|length > 0 %}
     <section class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0">
 
-        <div class="{{ standardLayout and useMetaSidebar ? 'col-span-6' : 'col-span-8' }}">
+        <div class="{{ standardLayout and metaSidebar ? 'col-span-6' : 'col-span-8' }}">
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
 
             {% if useSections %}
-            <div class="{{ ((rows|first).getElements|first).class }} mb-6 rounded bg-gray-50 border border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? ' sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
+            <div class="{{ ((rows|first).getElements|first).class }} mb-6 rounded bg-gray-50 border border-gray-400 {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
             {% endif %}
 
             {% for num, row in rows %}
@@ -114,7 +113,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
                     {% set class = hasClass ? class ~ ' ' ~  element.getClass : class %}
-                    <div class="{{ class }} {{ 'flex-' not in class ? 'flex-1' }}" >
+                    <div class="{{ class }} {{ 'flex-' not in class ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
                         {{ element.getOutput|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
@@ -136,7 +135,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         </div>
 
-        {% if useMetaSidebar  %}
+        {% if metaSidebar  %}
 
         <aside class="hidden xl:block col-span-2 h-min">
             

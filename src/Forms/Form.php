@@ -90,6 +90,10 @@ class Form implements OutputableInterface
             $form->enableQuickSave();
         }
 
+        if (stripos($action, 'addProcess') !== false || stripos($action, 'editProcess') !== false) {
+            $form->renderer->addData('metaSidebar', true);
+        }
+
         return $form;
     }
 

@@ -116,7 +116,7 @@ td.center {
 .dayPartial
  {
 	color: #d45602;
-	background: #ffd2a8 !important;
+	background: #ffedd5 !important;
 }
 
 .dayPartial {
@@ -136,7 +136,7 @@ td.center {
 .highlightMessage,
 .dayMessage {
 	color: #3B73AF;
-	background: #D0EAFD !important;
+	background: #DDF0FD !important;
 }
 
 .dayMessage, table.smallIntBorder td.dayMessage {

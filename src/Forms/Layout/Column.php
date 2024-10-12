@@ -71,9 +71,13 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         $output = '';
 
         foreach ($this->getElements() as $element) {
-            $output .= '<div class="'.$this->getContainerClass($element).' mb-1">';
-            $output .= $element->getOutput();
-            $output .= '</div>';
+            if ($class = $this->getContainerClass($element)) {
+                $output .= '<div class="'.$class.'">';
+                $output .= $element->getOutput();
+                $output .= '</div>';
+            } else {
+                $output .= $element->getOutput();
+            }
         }
 
         return $output;
