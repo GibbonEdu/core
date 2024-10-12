@@ -242,7 +242,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         $tabs = [];
 
         if (!empty($planner) || !empty($timetable)) {
-            $tabs['planner'] = [
+            $tabs['Planner'] = [
                 'label' =>  __('Planner'),
                 'content' => $planner.$timetable,
             ];
@@ -278,6 +278,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             'selected' => $defaultTab ?? 1,
             'tabs'     => $tabs,
             'outset'   => true,
+            'icons'    => true,
         ]);
 
         return $return;

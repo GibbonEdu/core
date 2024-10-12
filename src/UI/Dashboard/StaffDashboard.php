@@ -449,7 +449,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         $tabs = [];
 
         if (!empty($planner) || !empty($timetable)) {
-            $tabs['planner'] = [
+            $tabs['Planner'] = [
                 'label' =>  __('Planner'),
                 'content' => $planner.$timetable,
             ];
@@ -457,11 +457,11 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
 
         if (count($formGroups) > 0) {
             foreach ($formGroups as $index => $formGroup) {
-                $tabs['formGroup'.$index] = [
+                $tabs['Form Group Info'.$index] = [
                     'label'   => $formGroup[1],
                     'content' => $formGroup[2],
                 ];
-                $tabs['formGroupBehaviour'.$index] = [
+                $tabs['Form Group Behaviour'.$index] = [
                     'label'   => $formGroup[1].' '.__('Behaviour'),
                     'content' => $formGroup[3],
                 ];
@@ -469,7 +469,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         }
 
         if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_left.php') || isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new.php')) {
-            $tabs['enrolment'] = [
+            $tabs['Enrolment'] = [
                 'label'   => __('Enrolment'),
                 'content' => $this->enrolmentTable->getOutput(),
             ];
@@ -505,6 +505,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
             'selected' => $defaultTab ?? 1,
             'tabs'     => $tabs,
             'outset'   => true,
+            'icons'    => true,
         ]);
 
         return $return;

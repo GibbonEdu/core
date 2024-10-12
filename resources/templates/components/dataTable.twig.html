@@ -87,7 +87,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% for columnIndex, column in columns %}
                         {% set cell = rowData.cells[columnIndex] %}
                         
-                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }}; overflow-wrap: break-word;word-break: break-word;">
+                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }}; Xoverflow-wrap: break-word;Xword-break: break-word;">
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 

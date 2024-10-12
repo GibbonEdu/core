@@ -23,33 +23,6 @@ Theme fundamentals based on Mollio, copyright Daemon Pty Limited 2006, http://ww
 Used under "GNU Creative Commons License", http://creativecommons.org/licenses/GPL/2.0/
 */
 
-/* LAYOUT */
-
-/* div.trail {
-    text-align: left;
-    font-size: 70%;
-    margin: 10px 0px 10px -18px;
-    height: 16px;
-    padding-top: 7px;
-    padding-left: 20px;
-    font-weight: normal;
-    color: #3b73af;
-}
-
-div.trailEnd,
-div.trailHead,
-div.trailHead a {
-    display: inline-block;
-    white-space: nowrap;
-    font-weight: normal;
-    color: #3b73af;
-}
-
-div.trailEnd {
-    padding-left: 3px;
-} */
-
-
 
 /* LINKS */
 
@@ -109,16 +82,7 @@ h1:not([class]) {
 h2:not([class]) {
     font-size: 14pt;
 }
-/* #sidebar h2,
-div.sidebarExtra h2 {
-    font-size: 14pt;
-    border-left: none;
-    background: none;
-} */
 
-#sidebar p:last-of-type {
-    margin-bottom: 0;
-}
 
 h3:not([class]) {
     font-size: 13pt;
@@ -337,24 +301,13 @@ button,
 input[type="submit"],
 input[type="button"] {
     cursor: pointer;
-}
-
-button.active {
-    background-color: #dedede;
-}
-input[type="submit"].active,
-input[type="button"].active {
-    background-color: #bbbbbb;
+    background-color: inherit;
 }
 
 button[disabled],
 input[disabled],
 textarea[disabled] {
     cursor: initial;
-    /* filter: alpha(opacity = 65); */
-    /* -webkit-box-shadow: none; */
-    /* box-shadow: none; */
-    /* opacity: 0.45; */
     --tw-border-opacity: 0.5;
     --tw-ring-opacity: 0.5;
     --tw-text-opacity: 0.5;
@@ -734,50 +687,6 @@ div.resourceAddSlider {
     margin-bottom: -5px;
 }
 
-/* v12 NEW CLASSES */
-
-/* input.standardWidth,
-textarea.standardWidth,
-select.standardWidth,
-div.standardWidth,
-table.standardWidth {
-    width: 300px;
-}
-.w-full {
-    width: 100%;
-} */
-/* div.blockOuter {
-    text-align: center;
-}
-h1.bigTop,
-h2.bigTop,
-h3.bigTop,
-h4.bigTop,
-h5.bigTop,
-h6.bigTop {
-    margin-top: 50px !important;
-} */
-
-/* v13 NEW CLASSES */
-/* td.wordWrap {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word !important;
-} */
-
-/* v14 NEW CLASSES */
-
-/* select[multiple] {
-    height: auto;
-} */
-/* 
-.shortWidth {
-    width: 148px;
-}
-
-.mediumWidth {
-    width: 230px;
-} */
 
 table tr.heading td {
     padding: 15px 5px 15px 5px;
@@ -1018,8 +927,6 @@ table.smallIntBorder td.noPadding {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0icmdiKDEyMywgMTI5LCAxNDIpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNNi4yLDEzLjNsMy4yLDMuMmMuMy4zLjguMywxLjEsMGwzLjItMy4yYy4zLS4zLjMtLjgsMC0xLjFzLS44LS4zLTEuMSwwYzAsMCwwLDAsMCwwbC0yLjcsMi43LTIuNy0yLjdjLS4zLS4zLS44LS4zLTEuMSwwLS4zLjMtLjMuNywwLDFaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPg==');
 }
 
-
-
 .dataTable .expandable,
 .dataTable .draggable {
     border-right: 0px !important;
@@ -1181,16 +1088,20 @@ table.smallIntBorder td.noPadding {
     background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed;
 }
 
-.body-gradient-fuchsia {
-    background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;
+.body-gradient-indigo {
+    background: radial-gradient(80% 1000px at 20% 500px, #818cf8 0%, #4f46e5 100%) no-repeat fixed ;
 }
 
 .body-gradient-blue {
-    background: radial-gradient(80% 1000px at 20% 500px, #63B3ED 0%, #3182CE 100%) no-repeat fixed ;
+    background: radial-gradient(80% 1000px at 20% 500px, #60a5fa 0%, #2563eb 100%) no-repeat fixed ;
 }
 
-.body-gradient-indigo {
-    background: radial-gradient(80% 1000px at 20% 500px, #7F9CF5 0%, #5A67D8 100%) no-repeat fixed ;
+.body-gradient-sky {
+    background: radial-gradient(80% 1000px at 20% 500px, #7dc7ea 0%, #0ea5e9 100%) no-repeat fixed ;
+}
+
+.body-gradient-teal {
+    background: radial-gradient(80% 1000px at 20% 500px, #2dd4bf 0%, #0d9488 100%) no-repeat fixed ;
 }
 
 .body-gradient-green {
@@ -1198,19 +1109,23 @@ table.smallIntBorder td.noPadding {
 }
 
 .body-gradient-yellow {
-    background: radial-gradient(80% 1000px at 20% 500px, #ECC94B 0%, #D69E2E 100%) no-repeat fixed ;
+    background: radial-gradient(80% 1000px at 20% 500px, #facc15 0%, #f59e0b 100%) no-repeat fixed ;
 }
 
 .body-gradient-orange {
-    background: radial-gradient(80% 1000px at 20% 500px, #F6AD55 0%, #DD6B20 100%) no-repeat fixed ;
+    background: radial-gradient(80% 1000px at 20% 500px, #fb923c 0%, #ea580c 100%) no-repeat fixed ;
 }
 
 .body-gradient-red {
-    background: radial-gradient(80% 1000px at 20% 500px, #FC8181 0%, #E53E3E 100%) no-repeat fixed ;
+    background: radial-gradient(80% 1000px at 20% 500px, #e16363 0%, #b91c1c 100%) no-repeat fixed ;
 }
 
 .body-gradient-pink {
     background: radial-gradient(80% 1000px at 20% 500px, #F687B3 0%, #D53F8C 100%) no-repeat fixed ;
+}
+
+.body-gradient-fuchsia {
+    background: radial-gradient(80% 1000px at 20% 500px, #df8aee 0%, #a143aa 100%) no-repeat fixed ;
 }
 
 .standardForm:not(.blank) .formRow:not(:last-child)  {
