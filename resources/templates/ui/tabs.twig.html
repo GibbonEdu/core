@@ -25,23 +25,25 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     x-init="" class="relative w-full max-w-full">
     
     
+    <div class="overflow-x-auto overflow-y-hidden" style="width:100%;">
 
-    <div x-ref="tabButtons" @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()" class="max-w-full flex justify-start items-end flex-wrap-none overflow-x-auto overflow-y-hidden" role="tablist" aria-label="tab options">
+    <div x-ref="tabButtons" @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()" class="flex justify-start items-end flex-nowrap " role="tablist" aria-label="tab options">
         {% for tabID, tab in tabs %}
-        <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-400 z-10 bg-white' : 'text-gray-700 hover:text-gray-900 border border-transparent bg-transparent'" class="inline-flex items-center px-2.5 sm:px-5 sm:-mr-2 py-2 font-normal text-sm rounded-t-md border-b-0 " role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">
+        <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-400 z-10 bg-white' : 'text-gray-700 hover:text-gray-900 border border-transparent bg-transparent'" class="inline-flex items-center px-4 sm:px-5 py-2 -mr-1 sm:-mr-2 font-normal text-sm rounded-t-md border-b-0 " role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">
             {% if icons %}
                 {{ include('ui/tabIcons.twig.html', {'tab': tabID, 'iconClass': 'inline-block size-5 p-px -ml-1 mr-2 opacity-90'}) }}
             {% endif %}
-            <span class="whitespace-nowrap">{{ tab.label }}</span>
+            <span style="text-wrap-mode: nowrap;overflow-wrap: break-word;">{{ tab.label }}</span>
         </button>
  
         {% endfor %}
 
     </div>
+</div>
 
-    <div class="absolute -mt-px {{ outset ? '-mx-8' }} left-0 border-b border-gray-400 dark:border-gray-700" style="width: {{ outset ? 'calc(100% + 4rem)' : '100%' }}"></div>
+    <!-- <div class="absolute -mt-px {{ outset ? '-mx-4 sm:-mx-8' }} left-0 border-b border-gray-400 dark:border-gray-700" style="width: {{ outset ? 'calc(100% + 4rem)' : '100%' }}"></div> -->
 
-    <div role="tabpanels" class="pt-4 {{ outset ? '-mx-8 pb-6 px-8 rounded ' : 'px-4 border border-gray-400 border-t-0' }} bg-white">
+    <div role="tabpanels" class="pt-4 -mt-px {{ outset ? '-mx-4 sm:-mx-8 px-4 sm:px-8 pb-6 rounded border-t' : 'px-4 border' }} bg-white border-gray-400">
         {% for tabID, tab in tabs %}
         <div :id="$id(tabId + '-content')" x-show="tabContentActive($el)" class="relative"  :aria-labelledby="$id(tabId + '-content')" role="tabpanel">
            {{ tab.content|raw }}
