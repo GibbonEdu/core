@@ -134,7 +134,7 @@ class DataTableView extends View implements RendererInterface
             $row = $this->createTableRow($data, $table);
             if (!$row) continue; // Can be removed by rowLogic
             
-            $row->addClass($count % 2 == 0? 'odd' : 'even');
+            // $row->addClass($count % 2 == 0? 'odd' : 'even');
 
             $cells = [];
 

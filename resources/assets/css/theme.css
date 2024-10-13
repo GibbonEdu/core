@@ -466,9 +466,14 @@ input[type="checkbox"] + .LV_validation_message {
  --------------------------------------------------------------------------
 */
 
-.dataTable tr:hover {
+.dataTable tr:not([class]):hover {
     @apply bg-gray-100;
 }
+
+.dataTable tr[class]:hover {
+    @apply backdrop-brightness-125 bg-opacity-90;
+}
+
 
 .navigation-link::after {
     @apply bg-purple-600 rounded-md;

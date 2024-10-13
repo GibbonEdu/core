@@ -50,12 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $type = $_GET['type'] ?? '';
 
-        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder w-full');
+        $form = Form::createSearch();
         $form->setFactory(DatabaseFormFactory::create($pdo));
-
-        $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID',__('Student'));
@@ -79,8 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelect('type')->fromArray($arrTypes)->selected($type)->placeholder();
 
 
-        $row = $form->addRow();
-            $row->addSearchSubmit($session, __('Clear Filters'));
+        $row = $form->addRow()->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 

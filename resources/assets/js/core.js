@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-jQuery(function ($) {
+htmx.onLoad(function (content) {
+    
     /**
      * Sidebar toggle switch
      */
@@ -190,9 +191,7 @@ jQuery(function ($) {
             },
         });
     });
-});
 
-htmx.onLoad(function (content) {
     /**
      * Data Table: Simple Drag-Drop
      */

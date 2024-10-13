@@ -8,7 +8,7 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
     
-<form {{ form.getAttributeString|raw }} x-data="{'submitting': false}">
+<form {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'submitting': false}">
 
     {% if form.getTitle and not form.getHeader %}
         <h2>{{ form.getTitle }}</h2>
@@ -36,18 +36,28 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endfor %}
 
     {% if form.getRows|length > 0 %}
-    <section class="w-full">
+    <section class="w-full bg-blue-50 border rounded-md px-4 py-2">
 
         {% for num, row in form.getRows %}
 
             {% set rowLoop = loop %}
+            {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-6 sm:py-2' %}
 
-            <div id="{{ row.getID }}" class="{{ row.getClass }} " {{ row.getAttributeString("data-drag-id,x-show,x-transition,x-cloak")|raw }}>
+            <div id="{{ row.getID }}" class="{{ row.getClass }} {{ rowClass }}" {{ row.getAttributeString("data-drag-id,x-show,x-transition,x-cloak")|raw }}>
     
             {% for element in row.getElements %}
 
-                {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
-                <div class="{{ hasClass ? element.getClass : '' }}" >
+                {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                    {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0 text-xs ' %}
+                {% elseif loop.last %}
+                    {% set class = 'flex-1 relative flex justify-end items-center' %}
+                {% else %}
+                    {% set class = '' %}
+                {% endif %}
+
+                {% set class = class ~ ' ' ~ element.getAttribute('class') %}
+
+                <div class="{{ class }}" >
                     {{ element.getOutput|raw }}
 
                     {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}

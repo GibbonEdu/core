@@ -323,7 +323,7 @@ class FormFactory implements FormFactoryInterface
         $clearURL = Url::fromRoute()->withQueryParams($parameters);
         $clearLink = sprintf('<a href="%s" class="right px-3 py-2 text-xs font-medium text-gray-600">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
-        return $this->createSubmit('Go')->prepend($clearLink);
+        return $this->createSubmit(__('Go'))->prepend($clearLink);
     }
 
     public function createConfirmSubmit($label = 'Yes', $cancel = false)

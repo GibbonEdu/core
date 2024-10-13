@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Http\Url;
 use Gibbon\Tables\Action;
 use Gibbon\Forms\View\FormBlankView;
 use Gibbon\Forms\View\FormTableView;
@@ -103,18 +104,19 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public static function createBlank($id, $action, $method = 'post', $class = '')
+    public static function createSearch($id = 'search', $action = '', $method = 'get', $class = '')
     {
-        $form = static::create($id, $action, $method, $class);
-        $form->renderer->setTemplate('components/formBlank.twig.html');
-
-        return $form;
-    }
-
-    public static function createSearch($id, $action, $method = 'post', $class = '')
-    {
-        $form = static::create($id, $action, $method, $class);
+        $form = static::create($id, $action ?? Url::fromRoute(), $method, $class);
         $form->renderer->setTemplate('components/formSearch.twig.html');
+        $form->addHiddenValue('q', $_GET['q']);
+
+        $form->setAttribute('hx-get', Url::fromRoute())
+            ->setAttribute('hx-trigger', 'submit')
+            ->setAttribute('hx-select', '#content-inner')
+            ->setAttribute('hx-target', '#content-inner')
+            ->setAttribute('hx-swap', 'outerHTML show:none swap:0.2s')
+            ->setAttribute('x-on:htmx:before-request', 'submitting = true')
+            ->setAttribute('x-on:htmx:after-swap', 'submitting = false');
 
         return $form;
     }
@@ -123,6 +125,14 @@ class Form implements OutputableInterface
     {
         $form = static::create($id, $action, $method, $class);
         $form->renderer->setTemplate('components/formTable.twig.html');
+
+        return $form;
+    }
+
+    public static function createBlank($id, $action, $method = 'post', $class = '')
+    {
+        $form = static::create($id, $action, $method, $class);
+        $form->renderer->setTemplate('components/formBlank.twig.html');
 
         return $form;
     }
