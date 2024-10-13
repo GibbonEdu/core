@@ -9,9 +9,7 @@
 
 
     <span class="pointer-events-none absolute top-0.5 right-0.5">
-        <svg class="w-9 h-9 p-2 rounded text-gray-700 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
+        <?= icon('outline', 'clock', 'pointer-events-none size-9 p-2 rounded bg-white text-gray-600 hover:text-gray-800'); ?>
     </span>
 
 </div>

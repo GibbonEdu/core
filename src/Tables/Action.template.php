@@ -1,7 +1,7 @@
 <?php
-    if ($action == 'add' || $action == 'addMultiple') {
+    if ($action == 'add' || $action == 'addMultiple' || $action == 'accept') {
         $hoverClass = 'hover:text-green-500 hover:border-green-500';
-    } elseif ($action == 'delete') {
+    } elseif ($action == 'delete' || $action == 'reject') {
         $hoverClass = 'hover:text-red-700 hover:border-red-700';
     } else {
         $hoverClass = 'hover:text-blue-500 hover:border-blue-500';
@@ -13,7 +13,7 @@
 
     <?php $svgClass = 'w-6 h-6 sm:h-5 sm:w-5'.($displayLabel ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
 
-    <?= icon('solid', $action, $svgClass) ?>
+    <?= icon('solid', $icon ?? $action, $svgClass) ?>
     
     <?php if ($displayLabel) { ?>
     <span class="hidden lg:block text-gray-800 whitespace-nowrap">

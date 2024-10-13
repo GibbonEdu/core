@@ -31,10 +31,11 @@ use Gibbon\View\Component;
  */
 class Icon
 {
-    protected $libraries = [
+    protected static $libraries = [
         'Basic',
         'Solid',
         'Outline',
+        'Large',
     ];
 
     /**

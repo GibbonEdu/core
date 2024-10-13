@@ -105,9 +105,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                                     {% if actions|length > 1 %}
                                     <button type="button" @click="open = true" class="block sm:hidden rounded-md mx-auto my-1 p-1 shadow-sm bg-white border border-gray-400 hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-sans font-bold leading-none" >
-                                        <svg class="pointer-events-none block w-7 h-7 sm:h-6 sm:w-6" viewBox="0 0 20 20" fill="currentColor" >
-                                        <path d="M3 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM8.5 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM15.5 8.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" />
-                                        </svg>  
+                                        {{ icon('basic', 'ellipsis-horizontal', 'pointer-events-none block size-7 sm:size-6' ) }}
                                     </button>
                                     {% endif %}
                                 </nav>

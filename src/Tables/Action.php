@@ -69,7 +69,7 @@ class Action extends WebLink
      *
      * @var string|Gibbon\Url
      */
-    protected $icon;
+    protected $icon = null;
 
     /**
      * Boolean flag indicate if the link opens a modal box.
@@ -286,21 +286,6 @@ class Action extends WebLink
             return $this->getLabel();
         }
 
-        if ($icon = $this->getIcon()) {
-            // Allow modules to specify their own icons if needed
-            $icon = substr($icon, 0, 4) != 'http'
-                ? $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/'.$icon.'.png'
-                : $icon;
-
-            $this->setContent(sprintf('%1$s<img alt="%2$s" title="%2$s" src="'.$icon.'" width="25" height="25" class="ml-1">',
-                ($this->displayLabel? $this->getLabel() : ''),
-                $this->getLabel(),
-                $this->getIcon()
-            ));
-        } else {
-            $this->setContent($this->getLabel());
-        }
-
         $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
         // Allow ActionColumn level params to auto-fill from the row data, if they're not set
@@ -342,8 +327,6 @@ class Action extends WebLink
                 ->withQueryParams($queryParams)
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         }
-
-        // return parent::getOutput();
 
         return Component::render(Action::class, $this->getAttributeArray() + [
             'action' => $this->name,

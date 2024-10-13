@@ -83,11 +83,8 @@ class PersonalDocuments extends Input
 
             $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-between">';
-            
-            $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                'icon' => strtolower($document['document']),
-                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
-            ]);
+
+            $output .= icon('large', strtolower($document['document']), 'size-6 fill-current mr-3 -my-2');
 
             $output .= __($document['name']);
 

@@ -50,11 +50,9 @@ Useful for scripts that need to execute after the page has loaded.
             :class="modalType == 'delete' ? 'max-w-2xl' : 'max-w-6xl'"
             style="min-height: 20vh; max-height: 80vh"
         >
-            <div class="flex w-full -my-2 mx-2 justify-end">
+            <div class="flex w-full -mt-4 ml-4 justify-end">
                 <button @click="modalOpen = false" class="bg-white text-gray-600 focus:outline-none hover:text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    {{ icon('basic', 'x-mark', 'size-6') }}
                 </button>
             </div>
 
