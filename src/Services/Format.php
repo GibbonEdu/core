@@ -1060,7 +1060,7 @@ class Format
 
         if ($daysUntilNextBirthday == 0) {
             $title = __("{name}'s birthday today!", ['name' => $preferredName]);
-            $icon = 'gift_pink.png';
+            $iconClass = 'bg-pink-500 text-white';
         } else {
             $title = __n(
                 "{count} day until {name}'s birthday!",
@@ -1068,10 +1068,10 @@ class Format
                 $daysUntilNextBirthday,
                 ['name' => $preferredName]
             );
-            $icon = 'gift.png';
+            $iconClass = 'text-gray-600 bg-white';
         }
 
-        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+        return Format::tooltip(icon('outline', 'gift', 'absolute bottom-0 -ml-4 size-7 shadow p-0.5 rounded-md '.$iconClass, ['stroke-width' => '1.8']), $title);
     }
 
     /**
