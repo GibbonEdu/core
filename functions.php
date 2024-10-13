@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Locale;
+use Gibbon\UI\Icon;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +29,6 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Input\Editor;
-use Gibbon\Locale;
 
 function getIPAddress()
 {
@@ -177,6 +178,21 @@ function __m(string $text, array $params = [], array $options = [])
     }
 
     return $gibbon->locale->translate($text, $params, $options);
+}
+
+/**
+ * Return an SVG icon from a specified icon library.
+ * Many of the icons come from: https://heroicons.com
+ *
+ * @param string $library   One of: basic, solid, outline
+ * @param string $icon      The name of an icon
+ * @param string $class     Applies a class to the svg returned
+ * @param array $options    Eg: strokeWidth for outline icons
+ * @return string
+ */
+function icon(string $library, string $icon, string $class = '', array $options = []) : string
+{
+    return Icon::get($library, $icon, $class, $options);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field

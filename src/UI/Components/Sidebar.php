@@ -247,7 +247,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $row = $form->addRow()->addClass('flex items-center justify-between');
                         $row->addButton('')
                             ->setID('usernameLabel')
-                            ->setIcon('username')
+                            ->setIcon('user')
                             ->groupAlign('left')
                             ->setAria('label', __('Username or email'))
                             ->setTitle(__('Username or email'))

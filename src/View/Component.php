@@ -58,7 +58,7 @@ class Component
     {
         static::$path = empty(static::$path) ? realpath(__DIR__.'/../').'/' : static::$path;
 
-        $view = str_replace(['Gibbon\\', '\\', '..'], ['', '/', ''], $view);
+        $view = str_replace(['Gibbon\\', '\\', '..'], ['', '/', ''], ltrim($view, '/'));
 
         if (!file_exists($file = static::$path.$view.'.template.php')) {
             throw new \Exception(sprintf('The component %s could not be found.', $file));

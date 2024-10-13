@@ -747,15 +747,17 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         if (!empty($plannerOutput) || !empty($gradesOutput) || !empty($deadlinesOutput)) {
             $tabs['Planner'] = [
-                'label' =>  __('Planner'),
+                'label'   => __('Planner'),
                 'content' => $plannerOutput.$gradesOutput.$deadlinesOutput,
+                'icon'    => 'book-open',
             ];
         }
 
         if (!empty($timetableOutput)) {
             $tabs['Timetable'] = [
-                'label' =>  __('Timetable'),
+                'label'   => __('Timetable'),
                 'content' => $timetableOutput,
+                'icon'    => 'calendar',
             ];
         }
         
@@ -763,6 +765,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $tabs['Activities'] = [
                 'label' =>  __('Activities'),
                 'content' => $activitiesOutput,
+                'icon'    => 'star',
             ];
         }
 
@@ -783,6 +786,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $tabs[$hookData['name']] = [
                 'label'   => __($hookData['name'], [], $hookData['sourceModuleName']),
                 'content' => $hookOutput,
+                'icon'    => $hookData['name'],
             ];
         }
 
@@ -796,7 +800,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             'selected' => $defaultTab ?? 1,
             'tabs'     => $tabs,
             'outset'   => false,
-            
+            'icons'    => true,
         ]);
 
         return $return;

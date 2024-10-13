@@ -23,13 +23,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     }"
     x-init="tabSelected = {{ selected|default(1) }}" class="relative w-full h-full max-w-full">
     
-    
     <div class="overflow-x-auto overflow-y-hidden" style="width:100%;">
         <div x-ref="tabButtons" @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()" class="flex justify-start items-end flex-nowrap " role="tablist" aria-label="tab options">
             {% for tabID, tab in tabs %}
             <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-400 border-b-white z-10 bg-white shadow' : 'text-gray-800 hover:bg-gray-200 border border-transparent border-b-gray-400 bg-transparent'" class="inline-flex flex-col sm:flex-row gap-1.5 items-center px-4 sm:px-5 xl:px-6 py-2 -mr-1 sm:-mr-2 font-normal rounded-t-md  " role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">
-                {% if icons %}
-                    {{ include('ui/tabIcons.twig.html', {'tab': tabID, 'iconClass': 'inline-block size-5 p-px sm:-ml-1 opacity-50'}) }}
+                {% if icons and tab.icon %}
+                    {{ icon('outline', tab.icon, 'inline-block size-5 p-px sm:-ml-1 opacity-50')|raw }}
                 {% endif %}
                 <span class="block sm:inline text-xxs sm:text-sm whitespace-nowrap">{{ tab.label }}</span>
             </button>
@@ -38,7 +37,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
     </div>
 
-    <div role="tabpanels" class="h-full pt-4 -mt-px {{ outset ? '-mx-4 sm:-mx-8 px-4 sm:px-8 pb-6 rounded border-t' : 'px-4 border' }} bg-white border-gray-400">
+    <div role="tabpanels" class="h-full pt-4 -mt-px {{ outset ? '-mx-4 sm:-mx-8 px-4 sm:px-8 pb-6 border-t' : 'px-4 border' }} rounded-b bg-white border-gray-400">
         {% for tabID, tab in tabs %}
         <div :id="$id(tabId + '-content')" x-show="tabContentActive($el)" class="relative"  :aria-labelledby="$id(tabId + '-content')" role="tabpanel">
            {{ tab.content|raw }}
