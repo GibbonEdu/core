@@ -103,9 +103,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     $dowShort = date('D', strtotime("Sunday +$i days"));
 
                     $script = '<script type="text/javascript">';
-                    $script .= '$(function () {';
-                    $script .= "$('#checkall".$dowShort.$values['nameShort']."').click(function () {";
-                    $script .= "$('.".$dowShort.$values['nameShort'].":checkbox').attr('checked', this.checked);";
+                    $script .= 'htmx.onLoad(function (content) {';
+                    $script .= "$(document).on('click', '#checkall".$dowShort.$values['nameShort']."', function () {";
+                    $script .= "$('.".$dowShort.$values['nameShort']." :checkbox').attr('checked', this.checked);";
                     $script .= '});';
                     $script .= '});';
                     $script .= '</script>';

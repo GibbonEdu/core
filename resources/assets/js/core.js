@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 htmx.onLoad(function (content) {
     
+    
+
     /**
      * Sidebar toggle switch
      */
@@ -35,6 +37,8 @@ htmx.onLoad(function (content) {
         }
     });
 
+    
+
     /**
      * Form Class: generic check All/None checkboxes
      */
@@ -42,7 +46,7 @@ htmx.onLoad(function (content) {
         var checkall = this;
         var checked = checkall.checked;
         var parent = checkall.parentElement.parentElement.closest(
-            ".checkboxGroup, .bulkActionForm"
+            '.bulkActionForm, .checkboxGroup'
         );
 
         parent
@@ -76,6 +80,8 @@ htmx.onLoad(function (content) {
             var checkedCount = checkboxes.filter(":checked").length;
 
             if (checkedCount > 0) {
+                $(".bulkActionCount span").html(checkedCount);
+
                 if ($(".bulkActionPanel").hasClass("hidden")) {
                     $(".bulkActionPanel").removeClass("hidden");
 
@@ -83,8 +89,7 @@ htmx.onLoad(function (content) {
                         .parents(".bulkActionForm")
                         .find(".dataTable header");
                     var panelHeight = $(".bulkActionPanel").innerHeight();
-
-                    $(".bulkActionCount span").html(checkedCount);
+                    
                     $(".bulkActionPanel").css(
                         "top",
                         header.outerHeight(false) - panelHeight + 6

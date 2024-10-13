@@ -31,7 +31,7 @@ Main Menu: Displays the top-level categories and active modules.
         </a>
 
         <script type="text/javascript">
-            $(document).ready(function() {
+            htmx.onLoad(function (content) {
                 setInterval(function() {
                     refreshNotifications();
                 }, {{ statusTray.notifications.interval }});
@@ -42,7 +42,7 @@ Main Menu: Displays the top-level categories and active modules.
 
 {% if statusTray.alarm %}
     <script>
-        $(document).ready(function() {
+        htmx.onLoad(function (content) {
             refreshNotifications();
         });
     </script>

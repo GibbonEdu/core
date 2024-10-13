@@ -104,16 +104,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $row = $table->addRow();
                     $row->addCheckbox('syncEnabled['.$class['gibbonCourseClassID'].']')
                         ->checked(!empty($class['syncTo']))
-                        ->setClass($course['gibbonCourseID'])
-                        ->description('&nbsp;&nbsp;');
+                        ->setClass($course['gibbonCourseID'].' w-12');
                     $row->addLabel('syncEnabled['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])
                         ->setTitle($class['courseNameShort'])
-                        ->setClass('mediumWidth');
+                        ->setClass('w-36');
                     $row->addContent((empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )
-                        ->setClass('shortWidth right');
+                        ->setClass('w-1/3 text-right');
                     $row->addSelectFormGroup('syncTo['.$class['gibbonCourseClassID'].']', $gibbonSchoolYearID)
                         ->selected($class['syncTo'])
-                        ->setClass('mediumWidth');
+                        ->setClass('flex-1');
             }
 
             // Checkall by course

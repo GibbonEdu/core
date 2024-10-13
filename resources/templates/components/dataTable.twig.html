@@ -46,8 +46,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% else %}
 
     {% block tableInner %}
-    
-        <table class="{{ class }} w-full mb-2 relative" cellspacing=0 {% if draggable %}data-draggable="true" hx-post="{{ draggable.url }}" hx-trigger="end" hx-swap="none" hx-include="this" hx-vals="{{ draggable.data }}"{% endif %}>
+
+        <table class="{{ class }} w-full mb-2 relative" cellspacing=0 {% if draggable %}data-draggable="true" hx-post="{{ draggable.url }}" hx-trigger="end" hx-swap="none" hx-include="this" hx-vals="{{ draggable.data is not empty and draggable.data != '[]' ? draggable.data : '' }}"{% endif %}>
             <thead class="sticky top-0 z-20">
             {% for rowIndex, headerRow in headers %}
 

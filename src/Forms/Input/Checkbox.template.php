@@ -1,4 +1,4 @@
-<div class="checkboxGroup flex-grow relative gap-2 <?= $inline ? 'inline-flex justify-between items-center ' : 'flex flex-col justify-center ' . ($align == 'left' ? 'items-start' : 'items-end'); ?>" >
+<div class="<?= !empty($checkall) ? 'checkboxGroup' : ''; ?> flex-grow relative gap-2 <?= $inline ? 'inline-flex justify-between items-center ' : 'flex flex-col justify-center ' . ($align == 'left' ? 'items-start' : 'items-end'); ?>" >
    
 <?php if (!empty($checkall)) { ?>
 <div class="flex mt-1 <?= $align == 'right' ? 'justify-end text-right' : '' ?>">
@@ -18,7 +18,7 @@
     <?php foreach ($optionList as $checkboxValue => $checkbox) { ?>
 
         <?php $itemId = $hasMultiple ? $identifier.$count : $identifier; ?>
-        <?php $itemClass = 'h-4 w-4 rounded text-blue-500 focus:ring-blue-600'; ?>
+        <?php $itemClass = 'h-4 w-4 rounded text-blue-500 focus:ring-blue-600 ' . $class; ?>
         
         <?php if ($inline) { ?>
             <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
