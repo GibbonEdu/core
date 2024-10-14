@@ -198,6 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $params['gibbonCourseClassID'] = $gibbonCourseClassID;
                     }
                     $params['subView'] = $subView;
+                    $params['search'] = $gibbonPersonID;
                     $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
                     $roleCategory = $session->get('gibbonRoleIDCurrentCategory');

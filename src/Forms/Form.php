@@ -464,6 +464,7 @@ class Form implements OutputableInterface
             ->setAttribute('hx-trigger', 'submit')
             ->setAttribute('hx-select', '#content-wrap')
             ->setAttribute('hx-target', '#content-wrap')
+            ->setAttribute('hx-replace-url', 'true')
             ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0.2s')
             ->setAttribute('x-on:htmx:before-request', 'submitting = true')
             ->setAttribute('x-on:htmx:after-swap', 'submitting = false');

@@ -299,6 +299,10 @@ class Format
             return '';
         }
 
+        if ($dateFrom == $dateTo) {
+            return static::date($dateFrom, $format);
+        }
+
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
     }
 

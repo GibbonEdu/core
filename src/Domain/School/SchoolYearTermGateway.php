@@ -74,14 +74,25 @@ class SchoolYearTermGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectSchoolClosuresByTerm($gibbonSchoolYearTermID)
+    public function selectSchoolClosuresByTerm($gibbonSchoolYearTermID, $grouped = false)
     {
-        $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
-        $sql = "SELECT date, name
+        $gibbonSchoolYearTermIDList = !is_array($gibbonSchoolYearTermID) ?: implode(',', $gibbonSchoolYearTermID);
+        $data = array('gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList);
+        if ($grouped) {
+            $sql = "SELECT MIN(date) as groupBy, name, MIN(date) as firstDay, MAX(date) as lastDay
                 FROM gibbonSchoolYearSpecialDay
-                WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID
+                WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
+                AND type='School Closure'
+                GROUP BY name
+                ORDER BY date";
+        } else {
+            $sql = "SELECT date, name
+                FROM gibbonSchoolYearSpecialDay
+                WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
                 AND type='School Closure'
                 ORDER BY date";
+        }
+        
 
         return $this->db()->select($sql, $data);
     }
@@ -108,9 +119,20 @@ class SchoolYearTermGateway extends QueryableGateway
     public function selectTermsBySchoolYear(int $gibbonSchoolYearID): Result
     {
         $sql = 'SELECT gibbonSchoolYearTermID, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
-        return $this->db()->select($sql, [
-            'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        ]);
+        return $this->db()->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
+    }
+
+    /**
+     * Select a full list of school year term fields in the specified school year.
+     *
+     * @param integer $gibbonSchoolYearID  The ID of the school year.
+     *
+     * @return Result
+     */
+    public function selectTermDetailsBySchoolYear(int $gibbonSchoolYearID): Result
+    {
+        $sql = 'SELECT gibbonSchoolYearTermID as groupBy, gibbonSchoolYearTerm.* FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+        return $this->db()->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
     }
 
     /**
