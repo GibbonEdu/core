@@ -20,13 +20,13 @@ all stylesheets and scripts with a 'head' context.
                     <li aria-current="page" class="list-none inline ml-0 trailEnd">{{ title }}</li>
                 {% elseif loop.revindex > 5 and loop.index != 1 %}
                     <li class="list-none inline ml-0 ">
-                        <a hx-boost="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll swap:0s" class="text-blue-700 underline" href="{{ src }}">...
+                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="text-blue-700 underline" href="{{ src }}">...
 
                         </a> > 
                     </li>
                 {% else %}
                     <li class="list-none inline ml-0 ">
-                        <a hx-boost="true" hx-target="#content-inner" hx-select="#content-inner" hx-swap="outerHTML show:no-scroll swap:0s" class="text-blue-700 underline" href="{{ src }}">
+                        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="text-blue-700 underline" href="{{ src }}">
                             {{ title }}
                         </a> > 
                     </li>

@@ -294,7 +294,7 @@ table.blank > tbody > tr > td {
 /* FORMS */
 
 input[type="checkbox"][disabled] {
-    opacity: 1;
+    opacity: 0.35;
 }
 
 button,

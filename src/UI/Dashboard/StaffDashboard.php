@@ -461,7 +461,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                 $tabs['Form Group Info'.$index] = [
                     'label'   => $formGroup[1],
                     'content' => $formGroup[2],
-                    'icon'    => 'users',
+                    'icon'    => 'user-group',
                 ];
                 $tabs['Form Group Behaviour'.$index] = [
                     'label'   => $formGroup[1].' '.__('Behaviour'),
