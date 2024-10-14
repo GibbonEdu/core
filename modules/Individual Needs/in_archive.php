@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
             WHERE status='Full' 
             AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
             ORDER BY surname, preferredName";
-    $result = $pdo->executeQuery($data, $sql);
+    $result = $pdo->select($sql, $data);
 
     $students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
     $students = array_map(function($item) {
