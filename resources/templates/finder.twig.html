@@ -43,9 +43,9 @@ Fast Finder
             {{ icon('basic', 'search', 'size-5 text-white opacity-50') }}
         </button>
 
-        <input class="form-control flex-1 text-white text-sm pl-10 h-10" 
+        <input class="form-control flex-1 text-white placeholder:text-white placeholder:text-opacity-60 text-sm pl-10 h-10" 
             type="search" autocomplete="off" 
-            name="search" placeholder="" 
+            name="search" placeholder="{{ __('Search') }}" 
             hx-post="index_fastFinder_ajax.php" 
             hx-trigger="input changed delay:500ms, search" 
             hx-target="#search-results" 

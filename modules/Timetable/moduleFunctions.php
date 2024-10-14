@@ -490,68 +490,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $gibbonTTID = $row['gibbonTTID'];
             $nameShortDisplay = $row['nameShortDisplay']; //Store day short name display setting for later
 
-            if ($title != false) {
-                $output .= '<h2>'.$row['name'].'</h2>';
-            }
-
-            $urlParams = [
-                'q'                    => $q,
-                'gibbonPersonID'       => $gibbonPersonID,
-                'gibbonTTID'           => $row['gibbonTTID'],
-                'schoolCalendar'       => $session->get('viewCalendarSchool'),
-                'personalCalendar'     => $session->get('viewCalendarPersonal'),
-                'spaceBookingCalendar' => $session->get('viewCalendarSpaceBooking'),
-                'narrow'               => $narrow,
-                'fromTT'               => 'Y',
-            ];
-
-            $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($urlParams);
-
-            $output .= "<div id='tt' name='tt' x-data='{ ttDate: \"\", ttRefresh: false }' style='width: 100%; min-height: 40px; text-align: center'>";
-
-            $output .= "<form
-                        hx-post='".$apiEndpoint."' 
-                        hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
-                        hx-target='closest #tt' 
-                        hx-select='#tt'
-                        hx-swap='outerHTML' 
-                        hx-indicator='#indicator'
-                        hx-include='[name=\"ttDateChooser\"],[name=\"ttCalendarRefresh\"]'
-                        hx-vals='js:{\"edit\": \"".$edit."\"}'
-                        >";
-
-            $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
-            $output .= "<input type='hidden' name='ttDateNav' x-model='ttDate'>";
-            $output .= "<input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>";
-
-            $output .= "<div>";
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
-            $output .= icon('basic', 'chevron-left', 'inline-block size-5');
-            $output .=" <span class='hidden sm:inline ml-1'>".__('Last Week')."</span></button>";
-
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
-
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1'>".__('Next Week')."</span>";
-            $output .= icon('basic', 'chevron-right', 'inline-block size-5');
-            $output .= "</button>";
-
-            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 inline-block align-middle w-5 h-5 opacity-0"></span>';
-            $output .= "</div>";
-
-            $output .= "<div class='inline-flex'>";
-            $output .= "<button type='button' class='ttNav inline-flex items-center rounded-l p-2 -mr-px text-base border border-gray-400 text-gray-600 bg-white font-medium hover:bg-gray-300 hover:text-gray-700'
-                    x-on:click='ttRefresh=true'>";
-            $output .= icon('basic', 'refresh', 'size-4');
-            $output .= "</button>";
-            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='inline-flex border rounded-r text-sm font-sans h-10 w-40 px-3'> ";
-            $output .= "</div>";
-
-            $output .= '</nav>';
-
-            $output .= '</form>';
 
             //Check which days are school days
             $daysInWeek = 0;
@@ -607,6 +545,77 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             //Count forward to the end of the week
             $endDayStamp = $startDayStamp + (86400 * ($daysInWeek - 1));
+
+
+            if ($title != false) {
+                $output .= '<h2>'.$row['name'].'</h2>';
+            }
+
+            $urlParams = [
+                'q'                    => $q,
+                'gibbonPersonID'       => $gibbonPersonID,
+                'gibbonTTID'           => $row['gibbonTTID'],
+                'schoolCalendar'       => $session->get('viewCalendarSchool'),
+                'personalCalendar'     => $session->get('viewCalendarPersonal'),
+                'spaceBookingCalendar' => $session->get('viewCalendarSpaceBooking'),
+                'narrow'               => $narrow,
+                'fromTT'               => 'Y',
+            ];
+
+            $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($urlParams);
+
+            $output .= "<div id='tt' name='tt' x-data='{ ttDate: \"\", ttRefresh: false }' style='width: 100%; min-height: 40px; text-align: center'>";
+
+            $output .= "<form
+                        hx-post='".$apiEndpoint."' 
+                        hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
+                        hx-target='closest #tt' 
+                        hx-select='#tt'
+                        hx-swap='outerHTML' 
+                        hx-indicator='#indicator'
+                        hx-include='[name=\"ttDateChooser\"],[name=\"ttCalendarRefresh\"]'
+                        hx-vals='js:{\"edit\": \"".$edit."\"}'
+                        >";
+
+            $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
+            $output .= "<input type='hidden' name='ttDateNav' x-model='ttDate'>";
+            $output .= "<input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>";
+
+            $output .= "<div class='flex-1 text-left'>";
+            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
+            $output .= icon('basic', 'chevron-left', 'inline-block size-5');
+            $output .=" <span class='hidden sm:inline ml-1 sr-only'>".__('Last Week')."</span></button>";
+
+            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+                x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
+
+            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1 sr-only'>".__('Next Week')."</span>";
+            $output .= icon('basic', 'chevron-right', 'inline-block size-5');
+            $output .= "</button>";
+            $output .= "</div>";
+
+            $output .= "<div class='flex-shrink  hidden md:block'>";
+            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed mr-4 inline-block align-middle w-5 h-5 opacity-0"></span>';
+            $output .= "<div class='h-8 px-4 mr-6 text-xs/6 inline-flex items-center rounded border border-gray-400 text-gray-600 bg-gray-100 font-medium'>";
+            $output .= Format::dateRangeReadable($startDayStamp, $endDayStamp);
+            $output .= "</div>";
+            $output .= "</div>";
+
+            $output .= "<div class='flex-1 text-right inline-flex justify-end'>";
+            $output .= "<button type='button' class='ttNav inline-flex items-center rounded-l px-2 py-1 -mr-px text-base border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+                    x-on:click='ttRefresh=true'>";
+            $output .= icon('basic', 'refresh', 'size-4');
+            $output .= "</button>";
+            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='inline-flex border rounded-r bg-gray-100 text-sm/6 py-1 font-sans w-36 px-3'> ";
+            $output .= "</div>";
+
+            $output .= '</nav>';
+
+            $output .= '</form>';
+
+            
 
             $schoolCalendarAlpha = 0.85;
             $ttAlpha = 1.0;
@@ -1727,11 +1736,17 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                                                 if ($resultPlan->rowCount() == 1) {
                                                     $rowPlan = $resultPlan->fetch();
-                                                    $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."'><img style='float: right; margin: ".($height - 27)."px 2px 0 0' title='".__('Lesson planned: {name}',['name' => htmlPrep($rowPlan['name'])])."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/iconTick.png'/></a>";
+                                                    $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Lesson planned: {name}',['name' => htmlPrep($rowPlan['name'])])."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."'>";
+                                                    $output .= icon('solid', 'check', 'size-7 text-blue-500 hover:text-blue-800');
+                                                    $output .= '</a>';
                                                 } elseif ($resultPlan->rowCount() == 0) {
-                                                    $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."' ><img style='float: right; margin: ".($height - 27)."px 2px 0 0' alt='".__('Add lesson plan')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_new.png' title='".__('Add lesson plan')."'/></a>";
+                                                    $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add lesson plan')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."' >";
+                                                    $output .= icon('solid', 'add', 'size-7 text-gray-600 hover:text-gray-800');
+                                                    $output .= '</a>';
                                                 } else {
-                                                    $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><div style='float: right; margin: ".($height - 17)."px 5px 0 0'>".__('Multiple').'</div></a>';
+                                                    $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'>";
+                                                    $output .= icon('solid', 'add-multi', 'size-7 text-gray-600 hover:text-gray-800');
+                                                    $output .= '</a>';
                                                 }
                                             }
                                             $output .= '</div>';
@@ -1755,7 +1770,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                             }
                                             if ($resultPlan->rowCount() == 1) {
                                                 $rowPlan = $resultPlan->fetch();
-                                                $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."&search=$gibbonPersonID'><img style='float: right; margin: ".($height - 27)."px 2px 0 0' title='".__('View lesson:').' '.htmlPrep($rowPlan['name'])."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png'/></a>";
+                                                $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('View lesson:').' '.htmlPrep($rowPlan['name'])."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."&search=$gibbonPersonID'>";
+                                                $output .= icon('solid', 'zoom', 'size-7 text-gray-600 hover:text-gray-800');
+                                                $output .="</a>";
                                             } elseif ($resultPlan->rowCount() > 1) {
                                                 $output .= "<div style='float: right; margin: ".($height - 17)."px 5px 0 0'>".__('Multiple').'</div>';
                                             }
@@ -1770,8 +1787,10 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                     //Check for lesson plan
                                     $bgImg = 'none';
 
-                                if (!empty($rowPeriods['gibbonCourseClassID'])) {
-                                    $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'><img style='float: right; margin: ".($height - 27)."px 2px 0 0' title='".__('Manage Exceptions')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/attendance.png'/></a>";
+                                if (!empty($rowPeriods['gibbonCourseClassID']) && $height >= 30) {
+                                    $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Manage Exceptions')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>";
+                                    $output .= icon('solid', 'user-minus', 'size-6 text-gray-600 hover:text-gray-800');
+                                    $output .= "</a>";
                                 }
                                 $output .= '</div>';
                                 ++$zCount;
@@ -2662,7 +2681,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                             });
 
                         if (empty($overlappingBookings)) {
-                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_new.png' width=20 height=20/></a>";
+                            $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Booking')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'>";
+                            $output .= icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800');
+                            $output .= "</a>";
                         }
                     }
                 }
@@ -2829,15 +2850,21 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
                         if ($offTimetableClass) {
-                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$targetDate.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_new.png' width=20 height=20/></a>";
+                            $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Booking')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$targetDate.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'>";
+                            $output .= icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800');
+                            $output .= "</a>";
                         } else {
-                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}&source={$gibbonSpaceID}'><img style='' title='".__('Add Facility Change')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/copyforward.png' width=20 height=20/></a>";
+                            $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Change')."' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}&source={$gibbonSpaceID}'>";
+                            $output .= icon('solid', 'next', 'size-6 text-gray-600 hover:text-gray-800');
+                            $output .= "</a>";
                         }
                         
                     }
 
                     if ($canEditTTDays) {
-                        $output .= "<a style='pointer-events: auto; position: absolute; left: 5px; bottom: 5px;' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonSchoolYearID={$session->get('gibbonSchoolYearID')}&gibbonTTID={$rowPeriods['gibbonTTID']}&gibbonTTDayID={$rowDay['gibbonTTDayID']}&gibbonTTColumnRowID={$rowPeriods['gibbonTTColumnRowID']}&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}'><img style='' title='".__('Edit Class in Period')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/config.png' width=20 height=20/></a>";
+                        $output .= "<a class='absolute left-0 bottom-0 p-1 pointer-events-auto' title='".__('Edit Class in Period')."' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonSchoolYearID={$session->get('gibbonSchoolYearID')}&gibbonTTID={$rowPeriods['gibbonTTID']}&gibbonTTDayID={$rowDay['gibbonTTDayID']}&gibbonTTColumnRowID={$rowPeriods['gibbonTTColumnRowID']}&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}'>";
+                        $output .= icon('solid', 'edit', 'size-5 text-gray-600 hover:text-gray-800');
+                        $output .= "</a>";
                     }
 
                     $output .= '</div>';

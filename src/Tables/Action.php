@@ -114,24 +114,7 @@ class Action extends WebLink
 
         // Pre-defined settings for common actions
         switch ($this->name) {
-            case 'add':     $this->setIcon('page_new');
-                            break;
-            case 'addMultiple':
-                            $this->setIcon('page_new_multi');
-                            break;
-            case 'edit':    $this->setIcon('config');
-                            break;
-            case 'delete':  $this->setIcon('garbage')->modalWindow(650, 250);
-                            break;
-            case 'print':   $this->setIcon('print');
-                            break;
-            case 'export':  $this->setIcon('download');
-                            break;
-            case 'import':  $this->setIcon('upload');
-                            break;
-            case 'view':    $this->setIcon('view');
-                            break;
-            case 'accept':   $this->setIcon('iconTick');
+            case 'delete':  $this->modalWindow(650, 250);
                             break;
         }
     }

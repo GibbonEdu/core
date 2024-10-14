@@ -94,7 +94,7 @@ TODO: add template variable details.
 
                 <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex flex-col' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
 
-                    <div class="block lg:hidden w-full shadow bg-white rounded px-4 mx-4 sm:mx-0 mb-4">
+                    <div class="block md:hidden shadow bg-white rounded px-4 mx-4 sm:mx-0 mb-4">
                         {% for type, alerts in page.alerts %}
                             {% for text in alerts %}
                                 <div class="{{ type }}">{{ text|raw }}</div>
