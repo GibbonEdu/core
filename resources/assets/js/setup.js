@@ -18,19 +18,80 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Initialize all legacy Thickbox links as HTMX AJAX calls
-Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
-    if (element.nodeName != 'A') return;
-    
-    element.setAttribute('hx-boost', 'true');
-    element.setAttribute('hx-target', '#modalContent');
-    element.setAttribute('hx-push-url', 'false');
-    element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
-    element.classList.remove('thickbox');
+// Initialize an Alpine.js Tooltip (on non-mobile devices)
+document.addEventListener('alpine:init', () => {
+    if (window.innerWidth < 768) return;
 
-    if (element.getAttribute('href').includes('_delete')) {
-        element.setAttribute('x-on:click', "modalType = 'delete'");
-    }
+    var currentTooltip;
+
+    Alpine.directive('tooltip', (el, { modifiers, expression }, { cleanup }) => {
+        var tooltipActive = false;
+        let tooltipText = expression;
+        let tooltipArrow = modifiers.includes('noarrow') ? false : true;
+        let tooltipPosition = 'top';
+        let tooltipId = 'tooltip-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
+        let positions = ['top', 'bottom', 'left', 'right'];
+        let elementPosition = getComputedStyle(el).position;
+
+        for (let position of positions) {
+            if (modifiers.includes(position)) {
+                tooltipPosition = position;
+                break;
+            }
+        }
+
+        if(!['relative', 'absolute', 'fixed'].includes(elementPosition)){
+            el.style.position='relative';
+        }
+        
+        let tooltipHTML = `
+            <div id="${tooltipId}" x-cloak x-data="{ tooltipVisible: false, tooltipText: '${tooltipText}', tooltipArrow: ${tooltipArrow}, tooltipPosition: '${tooltipPosition}' }" x-ref="tooltip" x-init="setTimeout(function(){ tooltipVisible = true; }, 1);" x-show="tooltipVisible" :class="{ 'top-0 left-1/2 -translate-x-1/2 -mt-0.5 -translate-y-full' : tooltipPosition == 'top', 'top-1/2 -translate-y-1/2 -ml-1.5 left-0 -translate-x-full' : tooltipPosition == 'left', 'bottom-0 left-1/2 -translate-x-1/2 -mb-0.5 translate-y-full' : tooltipPosition == 'bottom', 'top-1/2 -translate-y-1/2 -mr-1.5 right-0 translate-x-full' : tooltipPosition == 'right' }" class="absolute pointer-events-none w-auto text-sm font-normal" style="z-index: 100;" >
+                <div x-show="tooltipVisible" class="relative px-2 py-1 text-white bg-black bg-opacity-80 backdrop-blur-lg backdrop-contrast-125 backdrop-saturate-150 rounded-md" style="z-index: 100;"
+                    x-transition:enter="transition delay-75 ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-50"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-50" >
+                    <p class="flex-shrink-0 block m-0 p-1 text-xs whitespace-nowrap" style="z-index: 100;" >${tooltipText}</p>
+                    <div x-ref="tooltipArrow" x-show="tooltipArrow" :class="{ 'bottom-0 -translate-x-1/2 left-1/2 w-2.5 translate-y-full' : tooltipPosition == 'top', 'right-0 -translate-y-1/2 top-1/2 h-2.5 -mt-px translate-x-full' : tooltipPosition == 'left', 'top-0 -translate-x-1/2 left-1/2 w-2.5 -translate-y-full' : tooltipPosition == 'bottom', 'left-0 -translate-y-1/2 top-1/2 h-2.5 -mt-px -translate-x-full' : tooltipPosition == 'right' }" class="absolute inline-flex items-center justify-center overflow-hidden">
+                        <div :class="{ 'origin-top-left -rotate-45' : tooltipPosition == 'top', 'origin-top-left rotate-45' : tooltipPosition == 'left', 'origin-bottom-left rotate-45' : tooltipPosition == 'bottom', 'origin-top-right -rotate-45' : tooltipPosition == 'right' }" class="w-1.5 h-1.5 transform bg-black bg-opacity-80"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        el.dataset.tooltip = tooltipId;
+
+        let mouseEnter = function(event){ 
+            if (currentTooltip != null) {
+                currentTooltip.dispatchEvent(new Event('mouseleave'));
+            }
+            if (!tooltipActive) {
+                el.insertAdjacentHTML('beforeend', tooltipHTML);
+                tooltipActive = true;
+                currentTooltip = el;
+            }
+        };
+
+        let mouseLeave = function(event){
+            var tooltip = document.getElementById(event.target.dataset.tooltip);
+            if (tooltip) tooltip.remove();
+
+            tooltipActive = false;
+            currentTooltip = null;
+        };
+        
+        el.addEventListener('mouseenter', mouseEnter);
+        el.addEventListener('mouseleave', mouseLeave);
+        document.addEventListener('htmx:beforeRequest', mouseLeave);
+
+        cleanup(() => {
+            el.removeEventListener('mouseenter', mouseEnter);
+            el.removeEventListener('mouseleave', mouseLeave);
+        })
+    });
+    
 });
 
 // Enable preventing page navigation from hx-boosted links
@@ -54,34 +115,29 @@ if (!document.body.hasAttribute('hx-loaded')) {
 
 htmx.onLoad(function (content) {
 
-    $(document).trigger('gibbon-setup');
+    // Initialize all legacy Thickbox links as HTMX AJAX calls
+    Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
+        if (element.nodeName != 'A') return;
+        
+        element.setAttribute('hx-boost', 'true');
+        element.setAttribute('hx-target', '#modalContent');
+        element.setAttribute('hx-push-url', 'false');
+        element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
+        element.classList.remove('thickbox');
 
-    // Initialize tooltip
-    if ($(window).width() > 768) {
-        $(document).tooltip({
-            show: 800,
-            hide: false,
-            items: "*[title]:not(.tox-edit-area__iframe):not(.tox-collection__item):not(.tox-button):not(.tox-tbtn--select)",
-            content: function () {
-                return $(this).prop('title');
-            },
-            open: function(event, ui) {
-                ui.tooltip.delay(3000).fadeTo(1000, 0);
-            },
-            position: {
-                my: "center bottom-20",
-                at: "center top",
-                using: function (position, feedback) {
-                    $(this).css(position);
-                    $("<div>").
-                        addClass("arrow").
-                        addClass(feedback.vertical).
-                        addClass(feedback.horizontal).
-                        appendTo(this);
-                }
-            }
-        });
-    }
+        if (element.getAttribute('href').includes('_delete')) {
+            element.setAttribute('x-on:click', "modalType = 'delete'");
+        }
+    });
+
+    Array.from(document.querySelectorAll('[title]')).forEach((element) => {
+        if (element.title != undefined && element.title != '') {
+            element.setAttribute('x-tooltip', element.title);
+            element.title = '';
+        }
+    });
+
+    $(document).trigger('gibbon-setup');
 
     // Initialize latex
     $(".latex").latex();

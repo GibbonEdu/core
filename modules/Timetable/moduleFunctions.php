@@ -1049,14 +1049,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<div style='position: relative;'>";
             $countTime = 0;
             $time = $timeStart;
-            $output .= "<div $title style='z-index: ".$zCount."; position: absolute; top: -3px; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+            $output .= "<div $title style=' position: absolute; top: -3px; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
             $output .= substr($time, 0, 5).'<br/>';
             $output .= '</div>';
             $time = date('H:i:s', strtotime($time) + 3600);
             $spinControl = 0;
             while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
                 ++$countTime;
-                $output .= "<div $title style='z-index: $zCount; position: absolute; top:".(($countTime * 60) - 5)."px ; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+                $output .= "<div $title style=' position: absolute; top:".(($countTime * 60) - 5)."px ; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
                 $output .= substr($time, 0, 5).'<br/>';
                 $output .= '</div>';
                 $time = date('H:i:s', strtotime($time) + 3600);
@@ -1140,12 +1140,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 {
     global $session;
 
-    $schoolCalendarAlpha = 0.90;
+    $schoolCalendarAlpha = 1.0;
     $ttAlpha = 1.0;
 
-    if ($session->get('viewCalendarSchool') != 'N' or $session->get('viewCalendarPersonal') != 'N' or $session->get('viewCalendarSpaceBooking') != 'N') {
-        $ttAlpha = 0.75;
-    }
+    // if ($session->get('viewCalendarSchool') != 'N' or $session->get('viewCalendarPersonal') != 'N' or $session->get('viewCalendarSpaceBooking') != 'N') {
+    //     $ttAlpha = 0.75;
+    // }
 
     $date = date('Y-m-d', ($startDayStamp + (86400 * $count)));
 
@@ -1198,7 +1198,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     if ($schoolOpen == false || $offTimetable == true) {
         $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
         $output .= "<div style='position: relative'>";
-        $output .= "<div class='".($offTimetable ? 'bg-blue-200 border border-blue-700 text-blue-700' : 'ttClosure text-red-700')."' style='z-index: $zCount; position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+        $output .= "<div class='".($offTimetable ? 'bg-blue-200 border border-blue-700 text-blue-700' : 'ttClosure text-red-700')."' style=' position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; '>";
         $output .= "<div style='position: relative; top: 50%' title='".($specialDay['description'] ?? '' )."'>";
         $output .= $offTimetable ? __('School Day').'<br/><br/>'.__('Off Timetable') : __('School Closed');
         $output .= '<br/><br/>'.($specialDay['name'] ?? '');
@@ -1223,7 +1223,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         $height = 30;
                         $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttSchoolCalendar' $title style=' position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                         $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                         $output .= '</div>';
                         ++$allDay;
@@ -1240,7 +1240,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttSchoolCalendar' $title style=' position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                         $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                         $output .= '</div>';
                     }
@@ -1253,7 +1253,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         if ($eventsPersonal != false) {
             $height = 0;
             $top = 0;
-            $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
+            $bg = "rgba(103,153,207,0.9)";
             foreach ($eventsPersonal as $event) {
                 if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
                     if ($event[1] == 'All Day') {
@@ -1265,7 +1265,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         $height = 30;
                         $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttPersonalCalendar' $title style=' position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                         $output .= !empty($event[5])
                             ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                             : $label;
@@ -1284,7 +1284,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<div class='ttPersonalCalendar' $title style=' position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                         $output .= !empty($event[5])
                             ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                             : $label;
@@ -1321,7 +1321,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
                     } 
                     
-                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style=' position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                     $output .= $label;
                     $output .= '</div>';
                     ++$zCount;
@@ -1437,7 +1437,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $class = 'ttPeriodCurrent bg-green-100';
                     }
 
-                    $output .= "<div class='$class' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                    $output .= "<div class='$class' $title style=' position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; '>";
                     if ($height > 15 and $height < 30) {
                         $output .= $rowPeriods['name'].'<br/>';
                     } elseif ($height >= 30) {
@@ -1609,7 +1609,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                             if ($resultTeacher->rowCount() > 0) {
                                 $teachers = $resultTeacher->fetchAll();
-                                $title .= __('Teacher').': '.Format::nameList($teachers, 'Staff', false, false, ', ').'<br/>' ;
+                                $title .= __('Teacher').': '.Format::nameList($teachers, 'Staff', false, false, ', ')."<br/>" ;
                             }
                         }
 
@@ -1638,7 +1638,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 }
                             }
                         }
-                        $title = substr($title, 0, -3);
                         $title .= "'";
                         $class2 = 'ttPeriod';
                         $bg = '';
@@ -1663,7 +1662,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         if ($height < 60) {
                             $fontSize = '85%';
                         }
-                        $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px;  font-size: $fontSize; $bg'>";
+                        $output .= "<div class='$class2' $title style=' position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px;  font-size: $fontSize; $bg'>";
                         if ($height >= 45) {
                             if ($isCovering) {
                                 $output .= '<b>'.__('Covering').' '.$rowPeriods['nameShort'].'</b><br/>';
@@ -1721,7 +1720,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 //Add planner link icons for staff looking at own TT.
                                     if ($self == true and $roleCategory == 'Staff') {
                                         if ($height >= 30) {
-                                            $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                            $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                                 //Check for lesson plan
                                                 $bgImg = 'none';
 
@@ -1756,7 +1755,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                     }
                                     //Add planner link icons for any one else's TT
                                     else {
-                                        $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                        $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                         //Check for lesson plan
                                         $bgImg = 'none';
 
@@ -1783,7 +1782,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             //Show exception editing
                             elseif ($edit) {
-                                $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                     //Check for lesson plan
                                     $bgImg = 'none';
 
@@ -1828,7 +1827,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $bg = 'background: #dfcbf6 !important;';
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='{$class}' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
+                        $output .= "<div class='{$class}' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
                         if ($height >= 26) {
                             $output .= __('Activity').'<br/>';
                         }
@@ -1874,7 +1873,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $bg = 'background: #FDE68A !important;';
                         
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='{$class}' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
+                        $output .= "<div class='{$class}' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
                         if ($height >= 26) {
                             $output .= __('Staff Duty').'<br/>';
                         }
@@ -1909,7 +1908,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             $height = 30;
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttSchoolCalendar' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                             $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                             $output .= '</div>';
                             ++$allDay;
@@ -1926,7 +1925,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttSchoolCalendar' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                             $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
                             $output .= '</div>';
                         }
@@ -1953,7 +1952,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             $height = 30;
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttPersonalCalendar' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                             $output .= !empty($event[5])
                                 ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                                 : $label;
@@ -1972,7 +1971,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<div class='ttPersonalCalendar' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                             $output .= !empty($event[5])
                                 ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
                                 : $label;
@@ -2010,7 +2009,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
                     } 
                     
-                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style=' position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                     $output .= $label;
                     $output .= '</div>';
                     ++$zCount;
@@ -2336,7 +2335,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     if ($session->get('viewCalendarSpaceBooking') == 'Y') {
                         $checked = 'checked';
                     }
-                    $output .= "<span class='ttSpaceBookingCalendar rounded-sm my-1' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
+                    $output .= "<span class='ttSpaceBookingCalendar rounded-sm my-1' style=''><a style='color: #fff' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
                     $output .= "<input 
                         $checked style='margin-left: 3px' type='checkbox' value='Y' name='spaceBookingCalendar' aria-label='".__('Space Booking Calendar')."' 
                         />";
@@ -2492,7 +2491,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             if ($rowClosure['type'] == 'School Closure') {
                                 $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
                                 $dayOut .= "<div style='position: relative'>";
-                                $dayOut .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                                $dayOut .= "<div class='ttClosure' style=' position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; '>";
                                 $dayOut .= "<div style='position: relative; top: 50%'>";
                                 $dayOut .= '<span>'.$rowClosure['type'].'<br/><br/>'.$rowClosure['name'].'</span>';
                                 $dayOut .= '</div>';
@@ -2512,7 +2511,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     if ($dayOut == '') {
                         $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
                         $dayOut .= "<div style='position: relative'>";
-                        $dayOut .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                        $dayOut .= "<div class='ttClosure' style=' position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; '>";
                         $dayOut .= "<div style='position: relative; top: 50%'>";
                         $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__('School Closed').'</span>';
                         $dayOut .= '</div>';
@@ -2667,7 +2666,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $class = 'ttPeriodCurrent';
                 }
 
-                $output .= "<div class='$class' $title style='z-index: $zCount; position: absolute; top: $top; min-width: $width; width: 100%; height: {$height}px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                $output .= "<div class='$class' $title style=' position: absolute; top: $top; min-width: $width; width: 100%; height: {$height}px; margin: 0px; padding: 0px; '>";
                 if ($height > 15 and $height < 30) {
                     $output .= $rowPeriods['name'].'<br/>';
                 } elseif ($height >= 30) {
@@ -2793,7 +2792,6 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         }
                     }
 
-                    $title = substr($title, 0, -3);
                     $title .= "'";
                     $class2 = 'ttPeriod';
                     $bg = '';
@@ -2808,7 +2806,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     }
 
                     //Create div to represent period
-                    $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; opacity: $ttAlpha; {$bg}'>";
+                    $output .= "<div class='$class2' $title style=' position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; ; {$bg}'>";
 
                     if ($height >= 45) {
                         $output .= $rowPeriods['name'].'<br/>';
@@ -2901,7 +2899,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         $bg = 'background: #dfcbf6 !important;';
                     }
                     $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                    $output .= "<div class='{$class}' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
+                    $output .= "<div class='{$class}' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
                     if ($height >= 26) {
                         $output .= __('Activity').'<br/>';
                     }
@@ -2952,7 +2950,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                 if ($height > 56) {
                     $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
                 } 
-                $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                $output .= "<div class='ttSpaceBookingCalendar' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; '>";
                 $output .= $label;
                 $output .= '</div>';
                 ++$zCount;

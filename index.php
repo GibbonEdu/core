@@ -314,6 +314,9 @@ $page->scripts->addMultiple([
     
 ], ['context' => 'head']);
 
+// Set page scripts: foot - core
+$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
+
 // Set page scripts: foot - jquery
 $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
@@ -324,15 +327,12 @@ $page->scripts->addMultiple([
 
 // Set page scripts: foot - misc
 $page->scripts->addMultiple([
+    'core-setup'     => 'resources/assets/js/setup.js',
     'tinymce'        => 'lib/tinymce/tinymce.min.js',
     'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
     'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
     'alpine'         => 'lib/htmx/alpine.min.js',
 ], ['context' => 'foot', 'type' => 'defer']);
-
-// Set page scripts: foot - core
-$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
-$page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
