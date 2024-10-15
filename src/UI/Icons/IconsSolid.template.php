@@ -92,7 +92,7 @@
 
 <?php } elseif ($icon == 'arrow-left-circle' || $icon == 'page_left' || $icon == 'copyback') { ?>
     <svg class="<?= $class; ?>" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-    <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.25-7.25a.75.75 0 0 0 0-1.5H8.66l2.1-1.95a.75.75 0 1 0-1.02-1.1l-3.5 3.25a.75.75 0 0 0 0 1.1l3.5 3.25a.75.75 0 0 0 1.02-1.1l-2.1-1.95h4.59Z" clipRule="evenodd" />
+    <path fill-rule="evenodd" d="M18,10c0-4.4-3.6-8-8-8S2,5.6,2,10s3.6,8,8,8c4.4,0,8-3.6,8-8ZM8.7,9.2l2.1-2c.3-.3.3-.8,0-1.1-.3-.3-.8-.3-1.1,0l-3.5,3.2s0,0,0,0c-.3.3-.3.8,0,1.1l3.5,3.3c.3.3.8.3,1.1,0,.3-.3.3-.8,0-1.1l-2.1-1.9h4.6c.4,0,.8-.3.8-.7s-.3-.8-.7-.8h-4.6Z"/>
     </svg>
 
 <?php } elseif ($icon == 'archive' || $icon == 'quicksave' || $icon == 'delivery2') { ?>
