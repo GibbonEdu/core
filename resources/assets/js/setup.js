@@ -130,6 +130,7 @@ htmx.onLoad(function (content) {
         }
     });
 
+    // Convert all title attributes into x-tooltip attributes
     Array.from(document.querySelectorAll('[title]')).forEach((element) => {
         if (element.title != undefined && element.title != '') {
             element.setAttribute('x-tooltip', element.title);

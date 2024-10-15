@@ -314,6 +314,13 @@ $page->scripts->addMultiple([
     
 ], ['context' => 'head']);
 
+$page->scripts->addMultiple([
+    'core-setup'     => 'resources/assets/js/setup.js',
+    'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
+    'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
+    'alpine'         => 'lib/htmx/alpine.min.js',
+], ['context' => 'head', 'type' => 'defer']);
+
 // Set page scripts: foot - core
 $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 
@@ -327,11 +334,7 @@ $page->scripts->addMultiple([
 
 // Set page scripts: foot - misc
 $page->scripts->addMultiple([
-    'core-setup'     => 'resources/assets/js/setup.js',
     'tinymce'        => 'lib/tinymce/tinymce.min.js',
-    'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
-    'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
-    'alpine'         => 'lib/htmx/alpine.min.js',
 ], ['context' => 'foot', 'type' => 'defer']);
 
 // Register scripts available to the core, but not included by default
