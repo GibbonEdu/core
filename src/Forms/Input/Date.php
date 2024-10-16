@@ -86,18 +86,18 @@ class Date extends TextField
         return $this->setValue($value);
     }
 
-    /**
-     * Set if the input is required.
-     * @param  bool  $required
-     * @return $this
-     */
-    public function setRequired($required)
-    {
-        if ($required) {
-            $this->setAttribute('required', 'required');
-        }
-        return parent::setRequired($required);
-    }
+    // /**
+    //  * Set if the input is required.
+    //  * @param  bool  $required
+    //  * @return $this
+    //  */
+    // public function setRequired($required = true)
+    // {
+    //     // if ($required) {
+    //     //     $this->setAttribute('required', 'required');
+    //     // }
+    //     return parent::setRequired($required);
+    // }
 
     /**
      * Adds date format to the label description (if not already present)
@@ -105,12 +105,6 @@ class Date extends TextField
      */
     public function getLabelContext($label)
     {
-        global $session;
-
-        // if (stristr($label->getDescription(), 'Format') === false) {
-        //     return __('Format').': '.$session->get('i18n')['dateFormat'];
-        // }
-
         return false;
     }
 

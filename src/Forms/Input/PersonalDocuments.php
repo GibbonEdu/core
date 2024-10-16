@@ -37,7 +37,7 @@ class PersonalDocuments extends Input
     protected $view;
     protected $factory;
     protected $documents;
-    protected $validation;
+    protected $validationOutput;
 
     protected $absoluteURL;
     protected $nationalityList;
@@ -63,7 +63,7 @@ class PersonalDocuments extends Input
      */
     public function getValidationOutput()
     {
-        return $this->validation;
+        return $this->validationOutput;
     }
 
     /**
@@ -160,7 +160,7 @@ class PersonalDocuments extends Input
                     
                     $output .= $label->setClass('inline-block w-32 font-medium text-xs text-gray-700')->getOutput();
                     $output .= $input->getOutput();
-                    $this->validation .= $input->getValidationOutput();
+                    $this->validationOutput .= $input->getValidationOutput();
                 }
                 $output .= '</div>';
             }

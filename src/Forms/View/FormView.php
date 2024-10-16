@@ -23,7 +23,6 @@ namespace Gibbon\Forms\View;
 
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\View\FormRendererInterface;
 
 /**

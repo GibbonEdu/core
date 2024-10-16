@@ -22,16 +22,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 
 /**
- * Displays a collapable element that can have content inside it.
+ * Displays a collapsable element that can have content inside it.
  *
  * @version v19
  * @since   v19
  */
-class Details extends Row implements OutputableInterface, ValidatableInterface
+class Details extends Row implements OutputableInterface
 {
     protected $summaryText = 'Expand';
     protected $summaryClass = 'px-1 text-sm leading-normal hover:text-blue-600 cursor-pointer';
@@ -88,33 +87,6 @@ class Details extends Row implements OutputableInterface, ValidatableInterface
             $output .= $element->getOutput();
         }
         $output .= '</details>';
-
-        return $output;
-    }
-
-    /**
-     * Dead-end stub for interface: columns cannot validate.
-     * @param   string  $name
-     * @return  self
-     */
-    public function addValidation($name)
-    {
-        return $this;
-    }
-
-    /**
-     * Iterate over each element in the collection and get the combined validation output.
-     * @return  string
-     */
-    public function getValidationOutput()
-    {
-        $output = '';
-
-        foreach ($this->getElements() as $element) {
-            if ($element instanceof ValidatableInterface) {
-                $output .= $element->getValidationOutput();
-            }
-        }
 
         return $output;
     }

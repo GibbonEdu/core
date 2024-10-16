@@ -172,7 +172,7 @@ class Label extends Element implements RowDependancyInterface
         $output = '';
         
         $this->addClass('-mt-1');
-        $output .= '<label '.$this->getAttributeString().'>';
+        $output .= '<label '.$this->getAttributeString().' aria-label="'.$this->label.'">';
         $output .= $this->label;
     
         if ($this->getReadonly()) {

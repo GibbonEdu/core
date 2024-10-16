@@ -39,6 +39,7 @@ trait BasicAttributesTrait
      */
     public function setID($id = '')
     {
+        $id = str_replace(['[',']'], '', $id);
         $this->setAttribute('id', $id);
         return $this;
     }

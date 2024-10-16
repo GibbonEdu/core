@@ -303,7 +303,7 @@ $javascriptConfig = [
 
 // Set page scripts: head
 $page->scripts->addMultiple([
-    'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
+    // 'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
     'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
     'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',

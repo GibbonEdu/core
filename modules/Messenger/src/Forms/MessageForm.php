@@ -760,9 +760,9 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('noEmail')->onRadio('email')->when('N');
 
             $row = $form->addRow('stickySubmit');
-                $col = $row->addColumn()->addClass('items-center');
-                    $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('rounded-sm w-auto mr-2');
-                $col = $row->addColumn()->addClass('items-center');
+                $col = $row->addColumn()->setClass('flex-shrink items-center');
+                    $col->addButton(__('Save Draft'))->setAttribute('@click', 'if ($validate.isComplete("messengerMessage")) { saveDraft() } else { invalid = true; }')->addClass('rounded-sm w-auto mr-2');
+                $col = $row->addColumn()->setID('Submit')->addClass('items-center');
                     $col->addSubmit(__('Preview & Send'))->addClass('email');
                     $col->addSubmit()->addClass('noEmail');
         }

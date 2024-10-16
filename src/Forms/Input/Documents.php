@@ -37,7 +37,7 @@ class Documents extends Input
 {
     protected $view;
     protected $factory;
-    protected $validation;
+    protected $validationOutput;
     protected $absoluteURL;
     protected $mode;
 
@@ -63,7 +63,7 @@ class Documents extends Input
      */
     public function getValidationOutput()
     {
-        return $this->validation;
+        return $this->validationOutput;
     }
 
     public function setAttachments(&$attachments)
@@ -129,7 +129,7 @@ class Documents extends Input
                 $input->setAttachment($fieldName.'File', $this->absoluteURL, $this->attachments[$document]);
             }
 
-            $this->validation .= $input->getValidationOutput();
+            $this->validationOutput .= $input->getValidationOutput();
 
             $output .= $input->getOutput();
             

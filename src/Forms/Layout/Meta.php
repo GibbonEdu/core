@@ -56,7 +56,7 @@ class Meta extends Row
             $row = $this->addRow()->addClass('text-sm');
             $row->addContent(icon('solid', 'add', $iconClass) . __('Adding'))->wrap('<h3 class="text-base font-semibold text-gray-800 mt-0 ">', '</h3>');
             $row->addContent(__('You are creating a new record and it has not been saved yet.').'<br/><br/>'.__('Press Submit to save your data.'))->wrap('<p class="mt-2 mb-0">', '</p>');
-        }if ($this->checkActionList($action, ['addMultipleProcess'])) {
+        }if ($this->checkActionList($action, ['addMultiProcess', 'addMultipleProcess'])) {
             $row = $this->addRow()->addClass('text-sm');
             $row->addContent(icon('solid', 'add-multi', $iconClass) . __('Adding Multiple'))->wrap('<h3 class="text-base font-semibold text-gray-800 mt-0 ">', '</h3>');
             $row->addContent(__('You are creating multiple new records that share similar data.').'<br/><br/>'.__('Press Submit to save your data.'))->wrap('<p class="mt-2 mb-0">', '</p>');
@@ -88,19 +88,24 @@ class Meta extends Row
      */
     public function loadFrom(&$data)
     {
-        if (!empty($data['active'])) {
-            $row = $this->addRow()->setClass('flex flex-row items-center justify-between');
-                $row->addLabel('active', __('Status'));
-                $row->addToggle('active')->setActiveInactive()->setClass('justify-start')->setValue($data['active']);
-        }
+        // if (!empty($data['active'])) {
+        //     $row = $this->addRow()->setClass('flex flex-row items-center justify-between');
+        //         $row->addLabel('active', __('Status'));
+        //         $row->addToggle('active')->setActiveInactive()->setClass('justify-start')->setValue($data['active']);
+        // }
 
         // $row = $this->addRow()->addContent('This is a layout test');
 
+        if (!empty($data['timestampCreated'])) {
+            $row = $this->addRow();
+                $row->addLabel('', __('Created'));
+                $row->addContent(Format::dateTimeReadable($data['timestampCreated']));
+        }
+
         if (!empty($data['timestamp']) || !empty($data['timestampModified'])) {
-            $timestamp = $data['timestamp'] ?? $data['timestampModified'];
             $row = $this->addRow();
                 $row->addLabel('', __('Last Modified'));
-                $row->addContent(Format::dateTimeReadable($timestamp));
+                $row->addContent(Format::dateTimeReadable($data['timestamp'] ?? $data['timestampModified']));
         }
 
         return $this;

@@ -240,7 +240,6 @@ class CustomBlocks implements OutputableInterface
             if ($element instanceof Input && $element->hasValidation()) {
                 // Trigger the output before getting validations: some Inputs add these on getOutput();
                 $elementOutput = $element->getOutput();
-                $element->addData('validation', $element->getValidationAsJSON());
             }
         };
 

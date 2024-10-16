@@ -79,18 +79,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 ?>
 <script>
 function saveDraft() {
+
     $('option', '#individualList').each(function() {
         $(this).prop('selected', true);
     });
 
-    var form = LiveValidationForm.getInstance(document.getElementById('messengerMessage'));
-    if (LiveValidation.massValidate(form.fields)) {
-        $('button[id="Save Draft"]').prop('disabled', true);
-        setTimeout(function() {
-            $('button[id="Save Draft"]').wrap('<span class="submitted"></span>');
-        }, 500);
-        $('input[name="saveMode"]').val('Draft');
-        document.getElementById('messengerMessage').submit();
-    }
+    window.onbeforeunload = null;
+
+    $('input[name="saveMode"]').val('Draft');
+    document.getElementById('messengerMessage').submit(); 
 }
 </script>

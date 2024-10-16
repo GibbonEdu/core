@@ -114,19 +114,9 @@ Rich Text Editor
 
 
 <div id="editorcontainer" class="relative">
-    <textarea class="tinymce w-full ml-0 float-none focus:shadow-none focus:border-gray-500" name="{{ name }}" id="{{ id }}" rows="{{ rows }}" style="height: {{ rows * 18 }}px;">
+    <textarea class="tinymce w-full ml-0 float-none focus:shadow-none focus:border-gray-500" name="{{ name }}" id="{{ id }}" rows="{{ rows }}" style="height: {{ rows * 18 }}px;" {% if required %} x-validate.required data-error-msg="{{__('This field is required') }}" {% endif %} >
         {{- value -}}
     </textarea>
-
-    {% if required %}
-        <script type="text/javascript">
-        var {{ id }} = new LiveValidation('{{ id }}');
-        {{ id }}.add(Validate.Presence, { tinymce: true, tinymceField: '{{ id }}'});
-        {% if initiallyHidden %}
-            {{ id }}.disable();
-        {% endif %}
-        </script>
-    {% endif %}
 </div>
 
 <script type="text/javascript">
@@ -152,24 +142,12 @@ document.addEventListener('tinymceSetup', function (event) {
         $('#{{ id }}edButtonPreview').removeClass('active') ;
         $(".{{ id }}resourceSlider").hide();
         $("#{{ id }}mediaInner").hide();
-        {% if required %}
-            {{ id }}.destroy();
-            $('.LV_validation_message').css('display','none');
-            {{ id }}=new LiveValidation('{{ id }}');
-            {{ id }}.add(Validate.Presence);
-        {% endif %}
     }) ;
     $('#{{ id }}edButtonPreview').click(function(){
         tinyMCE.execCommand('mceAddEditor', false, '{{ id }}');
         $('#{{ id }}edButtonPreview').addClass('active');
         $('#{{ id }}edButtonHTML').removeClass('active'); 
         $("#{{ id }}mediaInner").show();
-        {% if required %}
-            {{ id }}.destroy();
-            $('.LV_validation_message').css('display','none');
-            {{ id }}=new LiveValidation('{{ id }}');
-            {{ id }}.add(Validate.Presence, { tinymce: true, tinymceField: '{{ id }}'});
-        {% endif %}
     });
 });
 </script>

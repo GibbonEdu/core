@@ -77,7 +77,11 @@ class Number extends TextField
         return $this;
     }
 
-    protected function addNumericValidation()
+    /**
+     * Sets the internal validation for this input.
+     * @return  self
+     */
+    protected function setValidation()
     {
         $validateParams = array();
         if (isset($this->min)) {
@@ -96,6 +100,8 @@ class Number extends TextField
         if (!empty($this->decimalPlaces) && $this->decimalPlaces > 0) {
             $this->addValidation('Validate.Format', 'pattern: /^[0-9\-]+(\.[0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
         }
+
+        return $this;
     }
 
     /**
@@ -104,8 +110,6 @@ class Number extends TextField
      */
     protected function getElement()
     {
-        $this->addNumericValidation();
-
         return Component::render(Number::class, $this->getAttributeArray() + []);
     }
 }

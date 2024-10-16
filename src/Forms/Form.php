@@ -97,7 +97,7 @@ class Form implements OutputableInterface
         }
 
         // Add meta sidebar by default
-        if ($form->checkActionList($action, ['addProcess', 'addMultipleProcess', 'editProcess', 'duplicate'])) {
+        if ($form->checkActionList($action, ['addProcess', 'addMultiProcess', 'addMultipleProcess', 'editProcess', 'duplicate'])) {
             $form->addMeta()->addDefaultContent($action);
         }
 
@@ -357,6 +357,17 @@ class Form implements OutputableInterface
     public function hasMeta()
     {
         return !empty($this->meta);
+    }
+
+    /**
+     * Removes the Meta object from this form.
+     * @return  self
+     */
+    public function removeMeta()
+    {
+        $this->meta = null;
+
+        return $this;
     }
 
 

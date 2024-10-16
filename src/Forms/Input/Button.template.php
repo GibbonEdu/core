@@ -22,9 +22,9 @@
 
     <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> flex items-center border border-gray-400 px-4 py-2 font-semibold shadow-sm text-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">
 
-    <?php $svgClass = 'text-gray-600 block m-0.5 size-5'.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5' : ''); ?>
+    <?php $svgClass = 'text-gray-600 block m-0.5 size-5 '.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5 ' : '').($iconClass ?? ''); ?>
 
-    <?= !empty($icon) ? icon('solid', $icon, $svgClass) : ''; ?>
+    <?= !empty($icon) ? icon('solid', $icon, $svgClass ) : ''; ?>
 
     <?= $value; ?>
 

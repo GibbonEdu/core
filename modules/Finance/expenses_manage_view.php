@@ -159,10 +159,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             ?>
                                             <input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
                                             <input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
-                                            <script type="text/javascript">
-                                                var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
-                                                gibbonFinanceBudgetCycleID.add(Validate.Presence);
-                                            </script>
                                         </td>
                                     </tr>
                                     <tr>

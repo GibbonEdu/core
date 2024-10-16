@@ -42,8 +42,6 @@ class Currency extends Number
     {
         global $session;
 
-        $this->addNumericValidation();
-
         list($currencyName, $currencySymbol) = explode(' ', $session->get('currency'));
 
         return Component::render(Currency::class, $this->getAttributeArray() + [

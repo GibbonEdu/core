@@ -3,7 +3,7 @@
     focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6" >
 
     <?php if (isset($placeholder) && empty($multiple)) { ?>
-        <option value="<?= $placeholder; ?>"><?= __($placeholder); ?></option>
+        <option value=""><?= __($placeholder); ?></option>
     <?php } ?>
 
     <?php foreach ($options as $optLabel => $optGroup) { ?>
