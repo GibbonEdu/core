@@ -567,4 +567,44 @@ class PlannerEntryGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getPreviousLesson($gibbonCourseClassID, $date, $timeStart, $role)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart];
+        $sql = "SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents 
+            FROM gibbonPlannerEntry
+            JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID 
+            AND (date<:date OR (date=:date AND timeStart<:timeStart)) ";
+
+        if ($role == 'Student') {
+            $sql .= ' AND viewableStudent="Y" ';
+        } elseif ($role == 'Parent') {
+            $sql .= ' AND viewableParent="Y" ';
+        }
+        $sql .= " ORDER BY date DESC, timeStart DESC LIMIT 1";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getNextLesson($gibbonCourseClassID, $date, $timeStart, $role)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart];
+        $sql = "SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents 
+            FROM gibbonPlannerEntry
+            JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID 
+            AND (date>:date OR (date=:date AND timeStart>:timeStart)) ";
+
+        if ($role == 'Student') {
+            $sql .= ' AND viewableStudent="Y" ';
+        } elseif ($role == 'Parent') {
+            $sql .= ' AND viewableParent="Y" ';
+        }
+        $sql .= " ORDER BY date, timeStart LIMIT 1";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
