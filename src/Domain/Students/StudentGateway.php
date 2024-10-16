@@ -216,7 +216,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' as roleCategory
+        $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' as roleCategory
                 FROM gibbonFamilyAdult
                 JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
                 JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)

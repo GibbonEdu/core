@@ -579,9 +579,9 @@ class PlannerEntryGateway extends QueryableGateway
             AND (date<:date OR (date=:date AND timeStart<:timeStart)) ";
 
         if ($role == 'Student') {
-            $sql .= ' AND viewableStudent="Y" ';
+            $sql .= ' AND viewableStudents="Y" ';
         } elseif ($role == 'Parent') {
-            $sql .= ' AND viewableParent="Y" ';
+            $sql .= ' AND viewableParents="Y" ';
         }
         $sql .= " ORDER BY date DESC, timeStart DESC LIMIT 1";
 
@@ -599,9 +599,9 @@ class PlannerEntryGateway extends QueryableGateway
             AND (date>:date OR (date=:date AND timeStart>:timeStart)) ";
 
         if ($role == 'Student') {
-            $sql .= ' AND viewableStudent="Y" ';
+            $sql .= ' AND viewableStudents="Y" ';
         } elseif ($role == 'Parent') {
-            $sql .= ' AND viewableParent="Y" ';
+            $sql .= ' AND viewableParents="Y" ';
         }
         $sql .= " ORDER BY date, timeStart LIMIT 1";
 
