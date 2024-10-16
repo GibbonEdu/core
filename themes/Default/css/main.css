@@ -26,30 +26,7 @@ Used under "GNU Creative Commons License", http://creativecommons.org/licenses/G
 
 /* LINKS */
 
-a {
-    background: transparent;
-    color: #c00;
-    text-decoration: inherit;
-}
 
-a:not([class]) {
-    text-decoration: underline;
-}
-
-a:hover:not([class]),
-a:active:not([class]) {
-    color: #069;
-}
-
-a.active {
-    font-weight: bold;
-    color: #600;
-}
-
-a img {
-    color: #ffffff;
-    border-color: none;
-}
 
 /* TYPOGRAPHY */
 p {
@@ -412,7 +389,7 @@ a.edButtonHTML {
 a.edButtonHTML {
     margin-right: 15px;
 }
-a,
+/* a,
 #adminmenu a,
 a.edButtonPreview,
 a.edButtonHTML,
@@ -424,7 +401,7 @@ a.edButtonHTML,
     color: #21759b;
     text-decoration: none;
     color: #c00;
-}
+} */
 
 .ui-tooltip,
 .arrow:after {

@@ -52,17 +52,31 @@ body {
 
 /*
  --------------------------------------------------------------------------
-  Typography
+  Links
  --------------------------------------------------------------------------
 */
 
-.link-white {
-    @apply text-white underline;
+a {
+    @apply text-red-700 no-underline;
 }
 
-.link-white:hover {
-    @apply text-gray-400 underline;
+a:not([class]) {
+    @apply text-red-700 bg-transparent;
 }
+
+a:hover:not([class]) {
+    @apply text-red-900 underline;
+}
+
+a img {
+    @apply text-white border-none;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Typography
+ --------------------------------------------------------------------------
+*/
 
 hr {
     @apply border-gray-300 border my-6;
