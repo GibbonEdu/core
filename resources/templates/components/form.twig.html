@@ -51,10 +51,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     {% block header %}
-        <header class="relative flex justify-between mb-2 {{ standardLayout ? '' }}">
+        <header class="relative flex justify-between items-end mb-2 {{ standardLayout ? '' }}">
             {% if form.getHeader %}
                 <h2>{{ form.getTitle }}</h2>
-                <div class="linkTop flex justify-end gap-2">
+                <div class="linkTop flex justify-end gap-2 h-10 py-px">
                     {% for action in form.getHeader %}
                         {{ action.getOutput|raw }}
                     {% endfor %}

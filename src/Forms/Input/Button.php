@@ -100,6 +100,22 @@ class Button extends Element
         $this->size = $value;
         return $this;
     }
+
+    public function setAction($url)
+    {
+        if (empty($url)) {
+            $this->setDisabled(true);
+            return;
+        }
+
+        $this->setAttribute('hx-get', $url)
+            ->setAttribute('hx-target', '#content-wrap')
+            ->setAttribute('hx-select', '#content-wrap')
+            ->setAttribute('hx-push-url', 'true')
+            ->setAttribute('hx-swap', 'outerHTML show:none swap:0s');
+
+        return $this;
+    }
  
     protected function getElement()
     {

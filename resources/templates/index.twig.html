@@ -66,7 +66,7 @@ TODO: add template variable details.
                         {% else %}
                             {% for link in minorLinks %}
                                 {{ link.prepend }}&nbsp;
-                                <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
+                                <a href="{{ link.url }}" class="text-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                     {{- link.name|raw -}}
                                 </a>
                                 {{ link.append }}

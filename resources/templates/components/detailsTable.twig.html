@@ -16,14 +16,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block table %}
 
-    <header class="relative flex justify-between">
+    <header class="relative w-full flex justify-between items-end">
         {% block header %}
             {% if table.getTitle %}
                 <h2>{{ table.getTitle|raw }}</h2>
             {% endif %}
 
             {% if table.getHeader %}
-            <div class="linkTop flex-1 flex justify-end gap-2 mb-2">
+            <div class="linkTop flex-1 flex justify-end items-end gap-2 mb-2 h-10 py-px">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}

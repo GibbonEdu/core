@@ -164,7 +164,6 @@ class DataTableView extends View implements RendererInterface
         $th = new TableCell($column->getLabel());
 
         $th->setTitle($column->getTitle())
-           ->setClass('column sticky top-0 z-10 '.$column->getClass())
            ->addData('description', $column->getDescription());
 
         $this->applyContexts($column, $th);

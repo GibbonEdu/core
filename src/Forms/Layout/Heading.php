@@ -63,6 +63,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
         $this->row->setID($headingID);
 
         $this->row->setHeading(preg_replace('/[^a-zA-Z0-9 -_]/', '', strip_tags($this->id)));
+        $this->setID($headingID);
     }
 
     public function getTag()
@@ -81,6 +82,6 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
      */
     protected function getElement()
     {
-        return sprintf('<%1$s class="m-0 p-0 pb-2 font-semibold text-gray-950 text-2xl/8 sm:text-xl/8">%2$s</%1$s>', $this->tag ?? 'h3', $this->content);
+        return sprintf('<%1$s class="m-0 p-0 pb-2 font-semibold text-gray-950 text-2xl/8 sm:text-xl/8"><a id="%3$s"></a>%2$s</%1$s>', $this->tag ?? 'h3', $this->content, $this->id);
     }
 }

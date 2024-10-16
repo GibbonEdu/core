@@ -24,7 +24,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% block header %}
     
             {% if table.getHeader %}
-            <div class="linkTop mt-0 flex justify-end gap-2 mb-2">
+            <div class="linkTop mt-0 flex justify-end gap-2 mb-2 h-10 py-px">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}
@@ -87,7 +87,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% for columnIndex, column in columns %}
                         {% set cell = rowData.cells[columnIndex] %}
                         
-                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }}; Xoverflow-wrap: break-word;Xword-break: break-word;">
+                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }};">
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 
