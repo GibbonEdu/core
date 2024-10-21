@@ -23,6 +23,7 @@ v28.0.00
 --------
 
     Headlines
+        Messenger: added new Mailing List feature
 
     Changes With Important Notices
 
