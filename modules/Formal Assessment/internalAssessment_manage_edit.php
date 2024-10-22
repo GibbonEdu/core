@@ -67,98 +67,93 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     ->add(__('Manage {courseClass} Internal Assessments', ['courseClass' => $class['course'].'.'.$class['class']]), 'internalAssessment_manage.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
                     ->add(__('Edit Column'));
 
-                if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-                    echo "<div class='error'>";
-                    echo __('This column is part of a set of columns, which you did not create, and so cannot be individually edited.');
-                    echo '</div>';
-                } else {
-                    $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
+                $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
-                    $form = Form::create('internalAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/internalAssessment_manage_editProcess.php?gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$session->get('address'));
-                    $form->setFactory(DatabaseFormFactory::create($pdo));
-                    $form->addHiddenValue('address', $session->get('address'));
+                $form = Form::create('internalAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/internalAssessment_manage_editProcess.php?gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$session->get('address'));
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->addHiddenValue('address', $session->get('address'));
 
-                    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
+                $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
+                $row = $form->addRow();
+                    $row->addLabel('className', __('Class'));
+                    $row->addTextField('className')->required()->readonly()->setValue(htmlPrep($class['course'].'.'.$class['class']));
+
+                $row = $form->addRow();
+                    $row->addLabel('name', __('Name'));
+                    $row->addTextField('name')->required()->maxLength(30);
+
+                $row = $form->addRow();
+                    $row->addLabel('description', __('Description'));
+                    $row->addTextField('description')->required()->maxLength(1000);
+
+                $types = $settingGateway->getSettingByScope('Formal Assessment', 'internalAssessmentTypes');
+                if (!empty($types)) {
                     $row = $form->addRow();
-                        $row->addLabel('className', __('Class'));
-                        $row->addTextField('className')->required()->readonly()->setValue(htmlPrep($class['course'].'.'.$class['class']));
-
-                    $row = $form->addRow();
-                        $row->addLabel('name', __('Name'));
-                        $row->addTextField('name')->required()->maxLength(30);
-
-                    $row = $form->addRow();
-                        $row->addLabel('description', __('Description'));
-                        $row->addTextField('description')->required()->maxLength(1000);
-
-                    $types = $settingGateway->getSettingByScope('Formal Assessment', 'internalAssessmentTypes');
-                    if (!empty($types)) {
-                        $row = $form->addRow();
-                            $row->addLabel('type', __('Type'));
-                            $row->addSelect('type')->fromString($types)->required()->placeholder();
-                    }
-
-                    $row = $form->addRow();
-                        $row->addLabel('file', __('Attachment'));
-                        $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
-
-                    $form->addRow()->addHeading('Assessment', __('Assessment'));
-
-                    $attainmentLabel = !empty($attainmentAlternativeName)? sprintf(__('Assess %1$s?'), $attainmentAlternativeName) : __('Assess Attainment?');
-                    $row = $form->addRow();
-                        $row->addLabel('attainment', $attainmentLabel);
-                        $row->addYesNoRadio('attainment')->required();
-
-                    $form->toggleVisibilityByClass('attainmentRow')->onRadio('attainment')->when('Y');
-
-                    $attainmentScaleLabel = !empty($attainmentAlternativeName)? $attainmentAlternativeName.' '.__('Scale') : __('Attainment Scale');
-                    $row = $form->addRow()->addClass('attainmentRow');
-                        $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
-                        $row->addSelectGradeScale('gibbonScaleIDAttainment')->required()->selected($session->get('defaultAssessmentScale'));
-
-                    $effortLabel = !empty($effortAlternativeName)? sprintf(__('Assess %1$s?'), $effortAlternativeName) : __('Assess Effort?');
-                    $row = $form->addRow();
-                        $row->addLabel('effort', $effortLabel);
-                        $row->addYesNoRadio('effort')->required();
-
-                    $form->toggleVisibilityByClass('effortRow')->onRadio('effort')->when('Y');
-
-                    $effortScaleLabel = !empty($effortAlternativeName)? $effortAlternativeName.' '.__('Scale') : __('Effort Scale');
-                    $row = $form->addRow()->addClass('effortRow');
-                        $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
-                        $row->addSelectGradeScale('gibbonScaleIDEffort')->required()->selected($session->get('defaultAssessmentScale'));
-
-                    $row = $form->addRow();
-                        $row->addLabel('comment', __('Include Comment?'));
-                        $row->addYesNoRadio('comment')->required();
-
-                    $row = $form->addRow();
-                        $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
-                        $row->addYesNoRadio('uploadedResponse')->required();
-
-                    $form->addRow()->addHeading('Access', __('Access'));
-
-                    $row = $form->addRow();
-                        $row->addLabel('viewableStudents', __('Viewable to Students'));
-                        $row->addYesNo('viewableStudents')->required();
-
-                    $row = $form->addRow();
-                        $row->addLabel('viewableParents', __('Viewable to Parents'));
-                        $row->addYesNo('viewableParents')->required();
-
-                    $row = $form->addRow();
-                        $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));
-                        $row->addDate('completeDate');
-
-                    $row = $form->addRow();
-                        $row->addFooter();
-                        $row->addSubmit();
-
-                    $form->loadAllValuesFrom($values);
-
-                    echo $form->getOutput();
+                        $row->addLabel('type', __('Type'));
+                        $row->addSelect('type')->fromString($types)->required()->placeholder();
                 }
+
+                $row = $form->addRow();
+                    $row->addLabel('file', __('Attachment'));
+                    $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
+
+                $form->addRow()->addHeading('Assessment', __('Assessment'));
+
+                $attainmentLabel = !empty($attainmentAlternativeName)? sprintf(__('Assess %1$s?'), $attainmentAlternativeName) : __('Assess Attainment?');
+                $row = $form->addRow();
+                    $row->addLabel('attainment', $attainmentLabel);
+                    $row->addYesNoRadio('attainment')->required();
+
+                $form->toggleVisibilityByClass('attainmentRow')->onRadio('attainment')->when('Y');
+
+                $attainmentScaleLabel = !empty($attainmentAlternativeName)? $attainmentAlternativeName.' '.__('Scale') : __('Attainment Scale');
+                $row = $form->addRow()->addClass('attainmentRow');
+                    $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
+                    $row->addSelectGradeScale('gibbonScaleIDAttainment')->required()->selected($session->get('defaultAssessmentScale'));
+
+                $effortLabel = !empty($effortAlternativeName)? sprintf(__('Assess %1$s?'), $effortAlternativeName) : __('Assess Effort?');
+                $row = $form->addRow();
+                    $row->addLabel('effort', $effortLabel);
+                    $row->addYesNoRadio('effort')->required();
+
+                $form->toggleVisibilityByClass('effortRow')->onRadio('effort')->when('Y');
+
+                $effortScaleLabel = !empty($effortAlternativeName)? $effortAlternativeName.' '.__('Scale') : __('Effort Scale');
+                $row = $form->addRow()->addClass('effortRow');
+                    $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
+                    $row->addSelectGradeScale('gibbonScaleIDEffort')->required()->selected($session->get('defaultAssessmentScale'));
+
+                $row = $form->addRow();
+                    $row->addLabel('comment', __('Include Comment?'));
+                    $row->addYesNoRadio('comment')->required();
+
+                $row = $form->addRow();
+                    $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
+                    $row->addYesNoRadio('uploadedResponse')->required();
+
+                $form->addRow()->addHeading('Access', __('Access'));
+
+                $row = $form->addRow();
+                    $row->addLabel('viewableStudents', __('Viewable to Students'));
+                    $row->addYesNo('viewableStudents')->required();
+
+                $row = $form->addRow();
+                    $row->addLabel('viewableParents', __('Viewable to Parents'));
+                    $row->addYesNo('viewableParents')->required();
+
+                $row = $form->addRow();
+                    $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));
+                    $row->addDate('completeDate');
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                $form->loadAllValuesFrom($values);
+
+                echo $form->getOutput();
+            
             }
         }
 
