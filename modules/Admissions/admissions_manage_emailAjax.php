@@ -27,6 +27,7 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
 } else {
     $gibbonAdmissionsAccountID = isset($_POST['gibbonAdmissionsAccountID'])? $_POST['gibbonAdmissionsAccountID'] : '';
     $email = isset($_POST['email'])? $_POST['email'] : (isset($_POST['value'])? $_POST['value'] : '');
+    $email = filter_var(trim($email), FILTER_SANITIZE_EMAIL);
 
     $data = array('gibbonAdmissionsAccountID' => $gibbonAdmissionsAccountID, 'email' => $email);
     $sql = "SELECT COUNT(*) FROM gibbonAdmissionsAccount WHERE email=:email AND gibbonAdmissionsAccountID<>:gibbonAdmissionsAccountID";

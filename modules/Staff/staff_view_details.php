@@ -318,12 +318,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
 
                         $col->addColumn('email', __('Email'))
-                            ->format(Format::using('link', ['mailto:' . $row['email'], 'email']));
+                            ->format(Format::using('link', $row['email']));
 
                         $col->addColumn('emailAlternate', __('Alternate Email'))
                             ->format(function($row) {
                                 if ($row['emailAlternate'] != '') {
-                                    return Format::link('mailto:' . $row['emailAlternate'], $row['emailAlternate']);
+                                    return Format::link($row['emailAlternate']);
                                 }
                                 return '';
                             });

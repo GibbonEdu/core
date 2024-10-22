@@ -169,8 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $gibbonRoleIDAll = (is_array($gibbonRoleIDAll))? implode(',', array_unique($gibbonRoleIDAll)) : $row['gibbonRoleIDAll'];
 
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-            $email = trim($_POST['email'] ?? '');
-            $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
             $address1 = $_POST['address1'] ?? '';
             $address1District = $_POST['address1District'] ?? '';
             $address1Country = $_POST['address1Country'] ?? '';
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
             $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
             $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-            $website = $_POST['website'] ?? '';
+            $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
             $languageFirst = $_POST['languageFirst'] ?? '';
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';

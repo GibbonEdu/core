@@ -28,6 +28,7 @@ v28.0.00
     Changes With Important Notices
 
     Security
+        User Admin: applied input and output filtering to all email address fields
 
     Tweaks & Additions
         System: set Greek as an active language

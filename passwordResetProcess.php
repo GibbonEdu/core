@@ -40,6 +40,7 @@ $_POST = $validator->sanitize($_POST);
 
 //Check email address is not blank
 $input = $_GET['input'] ?? ($_POST['email'] ?? '');
+$input = filter_var(trim($input), FILTER_SANITIZE_EMAIL);
 $step = $_GET['step'] ?? '';
 
 $URL = Url::fromRoute('passwordReset');

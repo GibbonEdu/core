@@ -94,7 +94,7 @@ if ($proceed == false) {
         $languageSecond = $_POST['languageSecond'] ?? '';
         $languageThird = $_POST['languageThird'] ?? '';
         $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-        $email = trim($_POST['email'] ?? '');
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $phone1Type = $_POST['phone1Type'] ?? '';
         if (!empty($_POST['phone1']) and $phone1Type == '') {
             $phone1Type = 'Other';

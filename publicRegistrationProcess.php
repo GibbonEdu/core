@@ -71,8 +71,8 @@ if ($proceed == false) {
     } else {
         $dob = Format::dateConvert($dob);
     }
-    $email = trim($_POST['email']);
-    $emailAlternate = (!empty($_POST['emailAlternate']) ? trim($_POST['emailAlternate']) : '');
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
     $username = trim($_POST['usernameCheck']);
     $password = $_POST['passwordNew'] ?? '';
     $salt = getSalt();

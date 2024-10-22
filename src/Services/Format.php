@@ -616,8 +616,14 @@ class Format
         }
 
         if (stripos($url, '@') !== false) {
+            $url = filter_var($url, FILTER_SANITIZE_EMAIL);
             $url = 'mailto:'.$url;
+        } else {
+            $url = filter_var($url, FILTER_SANITIZE_URL);
         }
+
+        $url = str_replace(['"', "'"], ['%22', '%27'], $url);
+        
         if (substr($url, 0, 2) == './') {
             $url = static::$settings['absoluteURL'].substr($url, 1);
         }

@@ -182,7 +182,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
 
-                    $from = $_POST['email'] ?? '';
+                    $from = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
                     if ($partialFail == false and $from != '') {
                         //Send emails
                         $emails = array() ;

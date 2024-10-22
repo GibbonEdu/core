@@ -169,6 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
                     if ($row['email'] != '') {
+                        $row['email'] = filter_var(trim($row['email']), FILTER_SANITIZE_EMAIL);
                         echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
                     }
                     echo '</td>';
@@ -408,23 +409,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table->addColumn('email', __('Email'))
                                 ->format(Format::using('link', ['email']));
 
-                                $studentGateway = $container->get(StudentGateway::class);
-                                $table->addColumn('schoolHistory', __('School History'))
-                                ->format(function($row) use ($connection2, $studentGateway ) {
-                                    if ($row['dateStart'] != '') {
-                                        echo '<u>'.__('Start Date').'</u>: '.Format::date($row['dateStart']).'</br>';
-                                    }
+                        $studentGateway = $container->get(StudentGateway::class);
+                        $table->addColumn('schoolHistory', __('School History'))
+                        ->format(function($row) use ($connection2, $studentGateway ) {
+                            if ($row['dateStart'] != '') {
+                                echo '<u>'.__('Start Date').'</u>: '.Format::date($row['dateStart']).'</br>';
+                            }
 
-                                    $resultSelect = $studentGateway->selectStudentEnrolmentHistory($row['gibbonPersonID']);
-                                    
-                                    while ($rowSelect = $resultSelect->fetch()) {
-                                        echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].' ('.$rowSelect['studyYear'].')'.'<br/>';
-                                    }
+                            $resultSelect = $studentGateway->selectStudentEnrolmentHistory($row['gibbonPersonID']);
+                            
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].' ('.$rowSelect['studyYear'].')'.'<br/>';
+                            }
 
-                                    if ($row['dateEnd'] != '') {
-                                        echo '<u>'.__('End Date').'</u>: '.Format::date($row['dateEnd']).'</br>';
-                                    }
-                                });
+                            if ($row['dateEnd'] != '') {
+                                echo '<u>'.__('End Date').'</u>: '.Format::date($row['dateEnd']).'</br>';
+                            }
+                        });
 
                         $table->addColumn('lockerNumber', __('Locker Number'));
 
@@ -529,6 +530,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $table->addColumn('email', __('Email'))
                                     ->notSortable()
                                     ->format(function ($person) {
+                                        $person['email'] = filter_var(trim($person['email']), FILTER_SANITIZE_EMAIL);
                                         return htmlPrep('<'.$person['email'].'>');
                                     });
                             }
@@ -939,9 +941,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo __('Do not contact by email.');
                                     } elseif ($rowMember['contactEmail'] == 'Y' and ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '')) {
                                         if ($rowMember['email'] != '') {
+                                            $rowMember['email'] = filter_var(trim($rowMember['email']), FILTER_SANITIZE_EMAIL);
                                             echo __('Email').": <a href='mailto:".$rowMember['email']."'>".$rowMember['email'].'</a><br/>';
                                         }
                                         if ($rowMember['emailAlternate'] != '') {
+                                            $rowMember['emailAlternate'] = filter_var(trim($rowMember['emailAlternate']), FILTER_SANITIZE_EMAIL);
                                             echo __('Email')." 2: <a href='mailto:".$rowMember['emailAlternate']."'>".$rowMember['emailAlternate'].'</a><br/>';
                                         }
                                         echo '<br/>';
@@ -1193,6 +1197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table->addColumn('email', __('Email'))
                                 ->notSortable()
                                 ->format(function ($person) {
+                                    $person['email'] = filter_var(trim($person['email']), FILTER_SANITIZE_EMAIL);
                                     return htmlPrep('<'.$person['email'].'>');
                                 });
                         $table->addColumn('context', __('Context'))
@@ -2198,6 +2203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 while ($rowDetail = $resultDetail->fetch()) {
                                     echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
                                     if ($rowDetail['email'] != '') {
+                                        $rowDetail['email'] = filter_var(trim($rowDetail['email']), FILTER_SANITIZE_EMAIL);
                                         echo htmlPrep(' <'.$rowDetail['email'].'>');
                                     }
                                     echo '</li>';

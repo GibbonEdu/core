@@ -223,7 +223,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 //Email Receipt
                 if (isset($_POST['emailReceipt'])) {
                     if ($_POST['emailReceipt'] == 'Y' && stripos($status, 'Paid') !== false) {
-                        $from = $_POST['email'] ?? '';
+                        $from = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
                         if ($partialFail == false and $from != '') {
                             //Send emails
                             $emails = array() ;
@@ -281,7 +281,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 //Email reminder
                 if (isset($_POST['emailReminder'])) {
                     if ($_POST['emailReminder'] == 'Y') {
-                        $from = $_POST['email'] ?? '';
+                        $from = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
                         if ($partialFail == false and $from != '') {
                             //Send emails
                             $emails = array() ;

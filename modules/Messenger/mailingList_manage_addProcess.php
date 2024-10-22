@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_mana
     $data = [
         'surname'                   => $_POST['surname'] ?? '',
         'preferredName'             => $_POST['preferredName'] ?? '',
-        'email'                     => $_POST['email'] ?? ''
+        'email'                     => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
     ];
 
     // Validate the required values are present
