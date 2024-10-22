@@ -184,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
 
                 if ($fieldName == 'email') {
+                    $newValues['email'] = filter_var(trim($newValues['email']), FILTER_SANITIZE_EMAIL);
                     $uniqueEmailAddress = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
                         $data = array('gibbonPersonID' => $oldValues['gibbonPersonID'], 'email' => $newValues['email']);
