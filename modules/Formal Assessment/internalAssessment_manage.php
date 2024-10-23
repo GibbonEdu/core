@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\FormalAssessment\InternalAssessmentColumnGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,11 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     if (isset($_GET['gibbonCourseClassID'])) {
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     } else {
-        
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+
+            $result = $container->get(CourseClassGateway::class)->selectClassesByPerson($session->get('gibbonPersonID'));
+
         if ($result->rowCount() > 0) {
             $row = $result->fetch();
             $gibbonCourseClassID = $row['gibbonCourseClassID'];
@@ -53,19 +53,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     }
     //Check existence of and access to this class.
     else {
-        
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(CourseClassGateway::class)->getCourseClass($gibbonCourseClassID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             echo '<h1>';
             echo __('Manage Internal Assessment');
             echo '</h1>';
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $row = $result->fetch();
+            $row = $result;
             $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
 
             //Add multiple columns
@@ -80,11 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             //Get teacher list
             $teaching = false;
-            
-                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+
+            $result = $container->get(CourseClassGateway::class)->selectTeacherListByClass($gibbonCourseClassID);
+
             if ($result->rowCount() > 0) {
                 echo '<h3>';
                 echo __('Teachers');
@@ -105,11 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '<h3>';
             echo __('Internal Assessment Columns');
             echo '</h3>';
-
-                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            
+                $result = $container->get(InternalAssessmentColumnGateway::class)->selectColumnsByClass($gibbonCourseClassID);
 
             if ($result->rowCount() < 1) {
                 echo $page->getBlankSlate();

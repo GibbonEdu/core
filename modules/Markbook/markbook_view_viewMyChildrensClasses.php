@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
 $page->breadcrumbs->add(__('View Markbook'));
 
@@ -447,11 +448,8 @@ if ($result->rowCount() < 1) {
                                     echo '<td>';
                                     $rowSub = $resultSub->fetch();
 
-
-                                        $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $gibbonPersonID);
-                                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                        $resultWork = $connection2->prepare($sqlWork);
-                                        $resultWork->execute($dataWork);
+                                        $resultWork = $container->get(PlannerEntryHomeworkGateway::class)->selectHomeworkByStudent($rowEntry['gibbonPlannerEntryID'], $gibbonPersonID);
+                                        
                                     if ($resultWork->rowCount() > 0) {
                                         $rowWork = $resultWork->fetch();
 

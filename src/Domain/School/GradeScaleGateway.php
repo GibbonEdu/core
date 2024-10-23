@@ -71,4 +71,20 @@ class GradeScaleGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getScaleGradeByScaleAttainmentAndValue($attainmentValue, $scaleAttainment)
+    {
+        $data = ['attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment];
+        $sql = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment';
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getScaleGradeByScaleEffortAndValue($effortValue, $scaleEffort)
+    {
+        $data = ['effortValue' => $effortValue, 'scaleEffort' => $scaleEffort];
+        $sql = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:effortValue AND gibbonScaleGrade.gibbonScaleID=:scaleEffort';
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
