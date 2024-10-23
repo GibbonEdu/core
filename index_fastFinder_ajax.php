@@ -32,6 +32,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     $searchType = $_REQUEST['searchType'] ?? '';
 
     // Allow for * as wildcard (as well as %)
+    $searchTermSafe = preg_replace('/([#-.]|[[-^]|[?|{}]|[\/])/', '\\\\$1', $searchTerm);
     $searchTerm = str_replace('*', '%', $searchTerm);
 
     // Cancel out early for empty searches
@@ -272,7 +273,8 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                 $name = htmlPrep($token['name']);
             }
 
-            $name = str_ireplace($searchTerm, '<strong>'.$searchTerm.'</strong>', $name);
+
+            $name = preg_replace('/'.$searchTermSafe.'/i', '<strong>$0</strong>', $name);
 
             $output .= '<a href="'.($URL ?? '').'" class="block cursor-pointer px-4 py-2 text-sm text-gray-800 hover:bg-indigo-500 hover:text-white" role="menuitem" tabindex="-1" id="menu-item-0">'.htmlPrep(__($type)).' - '.$name.'</a>';
             $outputCount++;
