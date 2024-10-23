@@ -413,11 +413,13 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 
         if ($highestAction == 'Unit Planner_all') {
             $courses = [
-                '--'.__('My Courses').'--' => $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair(),
-                '--'.__('All Courses').'--' => $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair(),
+                __('Department Courses') => $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair(),
+                __('All Courses') => $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair(),
             ];
         } elseif ($highestAction == 'Unit Planner_learningAreas') {
-            $courses = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
+            $courses = [
+                __('Department Courses') => $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair(),
+            ];
         }
 
         $form = Form::create('courseChooser', $session->get('absoluteURL').'/index.php', 'get');
