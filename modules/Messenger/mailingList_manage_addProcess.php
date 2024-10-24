@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Messenger\MailingListGateway;
 
 require_once '../../gibbon.php';
@@ -36,11 +37,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_mana
 } else {
     // Proceed!
     $mailingListGateway = $container->get(MailingListGateway::class);
-
+    $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+    
     $data = [
-        'surname'                   => $_POST['surname'] ?? '',
-        'preferredName'             => $_POST['preferredName'] ?? '',
-        'email'                     => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
+        'surname'           => $_POST['surname'] ?? '',
+        'preferredName'     => $_POST['preferredName'] ?? '',
+        'email'             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
+        'key'               => $randStrGenerator->generate()    
     ];
 
     // Validate the required values are present
