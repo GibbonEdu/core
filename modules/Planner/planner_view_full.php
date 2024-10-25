@@ -1196,8 +1196,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
 
                         // ATTENDANCE FORM
-                        $form = Form::create('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
-                        $form->setClass('noIntBorder w-full');
+                        $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
+                        $form->setClass('w-full font-sans text-xs text-gray-700');
                         $form->setAutocomplete('off');
                         $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
 
@@ -1222,7 +1222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         }
 
-                        $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
+                        $grid = $form->addRow()->addGrid('attendance')->setClass('border bg-blue-50 rounded p-2 lg:p-4')->setBreakpoints('w-1/2');
 
                         // Display attendance grid
                         $count = 0;
@@ -1234,7 +1234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $form->addHiddenValue($count . '-prefilled', $person['log']['prefilled'] ?? '');
 
                             $cell = $grid->addCell()
-                                ->setClass('text-center py-4 px-1 -mr-px -mb-px flex flex-col justify-start')
+                                ->setClass('text-center py-4 px-1 flex flex-col justify-start')
                                 ->addClass($person['cellHighlight'] ?? '');
 
                             // Display alerts and birthdays, teacher only

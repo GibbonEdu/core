@@ -34,6 +34,7 @@ use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
+use Gibbon\Tables\Prefab\TodaysLessonsTable;
 
 /**
  * Parent Dashboard View Composer
@@ -179,101 +180,13 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__('Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParam('search', $gibbonPersonID)."'>".__('View Planner').'</a></span>';
 
             $date = date('Y-m-d');
-            if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $this->session->get('username') != '') {
-                try {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $gibbonPersonID, 'date2' => $date, 'gibbonPersonID2' => $gibbonPersonID);
-                    $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (\PDOException $e) {
-                }
-                if ($result->rowCount() > 0) {
-                    $classes = true;
-                    $plannerOutput .= "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>";
-                    $plannerOutput .= "<tr class='head'>";
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __('Class').'<br/>';
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __('Lesson').'<br/>';
-                    $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>".__('Summary').'</span>';
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __($homeworkNameSingular);
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __('Action');
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '</tr>';
-
-                    $count2 = 0;
-                    $rowNum = 'odd';
-                    while ($row = $result->fetch()) {
-                        if ($count2 % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count2;
-
-                        //Highlight class in progress
-                        if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                            $rowNum = 'current';
-                        }
-
-                        //COLOR ROW BY STATUS!
-                        $plannerOutput .= "<tr class=$rowNum>";
-                        $plannerOutput .= '<td>';
-                        $plannerOutput .= '<b>'.$row['course'].'.'.$row['class'].'</b><br/>';
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td id="break-words">';
-                        $plannerOutput .= $row['name'].'<br/>';
-                        $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonCourseClassID']);
-                        if (isset($unit[0])) {
-                            $plannerOutput .= $unit[0];
-                            if ($unit[1] != '') {
-                                $plannerOutput .= '<br/><i>'.$unit[1].' '.__('Unit').'</i><br/>';
-                            }
-                        }
-                        $plannerOutput .= "<div style='font-size: 85%; font-weight: normal; font-style: italic'>";
-                        $plannerOutput .= $row['summary'];
-                        $plannerOutput .= '</div>';
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td>';
-                        if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                            $plannerOutput .= __('No');
-                        } else {
-                            if ($row['homework'] == 'Y') {
-                                $plannerOutput .= __('Yes').': '.__('Teacher Recorded').'<br/>';
-                                if ($row['homeworkSubmission'] == 'Y') {
-                                    $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
-                                    if ($row['homeworkCrowdAssess'] == 'Y') {
-                                        $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
-                                    }
-                                }
-                            }
-                            if ($row['myHomeworkDueDateTime'] != '') {
-                                $plannerOutput .= __('Yes').': '.__('Student Recorded').'</br>';
-                            }
-                        }
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td>';
-                        $plannerOutput .= "<a href='" . Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
-                            'search' => $gibbonPersonID,
-                            'viewBy' => 'date',
-                            'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
-                            'date' => $date,
-                            'width' => 1000,
-                            'height' => 550,
-                        ]) . "'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '</tr>';
-                    }
-                    $plannerOutput .= '</table>';
-                }
-            }
-            if ($classes == false) {
-                $plannerOutput .= Format::alert(__('There are no records to display.'), 'empty');
+            if (isSchoolOpen($guid, $date, $connection2) == true && $this->session->has('username')) {
+                $classes = true;
+                $plannerOutput = $this
+                    ->getContainer()
+                    ->get(TodaysLessonsTable::class)
+                    ->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent')
+                    ->getOutput();   
             }
         }
 

@@ -102,7 +102,7 @@ class Grid implements OutputableInterface
      */
     public function getOutput()
     {
-        $this->setClass('w-full flex flex-wrap items-stretch');
+        $this->addClass('w-full flex flex-wrap items-stretch');
 
         $output = '<div '.$this->getAttributeString().'>';
 

@@ -192,9 +192,11 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
             }
         }
 
-        $validations = !empty($validations)? '.'.implode('.', array_unique($validations)) : '';
-        $this->setAttribute('x-validate' . $validations, $expression);
-        $this->setAttribute('data-error-msg', $message);
+        if (!empty($this->validation) || !empty($validations)) {
+            $validations = !empty($validations)? '.'.implode('.', array_unique($validations)) : '';
+            $this->setAttribute('x-validate' . $validations, $expression);
+            $this->setAttribute('data-error-msg', $message);
+        }
     }
 
     /**

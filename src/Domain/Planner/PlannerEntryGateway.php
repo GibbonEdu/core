@@ -93,7 +93,7 @@ class PlannerEntryGateway extends QueryableGateway
 
     public function queryPlannerByDate($criteria, $gibbonSchoolYearID, $gibbonPersonID, $date, $viewingAs = 'Student')
     {
-        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'timeStart', 'timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'date'];
+        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.summary', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'timeStart', 'timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'date'];
 
         $query = $this
             ->newQuery()

@@ -191,6 +191,17 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Get whether the table has a DataSet with data in in.
+     *
+     * @param DataSet|array $data
+     * @return self
+     */
+    public function hasData()
+    {
+        return !empty($this->data) && !empty($this->data->getResultCount());
+    }
+
+    /**
      * Set the table data internally.
      *
      * @param DataSet|array $data
