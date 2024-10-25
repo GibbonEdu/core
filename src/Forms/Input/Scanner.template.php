@@ -1,5 +1,5 @@
 <div class="flex-grow relative inline-flex">
-    <input type="text" <?= $attributes; ?> class="w-full min-w-0 py-2 rounded-l-md placeholder:text-gray-400  sm:text-sm sm:leading-6">
+    <input type="text" <?= $attributes; ?> class="w-full min-w-0 py-2 rounded-l-md placeholder:text-gray-500  sm:text-sm sm:leading-6">
 
     <button type="button" class="-ml-px px-4 bg-gray-100 inline-flex items-center border border-gray-400 rounded-r-md text-base text-gray-600" onclick="scanner(this)">
         <?= icon('solid', 'qr-code', 'pointer-events-none size-5 text-gray-700 fill-current'); ?>
