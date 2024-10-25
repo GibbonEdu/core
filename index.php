@@ -318,6 +318,7 @@ $page->scripts->addMultiple([
     'core-setup'     => 'resources/assets/js/setup.js',
     'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
     'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
+    'alpineValidate' => 'lib/htmx/alpine.validate.min.js',
     'alpine'         => 'lib/htmx/alpine.min.js',
 ], ['context' => 'head', 'type' => 'defer']);
 
