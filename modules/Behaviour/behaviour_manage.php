@@ -117,8 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
-            ->displayLabel()
-            ->append('&nbsp|&nbsp');
+            ->displayLabel();
 
         $table->addHeaderAction('addMultiple', __('Add Multiple'))
             ->setURL('/modules/Behaviour/behaviour_manage_addMulti.php')
@@ -132,21 +131,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         if (!empty($policyLink)) {
             $table->addHeaderAction('policy', __('View Behaviour Policy'))
                 ->setExternalURL($policyLink)
-                ->displayLabel()
-                ->prepend('&nbsp|&nbsp');
+                ->displayLabel();
         }
 
         $table->addExpandableColumn('comment')
             ->format(function($beahviour) {
                 $output = '';
                 if (!empty($beahviour['comment'])) {
-                    $output .= '<strong>'.__('Incident').'</strong><br/>';
+                    $output .= Format::bold(__('Incident')).'<br/>';
                     $output .= nl2br($beahviour['comment']).'<br/>';
                 }
 
                 if (!empty($beahviour['followUps'])) {
                     foreach ($beahviour['followUps'] as $followUp) { 
-                        $output .= '<br/><strong>'.__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname'].'</strong><br/>';
+                        $output .= '<br/>'.Format::bold(__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname']).'<br/>';
                         $output .= nl2br($followUp['followUp']).'<br/>';
                     }
                 }
@@ -177,11 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addColumn('type', __('Type'))
             ->context('secondary')
             ->width('5%')
-            ->format(function($beahviour) use ($session) {
+            ->format(function($beahviour) {
                 if ($beahviour['type'] == 'Negative') {
-                    return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
+                    return icon('solid', 'cross', 'size-6 fill-current text-red-700');
                 } elseif ($beahviour['type'] == 'Positive') {
-                    return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
+                    return icon('solid', 'check', 'size-6 fill-current text-green-600');
                 }
             });
 

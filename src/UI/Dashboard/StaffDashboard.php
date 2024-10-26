@@ -35,6 +35,7 @@ use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Tables\Prefab\TodaysLessonsTable;
+use Gibbon\Tables\Prefab\BehaviourTable;
 
 /**
  * Staff Dashboard View Composer
@@ -189,132 +190,11 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
 
             $formGroups[$count][2] = $formGroupTable->getOutput();
 
+            // BEHAVIOUR
             $behaviourView = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php');
             if ($behaviourView) {
-                //Behaviour
-                $formGroups[$count][3] = '';
-                $plural = 's';
-                if ($resultFormGroups->rowCount() == 1) {
-                    $plural = '';
-                }
-                try {
-                    $dataBehaviour = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $formGroups[$count][0]);
-                    $sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY timestamp DESC';
-                    $resultBehaviour = $connection2->prepare($sqlBehaviour);
-                    $resultBehaviour->execute($dataBehaviour);
-                } catch (\PDOException $e) {}
-
-                if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php')) {
-                    $formGroups[$count][3] .= "<div class='linkTop'>";
-                    $formGroups[$count][3] .= "<a href='".Url::fromModuleRoute('Behaviour', 'behaviour_manage_add')->withQueryParams([
-                        'gibbonPersonID' => '',
-                        'gibbonFormGroupID' => '',
-                        'gibbonYearGroupID' => '',
-                        'type' => '',
-                    ]) . "'>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-                    $policyLink = $this->settingGateway->getSettingByScope('Behaviour', 'policyLink');
-                    if ($policyLink != '') {
-                        $formGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
-                    }
-                    $formGroups[$count][3] .= '</div>';
-                }
-
-                if ($resultBehaviour->rowCount() < 1) {
-                    $formGroups[$count][3] .= "<div class='error'>";
-                    $formGroups[$count][3] .= __('There are no records to display.');
-                    $formGroups[$count][3] .= '</div>';
-                } else {
-                    $formGroups[$count][3] .= "<table cellspacing='0' style='width: 100%'>";
-                    $formGroups[$count][3] .= "<tr class='head'>";
-                    $formGroups[$count][3] .= '<th>';
-                    $formGroups[$count][3] .= __('Student & Date');
-                    $formGroups[$count][3] .= '</th>';
-                    $formGroups[$count][3] .= '<th>';
-                    $formGroups[$count][3] .= __('Type');
-                    $formGroups[$count][3] .= '</th>';
-                    $formGroups[$count][3] .= '<th>';
-                    $formGroups[$count][3] .= __('Descriptor');
-                    $formGroups[$count][3] .= '</th>';
-                    $formGroups[$count][3] .= '<th>';
-                    $formGroups[$count][3] .= __('Level');
-                    $formGroups[$count][3] .= '</th>';
-                    $formGroups[$count][3] .= '<th>';
-                    $formGroups[$count][3] .= __('Teacher');
-                    $formGroups[$count][3] .= '</th>';
-                    $formGroups[$count][3] .= '<th>';
-                    $formGroups[$count][3] .= __('Action');
-                    $formGroups[$count][3] .= '</th>';
-                    $formGroups[$count][3] .= '</tr>';
-
-                    $count2 = 0;
-                    $rowNum = 'odd';
-                    while ($rowBehaviour = $resultBehaviour->fetch()) {
-                        if ($count2 % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count2;
-
-                        //COLOR ROW BY STATUS!
-                        $formGroups[$count][3] .= "<tr class=$rowNum>";
-                        $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= '<b>'.Format::name('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
-                        if (substr($rowBehaviour['timestamp'], 0, 10) > $rowBehaviour['date']) {
-                            $formGroups[$count][3] .= __('Date Updated').': '.Format::date(substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
-                            $formGroups[$count][3] .= __('Incident Date').': '.Format::date($rowBehaviour['date']).'<br/>';
-                        } else {
-                            $formGroups[$count][3] .= Format::date($rowBehaviour['date']).'<br/>';
-                        }
-                        $formGroups[$count][3] .= '</td>';
-                        $formGroups[$count][3] .= "<td style='text-align: center'>";
-                        if ($rowBehaviour['type'] == 'Negative') {
-                            $formGroups[$count][3] .= "<img title='".__('Negative')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/iconCross.png'/> ";
-                        } elseif ($rowBehaviour['type'] == 'Positive') {
-                            $formGroups[$count][3] .= "<img title='".__('Positive')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/iconTick.png'/> ";
-                        }
-                        $formGroups[$count][3] .= '</td>';
-                        $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= trim($rowBehaviour['descriptor'] ?? '');
-                        $formGroups[$count][3] .= '</td>';
-                        $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= trim($rowBehaviour['level'] ?? '');
-                        $formGroups[$count][3] .= '</td>';
-                        $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= Format::name($rowBehaviour['title'], $rowBehaviour['preferredNameCreator'], $rowBehaviour['surnameCreator'], 'Staff', false).'<br/>';
-                        $formGroups[$count][3] .= '</td>';
-                        $formGroups[$count][3] .= '<td>';
-                        $formGroups[$count][3] .= "<script type='text/javascript'>";
-                        $formGroups[$count][3] .= '$(document).ready(function(){';
-                        $formGroups[$count][3] .= "\$(\".comment-$count2\").hide();";
-                        $formGroups[$count][3] .= "\$(\".show_hide-$count2\").fadeIn(1000);";
-                        $formGroups[$count][3] .= "\$(\".show_hide-$count2\").click(function(){";
-                        $formGroups[$count][3] .= "\$(\".comment-$count2\").fadeToggle(1000);";
-                        $formGroups[$count][3] .= '});';
-                        $formGroups[$count][3] .= '});';
-                        $formGroups[$count][3] .= '</script>';
-                        if ($rowBehaviour['comment'] != '') {
-                            $formGroups[$count][3] .= "<a title='".__('View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$this->session->get('absoluteURL')."/themes/Default/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
-                        }
-                        $formGroups[$count][3] .= '</td>';
-                        $formGroups[$count][3] .= '</tr>';
-                        if ($rowBehaviour['comment'] != '') {
-                            if ($rowBehaviour['type'] == 'Positive') {
-                                $bg = 'background-color: #D4F6DC;';
-                            } else {
-                                $bg = 'background-color: #F6CECB;';
-                            }
-                            $formGroups[$count][3] .= "<tr class='comment-$count2' id='comment-$count2'>";
-                            $formGroups[$count][3] .= "<td style='$bg' colspan=6>";
-                            $formGroups[$count][3] .= $rowBehaviour['comment'];
-                            $formGroups[$count][3] .= '</td>';
-                            $formGroups[$count][3] .= '</tr>';
-                        }
-                        $formGroups[$count][3] .= '</tr>';
-                        $formGroups[$count][3] .= '</tr>';
-                    }
-                    $formGroups[$count][3] .= '</table>';
-                }
+                $table = $this->getContainer()->get(BehaviourTable::class)->create($this->session->get('gibbonSchoolYearID'), $formGroups[$count][0]);
+                $formGroups[$count][3] = $table->getOutput();
             }
 
             ++$count;

@@ -292,6 +292,11 @@ class Action extends WebLink
                 ->setAttribute('hx-target', '#content-wrap')
                 ->setAttribute('hx-select', '#content-wrap')
                 ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
+        } else if (!empty($this->getAttribute('hx-confirm'))) {
+            $this->setAttribute('hx-post', Url::fromHandlerRoute(ltrim($this->url, '/')) )
+                ->setAttribute('hx-target', '#content-wrap')
+                ->setAttribute('hx-select', '#content-wrap')
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
         }
 
         if ($this->url instanceof Url) {
