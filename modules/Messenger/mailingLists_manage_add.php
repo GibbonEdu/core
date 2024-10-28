@@ -22,35 +22,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 $page->breadcrumbs
-    ->add(__('Manage Mailing Lists'), 'mailingList_manage.php')
-    ->add(__('Add Recipient'));
+    ->add(__('Manage Mailing Lists'), 'mailingLists_manage.php')
+    ->add(__('Add List'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingLists_manage_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingList_manage_edit.php&gibbonMessengerMailingListID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingLists_manage_edit.php&gibbonMessengerMailingListID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 	
-	$form = Form::create('mailingList', $session->get('absoluteURL').'/modules/'.$session->get('module').'/mailingList_manage_addProcess.php');
+	$form = Form::create('mailingList', $session->get('absoluteURL').'/modules/'.$session->get('module').'/mailingLists_manage_addProcess.php');
                 
 	$form->addHiddenValue('address', $session->get('address'));
 
 	$row = $form->addRow();
-		$row->addLabel('surname', __('Surname'));
-		$row->addTextField('surname')->required()->maxLength(60);
-
+		$row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+		$row->addTextField('name')->required()->maxLength(60);
+	
 	$row = $form->addRow();
-		$row->addLabel('preferredName', __('Preferred Name'));
-		$row->addTextField('preferredName')->required()->maxLength(60);
-
-	$row = $form->addRow();
-		$row->addLabel('email', __('Email'))->description(__('Must be unique.'));
-		$row->addEmail('email')->required()->maxLength(75);
+        $row->addLabel('active', __('Active'));
+        $row->addYesNo('active')->required();
 
 	$row = $form->addRow();
 		$row->addFooter();

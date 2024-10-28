@@ -20,37 +20,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\Messenger\MailingListGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_manage_edit.php') == false) {
+$page->breadcrumbs
+    ->add(__('Manage Mailing List Recipients'), 'mailingListRecipients_manage.php')
+    ->add(__('Add Recipient'));
+
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecipients_manage_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    // Proceed!
-    $gibbonMessengerMailingListID = $_GET['gibbonMessengerMailingListID'] ?? '';
-
-    $page->breadcrumbs
-        ->add(__m('Manage Mailing List'), 'mailingList_manage.php')
-        ->add(__m('Edit Recipient'));
-
-    if (empty($gibbonMessengerMailingListID)) {
-        $page->addError(__('You have not specified one or more required parameters.'));
-        return;
+    //Proceed!
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingListRecipients_manage_edit.php&gibbonMessengerMailingListRecipientID='.$_GET['editID'];
     }
+    $page->return->setEditLink($editLink);
+	
+	$form = Form::create('mailingList', $session->get('absoluteURL').'/modules/'.$session->get('module').'/mailingListRecipients_manage_addProcess.php');
+                
+	$form->addHiddenValue('address', $session->get('address'));
 
-    $values = $container->get(MailingListGateway::class)->getByID($gibbonMessengerMailingListID);
-
-    if (empty($values)) {
-        $page->addError(__('The specified record cannot be found.'));
-        return;
-    }
-
-    $form = Form::create('category', $session->get('absoluteURL').'/modules/'.$session->get('module').'/mailingList_manage_editProcess.php');
-
-    $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('gibbonMessengerMailingListID', $gibbonMessengerMailingListID);
-
-    $row = $form->addRow();
+	$row = $form->addRow();
 		$row->addLabel('surname', __('Surname'));
 		$row->addTextField('surname')->required()->maxLength(60);
 
@@ -61,12 +51,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_mana
 	$row = $form->addRow();
 		$row->addLabel('email', __('Email'))->description(__('Must be unique.'));
 		$row->addEmail('email')->required()->maxLength(75);
+	
+	$row = $form->addRow();
+		$row->addLabel('organisation', __('Organisation'));
+		$row->addTextField('organisation')->maxLength(60);
+	
+	$sql = "SELECT gibbonMessengerMailingListID as value, name FROM gibbonMessengerMailingList WHERE active='Y' ORDER BY name";
+	$lists = $pdo->select($sql)->fetchKeyPair();
+	$row = $form->addRow();
+        $row->addLabel('gibbonMessengerMailingListIDList', __('Mailing Lists'));
+        $row->addCheckbox('gibbonMessengerMailingListIDList')->fromArray($lists);
 
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+	$row = $form->addRow();
+		$row->addFooter();
+		$row->addSubmit();
 
-    $form->loadAllValuesFrom($values);
-
-    echo $form->getOutput();
+	echo $form->getOutput();
 }

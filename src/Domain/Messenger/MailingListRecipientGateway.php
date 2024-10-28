@@ -31,13 +31,13 @@ use Gibbon\Domain\QueryableGateway;
  * @version v28
  * @since   v28
  */
-class MailingListGateway extends QueryableGateway
+class MailingListRecipientGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonMessengerMailingList';
-    private static $primaryKey = 'gibbonMessengerMailingListID';
-    private static $searchableColumns = ['gibbonMessengerMailingList.name'];
+    private static $tableName = 'gibbonMessengerMailingListRecipient';
+    private static $primaryKey = 'gibbonMessengerMailingListRecipientID';
+    private static $searchableColumns = ['gibbonMessengerMailingListRecipient.name'];
     
     /**
      * Queries the list of groups for the messenger Manage MailingLists page.
@@ -51,7 +51,7 @@ class MailingListGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonMessengerMailingList.gibbonMessengerMailingListID', 'name', 'active'
+                'gibbonMessengerMailingListRecipient.gibbonMessengerMailingListRecipientID', 'surname', 'preferredName', 'email', 'organisation', 'gibbonMessengerMailingListIDList'
             ]);
     
         return $this->runQuery($query, $criteria);

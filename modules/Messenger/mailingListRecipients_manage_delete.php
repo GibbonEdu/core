@@ -20,27 +20,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Domain\Messenger\MailingListGateway;
+use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecipients_manage_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $gibbonMessengerMailingListID = $_GET['gibbonMessengerMailingListID'] ?? '';
+    $gibbonMessengerMailingListRecipientID = $_GET['gibbonMessengerMailingListRecipientID'] ?? '';
 
-    if (empty($gibbonMessengerMailingListID)) {
+    if (empty($gibbonMessengerMailingListRecipientID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $values = $container->get(MailingListGateway::class)->getByID($gibbonMessengerMailingListID);
+    $values = $container->get(MailingListRecipientGateway::class)->getByID($gibbonMessengerMailingListRecipientID);
 
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Messenger/mailingList_manage_deleteProcess.php');
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Messenger/mailingListRecipients_manage_deleteProcess.php');
     echo $form->getOutput();
 }
