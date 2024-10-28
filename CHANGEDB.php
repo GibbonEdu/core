@@ -844,4 +844,10 @@ INSERT IGNORE INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `cate
 INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='Manage Mailing Lists'));end
 ALTER TABLE gibbonMessengerMailingListRecipient ADD `organisation` varchar(60) DEFAULT NULL AFTER `email`;end
 ALTER TABLE gibbonMessengerMailingListRecipient ADD `gibbonMessengerMailingListIDList` TEXT DEFAULT NULL AFTER `organisation`;end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger'), 'New Message_mailingList', 0, 'Manage Messages', 'Enable users to send messages to mailing lists.', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='New Message_mailingList'));end
+ALTER TABLE gibbonMessengerTarget CHANGE `type` `type` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group','Mailing List') DEFAULT NULL;end
+ALTER TABLE gibbonMessengerReceipt CHANGE `targetType` `targetType` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group','Mailing List') DEFAULT NULL;end
+
+
 ";

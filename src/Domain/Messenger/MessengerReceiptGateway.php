@@ -60,7 +60,19 @@ class MessengerReceiptGateway extends QueryableGateway
             ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where('gibbonMessenger.gibbonMessengerID=:gibbonMessengerID')
             ->bindValue('gibbonMessengerID', $gibbonMessengerID)
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("NOT gibbonMessengerReceipt.targetType='Mailing List'");
+        
+        $this->unionAllWithCriteria($query, $criteria)
+            ->cols([
+                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.status', 'NULL as title', 'gibbonMessengerMailingListRecipient.surname', 'gibbonMessengerMailingListRecipient.preferredName', 'gibbonMessengerMailingListRecipient.email', 'NULL as phone1', '\'External\' as role', 'gibbonMessengerReceipt.gibbonMessengerReceiptID', 'gibbonMessengerReceipt.targetType', 'gibbonMessengerReceipt.contactType', 'gibbonMessengerReceipt.contactDetail', 'NULL as formGroup', 'gibbonMessengerReceipt.sent'
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonMessenger', 'gibbonMessenger.gibbonMessengerID=gibbonMessengerReceipt.gibbonMessengerID')
+            ->innerJoin('gibbonMessengerMailingListRecipient', 'gibbonMessengerMailingListRecipient.gibbonMessengerMailingListRecipientID=gibbonMessengerReceipt.gibbonPersonID')
+            ->where('gibbonMessenger.gibbonMessengerID=:gibbonMessengerID')
+            ->bindValue('gibbonMessengerID', $gibbonMessengerID)
+            ->where("gibbonMessengerReceipt.targetType='Mailing List'");
 
         return $this->runQuery($query, $criteria);
     }

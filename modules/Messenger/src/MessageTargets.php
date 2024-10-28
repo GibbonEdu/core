@@ -308,22 +308,22 @@ class MessageTargets
         //Attendance
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
             if ($_POST["attendance"]=="Y") {
-            $choices = $_POST["attendanceStatus"] ?? [];
-            $students = $_POST["attendanceStudents"] ?? [];
-            $parents = $_POST["attendanceParents"] ?? [];
-            if (!empty($choices)) {
-                foreach ($choices as $t) {
-                try {
-                    $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents);
-                    $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Attendance', id=:id, students=:students, parents=:parents";
-                    $result=$connection2->prepare($sqlTarget);
-                    $result->execute($dataTarget);
+                $choices = $_POST["attendanceStatus"] ?? [];
+                $students = $_POST["attendanceStudents"] ?? [];
+                $parents = $_POST["attendanceParents"] ?? [];
+                if (!empty($choices)) {
+                    foreach ($choices as $t) {
+                        try {
+                            $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents);
+                            $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Attendance', id=:id, students=:students, parents=:parents";
+                            $result=$connection2->prepare($sqlTarget);
+                            $result->execute($dataTarget);
+                        }
+                        catch(\PDOException $e) {
+                            $partialFail = true;
+                        }
+                    }
                 }
-                catch(\PDOException $e) {
-                    $partialFail = true;
-                }
-                }
-            }
             }
         }
 
@@ -342,6 +342,29 @@ class MessageTargets
                         try {
                             $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
                             $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Group', id=:t, staff=:staff, students=:students, parents=:parents";
+                            $result=$connection2->prepare($sqlTarget);
+                            $result->execute($dataTarget);
+                        }
+                        catch(\PDOException $e) {
+                            $partialFail = true;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        
+        // Mailing List
+        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
+            if ($_POST["mailingList"] == "Y") {
+                $choices = $_POST["mailingLists"] ?? [];
+                if (!empty($choices)) {
+                    foreach ($choices as $t) {
+                        try {
+                            $dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t);
+                            $sqlTarget="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Mailing List', id=:t, staff='N', students='N', parents='N'";
                             $result=$connection2->prepare($sqlTarget);
                             $result->execute($dataTarget);
                         }
@@ -2146,6 +2169,38 @@ class MessageTargets
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // Mailing List
+        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
+            if ($_POST["mailingList"]=="Y") {
+                $choices=$_POST["mailingLists"] ?? [];
+                if (!empty($choices)) {
+                    foreach ($choices as $t) {
+                        try {
+                            $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
+                            $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Mailing List', id=:id, staff='N', students='N', parents='N'" ;
+                            $result=$connection2->prepare($sql);
+                            $result->execute($data);
+                        }
+                        catch(\PDOException $e) {
+                            $partialFail=TRUE;
+                        }
+
+                        //Get email addresses
+                        try {
+                            $dataEmail=array("gibbonMessengerMailingListID"=>$t);
+                            $sqlEmail="SELECT DISTINCT email, gibbonMessengerMailingListRecipientID FROM gibbonMessengerMailingList JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerMailingListRecipient.gibbonMessengerMailingListIDList LIKE CONCAT('%', gibbonMessengerMailingList.gibbonMessengerMailingListID, '%')) WHERE NOT email='' AND gibbonMessengerMailingList.gibbonMessengerMailingListID=:gibbonMessengerMailingListID" ;
+                            $resultEmail=$connection2->prepare($sqlEmail);
+                            $resultEmail->execute($dataEmail);
+                        }
+                        catch(\PDOException $e) {}
+                        while ($rowEmail=$resultEmail->fetch()) {
+                            $this->reportAdd($emailReceipt, $rowEmail['gibbonMessengerMailingListRecipientID'], 'Mailing List', $t, 'Email', $rowEmail["email"]);
+                        }
+                    }       
                 }
             }
         }
