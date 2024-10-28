@@ -35,8 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $versionDB = $container->get(SettingGateway::class)->getSettingByScope('System', 'version');
 
-    $trueIcon = "<img class='w-6 h-6 mt-2 ml-2' title='" . __('Yes'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconTick.png' />";
-    $falseIcon = "<img class='w-6 h-6 mt-2 ml-2' title='" . __('No'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconCross.png' />";
+    $trueIcon =  icon('solid', 'check', 'size-6 ml-2 fill-current text-green-600');
+    $falseIcon = icon('solid', 'cross', 'size-6 ml-2 fill-current text-red-700');
 
     $versionTitle = __('%s Version');
     $versionMessage = __('%s requires %s version %s or higher');

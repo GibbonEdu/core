@@ -209,8 +209,8 @@ class InstallController
         $nonce = $this->nonceService->generate('install:locale');
 
         //PROCEED
-        $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-        $falseIcon = "<img title='" . __('No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+        $trueIcon =  icon('solid', 'check', 'size-6 mr-2 fill-current text-green-600');
+        $falseIcon = icon('solid', 'cross', 'size-6 mr-2 fill-current text-red-700');
 
         $versionTitle = __('%s Version');
         $versionMessage = __('%s requires %s version %s or higher');

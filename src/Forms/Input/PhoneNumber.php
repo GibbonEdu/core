@@ -67,17 +67,17 @@ class PhoneNumber extends Input
             ->addSelect($name.'Type')
             ->fromArray($types)
             ->placeholder()
-            ->addClass('mr-1 w-1/3 sm:w-1/4');
+            ->addClass('inline-flex mr-1 w-1/3 sm:w-1/4');
         
         $this->phoneCodes = $this->column
             ->addSelect($name.'CountryCode')
             ->fromArray($countryCodes)
             ->placeholder()
-            ->addClass('w-1/3 sm:w-1/4 rounded-r-none border-r-0');
+            ->addClass('inline-flex w-1/3 sm:w-1/4 rounded-r-none border-r-0');
             
         $this->phoneNumber = $this->column
             ->addTextField($name)
-            ->addClass('flex-1 rounded-l-none border-l-0');
+            ->addClass('inline-flex flex-1 rounded-l-none border-l-0');
     }
 
     /**

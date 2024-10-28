@@ -1,4 +1,4 @@
-<div class="w-full flex justify-between">
+<div class="flex-grow relative flex items-center justify-between <?= $class; ?>">
     
     <?= $phoneType; ?>
     <?= $phoneCodes; ?>

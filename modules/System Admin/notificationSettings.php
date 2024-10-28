@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     $nameFormat = function ($row) use ($session) {
         $output = __($row['event']);
         if ($row['type'] == 'CLI') {
-            $output .= " <img title='".__('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.')."' src='./themes/".$session->get('gibbonThemeName')."/img/run.png'/ style='float: right; width:20px; height:20px;margin: -4px 0 -4px 4px;opacity: 0.6;'>";
+            $output .=  Format::tooltip(icon('solid', 'config', 'size-5 ml-2 fill-current text-gray-400 float-right'), __('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.'));
         }
         return $output;
     };

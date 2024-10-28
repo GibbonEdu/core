@@ -172,7 +172,7 @@ class FileUpload extends Input
             $output .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.(1024 * (1024 * $this->maxUpload)).'">';
         }
 
-        $output .= '<div class="input-box-meta max-upload standardWidth right" style="'.$hidden.'">';
+        $output .= '<div class="input-box-meta max-upload " style="'.$hidden.'">';
         if ($this->getAttribute('multiple') == true) {
             $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label);
         } else {
@@ -191,6 +191,8 @@ class FileUpload extends Input
     {
         $output = '';
 
+        $output .= '<div class="w-full flex flex-col items-start">';
+        
         if (!empty($this->attachments)) {
             // jQuery needs brackets in input names escaped, php needs backslashes escaped = double-escaped
             $idEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $this->getID());
@@ -256,6 +258,7 @@ class FileUpload extends Input
         if ($this->maxUpload !== false) {
             $output .= $this->getMaxUploadText();
         }
+        $output .= '</div>';
 
         return $output;
     }

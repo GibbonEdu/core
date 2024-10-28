@@ -56,7 +56,7 @@ class Icon
 
         return Component::render($path, [
             'icon'    => strtolower($icon),
-            'class'   => $class .' pointer-events-none',
+            'class'   => $class , //.' pointer-events-none'
             'options' => $options,
         ]);
     }

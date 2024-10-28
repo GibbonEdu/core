@@ -26,12 +26,12 @@
 
         <?php } elseif ($align == 'right') { ?>
             
-            <div class="inline-flex gap-2 justify-center items-center text-right">
+            <div class="w-full inline-flex gap-2 justify-center items-center text-right">
             <label class="leading-compact flex-1 text-sm" for="<?= $itemId; ?>"><?= $checkbox['label']; ?></label>
             <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
             </div>
         <?php } else { ?>
-            <div class="inline-flex gap-2 justify-center items-center text-left">
+            <div class="w-full inline-flex gap-2 justify-center items-center text-left">
             <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
             <label class="leading-compact flex-1 text-sm" for="<?= $itemId; ?>"><?= $checkbox['label']; ?></label>
             </div>

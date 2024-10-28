@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         }
 
         if ($element = $row->getElement($field['fieldName'])) {
-            $element->addClass('flex-1');
+            $element->addClass('flex-grow');
         }
 
         $row->addContent((new Action('edit', __('Edit')))
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
             ->addParams($urlParams)
             ->getOutput()
-        );
+        )->addClass('text-right');
     }
 
     // $formFields->clearTriggers();
