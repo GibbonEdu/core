@@ -761,7 +761,7 @@ class MessageForm extends Form
 
             $row = $form->addRow('stickySubmit');
                 $col = $row->addColumn()->setClass('flex-shrink items-center');
-                    $col->addButton(__('Save Draft'))->setAttribute('@click', 'if ($validate.isComplete("messengerMessage")) { saveDraft() } else { invalid = true; }')->addClass('rounded-sm w-auto mr-2');
+                    $col->addButton(__('Save Draft'))->setAttribute('@click', 'checkDraft(); if ($validate.isComplete("messengerMessage")) { saveDraft() } else { invalid = true; }');
                 $col = $row->addColumn()->setID('Submit')->addClass('items-center');
                     $col->addSubmit(__('Preview & Send'))->addClass('email');
                     $col->addSubmit()->addClass('noEmail');

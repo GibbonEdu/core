@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             if (!is_null($values['emailReceipt']) && $values['status'] == 'Sent') {
                 $actions->addAction('send', __('View Send Report'))
                         ->setURL('/modules/Messenger/messenger_manage_report.php')
-                        ->setIcon('target');
+                        ->setIcon('document-check');
             }
         });
 

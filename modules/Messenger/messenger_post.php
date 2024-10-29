@@ -71,15 +71,18 @@ else {
 
 ?>
 <script>
-function saveDraft() {
-
+function checkDraft() {
     $('option', '#individualList').each(function() {
         $(this).prop('selected', true);
     });
+    document.getElementById('individualList').dispatchEvent(new Event('change'));
+}
 
+function saveDraft() {
     window.onbeforeunload = null;
 
     $('input[name="saveMode"]').val('Draft');
     document.getElementById('messengerMessage').submit(); 
 }
 </script>
+

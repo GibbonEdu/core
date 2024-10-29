@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_send.p
 
         $row = $form->addRow('stickySubmit');
             $col = $row->addColumn()->addClass('items-center');
-            $col->addButton(__('Edit Draft'))->onClick('window.location="'.$editURL.'"')->addClass('email rounded-sm w-24 mr-2');
+            $col->addButton(__('Edit Draft'))->onClick('window.location="'.$editURL.'"');
             $row->addSubmit(__('Send'));
     } else {
         // If the message is sent, display the message status
