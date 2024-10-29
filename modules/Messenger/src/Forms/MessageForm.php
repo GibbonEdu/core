@@ -686,6 +686,25 @@ class MessageForm extends Form
             }
         }
 
+        // Mailing Lists
+        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
+            $selectedByRole = [];
+            $selected = $this->getSelectedTargets($targets, 'Mailing List', $selectedByRole);
+
+            $row = $form->addRow();
+                $row->addLabel('mailingList', __('Mailing List'))->description(__('Members of a Messenger module mailing list.'));
+                $row->addYesNoRadio('mailingList')->checked(!empty($selected)? 'Y' : 'N')->required();
+
+            $form->toggleVisibilityByClass('messageMailingList')->onRadio('mailingList')->when('Y');
+
+            $data = [];
+            $sql = "SELECT gibbonMessengerMailingListID as value, name FROM gibbonMessengerMailingList WHERE active='Y' ORDER BY name";
+
+            $row = $form->addRow()->addClass('messageMailingList bg-blue-100');
+                $row->addLabel('mailingLists[]', __('Select Mailing Lists'));
+                $row->addSelect('mailingLists[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+        }
+
         // Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             $selected = $this->getSelectedTargets($targets, 'Individuals');

@@ -22,30 +22,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Messenger\MailingListGateway;
+use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 
-$page->breadcrumbs->add(__('Manage Mailing List'));
+$page->breadcrumbs->add(__('Manage Mailing List Recipients'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecipients_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
        
     // QUERY
-    $mailingListGateway = $container->get(MailingListGateway::class);
-    $criteria = $mailingListGateway->newQueryCriteria(true)
+    $MailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+    $criteria = $MailingListRecipientGateway->newQueryCriteria(true)
         ->sortBy('surname', 'preferredName')
         ->fromPOST();
 
-    $mailingLists = $mailingListGateway->queryMailingList($criteria);
+    $mailingLists = $MailingListRecipientGateway->queryMailingList($criteria);
 
     // TABLE
     $table = DataTable::createPaginated('mailingLists', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
         ->displayLabel()
-        ->setURL('/modules/Messenger/mailingList_manage_add.php');
+        ->setURL('/modules/Messenger/mailingListRecipients_manage_add.php');
 
     $table->addColumn('surname', __('Surname'));
 
@@ -53,14 +53,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_mana
 
     $table->addColumn('email', __('Email'));
 
+    $table->addColumn('organisation', __('Organisation'));
+
     $table->addActionColumn()
-        ->addParam('gibbonMessengerMailingListID')
+        ->addParam('gibbonMessengerMailingListRecipientID')
         ->format(function ($mailingList, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Messenger/mailingList_manage_edit.php');
+                ->setURL('/modules/Messenger/mailingListRecipients_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Messenger/mailingList_manage_delete.php');
+                ->setURL('/modules/Messenger/mailingListRecipients_manage_delete.php');
         });
 
     echo $table->render($mailingLists);

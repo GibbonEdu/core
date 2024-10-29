@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 use Gibbon\Domain\Messenger\MailingListGateway;
 
 require_once '../../gibbon.php';
@@ -28,32 +29,42 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonMessengerMailingListID = $_POST['gibbonMessengerMailingListID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingList_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingLists_manage_edit.php&gibbonMessengerMailingListID='.$gibbonMessengerMailingListID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingLists_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
-} elseif (empty($gibbonMessengerMailingListID)) {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
-    exit;
 } else {
+
     // Proceed!
     $mailingListGateway = $container->get(MailingListGateway::class);
-    $values = $mailingListGateway->getByID($gibbonMessengerMailingListID);
 
-    if (empty($values)) {
-        $URL .= '&return=error2';
+    $data = [
+        'name'                   => $_POST['name'] ?? '',
+        'active'                 => $_POST['active'] ?? 'Y',
+    ];
+
+    // Validate the required values are present
+    if (empty($data['name']) || empty($data['active'])) {
+        $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
-    $deleted = $mailingListGateway->delete($gibbonMessengerMailingListID);
+    // Validate that this record is unique
+    if (!$mailingListGateway->unique($data, ['name'], $gibbonMessengerMailingListID)) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+        exit;
+    }
 
-    $URL .= !$deleted
-        ? '&return=error2'
-        : '&return=success0';
+    // Update the record
+    $updated = $mailingListGateway->update($gibbonMessengerMailingListID, $data);
+
+    $URL .= !$updated
+        ? "&return=error2"
+        : "&return=success0";
 
     header("Location: {$URL}");
 }

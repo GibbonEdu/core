@@ -21,29 +21,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Messenger\MailingListGateway;
+use Gibbon\Data\PasswordPolicy;
+use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonMessengerMailingListID = $_POST['gibbonMessengerMailingListID'] ?? '';
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/mailingListRecipients_manage_add.php";
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingList_manage_edit.php&gibbonMessengerMailingListID='.$gibbonMessengerMailingListID;
-
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecipients_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 } else {
-
     // Proceed!
-    $mailingListGateway = $container->get(MailingListGateway::class);
-
+    $MailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+    $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+    
     $data = [
-        'surname'                   => $_POST['surname'] ?? '',
-        'preferredName'             => $_POST['preferredName'] ?? '',
-        'email'                     => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
+        'surname'                           => $_POST['surname'] ?? '',
+        'preferredName'                     => $_POST['preferredName'] ?? '',
+        'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
+        'key'                               => $randStrGenerator->generate(),    
+        'organisation'                      => $_POST['organisation'] ?? '',
+        'gibbonMessengerMailingListIDList'  => implode(',', $_POST['gibbonMessengerMailingListIDList']) ?? '',
     ];
 
     // Validate the required values are present
@@ -54,18 +56,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingList_mana
     }
 
     // Validate that this record is unique
-    if (!$mailingListGateway->unique($data, ['email'], $gibbonMessengerMailingListID)) {
+    if (!$MailingListRecipientGateway->unique($data, ['email'])) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }
 
-    // Update the record
-    $updated = $mailingListGateway->update($gibbonMessengerMailingListID, $data);
+    // Create the record
+    $gibbonMessengerMailingListRecipientID = $MailingListRecipientGateway->insert($data);
 
-    $URL .= !$updated
-        ? "&return=error2"
-        : "&return=success0";
+    if ($gibbonMessengerMailingListRecipientID) {
+        $URL .= "&return=success0&editID=$gibbonMessengerMailingListRecipientID";
+    }
+    else {
+        $URL .= "&return=error2";
+    }
 
     header("Location: {$URL}");
 }
