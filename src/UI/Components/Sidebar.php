@@ -324,7 +324,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $row = $form->addRow()->setClass('flex justify-end items-center');
                     $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('flex-1 mt-1')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
-                    $row->addSubmit(__('Login'))->addClass('flex-1 mt-1');
+                    $row->addSubmit(__('Login'))->addClass('flex-1 mt-1 text-right');
 
                 echo $form->getOutput();
                 echo '</div>';

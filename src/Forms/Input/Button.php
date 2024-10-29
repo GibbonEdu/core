@@ -29,7 +29,7 @@ use Gibbon\Forms\Traits\ButtonGroupTrait;
 /**
  * Button
  *
- * @version v14
+ * @version v28
  * @since   v14
  */
 class Button extends Element
@@ -41,6 +41,7 @@ class Button extends Element
     private $icon;
     private $iconClass;
     private $size;
+    private $color;
 
     public function __construct($name, $type = 'button', $onClick = null, $id = null)
     {
@@ -104,6 +105,18 @@ class Button extends Element
         return $this;
     }
 
+    /**
+     * Sets a display color for the button.
+     *
+     * @param string $value     One of: sm, md, ld
+     * @return self
+     */
+    public function setColor($value)
+    {
+        $this->color = $value;
+        return $this;
+    }
+
     public function setAction($url)
     {
         if (empty($url)) {
@@ -129,6 +142,7 @@ class Button extends Element
             'icon'       => $this->icon,
             'iconClass'  => $this->iconClass,
             'size'       => $this->size,
+            'color'      => $this->color,
         ]);
     }
 }

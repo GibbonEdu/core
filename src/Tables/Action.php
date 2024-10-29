@@ -286,13 +286,14 @@ class Action extends WebLink
                 ->setAttribute('hx-target', '#modalContent')
                 ->setAttribute('hx-push-url', 'false')
                 ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
-                ->setAttribute('x-on:click', "modalType = '{$this->name}'");
+                ->setAttribute('x-on:click', "modalType = '{$this->name}'")
+                ->setAttribute('hx-swap', 'innerHTML show:no-scroll swap:0s');
         } elseif (!$this->external && !$this->direct && $this->url != '#') {
             $this->setAttribute('hx-boost', 'true')
                 ->setAttribute('hx-target', '#content-wrap')
                 ->setAttribute('hx-select', '#content-wrap')
                 ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
-        } else if (!empty($this->getAttribute('hx-confirm'))) {
+        } elseif (!empty($this->getAttribute('hx-confirm'))) {
             $this->setAttribute('hx-post', Url::fromHandlerRoute(ltrim($this->url, '/')) )
                 ->setAttribute('hx-target', '#content-wrap')
                 ->setAttribute('hx-select', '#content-wrap')
