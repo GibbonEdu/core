@@ -159,7 +159,9 @@ class PersonalDocuments extends Input
                     $input->loadFrom($document)->setName($fieldName)->setID($fieldID);
                     
                     $output .= $label->setClass('inline-block w-32 font-medium text-xs text-gray-700')->getOutput();
+                    $output .= '<div class="flex-1 relative flex justify-end items-center">';
                     $output .= $input->getOutput();
+                    $output .= '</div>';
                     $this->validationOutput .= $input->getValidationOutput();
                 }
                 $output .= '</div>';

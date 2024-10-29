@@ -77,7 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
                     ->setURL('/modules/Reports/reporting_scopes_manage_edit.php');
 
             $actions->addAction('access', __('Manage Access'))
-                    ->setIcon('key')
                     ->setURL('/modules/Reports/reporting_access_manage.php');
 
             $actions->addAction('delete', __('Delete'))

@@ -63,13 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
                     ->setURL('/modules/Reports/reporting_cycles_manage_edit.php');
 
             $actions->addAction('scopes', __('Manage Scopes & Criteria'))
-                    ->setIcon('markbook') //internalAssessment
+                    ->setIcon('markbook')
                     ->setClass('mx-1')
                     ->setURL('/modules/Reports/reporting_scopes_manage.php');
-
-            // $actions->addAction('access', __('Manage Access'))
-            //         ->setIcon('key')
-            //         ->setURL('/modules/Reports/reporting_access_manage.php');
 
             $actions->addAction('duplicate', __('Duplicate'))
                     ->setIcon('copy')
