@@ -73,11 +73,11 @@ $I->seeSuccessMessage();
 // Delete Grade ------------------------------------------
 $I->amOnModulePage('School Admin', 'gradeScales_manage_edit_grade_delete.php', array('gibbonScaleID' => $gibbonScaleID, 'gibbonScaleGradeID' => $gibbonScaleGradeID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 // Delete Scale ------------------------------------------
 $I->amOnModulePage('School Admin', 'gradeScales_manage_delete.php', array('gibbonScaleID' => $gibbonScaleID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

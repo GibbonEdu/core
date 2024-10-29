@@ -42,7 +42,7 @@ $I->click('Logout');
 $I->loginAsAdmin();
 $I->amOnModulePage('Activities', 'activities_manage.php');
 $I->click("Delete", "//td[contains(text(),'T2 Test Activity')]//..");
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 

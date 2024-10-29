@@ -68,7 +68,7 @@ $gibbonFinanceInvoiceeUpdateID = $I->grabValueFromURL('gibbonFinanceInvoiceeUpda
 // Delete ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_finance_manage_delete.php', array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 
@@ -96,5 +96,5 @@ $gibbonFinanceInvoiceeUpdateID = $I->grabValueFromURL('gibbonFinanceInvoiceeUpda
 // Delete ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_finance_manage_delete.php', array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

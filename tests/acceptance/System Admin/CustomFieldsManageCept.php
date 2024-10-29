@@ -54,5 +54,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('System Admin', 'customFields_delete.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

@@ -129,7 +129,7 @@ $I->seeInField('completeDate', '2001-01-01');
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
 $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', $urlParams );
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 // Force Cleanup (for failed tests) ------------------------------
