@@ -273,6 +273,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                         $bodyOut = $studentNames.$bodyOut;
                     }
 
+                    // Deal with unsubscribe for mailing list recipients
+                    if ($reportEntry['targetType'] == 'Mailing List') {
+                        $bodyOut .= '<br/><hr/><br/><i>'.__('{linkOpen1}Unsubscribe{linkClose} or {linkOpen2}manage your subscription preferences{linkClose}', ['linkOpen1' => '<a href="'.$session->get('absoluteURL').'/modules/Messenger/mailingListRecipients_manage_subscribeProcess.php?mode=unsubscribe&email='.$reportEntry['contactDetail'].'&key='.$reportEntry['unsubscribeKey'].'">', 'linkOpen2' => '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php&mode=manage&email='.$reportEntry['contactDetail'].'&key='.$reportEntry['unsubscribeKey'].'">', 'linkClose' => '</a>'])."</i>";
+                    }
+                    
                     $mail->renderBody('mail/email.twig.html', [
                         'title'  => $subject,
                         'body'   => $bodyOut
