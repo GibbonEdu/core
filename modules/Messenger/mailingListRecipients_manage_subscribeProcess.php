@@ -88,8 +88,8 @@ if ($mode == 'subscribe') {
     }
 
     // Validate email and key
-    $email = $_POST['email'] ?? '';
-    $key = $_POST['key'] ?? '';
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $key = preg_replace('/[^a-zA-Z0-9]/', '', $_POST['key'] ?? '');
     $keyCheck = $mailingListRecipientGateway->keyCheck($email, $key);
     
     if ($keyCheck->rowCount() != 1) {
@@ -113,8 +113,8 @@ if ($mode == 'subscribe') {
     ];
 
     // Validate email and key
-    $email = $_GET['email'] ?? '';
-    $key = $_GET['key'] ?? '';
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $key = preg_replace('/[^a-zA-Z0-9]/', '', $_POST['key'] ?? '');
     $keyCheck = $mailingListRecipientGateway->keyCheck($email, $key);
     
     if ($keyCheck->rowCount() != 1) {
