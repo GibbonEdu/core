@@ -64,6 +64,10 @@ class Date extends TextField
             $value = Format::dateConvert($value);
         }
 
+        if (strlen($value) == 19) {
+            $value = substr($value, 0, 10);
+        }
+
         $this->setAttribute('value', $value);
         return $this;
     }
