@@ -89,6 +89,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
             return;
         }
 
+        $options = [
+            'newStudentPriority' => __('Prioritise new students getting their first choice'),
+            'yearGroupPriority'  => __('Prioritise younger year groups getting their first choice'),
+            'includePastChoices' => __('Include past choices when balancing groups'),
+            'includeTimestamps'  => __('Include sign-up time when balancing groups (semi-competitive)'),
+        ];
+
+        $row = $form->addRow();
+        $row->addLabel('options', __('Options'));
+        $row->addCheckbox('options')->fromArray($options)->checked(['newStudentPriority', 'yearGroupPriority', 'includePastChoices']);
+
         $activities = $activityGateway->selectActivityDetailsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
         $choiceCounts = $activityChoiceGateway->selectChoiceCountsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
 
@@ -161,6 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         $generator = $container->get(EnrolmentGenerator::class);
 
         $generator
+            ->setOptions($_POST['options'] ?? [])
             ->loadActivities($params['gibbonActivityCategoryID'], $activityList)
             ->loadEnrolments($params['gibbonActivityCategoryID'])
             ->loadChoices($params['gibbonActivityCategoryID'])

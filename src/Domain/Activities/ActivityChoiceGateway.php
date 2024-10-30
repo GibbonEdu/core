@@ -226,6 +226,17 @@ class ActivityChoiceGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getTimestampMinMaxByCategory($gibbonActivityCategoryID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
+        $sql = "SELECT UNIX_TIMESTAMP(MIN(timestampCreated)) as min, UNIX_TIMESTAMP(MAX(timestampCreated)) as max
+            FROM gibbonActivityChoice 
+            WHERE gibbonActivityChoice.gibbonActivityCategoryID=:gibbonActivityCategoryID
+            GROUP BY gibbonActivityChoice.gibbonActivityCategoryID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getYearGroupWeightingMax()
     {
         return $this->db()->selectOne("SELECT MAX(sequenceNumber) FROM gibbonYearGroup");

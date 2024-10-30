@@ -35,8 +35,12 @@ class EnrolmentGenerator
     protected $activityStudentGateway;
     protected $activityChoiceGateway;
 
+    protected $newStudentPriority = true;
+    protected $yearGroupPriority = true;
+    protected $includePastChoices = true;
+    protected $includeTimestamps = false;
+    
     protected $signUpChoices;
-
     protected $activities;
     protected $enrolments;
     protected $choices;
@@ -59,6 +63,16 @@ class EnrolmentGenerator
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    public function setOptions(array $options)
+    {
+        $this->newStudentPriority = in_array('newStudentPriority', $options);
+        $this->yearGroupPriority = in_array('yearGroupPriority', $options);
+        $this->includePastChoices = in_array('includePastChoices', $options);
+        $this->includeTimestamps = in_array('includeTimestamps', $options);
+
+        return $this;
     }
 
     public function loadActivities(string $gibbonActivityCategoryID, array $activityList)
@@ -207,24 +221,37 @@ class EnrolmentGenerator
     protected function sortChoicesByWeighting(string $gibbonActivityCategoryID)
     {
         $choiceWeights = $this->activityChoiceGateway->selectChoiceWeightingByCategory($gibbonActivityCategoryID)->fetchGroupedUnique();
+        $timestampRange = $this->activityChoiceGateway->getTimestampMinMaxByCategory($gibbonActivityCategoryID);
         $yearGroupMax = $this->activityChoiceGateway->getYearGroupWeightingMax();
 
         foreach ($this->choices as $gibbonPersonID => $person) {
+            $choiceWeight = $yearGroupWeight = 0;
+
             // Weight students who didn't get 1st choice in the past higher (0 - 3.0)
-            $choiceWeight = ($choiceWeights[$gibbonPersonID]['choiceCount'] ?? 0) / max(($choiceWeights[$gibbonPersonID]['categoryCount'] ?? 0), 1);
+            if ($this->includePastChoices && !empty($choiceWeights[$gibbonPersonID]['choiceCount'])) {
+                $choiceWeight += ($choiceWeights[$gibbonPersonID]['choiceCount']) / max(($choiceWeights[$gibbonPersonID]['categoryCount'] ?? 0), 1);
+            }
 
             // Students who are brand new to DL get an extra boost
-            if (empty($choiceWeights[$gibbonPersonID]['categoryCount'])) {
+            if ($this->newStudentPriority && empty($choiceWeights[$gibbonPersonID]['categoryCount'])) {
                 $choiceWeight += 1.5;
             }
 
             // Weight younger year groups more than older ones (0 - 1.0)
-            $yearGroupWeight = ($yearGroupMax - ($person['yearGroupSequence'] ?? 0)) / max($yearGroupMax, 1);
+            if ($this->yearGroupPriority) {
+                $yearGroupWeight = ($yearGroupMax - ($person['yearGroupSequence'] ?? 0)) / max($yearGroupMax, 1);
+            }
 
-            // Add some randomization to keep things fresh (0 - 0.5)
-            $randomWeight = (mt_rand(0,500) / 1000);
+            // Include timestamps (0 - 1.5), or add some randomization to keep things fresh (0 - 0.5)
+            if ($this->includeTimestamps && !empty($timestampRange['max'])) {
+                $timestamp = strtotime($person['timestampCreated']) - $timestampRange['min'];
+                $timestampUpper = $timestampRange['max'] - $timestampRange['min'];
+                $timestampWeight = 1.5 - ((floatval($timestamp) / floatval($timestampUpper)) * 1.5);
+            } else {
+                $timestampWeight = (mt_rand(0,500) / 1000);
+            }
 
-            $this->choices[$gibbonPersonID]['weight'] = $choiceWeight + $yearGroupWeight + $randomWeight;
+            $this->choices[$gibbonPersonID]['weight'] = $choiceWeight + $yearGroupWeight + $timestampWeight;
         }
 
         // A higher weighting gives students a higher priority to get their top choices
