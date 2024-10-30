@@ -305,16 +305,16 @@ $javascriptConfig = [
 $page->scripts->addMultiple([
     // 'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
-    'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
-    'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
-    'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
-    'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'htmx'           => 'lib/htmx/htmx.min.js',
     'core'           => 'resources/assets/js/core.min.js',
     
 ], ['context' => 'head']);
 
 $page->scripts->addMultiple([
+    'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
+    'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
+    'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
+    'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
     'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
     'alpineValidate' => 'lib/htmx/alpine.validate.min.js',
@@ -330,7 +330,7 @@ $page->scripts->addMultiple([
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
-], ['context' => 'foot']);
+], ['context' => 'foot', 'type' => 'defer']);
 
 // Set page scripts: foot - misc
 $page->scripts->addMultiple([

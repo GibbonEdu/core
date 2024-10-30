@@ -12,7 +12,7 @@ current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
-{% set sidebarClass = 'shadow bg-white rounded px-8 mb-6' %}
+{% set sidebarClass = 'shadow bg-white rounded px-6 mb-6' %}
 
 <div class="mx-4 sm:mx-0 relative sm:static" x-data="{moduleMenu: false}" @keydown.escape.window="moduleMenu = false" @click.outside="moduleMenu = false" x-init="moduleMenu = false">
 

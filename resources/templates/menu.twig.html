@@ -24,7 +24,7 @@ Main Menu: Displays the top-level categories and active modules.
             <ul x-cloak x-show="menuOpen" x-transition:enter.duration.250ms x-transition:leave.duration.0s class="list-none bg-black bg-opacity-75 backdrop-blur-lg backdrop-contrast-125 backdrop-saturate-150 rounded-md absolute w-available ms-4 me-4 sm:mx-0 sm:w-52  my-0 p-1 sm:p-1.5 z-50 {{ rightToLeft ? 'right-0' : 'left-0' }}">
                 {% for item in items %}
                 <li class="hover:bg-{{ themeColour }}-700 rounded">
-                    <a @click="menuOpen = false" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-2 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" href="{{ item.url }}">
+                    <a @click="menuOpen = false" class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-2 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" href="{{ item.url }}">
                         {{ __(item.name, item.textDomain) }}
                     </a>
                 </li>
