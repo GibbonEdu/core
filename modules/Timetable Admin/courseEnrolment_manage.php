@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if (empty($gibbonSchoolYearID)) {
-        echo '<div class="error">';
-        echo __('The specified record does not exist.');
-        echo '</div>';
+        $page->addError(__('The specified record does not exist.'));
     } else {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
+            $row->addSearchSubmit($session, __('Clear Search'), array('gibbonSchoolYearID'));
 
         echo $form->getOutput();
 
@@ -80,9 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $courses = $courseGateway->queryCoursesBySchoolYear($criteria, $gibbonSchoolYearID);
 
         if (count($courses) == 0) {
-            echo '<div class="error">';
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
             return;
         }
 

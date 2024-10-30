@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 if ($highestAction == 'Unit Planner_all') {
                     $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
                 } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
                 }
 
                 if ($result->rowCount() != 1) {
@@ -75,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 } else {
                     //Move attached file, if there is one
                     if (!empty($_FILES['file']['tmp_name'])) {
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
@@ -95,8 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo $e->getMessage();exit;
+                    } catch (PDOException $e) {exit;
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
@@ -131,23 +132,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     if ($blockCount > 0) {
                         $order = array();
                         if (isset($_POST['order'])) {
-                            $order = $_POST['order'];
+                            $order = $_POST['order'] ?? [];
                         }
                         foreach ($order as $i) {
                             $title = '';
                             if ($_POST["title$i"] != "Block $i") {
-                                $title = $_POST["title$i"];
+                                $title = $_POST["title$i"] ?? '';
                             }
                             $type2 = '';
                             if ($_POST["type$i"] != 'type (e.g. discussion, outcome)') {
-                                $type2 = $_POST["type$i"];
+                                $type2 = $_POST["type$i"] ?? '';
                             }
                             $length = '';
                             if ($_POST["length$i"] != 'length (min)') {
-                                $length = $_POST["length$i"];
+                                $length = $_POST["length$i"] ?? '';
                             }
-                            $contents = $_POST["contents$i"];
-                            $teachersNotes = $_POST["teachersNotes$i"];
+                            $contents = $_POST["contents$i"] ?? '';
+                            $teachersNotes = $_POST["teachersNotes$i"] ?? '';
 
                             if ($title != '') {
                                 try {

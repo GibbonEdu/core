@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,14 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$_GET['editID'];
     }
 
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('criteriaTypesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_addProcess.php');
+    $form = Form::create('criteriaTypesManage', $session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique'));
@@ -56,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         'Yes/No'      => __('Yes/No'),
         'Text'        => __('Text'),
         'Number'      => __('Number'),
+        'Image'       => __('Image'),
     ];
     $row = $form->addRow();
         $row->addLabel('valueType', __('Value Type'));
@@ -65,6 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
     $row = $form->addRow()->addClass('characterLimit');
         $row->addLabel('characterLimit', __('Character Limit'));
         $row->addNumber('characterLimit')->maxLength(6)->required()->setValue(1000);
+
+    $form->toggleVisibilityByClass('imageOptions')->onSelect('valueType')->when('Image');
+    $row = $form->addRow()->addClass('imageOptions');
+        $row->addLabel('imageSize', __('Maximum Size'))->description(__('In Pixels'));
+        $row->addRange('imageSize', 40, 2048, 1)->required()->setValue(1024);
+
+    $row = $form->addRow()->addClass('imageOptions');
+        $row->addLabel('imageQuality', __('Image Quality'))->description(__('Percentage'));
+        $row->addRange('imageQuality', 40, 100, 5)->required()->setValue(80);
 
     $form->toggleVisibilityByClass('gradeScale')->onSelect('valueType')->when('Grade Scale');
     $row = $form->addRow()->addClass('gradeScale');

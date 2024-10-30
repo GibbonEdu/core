@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -380,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 if (!empty($departureReasonsList)) {
                     $row->addSelect('departureReason')->fromString($departureReasonsList)->placeholder();
                 } else {
-                    $row->addTextField('departureReason')->maxLength(30);
+                    $row->addTextField('departureReason')->maxLength(100);
                 }
             }
 
@@ -558,10 +560,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             // CUSTOM FIELDS
             $params = compact('student', 'staff', 'parent', 'other');
+            $params['requiredOverride'] = 'N';
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
             $row = $form->addRow();
-                $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
+                $row->addFooter()->append('<small>'.getMaxUpload(true).'</small>');
                 $row->addSubmit();
 
             $form->loadAllValuesFrom($values);

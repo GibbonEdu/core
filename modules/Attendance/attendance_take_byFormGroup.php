@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $gibbonFormGroupID = $row['gibbonFormGroupID'];
             }
         } else {
-            $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
+            $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         }
 
         $today = date('Y-m-d');
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
 
@@ -107,9 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $result->execute($data);
 
                     if ($result->rowCount() == 0) {
-                        echo '<div class="error">';
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        echo $page->getBlankSlate();
                         return;
                     }
 
@@ -150,21 +148,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $resultFormGroup->execute($dataFormGroup);
 
                         if ($resultFormGroup->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         } else {
                             $count = 0;
                             $countPresent = 0;
                             $columns = 4;
 
-                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
+                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
                             $students = $resultFormGroup->fetchAll();
 
                             // Build the attendance log data per student
                             foreach ($students as $key => $student) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate);
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonFormGroupID
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonFormGroupID
                                         FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
@@ -186,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $students[$key]['cellHighlight'] = '';
                                 if ($attendance->isTypeAbsent($log['type'])) {
                                     $students[$key]['cellHighlight'] = 'dayAbsent';
-                                } elseif ($attendance->isTypeOffsite($log['type'])) {
+                                } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
                                     $students[$key]['cellHighlight'] = 'dayMessage';
                                 } elseif ($attendance->isTypeLate($log['type'])) {
                                     $students[$key]['cellHighlight'] = 'dayPartial';

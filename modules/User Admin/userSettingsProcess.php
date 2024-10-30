@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,11 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['privacyBlurb' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userSettings.php';
 
@@ -29,107 +33,48 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $ethnicity = $_POST['ethnicity'] ?? '';
-    $religions = $_POST['religions'] ?? '';
-    $nationality = $_POST['nationality'] ?? '';
-    $departureReasons = $_POST['departureReasons'] ?? '';
-    $privacy = $_POST['privacy'] ?? '';
-    $privacyBlurb = $_POST['privacyBlurb'] ?? null;
-    $privacyOptions = $_POST['privacyOptions'] ?? null;
-    $uniqueEmailAddress = $_POST['uniqueEmailAddress'] ?? 'N';
-    $personalBackground = $_POST['personalBackground'] ?? '';
+    $partialFail = false;
+    $settingGateway = $container->get(SettingGateway::class);
 
-    //Write to database
-    $fail = false;
+    $settingsToUpdate = [
+        'User Admin' => [
+            'ethnicity'               => 'comma-separated',
+            'religions'               => 'comma-separated',
+            'nationality'             => 'comma-separated',
+            'departureReasons'        => 'comma-separated',
+            'privacy'                 => 'required',
+            'privacyBlurb'            => '',
+            'privacyOptions'          => 'comma-separated',
+            'privacyOptionVisibility' => '',
+            'uniqueEmailAddress'      => 'required',
+            'personalBackground'      => 'required',
+        ],
+    ];
 
-    try {
-        $data = array('value' => $ethnicity);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='ethnicity'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            $value = $_POST[$name] ?? '';
+
+            if ($property == 'required' && empty($value)) {
+                $partialFail = true;
+                continue;
+            }
+
+            if ($property == 'skip-empty' && empty($value)) {
+                continue;
+            }
+
+            if ($property == 'comma-separated') {
+                $value = implode(',', array_map('trim', explode(',', $value)));
+            }
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+        }
     }
 
-    try {
-        $data = array('value' => $religions);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='religions'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $nationality);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='nationality'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $departureReasons);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='departureReasons'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $privacy);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacy'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $privacyBlurb);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacyBlurb'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $privacyOptions);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacyOptions'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $uniqueEmailAddress);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='uniqueEmailAddress'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $personalBackground);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='personalBackground'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    if ($fail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        //Success 0
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

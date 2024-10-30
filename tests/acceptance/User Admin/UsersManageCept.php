@@ -8,12 +8,13 @@ $I->amOnModulePage('User Admin', 'userSettings.php');
 $originalUserSettings = $I->grabAllFormValues();
 
 $newUserSettings = array_replace($originalUserSettings, array(
-    'nationality'     => 'Nationality 1, Nationality 2, Nationality 3',
-    'ethnicity'       => 'Ethnicity 1, Ethnicity 2, Ethnicity 3',
-    'religions'       => 'Religion 1, Religion 2, Religion 3',
+    'nationality'     => 'Nationality 1,Nationality 2,Nationality 3',
+    'ethnicity'       => 'Ethnicity 1,Ethnicity 2,Ethnicity 3',
+    'religions'       => 'Religion 1,Religion 2,Religion 3',
     'privacy'         => 'Y',
     'privacyBlurb'    => 'Privacy Blurb Test',
-    'privacyOptions'  => 'Privacy 1, Privacy 2, Privacy 3',
+    'privacyOptions'  => 'Privacy 1,Privacy 2,Privacy 3',
+    'privacyOptionVisibility' => 'Y',
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');
@@ -47,7 +48,7 @@ $formValues = array(
     'officialName'              => 'Test E. McTest',
     'nameInCharacters'          => 'TM',
     'gender'                    => 'F',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
     'status'                    => 'Full',
     'canLogin'                  => 'N',
     'passwordForceReset'        => 'N',
@@ -71,7 +72,7 @@ $formValues = array(
     'website'                   => 'http://gibbon.test',
     'dayType'                   => 'Day Type 1',
     'lastSchool'                => 'Testing',
-    'dateStart'                 => '30/01/2001',
+    'dateStart'                 => '2001-01-01',
     'languageFirst'             => 'Albanian',
     'languageSecond'            => 'Bulgarian',
     'languageThird'             => 'Cambodian',
@@ -179,7 +180,7 @@ $I->see('Your request was completed successfully.', '.success');
 
 // Cleanup Files ------------------------------------------------
 
-$I->deleteFile('../'.$I->grabValueFrom('input[name="attachment1"]'));
+$I->deleteFile('../'.rawurldecode($I->grabValueFrom('input[name="attachment1"]')));
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -71,18 +73,18 @@ class YearGroupGateway extends QueryableGateway
      *
      * @return array|false
      */
-    public function studentCountByYearGroup($gibbonYearGroupID)
+    public function studentCountByYearGroup($gibbonYearGroupID, $gibbonSchoolYearID)
     {
-        $data = array('gibbonYearGroupID' => $gibbonYearGroupID, 'today' => date('Y-m-d'));
+        $data = ['gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
         $sql = "SELECT count(*)
-            FROM gibbonStudentEnrolment
+                FROM gibbonStudentEnrolment
                 JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-            WHERE gibbonPerson.status='Full'
-                AND gibbonSchoolYear.status='Current'
+                WHERE gibbonPerson.status='Full'
                 AND (dateStart IS NULL OR dateStart<=:today)
                 AND (dateEnd IS NULL OR dateEnd>=:today)
                 AND gibbonYearGroupID=:gibbonYearGroupID
+                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 ";
 
         return $this->db()->selectOne($sql, $data);
@@ -116,7 +118,7 @@ class YearGroupGateway extends QueryableGateway
      */
     public function getNextYearGroupID(int $gibbonYearGroupID)
     {
-        $sql = "SELECT * FROM gibbonYearGroup WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonYearGroup WHERE sequenceNumber > (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID))";
+        $sql = "SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonYearGroup WHERE sequenceNumber > (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID))";
 
         return $this->db()->selectOne($sql, [
             'gibbonYearGroupID' => $gibbonYearGroupID,
@@ -134,6 +136,20 @@ class YearGroupGateway extends QueryableGateway
     public function getLastYearGroupID()
     {
         $sql = 'SELECT gibbonYearGroupID FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
+        return $this->db()->selectOne($sql);
+    }
+
+    /**
+     * Get the total number of year groups.
+     *
+     * @version v27
+     * @since   v27
+     *
+     * @return int|false
+     */
+    public function getYearGroupCount()
+    {
+        $sql = 'SELECT COUNT(gibbonYearGroupID) FROM gibbonYearGroup';
         return $this->db()->selectOne($sql);
     }
 }

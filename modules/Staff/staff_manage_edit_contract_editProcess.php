@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -79,11 +81,10 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $bonusPeriod = $_POST['bonusPeriod'] ?? '';
                 $education = $_POST['education'] ?? '';
                 $notes = $_POST['notes'] ?? '';
-                $contractUpload = $_POST['contractUpload'] ?? $row['contractUpload'];
 
                 $partialFail = false;
                 if (!empty($_FILES['file1']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
                     $fileUploader->getFileExtensions('Document');
 
                     $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
@@ -95,6 +96,9 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                         $contractUpload = '';
                         $partialFail = true;
                     }
+                } else {
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $contractUpload = empty($_POST['contractUpload']) ? '' : $row['contractUpload'];
                 }
 
                 if ($title == '' or $status == '') {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +28,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('System Check'));
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $statusCheck = checkUploadsFolderStatus($session->get('absoluteURL'));
     if (!$statusCheck) {
         echo Format::alert(__('The system check has detected that your uploads folder may be publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
-            'documentation' => Format::link('https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config', __('Post-Install and Server Config')),
+            'documentation' => Format::link('https://docs.gibbonedu.org/introduction/post-installation', __('Post-Install and Server Config')),
         ]), 'error');
     }
 
@@ -87,9 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $row->addContent((version_compare($mysqlVersion, $mysqlRequirement, '>='))? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
-        $row->addLabel('mysqlCollationLabel', __('MySQL Collation'))->description(sprintf( __('Database collation should be set to %s'), 'utf8_general_ci'));
+        $row->addLabel('mysqlCollationLabel', __('MySQL Collation'))->description(sprintf( __('Database collation should be set to %s'), 'utf8_general_ci or utf8mb3_general_ci'));
         $row->addTextField('mysqlCollation')->setValue($mysqlCollation)->readonly();
-        $row->addContent(($mysqlCollation == 'utf8_general_ci')? $trueIcon : $falseIcon);
+        $row->addContent(($mysqlCollation == 'utf8_general_ci' || $mysqlCollation == 'utf8mb3_general_ci')? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             [$setting, $operator, $compare] = $settingDetails;
             $value = @ini_get($setting);
 
-            if ($setting == 'session.gc_maxlifetime') $compare = $gibbon->session->get('sessionDuration');
+            if ($setting == 'session.gc_maxlifetime') $compare = $session->get('sessionDuration');
 
             $isValid = ($operator == '==' && $value == $compare)
                 || ($operator == '>=' && $value >= $compare)

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -89,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 $gibbonScaleIDTarget = $row['gibbonScaleIDTarget'];
 
                 for ($i = 1;$i <= $count;++$i) {
-                    $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];
+                    $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"] ?? '';
                     //Modified Assessment
                     if ($enableModifiedAssessment != 'Y') {
                         $modifiedAssessment = NULL;
@@ -132,13 +134,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $effortDescriptor = '';
                         $effortConcern = '';
                     } else {
-                        $effortValue = $_POST["$i-effortValue"];
+                        $effortValue = $_POST["$i-effortValue"] ?? '';
                     }
                     //Comment
                     if ($comment != 'Y') {
                         $commentValue = null;
                     } else {
-                        $commentValue = $_POST["comment$i"];
+                        $commentValue = $_POST["comment$i"] ?? '';
                     }
                     $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
@@ -253,46 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
                     }
 
-                    //Move attached file, if there is one
-                    if ($uploadedResponse == 'Y') {
-                        //Move attached image  file, if there is one
-                        if (!empty($_FILES['response'.$i]['tmp_name'])) {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-
-                            $file = (isset($_FILES['response'.$i]))? $_FILES['response'.$i] : null;
-
-                            // Upload the file, return the /uploads relative path
-                            $attachment = $fileUploader->uploadFromPost($file, $name."_Uploaded Response");
-
-                            if (empty($attachment)) {
-                                $partialFail = true;
-                            }
-
-                            // Create a log of failed uploads
-                            $errorMessage = $fileUploader->getLastError();
-                            if (empty($errorMessage) && !file_exists($attachment)) {
-                                $errorMessage = __('Uploaded file not found in the system.');
-                            }
-                            if (!empty($errorMessage) || filesize($attachment) === 0) {
-                                $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
-                                $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
-                                    'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
-                                    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
-                                    'name' => $name,
-                                    'attachment' => $attachment,
-                                    'errorMessage' => $errorMessage,
-                                    'fileType' => $file['type'] ?? '',
-                                    'fileError' => $file['error'] ?? '',
-                                ]);
-
-                                $attachmentFail = true;
-                            }
-                        } else {
-                            $attachment = (isset($_POST["attachment$i"]))? $_POST["attachment$i"] : '';
-                        }
-                    } else {
-                        $attachment = null;
-                    }
+                    
 
                     $selectFail = false;
                     try {
@@ -305,7 +268,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $selectFail = true;
                     }
                     if (!($selectFail)) {
-                        if ($result->rowCount() < 1) {
+                        $entry = $result->rowCount() > 0 ? $result->fetch() : [];
+
+                        // Move attached file, if there is one
+                        if ($uploadedResponse == 'Y') {
+                            //Move attached image  file, if there is one
+                            if (!empty($_FILES['response'.$i]['tmp_name'])) {
+                                $fileUploader = new Gibbon\FileUploader($pdo, $session);
+
+                                $file = (isset($_FILES['response'.$i]))? $_FILES['response'.$i] : null;
+
+                                // Upload the file, return the /uploads relative path
+                                $attachment = $fileUploader->uploadFromPost($file, $name."_Uploaded Response");
+
+                                if (empty($attachment)) {
+                                    $partialFail = true;
+                                }
+
+                                // Create a log of failed uploads
+                                $errorMessage = $fileUploader->getLastError();
+                                if (empty($errorMessage) && !file_exists($attachment)) {
+                                    $errorMessage = __('Uploaded file not found in the system.');
+                                }
+                                if (!empty($errorMessage) || filesize($attachment) === 0) {
+                                    $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
+                                    $logGateway->addLog($session->get('gibbonSchoolYearID'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Uploaded Response Failed', [
+                                        'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
+                                        'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+                                        'name' => $name,
+                                        'attachment' => $attachment,
+                                        'errorMessage' => $errorMessage,
+                                        'fileType' => $file['type'] ?? '',
+                                        'fileError' => $file['error'] ?? '',
+                                    ]);
+
+                                    $attachmentFail = true;
+                                }
+                            } else {
+                                // Remove the attachment if it has been deleted, otherwise retain the original value
+                                $attachment = empty($_POST["attachment$i"]) ? null : $entry['response'];
+                            }
+                        } else {
+                            $attachment = $entry['response'];
+                        }
+
+                        if (empty($entry)) {
                             try {
                                 $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment);
                                 $sql = 'INSERT INTO gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, modifiedAssessment=:modifiedAssessment, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment';
@@ -315,10 +322,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 $partialFail = true;
                             }
                         } else {
-                            $row = $result->fetch();
                             //Update
                             try {
-                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment, 'gibbonMarkbookEntryID' => $row['gibbonMarkbookEntryID']);
+                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment, 'gibbonMarkbookEntryID' => $entry['gibbonMarkbookEntryID']);
                                 $sql = 'UPDATE gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, modifiedAssessment=:modifiedAssessment, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment WHERE gibbonMarkbookEntryID=:gibbonMarkbookEntryID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);

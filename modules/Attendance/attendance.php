@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -69,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
 $row = $form->addRow();
 $row->addFooter();
-$row->addSearchSubmit($gibbon->session);
+$row->addSearchSubmit($session);
 
 $page->write($form->getOutput());
 
@@ -115,8 +117,8 @@ if ($session->has('username')) {
                                 'currentDate' => $day['currentDate'],
                             ]);
                             $content =
-                                '<div class="day text-xs">' . Format::dateReadable($day['currentDate'], '%d') . '</div>' .
-                                '<div class="month text-xxs mt-px">' . Format::dateReadable($day['currentDate'], '%b') . '</div>';
+                                '<div class="day text-xs">' . Format::date($day['currentDate'], 'd') . '</div>' .
+                                '<div class="month text-xxs mt-px">' . Format::monthName($day['currentDate'], true) . '</div>';
                         }
 
                         // determine how to display link and content
@@ -206,7 +208,6 @@ if ($session->has('username')) {
                 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
             ]);
         } catch (PDOException $e) {
-            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() > 0) {
@@ -221,7 +222,6 @@ if ($session->has('username')) {
                         'dateEnd' => $lastNSchoolDays[0],
                     ]);
                 } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
                 }
                 $logHistory = array();
                 while ($rowAttendance = $resultAttendance->fetch()) {
@@ -246,7 +246,6 @@ if ($session->has('username')) {
                         'date' => $currentDate . '%'
                     ]);
                 } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
                 }
 
                 $log = $resultLog->fetch();
@@ -307,7 +306,6 @@ if ($session->has('username')) {
                 'dateEnd' => $lastNSchoolDays[0],
             ]);
         } catch (PDOException $e) {
-            $page->addError($e->getMessage());
         }
         $logHistory = array();
         while ($row = $result->fetch()) {
@@ -322,7 +320,6 @@ if ($session->has('username')) {
                 'dateEnd' => $lastNSchoolDays[0],
             ]);
         } catch (PDOException $e) {
-            $page->addError($e->getMessage());
         }
         $ttHistory = array();
         while ($row = $result->fetch()) {
@@ -375,7 +372,6 @@ if ($session->has('username')) {
                         'date' => $currentDate . '%',
                     ]);
                 } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
                 }
 
                 $log = $resultLog->fetch();

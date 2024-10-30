@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $search = $_GET['search'] ?? '';
@@ -47,19 +47,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
         //Check if gibbonStaffID specified
-        $gibbonStaffID = $_GET['gibbonStaffID'];
+        $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
         if ($gibbonStaffID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $staffGateway = $container->get(StaffGateway::class);
             $staff = $staffGateway->selectStaffByStaffID($gibbonStaffID);
 
             if ($staff->isEmpty()) {
-                echo "<div class='error'>";
-                echo __('The specified record cannot be found.');
-                echo '</div>';
+                $page->addError(__('The specified record cannot be found.'));
             } else {
                 //Let's go!
                 $values = $staff->fetch();
@@ -157,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextArea('biography')->setRows(10);
 
                 // Custom Fields
-                $customFieldHandler->addCustomFieldsToForm($form, 'Staff', [], $values['fields']);
+                $customFieldHandler->addCustomFieldsToForm($form, 'Staff', ['requiredOverride' => 'N'], $values['fields']);
 
                 $row = $form->addRow();
                     $row->addFooter();
@@ -169,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 $staffFacilityGateway = $container->get(StaffFacilityGateway::class);
                 $criteria = $staffFacilityGateway->newQueryCriteria();
-                $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
+                $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                 $table = DataTable::create('facilities');
                 

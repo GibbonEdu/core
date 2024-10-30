@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -55,9 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
 
     $prototype = $templatePrototypeGateway->getByID($values['gibbonReportPrototypeSectionID']);
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_section_editProcess.php');
+    $form = Form::create('templatesManage', $session->get('absoluteURL').'/modules/Reports/templates_manage_section_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
     $form->addHiddenValue('gibbonReportTemplateSectionID', $gibbonReportTemplateSectionID);
 

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -62,9 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -73,9 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         $sort = $_GET['sort'] ?? '';
 
         if ($gibbonPersonID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
             return;
         } else {
             $settingGateway = $container->get(SettingGateway::class);
@@ -106,9 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $highestAction = 'View Student Profile_brief';
                 } else {
                     //Acess denied
-                    echo "<div class='error'>";
-                    echo __('You do not have access to this action.');
-                    echo '</div>';
+                    $page->addError(__('You do not have access to this action.'));
                     return;
                 }
             }
@@ -121,9 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $result->execute($data);
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
@@ -175,6 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
                     if ($row['email'] != '') {
+                        $row['email'] = filter_var(trim($row['email']), FILTER_SANITIZE_EMAIL);
                         echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
                     }
                     echo '</td>';
@@ -230,22 +225,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } else {
                         //Acess denied
-                        echo "<div class='error'>";
-                        echo __('You do not have access to this action.');
-                        echo '</div>';
+                        $page->addError(__('You do not have access to this action.'));
                         return;
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                     return;
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     return;
                 } else {
                     $row = $result->fetch();
@@ -419,31 +409,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table->addColumn('email', __('Email'))
                                 ->format(Format::using('link', ['email']));
 
+                        $studentGateway = $container->get(StudentGateway::class);
                         $table->addColumn('schoolHistory', __('School History'))
-                                ->format(function($row) use ($connection2) {
-                                    if ($row['dateStart'] != '') {
-                                        echo '<u>'.__('Start Date').'</u>: '.Format::date($row['dateStart']).'</br>';
-                                    }
+                        ->format(function($row) use ($connection2, $studentGateway ) {
+                            if ($row['dateStart'] != '') {
+                                echo '<u>'.__('Start Date').'</u>: '.Format::date($row['dateStart']).'</br>';
+                            }
 
-                                    $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                                    $sqlSelect = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear
-                                        FROM gibbonStudentEnrolment
-                                        JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                                        WHERE gibbonPersonID=:gibbonPersonID
-                                        AND (gibbonSchoolYear.status = 'Current' OR gibbonSchoolYear.status='Past')
-                                        ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
+                            $resultSelect = $studentGateway->selectStudentEnrolmentHistory($row['gibbonPersonID']);
+                            
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].' ('.$rowSelect['studyYear'].')'.'<br/>';
+                            }
 
-                                    while ($rowSelect = $resultSelect->fetch()) {
-                                        echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].'<br/>';
-                                    }
-
-                                    if ($row['dateEnd'] != '') {
-                                        echo '<u>'.__('End Date').'</u>: '.Format::date($row['dateEnd']).'</br>';
-                                    }
-                                });
+                            if ($row['dateEnd'] != '') {
+                                echo '<u>'.__('End Date').'</u>: '.Format::date($row['dateEnd']).'</br>';
+                            }
+                        });
 
                         $table->addColumn('lockerNumber', __('Locker Number'));
 
@@ -491,7 +473,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         $studentGateway = $container->get(StudentGateway::class);
-                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
+                        $staff = $studentGateway->selectAllRelatedUsersByStudent($session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
                         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
                         $criteria = $studentGateway->newQueryCriteria();
 
@@ -548,6 +530,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $table->addColumn('email', __('Email'))
                                     ->notSortable()
                                     ->format(function ($person) {
+                                        $person['email'] = filter_var(trim($person['email']), FILTER_SANITIZE_EMAIL);
                                         return htmlPrep('<'.$person['email'].'>');
                                     });
                             }
@@ -603,6 +586,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 ->directLink()
                                 ->displayLabel();
 
+                            if ($gibbonPersonID == $session->get('gibbonPersonID')) {
+                                $table->addHeaderAction('export', __('Export'))
+                                    ->modalWindow()
+                                    ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->setIcon('download')
+                                    ->displayLabel()
+                                    ->prepend(' | ');
+                            }
+
                             echo $table->render([['' => '']]);
 
                             include './modules/Timetable/moduleFunctions.php';
@@ -615,9 +608,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $page->addData('preventOverflow', false);
                                 echo $tt;
                             } else {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                echo $page->getBlankSlate();
                             }
                         } else {
                             echo '<h4>';
@@ -633,9 +624,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() < 1) {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                echo $page->getBlankSlate();
                             } else {
                                 echo '<ul>';
                                 while ($rowDetail = $resultDetail->fetch()) {
@@ -652,7 +641,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $formGroupGateway = $container->get(FormGroupGateway::class);
                         $studentGateway = $container->get(StudentGateway::class);
 
-                        $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
+                        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
                         $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
                         $yearGroup = $yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
                         $headOfYear = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
@@ -725,9 +714,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('departureReason', __('Departure Reason'));
 
                         $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Student Enrolment', [], $student['fields'] ?? '');
-                        
+
                         $col = $table->addColumn('Background Information', __('Background Information'));
-                        $country = $gibbon->session->get('country');
+                        $country = $session->get('country');
 
                         $col->addColumn('countryOfBirth', __('Country of Birth'))->translatable();
                         $col->addColumn('ethnicity', __('Ethnicity'));
@@ -793,9 +782,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultFamily->execute($dataFamily);
 
                         if ($resultFamily->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         } else {
                             while ($rowFamily = $resultFamily->fetch()) {
                                 $count = 1;
@@ -954,9 +941,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo __('Do not contact by email.');
                                     } elseif ($rowMember['contactEmail'] == 'Y' and ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '')) {
                                         if ($rowMember['email'] != '') {
+                                            $rowMember['email'] = filter_var(trim($rowMember['email']), FILTER_SANITIZE_EMAIL);
                                             echo __('Email').": <a href='mailto:".$rowMember['email']."'>".$rowMember['email'].'</a><br/>';
                                         }
                                         if ($rowMember['emailAlternate'] != '') {
+                                            $rowMember['emailAlternate'] = filter_var(trim($rowMember['emailAlternate']), FILTER_SANITIZE_EMAIL);
                                             echo __('Email')." 2: <a href='mailto:".$rowMember['emailAlternate']."'>".$rowMember['emailAlternate'].'</a><br/>';
                                         }
                                         echo '<br/>';
@@ -1081,9 +1070,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultFamily->execute($dataFamily);
 
                         if ($resultFamily->rowCount() == 0) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         } else {
                             while ($rowFamily = $resultFamily->fetch()) {
                                 $count = 1;
@@ -1185,7 +1172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         // Follow-up Contacts
                         $contacts = [];
                         $emergencyFollowUpGroup = $settingGateway->getSettingByScope('Students', 'emergencyFollowUpGroup');
-                        
+
                         if (!empty($emergencyFollowUpGroup)) {
                             $contactsList = explode(',', $emergencyFollowUpGroup) ?? [];
                             $contacts = $container->get(UserGateway::class)->selectNotificationDetailsByPerson($contactsList)->fetchAll();
@@ -1201,7 +1188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table = DataTable::create('followupMedicalContacts');
                         $table->setTitle(__('Follow-up Contacts'));
                         $table->setDescription(__('These contacts can be used when following up on an emergency, or for less serious issues, when parents and staff need to be notified by email.'));
-                        
+
                         $table->addColumn('fullName', __('Name'))
                                 ->notSortable()
                                 ->format(function ($person) {
@@ -1210,6 +1197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table->addColumn('email', __('Email'))
                                 ->notSortable()
                                 ->format(function ($person) {
+                                    $person['email'] = filter_var(trim($person['email']), FILTER_SANITIZE_EMAIL);
                                     return htmlPrep('<'.$person['email'].'>');
                                 });
                         $table->addColumn('context', __('Context'))
@@ -1332,7 +1320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
                             echo Format::alert(__('Your request failed because you do not have access to this action.'));
                         } else {
-                            
+
                             $firstAidGateway = $container->get(FirstAidGateway::class);
                             $criteria = $firstAidGateway->newQueryCriteria()
                                 ->sortBy(['date', 'timeIn'], 'DESC')
@@ -1347,10 +1335,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $output = '';
                                 if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2br($person['description']).'<br/><br/>';
                                 if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2br($person['actionTaken']).'<br/><br/>';
-                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
+                                if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'])]).'</b><br/>'.nl2br($person['followUp']).'<br/><br/>';
                                 $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
                                 foreach ($resultLog AS $rowLog) {
-                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
+                                    $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'])]).'</b><br/>'.nl2br($rowLog['followUp']).'<br/><br/>';
                                 }
 
                                 return $output;
@@ -1388,14 +1376,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     } elseif ($subpage == 'Notes') {
                         if ($enableStudentNotes != 'Y') {
-                            echo "<div class='error'>";
-                            echo __('You do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('You do not have access to this action.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed because you do not have access to this action.');
-                                echo '</div>';
+                                $page->addError(__('Your request failed because you do not have access to this action.'));
                             } else {
                                 echo '<p>';
                                 echo __('Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.').' <b>'.__('Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).').'</b>';
@@ -1404,7 +1388,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $categories = false;
                                 $category = null;
                                 if (isset($_GET['category'])) {
-                                    $category = $_GET['category'];
+                                    $category = $_GET['category'] ?? '';
                                 }
 
 
@@ -1431,7 +1415,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $rowFilter->addSelect('category')->fromQuery($pdo, $sql)->selected($category)->placeholder();
 
                                     $rowFilter = $form->addRow();
-                                        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
+                                        $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
 
                                     echo $form->getOutput();
                                 }
@@ -1447,7 +1431,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
                                 $notes = $pdo->select($sql, $data);
@@ -1513,9 +1496,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Attendance') {
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             include './modules/Attendance/moduleFunctions.php';
                             include './modules/Attendance/src/StudentHistoryData.php';
@@ -1534,18 +1515,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Markbook') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             // Register scripts available to the core, but not included by default
                             $page->scripts->add('chart');
 
                             $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
                             if ($highestAction2 == false) {
-                                echo "<div class='error'>";
-                                echo __('The highest grouped action cannot be determined.');
-                                echo '</div>';
+                                $page->addError(__('The highest grouped action cannot be determined.'));
                             } else {
                                 //Module includes
                                 include './modules/Markbook/moduleFunctions.php';
@@ -1641,7 +1618,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->fromArray(array('*' => __('All Years')))
                                         ->fromQuery($pdo, $sqlSelect, $dataSelect)
                                         ->selected($gibbonSchoolYearID);
-                                
+
                                 if ($enableGroupByTerm == "Y") {
                                     $dataSelect = [];
                                     $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as chainedTo, gibbonSchoolYearTerm.gibbonSchoolYearTermID as value, gibbonSchoolYearTerm.name FROM gibbonSchoolYearTerm JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYearTerm.sequenceNumber";
@@ -1650,7 +1627,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $rowFilter->addSelect('gibbonSchoolYearTermID')
                                             ->fromQueryChained($pdo, $sqlSelect, $dataSelect, 'gibbonSchoolYearID')
                                             ->placeholder()
-                                            ->selected($gibbonSchoolYearTermID);
+                                            ->selected($gibbonSchoolYearTermID ?? '');
                                 }
 
                                 $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
@@ -1669,7 +1646,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
 
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
+                                    $rowFilter->addSearchSubmit($session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
 
                                 echo $form->getOutput();
                                 ?>
@@ -1744,7 +1721,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $resultEntry = $connection2->prepare($sqlEntry);
                                             $resultEntry->execute($dataEntry);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
 
                                         if ($resultEntry->rowCount() > 0) {
@@ -2023,7 +1999,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                                             if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                                             }
 
                                             echo '</table>';
@@ -2039,15 +2015,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Internal Assessment') {
                         if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $highestAction2 = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_view.php', $connection2);
                             if ($highestAction2 == false) {
-                                echo "<div class='error'>";
-                                echo __('The highest grouped action cannot be determined.');
-                                echo '</div>';
+                                $page->addError(__('The highest grouped action cannot be determined.'));
                             } else {
                                 //Module includes
                                 include './modules/Formal Assessment/moduleFunctions.php';
@@ -2063,9 +2035,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'External Assessment') {
                         if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php') == false and isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             //Module includes
                             include './modules/Formal Assessment/moduleFunctions.php';
@@ -2079,26 +2049,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Reports') {
                         if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $highestActionReports = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_view.php', $connection2);
-                            $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+                            $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
                             if ($highestActionReports == 'View by Student') {
                                 $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
                             } else if ($highestActionReports == 'View Reports_myChildren') {
                                 $studentGateway = $container->get(StudentGateway::class);
                                 $children = $studentGateway
-                                    ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
+                                    ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))
                                     ->fetchGroupedUnique();
 
                                 if (!empty($children[$gibbonPersonID])) {
                                     $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
                                 }
                             } else if ($highestActionReports == 'View Reports_mine') {
-                                $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+                                $gibbonPersonID = $session->get('gibbonPersonID');
                                 $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
                             }
 
@@ -2187,9 +2155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Individual Needs') {
                         if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             //Edit link
                             if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == true) {
@@ -2203,9 +2169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled');
                             if ($statusTable == false) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed due to a database error.');
-                                echo '</div>';
+                                $page->addError(__('Your request failed due to a database error.'));
                             } else {
                                 echo $statusTable;
                             }
@@ -2239,6 +2203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 while ($rowDetail = $resultDetail->fetch()) {
                                     echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
                                     if ($rowDetail['email'] != '') {
+                                        $rowDetail['email'] = filter_var(trim($rowDetail['email']), FILTER_SANITIZE_EMAIL);
                                         echo htmlPrep(' <'.$rowDetail['email'].'>');
                                     }
                                     echo '</li>';
@@ -2255,7 +2220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $rowIN = $pdo->select($sqlIN, $dataIN)->fetch();
 
                             if (empty($rowIN)) {
-                                echo Format::alert(__('There are no records to display.'));
+                                echo $page->getBlankSlate();
                             } else {
                                 echo "<div style='font-weight: bold'>".__('Targets').'</div>';
                                 echo '<p>'.$rowIN['targets'].'</p>';
@@ -2278,9 +2243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Library Borrowing') {
                         if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             //Print borrowing record
                             $libraryGateway = $container->get(LibraryReportGateway::class);
@@ -2344,9 +2307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
@@ -2366,16 +2327,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($tt != false) {
                                 echo $tt;
                             } else {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                echo $page->getBlankSlate();
                             }
                         }
                     } elseif ($subpage == 'Activities') {
                         if (!(isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent'))) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             echo '<p>';
                             echo __('This report shows the current and historical activities that a student has enrolled in.');
@@ -2393,9 +2350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultYears->execute($dataYears);
 
                             if ($resultYears->rowCount() < 1) {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                echo $page->getBlankSlate();
                             } else {
                                 $yearCount = 0;
                                 while ($rowYears = $resultYears->fetch()) {
@@ -2407,17 +2362,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonSchoolYearTerm ON (FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivity.name";
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role 
+                                        FROM gibbonActivity 
+                                        JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+                                        LEFT JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID) 
+                                        LEFT JOIN gibbonSchoolYearTerm ON (FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)) 
+                                        WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
+                                        AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
+                                        AND gibbonActivity.active='Y' 
+                                        AND gibbonActivityStudent.status <> 'Not Accepted' 
+                                        AND (gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate)
+                                        GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivityStudent.status, gibbonActivity.name";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                         $resultData = $result->fetchAll();
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                        exit;
                                     }
 
                                     $table = DataTable::create('activities');
                                     $table->setTitle($rowYears['name']);
+
+                                    $table->modifyRows(function ($values, $row) {
+                                        if ($values['status'] == 'Pending') $row->addClass('warning');
+                                        if ($values['status'] == 'Waiting List') $row->addClass('warning');
+                                        if ($values['status'] == 'Not Accepted') $row->addClass('dull');
+                                        if ($values['status'] == 'Left') $row->addClass('dull');
+                                        return $row;
+                                    });
+
                                     $table->addColumn('name', __('Activity'));
                                     $table->addColumn('type', __('Type'));
                                     $table->addColumn('date', $dateType == "Date" ? __('Dates') : __('Term'))
@@ -2442,15 +2414,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     } elseif ($subpage == 'Homework') {
                         if (!(isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') or isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php'))) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             $role = $session->get('gibbonRoleIDCurrentCategory');
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
                             // DEADLINES
-                            $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'viewableStudents' : 'viewableParents')->fetchAll();
+                            $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'viewableStudents' : 'viewableParents')->fetchAll();
 
                             echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                                 'gibbonPersonID' => $gibbonPersonID,
@@ -2462,20 +2432,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Planner/src/Tables/HomeworkTable.php';
                             $page->scripts->add('planner', '/modules/Planner/js/module.js');
 
-                            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'Student' : 'Parent');
+                            $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'Student' : 'Parent');
 
                             echo $table->getOutput();
                         }
                     } elseif ($subpage == 'Behaviour') {
                         if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because you do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             include './modules/Behaviour/moduleFunctions.php';
-
+                            
+                            $highestActionBehaviour = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_view.php', $connection2);
+                            
                             //Print assessments
-                            echo getBehaviourRecord($container, $gibbonPersonID);
+                            if ($highestActionBehaviour == 'View Behaviour Records_all') {
+                                echo getBehaviourRecord($container, $gibbonPersonID);
+                            } else {
+                                echo getBehaviourRecord($container, $gibbonPersonID, $session->get('gibbonPersonID'));
+                            }
                         }
                     }
 
@@ -2483,7 +2457,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if (!empty($hook)) {
                         $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
                         if (empty($rowHook)) {
-                            echo Format::alert(__('There are no records to display.'), 'error');
+                            echo $page->getBlankSlate();
                         } else {
                             $options = unserialize($rowHook['options']);
 

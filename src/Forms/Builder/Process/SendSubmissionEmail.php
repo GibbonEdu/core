@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +33,8 @@ use Gibbon\Http\Url;
 
 class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['parent1email'];
+    protected $requiredFields = ['email', 'parent1email'];
+    protected $requiredFieldLogic = 'ANY';
 
     private $session;
     private $mail;
@@ -83,7 +86,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig('submissionEmailTemplate'));
         $templateData = [
-            'email'                => $formData->get('parent1email'),
+            'email'                => $builder->getConfig('accountEmail'),
             'date'                 => Format::date(date('Y-m-d')),
             'applicationID'        => $builder->getConfig('foreignTableID'),
             'applicationName'      => $builder->getDetail('name'),
@@ -99,7 +102,11 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         ];
 
         // Setup the email
-        $this->mail->AddAddress($formData->get('parent1email'));
+        $this->mail->AddAddress($builder->getConfig('accountEmail'));
+        if ($formData->has('parent1email')) {
+            $this->mail->AddAddress($formData->has('parent1email'));
+        }
+
         $this->mail->setDefaultSender($template->renderSubject($templateData));
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
         

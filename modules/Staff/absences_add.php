@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         'error8' => __('Your request failed.') .' '. __('The specified date is not in the future, or is not a school day.'),
     ]);
 
-    $absoluteURL = $gibbon->session->get('absoluteURL');
+    $absoluteURL = $session->get('absoluteURL');
     $settingGateway = $container->get(SettingGateway::class);
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
@@ -201,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $row = $form->addRow();
         $row->addLabel('notificationList', __('Notify Additional People'))->description(__('Your notification choices are saved and pre-filled for future absences.'));
         $row->addFinder('notificationList')
-            ->fromAjax($gibbon->session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
+            ->fromAjax($session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
             ->selected($notified)
             ->setParameter('resultsLimit', 10)
             ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
@@ -219,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
         $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
-            $row->addYesNo('coverageRequired')->required()->placeholder();
+            $row->addYesNo('coverageRequired')->required()->placeholder()->selected('N');
 
         $form->addRow()->setClass('hidden coverageRequestForm p-0');
 

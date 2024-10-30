@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -63,14 +65,13 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 //Validate Inputs
                 $count = 0;
                 if (is_numeric($_POST['count'])) {
-                    $count = $_POST['count'];
+                    $count = $_POST['count'] ?? '';
                 }
                 $date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 
-                $attachment = $_POST['attachment'] ?? $row['attachment'];
                 //Move attached image  file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
@@ -80,6 +81,9 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                     if (empty($attachment)) {
                         $partialFail = true;
                     }
+                } else {
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                 }
 
                 if ($date == '') {

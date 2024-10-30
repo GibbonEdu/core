@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -69,7 +71,6 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                     }
 
                     if ($result->rowCount() < 1) {
@@ -121,7 +122,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                             $paymentReimbursementStatus = null;
                             $reimbursementComment = '';
                             if (isset($_POST['paymentReimbursementStatus'])) {
-                                $paymentReimbursementStatus = $_POST['paymentReimbursementStatus'];
+                                $paymentReimbursementStatus = $_POST['paymentReimbursementStatus'] ?? '';
                                 if ($paymentReimbursementStatus != 'Requested' and $paymentReimbursementStatus != 'Complete') {
                                     $paymentReimbursementStatus = null;
                                 }

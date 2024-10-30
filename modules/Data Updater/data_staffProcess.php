@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +33,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $address = $_POST['address'] ?? '';
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_staff.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_staff.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.php') == false) {
     $URL .= '&return=error0';
@@ -65,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     }
 
     // Check access to staff record
-    if ($highestAction == 'Update Staff Data_my' && $values['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
+    if ($highestAction == 'Update Staff Data_my' && $values['gibbonPersonID'] != $session->get('gibbonPersonID')) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         return;
@@ -138,12 +140,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $event->setNotificationText(__('A staff data update request has been submitted.'));
         $event->setActionLink('/index.php?q=/modules/Data Updater/data_staff_manage.php');
 
-        $event->sendNotifications($pdo, $gibbon->session);
+        $event->sendNotifications($pdo, $session);
     }
 
     $URLSuccess = $highestAction == 'Update Staff Data_any'
-        ? $gibbon->session->get('absoluteURL')."/index.php?q=/modules/Data Updater/data_staff.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID"
-        : $gibbon->session->get('absoluteURL')."/index.php?q=/modules/Data Updater/data_updates.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID";
+        ? $session->get('absoluteURL')."/index.php?q=/modules/Data Updater/data_staff.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID"
+        : $session->get('absoluteURL')."/index.php?q=/modules/Data Updater/data_updates.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID";
 
     $URLSuccess .= '&return=success0';
     header("Location: {$URLSuccess}");

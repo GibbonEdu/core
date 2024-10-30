@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -35,13 +37,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
     // Proceed!
     $reportArchiveGateway = $container->get(ReportingCriteriaTypeGateway::class);
 
+    $options = [
+        'imageSize' => $_POST['imageSize'] ?? '',
+        'imageQuality' => $_POST['imageQuality'] ?? '',
+    ];
+    
     $data = [
         'name'           => $_POST['name'] ?? '',
         'active'         => $_POST['active'] ?? '',
         'valueType'      => $_POST['valueType'] ?? '',
-        'defaultValue'   => $_POS['defaultValue'] ?? null,
+        'defaultValue'   => $_POST['defaultValue'] ?? null,
         'characterLimit' => $_POST['characterLimit'] ?? null,
         'gibbonScaleID'  => $_POST['gibbonScaleID'] ?? null,
+        'options'        => json_encode($options),
     ];
 
     // Validate the required values are present

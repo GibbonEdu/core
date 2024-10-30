@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -51,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
 
             if ($name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
@@ -78,9 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
                     //Sort out logo
                     $imageFail = false;
-                    $logo = $_POST['logo'];
                     if (!empty($_FILES['file1']['tmp_name'])) {
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
@@ -90,6 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                         if (empty($logo)) {
                             $imageFail = true;
                         }
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $logo = empty($_POST['logo']) ? '' : $row['logo'];
                     }
 
                     //Write to database

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         return;
     }
 
-    $form = Form::create('archiveManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_editProcess.php');
+    $form = Form::create('archiveManage', $session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
     $form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
 
@@ -100,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     // Custom Blocks
     $row = $form->addRow();
-    $customBlocks = $row->addCustomBlocks('milestones', $gibbon->session)
+    $customBlocks = $row->addCustomBlocks('milestones', $session)
         ->fromTemplate($blockTemplate)
         ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true))
         ->placeholder(__('Milestones will be listed here...'))
@@ -109,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     // Add existing milestones
     $milestones = json_decode($values['milestones'], true);
     foreach ($milestones ?? [] as $index => $milestone) {
-        $milestone['milestoneDate'] = Format::date($milestone['milestoneDate']);
+        $milestone['milestoneDate'] = $milestone['milestoneDate'];
         $customBlocks->addBlock($index, $milestone);
     }
 
@@ -121,14 +123,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     echo $form->getOutput();
 }
-?>
-
-<script>
-$(document).ready(function () {
-    $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
-});
-$(document).on('click', '.addBlock', function () {
-    $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
-});
-</script>
-

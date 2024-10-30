@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +32,8 @@ use Gibbon\Services\Format;
 
 class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['parent1email'];
+    protected $requiredFields = ['email', 'parent1email', 'parent2email'];
+    protected $requiredFieldLogic = 'ANY';
 
     private $session;
     private $mail;
@@ -122,6 +125,6 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 
         // Send the email
         $sent = $this->mail->Send();
-        $formData->setResult($type.'Sent', $sent);
+        $formData->setResult($type.$prefix.'Sent', $sent);
     }
 }

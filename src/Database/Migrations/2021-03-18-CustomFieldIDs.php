@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,6 +45,8 @@ class CustomFieldIDs extends Migration
         $partialFail = false;
 
         $updateIDs = function ($fieldData) {
+            if (empty($fieldData) || !is_array($fieldData)) return [];
+
             return array_reduce(array_keys($fieldData), function ($group, $key) use (&$fieldData) {
                 $group[str_pad($key, 4, '0', STR_PAD_LEFT)] = $fieldData[$key];
                 return $group;

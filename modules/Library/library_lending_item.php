@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 } else {
     //Proceed!
     //Check if gibbonLibraryItemID specified
-    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
+    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -46,14 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $result->execute($data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
+          $page->addError(__('The specified record does not exist.'));
         } else {
             //Let's go!
             $row = $result->fetch();
 
-            $overdue = (strtotime(date('Y-m-d')) - strtotime($row['returnExpected'])) / (60 * 60 * 24);
+            $overdue = !empty($row['returnExpected']) ? (strtotime(date('Y-m-d')) - strtotime($row['returnExpected'])) / (60 * 60 * 24) : 0;
             if ($overdue > 0 and $row['status'] == 'On Loan') {
                 echo "<div class='error'>";
                 echo sprintf(__('This item is now %1$s%2$s days overdue'), '<u><b>', $overdue).'</b></u>.';
@@ -62,19 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $name = '';
             if (isset($_GET['name'])) {
-                $name = $_GET['name'];
+                $name = $_GET['name'] ?? '';
             }
             $gibbonLibraryTypeID = '';
             if (isset($_GET['gibbonLibraryTypeID'])) {
-                $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'];
+                $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
             }
             $gibbonSpaceID = '';
             if (isset($_GET['gibbonSpaceID'])) {
-                $gibbonSpaceID = $_GET['gibbonSpaceID'];
+                $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
             }
             $status = '';
             if (isset($_GET['status'])) {
-                $status = $_GET['status'];
+                $status = $_GET['status'] ?? '';
             }
 
             if ($name != '' or $gibbonLibraryTypeID != '' or $gibbonSpaceID != '' or $status != '') {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -48,10 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     }
 
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
+    $values['templateFile'] = str_replace('.twig.html', '_copy.twig.html', $values['templateFile']);
 
-    $form = Form::create('manageComponents', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_components_duplicateProcess.php');
+    $form = Form::create('manageComponents', $session->get('absoluteURL').'/modules/Reports/templates_assets_components_duplicateProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID);
 
     $row = $form->addRow();
@@ -59,7 +62,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         $row->addTextField('templateFileDestination')
             ->maxLength(255)
             ->required()
-            ->setValue(str_replace('reports/', '', $values['templateFile']));
+            ->setValue(basename($values['templateFile']))
+            ->prepend(dirname($values['templateFile']).'/')
+            ->addValidation(
+                'Validate.Format',
+                'pattern: /.*\.twig\.html/, failureMessage: "'.__('Invalid File Type').'"'
+            );
 
     $row = $form->addRow();
         $row->addFooter();

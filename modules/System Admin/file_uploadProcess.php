@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,9 +29,9 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_upload.php&step=3';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/file_upload.php&step=3';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -43,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
     $gibbonCustomFieldID = $_POST['gibbonCustomFieldID'] ?? '';
     $overwrite = $_POST['overwrite'] ?? 'N';
+    $deleteFiles = $_POST['deleteFiles'] ?? 'N';
     $zoom = $_POST['zoom'] ?? '100';
     $focalX = $_POST['focalX'] ?? '50';
     $focalY = $_POST['focalY'] ?? '50';
@@ -65,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         exit;
     }
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     if (!is_file($absolutePath.'/'.$zipFile)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -114,10 +117,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             $existingFile = $userData['image_240'];
         }
 
-        // Optionally overwrite exiting files or skip them
-        if (!empty($existingFile) && $overwrite == 'Y') {
+        // Optionally overwrite and delete exiting files
+        if (!empty($existingFile) && $overwrite == 'Y' && $deleteFiles == 'Y') {
             unlink($absolutePath.'/'.$existingFile);
-        } elseif (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
+        }
+        
+        // Skip uploading files if the file exists and overwrite is not on
+        if (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
             unlink($file['absolutePath']);
             continue;
         }

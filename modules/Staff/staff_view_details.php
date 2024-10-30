@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,17 +44,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     $highestActionManage = getHighestGroupedAction($guid, "/modules/Staff/staff_manage.php", $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonPersonID = str_pad($gibbonPersonID, 10, 0, STR_PAD_LEFT);
 
         if ($gibbonPersonID == '' ) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $hookGateway = $container->get(HookGateway::class);
             $search = $_GET['search'] ?? '';
@@ -112,13 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
 
@@ -135,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     $subpage = null;
                     if (isset($_GET['subpage'])) {
-                        $subpage = $_GET['subpage'];
+                        $subpage = $_GET['subpage'] ?? '';
                     }
                     if ($subpage == '' and $hook == '') {
                         $subpage = 'Overview';
@@ -242,11 +237,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo __('Timetable');
                         echo '</h4>';
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
+                            $table = DataTable::createDetails('timetable');
+
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                                echo '</div>';
+                                $table->addHeaderAction('edit', __('Edit'))
+                                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                    ->addParam('type', 'Staff')
+                                    ->addParam('allUsers', '')
+                                    ->displayLabel();
                             }
+
+                            if ($gibbonPersonID == $session->get('gibbonPersonID')) {
+                                $table->addHeaderAction('export', __('Export'))
+                                    ->modalWindow()
+                                    ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->setIcon('download')
+                                    ->displayLabel()
+                                    ->prepend(' | ');
+                            }
+
+                            echo $table->render(['' => '']);
 
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = '';
@@ -255,15 +268,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                             $gibbonTTID = null;
                             if (isset($_GET['gibbonTTID'])) {
-                                $gibbonTTID = $_GET['gibbonTTID'];
+                                $gibbonTTID = $_GET['gibbonTTID'] ?? '';
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search#timetable");
                             if ($tt != false) {
                                 echo $tt;
                             } else {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             }
                         }
                     } elseif ($subpage == 'Personal') {
@@ -307,12 +318,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
 
                         $col->addColumn('email', __('Email'))
-                            ->format(Format::using('link', ['mailto:' . $row['email'], 'email']));
+                            ->format(Format::using('link', $row['email']));
 
                         $col->addColumn('emailAlternate', __('Alternate Email'))
                             ->format(function($row) {
                                 if ($row['emailAlternate'] != '') {
-                                    return Format::link('mailto:' . $row['emailAlternate'], $row['emailAlternate']);
+                                    return Format::link($row['emailAlternate']);
                                 }
                                 return '';
                             });
@@ -382,11 +393,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         echo $page->fetchFromTemplate('profile/family.twig.html', [
                             'families' => $families,
+                            'fullDetails' => false,
                         ]);
                     } elseif ($subpage == 'Facilities') {
                         $staffFacilityGateway = $container->get(StaffFacilityGateway::class);
                         $criteria = $staffFacilityGateway->newQueryCriteria();
-                        $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
+                        $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                         $table = DataTable::create('facilities');
 
@@ -400,9 +412,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo $table->render($facilities);
                     } elseif ($subpage == 'Emergency Contacts') {
                         if ($highestActionManage != 'Manage Staff_confidential') {
-                            echo "<div class='error'>";
-                            echo __('You do not have access to this action.');
-                            echo '</div>';
+                            $page->addError(__('You do not have access to this action.'));
                         }
                         else {
                             if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
@@ -556,9 +566,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
-                            echo "<div class='error'>";
-                            echo __('The selected record does not exist, or you do not have access to it.');
-                            echo '</div>';
+                            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 echo "<div class='linkTop'>";
@@ -573,15 +581,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                             $gibbonTTID = null;
                             if (isset($_GET['gibbonTTID'])) {
-                                $gibbonTTID = $_GET['gibbonTTID'];
+                                $gibbonTTID = $_GET['gibbonTTID'] ?? '';
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search");
                             if ($tt != false) {
                                 echo $tt;
                             } else {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             }
                         }
                     }
@@ -590,7 +596,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     if (!empty($hook)) {
                         $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
                         if (empty($rowHook)) {
-                            echo Format::alert(__('There are no records to display.'), 'error');
+                            echo $page->getBlankSlate();
                         } else {
                             $options = unserialize($rowHook['options']);
 

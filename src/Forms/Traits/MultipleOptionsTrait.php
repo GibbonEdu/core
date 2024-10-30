@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -53,7 +55,7 @@ trait MultipleOptionsTrait
             $pieces = str_getcsv($value);
 
             foreach ($pieces as $piece) {
-                $piece = trim($piece);
+                $piece = trim($piece ?? '');
                 $this->options[$piece] = $piece;
             }
         }
@@ -82,12 +84,12 @@ trait MultipleOptionsTrait
         } elseif (array_values($values) === $values) {
             // Convert non-associative array and trim values
             foreach ($values as $value) {
-                $this->options[trim(strval($value))] = (!is_array($value))? trim($value) : $value;
+                $this->options[trim(strval($value))] = !is_array($value)? trim($value ?? '') : $value;
             }
         } else {
             // Trim keys and values for associative array
             foreach ($values as $key => $value) {
-                $this->options[trim($key)] = (!is_array($value))? trim($value) : $value;
+                $this->options[trim($key ?? '')] = !is_array($value)? trim($value ?? '') : $value;
             }
         }
 
@@ -187,7 +189,7 @@ trait MultipleOptionsTrait
         foreach ($options as $option) {
             $option = is_array($option) ? 
                 array_map(function ($item) {
-                    return is_string($item) ? trim($item) : $item;
+                    return is_string($item) ? trim($item ?? '') : $item;
                 }, $option) 
                 : $option;
 

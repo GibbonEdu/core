@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
-    
+
     // COVERAGE DATA
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
@@ -58,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
     // Translated array of months in the current school year
     foreach ($dateRange as $monthDate) {
-        $months[$monthDate->format('Y-m-d')] = Format::dateReadable($monthDate->format('Y-m-d'), '%B %Y');
+        $months[$monthDate->format('Y-m-d')] = Format::monthName($monthDate->format('Y-m-d')).' '.$monthDate->format('Y');
     }
 
     // Setup the date range used for this report
@@ -71,10 +73,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     } else {
         $dateStart = new DateTime($schoolYear['firstDay']);
     }
-    
+
     // Get all substitutes
+    $status = $_GET['status'] ?? 'Full';
     $criteria = $substituteGateway->newQueryCriteria()
         ->filterBy('allStaff', $internalCoverage == 'Y')
+        ->filterBy('status', $status == 'Full' ? $status : '')
         ->sortBy(['active', 'surname', 'preferredName'])
         ->fromPOST();
 
@@ -94,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         $subsByID = array_map(function ($sub) {
             return $sub['gibbonPersonID'];
         }, $substitutes->toArray());
-        
+
         $row = $form->addRow()->addClass('substitutes');
             $row->addLabel('gibbonPersonID', __('Substitute'));
             $row->addSelectUsersFromList('gibbonPersonID', $subsByID)
@@ -106,11 +110,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             $row->addSelect('month')->fromArray(['' => __('All')])->fromArray($months)->selected($month);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session);
+                $row->addLabel('Status', __('All Staff'))->description(__('Include all staff, regardless of status and current employment.'));
+                $row->addCheckbox('status')->setValue('on')->checked($status);
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
-    
+
 
     if (!empty($gibbonPersonID)) {
         // COVERAGE SUMMARY BY SUBSTITUTE
@@ -120,10 +128,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             ->filterBy('dateEnd', $dateEnd->format('Y-m-d'))
             ->fromPOST('staffCoverage'.$gibbonPersonID);
 
-        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonSchoolYearID, $gibbonPersonID, false);
 
         // DATA TABLE
-        $table = ReportTable::createPaginated('staffCoverage'.$gibbonPersonID, $criteria)->setViewMode($viewMode, $gibbon->session);
+        $table = ReportTable::createPaginated('staffCoverage'.$gibbonPersonID, $criteria)->setViewMode($viewMode, $session);
         $table->setTitle(__('Report'));
         $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 
@@ -145,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             ->width('20%')
             ->sortable(['absence.surname', 'absence.preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);
@@ -178,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
         });
 
         // DATA TABLE
-        $table = ReportTable::createPaginated('staffCoverage', $criteria)->setViewMode($viewMode, $gibbon->session);
+        $table = ReportTable::createPaginated('staffCoverage', $criteria)->setViewMode($viewMode, $session);
         $table->setTitle(__('Report'));
         $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 
@@ -200,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
         $count = 0;
         foreach ($dateRange as $monthDate) {
-            $table->addColumn('month'.$count, Format::dateReadable($monthDate, '%b'))->description(Format::dateReadable($monthDate, '%Y'))
+            $table->addColumn('month'.$count, Format::monthName($monthDate, true))->description(Format::date($monthDate, 'Y'))
                 ->notSortable()
                 ->format(function ($sub) use ($monthDate) {
                     $sum =  array_sum($sub['coverage'][$monthDate->format('Y-m')] ?? []);

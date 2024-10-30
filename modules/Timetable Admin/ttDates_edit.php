@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
         ->add(__('Edit Days in Date'));
 
     //Check if gibbonSchoolYearID and dateStamp specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $dateStamp = $_GET['dateStamp'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $dateStamp = $_GET['dateStamp'] ?? '';
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -50,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('dateStamp', $dateStamp)
                 ->displayLabel()
-                ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_add.php');
+                ->setURL('/modules/' . $session->get('module') . '/ttDates_edit_add.php');
 
         $table->addColumn('ttName', __('Timetable'));
         $table->addColumn('dayName', __('Day'));
@@ -58,9 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('dateStamp', $dateStamp)
                 ->addParam('gibbonTTDayID')
-                ->format(function ($subcategory, $actions) use ($gibbon) {
+                ->format(function ($subcategory, $actions) use ($session) {
                     $actions->addAction('delete', __('Delete'))
-                            ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_delete.php');
+                            ->setURL('/modules/' . $session->get('module') . '/ttDates_edit_delete.php');
                 });
 
         echo $table->render($result->toDataSet());

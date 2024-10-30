@@ -8,12 +8,13 @@ $I->amOnModulePage('User Admin', 'userSettings.php');
 $originalUserSettings = $I->grabAllFormValues();
 
 $newUserSettings = array_replace($originalUserSettings, array(
-    'nationality'     => 'Nationality 1, Nationality 2, Nationality 3',
-    'ethnicity'       => 'Ethnicity 1, Ethnicity 2, Ethnicity 3',
-    'religions'       => 'Religion 1, Religion 2, Religion 3',
+    'nationality'     => 'Nationality 1,Nationality 2,Nationality 3',
+    'ethnicity'       => 'Ethnicity 1,Ethnicity 2,Ethnicity 3',
+    'religions'       => 'Religion 1,Religion 2,Religion 3',
     'privacy'         => 'Y',
     'privacyBlurb'    => 'Privacy Blurb Test',
-    'privacyOptions'  => 'Privacy 1, Privacy 2, Privacy 3',
+    'privacyOptions'  => 'Privacy 1,Privacy 2,Privacy 3',
+    'privacyOptionVisibility' => 'Y',
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');
@@ -57,7 +58,7 @@ $editFormValues = array(
     'preferredName'             => 'Student',
     'officialName'              => 'Student A. TestUser',
     'nameInCharacters'          => 'TM',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
 
     'emergency1Name'            => 'Emergency Person 1',
     'emergency1Relationship'    => 'Doctor',
@@ -151,7 +152,7 @@ $editFormValues = array(
     'preferredName'             => 'Student',
     'officialName'              => 'Student B. TestUser',
     'nameInCharacters'          => 'TM',
-    'dob'                       => '30/01/2001',
+    'dob'                       => '2001-01-01',
 
     'emergency1Name'            => 'Emergency Person 1',
     'emergency1Relationship'    => 'Doctor',

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -177,7 +179,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (\PDOException $e) {
-                    $plannerOutput .= "<div class='error'>".$e->getMessage().'</div>';
                 }
                 if ($result->rowCount() > 0) {
                     $classes = true;
@@ -292,7 +293,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $resultEntry = $connection2->prepare($sqlEntry);
                 $resultEntry->execute($dataEntry);
             } catch (\PDOException $e) {
-                $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultEntry->rowCount() > 0) {
                 $showParentAttainmentWarning = $this->settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
@@ -475,7 +475,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $resultSub = $connection2->prepare($sqlSub);
                             $resultSub->execute($dataSub);
                         } catch (\PDOException $e) {
-                            $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultSub->rowCount() != 1) {
                             $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: left'>";
@@ -491,7 +490,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                                 $resultWork = $connection2->prepare($sqlWork);
                                 $resultWork->execute($dataWork);
                             } catch (\PDOException $e) {
-                                $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                             }
                             if ($resultWork->rowCount() > 0) {
                                 $rowWork = $resultWork->fetch();
@@ -619,7 +617,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $resultYears = $connection2->prepare($sqlYears);
                 $resultYears->execute($dataYears);
             } catch (\PDOException $e) {
-                $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($resultYears->rowCount() < 1) {
@@ -636,7 +633,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (\PDOException $e) {
-                        $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                     }
 
                     if ($result->rowCount() < 1) {
@@ -683,7 +679,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $activitiesOutput .= $row['name'];
                             $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
-                            $activitiesOutput .= trim($row['type']);
+                            $activitiesOutput .= trim($row['type'] ?? '');
                             $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
                             if ($dateType != 'Date') {
@@ -712,7 +708,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                                     $resultSlots = $connection2->prepare($sqlSlots);
                                     $resultSlots->execute($dataSlots);
                                 } catch (\PDOException $e) {
-                                    $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                                 }
                                 $count = 0;
                                 while ($rowSlots = $resultSlots->fetch()) {
@@ -828,7 +823,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
 
-        if (!isset($_GET['tab']) && !is_null($parentDashboardDefaultTabCount)) {
+        if (!isset($_GET['tab']) && !empty($parentDashboardDefaultTabCount)) {
             $defaultTab = $parentDashboardDefaultTabCount-1;
         }
         $return .= "<script type='text/javascript'>";

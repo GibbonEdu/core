@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,7 +59,6 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $return .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($result->rowCount() < 1) {
@@ -430,13 +431,15 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
         $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
         $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
 
+        $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
         } else {
             if ($row['status'] != 'Requested') { //Finished? Return
                 return true;
             } else { //Not finished
-                $notificationText = sprintf(__('Someone has requested expense approval for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                $notificationText = __('{person} has requested expense approval for {title} in budget {budgetName}.', ['person' => $personName, 'title' => $row['title'], 'budgetName' => $row['budget']]);
 
                 if ($row['statusApprovalBudgetCleared'] == 'N') { //Notify budget holders (e.g. access Full)
                     //Get Full budget people, and notify them
@@ -539,7 +542,6 @@ function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetI
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo $e->getMessage();
     }
 
     $count = 0;
@@ -567,7 +569,6 @@ function getBudgets($connection2)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo $e->getMessage();
     }
 
     $count = 0;
@@ -840,7 +841,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultParents = $connection2->prepare($sqlParents);
                 $resultParents->execute($dataParents);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultParents->rowCount() < 1) {
                 $return .= "<div class='warning'>".__('There are no family members available to send this receipt to.').'</div>';
@@ -907,7 +907,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultSched = $connection2->prepare($sqlSched);
                 $resultSched->execute($dataSched);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultSched->rowCount() == 1) {
                 $rowSched = $resultSched->fetch();
@@ -965,7 +964,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $resultFees = $connection2->prepare($sqlFees);
             $resultFees->execute($dataFees);
         } catch (PDOException $e) {
-            $return .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";
@@ -1176,7 +1174,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultParents = $connection2->prepare($sqlParents);
                 $resultParents->execute($dataParents);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultParents->rowCount() < 1) {
                 $return .= "<div class='warning'>".__('There are no family members available to send this receipt to.').'</div>';
@@ -1234,7 +1231,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= __($row['status']);
         } else {
             $paymentFail = false;
-            if (is_numeric($receiptNumber) == false) {
+            if (is_numeric($receiptNumber) == false || $receiptNumber < 0) {
                 $paymentFail = true;
             } else {
                 try {
@@ -1244,7 +1241,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $resultPayment->execute($dataPayment);
                 } catch (PDOException $e) {
                     $paymentFail = true;
-                    $return .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultPayment->rowCount() != 1) {
@@ -1270,7 +1266,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $resultSched = $connection2->prepare($sqlSched);
                 $resultSched->execute($dataSched);
             } catch (PDOException $e) {
-                $return .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultSched->rowCount() == 1) {
                 $rowSched = $resultSched->fetch();
@@ -1324,7 +1319,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $resultFees = $connection2->prepare($sqlFees);
             $resultFees->execute($dataFees);
         } catch (PDOException $e) {
-            $return .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";

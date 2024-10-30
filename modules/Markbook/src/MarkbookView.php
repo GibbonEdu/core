@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -58,6 +60,7 @@ class MarkbookView
     protected $externalAssessmentFields;
     protected $personalizedTargets;
 
+    
     /**
      * Row data from gibbonMarkbookWeight
      * @var array
@@ -70,6 +73,12 @@ class MarkbookView
      */
     protected $weightedAverages;
 
+    /**
+     * Holds the sums for total and cumulative raw values from markbookEntry
+     * @var array
+     */
+    protected $rawAverages;
+    
     /**
      * SQL statements to be appended to the query to filter the current view
      * @var array
@@ -124,11 +133,12 @@ class MarkbookView
      * @return   void
      */
     public function __construct(Core $gibbon, Connection $pdo, $gibbonCourseClassID, SettingGateway $settingGateway)
-    {
+    {   
+        global $session;
         $this->pdo = $pdo;
 
         $this->gibbonCourseClassID = $gibbonCourseClassID;
-        $this->gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $this->gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
         $this->settingGateway = $settingGateway;
 
         // Preload Gibbon settings - we check them a lot
@@ -770,7 +780,6 @@ class MarkbookView
             $sql = 'SELECT type, description, weighting, reportable, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
             $resultWeights = $this->pdo->select($sql, $data);
         } catch (\PDOException $e) {
-            echo "<div class='error'>" . $e->getMessage() . '</div>';
         }
 
         if ($resultWeights->rowCount() > 0) {
@@ -810,7 +819,7 @@ class MarkbookView
         if ($result->rowCount() > 0) {
             while ($entry = $result->fetch()) {
                 // Exclude incomplete values -- maybe make this a setting later?
-                if ($entry['attainmentValue'] == 'Incomplete' || stripos($entry['attainmentValue'], 'Inc') !== false) {
+                if (!is_numeric(rtrim($entry['attainmentValue'], "%"))) {
                     continue;
                 }
 

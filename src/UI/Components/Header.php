@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -71,10 +73,16 @@ class Header
         $criteria = $this->notificationGateway->newQueryCriteria();
         $notifications = $this->notificationGateway->queryNotificationsByPerson($criteria, $this->session->get('gibbonPersonID'), 'New');
 
+        $intervalStaff = $this->settingGateway->getSettingByScope('System', 'notificationIntervalStaff');
+        $intervalStaff = (is_numeric($intervalStaff) and $intervalStaff >= 10000 and $intervalStaff <= 1000000) ? $intervalStaff : 10000 ;
+
+        $intervalOther = $this->settingGateway->getSettingByScope('System', 'notificationIntervalOther');
+        $intervalOther = (is_numeric($intervalOther) and $intervalOther >= 10000 and $intervalOther <= 1000000) ? $intervalOther : 60000 ;
+
         $tray['notifications'] = [
             'url'      => Url::fromRoute('notifications')->withQueryParam('sidebar', 'false'),
             'count'    => $notifications->count(),
-            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? 10000 : 60000,
+            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? $intervalStaff : $intervalOther,
         ];
 
         // Alarm
@@ -170,6 +178,8 @@ class Header
 
         $messageWallLatestPost = $this->messengerGateway->getRecentMessageWallTimestamp();
 
+        $houseLogo = file_exists($this->session->get('absolutePath').'/'.$this->session->get('gibbonHouseIDLogo')) ? $this->session->get('gibbonHouseIDLogo') : '';
+
         return [
             'url'           => $profileURL ?? '',
             'name'          => $this->session->get('preferredName').' '.$this->session->get('surname'),
@@ -177,7 +187,7 @@ class Header
             'roleCategory'  => $this->session->get('gibbonRoleIDCurrentCategory'),
             'image_240'     => $this->session->get('image_240'),
             'houseName'     => $this->session->get('gibbonHouseIDName'),
-            'houseLogo'     => $this->session->get('gibbonHouseIDLogo'),
+            'houseLogo'     => $houseLogo,
             'messengerRead' => strtotime((string) $this->session->get('messengerLastRead')) >= $messageWallLatestPost,
         ];
     }

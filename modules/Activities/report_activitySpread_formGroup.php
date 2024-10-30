@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -89,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     });
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('activitySpread_formGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('activitySpread_formGroup', $criteria)->setViewMode($viewMode, $session);
 
     $table->setTitle(__('Activity Spread by Form Group'));
 

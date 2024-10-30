@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,9 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     echo '</h3>';
 
     //Get current filter values
-    $tags = (isset($_REQUEST['tag']))? trim($_REQUEST['tag']) : null;
+    $tags = isset($_REQUEST['tag'])? trim($_REQUEST['tag']) : '';
     $tags = preg_replace('/[^a-zA-Z0-9-_, \']/', '', $tags);
-    $tagsArray = (!empty($tags))? explode(',', $tags) : array();
+    $tagsArray = !empty($tags)? explode(',', $tags) : [];
 
     $category = (isset($_REQUEST['category']))? trim($_REQUEST['category']) : null;
     $purpose = (isset($_REQUEST['purpose']))? trim($_REQUEST['purpose']) : null;
@@ -77,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -97,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $table = DataTable::createPaginated('resources', $criteria);
     $table->setTitle(__('View'));
         $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
+        ->setURL('/modules/' .$session->get('module') . '/resources_manage_add.php')
         ->displayLabel();
         
     $table->addColumn('name', __('Name'))

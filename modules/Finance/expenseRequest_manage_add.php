@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
     $urlParams = compact('gibbonFinanceBudgetCycleID');
 
@@ -41,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $page->return->addReturns(['success1' => __('Your request was completed successfully, but notifications could not be sent out.')]);
 
     //Check if gibbonFinanceBudgetCycleID specified
-    $status2 = $_GET['status2'];
-    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+    $status2 = $_GET['status2'] ?? '';
+    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
     if ($gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -57,9 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
             }
         }
         if ($budgetsAccess == false) {
-            echo "<div class='error'>";
-            echo __('You do not have Full or Write access to any budgets.');
-            echo '</div>';
+            $page->addError(__('You do not have Full or Write access to any budgets.'));
         } else {
             //Get and check settings
             $settingGateway = $container->get(SettingGateway::class);
@@ -67,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
             $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
             $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
-                echo "<div class='error'>";
-                echo __('An error has occurred with your expense and budget settings.');
-                echo '</div>';
+                $page->addError(__('An error has occurred with your expense and budget settings.'));
             } else {
                 //Check if there are approvers
                 try {
@@ -78,13 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                 }
 
                 if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('An error has occurred with your expense and budget settings.');
-                    echo '</div>';
+                    $page->addError(__('An error has occurred with your expense and budget settings.'));
                 } else {
                     //Ready to go!
                     if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {

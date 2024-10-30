@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +31,7 @@ $type = $_POST['type'] ?? '';
 $gibbonReportingCycleIDList = !empty($_POST['gibbonReportingCycleIDList'])? explode(',', $_POST['gibbonReportingCycleIDList']) : [];
 $notificationText = $_POST['notificationText'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php&type='.$type;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php&type='.$type;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.php') == false) {
     $URL .= '&return=error0';

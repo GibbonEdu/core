@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -36,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 
     $data = [
-        'gibbonSchoolYearID'    => $gibbon->session->get('gibbonSchoolYearID'),
+        'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
         'gibbonYearGroupIDList' => isset($_POST['gibbonYearGroupIDList'])? implode(',', $_POST['gibbonYearGroupIDList']) : null,
         'name'                  => $_POST['name'] ?? '',
         'nameShort'             => $_POST['nameShort'] ?? '',

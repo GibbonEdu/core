@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 } else {
     //Proceed!
     //Check if school year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $urlParams = compact('gibbonSchoolYearID');
 
@@ -34,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
         ->add(__('Manage Fees'),'fees_manage.php', $urlParams)
         ->add(__('Edit Fee'));
 
-    $gibbonFinanceFeeID = $_GET['gibbonFinanceFeeID'];
-    $search = $_GET['search'];
+    $gibbonFinanceFeeID = $_GET['gibbonFinanceFeeID'] ?? '';
+    $search = $_GET['search'] ?? '';
     if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

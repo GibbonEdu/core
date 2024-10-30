@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,16 +35,12 @@ $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'ef
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php') == false) {
     //Access denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         /**
          * @var AlertLevelGateway
@@ -54,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         //Get class variable
         $gibbonCourseClassID = null;
         if (isset($_GET['gibbonCourseClassID'])) {
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
         if ($gibbonCourseClassID == '') {
 
@@ -86,13 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($result->rowCount() != 1) {
                 $page->breadcrumbs->add(__('Write Internal Assessments'));
-                echo "<div class='error'>";
-                echo __('The specified record does not exist or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The specified record does not exist or you do not have access to it.'));
             } else {
                 $row = $result->fetch();
                 $courseName = $row['courseName'] ?? '';
@@ -142,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 } else {
                     $x = null;
                     if (isset($_GET['page'])) {
-                        $x = $_GET['page'];
+                        $x = $_GET['page'] ?? '';
                     }
                     if ($x == '') {
                         $x = 0;
@@ -207,7 +202,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $resultExternalAssessment = $connection2->prepare($sqlExternalAssessment);
                                         $resultExternalAssessment->execute($dataExternalAssessment);
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($resultExternalAssessment->rowCount() >= 1) {
                                         $rowExternalAssessment = $resultExternalAssessment->fetch();

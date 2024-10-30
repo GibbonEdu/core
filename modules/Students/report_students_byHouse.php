@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,17 +27,29 @@ use Gibbon\Domain\School\HouseGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byHouse.php') == false) {
 	//Acess denied
-	echo "<div class='error'>" ;
-		echo __('You do not have access to this action.');
-	echo "</div>" ;
+	$page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $includeUpcoming = $_REQUEST['includeUpcoming'] ?? 'N';
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonYearGroupIDList = explode(',', $_GET['gibbonYearGroupIDList'] ?? '');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students by House'));
+
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_students_byHouse.php");
+
+        $row = $form->addRow();
+            $row->addLabel('includeUpcoming', __('Include Upcoming Students?'));
+            $row->addCheckbox('includeUpcoming')->setValue('Y')->checked($includeUpcoming);
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSearchSubmit($session);
+
+        echo $form->getOutput();
     }
 
     $houseGateway = $container->get(HouseGateway::class);
@@ -44,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         ->sortBy(['gibbonHouse.name'])
         ->fromPOST();
 
-    $houseCounts = $houseGateway->queryStudentHouseCountByYearGroup($criteria, $gibbonSchoolYearID);
+    $houseCounts = $houseGateway->queryStudentHouseCountByYearGroup($criteria, $gibbonSchoolYearID, $includeUpcoming);
     $houses = [];
 
     // Group each year group result by house, and total up houses as we go
@@ -71,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $yearGroupCounts[] = $houses + ['yearGroupName' => __('Total')];
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsByHouse', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsByHouse', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Students by House'));
     $table->modifyRows(function ($house, $row) {
         if ($house['yearGroupName'] == __('Total')) $row->addClass('dull');

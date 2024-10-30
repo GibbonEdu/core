@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,18 +31,18 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 //Setup variables
 $output = '';
-$id = $_GET['id'];
+$id = $_GET['id'] ?? '';
 $action = null;
 if (isset($_GET['action'])) {
-    $action = $_GET['action'];
+    $action = $_GET['action'] ?? '';
 }
 $category = null;
 if (isset($_GET['category'])) {
-    $category = $_GET['category'];
+    $category = $_GET['category'] ?? '';
 }
 $purpose = null;
 if (isset($_GET['purpose'])) {
-    $purpose = $_GET['purpose'];
+    $purpose = $_GET['purpose'] ?? '';
 }
 $tag = null;
 if (isset($_GET['tag'.$id])) {
@@ -48,12 +50,12 @@ if (isset($_GET['tag'.$id])) {
 }
 $gibbonYearGroupID = null;
 if (isset($_GET['gibbonYearGroupID'])) {
-    $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 }
-$allowUpload = $_GET['allowUpload'];
+$allowUpload = $_GET['allowUpload'] ?? '';
 $alpha = null;
 if (isset($_GET['alpha'])) {
-    $alpha = $_GET['alpha'];
+    $alpha = $_GET['alpha'] ?? '';
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {

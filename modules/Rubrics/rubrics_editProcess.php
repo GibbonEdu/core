@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -73,20 +75,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     header("Location: {$URL}");
                 } else {
                     //Proceed!
-                    $scope = $_POST['scope'];
+                    $scope = $_POST['scope'] ?? '';
                     $gibbonDepartmentID = null;
                     if ($scope == 'Learning Area') {
-                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
                     }
-                    $name = $_POST['name'];
-                    $active = $_POST['active'];
-                    $category = $_POST['category'];
-                    $description = $_POST['description'];
+                    $name = $_POST['name'] ?? '';
+                    $active = $_POST['active'] ?? '';
+                    $category = $_POST['category'] ?? '';
+                    $description = $_POST['description'] ?? '';
                     $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList']) ? implode(',', $_POST['gibbonYearGroupIDList']) : '';
                     $gibbonScaleID = null;
                     if (isset($_POST['gibbonScaleID'])) {
                         if ($_POST['gibbonScaleID'] != '') {
-                            $gibbonScaleID = $_POST['gibbonScaleID'];
+                            $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
                         }
                     }
 

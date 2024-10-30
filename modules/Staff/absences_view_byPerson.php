@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     } else {
@@ -121,6 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     $table->modifyRows(function ($absence, $row) {
         if ($absence['status'] == 'Pending Approval') $row->addClass('warning');
         if ($absence['status'] == 'Declined') $row->addClass('dull');
+        if ($absence['status'] == 'Cancelled') $row->addClass('dull');
         return $row;
     });
 
@@ -156,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         ->addParam('gibbonStaffAbsenceID')
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($absence, $actions) use ($canManage, $canRequest, $coverageMode) {
-            $noApprovalRequired = ($coverageMode == 'Requested' && $absence['status'] == 'Approved') || $coverageMode == 'Assigned';
+            $noApprovalRequired = ($coverageMode == 'Requested' && $absence['status'] == 'Approved') || ($coverageMode == 'Assigned' && $absence['status'] != 'Cancelled');
             if ($canRequest && $noApprovalRequired && $absence['dateEnd'] >= date('Y-m-d')) {
                 $actions->addAction('coverage', __('Request Coverage'))
                     ->setIcon('attendance')
@@ -173,6 +176,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Staff/absences_manage_delete.php');
+            }
+            
+            if (($absence['status'] == 'Approved' || $absence['status'] == 'Pending Approval') && date('Y-m-d') <= $absence['dateEnd']) {
+                $actions->addAction('cancel', __('Cancel'))
+                    ->setIcon('iconCross')
+                    ->setURL('/modules/Staff/absences_view_cancel.php');
             }
         });
 

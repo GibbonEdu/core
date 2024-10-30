@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -69,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 //UPDATE STATUS
                 $statuses = array();
                 if (isset($_POST['status'])) {
-                    $statuses = $_POST['status'];
+                    $statuses = $_POST['status'] ?? '';
                 }
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -126,9 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 //Scan through assistants
                 $staff = array();
                 if (isset($_POST['staff'])) {
-                    $staff = $_POST['staff'];
+                    $staff = $_POST['staff'] ?? [];
                 }
-                $comment = $_POST['comment'];
+                $comment = $_POST['comment'] ?? '';
                 if (count($staff) > 0) {
                     foreach ($staff as $t) {
                         //Check to see if person is already registered as an assistant
@@ -195,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                 $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                $event->sendNotifications($pdo, $session);
             }
 
             //DEAL WITH OUTCOME

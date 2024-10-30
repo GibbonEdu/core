@@ -18,9 +18,9 @@ fields:
         args: {filter: date, custom: true, required: true, readonly: [gibbonExternalAssessmentStudentEntry] }
     gibbonPersonID:
         name: "Student"
-        desc: "Username or Email (if unique)"
+        desc: "Username, Student ID or Email (if unique)"
         args: { filter: username, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email|studentID  }
     gibbonExternalAssessmentStudentID:
         name: "Student Assessment ID"
         desc: ""

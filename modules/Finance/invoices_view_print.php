@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,22 +29,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-        $type = $_GET['type'];
+        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+        $type = $_GET['type'] ?? '';
         $gibbonPersonID = null;
         if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         }
 
         if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '' or $gibbonPersonID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             //Confirm access to this student
             try {
@@ -56,12 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultChild->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $rowChild = $resultChild->fetch();
 
@@ -72,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                     $result->execute($data);
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record cannot be found.');
-                    echo '</div>';
+                    $page->addError(__('The specified record cannot be found.'));
                 } else {
                     //Let's go!
                     $row = $result->fetch();
@@ -93,9 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         echo '</h2>';
                         $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, false);
                         if ($invoiceContents == false) {
-                            echo "<div class='error'>";
-                            echo __('An error occurred.');
-                            echo '</div>';
+                            $page->addError(__('An error occurred.'));
                         } else {
                             echo $invoiceContents;
                         }
@@ -118,8 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         $receiptNumber = ($resultReceiptNumber->rowCount()-1) ;
                         $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $receiptNumber);
                         if ($receiptContents == false) {
-                            echo "<div class='error'>";
-                            echo __('An error occurred.');
+                            $page->addError(__('An error occurred.'));
                             echo '</div>';
                         } else {
                             echo $receiptContents;

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,63 +59,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         return;
     }
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php');
+    $form = Form::create('templatesManage', $session->get('absoluteURL') . '/modules/Reports/templates_manage_editProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
 
     $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
-        $row->addTextField('name')->maxLength(90)->required();
+    $row->addLabel('name', __('Name'))->description(__('Must be unique'));
+    $row->addTextField('name')->maxLength(90)->required();
 
     $row = $form->addRow();
-        $row->addLabel('context', __('Context'));
-        $row->addTextField('context')->readonly();
+    $row->addLabel('context', __('Context'));
+    $row->addTextField('context')->readonly();
 
     $stylesheets = $prototypeSectionGateway->selectPrototypeStylesheets();
     $row = $form->addRow();
-        $row->addLabel('stylesheet', __('Stylesheet'));
-        $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+    $row->addLabel('stylesheet', __('Stylesheet'));
+    $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
 
     $fontFamilies = $templateFontGateway->selectFontFamilies();
     $row = $form->addRow();
-        $row->addLabel('fonts', __('Fonts'));
-        $row->addSelect('fonts')
-            ->fromResults($fontFamilies)
-            ->selectMultiple()
-            ->setSize(4)
-            ->selected($config['fonts'] ?? []);
+    $row->addLabel('fonts', __('Fonts'));
+    $row->addSelect('fonts')
+        ->fromResults($fontFamilies)
+        ->selectMultiple()
+        ->setSize(4)
+        ->selected($config['fonts'] ?? []);
 
     $flags = ['000' => __('TCPDF Renderer - Faster, Limited HTML'), '001' => __('mPDF Renderer - Slower, Better HTML Support')];
     $row = $form->addRow();
-        $row->addLabel('flags', __('Renderer'));
-        $row->addSelect('flags')->fromArray($flags)->required();
+    $row->addLabel('flags', __('Renderer'));
+    $row->addSelect('flags')->fromArray($flags)->required();
 
     $form->addRow()->addHeading('Document Setup', __('Document Setup'));
 
     $orientations = ['P' => __('Portrait'), 'L' => __('Landscape')];
     $row = $form->addRow();
-        $row->addLabel('orientation', __('Orientation'));
-        $row->addSelect('orientation')->fromArray($orientations)->required();
+    $row->addLabel('orientation', __('Orientation'));
+    $row->addSelect('orientation')->fromArray($orientations)->required();
 
-    $pageSizes = ['A4' => __('A4'), 'letter' => __('US Letter')];
+    $pageSizes = ['A4' => __('A4'), 'LETTER' => __('US Letter')];
     $row = $form->addRow();
-        $row->addLabel('pageSize', __('Page Size'));
-        $row->addSelect('pageSize')->fromArray($pageSizes)->required();
-
-    $row = $form->addRow();
-        $row->addLabel('margins', __('Margins'));
-        $col = $row->addColumn()->addClass('items-center');
-        $col->addContent('<div class="flex-1 pr-1">X</div>');
-        $col->addNumber('marginX')->decimalPlaces(2)->required();
-        $col->addContent('<div class="flex-1 pr-1 pl-2">Y</div>');
-        $col->addNumber('marginY')->decimalPlaces(2)->required();
+    $row->addLabel('pageSize', __('Page Size'));
+    $row->addSelect('pageSize')->fromArray($pageSizes)->required();
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+    $row->addLabel('margins', __('Margins'));
+    $col = $row->addColumn()->addClass('items-center');
+    $col->addContent('<div class="flex-1 pr-1">X</div>');
+    $col->addNumber('marginX')->decimalPlaces(2)->required();
+    $col->addContent('<div class="flex-1 pr-1 pl-2">Y</div>');
+    $col->addNumber('marginY')->decimalPlaces(2)->required();
+
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSubmit();
 
     $form->loadAllValuesFrom($values);
 
@@ -128,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $table = $container->get(DataTable::class);
     $table->addMetaData('blankSlate', __('There are no sections here yet.'));
 
-    $draggableAJAX = $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_editOrderAjax.php';
+    $draggableAJAX = $session->get('absoluteURL') . '/modules/Reports/templates_manage_editOrderAjax.php';
     $table->addDraggableColumn('gibbonReportTemplateSectionID', $draggableAJAX, [
         'gibbonReportTemplateID' => $gibbonReportTemplateID,
     ]);
@@ -152,12 +154,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         ->addParam('gibbonReportTemplateSectionID')
         ->format(function ($template, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Reports/templates_manage_section_edit.php');
+                ->setURL('/modules/Reports/templates_manage_section_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Reports/templates_manage_section_delete.php');
+                ->setURL('/modules/Reports/templates_manage_section_delete.php');
         });
-    
+
     // BODY
     $bodySections = $templateSectionGateway->querySectionsByType($criteria, $gibbonReportTemplateID, 'Body');
     $bodyTable = clone $table;
@@ -182,9 +184,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $prototypeAdditionalSections = $prototypeSectionGateway->selectPrototypeSections('Additional')->fetchGrouped();
 
     // SETTINGS FORM
-    // $form = Form::create('settings', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
+    // $form = Form::create('settings', $session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
 
-    // $form->addHiddenValue('address', $gibbon->session->get('address'));
+    // $form->addHiddenValue('address', $session->get('address'));
     // $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
 
     // $fonts = ['Helvetica', 'Arial', 'Times New Roman'];
@@ -195,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     // $row = $form->addRow();
     //     $row->addLabel('size', __('Size'));
     //     $row->addNumber('size');
-        
+
     // $row = $form->addRow();
     //     $row->addLabel('color', __('Color'));
     //     $row->addTextField('color');

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,6 +27,7 @@ use Gibbon\View\Components\Breadcrumbs;
 use Gibbon\View\Components\ReturnMessage;
 use Psr\Container\ContainerInterface;
 use Gibbon\View\Components\Navigator;
+use Gibbon\Services\Format;
 
 /**
  * Holds the details for rendering the current page.
@@ -259,12 +262,27 @@ class Page extends View
     }
 
     /**
+     * Returns a message when there are no records to display (but not an error message).
+     *
+     * @param string $text Error message text.
+     */
+    public function getBlankSlate(string $text = null)
+    {
+        return Format::alert($text ?? __('There are no records to display.'), 'message');
+    }
+
+    /**
      * Add user feedback as an error message displayed on this page.
      *
      * @param string $text Error message text.
      */
     public function addError(string $text)
     {
+        // Override to always display the sidebar when pages are inaccessible
+        if ($text == __('You do not have access to this action.') && empty($this['isLoggedIn'])) {
+            $this['showSidebar'] = true;
+        }
+
         $this->addAlert($text, 'error');
     }
 
@@ -306,7 +324,7 @@ class Page extends View
      */
     public function addAlert(string $text, string $context = 'message')
     {
-        $this->alerts[$context][] = strip_tags($text, '<a><b><i><u><strong><br>');
+        $this->alerts[$context][] = strip_tags($text, '<a><b><i><u><strong><br><ul><ol><li>');
     }
 
     /**
@@ -424,7 +442,7 @@ class Page extends View
      * @param string $address
      * @return bool
      */
-    public function isAddressValid($address, bool $strictPHP = false) : bool
+    public function isAddressValid($address, bool $strictPHP = true) : bool
     {
         if ($strictPHP && stripos($address, '.php') === false) {
             return false;

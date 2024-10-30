@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -87,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         // Setup which processes are going to run, based on user-selected checkboxes
         foreach ($processes as $processName => $process) {
             $formBuilder->addConfig(['mode' => 'process', $processName.'Enabled' => $process['enabled'] ?? 'N']);
-            $formData->setResults($process['data'] ?? []);
+            $formData->addResults($process['data'] ?? []);
         }
 
         // Run any edit-related processes
@@ -124,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Validate submitted data - on error, return to the current page
     $validated = $formBuilder->validate($data);
     if (!empty($validated)) {
-        header("Location: {$URL->withReturn('error3')->withQueryParam('invalid', implode(',', $validated))}");
+        header("Location: {$URL->withReturn('warning4')->withQueryParam('invalid', implode(',', $validated))}");
         exit;
     }
 

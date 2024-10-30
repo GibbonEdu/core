@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -9,13 +11,14 @@ TODO: add template variable details.
 -->#}
 
 <!DOCTYPE html>
-<html lang="{{ lang }}" dir="{{ rightToLeft ? 'rtl' : 'ltr' }}">
+<html lang="{{ lang }}" dir="{{ rightToLeft ? 'rtl' : 'ltr' }}" style="scroll-behavior: smooth;">
     <head>
         {% block head %}
         {{ include('head.twig.html') }}
         {% endblock head %}
     </head>
-    <body class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;' : '' }}">
+    <body x-data="{ modalOpen: false, modalType: 'none' }"
+        class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed' : '' }}">
         <a id="top"></a>
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
 
@@ -24,7 +27,7 @@ TODO: add template variable details.
             {% block header %}
                 <div id="header" class="relative flex justify-between items-center">
 
-                    <a id="header-logo" class="block my-4 max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                    <a id="header-logo" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="block my-4 max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
                         <img class="block max-w-full {{ isLoggedIn ? 'h-12' : 'h-20 mt-4 mb-4' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("themes/Default/img/logo.png")|trim('/', 'left') }}" style="max-height:100px;" />
                     </a>
 
@@ -37,7 +40,7 @@ TODO: add template variable details.
 
                         <div class="group relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}">
 
-                            <a href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
+                            <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
                             {% if currentUser.image_240 %}
                                 <img class="w-full -mt-1" src="{{ absoluteURL }}/{{ currentUser.image_240 }}" />
                             {% else %}
@@ -107,15 +110,18 @@ TODO: add template variable details.
                         {{ include('navigation.twig.html') }}
                     {% endif %}
 
-                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} ">
+                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }}">
 
-                        {% block page %}
+                        <div id="content-inner" class="">
 
-                            {{ include('page.twig.html') }}
+                            {% block page %}
 
-                            {{ content|join("\n")|raw }}
-                            
-                        {% endblock %}
+                                {{ include('page.twig.html') }}
+
+                                {{ content|join("\n")|raw }}
+                                
+                            {% endblock %}
+                        </div>
                     </div>
 
                 </div>

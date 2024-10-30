@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
     $step = null;
     if (isset($_GET['step'])) {
-        $step = $_GET['step'];
+        $step = $_GET['step'] ?? '';
     }
     if ($step != 1 and $step != 2 and $step != 3) {
         $step = 1;
@@ -58,16 +60,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if ($nextYearBySession === false) {
-            echo "<div class='error'>";
-            echo __('The next school year cannot be determined, so this action cannot be performed.');
-            echo '</div>';
+            echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
         } else {
 
 
             if (empty($nextYearBySession)) {
-                echo "<div class='error'>";
-                echo __('The next school year cannot be determined, so this action cannot be performed.');
-                echo '</div>';
+                echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
             } else {
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rollover.php&step=2');
 
@@ -89,12 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
         echo __('Step 2');
         echo '</h3>';
 
-        $nextYearID = $_POST['nextYear'];
+        $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
-            echo "<div class='error'>";
-            echo __('The next school year cannot be determined, so this action cannot be performed.');
-            echo '</div>';
+            echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
         } else {
 
                 $dataNext = array('gibbonSchoolYearID' => $nextYearID);
@@ -107,9 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             $nameNext = $rowNext['name'];
             $sequenceNext = $rowNext['sequenceNumber'];
             if ($nameNext == '' or $sequenceNext == '') {
-                echo "<div class='error'>";
-                echo __('The next school year cannot be determined, so this action cannot be performed.');
-                echo '</div>';
+                echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
             } else {
                 echo '<p>';
                 echo sprintf(__('In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext);
@@ -512,9 +506,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
         $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
-            echo "<div class='error'>";
-            echo __('The next school year cannot be determined, so this action cannot be performed.');
-            echo '</div>';
+            echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
         } else {
 
                 $dataNext = array('gibbonSchoolYearID' => $nextYearID);
@@ -527,9 +519,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             $nameNext = $rowNext['name'] ?? '';
             $sequenceNext = $rowNext['sequenceNumber'] ?? '';
             if ($nameNext == '' or $sequenceNext == '') {
-                echo "<div class='error'>";
-                echo __('The next school year cannot be determined, so this action cannot be performed.');
-                echo '</div>';
+                echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
             } else {
                 echo '<h3>';
                 echo __('Step 3');
@@ -549,9 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $lastDay = Format::dateConvert($_POST['nextlastDay'] ?? '');
 
                     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
-                        echo "<div class='error'>";
-                        echo __('Your request failed because your inputs were invalid.');
-                        echo '</div>';
+                        echo Format::alert(__('Your request failed because your inputs were invalid.'), 'error');
                     } else {
                         //Check unique inputs for uniqueness
 
@@ -561,9 +549,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $result->execute($data);
 
                         if ($result->rowCount() > 0) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed because your inputs were invalid.');
-                            echo '</div>';
+                            echo Format::alert(__('Your request failed because your inputs were invalid.'), 'error');
                         } else {
                             //Write to database
                             $fail = false;
@@ -573,13 +559,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                                 $fail = true;
                             }
                             if ($fail == false) {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
                     }
@@ -601,9 +584,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>";
-                    echo __('Your request failed due to a database error.');
-                    echo '</div>';
+                    echo Format::alert(__('Your request failed due to a database error.'), 'error');
                     $advance = false;
                 }
                 if ($advance) {
@@ -614,18 +595,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>";
-                        echo __('Your request failed due to a database error.');
-                        echo '</div>';
+                        echo Format::alert(__('Your request failed due to a database error.'), 'error');
                         $advance2 = false;
                     }
                     if ($advance2) {
                         $session->forget('gibbonSchoolYearIDCurrent');
                         SessionFactory::setCurrentSchoolYear($session, $nextYearBySession);
 
-                        echo "<div class='success'>";
-                        echo __('Advance was successful, you are now in a new academic year!');
-                        echo '</div>';
+                        echo Format::alert(__('Advance was successful, you are now in a new academic year!'), 'success');
 
                         //SET EXPECTED USERS TO FULL
                         echo '<h4>';
@@ -634,9 +611,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = $_POST['expect-count'] ?? 0;
                         if (empty($count)) {
-                            echo "<div class='warning'>";
-                            echo __('No actions were selected in Step 2, and so no changes have been made.');
-                            echo '</div>';
+                            echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
@@ -665,17 +640,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                             //Feedback result!
                             if ($success == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request failed.'), 'error');
                             } elseif ($success < $count) {
-                                echo "<div class='warning'>";
-                                echo sprintf(__('%1$s updates failed.'), ($count - $success));
-                                echo '</div>';
+                                echo Format::alert(sprintf(__('%1$s updates failed.'), ($count - $success)), 'warning');
                             } else {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
 
@@ -686,9 +655,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = $_POST['enrol-count'] ?? 0;
                         if (empty($count)) {
-                            echo "<div class='warning'>";
-                            echo __('No actions were selected in Step 2, and so no changes have been made.');
-                            echo '</div>';
+                            echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
@@ -730,7 +697,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                                     $resultFamily3->execute($dataFamily3);
 
                                                     if ($rowFamily2['status'] != 'Full') {
-                                                        $userStatusLogGateway->insert(['gibbonPersonID' => $rowFamily2['gibbonPersonID'], 'statusOld' => $rowFamily2['status'], 'statusNew' => 'Full', 'reason' => __('Rollover')]);
+                                                        $userStatusLogGateway->insert(['gibbonPersonID' => $rowFamily2['gibbonPersonID'], 'statusOld' => $rowFamily2['status'], 'statusNew' => 'Full', 'reason' => __('Rollover'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                                     }
                                             }
                                         }
@@ -748,24 +715,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     if ($ok = true) {
                                         ++$success;
 
-                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Expected', 'statusNew' => 'Left', 'reason' => __('Rollover')]);
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Expected', 'statusNew' => 'Left', 'reason' => __('Rollover'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                     }
                                 }
                             }
 
                             //Feedback result!
                             if ($success == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request failed.'), 'error');
                             } elseif ($success < $count) {
-                                echo "<div class='warning'>";
-                                echo sprintf(__('%1$s adds failed.'), ($count - $success));
-                                echo '</div>';
+                                echo Format::alert(sprintf(__('%1$s adds failed.'), ($count - $success)), 'warning');
                             } else {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
 
@@ -776,12 +737,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = null;
                         if (isset($_POST['enrolFull-count'])) {
-                            $count = $_POST['enrolFull-count'];
+                            $count = $_POST['enrolFull-count'] ?? 0;
                         }
                         if ($count == '') {
-                            echo "<div class='warning'>";
-                            echo __('No actions were selected in Step 2, and so no changes have been made.');
-                            echo '</div>';
+                            echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
@@ -848,7 +807,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                                     $resultFamily3->execute($dataFamily3);
 
                                                     if ($rowFamily2['status'] != 'Full') {
-                                                    $userStatusLogGateway->insert(['gibbonPersonID' => $rowFamily2['gibbonPersonID'], 'statusOld' => $rowFamily2['status'], 'statusNew' => 'Full', 'reason' => __('Rollover')]);
+                                                    $userStatusLogGateway->insert(['gibbonPersonID' => $rowFamily2['gibbonPersonID'], 'statusOld' => $rowFamily2['status'], 'statusNew' => 'Full', 'reason' => __('Rollover'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                                     }
                                             }
                                         }
@@ -866,24 +825,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     if ($ok = true) {
                                         ++$success;
 
-                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => 'Left', 'reason' => __('Rollover')]);
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => 'Left', 'reason' => __('Rollover'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                     }
                                 }
                             }
 
                             //Feedback result!
                             if ($success == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request failed.'), 'error');
                             } elseif ($success < $count) {
-                                echo "<div class='warning'>";
-                                echo  sprintf(__('%1$s adds failed.'), ($count - $success));
-                                echo '</div>';
+                                echo Format::alert( sprintf(__('%1$s adds failed.'), ($count - $success)), 'warning');
                             } else {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
 
@@ -894,12 +847,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = null;
                         if (isset($_POST['reenrol-count'])) {
-                            $count = $_POST['reenrol-count'];
+                            $count = $_POST['reenrol-count'] ?? 0;
                         }
                         if ($count == '') {
-                            echo "<div class='warning'>";
-                            echo __('No actions were selected in Step 2, and so no changes have been made.');
-                            echo '</div>';
+                            echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
                         } else {
                             $success = 0;
 
@@ -920,12 +871,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $reenrolled = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
 
                                     if ($result->rowCount() != 1 and $result->rowCount() != 0) {
                                         $reenrolled = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                        echo "<div class='warning'>".__('Potential duplicate enrolment found for user ID {user}', ['user' => $gibbonPersonID]).'</div>';
                                     } elseif ($result->rowCount() == 1) {
                                         try {
                                             $data2 = array('gibbonSchoolYearID' => $nextYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonFormGroupID' => $gibbonFormGroupID);
@@ -934,7 +884,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result2->execute($data2);
                                         } catch (PDOException $e) {
                                             $reenrolled = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
                                         if ($reenrolled) {
                                             ++$success;
@@ -948,7 +897,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result2->execute($data2);
                                         } catch (PDOException $e) {
                                             $reenrolled = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
                                         if ($reenrolled) {
                                             ++$success;
@@ -963,29 +911,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $reenrolled = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($reenrolled) {
                                         ++$success;
 
-                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => 'Left', 'reason' => __('Rollover')]);
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => 'Left', 'reason' => __('Rollover'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                     }
                                 }
                             }
 
                             //Feedback result!
                             if ($success == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request failed.'), 'error');
                             } elseif ($success < $count) {
-                                echo "<div class='warning'>";
-                                echo sprintf(__('%1$s adds failed.'), ($count - $success));
-                                echo '</div>';
+                                echo Format::alert(sprintf(__('%1$s adds failed.'), ($count - $success)), 'warning');
                             } else {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
 
@@ -997,9 +938,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $count = $_POST['final-count'] ?? 0;
 
                         if (empty($count)) {
-                            echo "<div class='warning'>";
-                            echo __('No actions were selected in Step 2, and so no changes have been made.');
-                            echo '</div>';
+                            echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
@@ -1016,28 +955,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $result->execute($data);
                                 } catch (PDOException $e) {
                                     $left = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                                 if ($left) {
                                     ++$success;
 
-                                    $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => $status, 'reason' => __('Rollover').': '.__('Set Final Year Students To Left')]);
+                                    $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => $status, 'reason' => __('Rollover').': '.__('Set Final Year Students To Left'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                 }
                             }
 
                             //Feedback result!
                             if ($success == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request failed.'), 'error');
                             } elseif ($success < $count) {
-                                echo "<div class='warning'>";
-                                echo sprintf(__('%1$s updates failed.'), ($count - $success));
-                                echo '</div>';
+                                echo Format::alert(sprintf(__('%1$s updates failed.'), ($count - $success)), 'warning');
                             } else {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
 
@@ -1048,9 +980,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = $_POST['register-count'] ?? 0;
                         if (empty($count)) {
-                            echo "<div class='warning'>";
-                            echo __('No actions were selected in Step 2, and so no changes have been made.');
-                            echo '</div>';
+                            echo Format::alert(__('No actions were selected in Step 2, and so no changes have been made.'), 'warning');
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
@@ -1070,7 +1000,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $resultCheck->execute($dataCheck);
                                     } catch (PDOException $e) {
                                         $enrolled = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($resultCheck->rowCount() == 0) {
                                         try {
@@ -1080,7 +1009,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result->execute($data);
                                         } catch (PDOException $e) {
                                             $enrolled = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
                                         if ($enrolled) {
                                             ++$success;
@@ -1093,7 +1021,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result->execute($data);
                                         } catch (PDOException $e) {
                                             $enrolled = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
                                         if ($enrolled) {
                                             ++$success;
@@ -1108,29 +1035,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $left = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($left) {
                                         ++$success;
 
-                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Expected', 'statusNew' => 'Left', 'reason' => __('Rollover').': '.__('Register New Staff')]);
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Expected', 'statusNew' => 'Left', 'reason' => __('Rollover').': '.__('Register New Staff'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                                     }
                                 }
                             }
 
                             //Feedback result!
                             if ($success == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request failed.'), 'error');
                             } elseif ($success < $count) {
-                                echo "<div class='warning'>";
-                                echo sprintf(__('%1$s adds failed.'), ($count - $success));
-                                echo '</div>';
+                                echo Format::alert(sprintf(__('%1$s adds failed.'), ($count - $success)), 'warning');
                             } else {
-                                echo "<div class='success'>";
-                                echo __('Your request was completed successfully.');
-                                echo '</div>';
+                                echo Format::alert(__('Your request was completed successfully.'), 'success');
                             }
                         }
                     }

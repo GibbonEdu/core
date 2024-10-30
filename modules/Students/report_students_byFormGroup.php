@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -58,13 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
-
+    
     // Cancel out early if there's no form group selected
-    if (empty($gibbonFormGroupID)) return;
+    if (!isset($gibbonFormGroupID)) return;
 
     $formGroupGateway = $container->get(FormGroupGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $students = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID != '*' ? $gibbonFormGroupID : null);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsByFormGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsByFormGroup', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report Data'));
     $table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
         $output = '';

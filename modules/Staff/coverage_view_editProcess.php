@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['text' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['text' => 'HTML', 'link' => 'URL']);
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 
@@ -68,15 +70,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
     }
 
     // File Upload
-    if ($type == 'File' && !empty($_FILES['file'])) {
-        // Upload the file, return the /uploads relative path
-        $fileUploader = new FileUploader($pdo, $gibbon->session);
-        $content = $fileUploader->uploadFromPost($_FILES['file']);
-
-        if (empty($content)) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-            exit;
+    if ($type == 'File') {
+        if (!empty($_FILES['file'])) {
+            // Upload the file, return the /uploads relative path
+            $fileUploader = new FileUploader($pdo, $session);
+            $content = $fileUploader->uploadFromPost($_FILES['file']);
+    
+            if (empty($content)) {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+                exit;
+            }
+        } else {
+            // Remove the attachment if it has been deleted, otherwise retain the original value
+            $content = empty($_POST['attachment']) ? '' : $coverage['attachmentContent'];
         }
     }
 

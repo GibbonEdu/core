@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -58,7 +60,19 @@ class MessengerReceiptGateway extends QueryableGateway
             ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where('gibbonMessenger.gibbonMessengerID=:gibbonMessengerID')
             ->bindValue('gibbonMessengerID', $gibbonMessengerID)
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("NOT gibbonMessengerReceipt.targetType='Mailing List'");
+        
+        $this->unionAllWithCriteria($query, $criteria)
+            ->cols([
+                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.status', 'NULL as title', 'gibbonMessengerMailingListRecipient.surname', 'gibbonMessengerMailingListRecipient.preferredName', 'gibbonMessengerMailingListRecipient.email', 'NULL as phone1', '\'External\' as role', 'gibbonMessengerReceipt.gibbonMessengerReceiptID', 'gibbonMessengerReceipt.targetType', 'gibbonMessengerReceipt.contactType', 'gibbonMessengerReceipt.contactDetail', 'NULL as formGroup', 'gibbonMessengerReceipt.sent'
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonMessenger', 'gibbonMessenger.gibbonMessengerID=gibbonMessengerReceipt.gibbonMessengerID')
+            ->innerJoin('gibbonMessengerMailingListRecipient', 'gibbonMessengerMailingListRecipient.gibbonMessengerMailingListRecipientID=gibbonMessengerReceipt.gibbonPersonID')
+            ->where('gibbonMessenger.gibbonMessengerID=:gibbonMessengerID')
+            ->bindValue('gibbonMessengerID', $gibbonMessengerID)
+            ->where("gibbonMessengerReceipt.targetType='Mailing List'");
 
         return $this->runQuery($query, $criteria);
     }

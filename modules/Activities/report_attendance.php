@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
     $allColumns = (isset($_GET['allColumns'])) ? $_GET['allColumns'] : false;
 
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -82,9 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $activityResult->execute($data);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -105,6 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         );
     }
 
+    $today = date('Y-m-d');
     $activity = $activityResult->fetch();
     $activity['participants'] = $studentResult->rowCount();
 
@@ -162,9 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     echo '</h2>';
 
     if ($allColumns == false && $attendanceResult->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -176,9 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     }
 
     if (count($activitySessions) <= 0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             echo "<div class='linkTop'>";
@@ -221,10 +218,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                             echo "<td style='vertical-align:top; width: 50px;  white-space: nowrap;'>";
                         }
 
-                printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], Format::dateReadable($sessionDate, '%a <br /> %b %e'));
+                printf("<span title='%s'>%s <br/> %s</span><br/>&nbsp;<br/>",
+                    $sessionAttendanceData[$sessionDate]['info'],
+                    Format::dayOfWeekName($sessionDate, true),
+                    Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR)
+                );
             } else {
                 echo "<td style='color: #bbb; vertical-align:top; width: 50px; white-space: nowrap;'>";
-                echo Format::dateReadable($sessionDate, '%a <br /> %b %e').'<br/>&nbsp;<br/>';
+                echo Format::dayOfWeekName($sessionDate).' <br/> '.
+                    Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR).'<br/>&nbsp;<br/>';
             }
             echo '</td>';
         }
@@ -268,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             echo '<td>';
-            if (!empty($attendanceCount[$sessionDate])) {
+            if (!empty($attendanceCount[$sessionDate]) || $sessionDate <= $today) {
                 echo $attendanceCount[$sessionDate].' / '.$activity['participants'];
             }
             echo '</td>';

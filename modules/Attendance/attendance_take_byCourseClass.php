@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,9 +35,7 @@ $page->breadcrumbs->add(__('Take Attendance by Class'));
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __("You do not have access to this action.");
-    echo "</div>";
+    $page->addError(__("You do not have access to this action."));
 } else {
     //Proceed!
     $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
@@ -64,7 +64,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>" . $e->getMessage() . "</div>";
         }
 
         if ($result->rowCount() > 0) {
@@ -107,7 +106,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     }
 
     $row = $form->addRow();
-    $row->addSearchSubmit($gibbon->session);
+    $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -137,13 +136,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>" . $e->getMessage() . "</div>";
                 }
 
                 if ($result->rowCount() == 0) {
-                    echo '<div class="error">';
-                    echo __('There are no records to display.');
-                    echo '</div>';
+                    echo $page->getBlankSlate();
                     return;
                 }
 
@@ -173,7 +169,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $resultLog = $connection2->prepare($sqlLog);
                         $resultLog->execute($dataLog);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>" . $e->getMessage() . "</div>";
                     }
                     if ($resultLog->rowCount() < 1) {
                         echo "<div class='error'>";
@@ -215,7 +210,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     $resultCourseClass = $pdo->select($sqlCourseClass, $dataCourseClass);
 
                     if ($resultCourseClass->rowCount() < 1) {
-                        echo Format::alert(__('There are no records to display.'), 'error');
+                        echo $page->getBlankSlate();
                     } else {
                         $count = 0;
                         $countPresent = 0;

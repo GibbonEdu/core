@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs
             ->add(__('View Activities'), 'activities_view.php')
@@ -43,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
         if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register') == false) {
             //Acess denied
-            echo "<div class='error'>";
-            echo __('You do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('You do not have access to this action.'));
         } else {
 
             $settingGateway = $container->get(SettingGateway::class);
@@ -66,13 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             } else {
                 //Check if gibbonActivityID specified
-                $gibbonActivityID = $_GET['gibbonActivityID'];
+                $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
                 if ($gibbonActivityID == 'Y') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
-                    $mode = $_GET['mode'];
+                    $mode = $_GET['mode'] ?? '';
 
                     if ($_GET['search'] != '' or $gibbonPersonID != '') {
                         $params = [
@@ -109,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $result->execute($data);
 
                         if ($result->rowCount() < 1) {
-                            $page->addMessage(__('There are no records to display.'));
+                            echo $page->getBlankSlate();
                         } else {
                             $countChild = 0;
                             while ($values = $result->fetch()) {
@@ -135,9 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($mode == 'register') {
                         if ($continue == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed due to a database error.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed due to a database error.'));
                         } else {
                             $today = date('Y-m-d');
 
@@ -158,13 +153,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
                             if ($result->rowCount() != 1) {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             } else {
                                 $values = $result->fetch();
 
@@ -200,6 +192,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                                 $proceed = false;
                                             }
                                         }
+                                    }
+
+                                    $overlapCheck = $activityGateway->getOverlappingActivityTimeSlot($gibbonActivityID, $gibbonPersonID, $dateType)->fetchKeyPair();
+
+                                    if (!empty($overlapCheck)) {
+                                        echo Format::alert(__('The timing of this activity conflicts with one or more currently enrolled activities:').' '.Format::bold(implode(',', $overlapCheck)), 'warning');
                                     }
 
                                     $activityCountByType = $activityGateway->getStudentActivityCountByType($values['type'], $gibbonPersonID);
@@ -299,9 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
                     } elseif ($mode = 'unregister') {
                         if ($continue == false) {
-                            echo "<div class='error'>";
-                            echo __('Your request failed due to a database error.');
-                            echo '</div>';
+                            $page->addError(__('Your request failed due to a database error.'));
                         } else {
                             $today = date('Y-m-d');
 
@@ -319,13 +315,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
                             if ($result->rowCount() != 1) {
-                                echo "<div class='error'>";
-                                echo __('The selected record does not exist, or you do not have access to it.');
-                                echo '</div>';
+                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                             } else {
                                 $values = $result->fetch();
 

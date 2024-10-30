@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
 } else {
     // Proceed!
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
@@ -54,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         $studentGateway = $container->get(StudentGateway::class);
 
         $children = $studentGateway
-            ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
+            ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $session->get('gibbonPersonID'))
             ->fetchGroupedUnique();
 
         if (!empty($children[$gibbonPersonID])) {
@@ -65,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
                 ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
         }
     } else if ($highestAction == 'View Reports_mine') {
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
         $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
 
         $page->breadcrumbs->add(__('View Reports'));

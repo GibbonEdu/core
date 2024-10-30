@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,27 +37,32 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-$id = $_POST['gibbonTTID'] ?? '';
+$id = $_REQUEST['gibbonTTID'] ?? '';
+$gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+$narrow = $_REQUEST['narrow'] ?? 'trim';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
-    //Acess denied
-    $output .= "<div class='error'>";
-    $output .= __('Your request failed because you do not have access to this action.');
-    $output .= '</div>';
+    // Access denied
+    echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
-    if (!empty($_POST['ttDate'])) {
-        $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+
+    if (!empty($_REQUEST['ttDateNav'])) {
+        $ttDate = Format::timestamp($_REQUEST['ttDateNav']);
+    } elseif (!empty($_REQUEST['ttDateChooser'])) {
+        $ttDate = Format::timestamp($_REQUEST['ttDateChooser']);
+    } elseif (!empty($_REQUEST['ttDate'])) {
+        $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
     }
 
-    $tt = renderTT($guid, $connection2, $session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
+    $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
+
+    $tt = renderTT($guid, $connection2, $gibbonPersonID, $id, false, $ttDate, '', '', $narrow, $edit);
     if ($tt != false) {
         $output .= $tt;
     } else {
-        $output .= "<div class='error'>";
-        $output .= __('There is no information for the date specified.');
-        $output .= '</div>';
+        echo Format::alert(__('There is no information for the date specified.'), 'error');
     }
 }
 

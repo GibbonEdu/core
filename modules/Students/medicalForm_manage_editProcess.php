@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,8 +26,8 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
-$search = $_GET['search'];
+$gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
+$search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == false) {
@@ -53,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $longTermMedication = $_POST['longTermMedication'];
+            $longTermMedication = $_POST['longTermMedication'] ?? 'N';
             $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
-            $comment = $_POST['comment'];
+            $comment = $_POST['comment'] ?? '';
 
             $customRequireFail = false;
             $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Medical Form', [], $customRequireFail);

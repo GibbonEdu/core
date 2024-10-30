@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -50,8 +52,12 @@ class AbsenceFormats
 
     public static function substituteDetails($coverage)
     {
+        if (!empty($coverage['status']) && $coverage['status'] == 'Cancelled') {
+            return Format::small(__('Cancelled'));
+        }
+
         if (empty($coverage['gibbonPersonIDCoverage'])) {
-            if ($coverage['status'] == 'Pending') {
+            if ($coverage['status'] == 'Pending' || $coverage['status'] == 'Requested') {
                 return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
             } else if ($coverage['status'] == 'Not Required') {
                 return Format::tag(__('Not Required'), 'dull whitespace-nowrap');
@@ -108,7 +114,11 @@ class AbsenceFormats
     }
 
     public static function coverage($absence) {
-        if (empty($absence['gibbonPersonIDCoverage']) && $absence['coverage'] == 'Pending') {
+        if (!empty($absence['status']) && $absence['status'] == 'Cancelled' || $absence['coverage'] == 'Cancelled') {
+            return Format::small(__('Cancelled'));
+        }
+
+        if (empty($absence['gibbonPersonIDCoverage']) && ($absence['coverage'] == 'Pending' || $absence['coverage'] == 'Declined')) {
             return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }
 
@@ -122,7 +132,19 @@ class AbsenceFormats
 
     public static function coverageList($absence)
     {
-        if (empty($absence['gibbonPersonIDCoverage']) && !empty($absence['coverage']) && $absence['coverage'] == 'Pending') {
+        if (!empty($absence['status']) && $absence['status'] == 'Cancelled') {
+            return Format::small(__('Cancelled'));
+        }
+
+        if (empty($absence['gibbonPersonIDCoverage']) && !empty($absence['coverage']) && ($absence['coverage'] == 'Pending' || $absence['coverage'] == 'Declined')) {
+            return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
+        }
+
+        $absence['coverageList'] = array_filter($absence['coverageList'], function ($item) {
+            return !empty($item['gibbonPersonIDCoverage']);
+        });
+
+        if ($absence['coverageRequired'] == 'Y' && empty($absence['coverageList'])) {
             return Format::tag(__('Cover Required'), 'error whitespace-nowrap');
         }
 
@@ -134,7 +156,11 @@ class AbsenceFormats
             return '';
         }
 
-        $names = array_unique(array_map(['self', 'coverage'], $absence['coverageList'] ?? []));
+        $names = [];
+        foreach ($absence['coverageList'] as $absence) {
+            $names[] = static::coverage($absence);
+        }
+        $names = array_unique($names);
 
         return implode('<br/>', $names);
     }
@@ -154,7 +180,7 @@ class AbsenceFormats
         } elseif ($relativeSeconds <= (86400 * ($urgencyThreshold * 3))) {
             return '<span class="tag warning">'.__('Upcoming').'</span>';
         } else {
-            return __('Upcoming');
+            return __($coverage['status']);
         }
     }
 

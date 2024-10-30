@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -99,8 +101,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $paidDate = null;
                 }
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paidAmountLog = $_POST['paidAmount'];
-                    $paidAmount = $_POST['paidAmount'];
+                    $paidAmountLog = $_POST['paidAmount'] ?? '';
+                    $paidAmount = $_POST['paidAmount'] ?? '';
                     //If some paid already, work out amount, and add it to total
                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
                     $paidAmount += $alreadyPaid;
@@ -111,11 +113,11 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 }
                 $paymentType = null;
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paymentType = $_POST['paymentType'];
+                    $paymentType = $_POST['paymentType'] ?? '';
                 }
                 $paymentTransactionID = null;
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paymentTransactionID = $_POST['paymentTransactionID'];
+                    $paymentTransactionID = $_POST['paymentTransactionID'] ?? '';
                 }
                 if ($row['billingScheduleType'] == 'Ad Hoc' and ($row['status'] == 'Pending' or $row['status'] == 'Issued')) {
                     $invoiceDueDate = !empty($_POST['invoiceDueDate']) ? Format::dateConvert($_POST['invoiceDueDate']) : null;
@@ -220,8 +222,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 $emailFail = false;
                 //Email Receipt
                 if (isset($_POST['emailReceipt'])) {
-                    if ($_POST['emailReceipt'] == 'Y') {
-                        $from = $_POST['email'] ?? '';
+                    if ($_POST['emailReceipt'] == 'Y' && stripos($status, 'Paid') !== false) {
+                        $from = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
                         if ($partialFail == false and $from != '') {
                             //Send emails
                             $emails = array() ;
@@ -279,7 +281,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 //Email reminder
                 if (isset($_POST['emailReminder'])) {
                     if ($_POST['emailReminder'] == 'Y') {
-                        $from = $_POST['email'];
+                        $from = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
                         if ($partialFail == false and $from != '') {
                             //Send emails
                             $emails = array() ;

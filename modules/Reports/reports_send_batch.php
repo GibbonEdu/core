@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -70,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $reports->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_send_batchProcess.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Reports/reports_send_batchProcess.php');
     $form->setTitle($report['name']);
     $form->setDescription(__('This process will send a templated email to each recipient. To customize this email, you can edit the template called {templateName} on the {pageLink} page.', ['templateName' => '<b>'.__('Send Reports to Parents').'</b>', 'pageLink' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
 
@@ -105,6 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->width('25%')
         ->format(function ($person) {
             return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, false, ['subpage' => 'Reports']);
+        })
+        ->formatDetails(function ($person) {
+            return Format::small($person['email'] ?? '');
         });
 
     $table->addColumn('timestampModified', __('Last Created'))

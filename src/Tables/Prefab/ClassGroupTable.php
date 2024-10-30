@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,6 +59,7 @@ class ClassGroupTable extends DataTable
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
+        $canEditEnrolment = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php');
 
         $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
             || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
@@ -74,6 +77,16 @@ class ClassGroupTable extends DataTable
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
+
+        if ($canEditEnrolment && count($participants) > 0) {
+            $this->addHeaderAction('edit', __('Edit Enrolment'))
+                ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonCourseID', $participants->getRow(0)['gibbonCourseID'] ?? '')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->displayLabel()
+                ->append('&nbsp;&nbsp;|&nbsp;&nbsp;');
+        }
 
         if ($canViewConfidential) {
             $this->addHeaderAction('export', __('Export to Excel'))
@@ -104,14 +117,14 @@ class ClassGroupTable extends DataTable
 
         $this->addColumn('image_240')
             ->setClass('relative')
-            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+            ->format(function ($person) use ($canViewStaff, $canViewStudents, $canViewConfidential) {
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
-                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                $icon = $canViewConfidential ? Format::userBirthdayIcon($person['dob'], $person['preferredName']) : '';
 
                 if ($person['role'] == 'Student') {
                     $url = Url::fromModuleRoute('Students', 'student_view_details')
                         ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
-                    return $canViewStudents
+                    return $canViewStudents && $canViewConfidential
                         ? Format::link($url, $photo).$icon
                         : $photo.$icon;
                 } else {
@@ -125,12 +138,12 @@ class ClassGroupTable extends DataTable
 
         $this->addColumn('name')
             ->setClass('text-xs font-bold mt-1')
-            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+            ->format(function ($person) use ($canViewStaff, $canViewStudents, $canViewConfidential) {
                 if ($person['role'] == 'Student') {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
                     $url = Url::fromModuleRoute('Students', 'student_view_details')
                         ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
-                    $canViewProfile = $canViewStudents;
+                    $canViewProfile = $canViewStudents && $canViewConfidential;
                 } else {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, false);
                     $url = Url::fromModuleRoute('Staff', 'staff_view_details')

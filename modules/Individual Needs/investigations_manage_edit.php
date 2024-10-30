@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -48,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-        $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'];
+        $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
         if (empty($gibbonINInvestigationID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
@@ -118,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     //Parents Informed?
                     $row = $form->addRow();
                         $row->addLabel('parentsInformed', __('Parents Informed?'))->description(__('For example, via a phone call, email, Markbook, meeting or other means.'));
-                        $row->addYesNo('parentsInformed')->required()->readonly(!$canEdit || $investigation['status'] != 'Referral')->placeholder();
+                        $row->addYesNo('parentsInformed')->required()->readonly(!$canEdit || $investigation['status'] != 'Referral')->placeholder()->selected('N');
 
                     $form->toggleVisibilityByClass('parentsInformedYes')->onSelect('parentsInformed')->when('Y');
                     $form->toggleVisibilityByClass('parentsInformedNo')->onSelect('parentsInformed')->when('N');
@@ -140,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                         if ($isTutor && $investigation['status'] == 'Referral') {
                             $row = $form->addRow();
                                 $row->addLabel('resolvable', __('Resolvable?'))->description(__('Is form tutor able to resolve without further input? If no, further investigation will be launched.'));
-                                $row->addYesNo('resolvable')->required()->placeholder();
+                                $row->addYesNo('resolvable')->required()->placeholder()->selected('N');
 
                                 $form->toggleVisibilityByClass('resolutionDetails')->onSelect('resolvable')->when('Y');
                         }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,26 +56,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
     if (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) {
         //Get an array of days school is in session
         $dates = getLastNSchoolDays(
-            $gibbon->session->get('guid'),
+            $session->get('guid'),
             $connection2,
             date("Y-m-d"),
             $numberOfSchoolDays,
             true
         );
         if (!is_array($dates) || count($dates) != $numberOfSchoolDays) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         } else {
 
-            $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sql = "
                 SELECT
                   gibbonPerson.gibbonPersonID,
@@ -95,10 +95,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
-            $absences = array_map(function ($row) use ($gibbon, $connection2, $dates) {
+            $absences = array_map(function ($row) use ($session, $connection2, $dates) {
               // Get number of absences within date range
                 $row['count'] = getAbsenceCount(
-                    $gibbon->session->get('guid'),
+                    $session->get('guid'),
                     $row['gibbonPersonID'],
                     $connection2,
                     end($dates),

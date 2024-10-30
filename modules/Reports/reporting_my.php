@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
     // Proceed!
     $page->breadcrumbs->add(__('My Reporting'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     // Select Person, if able to
     if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.php', 'Write Reports_editAll')) {
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID');
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -52,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     } else {
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
     }
 
     if (empty($gibbonPersonID)) {
@@ -140,8 +142,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
             $table = DataTable::create('reportsMy');
             $table->setTitle($scope['name']);
             $table->setDescription(__('You have access from {dateStart} to {dateEnd}.', [
-                'dateStart' => Format::dateReadable($scope['dateStart'], '%b %e'),
-                'dateEnd' => Format::dateReadable($scope['dateEnd'], '%b %e'),
+                'dateStart' => Format::dateReadable($scope['dateStart'], Format::MEDIUM_NO_YEAR),
+                'dateEnd' => Format::dateReadable($scope['dateEnd'], Format::MEDIUM_NO_YEAR),
             ]));
 
             $table->addColumn('criteriaName', __('Name'))->width('35%');

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -226,6 +228,9 @@ class CustomFieldHandler
 
                 // Upload the file, return the /uploads relative path
                 $fieldValue = $this->fileUploader->uploadFromPost($file, $fieldName);
+            } else if (empty($_POST[$fieldName])) {
+                // Remove the attachment if it has been deleted, otherwise retain the original value
+                $fieldValue = null;
             }
         }
 
@@ -291,6 +296,10 @@ class CustomFieldHandler
                     $fieldValue = explode(',', $fieldValue);
                 }
 
+                if (!empty($params['requiredOverride'])) {
+                    $field['required'] = $params['requiredOverride'];
+                }
+
                 $name = $prefix.$field['gibbonCustomFieldID'];
                 $row = $table->addRow()->addClass($params['class'] ?? '')->setHeading($heading);
 
@@ -299,7 +308,7 @@ class CustomFieldHandler
                     $row = $row->addColumn();
                 }
 
-                $row->addLabel($name, $field['name'])->description($field['description']);
+                $row->addLabel($name, $field['name'])->description(Format::hyperlinkAll($field['description']));
                 $row->addCustomField($name, $field)->setValue($fieldValue)->readonly($params['readonly'] ?? false);
             }
         }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +29,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_upload.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_upload.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upload.php') == false) {
     $URL .= '&return=error0';
@@ -50,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         exit;
     }
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     if (!is_file($absolutePath.'/'.$file)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -74,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         mkdir($absolutePath.$destinationFolder, 0755, true);
     }
 
-    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader = new FileUploader($pdo, $session);
     $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$file, $destinationFolder, ['pdf']);
 
     $partialFail = false;

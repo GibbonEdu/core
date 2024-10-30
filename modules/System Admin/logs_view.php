@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -58,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         $row->addTextField('ip')->setValue($ip);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -72,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->filterBy('gibbonPersonID', $gibbonPersonID)
         ->fromPOST();
 
-    $logs = $logGateway->queryLogs($criteria, $gibbon->session->get('gibbonSchoolYearID'));
+    $logs = $logGateway->queryLogs($criteria, $session->get('gibbonSchoolYearID'));
 
     $table = DataTable::createPaginated('logView', $criteria);
     $table->setTitle(__('Data'));
@@ -84,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {
-            $detailsArray = !empty($log['serialisedArray']) ? unserialize($log['serialisedArray']) : [];
+            $detailsArray = !empty($log['serialisedArray']) ? @unserialize($log['serialisedArray']) : [];
 
             $details = '';
             if (is_array($detailsArray) && count($detailsArray) > 0) {

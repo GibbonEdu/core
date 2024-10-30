@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,9 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             // Acess denied for users changing a password if they do not have system access to this role
             if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) )
               || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) && !isset($userRoles['001']) )) {
-                echo "<div class='error'>";
-                echo __('You do not have access to this action.');
-                echo '</div>';
+                $page->addError(__('You do not have access to this action.'));
                 return;
             }
 
@@ -111,8 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             echo '<br/>';
 
             // LOGIN TROUBLESHOOTING
-            $trueIcon = "<img title='" . __('Yes'). "' src='".$gibbon->session->get('absoluteURL')."/themes/".$gibbon->session->get('gibbonThemeName')."/img/iconTick.png' class='w-5 h-5 mr-4 float-right' />";
-            $falseIcon = "<img title='" . __('No'). "' src='".$gibbon->session->get('absoluteURL')."/themes/".$gibbon->session->get('gibbonThemeName')."/img/iconCross.png' class='w-5 h-5 mr-4 float-right' />";
+            $trueIcon = "<img title='" . __('Yes'). "' src='".$session->get('absoluteURL')."/themes/".$session->get('gibbonThemeName')."/img/iconTick.png' class='w-5 h-5 mr-4 float-right' />";
+            $falseIcon = "<img title='" . __('No'). "' src='".$session->get('absoluteURL')."/themes/".$session->get('gibbonThemeName')."/img/iconCross.png' class='w-5 h-5 mr-4 float-right' />";
 
             $form = Form::create('loginAccess', "")->setClass('smallIntBorder w-full');
             $form->setTitle(__('Login Troubleshooting'));

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,9 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $scope = $_POST['scope'];
+            $scope = $_POST['scope'] ?? '';
             if ($scope == 'Learning Area') {
-                $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+                $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
             } else {
                 $gibbonDepartmentID = null;
             }
@@ -79,14 +81,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $AI = $connection2->lastInsertID();
 
                 //Create rows & columns
-                for ($i = 1; $i <= $_POST['rows']; ++$i) {
+                for ($i = 1; $i <= $_POST['rows'] ?? ''; ++$i) {
 
                         $data = array('gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i);
                         $sql = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                 }
-                for ($i = 1; $i <= $_POST['columns']; ++$i) {
+                for ($i = 1; $i <= $_POST['columns'] ?? ''; ++$i) {
 
                         $data = array('gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i);
                         $sql = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';

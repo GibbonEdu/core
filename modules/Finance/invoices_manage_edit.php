@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -202,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                 // Custom Blocks for Fees
                 $row = $form->addRow();
-                    $customBlocks = $row->addCustomBlocks('feesBlock', $gibbon->session)
+                    $customBlocks = $row->addCustomBlocks('feesBlock', $session)
                         ->fromTemplate($blockTemplate)
                         ->settings(array('inputNameStrategy' => 'string', 'addOnEvent' => 'change', 'sortable' => true))
                         ->placeholder(__('Fees will be listed here...'))
@@ -280,7 +282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     $row->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');
                 } else {
                     $row = $form->addRow()->addClass('emailReceipts emailReceiptsTable');
-                    $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
+                    $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $session);
                 }
             }
 
@@ -302,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     $row->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');
                 } else {
                     $row = $form->addRow()->addClass('emailReminders emailRemindersTable');
-                    $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
+                    $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $session);
                 }
             }
 

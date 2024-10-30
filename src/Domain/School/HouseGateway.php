@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -52,7 +54,7 @@ class HouseGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentHouseCountByYearGroup(QueryCriteria $criteria, $gibbonSchoolYearID)
+    public function queryStudentHouseCountByYearGroup(QueryCriteria $criteria, $gibbonSchoolYearID, $includeUpcoming = false)
     {
         $query = $this
             ->newQuery()
@@ -65,11 +67,20 @@ class HouseGateway extends QueryableGateway
                 "count(gibbonStudentEnrolment.gibbonPersonID) AS total",
                 "count(CASE WHEN gibbonPerson.gender='M' THEN gibbonStudentEnrolment.gibbonPersonID END) as totalMale",
                 "count(CASE WHEN gibbonPerson.gender='F' THEN gibbonStudentEnrolment.gibbonPersonID END) as totalFemale",
-            ])
-            ->leftJoin('gibbonPerson', "gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID
-                        AND gibbonPerson.status='Full'
-                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
-                        AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)")
+            ]);
+
+            if ($includeUpcoming == 'Y') {
+                $query->leftJoin('gibbonPerson', "gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID
+                    AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
+                    AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)");
+            } else {
+                $query->leftJoin('gibbonPerson', "gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID
+                    AND gibbonPerson.status='Full'
+                    AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
+                    AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)");
+            }
+
+            $query
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
                         AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
@@ -77,6 +88,8 @@ class HouseGateway extends QueryableGateway
             ->having('total > 0')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->bindValue('today', date('Y-m-d'));
+
+            
 
         return $this->runQuery($query, $criteria);
     }

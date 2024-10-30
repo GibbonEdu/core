@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -141,8 +143,31 @@ class AdmissionsFields extends AbstractFieldGroup
                 break;
                 
             case 'gibbonFormGroupIDEntry':
+
                 $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ?  : '')->readonly($accepted)->selected($default);
+
+                if ($formBuilder->hasConfig('gibbonSchoolYearID')) {
+                    // Handle form group selection within the Office Only, school year is provided
+                    $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))
+                        ->required($required)
+                        ->placeholder($required ?  : '')
+                        ->readonly($accepted)
+                        ->selected($default);
+
+                } else {
+                    // Handle form group select in a regular application form
+                    $formGroups = $this->formGroupGateway->selectFormGroups()->fetchAll();
+                    $formGroupsChained = array_combine(array_column($formGroups, 'value'), array_column($formGroups, 'gibbonSchoolYearID'));
+                    $formGroupsOptions = array_combine(array_column($formGroups, 'value'), array_column($formGroups, 'name'));
+
+                    $row->addSelect('gibbonFormGroupIDEntry')
+                        ->fromArray($formGroupsOptions)
+                        ->chainedTo('gibbonSchoolYearIDEntry', $formGroupsChained)
+                        ->required($required)
+                        ->placeholder($required ?  : '')
+                        ->readonly($accepted)
+                        ->selected($default);
+                }
                 break;
 
             case 'dayType':

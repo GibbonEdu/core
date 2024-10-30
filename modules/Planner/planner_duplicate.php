@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Set variables
         $today = date('Y-m-d');
@@ -46,11 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -75,9 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             $params += [
                 'viewBy' => 'class',
                 'date' => $class,
@@ -93,9 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? ''; 
         $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($viewBy == 'date') {
@@ -108,7 +106,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($result->rowCount() != 1) {
@@ -121,9 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $returns['success0'] = __('Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
                 $page->return->addReturns($returns);
                 if ($otherYearDuplicateSuccess != true) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 }
             } else {
                 //Let's go!
@@ -140,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                 $step = null;
                 if (isset($_GET['step'])) {
-                    $step = $_GET['step'];
+                    $step = $_GET['step'] ?? '';
                 }
                 if ($step != 1 and $step != 2) {
                     $step = 1;
@@ -197,17 +192,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                     echo $form->getOutput();
 
                 } elseif ($step == 2) {
-                    $gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'];
-                    $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-                    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
+                    $gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'] ?? '';
+                    $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+                    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
                     $duplicate = null;
                     if (isset($_POST['duplicate'])) {
-                        $duplicate = $_POST['duplicate'];
+                        $duplicate = $_POST['duplicate'] ?? '';
                     }
                     if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '') {
-                        echo "<div class='error'>";
-                        echo __('You have not specified one or more required parameters.');
-                        echo '</div>';
+                        $page->addError(__('You have not specified one or more required parameters.'));
                     } else {
                         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_duplicateProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
 
@@ -231,7 +224,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $resultSelect = $connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
-                            echo $e->getMEssage();
                         }
                         if ($resultSelect->rowCount() == 1) {
                             $rowSelect = $resultSelect->fetch();
@@ -298,11 +290,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                         $row = $form->addRow();
                             $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
-                            $row->addTime('timeStart')->setValue(substr($next['start'], 0, 5))->required();
+                            $row->addTime('timeStart')->setValue(substr($next['start'] ?? '', 0, 5))->required();
 
                         $row = $form->addRow();
                             $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
-                            $row->addTime('timeEnd')->setValue(substr($next['end'], 0, 5))->required();
+                            $row->addTime('timeEnd')->setValue(substr($next['end'] ?? '', 0, 5))->required();
 
                         if ($values['homework'] == 'Y') {
                             $form->addRow()->addHeading($homeworkNamePlural, __($homeworkNamePlural));
@@ -313,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                             $row = $form->addRow();
                                 $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description("Format: hh:mm (24hr)");
-                                $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'], 0, 5))->required();
+                                $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'] ?? '', 0, 5))->required();
 
                             if ($values['homeworkSubmission'] == 'Y') {
                                 $row = $form->addRow();

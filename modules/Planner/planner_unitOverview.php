@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,23 +27,19 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOverview.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -50,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman'])) {
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
@@ -61,22 +59,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             $class = $_GET['class'] ?? [];
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         }
         $replyTo = null;
         if (isset($_GET['replyTo'])) {
-            $replyTo = $_GET['replyTo'];
+            $replyTo = $_GET['replyTo'] ?? '';
         }
 
         $gibbonPersonID = null;
         if (isset($_GET['search'])) {
-            $gibbonPersonID = $_GET['search'];
+            $gibbonPersonID = $_GET['search'] ?? '';
         }
 
         //Get class variable
         $gibbonPlannerEntryID = null;
         if (isset($_GET['gibbonPlannerEntryID'])) {
-            $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+            $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
         }
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
@@ -97,9 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     if ($resultChild->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $data = array('date' => $date);
                         $data['gibbonPlannerEntryID1'] = $gibbonPlannerEntryID;
@@ -120,9 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 $result->execute($data);
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $row = $result->fetch();
 
@@ -132,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 // planner parameters
                 $params = [];
                 if ($date != '') {
-                    $params['date'] = $_GET['date'];
+                    $params['date'] = $_GET['date'] ?? '';
                 }
                 if ($viewBy != '') {
                     $params['viewBy'] = $_GET['viewBy'] ?? '';
@@ -161,9 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         $resultUnit->execute($dataUnit);
 
                     if ($resultUnit->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
-                        echo '</div>';
+                        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                     } else {
                         $rowUnit = $resultUnit->fetch();
 
@@ -192,9 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             $resultPlanners->execute($dataPlanners);
 
                         if ($resultPlanners->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                            echo $page->getBlankSlate();
                         } else {
                             $dataMulti = array();
                             $whereMulti = '(';
@@ -315,9 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $resultOutcomes = $connection2->prepare($sqlOutcomes);
                                 $resultOutcomes->execute($dataOutcomes);
                             if ($resultOutcomes->rowCount() < 1) {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                                echo $page->getBlankSlate();
                             } else {
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
@@ -451,7 +439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                         $sqlDiscuss = 'SELECT gibbonPlannerEntryDiscuss.*, title, surname, preferredName, category FROM gibbonPlannerEntryDiscuss JOIN gibbonPerson ON (gibbonPlannerEntryDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY timestamp';
                                         $resultDiscuss = $connection2->prepare($sqlDiscuss);
                                         $resultDiscuss->execute($dataDiscuss);
-                                    } catch (PDOException $e) { print $e->getMessage();}
+                                    } catch (PDOException $e) {}
 
                                     if ($resultDiscuss->rowCount() > 0) {
                                         echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';
@@ -559,9 +547,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
 							//No resources!
 							if ($noReosurces) {
-								echo "<div class='error'>";
-								echo __('There are no records to display.');
-								echo '</div>';
+								echo $page->getBlankSlate();
 							}
                             echo '</div>';
                             echo '</div>';

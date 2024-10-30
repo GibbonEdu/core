@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -289,17 +291,26 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             }
         }
 
+        $session = $this->session;
         //Show custom sidebar content on homepage for logged in users
-        if ($this->session->get('address') == '' and $this->session->exists('username')) {
-            if (!$this->session->exists('index_customSidebar.php')) {
+        if ($session->get('address') == '' and  $session->exists('username')) {
+            $cacheLoad = false;
+            $caching = $this->getContainer()->get('config')->getConfig('caching');
+
+            if (!empty($caching) && is_numeric($caching)) {
+                $cacheLoad = $session->get('pageLoads') % intval($caching) == 0;
+            }
+
+            if ($cacheLoad || !$session->exists('index_customSidebar.php')) {
                 if (is_file('./index_customSidebar.php')) {
-                    $this->session->set('index_customSidebar.php', include './index_customSidebar.php');
+                    $session->set('index_customSidebar.php', include './index_customSidebar.php');
                 } else {
-                    $this->session->set('index_customSidebar.php', null);
+                    $session->set('index_customSidebar.php', null);
                 }
             }
-            if ($this->session->exists('index_customSidebar.php')) {
-                echo $this->session->get('index_customSidebar.php');
+
+            if ($session->exists('index_customSidebar.php')) {
+                echo  $session->get('index_customSidebar.php');              
             }
         }
 
@@ -324,7 +335,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             return $group;
                         }, []);
 
-                        echo '<div class="column-no-break">';
+                        echo '<div class="column-no-break overflow-x-scroll max-w-xs" >';
                         echo '<h2>';
                         echo __('Message Wall');
                         echo '</h2>';

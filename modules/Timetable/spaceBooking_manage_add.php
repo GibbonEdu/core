@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->breadcrumbs
@@ -42,11 +43,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
         $step = null;
         if (isset($_GET['step'])) {
-            $step = $_GET['step'];
+            $step = $_GET['step'] ?? '';
         }
         if ($step != 1 and $step != 2) {
             $step = 1;
         }
+
+        $canOverride = $highestAction == 'Manage Facility Bookings_allBookings';
 
         //Step 1
         if ($step == 1) {
@@ -68,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $timeEnd = isset($_GET['timeEnd'])? $_GET['timeEnd'] : '';
 
             // Collect facilities
-            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace ORDER BY name";
+            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace WHERE active='Y' ORDER BY name";
             $results = $pdo->executeQuery(array(), $sql);
             if ($results->rowCOunt() > 0) {
                 $facilities['--'.__('Facilities').'--'] = $results->fetchAll(\PDO::FETCH_KEY_PAIR);
@@ -146,24 +149,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 }
             }
             $date = Format::dateConvert($_POST['date']);
-            $timeStart = $_POST['timeStart'];
-            $timeEnd = $_POST['timeEnd'];
-            $reason = $_POST['reason'];
-            $repeat = $_POST['repeat'];
+            $timeStart = $_POST['timeStart'] ?? '';
+            $timeEnd = $_POST['timeEnd'] ?? '';
+            $reason = $_POST['reason'] ?? '';
+            $repeat = $_POST['repeat'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $repeatDaily = null;
             $repeatWeekly = null;
             if ($repeat == 'Daily') {
-                $repeatDaily = $_POST['repeatDaily'];
+                $repeatDaily = $_POST['repeatDaily'] ?? '';
             } elseif ($repeat == 'Weekly') {
-                $repeatWeekly = $_POST['repeatWeekly'];
+                $repeatWeekly = $_POST['repeatWeekly'] ?? '';
             }
 
             //Check for required fields
             if ($foreignKey == null or $foreignKeyID == null or $foreignKey == '' or $foreignKeyID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $repeat == '') {
-                echo "<div class='error'>";
-                echo __('Your request failed because your inputs were invalid.');
-                echo '</div>';
+                $page->addError(__('Your request failed because your inputs were invalid.'));
             } else {
                 try {
                     if ($foreignKey == 'gibbonSpaceID') {
@@ -176,18 +177,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>";
-                    echo __('Your request failed due to a database error.');
-                    echo '</div>';
+                    $page->addError(__('Your request failed due to a database error.'));
                 }
 
                 if ($resultSelect->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('Your request failed due to a database error.');
-                    echo '</div>';
+                    $page->addError(__('Your request failed due to a database error.'));
                 } else {
                     $rowSelect = $resultSelect->fetch();
 
+                    $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
                     $available = false;
 
                     $form = Form::create('spaceBookingStep1', $session->get('absoluteURL').'/modules/'.$session->get('module').'/spaceBooking_manage_addProcess.php');
@@ -207,15 +205,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
                     if ($repeat == 'No') {
-                        $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd);
+                        $gibbonCourseClassID = null;
+                        $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd, $gibbonCourseClassID);
+
+                        if (!$available && !empty($gibbonCourseClassID)) {
+                            $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $date);
+
+                            if ($offTimetable) {
+                                $available = true;
+                            }
+                        }
+
                         if ($available == true) {
                             $row = $form->addRow()->addClass('current');
-                            $row->addLabel('dates[]', Format::date($date))->description(__('Available'));
+                            $row->addLabel('dates[]', Format::date($date))->description(__('Available') . ($offTimetable? ' ('.__('Off Timetable').')' : ''));
                             $row->addCheckbox('dates[]')->setValue($date)->checked($date);
                         } else {
                             $row = $form->addRow()->addClass('error');
                             $row->addLabel('dates[]', Format::date($date))->description(__('Not Available'));
-                            $row->addCheckbox('dates[]')->setValue($date)->disabled();
+                            $row->addCheckbox('dates[]')->setValue($date)->disabled(!$canOverride);
                         }
                     } elseif ($repeat == 'Daily' and $repeatDaily >= 2 and $repeatDaily <= 20) {
                         $continue = true;
@@ -239,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled(!$canOverride);
                                 }
                             } else {
                                 ++$failCount;
@@ -271,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled(!$canOverride);
                                 }
                             } else {
                                 ++$failCount;
@@ -287,6 +295,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     }
 
                     if ($available == true) {
+
+                        if ($canOverride) {
+                            $row = $form->addRow();
+                                $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
+                                $row->addCheckbox('override')->setValue('Y');
+                        }
+                            
                         $row = $form->addRow();
                             $row->addSubmit();
                     } else {

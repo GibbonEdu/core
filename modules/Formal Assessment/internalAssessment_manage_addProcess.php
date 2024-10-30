@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -51,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             if ($_POST['gibbonScaleIDAttainment'] == '') {
                 $gibbonScaleIDAttainment = null;
             } else {
-                $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'];
+                $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'] ?? '';
             }
         }
         //Sort out effort
@@ -62,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             if ($_POST['gibbonScaleIDEffort'] == '') {
                 $gibbonScaleIDEffort = null;
             } else {
-                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'];
+                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'] ?? '';
             }
         }
         $comment = $_POST['comment'] ?? '';
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         $gibbonPersonIDCreator = $session->get('gibbonPersonID');
         $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
         $fileUploader->getFileExtensions();
 
         //Lock markbook column table
@@ -142,7 +144,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                     exit();
                     $partialFail = true;
                 }

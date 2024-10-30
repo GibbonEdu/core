@@ -1,0 +1,57 @@
+details:
+    type: behaviour
+    category: Behaviour
+    name: Behaviour Record
+    table: gibbonBehaviour
+    modes: { update: false, insert: true }
+access:
+    module: Behaviour
+    action: Manage Behaviour Records
+primaryKey:
+    gibbonBehaviourID
+uniqueKeys:
+    []
+table:
+  gibbonSchoolYearID: 
+      name: "School Year"
+      desc: "School year name, as set in School Admin. Must already exist."
+      args: { filter: schoolyear,  required: true }
+      relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name }
+  gibbonPersonID:
+      name: "Student"
+      desc: "Username, student ID, or Email (if unique)"
+      args: { filter: nospaces, required: true }
+      relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email|studentID }
+  date: 
+      name: "Date"
+      desc: "Must be unique."
+      args: { filter: date, required: true }
+  type:
+      name: "Type"
+      desc: "Positive or Negative"
+      args: { filter: string, required: true }
+  descriptor:
+      name: "Descriptor"
+      desc: "Optional, as defined in School Admin > Behaviour Settings"
+      args: { filter: string, required: false }
+  level:
+      name: "Level"
+      desc: "Optional, as defined in School Admin > Behaviour Settings"
+      args: { filter: string, required: false }
+  comment:
+      name: "Comment"
+      desc: ""
+      args: { filter: html, required: false }
+  followup:
+      name: "Followup"
+      desc: ""
+      args: { filter: html, required: false }
+  gibbonPersonIDCreator:
+      name: "Created By"
+      desc: "Username or Email (if unique)"
+      args: { filter: string, custom: true }
+      relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
+  timestamp:
+      name: "Timestamp"
+      desc: ""
+      args: { filter: timestamp, function: timestamp }

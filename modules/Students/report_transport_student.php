@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Student Transport'));
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     $transport->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentTransport', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentTransport', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Student Transport'));
 
     $table->addColumn('transport', __('Transport'))

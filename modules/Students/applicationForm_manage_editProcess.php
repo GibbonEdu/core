@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -83,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             $gibbonFormGroupID = null;
             if (isset($_POST['gibbonFormGroupID']) && $_POST['gibbonFormGroupID'] != '') {
-                $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
+                $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
             }
 
             $paymentMade = !empty($_POST['paymentMade']) ? $_POST['paymentMade'] : 'N';
@@ -105,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
             $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-            $email = trim($_POST['email'] ?? '');
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $phone1Type = $_POST['phone1Type'] ?? '';
             $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
             $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1'] ?? '');
@@ -117,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($sen == 'N') {
                 $senDetails = '';
             } else {
-                $senDetails = $_POST['senDetails'];
+                $senDetails = $_POST['senDetails'] ?? '';
             }
             $gibbonSchoolYearIDEntry = $_POST['gibbonSchoolYearIDEntry'] ?? '';
             $gibbonYearGroupIDEntry = $_POST['gibbonYearGroupIDEntry'] ?? '';
@@ -147,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             //GET FAMILY FEILDS
             $gibbonFamily = $_POST['gibbonFamily'] ?? '';
             if ($gibbonFamily == 'TRUE') {
-                $gibbonFamilyID = $_POST['gibbonFamilyID'];
+                $gibbonFamilyID = $_POST['gibbonFamilyID'] ?? '';
             } else {
                 $gibbonFamilyID = null;
             }
@@ -168,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $parent1relationship = $_POST['parent1relationship'] ?? null;
             $parent1languageFirst = $_POST['parent1languageFirst'] ?? null;
             $parent1languageSecond = $_POST['parent1languageSecond'] ?? null;
-            $parent1email = trim($_POST['parent1email'] ?? '');
+            $parent1email = filter_var(trim($_POST['parent1email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $parent1phone1Type = $_POST['parent1phone1Type'] ?? null;
             if (isset($_POST['parent1phone1']) and $parent1phone1Type == '') {
                 $parent1phone1Type = 'Other';
@@ -195,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $parent2relationship = $_POST['parent2relationship'] ?? null;
             $parent2languageFirst = $_POST['parent2languageFirst'] ?? null;
             $parent2languageSecond = $_POST['parent2languageSecond'] ?? null;
-            $parent2email = trim($_POST['parent2email'] ?? '');
+            $parent2email = filter_var(trim($_POST['parent2email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $parent2phone1Type = $_POST['parent2phone1Type'] ?? null;
             if (isset($_POST['parent2phone1']) and $parent2phone1Type == '') {
                 $parent2phone1Type = 'Other';
@@ -267,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $companyAll = $_POST['companyAll'] ?? null;
             $gibbonFinanceFeeCategoryIDList = null;
             if (isset($_POST['gibbonFinanceFeeCategoryIDList'])) {
-                $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'];
+                $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'] ?? '';
                 if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
                     foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
                         $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';
@@ -285,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
             $privacy = null;
             if (isset($_POST['privacyOptions'])) {
-                $privacyOptions = $_POST['privacyOptions'];
+                $privacyOptions = $_POST['privacyOptions'] ?? [];
                 foreach ($privacyOptions as $privacyOption) {
                     if ($privacyOption != '') {
                         $privacy .= $privacyOption.',';
@@ -391,10 +393,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
                         $fileCount = 0;
                         if (isset($_POST['fileCount'])) {
-                            $fileCount = $_POST['fileCount'];
+                            $fileCount = $_POST['fileCount'] ?? '';
                         }
 
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         for ($i = 0; $i < $fileCount; ++$i) {
                             if (empty($_FILES["file$i"]['tmp_name'])) continue;

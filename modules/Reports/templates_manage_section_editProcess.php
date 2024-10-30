@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +32,7 @@ $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 $gibbonReportTemplateSectionID = $_POST['gibbonReportTemplateSectionID'] ?? '';
 $search = $_GET['search'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_section_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&gibbonReportTemplateSectionID='.$gibbonReportTemplateSectionID.'&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_section_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&gibbonReportTemplateSectionID='.$gibbonReportTemplateSectionID.'&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_section_edit.php') == false) {
     $URL .= '&return=error0';
@@ -67,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
             }, []);
 
             // Upload the file, return the /uploads relative path
-            $fileUploader = empty($fileUploader) ? new FileUploader($pdo, $gibbon->session) : $fileUploader;
+            $fileUploader = empty($fileUploader) ? new FileUploader($pdo, $session) : $fileUploader;
             $config[$configName] = $fileUploader->uploadFromPost($file, $configName.'_file');
         }
     }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -74,12 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                 } else {
                     $row = $result->fetch();
                     //Proceed!
-                    $scope = $_POST['scope'];
+                    $scope = $_POST['scope'] ?? '';
                     $gibbonDepartmentID = null;
                     if ($scope == 'Learning Area') {
                         $gibbonDepartmentID = !empty($_POST['gibbonDepartmentID'])? $_POST['gibbonDepartmentID'] : $row['gibbonDepartmentID'];
                     }
-                    $name = $_POST['name'];
+                    $name = $_POST['name'] ?? '';
 
                     if ($scope == '' or ($scope == 'Learning Area' and $gibbonDepartmentID == null) or $name == '') {
                         $URL .= '&return=error3';

@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -56,6 +58,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             {% if student.status != 'Full' %}
                 <span class="tag error ml-2 text-xxs">{{ student.status }}</span>
+            {% endif %}
+
+            {% if student.role == 'Student - Left' %}
+                <span class="tag error ml-2 text-xxs">{{ __('Left') }}</span>
             {% endif %}
         </div>
     </a>

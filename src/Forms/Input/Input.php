@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,6 +25,7 @@ use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\RowDependancyInterface;
 use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\Traits\InputAttributesTrait;
+use Gibbon\Forms\Input\Date;
 
 /**
  * Abstract base class for form input elements.
@@ -85,7 +88,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      * @return bool
      */
     public function isValidatable() {
-        return !empty($this->getID()) && !$this->getReadonly();
+        return !empty($this->getID()) && !$this->getReadonly() && !$this instanceof Toggle && !$this instanceof Date;
     }
 
     /**

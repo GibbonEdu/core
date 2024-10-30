@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -28,7 +30,7 @@ use Gibbon\Domain\User\RoleGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
 
 //Module includes
 include './moduleFunctions.php';
@@ -89,8 +91,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     $other = true;
                 }
             }
-
-            $attachment1 = $_POST['attachment1'] ?? '';
 
             //Proceed!
             $title = $_POST['title'] ?? '';
@@ -169,8 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $gibbonRoleIDAll = (is_array($gibbonRoleIDAll))? implode(',', array_unique($gibbonRoleIDAll)) : $row['gibbonRoleIDAll'];
 
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-            $email = trim($_POST['email'] ?? '');
-            $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
             $address1 = $_POST['address1'] ?? '';
             $address1District = $_POST['address1District'] ?? '';
             $address1Country = $_POST['address1Country'] ?? '';
@@ -189,19 +189,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
             $phone2CountryCode = $_POST['phone2CountryCode'] ?? '';
             $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2'] ?? '');
-            $phone3Type = $_POST['phone3Type'];
+            $phone3Type = $_POST['phone3Type'] ?? '';
             if ($_POST['phone3'] != '' && $phone3Type == '') {
                 $phone3Type = 'Other';
             }
             $phone3CountryCode = $_POST['phone3CountryCode'] ?? '';
             $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3'] ?? '');
-            $phone4Type = $_POST['phone4Type'];
+            $phone4Type = $_POST['phone4Type'] ?? '';
             if ($_POST['phone4'] != '' && $phone4Type == '') {
                 $phone4Type = 'Other';
             }
             $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
             $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-            $website = $_POST['website'] ?? '';
+            $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
             $languageFirst = $_POST['languageFirst'] ?? '';
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
                         $path = $session->get('absolutePath');
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
@@ -350,11 +350,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 }
                             }
                         }
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $attachment1 = empty($_POST['attachment1']) ? '' : $row['image_240'];
                     }
 
                     // CUSTOM FIELDS
                     $customRequireFail = false;
                     $params = compact('student', 'staff', 'parent', 'other');
+                    $params['requiredOverride'] = 'N';
                     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
 
                     // PERSONAL DOCUMENTS
@@ -382,7 +386,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $statusReason = $_POST['statusReason'] ?? '';
 
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason]);
+                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
 
                         //Deal with change to privacy settings
@@ -400,8 +404,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                     $rowDetail = $resultDetail->fetch();
 
                                     // Initialize the notification sender & gateway objects
-                                    $notificationGateway = new NotificationGateway($pdo);
-                                    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                                    $notificationGateway = $container->get(NotificationGateway::class);
+                                    $notificationSender = $container->get(NotificationSender::class);
 
                                     // Raise a new notification event
                                     $event = new NotificationEvent('Students', 'Updated Privacy Settings');
@@ -458,7 +462,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         $partialFail = false;
                         $matchAddressCount = null;
                         if (isset($_POST['matchAddressCount'])) {
-                            $matchAddressCount = $_POST['matchAddressCount'];
+                            $matchAddressCount = $_POST['matchAddressCount'] ?? '';
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {

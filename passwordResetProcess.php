@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,7 +40,8 @@ $_POST = $validator->sanitize($_POST);
 
 //Check email address is not blank
 $input = $_GET['input'] ?? ($_POST['email'] ?? '');
-$step = $_GET['step'];
+$input = filter_var(trim($input), FILTER_SANITIZE_EMAIL);
+$step = $_GET['step'] ?? '';
 
 $URL = Url::fromRoute('passwordReset');
 $URLSuccess1 = Url::fromRoute();
@@ -149,9 +152,9 @@ else {
         }
         else { //This is the confirmation/reset phase
             //Get URL parameters
-        	$input = $_GET['input'];
-        	$key = $_GET['key'];
-        	$gibbonPersonResetID = $_GET['gibbonPersonResetID'];
+        	$input = $_GET['input'] ?? '';
+        	$key = $_GET['key'] ?? '';
+        	$gibbonPersonResetID = $_GET['gibbonPersonResetID'] ?? '';
 
         	//Verify authenticity of this request and check it is fresh (within 48 hours)
         	try {
@@ -170,8 +173,8 @@ else {
         	} else {
                 $row = $result->fetch();
                 $gibbonPersonID = $row['gibbonPersonID'];
-                $passwordNew = $_POST['passwordNew'];
-                $passwordConfirm = $_POST['passwordConfirm'];
+                $passwordNew = $_POST['passwordNew'] ?? '';
+                $passwordConfirm = $_POST['passwordConfirm'] ?? '';
 
                 //Check passwords are not blank
                 if ($passwordNew == '' or $passwordConfirm == '') {

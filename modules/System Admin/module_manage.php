@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,15 +40,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $returns['warning1'] = __('Install failed, but module was added to the system and set non-active.');
     $returns['warning2'] = __('Install was successful, but module could not be activated.');
     $page->return->addReturns($returns);
-    if (!empty($gibbon->session->get('moduleInstallError'))) {
-        $page->addError(__('The following SQL statements caused errors:').' '.$gibbon->session->get('moduleInstallError'));
-        $gibbon->session->set('moduleInstallError', '');
+    if (!empty($session->get('moduleInstallError'))) {
+        $page->addError(__('The following SQL statements caused errors:').' '.$session->get('moduleInstallError'));
+        $session->set('moduleInstallError', '');
     }
 
-    $page->addMessage(sprintf(__('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$gibbon->session->get('absolutePath').'/modules/</u></b>'));
+    $page->addMessage(sprintf(__('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$session->get('absolutePath').'/modules/</u></b>'));
 
     // Get list of modules in /modules directory
-    $moduleFolders = glob($gibbon->session->get('absolutePath').'/modules/*', GLOB_ONLYDIR);
+    $moduleFolders = glob($session->get('absolutePath').'/modules/*', GLOB_ONLYDIR);
 
     // QUERY
     $moduleGateway = $container->get(ModuleGateway::class);

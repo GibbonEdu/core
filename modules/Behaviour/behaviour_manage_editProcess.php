@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,15 +19,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\FormGroups\FormGroupGateway;
-use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
-use Gibbon\Data\Validator;
 use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 require_once '../../gibbon.php';
 
@@ -35,6 +39,7 @@ $settingGateway = $container->get(SettingGateway::class);
 
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+$behaviourGateway = $container->get(BehaviourGateway::class);
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
 $address = $_POST['address'] ?? '';
@@ -59,37 +64,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                if ($highestAction == 'Manage Behaviour Records_all') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID ORDER BY date DESC';
-                } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonPersonIDCreator=:gibbonPersonID ORDER BY date DESC';
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+            
+            if ($highestAction == 'Manage Behaviour Records_all') {
+                $behaviourRecord = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                $canEdit = true;
+            } elseif ($highestAction == 'Manage Behaviour Records_my') {
+                $behaviourRecord = $behaviourGateway->getBehaviourDetailsByCreator($session->get('gibbonSchoolYearID'), $gibbonBehaviourID, $session->get('gibbonPersonID'));
+                $canEdit = true;
+            }
+            
+            if (empty($behaviourRecord) && ($highestAction == 'Manage Behaviour Records_all' || $highestAction == 'Manage Behaviour Records_my')) {
+                $behaviourRecord = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
+                $canEdit = false;
             }
 
-            if ($result->rowCount() != 1) {
+            if (empty($behaviourRecord)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $behaviourRecord = $result->fetch();
-
+                
                 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
                 $date = $_POST['date'] ?? '';
                 $type = $_POST['type'] ?? '';
                 $descriptor = $_POST['descriptor'] ?? null;
                 $level = $_POST['level'] ?? null;
                 $comment = $_POST['comment'] ?? '';
-                $followup = $_POST['followup'] ?? '';
+                $followUp = $_POST['followUp'] ?? '';
                 $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
+                $gibbonBehaviourLinkToID = !empty($_POST['gibbonBehaviourLinkToID']) ? $_POST['gibbonBehaviourLinkToID'] : null;
+                
+                if($canEdit && !empty($gibbonBehaviourLinkToID)) {
+                    $linkToBehaviour = $container->get(BehaviourGateway::class)->getByID($gibbonBehaviourLinkToID);
+                    $linkToMultiIncidentID = '';
 
+                    if(!empty($linkToBehaviour['gibbonMultiIncidentID'])) {
+                        $linkToMultiIncidentID = $linkToBehaviour['gibbonMultiIncidentID'];
+                    } else {
+                        $salt = getSalt();
+                        $linkToMultiIncidentID = hash('sha256', $salt);
+
+                        $updatedNew = $behaviourGateway->updateMultiIncidentIDByBehaviourID($linkToBehaviour['gibbonBehaviourID'], $linkToMultiIncidentID);
+                    }
+
+                    $updated = $behaviourGateway->updateMultiIncidentIDByBehaviourID($gibbonBehaviourID, $linkToMultiIncidentID);
+                }
+                                      
                 $customRequireFail = false;
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
 
@@ -97,16 +116,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $URL .= '&return=error1';
                     header("Location: {$URL}");
                 } else {
-                    try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'fields' => $fields, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
-                        $sql = 'UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, fields=:fields, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
+                    if ($canEdit) {
+                        try {
+                            $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID];
+                            $sql = 'UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $URL .= '&return=error2';
+                            header("Location: {$URL}");
+                            exit();
+                        }
                     }
+
+                    // Add a new follow up log, if needed
+                    if (!empty($followUp)) {
+                        $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+
+                        $data = [
+                            'gibbonBehaviourID' => $gibbonBehaviourID,
+                            'gibbonPersonID' => $session->get('gibbonPersonID'),
+                            'followUp' => $followUp,
+                        ];
+
+                        $inserted = $behaviourFollowUpGateway->insert($data);
+                        
+                        if (!$inserted) {
+                            $URL .= '&return=error2';
+                            header("Location: {$URL}");
+                            exit;
+                        }
+                    }   
 
                     // Send a notification to student's tutors and anyone subscribed to the notification event
                     $studentGateway = $container->get(StudentGateway::class);
@@ -150,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             }
                         }
 
-                        $event->sendNotificationsAsBcc($pdo, $gibbon->session);
+                        $event->sendNotifications($pdo, $session);
 
                         // Check if this is an IN student 
                         $studentIN = $container->get(INGateway::class)->selectIndividualNeedsDescriptorsByStudent($gibbonPersonID)->fetchAll();
@@ -164,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                             $eventIN->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
 
-                            $eventIN->sendNotificationsAsBcc($pdo, $gibbon->session);
+                            $eventIN->sendNotifications($pdo, $session);
                         }
                     }
 

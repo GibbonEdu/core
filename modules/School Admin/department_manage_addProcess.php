@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $subjectListing = $_POST['subjectListing'] ?? '';
     $blurb = $_POST['blurb'] ?? '';
 
-    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+    $fileUploader = new Gibbon\FileUploader($pdo, $session);
     $fileUploader->getFileExtensions();
 
     if ($type == '' or $name == '' or $nameShort == '') {
@@ -87,12 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         //Scan through staff
         $staff = array();
         if (isset($_POST['staff'])) {
-            $staff = $_POST['staff'];
+            $staff = $_POST['staff'] ?? '';
         }
         if ($type == 'Learning Area') {
-            $role = $_POST['roleLA'];
+            $role = $_POST['roleLA'] ?? '';
         } elseif ($type == 'Administration') {
-            $role = $_POST['roleAdmin'];
+            $role = $_POST['roleAdmin'] ?? '';
         }
         if ($role == '') {
             $role = 'Other';

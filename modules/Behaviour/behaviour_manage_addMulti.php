@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->add(__('Add Multiple'));
 
     $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? null;
+    $gibbonMultiIncidentID = $_GET['gibbonMultiIncidentID'] ?? null;
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
@@ -86,7 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
             $multiSelect = $col->addMultiSelect('gibbonPersonIDMulti')
-                ->addSortableAttribute('Form', $students['form']);
+                ->addSortableAttribute('Form', $students['form'])
+                ->required();
 
             $multiSelect->source()->fromArray($students['students']);
 
@@ -148,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('followup', __('Follow Up'));
-        $col->addTextArea('followup')
+        $col->addTextArea('followUp')
             ->setRows(5)
             ->setClass('fullWidth');
 

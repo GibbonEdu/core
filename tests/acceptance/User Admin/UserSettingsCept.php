@@ -19,6 +19,7 @@ $newFormValues = array(
     'privacy'            => 'Y',
     'privacyBlurb'       => 'Privacy Blurb Test',
     'privacyOptions'     => 'Privacy 1,Privacy 2,Privacy 3',
+    'privacyOptionVisibility' => 'Y',
     'personalBackground' => 'Y',
 );
 

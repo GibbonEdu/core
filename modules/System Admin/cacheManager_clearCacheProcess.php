@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,29 +30,29 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 } else {
-    $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
+    $cachePath = $session->has('cachePath') ? $session->get('cachePath') : '/uploads/cache';
 
     // Clear the templates cache folder
     if (!empty($_POST['templateCache']) && $_POST['templateCache'] == 'Y') {
-        removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates');
+        removeDirectoryContents($session->get('absolutePath').$cachePath.'/templates');
     }
 
     // Clear the reports cache folder
     if (!empty($_POST['reportsCache']) && $_POST['reportsCache'] == 'Y') {
-        removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/reports');
+        removeDirectoryContents($session->get('absolutePath').$cachePath.'/reports');
     }
 
     // Update the cache invalidation string, for development
     if (!empty($_POST['frontEndCache']) && $_POST['frontEndCache'] == 'Y') {
-        $gibbon->session->set('cacheString', time());
-        $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $gibbon->session->get('cacheString'));
+        $session->set('cacheString', time());
+        $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $session->get('cacheString'));
     }
 
     $URL .= '&return=success0';

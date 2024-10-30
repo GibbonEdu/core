@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,11 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $params = [];
     $viewBy = null;
     if (isset($_GET['viewBy'])) {
-        $viewBy = $_GET['viewBy'];
+        $viewBy = $_GET['viewBy'] ?? '';
     }
     $subView = null;
     if (isset($_GET['subView'])) {
-        $subView = $_GET['subView'];
+        $subView = $_GET['subView'] ?? '';
     }
     if ($viewBy != 'date' and $viewBy != 'class') {
         $viewBy = 'date';
@@ -58,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $dateStamp = null;
     if ($viewBy == 'date') {
         if (isset($_GET['date'])) {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
         }
         if (isset($_GET['dateHuman'])) {
             $date = Format::dateConvert($_GET['dateHuman']);
@@ -75,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     } elseif ($viewBy == 'class') {
         $class = null;
         if (isset($_GET['class'])) {
-            $class = $_GET['class'];
+            $class = $_GET['class'] ?? '';
         }
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $params += [
             'viewBy' => 'class',
             'date' => $class,
@@ -88,16 +90,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
     $show = null;
     if (isset($_GET['show'])) {
-        $show = $_GET['show'];
+        $show = $_GET['show'] ?? '';
     }
 
     if (isset($_GET['gibbonCourseClassIDFilter'])) {
-        $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'] ?? '';
         $params['gibbonCourseClassID'] = $gibbonCourseClassID;
     }
     $gibbonPersonID = null;
     if (isset($_GET['search'])) {
-        $gibbonPersonID = $_GET['search'];
+        $gibbonPersonID = $_GET['search'] ?? '';
     }
 
     //My children's classes
@@ -114,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             $result = $connection2->prepare($sql);
             $result->execute($data);
         if ($result->rowCount() < 1) {
-            $page->addMessage(__('There are no records to display.'));
+            echo $page->getBlankSlate();
         } else {
             //Get child list
             $count = 0;
@@ -134,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             }
 
             if ($count == 0) {
-                $page->addMessage(__('There are no records to display.'));
+                echo $page->getBlankSlate();
             } elseif ($count == 1) {
                 $gibbonPersonID = $gibbonPersonIDArray[0];
             } else {
@@ -162,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addSearchSubmit($gibbon->session);
+                    $row->addSearchSubmit($session);
 
                 echo $form->getOutput();
             }
@@ -175,9 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                     $resultChild = $connection2->prepare($sqlChild);
                     $resultChild->execute($dataChild);
                 if ($resultChild->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $rowChild = $resultChild->fetch();
 
@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                         echo Format::alert(__('Your request failed because you do not have access to this action.'));
                     } else {
                         // DEADLINES
-                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
+                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
 
                         echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                             'gibbonPersonID' => $gibbonPersonID,
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                         ]);
 
                         // HOMEWORK TABLE
-                        $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
+                        $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
                         $table->setTitle($homeworkNamePlural);
 
                         echo $table->getOutput();
@@ -247,7 +247,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 if ($result->rowCount() != 1) {
                     $proceed = false;
@@ -260,10 +259,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         } else {
             // DEADLINES
             if ($highestAction == 'Lesson Planner_viewEditAllClasses' and $show == 'all') {
-                $deadlines = $plannerGateway->selectAllUpcomingHomework($gibbon->session->get('gibbonSchoolYearID'))->fetchAll();
+                $deadlines = $plannerGateway->selectAllUpcomingHomework($session->get('gibbonSchoolYearID'))->fetchAll();
             } else {
                 $gibbonPersonID = $session->get('gibbonPersonID');
-                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
             }
 
             echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
@@ -274,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ]);
 
             // HOMEWORK TABLE
-            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category, $gibbonCourseClassID);
+            $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, $category, $gibbonCourseClassID);
             $table->setTitle($homeworkNamePlural);
 
             echo $table->getOutput();

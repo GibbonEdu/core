@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -283,6 +285,8 @@ class Checkbox extends Input
 
                     if ($value != 'on') $this->setValue($value);
 
+                    $this->addClass('w-4 h-4');
+
                     if ($this->inline) {
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
                         $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
@@ -296,7 +300,7 @@ class Checkbox extends Input
                         $output .= '</div>';
                     } else {
                         $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
-                        $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
+                        $output .= '<label class="leading-compact mr-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                         $output .= '</div>';
                     }

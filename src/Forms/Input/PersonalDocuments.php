@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -102,7 +104,7 @@ class PersonalDocuments extends Input
 
             $output .= '</div>';
 
-            $output .= !empty($document['description']) ? '<p class="m-0 p-4 pb-0 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
+            $output .= !empty($document['description']) ? '<p class="m-0 p-0 -mt-2 ml-1 pl-12 pb-2 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
 
             $output .= '<div class="document-details border-t sm:grid grid-cols-2 grid-flow-col auto-rows-fr py-2" style="grid-template-rows: repeat('.(ceil(count($fields)/2)).',auto);">';
 
@@ -126,7 +128,7 @@ class PersonalDocuments extends Input
                     case 'documentType':
                         $label = $row->addLabel($field, __('Residency/Visa Type'));
                         $input = !empty($this->residencyStatus)
-                            ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()
+                            ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()->required($document['required'] == 'Y' && $index == 0)
                             : $row->addTextField($field)->maxLength(60)->required($document['required'] == 'Y');
                         break;
                     case 'country':

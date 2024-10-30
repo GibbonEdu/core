@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -209,6 +211,46 @@ class ReportingProgressGateway extends QueryableGateway
         }
         if ($gibbonReportingScopeID) {
             $query->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID', ['gibbonReportingScopeID' => $gibbonReportingScopeID]);
+        }
+        if (empty($gibbonReportingCycleID) && empty($gibbonReportingScopeID)) {
+            $query->where(':today BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd', ['today' => date('Y-m-d')]);
+        }
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryReportingProgressByDepartment(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonReportingCycleID = null)
+    {
+        // COURSES
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonDepartment.name as department', 'gibbonDepartment.gibbonDepartmentID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'gibbonReportingCycle.gibbonReportingCycleID', "GROUP_CONCAT(DISTINCT CONCAT(teacher.preferredName, ' ', teacher.surname) SEPARATOR '<br/>') as teachers","CONCAT(gibbonReportingScope.gibbonReportingScopeID, '-', gibbonCourseClass.gibbonCourseClassID) as criteriaSelector", "COUNT(DISTINCT studentClass.gibbonCourseClassPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
+            ->from('gibbonReportingCycle')
+            ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
+            ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
+            ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID')
+            ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
+            ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+            ->innerJoin('gibbonDepartment', 'gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID')
+            ->innerJoin('gibbonCourseClassPerson as studentClass', "studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND studentClass.role='Student'")
+            ->innerJoin('gibbonPerson as student', 'student.gibbonPersonID=studentClass.gibbonPersonID')
+            ->leftJoin('gibbonCourseClassPerson as teacherClass', "teacherClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND teacherClass.role='Teacher'")
+            ->leftJoin('gibbonPerson as teacher', 'teacher.gibbonPersonID=teacherClass.gibbonPersonID')
+            ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID AND gibbonReportingProgress.gibbonPersonIDStudent=studentClass.gibbonPersonID AND gibbonReportingProgress.gibbonCourseClassID=studentClass.gibbonCourseClassID')
+            ->where('gibbonReportingCycle.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonReportingScope.scopeType='Course'")
+            ->where("gibbonReportingCriteria.target='Per Student'")
+            ->where("gibbonCourseClass.reportable='Y'")
+            ->where("studentClass.reportable='Y'")
+            ->where("student.status='Full'")
+            ->where("(student.dateStart IS NULL OR student.dateStart<=:today)")
+            ->where("(student.dateEnd IS NULL OR student.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
+            ->groupBy(['gibbonCourseClass.gibbonCourseClassID']);
+
+        if ($gibbonReportingCycleID) {
+            $query->where('gibbonReportingCycle.gibbonReportingCycleID=:gibbonReportingCycleID', ['gibbonReportingCycleID' => $gibbonReportingCycleID]);
         }
         if (empty($gibbonReportingCycleID) && empty($gibbonReportingScopeID)) {
             $query->where(':today BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd', ['today' => date('Y-m-d')]);

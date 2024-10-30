@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,12 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
-        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
         $urlParams = compact('gibbonFinanceBudgetCycleID');
 
@@ -50,9 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
         $status2 = $_GET['status2'] ?? '';
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $budgetsAccess = false;
             if ($highestAction == 'Manage Expenses_all') { //Access to everything {
@@ -70,9 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
             }
 
             if ($budgetsAccess == false) {
-                echo "<div class='error'>";
-                echo __('You do not have Full or Write access to any budgets.');
-                echo '</div>';
+                $page->addError(__('You do not have Full or Write access to any budgets.'));
             } else {
                 //Get and check settings
                 $settingGateway = $container->get(SettingGateway::class);
@@ -80,9 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                 $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
                 $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
-                    echo "<div class='error'>";
-                    echo __('An error has occurred with your expense and budget settings.');
-                    echo '</div>';
+                    $page->addError(__('An error has occurred with your expense and budget settings.'));
                 } else {
                     //Check if there are approvers
                     try {
@@ -91,13 +85,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                     }
 
                     if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('An error has occurred with your expense and budget settings.');
-                        echo '</div>';
+                        $page->addError(__('An error has occurred with your expense and budget settings.'));
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
                         try {
@@ -124,13 +115,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                         if ($result->rowCount() != 1) {
-                            echo "<div class='error'>";
-                            echo __('The specified record cannot be found.');
-                            echo '</div>';
+                            $page->addError(__('The specified record cannot be found.'));
                         } else {
                             //Let's go!
                             $row = $result->fetch();
@@ -290,7 +278,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 													$resultCheck = $connection2->prepare($sqlCheck);
 													$resultCheck->execute($dataCheck);
 												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
 													$budgetAllocationFail = true;
 												}
 												if ($resultCheck->rowCount() != 1) {
@@ -336,7 +323,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 													$resultCheck = $connection2->prepare($sqlCheck);
 													$resultCheck->execute($dataCheck);
 												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
 													$budgetAllocatedFail = true;
 												}
 												if ($budgetAllocatedFail == false) {

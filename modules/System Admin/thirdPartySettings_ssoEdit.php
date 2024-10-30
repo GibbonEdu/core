@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -137,6 +139,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row = $form->addRow()->addClass('settingActive');
             $row->addLabel('userEndpoint', __('API User Endpoint'));
             $row->addURL('userEndpoint')->required();
+    
+        $row = $form->addRow()->addHeading('Additional Parameters', __('Additional Parameters'))
+                    ->addClass('settingActive')
+                    ->append(__('Some systems require additional parameters for a login request in order to read the user\'s basic profile.'));
+            
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('scopes', __('Scopes'))
+                ->description(__('Scope is a mechanism in OAuth 2.0 to limit an application\'s access to a user\'s account. An application can request one or more scopes. The standard scopes for an OpenID Connect compliant system are: openid profile email.'));
+            $row->addTextField('scopes');
+
+        $row = $form->addRow()->addClass('settingActive');
+            $row->addLabel('usernameAttribute', __('Username attribute'))
+                ->description(__('Name of the attribute containing usernames in the OAuth service.'));
+            $row->addTextField('usernameAttribute')->required();                       
     }
 
     $row = $form->addRow();

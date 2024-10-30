@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -71,7 +73,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                 // File Upload
                 if (!empty($_FILES['attachment']['tmp_name'])) {
                     // Upload the file, return the /uploads relative path
-                    $fileUploader = new FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new FileUploader($pdo, $session);
                     $attachment = $fileUploader->uploadFromPost($_FILES['attachment']);
 
                     if (empty($attachment)) {
@@ -80,7 +82,8 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                         exit;
                     }
                 } else {
-                    $attachment = $_POST['attachment'] ?? null;
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $attachment = empty($_POST['attachment']) ? '' : $values['attachment'];
                 }
 
                 if ($name == '' or $gibbonAlertLevelID == '') {
@@ -107,7 +110,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
 
                     // Has the medical condition risk changed?
                     if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['gibbonAlertLevelID'] == '001' || $alert['gibbonAlertLevelID'] == '002')) {
-                        $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
+                        $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
 
                         // Raise a new notification event
                         $event = new NotificationEvent('Students', 'Medical Condition');
@@ -122,7 +125,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                         $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
 
                         // Send all notifications
-                        $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+                        $sendReport = $event->sendNotifications($pdo, $session);
                     }
 
                     $URL .= '&return=success0';

@@ -31,10 +31,11 @@ $I->amOnModulePage('User Admin', 'userSettings.php');
 $originalUserSettings = $I->grabAllFormValues();
 
 $newUserSettings = array_replace($originalUserSettings, array(
-    'nationality'        => 'Nationality 1, Nationality 2, Nationality 3',
+    'nationality'        => 'Nationality 1,Nationality 2,Nationality 3',
     'privacy'            => 'Y',
     'privacyBlurb'       => 'Privacy Blurb Test',
-    'privacyOptions'     => 'Privacy 1, Privacy 2, Privacy 3',
+    'privacyOptions'     => 'Privacy 1,Privacy 2,Privacy 3',
+    'privacyOptionVisibility' => 'Y',
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');
@@ -76,7 +77,7 @@ $formValues = array(
     'officialName'                => 'Testing McTest',
     'nameInCharacters'            => 'TT',
     'gender'                      => 'M',
-    'dob'                         => '01/01/2000',
+    'dob'                         => '2001-01-01',
     'languageHomePrimary'         => 'English',
     'languageHomeSecondary'       => 'German',
     'languageFirst'               => 'Spanish',
@@ -93,19 +94,19 @@ $formValues = array(
     'sen'                         => 'Y',
     'senDetails'                  => 'Testing SEN',
     'medicalInformation'          => 'Testing Medical',
-    'dateStart'                   => '01/01/2020',
+    'dateStart'                   => '2001-01-01',
     'referenceEmail'              => 'reference@testingemail.test',
     'dayType'                     => 'Day Type 1',
     'schoolName1'                 => 'Previous School 1',
     'schoolAddress1'              => 'Previous Address 1',
     'schoolGrades1'               => 'Previous Grade 1',
     'schoolLanguage1'             => 'Language 1',
-    'schoolDate1'                 => '01/01/2015',
+    'schoolDate1'                 => '2001-01-01',
     'schoolName2'                 => 'Previous School 2',
     'schoolAddress2'              => 'Previous Address 2',
     'schoolGrades2'               => 'Previous Grade 2',
     'schoolLanguage2'             => 'Language 2',
-    'schoolDate2'                 => '01/01/2011',
+    'schoolDate2'                 => '2001-01-01',
     'languageChoice'              => 'Latin',
     'languageChoiceExperience'    => 'Language Choice Test',
     'scholarshipInterest'         => 'Y',

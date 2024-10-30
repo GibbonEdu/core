@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,15 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         $lastPerson = '';
 
         $form = Form::create('generateInvoices', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_paymentProcessBulk.php');
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
-        $form->setClass('w-full blank');
+        $form->setClass('w-full blank bulkActionForm');
         $form->addHiddenValue('address', $session->get('address'));
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             $row->addContent(Format::name('', $student['preferredName'], $student['surname'], 'Student', true));
             $row->addContent($student['name']);
             $row->addCurrency("payment[$gibbonActivityStudentID]")->required()->setValue($student['payment']);
-            $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
+            $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('bulkCheckbox');
         }
 
         echo $form->getOutput();
@@ -110,9 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $result->execute($data);
 
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         $lastPerson = '';
 
@@ -156,11 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo '<td>';
             $invoiceNumber = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'invoiceNumber');
             if ($invoiceNumber == 'Person ID + Invoice ID') {
-                echo ltrim($row['gibbonPersonID'], '0').'-'.ltrim($row['gibbonFinanceInvoiceID'], '0');
+                echo ltrim($row['gibbonPersonID'] ?? '', '0').'-'.ltrim($row['gibbonFinanceInvoiceID'] ?? '', '0');
             } elseif ($invoiceNumber == 'Student ID + Invoice ID') {
-                echo ltrim($row['studentID'], '0').'-'.ltrim($row['gibbonFinanceInvoiceID'], '0');
+                echo ltrim($row['studentID'] ?? '', '0').'-'.ltrim($row['gibbonFinanceInvoiceID'] ?? '', '0');
             } else {
-                echo ltrim($row['gibbonFinanceInvoiceID'], '0');
+                echo ltrim($row['gibbonFinanceInvoiceID'] ?? '', '0');
             }
             echo '</td>';
             echo '</tr>';

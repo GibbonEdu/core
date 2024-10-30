@@ -12,7 +12,7 @@ class LibraryGateway extends QueryableGateway
     use TableAware;
     private static $tableName = 'gibbonLibraryItem';
     private static $primaryKey = 'gibbonLibraryItemID';
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['gibbonLibraryItem.name', 'gibbonLibraryItem.producer', 'gibbonLibraryItem.id'];
 
     public function queryLendingDetail(QueryCriteria $criteria)
     {
@@ -156,6 +156,9 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryItem.gibbonPersonIDCreator',
                 'gibbonLibraryItem.timestampCreator',
                 'gibbonLibraryItem.gibbonPersonIDUpdate',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , "$.Description") as description',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , "$.Subjects") as subjects',
+                'JSON_EXTRACT(gibbonLibraryItem.fields , \'$."Search Terms"\') as searchTerms',
                 'gibbonLibraryItem.timestampUpdate'
             ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
@@ -185,9 +188,25 @@ class LibraryGateway extends QueryableGateway
                     ->where("gibbonLibraryItem.fields LIKE CONCAT('%\"Collection\":\"', :collection, '\"%')")
                     ->bindValue('collection', $collection);
             },
+            'location' => function ($query, $location) {
+                return $query
+                    ->where('gibbonSpace.name LIKE :location')
+                    ->bindValue('location', $location);
+            },
+            'agecheck' => function ($query, $readerAge) {
+                return $query
+                    ->where('gibbonLibraryItem.fields->\'$."Reader Age (Youngest)"\' != "" 
+                            AND gibbonLibraryItem.fields->\'$."Reader Age (Oldest)"\' != "" 
+                            AND gibbonLibraryItem.fields->\'$."Reader Age (Youngest)"\'+0 <= :readerAge 
+                            AND gibbonLibraryItem.fields->\'$."Reader Age (Oldest)"\'+0 >= :readerAge')
+                    ->bindValue('readerAge', $readerAge);
+            },
             'everything' => function ($query, $needle) {
                 $globalSearch = "(";
                 foreach ($query->getCols() as $col) {
+                    if(preg_match('/.* as .*/', $col)) {
+                        $col = preg_replace('/ as .*/', '', $col);
+                    }
                     $globalSearch .= $col . " LIKE :needle OR ";
                 }
                 $globalSearch = preg_replace("/ OR $/", ")", $globalSearch);
@@ -207,16 +226,36 @@ class LibraryGateway extends QueryableGateway
             ->cols([
                 'gibbonLibraryItem.gibbonLibraryItemID',
                 'gibbonLibraryItem.gibbonLibraryItemIDParent',
+                'gibbonLibraryItem.gibbonLibraryTypeID',
                 'gibbonLibraryItem.id',
                 'gibbonLibraryItem.name',
                 'gibbonLibraryItem.producer',
+                'gibbonLibraryItem.fields',
                 'gibbonLibraryItem.vendor',
+                'gibbonLibraryItem.purchaseDate',
+                'gibbonLibraryItem.invoiceNumber',
+                'gibbonLibraryItem.imageType',
+                'gibbonLibraryItem.imageLocation',
+                'gibbonLibraryItem.comment',
+                'gibbonLibraryItem.gibbonSpaceID',
                 'gibbonSpace.name as spaceName',
                 'gibbonLibraryItem.locationDetail',
                 'gibbonLibraryItem.ownershipType',
                 'gibbonLibraryItem.gibbonPersonIDOwnership',
+                'gibbonLibraryItem.physicalCondition',
+                'gibbonLibraryItem.bookable',
                 'gibbonLibraryItem.borrowable',
                 'gibbonLibraryItem.status',
+                'gibbonLibraryItem.gibbonPersonIDStatusResponsible',
+                'gibbonLibraryItem.gibbonPersonIDStatusRecorder',
+                'gibbonLibraryItem.timestampStatus',
+                'gibbonLibraryItem.returnExpected',
+                'gibbonLibraryItem.returnAction',
+                'gibbonLibraryItem.gibbonPersonIDReturnAction',
+                'gibbonLibraryItem.gibbonPersonIDCreator',
+                'gibbonLibraryItem.timestampCreator',
+                'gibbonLibraryItem.gibbonPersonIDUpdate',
+                'gibbonLibraryItem.timestampUpdate',
                 'gibbonPerson.title as title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
@@ -241,10 +280,17 @@ class LibraryGateway extends QueryableGateway
                     ->bindValue('name', '%' . $name . '%');
             },
             'parent' => function ($query, $parentID) {
-                return $query
+                if($parentID == 'NULL') {
+                    $query = $query
+                    ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                    ->where('(gibbonLibraryItem.id IS NULL OR parent.id IS NULL)');
+                } else {
+                    $query = $query
                     ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
                     ->where('(gibbonLibraryItem.id = :parentID OR parent.id = :parentID)')
                     ->bindValue('parentID', $parentID);
+                }
+                return $query;
             },
             'type' => function ($query, $type) {
                 return $query
@@ -255,6 +301,11 @@ class LibraryGateway extends QueryableGateway
                 return $query
                     ->where('gibbonLibraryItem.gibbonSpaceID = :location')
                     ->bindValue('location', $location);
+            },
+            'locationDetail' => function ($query, $locationDetail) {
+                return $query
+                    ->where('gibbonLibraryItem.locationDetail LIKE :locationDetail')
+                    ->bindValue('locationDetail', '%'.$locationDetail.'%');
             },
             'status' => function ($query, $status) {
                 return $query
@@ -270,6 +321,16 @@ class LibraryGateway extends QueryableGateway
                 return $query
                     ->where('gibbonLibraryItem.fields LIKE :typeSpecificFields')
                     ->bindValue('typeSpecificFields', '%'.$typeSpecificFields.'%');
+            },
+            'everything' => function ($query, $needle) {
+                $globalSearch = "(";
+                foreach ($query->getCols() as $col) {
+                    $globalSearch .= $col . " LIKE :needle OR ";
+                }
+                $globalSearch = preg_replace("/ OR $/", ")", $globalSearch);
+                return $query
+                    ->where($globalSearch)
+                    ->bindValue('needle', '%' . $needle . '%');
             }
         ]);
 
@@ -321,6 +382,7 @@ class LibraryGateway extends QueryableGateway
             SET gibbonLibraryItem.fields=parent.fields, 
                 gibbonLibraryItem.name=parent.name,
                 gibbonLibraryItem.producer=parent.producer,
+                gibbonLibraryItem.vendor=parent.vendor,
                 gibbonLibraryItem.imageType=parent.imageType,
                 gibbonLibraryItem.imageLocation=parent.imageLocation,
                 gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
@@ -342,6 +404,7 @@ class LibraryGateway extends QueryableGateway
             SET gibbonLibraryItem.fields=parent.fields, 
                 gibbonLibraryItem.name=parent.name,
                 gibbonLibraryItem.producer=parent.producer,                
+                gibbonLibraryItem.vendor=parent.vendor,                
                 gibbonLibraryItem.imageType=parent.imageType,
                 gibbonLibraryItem.imageLocation=parent.imageLocation,
                 gibbonLibraryItem.gibbonSpaceID=parent.gibbonSpaceID,
@@ -350,5 +413,82 @@ class LibraryGateway extends QueryableGateway
             WHERE gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID";
 
         return $this->db()->update($sql, $data);
+    }
+
+    public function selectItemsByTypeFields($libraryType, $field, $fieldValue)
+    {
+        if ($field == 'Search Terms') {
+            $fieldValue = '"%'.$fieldValue.'%"';
+        }
+        $field = '$."'.$field.'"';
+        $data = array('libraryType' => $libraryType, 'field' => $field, 'fieldValue' => $fieldValue);
+        $sql = "SELECT gibbonLibraryItemID FROM gibbonLibraryItem
+                JOIN gibbonLibraryType ON (gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID)
+                WHERE gibbonLibraryItem.gibbonLibraryTypeID = :libraryType
+                AND gibbonLibraryItem.gibbonLibraryItemIDParent IS NULL";
+        if($field == '$."Search Terms"') {
+            $sql .= " AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) LIKE :fieldValue;";
+        } else {
+            $sql .= " AND JSON_EXTRACT(gibbonLibraryItem.fields , :field) = :fieldValue;";
+        }
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function queryItemsForShelves(QueryCriteria $criteria)
+    {
+      
+        $query = $this
+        ->newQuery()
+        ->from($this->getTableName())
+        ->cols([
+          "gibbonLibraryItem.id",
+          "gibbonLibraryItem.name",
+          "gibbonLibraryItem.producer",
+          "gibbonLibraryItem.gibbonLibraryItemID",
+          "gibbonLibraryItem.gibbonLibraryTypeID",
+          "gibbonLibraryItem.imageLocation",
+          "gibbonLibraryItem.status",
+        ])
+        ->where("gibbonLibraryItem.imageLocation IS NOT NULL AND gibbonLibraryItem.imageLocation != ''")
+        ->where("gibbonLibraryItem.status IN ('Available','On Loan','Repair')");
+
+        $criteria->addFilterRules([
+        'name' => function ($query, $name) {
+            return $query
+            ->where('(gibbonLibraryItem.name like :name OR gibbonLibraryItem.producer like :name OR gibbonLibraryItem.id like :name)')
+            ->bindValue('name', '%'.$name.'%');
+        },
+        'parent' => function ($query, $parentID) {
+            if($parentID == 'NULL') {
+                $query = $query
+                ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                ->where('(gibbonLibraryItem.id IS NULL OR parent.id IS NULL)');
+            } else {
+                $query = $query
+                ->leftJoin('gibbonLibraryItem AS parent', '(parent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemIDParent)')
+                ->where('(gibbonLibraryItem.id = :parentID OR parent.id = :parentID)')
+                ->bindValue('parentID', $parentID);
+            }
+            return $query;
+        },
+        ]);
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function selectDistinctVendorList()
+    {
+        $data = [];
+        $sql = "SELECT DISTINCT vendor FROM gibbonLibraryItem ORDER BY vendor";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectDistinctLocationDetails()
+    {
+        $data = [];
+        $sql = "SELECT DISTINCT locationDetail FROM gibbonLibraryItem ORDER BY locationDetail";
+
+        return $this->db()->select($sql, $data);
     }
 }

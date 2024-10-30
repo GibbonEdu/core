@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -56,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $initials = $_POST['initials'];
+            $initials = $_POST['initials'] ?? '';
             if ($initials == '') {
                 $initials = null;
             }
@@ -68,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             } else {
                 $dateStart = Format::dateConvert($dateStart);
             }
-            $dateEnd = $_POST['dateEnd'];
+            $dateEnd = $_POST['dateEnd'] ?? '';
             if ($dateEnd == '') {
                 $dateEnd = null;
             } else {
@@ -99,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 }
 
                 $customRequireFail = false;
-                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', [], $customRequireFail);
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', ['requiredOverride' => 'N'], $customRequireFail);
 
                 if ($customRequireFail) {
                     $URL .= '&return=error1';

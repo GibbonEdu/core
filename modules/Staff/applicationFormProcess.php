@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -83,17 +85,17 @@ if ($proceed == false) {
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
     $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-    $email = $_POST['email'] ?? '';
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
     $phone1Type = null;
     if (isset($_POST['phone1Type'])) {
-        $phone1Type = $_POST['phone1Type'];
+        $phone1Type = $_POST['phone1Type'] ?? '';
         if ($_POST['phone1'] != '' and $phone1Type == '') {
             $phone1Type = 'Other';
         }
     }
     $phone1CountryCode = null;
     if (isset($_POST['phone1CountryCode'])) {
-        $phone1CountryCode = $_POST['phone1CountryCode'];
+        $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
     }
     $phone1 = null;
     if (isset($_POST['phone1'])) {
@@ -132,10 +134,10 @@ if ($proceed == false) {
             if (!empty($requiredDocuments)) {
                 $fileCount = 0;
                 if (isset($_POST['fileCount'])) {
-                    $fileCount = $_POST['fileCount'];
+                    $fileCount = $_POST['fileCount'] ?? '';
                 }
 
-                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                 for ($i = 0; $i < $fileCount; ++$i) {
                     if (empty($_FILES["file$i"]['tmp_name'])) continue;
@@ -179,7 +181,6 @@ if ($proceed == false) {
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo $e->getMessage();
                         exit();
                         $partialFail = true;
                         $thisFail = true;
@@ -213,7 +214,7 @@ if ($proceed == false) {
                         $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));
                         $event->setActionLink("/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
 
-                        $event->sendNotifications($pdo, $gibbon->session);
+                        $event->sendNotifications($pdo, $session);
 
                         //Email reference form link to referee
                         $applicationFormRefereeLink = unserialize($settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink'));

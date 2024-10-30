@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,7 +36,7 @@ $status = $_POST['status'] ?? 'Draft';
 $twoSided = $_POST['twoSided'] ?? 'N';
 $action = $_POST['action'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
     $URL .= '&return=error0';
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
         $options = compact('status', 'twoSided');
         $process = $container->get(GenerateReportProcess::class);
 
-        $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $gibbon->session->get('gibbonPersonID'));
+        $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $session->get('gibbonPersonID'));
         $partialFail &= !$success;
         
         sleep(1.0);
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
             if (!empty($entry)) {
                 // Remove the file itself
-                $path = $gibbon->session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
+                $path = $session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
                 if (!empty($archive) && file_exists($path)) {
                     unlink($path);
                 }

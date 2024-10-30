@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,6 +38,7 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
+use Gibbon\Module\Messenger\Signature;
 
 /**
  * MessageProcess
@@ -101,12 +104,13 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $emailReceipt = $message['emailReceipt'] ?? 'N';
         $emailReceiptText = $message['emailReceiptText'] ?? '';
         $individualNaming = $message['individualNaming'] ?? 'N';
+        $includeSignature = $message['includeSignature'] ?? 'N';
         $confidential = $message['confidential'] ?? 'N';
 
         // SMS Credit notification
         if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
-            $notificationGateway = new NotificationGateway($pdo);
-            $notificationSender = new NotificationSender($notificationGateway, $session);
+            $notificationGateway = $container->get(NotificationGateway::class);
+            $notificationSender = $container->get(NotificationSender::class);
             $organisationAdministrator = $settingGateway->getSettingByScope('System', 'organisationAdministrator');
             $notificationString = __('Low SMS credit warning.');
             $notificationSender->addNotification($organisationAdministrator, $notificationString, "Messenger", "/index.php?q=/modules/Messenger/messenger_post.php");
@@ -164,6 +168,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             
             // Turn copy-pasted div breaks into paragraph breaks
             $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
+
+            if ($includeSignature == 'Y') {
+                $signature = $container->get(Signature::class)->getSignature($gibbonPersonID);
+                $body .= $signature;
+            }
 
             $mail->Subject = $subject;
             $mail->renderBody('mail/email.twig.html', [
@@ -233,12 +242,12 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
                     //Deal with email receipt and body finalisation
                     if ($emailReceipt == 'Y') {
-                        $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry['gibbonPersonID']."&key=".$reportEntry['key']."'>".$emailReceiptText."</a>";
-                        if (is_numeric(strpos($body, '[confirmLink]'))) {
+                        $bodyReadReceipt = "<hr style='border: 1px solid #dddddd;'><a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry['gibbonPersonID']."&key=".$reportEntry['key']."'>".$emailReceiptText."</a><hr style='border: 1px solid #dddddd;'><br/>";
+                        if (strpos($body, '[confirmLink]') !== false) {
                             $bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body);
                         }
                         else {
-                            $bodyOut = $body.$bodyReadReceipt;
+                            $bodyOut = $bodyReadReceipt.$body;
                         }
                     }
                     else {
@@ -256,9 +265,9 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                             $studentNameList = join(' & ', array_filter(array_merge(array(join(', ', array_slice($nameArray, 0, -1))), array_slice($nameArray, -1)), 'strlen'));
 
                             if (count($nameArray) > 1) {
-                                $studentNames = '<i>'.__('This email relates to the following students: ').$studentNameList.'</i><br/><br/>';
+                                $studentNames = '<i>'.__('This email relates to the following students: ').$studentNameList.'</i><br/>';
                             } else {
-                                $studentNames = '<i>'.__('This email relates to the following student: ').$studentNameList.'</i><br/><br/>';
+                                $studentNames = '<i>'.__('This email relates to the following student: ').$studentNameList.'</i><br/>';
                             }
                         }
                         $bodyOut = $studentNames.$bodyOut;
@@ -342,6 +351,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             $message['body'] = $this->handleFakeReadReceiptLink($message['body'], $message['emailReceiptText']);
         }
 
+        if ($message['includeSignature'] == 'Y') {
+            $signature = $this->getContainer()->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
+            $message['body'] .= $signature;
+        }
+
         $mail->renderBody('mail/email.twig.html', [
             'title'  => $message['subject'],
             'body'   => $message['body'],
@@ -354,11 +368,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
     {
         $session = $this->getContainer()->get(Session::class);
 
-        $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$emailReceiptText."</a>";
+        $bodyReadReceipt = "<hr style='border: 1px solid #dddddd;'><a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$emailReceiptText."</a><hr style='border: 1px solid #dddddd;'><br/>";
         if (is_numeric(strpos($body, '[confirmLink]'))) {
             return str_replace('[confirmLink]', $bodyReadReceipt, $body);
         } else {
-            return $body.$bodyReadReceipt;
+            return $bodyReadReceipt.$body;
         }
     }
 

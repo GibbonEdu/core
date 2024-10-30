@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs
             ->add(__('First Aid Records'), 'firstAidRecord.php')
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $editID = '';
         if (isset($_GET['editID'])) {
             $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$_GET['editID'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID;
-            $editID = $_GET['editID'];
+            $editID = $_GET['editID'] ?? '';
         }
         $page->return->setEditLink($editLink);
         $page->return->addReturns(['warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')]);
@@ -91,8 +91,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
         
         $row = $form->addRow();
+            $row->addLabel('gibbonPersonIDFollowUp', __('Follow up Request'))->description(__('If selected, this user will be notified to enter follow up details about the first aid incident.'));
+            $row->addSelectStaff('gibbonPersonIDFollowUp')->photo(true, 'small')->placeholder();
+
+        $row = $form->addRow();
             $column = $row->addColumn();
-            $column->addLabel('followUp', __('Follow Up'));
+            $column->addLabel('followUp', __('Follow Up'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what lead up to the incident, what was the incident, what did you do.'));
             $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
 
         // CUSTOM FIELDS

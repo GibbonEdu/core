@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->add(__('Map Classes'));
 
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
-        echo "<div class='error'>";
-        echo __('Your request failed because your inputs were invalid.');
-        echo '</div>';
+        $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 

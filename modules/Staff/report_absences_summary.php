@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,8 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
     // ABSENCE DATA
+    $status = $_GET['status'] ?? 'Full';
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->filterBy('type', $gibbonStaffAbsenceTypeID)
+        ->filterBy('all', $status == 'on')
         ->fromPOST();
 
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
@@ -60,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
     // Translated array of months in the current school year
     foreach ($dateRange as $monthDate) {
-        $months[$monthDate->format('Y-m-d')] = Format::dateReadable($monthDate->format('Y-m-d'), '%B %Y');
+        $months[$monthDate->format('Y-m-d')] = Format::monthName($monthDate->format('Y-m-d')).' '.$monthDate->format('Y');
     }
 
     // Setup the date range used for this report
@@ -100,10 +104,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
         $row = $form->addRow();
             $row->addLabel('month', __('Month'));
             $row->addSelect('month')->fromArray(['' => __('All')])->fromArray($months)->selected($month);
+        
+        $row = $form->addRow();
+            $row->addLabel('Status', __('All Staff'))->description(__('Include all staff, regardless of status and current employment.'));
+            $row->addCheckbox('status')->setValue('on')->checked($status);
 
         $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
         echo $form->getOutput();
 
@@ -135,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
             }
 
             $calendar[] = [
-                'name'  => Format::dateReadable($monthDate->format('Y-m-d'), '%b'),
+                'name'  => Format::monthName($monthDate->format('Y-m-d'), true),
                 'days'  => $days,
             ];
         }
@@ -165,8 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
                     if (empty($day)) return '';
                     $dateText = $day['date']->format($dateFormat);
                     $url = $baseURL.'&dateStart='.$dateText.'&dateEnd='.$dateText.'&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
-                    $title =  Format::dateReadable($day['date'], '%A');
-                    $title .= '<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
+                    $title =  Format::dayOfWeekName($day['date']);
+                    $title .= '<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     if ($day['count'] > 0) {
                         $title .= '<br/>'.__n('{count} Absence', '{count} Absences', $day['count']);
                     }
@@ -200,6 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     // DATA TABLE
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria()
+        ->filterBy('all', $status == 'on')
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
@@ -230,7 +239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('staffAbsences', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('staffAbsences', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report'));
     $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 
@@ -259,6 +268,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
             ->notSortable()
             ->width('10%');
     }
+
+    $table->modifyRows(function ($values, $row) {
+        if ($values['status'] == 'Left') $row->addClass('error');
+        return $row;
+    });
 
     $table->addColumn('total', __('Total'))->notSortable();
 

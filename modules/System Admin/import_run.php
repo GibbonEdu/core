@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -403,8 +405,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
         $csvData = $_POST['csvData'] ?? null;
         if ($step==4) {
-            $columnOrder = isset($_POST['columnOrder'])? unserialize($_POST['columnOrder']) : null;
-            $columnText = isset($_POST['columnText'])? unserialize($_POST['columnText']) : null;
+            $columnOrder = isset($_POST['columnOrder'])? json_decode($_POST['columnOrder'], true) : null;
+            $columnText = isset($_POST['columnText'])? json_decode($_POST['columnText'], true) : null;
         } else {
             $columnOrder = $_POST['columnOrder'] ?? null;
             $columnText = $_POST['columnText'] ?? null;
@@ -514,8 +516,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $form->addHiddenValue('mode', $mode);
                 $form->addHiddenValue('syncField', $syncField);
                 $form->addHiddenValue('syncColumn', $syncColumn);
-                $form->addHiddenValue('columnOrder', serialize($columnOrder));
-                $form->addHiddenValue('columnText', serialize($columnText));
+                $form->addHiddenValue('columnOrder', json_encode($columnOrder));
+                $form->addHiddenValue('columnText', json_encode($columnText));
                 $form->addHiddenValue('fieldDelimiter', urlencode($fieldDelimiter));
                 $form->addHiddenValue('stringEnclosure', urlencode($stringEnclosure));
                 $form->addHiddenValue('filename', $_POST['filename'] ?? '');

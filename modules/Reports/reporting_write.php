@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,15 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     }
 
     $gibbonPersonID = isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage.php')
-        ? $_REQUEST['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID')
-        : $gibbon->session->get('gibbonPersonID');
+        ? $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID')
+        : $session->get('gibbonPersonID');
 
     $page->breadcrumbs
         ->add(__('My Reporting'), 'reporting_my.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Write Reports'));
 
     $urlParams = [
-        'gibbonSchoolYearID' => $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID'),
+        'gibbonSchoolYearID' => $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID'),
         'gibbonReportingCycleID' => $_GET['gibbonReportingCycleID'] ?? '',
         'gibbonReportingScopeID' => $_GET['gibbonReportingScopeID'] ?? '',
         'scopeTypeID' => $_GET['scopeTypeID'] ?? '',
@@ -76,13 +78,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     }
 
     // ACCESS CHECK: overall check (for high-level access) or per-scope check for general access
-    $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $gibbon->session->get('gibbonPersonID'));
+    $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $session->get('gibbonPersonID'));
     if ($highestAction == 'Write Reports_editAll') {
         $reportingOpen = ($accessCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = true;
         $canWriteReport = true;
     } elseif ($highestAction == 'Write Reports_mine') {
-        $writeCheck = $reportingAccessGateway->getAccessToScopeAndCriteriaGroupByPerson($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $gibbon->session->get('gibbonPersonID'));
+        $writeCheck = $reportingAccessGateway->getAccessToScopeAndCriteriaGroupByPerson($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $session->get('gibbonPersonID'));
         $reportingOpen = ($writeCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = ($accessCheck['canAccess'] ?? 'N') == 'Y';
         $canWriteReport = $reportingOpen && ($writeCheck['canWrite'] ?? 'N') == 'Y';
@@ -123,10 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
 
     // FORM
     if (!empty($reportingCriteria)) {
-        $form = Form::create('reportingWriteGlobal', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_writeProcess.php');
+        $form = Form::create('reportingWriteGlobal', $session->get('absoluteURL').'/modules/Reports/reporting_writeProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonSchoolYearID', $urlParams['gibbonSchoolYearID']);
         $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
         $form->addHiddenValue('gibbonReportingScopeID', $reportingScope['gibbonReportingScopeID']);
@@ -166,6 +168,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
                         ->setValue($criteria['value'])
                         ->maxLength(20)
                         ->onlyInteger(false)
+                        ->readonly(!$canWriteReport);
+                } elseif ($criteria['valueType'] == 'Image') {
+                    $row->addFileUpload('file'.$criteria['gibbonReportingCriteriaID'])
+                        ->addClass('reportCriteria')
+                        ->setID($fieldID)
+                        ->setAttachment($fieldName, $session->get('absoluteURL'), $criteria['value'] ?? '')
                         ->readonly(!$canWriteReport);
                 } else {
                     $row->addTextField($fieldName)

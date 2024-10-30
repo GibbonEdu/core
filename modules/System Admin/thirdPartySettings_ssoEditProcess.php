@@ -2,8 +2,10 @@
 
 use Gibbon\Domain\System\SettingGateway;
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +24,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['authorizeEndpoint' => 'URL', 'tokenEndpoint' => 'URL', 'userEndpoint' => 'URL']);
 
 $sso = $_POST['sso'] ?? '';
 
@@ -45,14 +47,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $values = json_decode($values, true) ?? [];
 
     $data = [
-        'enabled'           => $_POST['enabled'] ?? 'N',
-        'clientName'        => $_POST['clientName'] ?? '',
-        'clientID'          => $_POST['clientID'] ?? '',
-        'clientSecret'      => $_POST['clientSecret'] ?? '',
-        'developerKey'      => $_POST['developerKey'] ?? '',
-        'authorizeEndpoint' => $_POST['authorizeEndpoint'] ?? '',
-        'tokenEndpoint'     => $_POST['tokenEndpoint'] ?? '',
-        'userEndpoint'      => $_POST['userEndpoint'] ?? '',
+        'enabled'            => $_POST['enabled'] ?? 'N',
+        'clientName'         => $_POST['clientName'] ?? '',
+        'clientID'           => $_POST['clientID'] ?? '',
+        'clientSecret'       => $_POST['clientSecret'] ?? '',
+        'developerKey'       => $_POST['developerKey'] ?? '',
+        'authorizeEndpoint'  => $_POST['authorizeEndpoint'] ?? '',
+        'tokenEndpoint'      => $_POST['tokenEndpoint'] ?? '',
+        'userEndpoint'       => $_POST['userEndpoint'] ?? '',
+        'scopes'             => $_POST['scopes'] ?? '',
+        'usernameAttribute'      => $_POST['usernameAttribute'] ?? '',
     ];
 
     $calendarFeed = $_POST['calendarFeed'] ?? '';

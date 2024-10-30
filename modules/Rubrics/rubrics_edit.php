@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,11 +29,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Search & Filters
 $search = null;
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
 }
 $filter2 = null;
 if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
+    $filter2 = $_GET['filter2'] ?? '';
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php') == false) {
@@ -41,14 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         if ($highestAction != 'Manage Rubrics_viewEditAll' and $highestAction != 'Manage Rubrics_viewAllEditLearningArea') {
-            echo "<div class='error'>";
-            echo __('You do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('You do not have access to this action.'));
         } else {
             //Proceed!
             $page->breadcrumbs
@@ -56,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                 ->add(__('Edit Rubric'));
 
             if (isset($_GET['addReturn'])) {
-                $addReturn = $_GET['addReturn'];
+                $addReturn = $_GET['addReturn'] ?? '';
             } else {
                 $addReturn = '';
             }
@@ -73,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             if (isset($_GET['columnDeleteReturn'])) {
-                $columnDeleteReturn = $_GET['columnDeleteReturn'];
+                $columnDeleteReturn = $_GET['columnDeleteReturn'] ?? '';
             } else {
                 $columnDeleteReturn = '';
             }
@@ -98,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             if (isset($_GET['rowDeleteReturn'])) {
-                $rowDeleteReturn = $_GET['rowDeleteReturn'];
+                $rowDeleteReturn = $_GET['rowDeleteReturn'] ?? '';
             } else {
                 $rowDeleteReturn = '';
             }
@@ -123,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             if (isset($_GET['cellEditReturn'])) {
-                $cellEditReturn = $_GET['cellEditReturn'];
+                $cellEditReturn = $_GET['cellEditReturn'] ?? '';
             } else {
                 $cellEditReturn = '';
             }
@@ -150,11 +148,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             }
 
             //Check if gibbonRubricID specified
-            $gibbonRubricID = $_GET['gibbonRubricID'];
+            $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
             if ($gibbonRubricID == '') {
-                echo "<div class='error'>";
-                echo __('You have not specified one or more required parameters.');
-                echo '</div>';
+                $page->addError(__('You have not specified one or more required parameters.'));
             } else {
 
                     $data = array('gibbonRubricID' => $gibbonRubricID);
@@ -163,9 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $result->execute($data);
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record does not exist.');
-                    echo '</div>';
+                    $page->addError(__('The specified record does not exist.'));
                 } else {
                     //Let's go!
                     $values = $result->fetch();

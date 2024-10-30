@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         ->add(__('Edit House'));
 
     //Check if gibbonHouseID specified
-    $gibbonHouseID = $_GET['gibbonHouseID'];
+    $gibbonHouseID = $_GET['gibbonHouseID'] ?? '';
     if ($gibbonHouseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -59,14 +61,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
                 $row->addTextField('nameShort')->required()->maxLength(10)->setValue($values['nameShort']);
 
-            $fileUploader = new FileUploader($pdo, $gibbon->session);
+            $fileUploader = new FileUploader($pdo, $session);
 
             $row = $form->addRow();
                 $row->addLabel('file1', __('Logo'));
                 $file = $row->addFileUpload('file1')
                     ->accepts($fileUploader->getFileExtensions('Graphics/Design'))
-                    ->setAttachment('logo', $session->get('absoluteURL'), $values['logo'])
-                    ->setDeleteAction('/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID='.$gibbonHouseID);
+                    ->setAttachment('logo', $session->get('absoluteURL'), $values['logo']);
 
             $row = $form->addRow();
                 $row->addFooter();

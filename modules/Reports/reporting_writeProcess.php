@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
@@ -25,6 +26,8 @@ use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\FileUploader;
 
 require_once '../../gibbon.php';
 
@@ -38,7 +41,7 @@ $urlParams = [
     'allStudents' => $_POST['allStudents'] ?? '',
 ];
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write.php&'.http_build_query($urlParams);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write.php&'.http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.php') == false) {
     $URL .= '&return=error0';
@@ -51,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
+    $fileUploader = $container->get(FileUploader::class);
     
     $values = $_POST['value'] ?? [];
 
@@ -71,14 +75,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     }
 
     // ACCESS CHECK: overall check (for high-level access) or per-scope check for general access
-    $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $gibbon->session->get('gibbonPersonID'));
+    $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $session->get('gibbonPersonID'));
     $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
     if ($highestAction == 'Write Reports_editAll') {
         $reportingOpen = ($accessCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = true;
         $canWriteReport = true;
     } elseif ($highestAction == 'Write Reports_mine') {
-        $writeCheck = $reportingAccessGateway->getAccessToScopeAndCriteriaGroupByPerson($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $gibbon->session->get('gibbonPersonID'));
+        $writeCheck = $reportingAccessGateway->getAccessToScopeAndCriteriaGroupByPerson($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $session->get('gibbonPersonID'));
         $reportingOpen = ($writeCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = ($accessCheck['canAccess'] ?? 'N') == 'Y';
         $canWriteReport = $reportingOpen && ($writeCheck['canWrite'] ?? 'N') == 'Y';
@@ -95,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         'gibbonReportingCriteriaID' => $urlParams['gibbonReportingScopeID'],
         'gibbonSchoolYearID'        => $reportingCycle['gibbonSchoolYearID'],
         'gibbonCourseClassID'       => $reportingScope['scopeType'] == 'Course' ? $urlParams['scopeTypeID'] : '',
-        'gibbonPersonIDCreated'     => $gibbon->session->get('gibbonPersonID'),
+        'gibbonPersonIDCreated'     => $session->get('gibbonPersonID'),
     ];
     
     // Insert or update each record
@@ -104,11 +108,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         $data['value'] = $data['comment'] = $data['gibbonScaleGradeID'] = null;
 
         $criteriaType = $reportingCriteriaGateway->getCriteriaTypeByID($gibbonReportingCriteriaID);
+        $criteriaOptions = !empty($criteriaType['options']) ? json_decode($criteriaType['options'], true) : [];
+
         if ($criteriaType['valueType'] == 'Comment' || $criteriaType['valueType'] == 'Remark') {
             $data['comment'] = $value;
         } elseif ($criteriaType['valueType'] == 'Grade Scale') {
             $data['value'] = $reportingValueGateway->getGradeScaleValueByID($value);
             $data['gibbonScaleGradeID'] = $value;
+        } elseif ($criteriaType['valueType'] == 'Image') {
+            if (!empty($_FILES['file'.$gibbonReportingCriteriaID]['tmp_name'])) {
+                $data['value'] = $fileUploader->uploadAndResizeImage($_FILES['file'.$gibbonReportingCriteriaID], 'reportFile', $criteriaOptions['imageSize'] ?? 1024, $criteriaOptions['imageQuality'] ?? 80);
+            } else {
+                $data['value'] = $value;
+            }
         } else {
             $data['value'] = $value;
         }
@@ -117,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
             'value' => $data['value'],
             'comment' => $data['comment'],
             'gibbonScaleGradeID' => $data['gibbonScaleGradeID'],
-            'gibbonPersonIDModified' => $gibbon->session->get('gibbonPersonID'),
+            'gibbonPersonIDModified' => $session->get('gibbonPersonID'),
             'timestampModified' => date('Y-m-d H:i:s'),
         ]);
         $partialFail = !$updated;

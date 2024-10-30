@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,18 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Check if gibbonCourseClassID and gibbonMarkbookCopyClassID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonMarkbookCopyClassID = (isset($_POST['gibbonMarkbookCopyClassID']))? $_POST['gibbonMarkbookCopyClassID'] : null;
 
         if ( empty($gibbonCourseClassID) or empty($gibbonMarkbookCopyClassID) ) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
         	$highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
@@ -56,16 +54,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($result->rowCount() != 1) {
                 echo '<h1>';
                 echo __('Copy Columns');
                 echo '</h1>';
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $course = $result->fetch();
 
@@ -78,9 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
                 if ($canEditThisClass == false) {
                     //Acess denied
-                    echo "<div class='error'>";
-                    echo __('You do not have access to this action.');
-                    echo '</div>';
+                    $page->addError(__('You do not have access to this action.'));
                 } else {
                     $page->breadcrumbs
                         ->add(
@@ -101,9 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 			            $result->execute($data);
 
 			        if ($result->rowCount() < 1) {
-	                    echo "<div class='error'>";
-	                    echo __('There are no records to display.');
-	                    echo '</div>';
+	                    echo $page->getBlankSlate();
 	                } else {
 
 		                    $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);

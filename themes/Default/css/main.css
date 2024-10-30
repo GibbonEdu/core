@@ -1,6 +1,8 @@
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Theme fundamentals based on Mollio, copyright Daemon Pty Limited 2006, http://www.daemon.com.au
 Used under "GNU Creative Commons License", http://creativecommons.org/licenses/GPL/2.0/
 */
+
+[x-cloak] { display: none !important; }
 
 /* LAYOUT */
 
@@ -742,12 +746,12 @@ span.ttSchoolCalendar {
     color: #fff;
     font-weight: bold;
     margin: 0px -2px 0px 5px;
-    background-color: rgb(51, 153, 0);
+    background-color: rgb(18, 138, 0);
     padding: 5px 7px;
     border: 1px solid #555;
 }
 div.ttSchoolCalendar {
-    background-color: rgb(51, 153, 0);
+    background-color: rgb(18, 138, 0);
     color: #fff;
     font-weight: bold;
 }
@@ -768,12 +772,12 @@ span.ttSpaceBookingCalendar {
     color: #fff;
     font-weight: bold;
     margin: 0px -2px 0px 5px;
-    background-color: #e5760d;
+    background-color: #f0851f;
     padding: 5px 7px;
     border: 1px solid #555;
 }
 div.ttSpaceBookingCalendar {
-    background-color: #e5760d;
+    background-color: #f0851f;
     color: #fff;
     font-weight: bold;
 }
@@ -1066,6 +1070,10 @@ table.smallIntBorder td.noPadding {
     color: #444444;
 }
 
+.customBlocks.compact .sortHighlight {
+    min-height: 56px !important;
+}
+
 .customBlocks .sortHandle {
     width: 2px;
     height: 64px;
@@ -1074,6 +1082,10 @@ table.smallIntBorder td.noPadding {
     border-style: dotted;
     border-width: 0px 3px 0px 3px;
     cursor: move;
+}
+
+.customBlocks .compact .sortHandle {
+    height: 44px !important;
 }
 
 .blockPlaceholder {
@@ -1320,6 +1332,10 @@ table.smallIntBorder td.noPadding {
 }
 
 .body-gradient-purple {
+    background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed;
+}
+
+.body-gradient-fuchsia {
     background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;
 }
 

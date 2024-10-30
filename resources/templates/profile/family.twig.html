@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -14,6 +16,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Family Name') }}</span><br />
                 {{ family.name }}
             </td>
+            {% if fullDetails %}
             <td style='width: 33%; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Family Status') }}</span><br />
                 {{ __(family.status) }}
@@ -23,7 +26,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ __(family.languageHomePrimary) }} <br />
                 {{ __(family.languageHomeSecondary) }}<br />
             </td>
+            {% endif %}
         </tr>
+
+        {% if fullDetails %}
         <tr>
             <td style='width: 33%; padding-top: 15px; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Address Name') }}</span><br />
@@ -34,6 +40,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <td style='width: 33%; padding-top: 15px; vertical-align: top'>
             </td>
         </tr>
+        
 
         <tr>
             <td style='width: 33%; padding-top: 15px; vertical-align: top'>
@@ -49,6 +56,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ __(family.homeAddressCountry) }}
             </td>
         </tr>
+        {% endif %}
     </table>
 
     {% for person in family.adults %}
@@ -87,6 +95,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ person.contactPriority }}
             </td>
         </tr>
+        {% if fullDetails %}
         <tr>
             <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('First Language') }}</span><br />
@@ -175,6 +184,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ person.comment }}
             </td>
         </tr>
+        {% endif %}
+
         {% endif %}
     </table>
     {% endfor %}

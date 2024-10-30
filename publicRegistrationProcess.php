@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -62,17 +64,17 @@ if ($proceed == false) {
     $firstName = trim($_POST['firstName']);
     $preferredName = trim($firstName);
     $officialName = $firstName.' '.$surname;
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
+    $gender = $_POST['gender'] ?? '';
+    $dob = $_POST['dob'] ?? '';
     if ($dob == '') {
         $dob = null;
     } else {
         $dob = Format::dateConvert($dob);
     }
-    $email = trim($_POST['email']);
-    $emailAlternate = (!empty($_POST['emailAlternate']) ? trim($_POST['emailAlternate']) : '');
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
     $username = trim($_POST['usernameCheck']);
-    $password = $_POST['passwordNew'];
+    $password = $_POST['passwordNew'] ?? '';
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);
     $status = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultStatus');

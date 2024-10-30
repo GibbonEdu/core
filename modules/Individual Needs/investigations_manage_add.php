@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
-            $editID = $_GET['editID'];
+            $editID = $_GET['editID'] ?? '';
             $editLink = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$editID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
         }
         $page->return->setEditLink($editLink);
@@ -92,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         //Parents Informed?
         $row = $form->addRow();
             $row->addLabel('parentsInformed', __('Parents Informed?'))->description(_('For example, via a phone call, email, Markbook, meeting or other means.'));
-            $row->addYesNo('parentsInformed')->required()->placeholder();
+            $row->addYesNo('parentsInformed')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('parentsInformedYes')->onSelect('parentsInformed')->when('Y');
         $form->toggleVisibilityByClass('parentsInformedNo')->onSelect('parentsInformed')->when('N');

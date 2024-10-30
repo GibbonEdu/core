@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbon->session->get('gibbonSchoolYearIDCurrent'), ['firstDay']);
+    $schoolYear = $container->get(SchoolYearGateway::class)->getByID($session->get('gibbonSchoolYearIDCurrent'), ['firstDay']);
 
     $row = $form->addRow();
         $row->addLabel('date', __('Cutoff Date'))->description(__("Include users with an end date preceding this date. Last login is used as a fallback. Must be prior to the current school year."));

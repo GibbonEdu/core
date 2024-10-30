@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,8 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     $page->breadcrumbs->add(__('Daily Coverage Planner'));
 
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $date = isset($_REQUEST['date'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['date']) :new DateTimeImmutable();
+    $date = !empty($_REQUEST['date'])? DateTimeImmutable::createFromFormat('Y-m-d', $_REQUEST['date']) : new DateTimeImmutable();
 
     $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
@@ -51,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
     $row = $form->addRow()->addClass('flex flex-wrap');
 
-    $lastDay = $date->modify('-1 day')->format($dateFormat);
-    $thisDay = (new DateTime('Today'))->format($dateFormat);
-    $nextDay = $date->modify('+1 day')->format($dateFormat);
+    $lastDay = $date->modify('-1 day')->format('Y-m-d');
+    $thisDay = (new DateTime('Today'))->format('Y-m-d');
+    $nextDay = $date->modify('+1 day')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
         $col->addButton(__('Previous Day'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastDay}'");
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         $col->addButton(__('Next Day'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('date')->setValue($date->format($dateFormat))->setClass('shortWidth');
+        $col->addDate('date')->setValue($date->format('Y-m-d'))->setClass('shortWidth');
         $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
@@ -69,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     // COVERAGE
     $coverage = $staffCoverageGateway->selectCoverageByTimetableDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGrouped();
     $times = $staffCoverageDateGateway->selectCoverageTimesByDate($gibbonSchoolYearID, $date->format('Y-m-d'))->fetchGroupedUnique();
-    
+
     $ttCount = count(array_unique(array_filter(array_column($times, 'ttName'))));
 
     if (empty($times)) {
@@ -92,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         ->addClass('thickbox float-right mt-8')
         ->getOutput();
 
-    echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
+    echo '<h2>'.__(Format::dayOfWeekName($date->format('Y-m-d'))).'</h2>';
     echo '<p>'.Format::dateReadable($date->format('Y-m-d')).'</p>';
 
     foreach ($times as $groupBy => $timeSlot) {
@@ -101,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
 
         // DATA TABLE
         $gridRenderer = new GridView($container->get('twig'));
-        
+
         $table = DataTable::create('staffCoverage')->setRenderer($gridRenderer);
 
         if (!empty($groupBy)) {
@@ -149,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                     return $coverage['contextName'].'<br/>'.Format::small(Format::timeRange($coverage['timeStart'], $coverage['timeEnd']));
                 };
 
-                $url = $coverage['context'] == 'Class' 
+                $url = $coverage['context'] == 'Class'
                     ? './index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID='.$coverage['gibbonDepartmentID'].'&gibbonCourseID='.$coverage['gibbonCourseID'].'&gibbonCourseClassID='.$coverage['gibbonCourseClassID']
                     : '';
                 return Format::link($url, $coverage['contextName']).'<br/>'.Format::small($coverage['space']);
@@ -165,12 +166,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
                     return Format::tag(__('Pending Approval'), 'dull');
                 } elseif ($coverage['status'] == 'Not Required') {
                     return Format::tag(__('Not Required'), 'dull');
-                } elseif ($coverage['status'] == 'Pending') {
+                } elseif ($coverage['status'] == 'Pending' || $coverage['status'] == 'Requested') {
                     return Format::tag(__('Cover Required'), 'bg-red-300 text-red-800');
                 }
                 return AbsenceFormats::substituteDetails($coverage);
         });
-        
+
         // ACTIONS
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')

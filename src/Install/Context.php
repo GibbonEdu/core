@@ -153,9 +153,9 @@ class Context
      */
     public function getPath($path): string
     {
-        return implode(DIRECTORY_SEPARATOR, [
+        return implode('/', [
             $this->getInstallPath(),
-            trim($path, DIRECTORY_SEPARATOR)
+            trim($path, '/')
         ]);
     }
 

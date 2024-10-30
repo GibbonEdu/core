@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,11 +25,11 @@ $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $gibbonSpacePersonID = $_GET['gibbonSpacePersonID'] ?? '';
 $allStaff = '';
 if (isset($_GET['allStaff'])) {
-    $allStaff = $_GET['allStaff'];
+    $allStaff = $_GET['allStaff'] ?? '';
 }
 $search = '';
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
 }
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_facility_delete.php&gibbonSpacePersonID=$gibbonSpacePersonID&search=$search&allStaff=$allStaff";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";

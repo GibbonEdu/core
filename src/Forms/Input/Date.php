@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,22 +47,52 @@ class Date extends TextField
         $name = str_replace('[]', '', $this->getName());
 
         if (!empty($data[$name]) && $data[$name] != '0000-00-00') {
-            $this->setDateFromValue($data[$name]);
+            $this->setValue($data[$name]);
         }
 
         return $this;
     }
 
     /**
-     * Set the input value by converting a YYYY-MM-DD format back to localized value.
+     * Set the input's value.
+     * @param  string  $value
+     * @return $this
+     */
+    public function setValue($value = '')
+    {
+        if (stripos($value, '/') !== false) {
+            $value = Format::dateConvert($value);
+        }
+
+        if (strlen($value) == 19) {
+            $value = substr($value, 0, 10);
+        }
+
+        $this->setAttribute('value', $value);
+        return $this;
+    }
+
+    /**
+     * @deprecated v28
      * @param  string  $value
      * @return  self
      */
     public function setDateFromValue($value)
     {
-        $this->setAttribute('value', Format::date($value));
+        return $this->setValue($value);
+    }
 
-        return $this;
+    /**
+     * Set if the input is required.
+     * @param  bool  $required
+     * @return $this
+     */
+    public function setRequired($required)
+    {
+        if ($required) {
+            $this->setAttribute('required', 'required');
+        }
+        return parent::setRequired($required);
     }
 
     /**
@@ -79,27 +111,25 @@ class Date extends TextField
     }
 
     /**
-     * Define a minimum for this date. Accepts YYYY-MM-DD strings as well as an
-     * integer for relative date values eg: -20. See DatePicker docs:
-     * https://api.jqueryui.com/datepicker/#option-minDate
+     * Define a minimum for this date. Accepts YYYY-MM-DD strings
      * @param   string|int  $value
      * @return  self
      */
     public function minimum($value)
     {
+        $this->setAttribute('min', $value);
         $this->min = $value;
         return $this;
     }
 
     /**
-     * Define a maximum for this date. Accepts YYYY-MM-DD strings as well as an
-     * integer for relative date values eg: 20. See DatePicker docs:
-     * https://api.jqueryui.com/datepicker/#option-maxDate
+     * Define a maximum for this date. Accepts YYYY-MM-DD strings
      * @param   string|int  $value
      * @return  self
      */
     public function maximum($value)
     {
+        $this->setAttribute('max', $value);
         $this->max = $value;
         return $this;
     }
@@ -136,76 +166,10 @@ class Date extends TextField
      */
     protected function getElement()
     {
-        global $session;
-
-        $validationFormat = '';
-        $dateFormat = $session->get('i18n')['dateFormat'];
-        $dateFormatRegex = $session->get('i18n')['dateFormatRegEx'];
-
         $this->setAttribute('autocomplete', 'off');
+        $this->addClass('border h-10 font-sans');
 
-        if ($dateFormatRegex == '') {
-            $validationFormat .= "pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-        } else {
-            $validationFormat .= 'pattern: '.$dateFormatRegex;
-        }
-
-        if ($dateFormat == '') {
-            $validationFormat .= ', failureMessage: "Use dd/mm/yyyy"';
-        } else {
-            $validationFormat .= ', failureMessage: "Use '.$dateFormat.'"';
-        }
-
-        $this->addValidation('Validate.Format', $validationFormat);
-
-        $today = Format::date(date('Y-m-d'));
-
-        $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
-
-        $minDate = $maxDate = 'null';
-        $onSelect = 'function(){$(this).blur();}';
-
-        if ($this->from) {
-            $onSelect = 'function() {
-                '.$this->from.'.datepicker( "option", "maxDate", getDate(this) );
-                $(this).blur();
-            }';
-        }
-        if ($this->to) {
-            $onSelect = 'function() {
-                '.$this->to.'.datepicker( "option", "minDate", getDate(this) );
-                if ($("#'.$this->to.'").val() == "") {
-                    '.$this->to.'.datepicker( "setDate", getDate(this) );
-                }
-                $(this).blur();
-            }';
-        }
-
-        if ($this->min) {
-            $minDate = is_string($this->min)
-                ? 'new Date("'.$this->min.'")'
-                : $this->min;
-        }
-        if ($this->max) {
-            $maxDate = is_string($this->max)
-                ? 'new Date("'.$this->max.'")'
-                : $this->max;
-        }
-
-        $output .= '<script type="text/javascript">';
-        $output .= '$(function() { '.$this->getID().' = $("#'.$this->getID().'").datepicker({onSelect: '.$onSelect.', onClose: function(){$(this).change();}, minDate: '.$minDate.', maxDate: '.$maxDate.' }); });';
-
-        if ($this->to || $this->from) {
-            $output .= 'function getDate(element) {
-                try {
-                  return $.datepicker.parseDate("'.substr($dateFormat, 0, 8).'", element.value);
-                } catch( error ) {
-                  return null;
-                }
-            }';
-        }
-
-        $output .= '</script>';
+        $output = '<input type="date" '.$this->getAttributeString().' maxlength="10">';
 
         return $output;
     }

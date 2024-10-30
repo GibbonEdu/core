@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -144,8 +146,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
                             
                             $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
-                            $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
-                            $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
+                            $homeworkSubmissionType = $_POST['homeworkSubmissionType'] ?? '';
+                            $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'] ?? '';
                             if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
                                 $homeworkCrowdAssess = 'Y';
                                 if (isset($_POST['homeworkCrowdAssessOtherTeachersRead'])) {
@@ -361,8 +363,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         //Notify participants
                         if (isset($_POST['notify'])) {
                             //Create notification for all people in class except me
-                            $notificationGateway = new NotificationGateway($pdo);
-                            $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                            $notificationGateway = $container->get(NotificationGateway::class);
+                            $notificationSender = $container->get(NotificationSender::class);
 
                             try {
                                 $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);

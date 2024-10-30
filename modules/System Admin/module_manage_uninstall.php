@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -68,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             // Let's go!
-            $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module')."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned", false, false);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned", false, false);
             
-            $manifestFile = $gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/manifest.php';
+            $manifestFile = $session->get('absolutePath').'/modules/'.$module['name'].'/manifest.php';
             if (file_exists($manifestFile)) {
                 include $manifestFile;
             } else if (empty($orphaned)) {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +27,7 @@ $output = '';
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php')) {
     if ($session->exists('username')) {
         if (isset($_GET['gibbonMessengerCannedResponseID'])) {
-            $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
+            $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'] ?? '';
                 $data = array('gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID);
                 $sql = 'SELECT body FROM gibbonMessengerCannedResponse WHERE gibbonMessengerCannedResponseID=:gibbonMessengerCannedResponseID';
                 $result = $connection2->prepare($sql);

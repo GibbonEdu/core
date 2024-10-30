@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -51,14 +53,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
-    } 
+    }
 
     // Proceed!
     // Check if course & school year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
     $unitBlockGateway = $container->get(UnitBlockGateway::class);
@@ -69,13 +71,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($highestAction == 'Unit Planner_all') {
         $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
+        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
     }
 
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
 
     $values = $result->fetch();
 
@@ -108,12 +110,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     }, []);
 
     // FORM
-    $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/Planner/units_edit_workingProcess.php?'.http_build_query($urlParams));
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/Planner/units_edit_workingProcess.php?'.http_build_query($urlParams));
     
     $form->setTitle(__('Lessons & Blocks'));
-    $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.').Format::alert(__('Deploying lessons only works for units with smart blocks. If you have duplicated a unit from a past year that does not have smart blocks, be sure to edit the lessons manually and assign a new date to them.'), 'message'));
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $addAll = $form->getFactory()->createRow()
+        ->setClass('-mt-4')
+        ->addSelect('blockAddAll')
+        ->fromArray($blockSelect)
+        ->placeholder()
+        ->setClass('blockAddAll float-right w-32')
+        ->prepend(Format::small(__('Add Block to All').':'));
+
+    $form->setDescription('<div class="float-right w-32 -mt-2">'.$addAll->getOutput().'</div><br/>'.__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.').Format::alert(__('Deploying lessons only works for units with smart blocks. If you have duplicated a unit from a past year that does not have smart blocks, be sure to edit the lessons manually and assign a new date to them.'), 'message'));
+
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Planner/units_edit_working_add.php')
@@ -128,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
         // Setup header links for this lesson
         $lessonLink = $form->getFactory()->createWebLink(($index+1).'. '.$lesson['name'])
-            ->setURL($gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php')
+            ->setURL($session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php')
             ->addParam('gibbonCourseClassID', $lesson['gibbonCourseClassID'])
             ->addParam('gibbonPlannerEntryID', $lesson['gibbonPlannerEntryID'])
             ->addParam('viewBy', 'class')
@@ -136,8 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             ->addClass('text-gray-800 underline')
             ->getOutput();
 
-        $deleteLink = $form->getFactory()->createWebLink('<img title="'.__('Delete').'" src="./themes/'.$gibbon->session->get('gibbonThemeName').'/img/garbage.png">')
-            ->setURL($gibbon->session->get('absoluteURL').'/modules/Planner/units_edit_working_lessonDelete.php')
+        $deleteLink = $form->getFactory()->createWebLink('<img title="'.__('Delete').'" src="./themes/'.$session->get('gibbonThemeName').'/img/garbage.png">')
+            ->setURL($session->get('absoluteURL').'/modules/Planner/units_edit_working_lessonDelete.php')
             ->addParams($urlParams)
             ->addParam('gibbonCourseClassID', $lesson['gibbonCourseClassID'])
             ->addParam('gibbonPlannerEntryID', $lesson['gibbonPlannerEntryID'])
@@ -153,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
         // Display the heading
         $heading = $form->addRow()->addHeading($lessonLink . $deleteLink)
-            ->append(Format::small(Format::dateReadable($lesson['date'], '%a %e %b, %Y')).'<br/>')
+            ->append(Format::small(Format::dateReadable($lesson['date'], Format::FULL)).'<br/>')
             ->append($lessonTiming.'<br/>')
             ->append(Format::small($times['spaceName'] ?? ''));
 
@@ -164,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         $form->addHiddenValue('date'.$index, $lesson['date']);
         $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
         $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-        
+
         $col->addColumn()
             ->setClass('-mt-4')
             ->addSelect('blockAdd')
@@ -224,8 +235,18 @@ $('.blockAdd').change(function () {
     var parent = $(this).parents('.blockLesson');
     var sortable = $('.sortableArea', parent);
 
-    $(sortable).append($('<div class="draggable z-100">').load("<?php echo $gibbon->session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingEdit&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
+    $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingEdit&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
 });
-    
+
+$('.blockAddAll').change(function () {
+    var gibbonUnitBlockID = $(this).val();
+    if (gibbonUnitBlockID == '') return;
+
+    var sortable = $('.sortableArea').each(function (index, element) {
+        $(element).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingEdit&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + gibbonUnitBlockID, "id=" + count) );
+        count++;
+    });
+});
+
 </script>

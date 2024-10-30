@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,8 +34,8 @@ $orphaned = $_GET['orphaned'] ?? '';
 
 $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
-$URLDelete = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
     $URL .= '&return=error0';
@@ -57,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             // Check for tables and views to remove, and remove them
             $tables = null;
             if (isset($_POST['remove'])) {
-                $tables = $_POST['remove'];
+                $tables = $_POST['remove'] ?? [];
             }
             if (is_array($tables)) {
                 if (count($tables) > 0) {
@@ -107,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $notificationGateway->deleteCascadeNotificationByModuleName($moduleName);
 
             // Clear the main menu from session cache
-            $gibbon->session->forget('menuMainItems');
+            $session->forget('menuMainItems');
 
             $URLDelete .= $orphaned != 'true'
                 ? '&return=warning0'

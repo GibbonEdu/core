@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -121,7 +123,7 @@ class SubstituteGateway extends QueryableGateway
             ])
             ->leftJoin('gibbonSubstitute', 'gibbonSubstitute.gibbonPersonID=gibbonPerson.gibbonPersonID');
                 
-        if ($criteria->hasFilter('allStaff')) {
+        if ($criteria->hasFilter('allStaff', 'Y')) {
             $query->innerJoin('gibbonStaff', 'gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID')
                   ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary');
         } else {
@@ -233,7 +235,7 @@ class SubstituteGateway extends QueryableGateway
               ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)')
               ->bindValue('date', $date);
 
-        if ($criteria->hasFilter('allStaff')) {
+        if ($criteria->hasFilter('allStaff', 'Y')) {
             $query->where("gibbonRole.category='Staff' AND gibbonStaff.type='Teaching'");
         } else {
             $query->where("gibbonSubstitute.active='Y'");
@@ -415,8 +417,10 @@ class SubstituteGateway extends QueryableGateway
             AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
             AND (student.dateStart IS NULL OR student.dateStart<=:date) 
             AND (student.dateEnd IS NULL OR student.dateEnd>=:date) 
-            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
-            AND (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
+            AND (
+                (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) )
+                OR (gibbonSchoolYearSpecialDayID IS NULL OR NOT FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))
+            )";
 
         $result = $this->db()->selectOne($sql, $data);
 

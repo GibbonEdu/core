@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,13 +68,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     if ($highestAction == 'Unit Planner_all') {
         $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
+        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
     }
 
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
     $values = $result->fetch();
 
     // Get the unit details
@@ -107,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         $lessonTimes = $plannerEntryGateway->queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_deploy.php&step=2&'.http_build_query($urlParams));
         $form->setTitle(__('Step 1 - Select Lessons'));
         $form->setDescription(__('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.'));
 
@@ -207,16 +209,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Planner/units_edit_deployProcess.php?'.http_build_query($urlParams));
         $form->setFactory(PlannerFormFactory::create($pdo));
         $form->setTitle(__('Step 2 - Distribute Blocks'));
-        $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
+
+        $addAll = $form->getFactory()->createRow()
+        ->setClass('-mt-4')
+        ->addSelect('blockAddAll')
+        ->fromArray($blockSelect)
+        ->placeholder()
+        ->setClass('blockAddAll float-right w-32')
+        ->prepend(Format::small(__('Add Block to All').':'));
+
+        $form->setDescription('<div class="float-right w-32 -mt-8">'.$addAll->getOutput().'</div>'.__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.'));
         
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
 
         $deployIndex = 0;
         $deployed = 0;
 
         foreach ($lessons as $index => $lesson) {
 
-            $form->addRow()->addHeading(($index+1).'. '.Format::dateReadable($lesson['date'], '%a %e %b, %Y'))
+            $form->addRow()->addHeading(($index+1).'. '.Format::dateReadable($lesson['date'], Format::FULL))
                 ->append(Format::small($lesson['period'].' ('.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']).')'));
 
             $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
@@ -225,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $form->addHiddenValue('date'.$index, $lesson['date']);
             $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
             $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-            
+
             $col->addColumn()
                 ->setClass('-mt-4')
                 ->addSelect('blockAdd')
@@ -315,5 +326,15 @@ $('.blockAdd').change(function () {
     $(sortable).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
 });
-    
+
+$('.blockAddAll').change(function () {
+    var gibbonUnitBlockID = $(this).val();
+    if (gibbonUnitBlockID == '') return;
+
+    var sortable = $('.sortableArea').each(function (index, element) {
+        $(element).append($('<div class="draggable z-100">').load("<?php echo $session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + gibbonUnitBlockID, "id=" + count) );
+        count++;
+    });
+});
+
 </script>

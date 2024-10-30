@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Filter variables
         $where = '';
@@ -45,11 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
             $where .= " WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID";
         }
 
-        $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/outcomes.php');
+        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/outcomes.php');
 
         $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
         $row = $form->addRow();
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
                 ->selected($filter2);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 

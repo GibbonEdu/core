@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -102,7 +104,7 @@ if (!$proceed) {
     // APPLICATION PROCESSING FEE
     if ($processPaymentRequired) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
-                    
+
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('accessID', $accessID);
         $form->addHiddenValue('gibbonFormID', $gibbonFormID);
@@ -130,7 +132,7 @@ if (!$proceed) {
             $row = $form->addRow();
             $row->addLabel('statusLabel', __('Status'));
             $row->addTextField('status')->readOnly()->setValue($payment['status'] ?? __('Complete'));
-        
+
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
             $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));
@@ -147,7 +149,7 @@ if (!$proceed) {
     // APPLICATION SUBMISSION FEE
     if ($submitPaymentRequired) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
-                
+
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('accessID', $accessID);
         $form->addHiddenValue('gibbonFormID', $gibbonFormID);
@@ -175,7 +177,7 @@ if (!$proceed) {
             $row = $form->addRow();
             $row->addLabel('statusLabel', __('Status'));
             $row->addTextField('status')->readOnly()->setValue($payment['status'] ?? __('Complete'));
-        
+
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
             $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));

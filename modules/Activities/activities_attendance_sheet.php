@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
 
     $numberOfColumns = (isset($_GET['numberOfColumns']) && $_GET['numberOfColumns'] <= 20 ) ? $_GET['numberOfColumns'] : 20;
@@ -61,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -77,9 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         } else {
             echo "<div class='linkTop'>";
             echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/activities_attendance_sheetPrint.php&gibbonActivityID=$gibbonActivityID&columns=$numberOfColumns'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";

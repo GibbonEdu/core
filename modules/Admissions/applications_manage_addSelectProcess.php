@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +31,7 @@ $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $applicationType = $_POST['applicationType'] ?? '';
 $gibbonAdmissionsAccountID = $_POST['gibbonAdmissionsAccountID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? null;
-$email = $_POST['email'] ?? '';
+$email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_addSelect')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search]);
 
@@ -48,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     switch ($applicationType) {
         case 'blank':
-            $email = $_POST['email'] ?? '';
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $account = !empty($email) ? $admissionsAccountGateway->selectBy(['email' => $email])->fetch() : [];
             break;
 

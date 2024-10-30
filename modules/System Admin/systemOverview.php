@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -62,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $statusCheck = checkUploadsFolderStatus($session->get('absoluteURL'));
     if (!$statusCheck) {
         $uploadsCheck = Format::alert(__('The system check has detected that your uploads folder may be publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
-            'documentation' => Format::link('https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config', __('Post-Install and Server Config')),
+            'documentation' => Format::link('https://docs.gibbonedu.org/introduction/post-installation', __('Post-Install and Server Config')),
         ]), 'error');
     }
 
@@ -77,8 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         'versionCheck'  => getCurrentVersion($guid, $connection2, $version),
         'uploadsCheck'  => $uploadsCheck ?? '',
 
-        'gibboneduComOrganisationName' => $gibbon->session->get('gibboneduComOrganisationName'),
-        'gibboneduComOrganisationKey'  => $gibbon->session->get('gibboneduComOrganisationKey'),
+        'gibboneduComOrganisationName' => $session->get('gibboneduComOrganisationName'),
+        'gibboneduComOrganisationKey'  => $session->get('gibboneduComOrganisationKey'),
     ]);
 
 }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     if (count($choices) == 0 && $session->has('report_student_medicalSummary.php_choices')) {
         $choices = $session->get('report_student_medicalSummary.php_choices');
     }
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     if (isset($_GET['gibbonPersonIDList'])) {
         $choices = explode(',', $_GET['gibbonPersonIDList']);
@@ -73,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -103,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     $students->joinColumn('gibbonPersonMedicalID', 'medicalConditions', $medicalConditions);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Student Medical Data Summary'));
 
     $table->addMetaData('post', ['gibbonPersonID' => $choices]);

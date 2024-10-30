@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +33,7 @@ require_once __DIR__.'/moduleFunctions.php';
 
 $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_components_edit.php&gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID.'&sidebar=false';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_components_edit.php&gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID.'&sidebar=false';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_edit.php') == false) {
     $URL .= '&return=error0';
@@ -56,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     }
     
     // Update file contents
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
     $templatePath = $absolutePath.$customAssetPath.'/templates';
 
@@ -72,9 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     }
 
     // Clear reports cache if this is not a development system (for ease of templating)
-    if ($gibbon->session->get('installType') != 'Development') {
-        include $gibbon->session->get('absolutePath').'/modules/System Admin/moduleFunctions.php';
-        removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/reports');
+    if ($session->get('installType') != 'Development') {
+        include $session->get('absolutePath').'/modules/System Admin/moduleFunctions.php';
+        removeDirectoryContents($session->get('absolutePath').'/uploads/cache/reports');
     }
 
     $URL .= !$updated

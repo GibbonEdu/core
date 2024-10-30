@@ -1,6 +1,8 @@
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,17 +18,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Initialize all legacy Thickbox links as HTMX AJAX calls
+Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
+    if (element.nodeName != 'A') return;
+    
+    element.setAttribute('hx-boost', 'true');
+    element.setAttribute('hx-target', '#modalContent');
+    element.setAttribute('hx-push-url', 'false');
+    element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
+    element.classList.remove('thickbox');
+
+    if (element.getAttribute('href').includes('_delete')) {
+        element.setAttribute('x-on:click', "modalType = 'delete'");
+    }
+});
+
+
 $(document).ready(function(){
 
     $(document).trigger('gibbon-setup');
-
-    // Initialize datepicker
-    var dateDefaults = $.datepicker.regional[Gibbon.config.datepicker.locale];
-    dateDefaults.dateFormat = Gibbon.config.datepicker.dateFormat;
-    dateDefaults.firstDay = Gibbon.config.datepicker.firstDay;
-    
-    $.datepicker.setDefaults(dateDefaults);
-    
 
     // Initialize tooltip
     if ($(window).width() > 768) {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,7 +34,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $output = '';
 $id = null;
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = $_GET['id'] ?? '';
 }
 
 $category = isset($_POST['category'.$id])? $_POST['category'.$id] : (isset($_GET['category'])? $_GET['category'] : '');
@@ -147,7 +149,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 		$result = $connection2->prepare($sql);
 		$result->execute($data);
 	} catch (PDOException $e) {
-		echo "<div class='error'>".$e->getMessage().'</div>';
 	}
 
     if ($result->rowCount() < 1) {

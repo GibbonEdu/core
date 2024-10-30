@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -59,6 +61,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             $table->addColumn('statusNew', __('New Status'));
 
             $table->addColumn('reason', __('Reason'));
+
+            $table->addColumn('modified', __('Person'))
+                ->format(function($values) {
+                    return !empty($values['gibbonPersonIDModified'])
+                        ? Format::nameLinked($values['gibbonPersonIDModified'], '', $values['preferredName'], $values['surname'], 'Staff', false, true)
+                        : Format::small(__('N/A'));
+                });
 
             echo $table->render($userStatusLogGateway->queryStatusLogByPerson($criteria, $gibbonPersonID));
         }

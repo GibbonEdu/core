@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -303,7 +305,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->required()->placeholder();
+            $row->addYesNo('sen')->required()->placeholder()->selected('N');
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
@@ -318,7 +320,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
-        $row->addYesNo('medical')->required()->placeholder();
+        $row->addYesNo('medical')->required()->placeholder()->selected('N');
 
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
 
@@ -735,11 +737,11 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('scholarshipInterest', __('Interest'))->description(__('Indicate if you are interested in a scholarship.'));
-            $row->addRadio('scholarshipInterest')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+            $row->addYesNo('scholarshipInterest')->required()->checked('N');
 
         $row = $form->addRow();
             $row->addLabel('scholarshipRequired', __('Required?'))->description(__('Is a scholarship required for you to take up a place at the school?'));
-            $row->addRadio('scholarshipRequired')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+            $row->addYesNo('scholarshipRequired')->required()->checked('N');
     }
 
 
@@ -832,7 +834,7 @@ if ($proceed == false) {
             }
         }
 
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
         $requiredDocumentsList = explode(',', $requiredDocuments);
 
@@ -847,7 +849,7 @@ if ($proceed == false) {
                     ->setMaxUpload(false);
         }
 
-        $row = $form->addRow()->addContent(getMaxUpload($guid));
+        $row = $form->addRow()->addContent(getMaxUpload());
         $form->addHiddenValue('fileCount', count($requiredDocumentsList));
     }
 
@@ -877,21 +879,25 @@ if ($proceed == false) {
     $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
     $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
     $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
+    $privacyOptionVisibility = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility');
 
     if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
-        $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+        if (!empty($privacyBlurb) || $privacyOptionVisibility == 'Y') {
+            $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+        }
 
-        $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
-
-        $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy Options'));
-            $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg');
+        if ($privacyOptionVisibility == 'Y') {
+            $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+            $row = $form->addRow();
+                $row->addLabel('privacyOptions[]', __('Privacy Options'));
+                $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg');
+        }
     }
 
     // Honey pot field
     $form->addRow()->addClass('hidden')->addTextField('emailAddress');
-    
+
     // AGREEMENT
     $agreement = $settingGateway->getSettingByScope('Application Form', 'agreement');
     if (!empty($agreement)) {

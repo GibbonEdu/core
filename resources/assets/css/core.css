@@ -1,0 +1,115 @@
+/*!
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/**
+ * This injects all of Tailwind's utility classes, generated based on your
+ * config file.
+ */
+
+ @tailwind utilities;
+ /* @tailwind components; */
+
+/*
+ --------------------------------------------------------------------------
+  Layout
+ --------------------------------------------------------------------------
+*/
+
+@layer utilities {
+    .column-1 {
+        column-count: 1;
+        column-gap: 1.5rem;
+    }
+
+    .column-2 {
+        column-count: 2;
+        column-gap: 1.5rem;
+    }
+
+    .column-3 {
+        column-count: 3;
+        column-gap: 1.5rem;
+    }
+}
+
+.column-no-break {
+    @apply table w-full pt-px;
+    -webkit-column-break-inside:avoid;
+    -moz-column-break-inside:avoid;
+    -o-column-break-inside:avoid;
+    -ms-column-break-inside:avoid;
+    column-break-inside:avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Typography
+ --------------------------------------------------------------------------
+*/
+
+@layer utilities {
+    .text-xxs {
+        font-size: 0.65rem;
+    }
+}
+
+/*
+ --------------------------------------------------------------------------
+  Backgrounds
+ --------------------------------------------------------------------------
+*/
+
+.bg-transparent-100 {
+    background-color: rgba(255,255,255,0.9);
+}
+
+.bg-transparent-300 {
+    background-color: rgba(50,50,50,0.1);
+}
+
+.bg-transparent-600 {
+    background-color: rgba(50,50,50,0.6);
+}
+
+.bg-transparent-900 {
+    background-color: rgba(50,50,50,0.95);
+}
+
+/*
+ --------------------------------------------------------------------------
+  Sizing
+ --------------------------------------------------------------------------
+*/
+
+.min-h-1\/2 {
+    min-height: 50vh;
+}
+
+@layer utilities {
+    .w-content {
+        width: 72%;
+    }
+
+    .w-sidebar {
+        width: 28%;
+    }
+}

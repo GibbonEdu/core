@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,14 +63,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addLabel('type', __('Type'));
             $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive') ])->placeholder()->selected($type);
 
-        if ($enableDescriptors == 'Y') {
-            $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
-            $negativeDescriptors = array_map('trim', explode(',', $negativeDescriptors));
+            if ($enableDescriptors == 'Y') {
+                $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
+                $negativeDescriptors = !empty($negativeDescriptors)? array_map('trim', explode(',', $negativeDescriptors)) : [];
+                $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
+                $positiveDescriptors = !empty($positiveDescriptors)? array_map('trim', explode(',', $positiveDescriptors)) : [];
 
-            $row = $form->addRow();
-                $row->addLabel('descriptor', __('Descriptor'));
-                $row->addSelect('descriptor')->fromArray($negativeDescriptors)->placeholder()->selected($descriptor);
-        }
+                $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
+                $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
+                $chainedTo = array_merge($chainedToNegative, $chainedToPositive);
+
+                $row = $form->addRow();
+                    $row->addLabel('descriptor', __('Descriptor'));
+                    $row->addSelect('descriptor')
+                        ->fromArray($positiveDescriptors)
+                        ->fromArray($negativeDescriptors)
+                        ->chainedTo('type', $chainedTo)
+                        ->placeholder()
+                        ->selected($descriptor);
+            }
 
         if ($enableLevels == 'Y') {
             $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
@@ -98,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($minimumCount);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
     }
@@ -124,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     // DATA TABLE
     $table = ReportTable::createPaginated('behaviourPatterns', $criteria);
-    $table->setTitle(__('Behaviour Records'))->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Behaviour Records'))->setViewMode($viewMode, $session);
     $table->setDescription(__('The students listed below match the criteria above, for {type} behaviour records in the current school year. The count is updated according to the criteria above.', ['type' => __($type)]));
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 

@@ -1,8 +1,10 @@
 <?php
 
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -129,7 +131,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
         ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span> &nbsp;&nbsp;');
 
     $rowFilter = $form->addRow();
-        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'))->prepend($showHide->getOutput());
+        $rowFilter->addSearchSubmit($session, __('Clear Filters'))->prepend($showHide->getOutput());
 
     echo $form->getOutput();
 
@@ -442,7 +444,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                 $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                 if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                    renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                    renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                 }
 
                 echo '</table>';

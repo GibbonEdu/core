@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
-        $gibbonActivityID = $_GET['gibbonActivityID'];
+        $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     }
 
     $settingGateway = $container->get(SettingGateway::class);
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->required()->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -85,9 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $activityResult->execute($data);
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
 
         return;
     }
@@ -110,6 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         );
     }
 
+    $today = date('Y-m-d');
     $activity = $activityResult->fetch();
     $activity['participants'] = $studentResult->rowCount();
 
@@ -168,22 +169,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     // Handle activities with no time slots or start/end, but don't return because there can still be previous records
     if (empty($activityWeekDays) || empty($activityTimespan)) {
-        echo "<div class='error'>";
-        echo __('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.');
-        echo '</div>';
+        echo Format::alert(__('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.'), 'error');
     }
 
     if (count($activitySessions) <= 0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
         $form->setClass('blank block w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
-        
+
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             $form->addHeaderAction('download', __('Export to Excel'))
                 ->setURL('/modules/Activities/report_attendanceExport.php')
@@ -215,7 +212,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
-            $dateLabel = $col->addContent(Format::dateReadable($sessionDate, '%a<br>%b %e'))->addClass('w-10 mx-auto whitespace-nowrap');
+            $dateLabel = $col->addContent(
+                Format::dayOfWeekName($sessionDate, true) . '<br>' .
+                Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR)
+            )->addClass('w-10 mx-auto whitespace-nowrap');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
@@ -295,7 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row->addContent(__('Total students:'))->addClass('text-right w-56 h-8 absolute left-0 ml-px');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
+            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate]) || $sessionDate <= $today
                 ? $attendanceCount[$sessionDate].' / '.$activity['participants']
                 : '');
         }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
 
         echo '<div id="servicesCheck">';
         echo "<div style='width: 100%; text-align: center'>";
-        echo '<img style="margin: 10px 0 5px 0" src="'.$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName').'/img/loading.gif" alt="Loading"/><br/>';
+        echo '<img style="margin: 10px 0 5px 0" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/loading.gif" alt="Loading"/><br/>';
         echo '</div>';
         echo '</div>';
     }
@@ -75,13 +77,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
 ?>
 <script type='text/javascript'>
     $(document).ready(function(){
-        var path = '<?php echo $gibbon->session->get('absoluteURL').'/modules/System%20Admin/services_manage_ajax.php'; ?>';
+        var path = '<?php echo $session->get('absoluteURL').'/modules/System%20Admin/services_manage_ajax.php'; ?>';
         var orgName = $('#gibboneduComOrganisationName').val();
         var orgKey = $('#gibboneduComOrganisationKey').val();
 
         if (orgName && orgKey) {
             $('#servicesCheck').load(path, {
-                'address': '<?php echo $gibbon->session->get('address'); ?>',
+                'address': '<?php echo $session->get('address'); ?>',
                 'gibboneduComOrganisationName': orgName, 
                 'gibboneduComOrganisationKey': orgKey
             });

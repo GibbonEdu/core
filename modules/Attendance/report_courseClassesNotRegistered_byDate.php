@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -125,17 +127,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             $tt[$row['gibbonCourseClassID']][$row['date']] = true;
         }
 
-
-
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') );
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount, gibbonTTColumnRow.name as 'Period' FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDayDate ON(gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort;";
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         }
         else if ($dateStart > $today || $dateEnd > $today) {
             echo "<div class='error'>";
@@ -188,11 +186,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 //Output row only if not registered on specified date, and timetabled for that day
                 if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false ||
                     count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
-                        
+
                     if (!empty($offTimetableList[$row['gibbonCourseClassID']]) && (($dateStart == $dateEnd &&  $offTimetableList[$row['gibbonCourseClassID']][$dateStart] == true) || count(array_filter($offTimetableList[$row['gibbonCourseClassID']])) == count($lastNSchoolDays))) {
                         continue;
                     }
-                    
+
                     ++$count;
 
                     //COLOR ROW BY STATUS!
@@ -241,12 +239,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 echo "<td class='$class' style='padding: 12px !important;' title='{$title}'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
-                                    echo Format::dateReadable($date, '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
+                                    echo Format::date($date, 'd').'<br/>';
+                                    echo "<span>".Format::monthName($date, true).'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo Format::dateReadable($date, '%d').'<br/>';
-                                    echo "<span>".Format::dateReadable($date, '%b').'</span>';
+                                    echo Format::date($date, 'd').'<br/>';
+                                    echo "<span>".Format::monthName($date, true).'</span>';
                                 }
                                 echo '</td>';
 

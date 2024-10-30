@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,6 +26,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
@@ -57,6 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $checkCount = 0;
             $self = false;
 
+            $settingGateway = $container->get(SettingGateway::class);
+
             if ($highestAction == 'Update Personal Data_any') {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_personal.php&gibbonPersonID='.$gibbonPersonID;
 
@@ -76,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
                 }
                 while ($rowCheck = $resultCheck->fetch()) {
 
@@ -148,8 +152,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         'officialName'               => $_POST['officialName'] ?? $values['officialName'],
                         'nameInCharacters'           => $_POST['nameInCharacters'] ?? $values['nameInCharacters'],
                         'dob'                        => isset($_POST['dob']) ? Format::dateConvert($_POST['dob']) : $values['dob'],
-                        'email'                      => $_POST['email'] ?? $values['email'],
-                        'emailAlternate'             => $_POST['emailAlternate'] ?? $values['emailAlternate'],
+                        'email'                      => filter_var(trim($_POST['email'] ?? $values['email']), FILTER_SANITIZE_EMAIL),
+                        'emailAlternate'             => filter_var(trim($_POST['emailAlternate'] ?? $values['emailAlternate']), FILTER_SANITIZE_EMAIL),
                         'address1'                   => $_POST['address1'] ?? $values['address1'],
                         'address1District'           => $_POST['address1District'] ?? $values['address1District'],
                         'address1Country'            => $_POST['address1Country'] ?? $values['address1Country'],
@@ -205,9 +209,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // Student privacy settings
-                    $data['privacy'] = !empty($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
-                        ? implode(',', $_POST['privacyOptions'])
-                        : '';
+                    $privacyOptionVisibility = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility');
+                    if ($privacyOptionVisibility == 'Y') {
+                        $data['privacy'] = !empty($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
+                            ? implode(',', $_POST['privacyOptions'])
+                            : '';
+                    } else {
+                        $data['privacy'] = $values['privacy'];
+                    }
 
                     // COMPARE VALUES: Has the data changed?
                     $dataChanged = $matchAddressCount > 0 ? true : false;
@@ -341,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $event->setNotificationText(__('A personal data update request has been submitted.'));
                             $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
 
-                            $event->sendNotifications($pdo, $gibbon->session);
+                            $event->sendNotifications($pdo, $session);
                         }
 
 

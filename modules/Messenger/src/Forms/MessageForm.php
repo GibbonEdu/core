@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,12 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Messenger\Forms;
 
+use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\CannedResponseGateway;
 
@@ -38,12 +42,22 @@ class MessageForm extends Form
 {
     protected $session;
     protected $db;
+    protected $messengerGateway;
+    protected $smsGateway;
+    protected $cannedResponseGateway;
+    protected $settingGateway;
+    protected $roleGateway;
+    protected $roleCategory;
+    protected $defaultSendStaff;
+    protected $defaultSendStudents;
+    protected $defaultSendParents;
 
-    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway)
+    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->messengerGateway = $messengerGateway;
+        $this->smsGateway = $smsGateway;
         $this->cannedResponseGateway = $cannedResponseGateway;
         $this->settingGateway = $settingGateway;
         $this->roleGateway = $roleGateway;
@@ -64,9 +78,6 @@ class MessageForm extends Form
         // Get the existing message data, if any
         $values = !empty($gibbonMessengerID) ? $this->messengerGateway->getByID($gibbonMessengerID) : [];
         $sent = !empty($values) && $values['status'] == 'Sent';
-
-        // TODO: refactor this
-        $signature = $this->getSignature($guid, $connection2, $this->session->get('gibbonPersonID'));
 
         // FORM
         $form = Form::create('messengerMessage', $this->session->get('absoluteURL').'/modules/Messenger/' .$action);
@@ -124,11 +135,18 @@ class MessageForm extends Form
             }
 
             $row = $form->addRow()->addClass('messageWall');
-                $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
-                $col = $row->addColumn('date1')->addClass('stacked');
-                $col->addDate('date1')->setValue(Format::date($values['messageWall_date1'] ?? date('Y-m-d')))->required();
-                $col->addDate('date2')->setValue(Format::date($values['messageWall_date2'] ?? ''));
-                $col->addDate('date3')->setValue(Format::date($values['messageWall_date3'] ?? ''));
+                $row->addLabel('datePublished', __('Publication Dates'));
+                $col = $row->addColumn('dateStart')->addClass('stacked');
+                $col->addLabel('dateStart', __('Start Date'));
+                $col->addDate('dateStart')
+                    ->chainedTo('dateEnd')
+                    ->setValue(Format::date($values['messageWall_dateStart'] ?? ''))
+                    ->required();
+                $col->addLabel('dateEnd', __('End Date'));
+                $col->addDate('dateEnd')
+                    ->chainedFrom('dateStart')
+                    ->setValue(Format::date($values['messageWall_dateEnd'] ?? ''))
+                    ->required();
         }
 
         // Delivery by SMS
@@ -149,7 +167,10 @@ class MessageForm extends Form
                 } else {
                     $row->addYesNoRadio('sms')->checked('N')->required();
 
-                    $this->getSMSSignatureJS($signature);
+                    if ($smsCredits = $this->smsGateway->getCreditBalance()) {
+                        $row = $form->addRow()->addClass('sms');
+                            $row->addAlert("<b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>", 'message');
+                    }
                 }
             }
         }
@@ -170,7 +191,7 @@ class MessageForm extends Form
             $cannedResponses = $this->cannedResponseGateway->selectCannedResponses()->fetchAll();
 
             if (!empty($cannedResponses)) {
-                $this->getCannedResponseJS($cannedResponses, $signature);
+                $this->getCannedResponseJS($cannedResponses);
                 $cans = array_combine(array_column($cannedResponses, 'gibbonMessengerCannedResponseID'), array_column($cannedResponses, 'subject'));
 
                 $row = $form->addRow();
@@ -191,7 +212,8 @@ class MessageForm extends Form
         $row = $form->addRow();
             $col = $row->addColumn('body');
             $col->addLabel('body', __('Body'));
-            $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($values['body'] ?? $signature);
+            $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($values['body'] ?? '');
+            $col->addCheckbox('includeSignature')->description(__('Include Signature? (email only)'))->setValue('Y')->checked($values['includeSignature'] ?? 'Y');
 
         // READ RECEIPTS
         if (!isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_readReceipts')) {
@@ -209,12 +231,22 @@ class MessageForm extends Form
 
                 $form->toggleVisibilityByClass('emailReceipt')->onRadio('emailReceipt')->when('Y');
                 $form->addRow()->addClass('emailReceipt')
-                    ->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.'));
+                    ->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the top of the message.'));
             }
 
-            $row = $form->addRow()->addClass('emailReceipt');
-                $row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-                $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'] ?? __('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly($sent);
+            if (empty($values['emailReceiptText'])) {
+                $values['emailReceiptText'] = __('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.');
+            }
+
+            if (!$sent || $values['emailReceipt'] == 'Y') {
+                $row = $form->addRow()->addClass('emailReceipt');
+                    $row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
+                    $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'])->readonly($sent);
+
+                $row = $form->addRow()->addClass('emailReceipt');
+                    $row->addLabel('enableSharingLink', __('Shareable Send Report'))->description(__('When enabled, you can share the Send Report for this message with other users.'));
+                    $row->addYesNoRadio('enableSharingLink')->required()->checked($values['enableSharingLink'] ?? 'N');
+            }
         }
 
         // Individual naming
@@ -654,6 +686,25 @@ class MessageForm extends Form
             }
         }
 
+        // Mailing Lists
+        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
+            $selectedByRole = [];
+            $selected = $this->getSelectedTargets($targets, 'Mailing List', $selectedByRole);
+
+            $row = $form->addRow();
+                $row->addLabel('mailingList', __('Mailing List'))->description(__('Members of a Messenger module mailing list.'));
+                $row->addYesNoRadio('mailingList')->checked(!empty($selected)? 'Y' : 'N')->required();
+
+            $form->toggleVisibilityByClass('messageMailingList')->onRadio('mailingList')->when('Y');
+
+            $data = [];
+            $sql = "SELECT gibbonMessengerMailingListID as value, name FROM gibbonMessengerMailingList WHERE active='Y' ORDER BY name";
+
+            $row = $form->addRow()->addClass('messageMailingList bg-blue-100');
+                $row->addLabel('mailingLists[]', __('Select Mailing Lists'));
+                $row->addSelect('mailingLists[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+        }
+
         // Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             $selected = $this->getSelectedTargets($targets, 'Individuals');
@@ -735,59 +786,7 @@ class MessageForm extends Form
         }, []);
     }
 
-    //Build an email signautre for the specified user
-    private function getSignature($guid, $connection2, $gibbonPersonID)
-    {
-        $return = false;
-
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-
-            $return = '<br /><br />----<br />';
-            $return .= '<span style="font-weight: bold; color: #447caa;">'.Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br />';
-            $return .= '<span style="font-style: italic;">';
-            if ($row['jobTitle'] != '') {
-                $return .= $row['jobTitle'].'<br />';
-            }
-            $return .= $this->session->get('organisationName').'<br />';
-            $return .= '</span>';
-        }
-
-        return $return;
-    }
-
-    private function getSMSSignatureJS($signature)
-    {
-        echo "<script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var smsRadio = document.querySelectorAll('input[name=\"sms\"]');
-            if (smsRadio == undefined || smsRadio.length == 0) return;
-
-            smsRadio.forEach(function (element) {
-                element.addEventListener('click', function(event) {
-                    tinymce.triggerSave();
-
-                    if (element.value == 'Y') {
-                        alert('".__('SMS sending has been enabled. Your signature has automatically been removed from the message body. Please note that the subject line is not included in SMS messages.')."');
-                        var contents = $('#body').val().replace('" . addSlashes($signature) . "', ' ');
-                    } else {
-                        var contents = $('#body').val() + '" . addSlashes($signature) . "';
-                    }
-
-                    tinymce.get('body').execCommand('mceSetContent', false, contents) ;
-                });
-            });
-          }, false);
-        </script>";
-    }
-
-    private function getCannedResponseJS(array $cannedResponses = [], string $signature = '')
+    private function getCannedResponseJS(array $cannedResponses = [])
     {
         // Set up JS to deal with canned response selection
         echo "<script type=\"text/javascript\">" ;
@@ -797,7 +796,7 @@ class MessageForm extends Form
                     echo "if ($('#cannedResponse').val()==\"\" ) {" ;
                         echo "$('#subject').val('');" ;
                         echo "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-                        echo "$('#body').val('" . addSlashes($signature) . "');" ;
+                        echo "$('#body').val('');" ;
                         echo "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
                     echo "}" ;
                     foreach ($cannedResponses AS $rowSelect) {
@@ -807,7 +806,7 @@ class MessageForm extends Form
                             echo "
                                 $.get('./modules/Messenger/messenger_post_ajax.php?gibbonMessengerCannedResponseID=" . $rowSelect["gibbonMessengerCannedResponseID"] . "', function(response) {
                                      var result = response;
-                                    $('#body').val(result + '" . addSlashes($signature) . "');
+                                    $('#body').val(result);
                                     tinyMCE.execCommand('mceAddEditor', false, 'body') ;
                                 });
                             " ;

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,6 +36,37 @@ class Time extends TextField
     protected $max;
     protected $chained;
     protected $showDuration;
+
+    /**
+     * Overload the base loadFrom method to handle converting time formats.
+     * @param   array  &$data
+     * @return  self
+     */
+    public function loadFrom(&$data)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($data[$name])) {
+            $this->setValue($data[$name]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the input's value.
+     * @param  string  $value
+     * @return $this
+     */
+    public function setValue($value = '')
+    {
+        if (strlen($value) == 19) {
+            $value = substr($value, 11);
+        }
+
+        $this->setAttribute('value', $value);
+        return $this;
+    }
 
     /**
      * Set the format to output time values (default 'H:i').

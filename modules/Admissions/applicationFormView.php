@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -93,15 +95,15 @@ if (!$proceed) {
         echo $form->getOutput();
         return;
     }
-    
+
     if ($public && !empty($account['timestampTokenExpire'])) {
         echo Format::alert(__('Welcome back! You are accessing this page through a unique link sent to your email address {email}. Please keep this link secret to protect your personal details. This link will expire {expiry}.', ['email' => '<u>'.$account['email'].'</u>', 'expiry' => Format::relativeTime($account['timestampTokenExpire'])]), 'message');
-    }    
+    }
 
     $page->return->addReturns(['success1' => __('A new admissions account has been created for {email}', ['email' => $account['email'] ?? ''])]);
 
     $formPayment = $container->get(FormPayment::class);
-    
+
     $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
 
@@ -118,11 +120,11 @@ if (!$proceed) {
         $table = DataTable::create('submissions');
         $table->setTitle(__('Current Applications'));
 
-        
+
         $table->addColumn('student', __('Applicant'))->format(function ($values) {
             return !empty($values['studentSurname'])
                 ? Format::name('', $values['studentPreferredName'], $values['studentSurname'], 'Student')
-                : Format::small(__('N/A')); 
+                : Format::small(__('N/A'));
 
         });
         $table->addColumn('formName', __('Application Form'));
@@ -180,7 +182,7 @@ if (!$proceed) {
 
     if (count($forms) == 0) {
         return;
-    } 
+    }
 
     // FORM
     $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applicationForm.php');
@@ -189,10 +191,10 @@ if (!$proceed) {
     $form->setDescription((count($submissions) > 0 ? __('You may continue submitting applications with the form below and they will be linked to your account data.').' ' : '').__('Some information has been pre-filled for you, feel free to change this information as needed.'));
 
     $form->setClass('w-full blank');
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('accessID', $account['accessID'] ?? '');
-    
+
     // Display all available public forms
     $firstForm = current($forms);
     foreach ($forms as $index => $applicationForm) {

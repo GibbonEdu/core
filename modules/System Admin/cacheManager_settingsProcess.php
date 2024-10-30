@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +26,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.php') == false) {
     $URL .= '&return=error0';
@@ -42,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
 
     $_POST['cachePath'] = '/'.trim($_POST['cachePath'], '/');
 
-    if (!is_dir($gibbon->session->get('absolutePath').'/'.$_POST['cachePath'])) {
-        mkdir($gibbon->session->get('absolutePath').'/'.$_POST['cachePath'], 0755);
+    if (!is_dir($session->get('absolutePath').'/'.$_POST['cachePath'])) {
+        mkdir($session->get('absolutePath').'/'.$_POST['cachePath'], 0755, true);
     }
 
     foreach ($settingsToUpdate as $scope => $settings) {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,6 +59,8 @@ class ReturnMessage
             'warning0' => __('Your optional extra data failed to save.'),
             'warning1' => __('Your request was successful, but some data was not properly saved.'),
             'warning2' => __('Your request was successful, but some data was not properly deleted.'),
+            'warning3' => __('Your request was successful but the emojis and symbols in your text have been removed due to compatibility constraints.'),
+            'warning4' => __('You have selected more than 50 individuals. Please select a target of less than 50 individuals and click Send.'),
         ]);
     }
 

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,19 +37,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         if ($highestAction != 'Manage Outcomes_viewEditAll' and $highestAction != 'Manage Outcomes_viewAllEditLearningArea') {
-            echo "<div class='error'>";
-            echo __('You do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('You do not have access to this action.'));
         } else {
             //Proceed!
             $filter2 = '';
             if (isset($_GET['filter2'])) {
-                $filter2 = $_GET['filter2'];
+                $filter2 = $_GET['filter2'] ?? '';
             }
 
             if ($filter2 != '') {
@@ -55,11 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             }
 
             //Check if gibbonOutcomeID specified
-            $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
+            $gibbonOutcomeID = $_GET['gibbonOutcomeID'] ?? '';
             if ($gibbonOutcomeID == '') {
-                echo "<div class='error'>";
-                echo __('You have not specified one or more required parameters.');
-                echo '</div>';
+                $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 try {
                     if ($highestAction == 'Manage Outcomes_viewEditAll') {
@@ -72,13 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record does not exist.');
-                    echo '</div>';
+                    $page->addError(__('The specified record does not exist.'));
                 } else {
                     //Let's go!
 					$values = $result->fetch(); 

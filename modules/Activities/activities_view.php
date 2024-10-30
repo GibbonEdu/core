@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('View Activities'));
 
@@ -45,17 +45,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         //Get current role category
         $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
+        $gibbonPersonID = null;
+
+        //If student, set gibbonPersonID to self
+        if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
+            $gibbonPersonID = $session->get('gibbonPersonID');
+        }
+        
         //Check access controls
         $settingGateway = $container->get(SettingGateway::class);
+
+        $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
+
         $allActivityAccess = $settingGateway->getSettingByScope('Activities', 'access');
         $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
 
         if (!($allActivityAccess == 'View' or $allActivityAccess == 'Register')) {
-            echo "<div class='error'>";
-            echo __('Activity listing is currently closed.');
-            echo '</div>';
+            echo Format::alert(__('Activity listing is currently closed.'), 'error');
         } else {
-            if ($allActivityAccess == 'View') {
+            if ($allActivityAccess == 'View' && $canAccessRegistration) {
                 echo "<div class='warning'>";
                 echo __('Registration is currently closed, but you can still view activities.');
                 echo '</div>';
@@ -68,12 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             }
 
-            $gibbonPersonID = null;
-
-            //If student, set gibbonPersonID to self
-            if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
-                $gibbonPersonID = $session->get('gibbonPersonID');
-            }
+           
             //IF PARENT, SET UP LIST OF CHILDREN
             $countChild = 0;
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
@@ -85,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $result->execute($data);
 
                 if ($result->rowCount() < 1) {
-                    $page->addMessage(__('There are no records to display.'));
+                    echo $page->getBlankSlate();
                 } else {
                     $options = array();
                     while ($row = $result->fetch()) {
@@ -107,9 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
 
                     if ($countChild == 0) {
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        echo $page->getBlankSlate();
                     }
                 }
             }
@@ -133,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $row->addTextField('search')->setValue($search)->maxLength(20);
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+                $row->addSearchSubmit($session, __('Clear Search'));
 
             echo $form->getOutput();
 
@@ -196,9 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             }
 
             if ($continue == false) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                echo $page->getBlankSlate();
             } else {
                 //Should we show date as term or date?
                 $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
@@ -215,8 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $schoolTerms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
                 $yearGroups = getYearGroups($connection2);
 
-                // Toggle Features
-                $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
+                // Toggle Features 
                 $paymentOn = $settingGateway->getSettingByScope('Activities', 'payment') != 'None' && $settingGateway->getSettingByScope('Activities', 'payment') != 'Single';
 
                 $activityGateway = $container->get(ActivityGateway::class);
@@ -298,7 +296,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     });
 
                     $table->modifyRows(function ($activity, $row)  {
-                        if (!empty($activity['currentEnrolment'])) $row->addClass('current');
+                        if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] != 'Waiting List') $row->addClass('current');
+                        else if (!empty($activity['currentEnrolment']) && $activity['currentEnrolment']['status'] == 'Waiting List') $row->addClass('warning');
                         else if ($activity['registration'] != 'Y') $row->addClass('dull');
                         else if ($activity['enrolmentFull']) $row->addClass('error');
 
@@ -307,19 +306,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 }
 
                 $table->addColumn('name', __('Activity'))
+                    ->context('primary')
                     ->format(function ($activity) {
                         return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
                     });
 
                 $table->addColumn('provider', __('Provider'))
+                    ->context('secondary')
                     ->width('10%')
                     ->format(function ($activity) use ($session) {
                         return ($activity['provider'] == 'School')? $session->get('organisationNameShort') : __('External');
                     });
 
                 $table->addColumn('date', $dateType != 'Date'? __('Term') : __('Dates'))
-                    ->width('18%')
                     ->description(__('Days'))
+                    ->context('secondary')
+                    ->width('18%')
                     ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
                     ->format(function ($activity) use ($dateType, $schoolTerms, $activityGateway) {
                         if (empty($schoolTerms)) return '';
@@ -364,6 +366,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 if ($canAccessRegistration) {
                     $table->addColumn('enrolmentAvailable', __('Enrolment'))
+                        ->context('primary')
                         ->sortable(false)
                         ->format(function ($activity) use ($disableExternalProviderSignup) {
                             if ($activity['provider'] == 'External' and $disableExternalProviderSignup == 'Y') {

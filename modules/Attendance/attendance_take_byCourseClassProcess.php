@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 
 //Gibbon system-wide includes
 require __DIR__ . '/../../gibbon.php';
@@ -95,39 +98,35 @@ else {
                 }
                 else {
                     $settingGateway = $container->get(SettingGateway::class);
+                    $attendanceLogCourseClassGateway = $container->get(AttendanceLogCourseClassGateway::class);
 
                     //Write to database
                     require_once __DIR__ . '/src/AttendanceView.php';
                     $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
-                    try {
-                        $data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate);
-                        $sql="SELECT gibbonAttendanceLogCourseClassID FROM gibbonAttendanceLogCourseClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY gibbonAttendanceLogCourseClassID DESC" ;
-                        $resultLog=$connection2->prepare($sql);
-                        $resultLog->execute($data);
-                    }
-                    catch(PDOException $e) {
-                        //Fail 2
-                        $URL.="&return=error2" ;
-                        header("Location: {$URL}");
-                        die();
-                    }
-
-                    if ($resultLog->rowCount()<1) {
-                        $data=array("gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
-                        $sql="INSERT INTO gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, gibbonTTDayRowClassID=:gibbonTTDayRowClassID, date=:date, timestampTaken=:timestampTaken" ;
-
+                    if (!empty($gibbonTTDayRowClassID)) {
+                        $classLog = $attendanceLogCourseClassGateway->selectBy(['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $currentDate, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID])->fetch();
                     } else {
-                        $resultUpdate=$resultLog->fetch() ;
-                        $data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
-                        $sql="UPDATE gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, gibbonTTDayRowClassID=:gibbonTTDayRowClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogCourseClassID=:gibbonAttendanceLogCourseClassID" ;
+                        $classLog = $attendanceLogCourseClassGateway->selectBy(['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $currentDate])->fetch();
                     }
 
-                    try {
-                        $result=$connection2->prepare($sql);
-                        $result->execute($data);
+                    if (!empty($classLog)) {
+                        $gibbonAttendanceLogCourseClassID = $classLog['gibbonAttendanceLogCourseClassID'];
+                        $attendanceLogCourseClassGateway->update($classLog['gibbonAttendanceLogCourseClassID'], [
+                            'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                            'timestampTaken'=>date('Y-m-d H:i:s'),
+                        ]);
+                    } else {
+                        $gibbonAttendanceLogCourseClassID = $attendanceLogCourseClassGateway->insert([
+                            'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                            'gibbonCourseClassID'=>$gibbonCourseClassID,
+                            'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+                            'date'=>$currentDate,
+                            'timestampTaken'=>date('Y-m-d H:i:s'),
+                        ]);
                     }
-                    catch(PDOException $e) {
+
+                    if (empty($gibbonAttendanceLogCourseClassID)) {
                         //Fail 2
                         $URL.="&return=error2" ;
                         header("Location: {$URL}");

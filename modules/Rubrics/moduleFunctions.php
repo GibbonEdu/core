@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -157,6 +159,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
     global $pdo, $page, $gibbon, $session;
 
     $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
+    $schoolYearFirstDay = $session->get('gibbonSchoolYearFirstDay');
 
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
@@ -168,9 +171,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
         $result->execute($data);
 
     if ($result->rowCount() != 1) {
-        echo "<div class='error'>";
-        echo __('The specified record cannot be found.');
-        echo '</div>';
+        $page->addError(__('The specified record cannot be found.'));
     } else {
         $values = $result->fetch();
 
@@ -265,6 +266,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 if ($resultContext->rowCount() > 0) {
                     $currentDate = date('Y-m-d');
                     while ($rowContext = $resultContext->fetch()) {
+                        // Skip data before the current school year
+                        if (!empty($schoolYearFirstDay) && $rowContext[$contextDBTableDateField] < $schoolYearFirstDay) {
+                            continue;
+                        }
+
                         // Skip data for any column that has not met its complete date yet
                         if (!empty($rowContext[$contextDBTableDateField]) && $currentDate < $rowContext[$contextDBTableDateField]) {
                             $containsFutureData = true;
@@ -422,7 +428,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $output .= "</p>";
 
                 require_once __DIR__ . '/src/Visualise.php';
-                $visualise = new Visualise($gibbon->session->get('absoluteURL'), $page, $gibbonPersonID, $columns, $rows, $cells, $contexts);
+                $visualise = new Visualise($session->get('absoluteURL'), $page, $gibbonPersonID, $columns, $rows, $cells, $contexts);
 
                 $output .= $visualise->renderVisualise();
 

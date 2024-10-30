@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -244,9 +246,11 @@ class Action extends WebLink
     {
         $this->modal = true;
 
-        $this->addClass('thickbox underline')
-            ->addParam('width', $width)
-            ->addParam('height', $height);
+        $this->setAttribute('hx-boost', 'true')
+            ->setAttribute('hx-target', '#modalContent')
+            ->setAttribute('hx-push-url', 'false')
+            ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
+            ->setAttribute('x-on:click', "modalType = '{$this->name}'");
 
         return $this;
     }
@@ -314,6 +318,13 @@ class Action extends WebLink
             $queryParams[$key] = $value;
         }
 
+        if (!$this->external && !$this->direct && !$this->modal) {
+            $this->setAttribute('hx-boost', 'true')
+                ->setAttribute('hx-target', '#content-inner')
+                ->setAttribute('hx-select', '#content-inner')
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
+        }
+
         if ($this->url instanceof Url) {
             $this->setAttribute('href', (string)$this->url);
         } elseif ($this->external) {
@@ -324,8 +335,7 @@ class Action extends WebLink
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         } else if ($this->modal) {
             $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
-                ->withQueryParams($queryParams)
-                ->withFragment(ltrim($this->urlFragment ?? '', '#')));
+                ->withQueryParams($queryParams));
         } else {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
@@ -28,6 +30,7 @@ class FormatTest extends TestCase
             'currency'                       => 'HKD $',
             'currencySymbol'                 => '$',
             'currencyName'                   => 'HKD',
+            'dateFormatGenerate'             => false,
         ];
 
         // Set the locale for the tests.
@@ -41,6 +44,9 @@ class FormatTest extends TestCase
         );
 
         Format::setup($settings);
+
+        // Verify test environment has correct locale setup.
+       $this->assertStringStartsWith($settings['code'], setlocale(LC_TIME, 0), 'Test environment has correct locale setup');
     }
 
     public function testFormatsDates()
@@ -76,7 +82,68 @@ class FormatTest extends TestCase
 
     public function testFormatsReadableDates()
     {
+        
+
+        $dateString = '2018-02-03 13:24';
+
+        // Verify fidelity of formatting output using default en_GB locale
+
+        $this->assertEquals('18 May 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('18 May 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
+        $this->assertEquals('Saturday, 3 February 2018', Format::dateReadable($dateString, Format::FULL));
+        $this->assertEquals('Saturday, 3 February', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
+        $this->assertEquals('3 February 2018', Format::dateReadable($dateString, Format::LONG));
+        $this->assertEquals('3 Feb 2018', Format::dateReadable($dateString, Format::MEDIUM));
+        $this->assertEquals('3 Feb', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
+        $this->assertEquals('03', Format::date($dateString, 'd'));
+        $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
+        $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
+        $this->assertEquals('February', Format::monthName($dateString));
+        $this->assertEquals('Feb', Format::monthName($dateString, true));
+        $this->assertEquals('3 Feb 2018, 13:24', Format::dateTimeReadable($dateString));
+        $this->assertEquals('3 February 2018 At 13:24', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
+        $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+
+        // Verify fidelity of formatting output using en_US locale
+
+        Format::setup(['code' => 'en_US']);
+
         $this->assertEquals('May 18, 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('May 18, 2018, 1:24 Pm', Format::dateTimeReadable('2018-05-18 13:24'));
+        $this->assertEquals('Saturday, February 3, 2018', Format::dateReadable($dateString, Format::FULL));
+        $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
+        $this->assertEquals('February 3, 2018', Format::dateReadable($dateString, Format::LONG));
+        $this->assertEquals('Feb 3, 2018', Format::dateReadable($dateString, Format::MEDIUM));
+        $this->assertEquals('Feb 3', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
+        $this->assertEquals('03', Format::date($dateString, 'd'));
+        $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
+        $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
+        $this->assertEquals('February', Format::monthName($dateString));
+        $this->assertEquals('Feb', Format::monthName($dateString, true));
+        $this->assertEquals('Feb 3, 2018, 1:24 Pm', Format::dateTimeReadable($dateString));
+        $this->assertEquals('February 3, 2018 At 1:24 Pm', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
+        $this->assertEquals('1:24 Pm', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+
+        // Verify fidelity of formatting output using generic fallbacks 
+
+        Format::$intlFormatterAvailable = false;
+
+        $this->assertEquals('May 18 2018', Format::dateReadable('2018-05-18'));
+        $this->assertEquals('May 18 2018, 13:24', Format::dateTimeReadable('2018-05-18 13:24'));
+        $this->assertEquals('Saturday, February 3 2018', Format::dateReadable($dateString, Format::FULL));
+        $this->assertEquals('Saturday, February 3', Format::dateReadable($dateString, Format::FULL_NO_YEAR));
+        $this->assertEquals('February 3 2018', Format::dateReadable($dateString, Format::LONG));
+        $this->assertEquals('Feb 3 2018', Format::dateReadable($dateString, Format::MEDIUM));
+        $this->assertEquals('Feb 3', Format::dateReadable($dateString, Format::MEDIUM_NO_YEAR));
+        $this->assertEquals('03', Format::date($dateString, 'd'));
+        $this->assertEquals('Saturday', Format::dayOfWeekName($dateString));
+        $this->assertEquals('Sat', Format::dayOfWeekName($dateString, true));
+        $this->assertEquals('February', Format::monthName($dateString));
+        $this->assertEquals('Feb', Format::monthName($dateString, true));
+        $this->assertEquals('Feb 3 2018, 13:24', Format::dateTimeReadable($dateString));
+        $this->assertEquals('February 3 2018, 13:24', Format::dateReadable($dateString, Format::LONG, Format::SHORT));
+        $this->assertEquals('13:24', Format::dateReadable($dateString, Format::NONE, Format::SHORT));
+        
     }
 
     public function testFormatsDateRanges()

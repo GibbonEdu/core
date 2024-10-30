@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -49,7 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     $row = $form->addRow();
         $row->addLabel('gibbonTTID', __('Timetable'));
-        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder()->selected($gibbonTTID);
+        $select = $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder()->selected($gibbonTTID);
+
+        if ($select->getOptionCount() == 1) {
+            $option = $select->getOptions();
+            $select->selected(key($option));
+            $gibbonTTID = key($option);
+        }
 
     $facilityTypes = $container->get(SettingGateway::class)->getSettingByScope('School Admin', 'facilityTypes');
     $facilityTypes = (!empty($facilityTypes))? explode(',', $facilityTypes) : [];
@@ -79,9 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $result = $pdo->select($sql, $data);
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $row = $result->fetch();
             $startDayStamp = strtotime(Format::dateConvert($ttDate));
@@ -355,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                         $vacancies = '';
                                         if ($rowPeriods['type'] != 'Break') {
                                             
-                                            $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+                                            $sqlSelect = 'SELECT * FROM gibbonSpace WHERE active="Y" ORDER BY name';
                                             $resultSelect = $pdo->select($sqlSelect);
 
                                             $removers = [];

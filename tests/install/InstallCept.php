@@ -33,7 +33,7 @@ try {
     $I->fillField('databaseUsername', getenv('DB_USERNAME'));
     $I->fillField('databasePassword', getenv('DB_PASSWORD'));
 
-    $I->selectOption('demoData', 'Y');
+    $I->fillField('demoData', 'Y');
     $I->click('Submit');
 
     // STEP 3 --------------------------------------

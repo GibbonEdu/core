@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_edit.php&gibbonReportingCycleID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_edit.php&gibbonReportingCycleID='.$_GET['editID'];
     }
 
     $page->return->setEditLink($editLink);
@@ -57,14 +59,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     $page->addMessage(__('Duplicating this reporting cycle will copy all milestones and criteria to the new reporting cycle. Reporting access will not be copied.'));
 
-    $form = Form::create('reportingCycles', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_duplicateProcess.php');
+    $form = Form::create('reportingCycles', $session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_duplicateProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearID', __('School Year'));
-        $row->addSelectSchoolYear('gibbonSchoolYearID')->required()->selected($gibbon->session->get('gibbonSchoolYearID'));
+        $row->addSelectSchoolYear('gibbonSchoolYearID')->required()->selected($session->get('gibbonSchoolYearID'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,16 +28,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-    $type = $_GET['type'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+    $type = $_GET['type'] ?? '';
     $preview = false;
     if (isset($_GET['preview']) && $_GET['preview'] == 'true') {
-        $preview = $_GET['preview'];
+        $preview = $_GET['preview'] ?? '';
     }
     $receiptNumber = null;
     if (isset($_GET['receiptNumber'])) {
-        $receiptNumber = $_GET['receiptNumber'];
+        $receiptNumber = $_GET['receiptNumber'] ?? '';
     }
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '') {
@@ -73,9 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
                 $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $preview);
                 if ($invoiceContents == false) {
-                    echo "<div class='error'>";
-                    echo __('An error occurred.');
-                    echo '</div>';
+                    $page->addError(__('An error occurred.'));
                 } else {
                     echo $invoiceContents;
                 }
@@ -119,9 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 echo '</h2>';
                 $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'));
                 if ($invoiceContents == false) {
-                    echo "<div class='error'>";
-                    echo __('An error occurred.');
-                    echo '</div>';
+                    $page->addError(__('An error occurred.'));
                 } else {
                     echo $invoiceContents;
                 }
@@ -131,9 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 echo '</h2>';
                 $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $receiptNumber);
                 if ($receiptContents == false) {
-                    echo "<div class='error'>";
-                    echo __('An error occurred.');
-                    echo '</div>';
+                    $page->addError(__('An error occurred.'));
                 } else {
                     echo $receiptContents;
                 }

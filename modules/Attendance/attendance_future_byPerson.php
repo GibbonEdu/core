@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -50,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
     $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
-    $gibbonThemeName = $gibbon->session->get('gibbonThemeName');
+    $gibbonThemeName = $session->get('gibbonThemeName');
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
 
@@ -98,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $row = $form->addRow()->addClass('single');
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'))->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonIDList[0] ?? '')->photo(true, 'small');
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonIDList[0] ?? '')->photo(true, 'small');
 
     if ($canTakeAdHocAttendance) {
         // Show the ad hoc attendance groups
@@ -110,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $row = $form->addRow()->addClass('multiple');
             $row->addLabel('target', __('Target'));
             $row->addSelect('target')->fromArray($targetOptions)->required()->selected($target)->placeholder();
-    
+
         $form->toggleVisibilityByClass('targetActivity')->onSelect('target')->when('Activity');
         $form->toggleVisibilityByClass('targetMessenger')->onSelect('target')->when('Messenger');
         $form->toggleVisibilityByClass('targetSelect')->onSelect('target')->when('Select');
@@ -137,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
     $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {
         $list = in_array($student['gibbonPersonID'], $gibbonPersonIDList) ? 'destination' : 'source';
-        $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup']; 
+        $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];
         $group['form'][$student['gibbonPersonID']] = $student['formGroup'];
         return $group;
     });
@@ -148,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $select->addSortableAttribute(__('Form Group'), $studentList['form']);
         $select->source()->fromArray($studentList['students']['source'] ?? []);
         $select->destination()->fromArray($studentList['students']['destination'] ?? []);
-        
+
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php')) {
         $availableAbsenceTypes = [
             'full' => __('Full Day'),
@@ -169,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $row->addTime('timeStart')
                 ->required()
                 ->setValue($timeStart);
-        
+
         $row = $form->addRow()->addClass('partialDateRow');
             $row->addLabel('timeEnd', __('End Time'));
             $row->addTime('timeEnd')
@@ -179,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     }
 
 
-    $form->addRow()->addSearchSubmit($gibbon->session);
+    $form->addRow()->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -206,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($gibbonPersonIDList[0], $targetDate)->fetchAll();
 
             //Get classes for partial attendance
-            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonIDList[0], $targetDate)->fetchAll();
+            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($session->get('gibbonSchoolYearID'), $gibbonPersonIDList[0], $targetDate)->fetchAll();
 
             if ($absenceType == 'partial' && empty($classes)) {
                 echo Format::alert(__('Cannot record a partial absence. This student does not have timetabled classes for this day.'));
@@ -250,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     }
                 });
                 $table->addColumn('staff', __('Recorded By'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
-                $table->addColumn('timestamp', __('On'))->format(Format::using('dateTimeReadable', 'timestampTaken', '%R, %b %d'));
+                $table->addColumn('timestamp', __('On'))->format(Format::using('dateTimeReadable', 'timestampTaken'));
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonIDList[0] ?? '')
@@ -295,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                     //Get classes for partial attendance
                     $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $targetDate)->fetchAll();
-                    $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $student['gibbonPersonID'], $targetDate)->fetchAll();
+                    $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($session->get('gibbonSchoolYearID'), $student['gibbonPersonID'], $targetDate)->fetchAll();
                     
                     // Filter only classes that are attendanceable
                     $classes = array_filter($classes, function ($item) {
@@ -308,11 +310,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                             foreach ($logs as $log) {
                                 if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
-                                    $name = $log['type'];
+                                    $name = $log['type'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
                                 }
                             }
 
-                            $group[$class['gibbonCourseClassID']] = $name;
+                            $group[$class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID']] = $name;
                             return $group;
                         }, []);
 
@@ -320,21 +322,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         $checked = array_reduce($classes, function ($group, $class) use ($targetDate, $effectiveStart, $effectiveEnd) {
                             $classStart = strtotime($targetDate.' '.$class['timeStart']);
                             $classEnd = strtotime($targetDate.' '.$class['timeEnd']);
-                            if (($classStart >= $effectiveStart && $classStart < $effectiveEnd) 
+                            if (($classStart >= $effectiveStart && $classStart < $effectiveEnd)
                                     || ($effectiveStart >= $classStart && $effectiveStart < $classEnd)) {
-                                $group[] = $class['gibbonCourseClassID'];
+                                $group[] = $class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID'];
                             }
-                            
+
                             return $group;
                         }, []);
 
                         $disabled = array_reduce($classes, function ($group, $class) use (&$logs, $targetDate) {
                             foreach ($logs as $log) {
-                                if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
-                                    $group[] = $class['gibbonCourseClassID'];
+                                if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate && (empty($log['gibbonTTDayRowClassID']) || ($class['gibbonTTDayRowClassID'] == $log['gibbonTTDayRowClassID'])) ) {
+                                    $group[] = $class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID'];
                                 }
                             }
-                            
+
                             return $group;
                         }, []);
 
@@ -345,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             ->alignLeft()
                             ->checked($checked + $disabled)
                             ->disabled($disabled);
-                        
+
                     } else {
                         $col->addContent(Format::small(__('N/A')));
                     }
@@ -385,48 +387,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $row->addLabel('periodSelectContainer', __('Periods Absent'));
 
                 $table = $row->addTable('periodSelectContainer')->setClass('standardWidth');
-                $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date),'%B %e, %Y'));
+                $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date), Format::LONG));
 
                 foreach ($classes as $class) {
                     $name = $class['columnName'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
+                    $logName = $name;
 
                     $classStart = strtotime($targetDate.' '.$class['timeStart']);
                     $classEnd = strtotime($targetDate.' '.$class['timeEnd']);
 
-                    $checked = (($classStart >= $effectiveStart && $classStart < $effectiveEnd) 
+                    $checked = (($classStart >= $effectiveStart && $classStart < $effectiveEnd)
                             || ($effectiveStart >= $classStart && $effectiveStart < $classEnd));
 
                     $disabled = false;
                     foreach (array_reverse($logs) as $log) {
                         if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
-                            $disabled = $class['gibbonCourseClassID'];
-                            $name .= ' ('.$log['type'].')';
+                            $logName = $name . ' ('.$log['type'].')';
                             break;
                         }
 
                         if ($log['context'] != 'Class' && $log['date'] == $targetDate) {
-                            $disabled = $class['gibbonCourseClassID'];
-                            $name .= ' ('.$log['type'].')';
-                            break;
+                            $logName = $name . ' ('.$log['type'].')';
                         }
                     }
 
                     $row = $table->addRow();
                     $row->addCheckbox("courses[{$gibbonPersonIDList[0]}][]")
-                        ->description($name)
+                        ->description($logName)
                         ->setValue($class['gibbonCourseClassID'])
                         ->inline()
                         ->setClass('')
-                        ->checked($checked ? $class['gibbonCourseClassID'] : '', $disabled);
+                        ->checked($checked ? $class['gibbonCourseClassID'] : '');
                 }
             } else {
-               
+
             }
         }
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray($attendance->getFutureAttendanceTypes())->required()->selected('Absent');
+            $row->addSelect('type')->fromArray($attendance->getFutureAttendanceTypes())->required()->selected($scope == 'multiple' ? 'Present - Offsite' : 'Absent');
 
         $row = $form->addRow();
             $row->addLabel('reason', __('Reason'));

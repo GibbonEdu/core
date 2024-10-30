@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), ['showForm' => true])->required()->placeholder();
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'), ['showForm' => true])->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('status', __('Status'))->description(__("Set this to Left unless the student's withdraw date is in the future."));
@@ -53,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
         if (!empty($departureReasonsList)) {
             $row->addSelect('departureReason')->fromString($departureReasonsList)->required()->placeholder();
         } else {
-            $row->addTextField('departureReason')->maxLength(30)->required();
+            $row->addTextField('departureReason')->maxLength(100)->required();
         }
 
     $schools = $pdo->select("SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY lastSchool")->fetchAll(\PDO::FETCH_COLUMN);
@@ -84,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
     $row = $form->addRow();
         $row->addLabel('notificationList', __('Notify Additional People'));
         $row->addFinder('notificationList')
-            ->fromAjax($gibbon->session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
+            ->fromAjax($session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
             ->setParameter('resultsLimit', 10)
             ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
 

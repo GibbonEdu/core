@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,15 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         if ($gibbonSchoolYearID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
 
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -60,16 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 $result->execute($data);
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record does not exist.');
-                echo '</div>';
+                $page->addError(__('The specified record does not exist.'));
             } else {
                 $values = $result->fetch();
 
                 if ($gibbonCourseID == '') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
                     $courseGateway = $container->get(CourseGateway::class);
 
@@ -77,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     if ($highestAction == 'Unit Planner_all') {
                         $resultCourse = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
                     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $resultCourse = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                        $resultCourse = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
                     }
 
                     if ($resultCourse->rowCount() != 1) {
@@ -213,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $form->addRow()->addHeading('Outcomes', __('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'))->addClass('advanced');
                         $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
                         $row = $form->addRow()->addClass('advanced');
-                            $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                            $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
                         //SMART BLOCKS
                         $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'))->append(__('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.'))->addClass('advanced');
@@ -223,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             ->addClass('advanced addBlock');
 
                         $row = $form->addRow()->addClass('advanced');
-                            $customBlocks = $row->addPlannerSmartBlocks('smart', $gibbon->session, $guid)
+                            $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid)
                                 ->addToolInput($blockCreator);
 
                         for ($i=0 ; $i<5 ; $i++) {

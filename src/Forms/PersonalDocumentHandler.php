@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -97,8 +99,9 @@ class PersonalDocumentHandler
                         if (empty($value)) {
                             $personalDocumentFail = true;
                         }
-                    } else {
-                        $data[$field] = $attachment;
+                    } else if (empty($attachment)) {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $data[$field] = null;
                     }
                 } else {
                     // Handle all other data

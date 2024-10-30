@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,16 +36,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         //Proceed!
         $page->breadcrumbs->add(__('View Form Groups'));
 
-        $gateway = $container->get(FormGroupGateway::class);
+        $formGroupGateway = $container->get(FormGroupGateway::class);
         if ($highestAction == "View Form Groups_all") {
-            $formGroups = $gateway->selectFormGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYear($session->get('gibbonSchoolYearID'));
         }
         else {
-            $formGroups = $gateway->selectFormGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
+            $formGroups = $formGroupGateway->selectFormGroupsBySchoolYearMyChildren($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
         }
 
-        $formatTutorsList = function($row) use ($gateway) {
-            $tutors = $gateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
+        $formatTutorsList = function($row) use ($formGroupGateway) {
+            $tutors = $formGroupGateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
             return Format::nameList($tutors, 'Staff', false, true);
@@ -87,8 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
                     }
                 });
             $table->addColumn('students', __('Students'))
-                ->format(function ($values) use ($yearGroupGateway) {
-                    return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID']);
+                ->format(function ($values) use ($yearGroupGateway, $session) {
+                    return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID'], $session->get('gibbonSchoolYearID'));
                 });
 
             echo $table->render($yearGroups);

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,19 +36,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $gibbonINDescriptorID = null;
     if (isset($_GET['gibbonINDescriptorID'])) {
-        $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
+        $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
     }
     $gibbonAlertLevelID = null;
     if (isset($_GET['gibbonAlertLevelID'])) {
-        $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'];
+        $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'] ?? '';
     }
     $gibbonFormGroupID = null;
     if (isset($_GET['gibbonFormGroupID'])) {
-        $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     }
     $gibbonYearGroupID = null;
     if (isset($_GET['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     }
 
     echo '<h3>';
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 

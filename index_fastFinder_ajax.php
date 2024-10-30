@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,30 +19,31 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Gibbon system-wide includes
-
+use Gibbon\Http\Url;
 use Gibbon\Domain\System\ActionGateway;
 
 include './gibbon.php';
-
-$themeName = $session->get('gibbonThemeName') ?? 'Default';
 
 if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     die( __('Your request failed because you do not have access to this action.') );
 } else {
 
-    $searchTerm = $_REQUEST['q'] ?? '';
+    $searchTerm = $_REQUEST['search'] ?? '';
+    $searchType = $_REQUEST['searchType'] ?? '';
 
     // Allow for * as wildcard (as well as %)
+    $searchTermSafe = preg_replace('/([#-.]|[[-^]|[?|{}]|[\/])/', '\\\\$1', $searchTerm);
     $searchTerm = str_replace('*', '%', $searchTerm);
 
     // Cancel out early for empty searches
-    if (empty($searchTerm)) die('[]');
+    if (empty($searchTerm) or strlen($searchTerm) < 2) die('<span class="block px-4 py-2 text-sm text-gray-800">'.__('Start typing a name...').'</span>');
 
     // Check access levels
     $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
     $highestActionStudent = getHighestGroupedAction($guid, '/modules/students/student_view.php', $connection2);
 
+    $departmentIsAccessible = isActionAccessible($guid, $connection2, '/modules/Departments/department.php');
+    $facilityIsAccessible = isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.php');
     $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
     $classIsAccessible = false;
     $alarmIsAccessible = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
@@ -50,7 +53,8 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     }
 
     $resultSet = array();
-    $resultError = '[{"id":"","name":"Database Error"}]';
+    $resultCount = 0;
+    $resultError = '<span class="block px-4 py-2 text-sm text-gray-800">'.__('Your request failed due to a database error.').'</span>';
 
     // ACTIONS
     // Grab the cached set of translated actions from the session
@@ -61,11 +65,12 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
         $actions = $session->get('fastFinderActions');
     }
     
-    if (!empty($actions) && is_array($actions)) {
+    if (($searchType == 'all' || $searchType == 'actions') && !empty($actions) && is_array($actions)) {
         foreach ($actions as $action) {
             // Add actions that match the search query to the result set
             if (stristr($action['name'], $searchTerm) !== false) {
                 $resultSet['Action'][] = $action;
+                $resultCount++;
             }
 
             // Handle the special Lockdown case
@@ -73,13 +78,31 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                 if (stristr('Lockdown', $searchTerm) !== false && $action['name'] == 'Sound Alarm') {
                     $action['name'] = 'Lockdown';
                     $resultSet['Action'][] = $action;
+                    $resultCount++;
                 }
             }
         }
     }
 
+    // DEPARTMENT
+    if (($searchType == 'all' || $searchType == 'departments') && $departmentIsAccessible == true) {
+        try {
+            $data = array('search' => '%'.$searchTerm.'%');
+            $sql = "SELECT gibbonDepartment.gibbonDepartmentID AS id,
+                    gibbonDepartment.name AS name,
+                    gibbonDepartment.type as type
+                    FROM gibbonDepartment
+                    WHERE gibbonDepartment.name LIKE :search 
+                    ORDER BY name";
+            $resultList = $pdo->select($sql, $data);
+        } catch (PDOException $e) { die($resultError); }
+
+        if ($resultList->rowCount() > 0) $resultSet['Department'] = $resultList->fetchAll();
+        $resultCount += $resultList->rowCount();
+    }
+    
     // CLASSES
-    if ($classIsAccessible) {
+    if (($searchType == 'all' || $searchType == 'classes') && $classIsAccessible) {
         try {
             if ($highestActionClass == 'Lesson Planner_viewEditAllClasses' or $highestActionClass == 'Lesson Planner_viewAllEditMyClasses') {
                 $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID') );
@@ -100,15 +123,15 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                         AND (gibbonCourse.name LIKE :search OR CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) LIKE :search)
                         ORDER BY name";
             }
-            $resultList = $connection2->prepare($sql);
-            $resultList->execute($data);
+            $resultList = $pdo->select($sql, $data);
         } catch (PDOException $e) { die($resultError); }
 
         if ($resultList->rowCount() > 0) $resultSet['Class'] = $resultList->fetchAll();
+        $resultCount += $resultList->rowCount();
     }
 
     // STAFF
-    if ($staffIsAccessible == true) {
+    if (($searchType == 'all' || $searchType == 'staff') && $staffIsAccessible == true) {
         try {
             $data = array('search' => '%'.$searchTerm.'%', 'today' => date('Y-m-d') );
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
@@ -125,15 +148,33 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                         OR gibbonPerson.preferredName LIKE :search
                         OR gibbonPerson.username LIKE :search)
                     ORDER BY name";
-            $resultList = $connection2->prepare($sql);
-            $resultList->execute($data);
+            $resultList = $pdo->select($sql, $data);
         } catch (PDOException $e) { die($resultError); }
 
         if ($resultList->rowCount() > 0) $resultSet['Staff'] = $resultList->fetchAll();
+        $resultCount += $resultList->rowCount();
+    }
+
+    // FACILITY
+    if (($searchType == 'all' || $searchType == 'facilities') && $facilityIsAccessible == true) {
+        try {
+            $data = array('search' => '%'.$searchTerm.'%');
+            $sql = "SELECT gibbonSpace.gibbonSpaceID AS id,
+                    gibbonSpace.name AS name,
+                    NULL as type
+                    FROM gibbonSpace
+                    WHERE gibbonSpace.name LIKE :search 
+                    AND gibbonSpace.active='Y'
+                    ORDER BY name";
+            $resultList = $pdo->select($sql, $data);
+        } catch (PDOException $e) { die($resultError); }
+
+        if ($resultList->rowCount() > 0) $resultSet['Facility'] = $resultList->fetchAll();
+        $resultCount += $resultList->rowCount();
     }
 
     // STUDENTS
-    if ($studentIsAccessible == true) {
+    if (($searchType == 'all' || $searchType == 'students') && $studentIsAccessible == true) {
 
         $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d') );
 
@@ -193,28 +234,58 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                 ORDER BY name";
 
         try {
-            $resultList = $connection2->prepare($sql);
-            $resultList->execute($data);
+            $resultList = $pdo->select($sql, $data);
         } catch (PDOException $e) { die($resultError); }
 
         if ($resultList->rowCount() > 0) $resultSet['Student'] = $resultList->fetchAll();
+        $resultCount += $resultList->rowCount();
     }
 
-    $list = '';
+    $output = '';
+    $outputCount = 0;
     foreach ($resultSet as $type => $results) {
         foreach ($results as $token) {
+
+            if ($outputCount > 30) {
+                $output .= '<span class="block px-4 py-2 text-sm italic text-gray-800">'.__('+{n} More Results', ['n' => $resultCount - $outputCount]).'</span>';
+                break 2;
+            }
+
+            if ($type == 'Student') {
+                $URL = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $token['id']);
+            } elseif ($type == 'Action') {
+                $URL = Url::fromModuleRoute(strstr($token['id'], '/', true), trim(strstr($token['id'], '/'), '/ '));
+            } elseif ($type == 'Staff') {
+                $URL = Url::fromModuleRoute('Staff', 'staff_view_details')->withQueryParam('gibbonPersonID', $token['id']);
+            } elseif ($type == 'Class') {
+                $URL = Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $token['id']);
+            } elseif ($type == 'Facility') {
+                $URL = Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParam('gibbonSpaceID', $token['id']);
+            } elseif ($type == 'Department') {
+                $URL = Url::fromModuleRoute('Departments', 'department')->withQueryParam('gibbonDepartmentID', $token['id']);
+            }
+
             if ($token['type'] == 'Core') {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($type)).' - '.htmlPrep(__($token['name'])).'"},';
+                $name = htmlPrep(__($token['name']));
+            } else if ($token['type'] == 'Additional') {
+                $name = htmlPrep(__($token['name'], $token['module']));
+            } else {
+                $name = htmlPrep($token['name']);
             }
-            else if ($token['type'] == 'Additional') {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($type)).' - '.htmlPrep(__($token['name'], $token['module'])).'"},';
-            }
-            else {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($type)).' - '.htmlPrep($token['name']).'"},';
-            }
+
+
+            $name = preg_replace('/'.$searchTermSafe.'/i', '<strong>$0</strong>', $name);
+
+            $output .= '<a href="'.($URL ?? '').'" class="block cursor-pointer px-4 py-2 text-sm text-gray-800 hover:bg-indigo-500 hover:text-white" role="menuitem" tabindex="-1" id="menu-item-0">'.htmlPrep(__($type)).' - '.$name.'</a>';
+            $outputCount++;
+            
         }
     }
 
-    // Output the json
-    echo '['.substr($list, 0, -1).']';
+    if ($resultCount == 0 || empty($output)) {
+        die('<span class="block px-4 py-2 text-sm text-gray-800">'.($searchType == 'all' ? __('No results') : __('No results in {type}', 
+        ['type' => __(ucfirst($searchType)) ] ) ).'</span>');
+    }
+
+    echo $output;
 }

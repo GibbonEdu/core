@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
         ->add(__('Run'), 'reports_generate_batch.php', ['gibbonReportID' => $gibbonReportID])
         ->add(__('Single'));
 
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
     }, $ids);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_generate_singleProcess.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Reports/reports_generate_singleProcess.php');
 
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('contextData', $contextData);
@@ -111,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
 
             return '';
         });
-    
+
     $debugMode = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'debugMode');
 
     $table->addActionColumn()
@@ -132,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
                         ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
                         ->addParam('gibbonReportArchiveEntryID', $report['archive']['gibbonReportArchiveEntryID'] ?? '')
                         ->setURL('/modules/Reports/archive_byStudent_download.php');
-                        
+
                 $actions->addAction('download', __('Download'))
                         ->directLink()
                         ->setIcon('download')

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,9 +30,7 @@ use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $timeStart = $_GET['timeStart'] ?? null;
     $timeEnd = $_GET['timeEnd'] ?? null;
     $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
-    
+
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
         $row->addSelect('allDay')->fromArray($allDayOptions)->selected($allDay);
-    
+
     $form->toggleVisibilityByClass('timeOptions')->onSelect('allDay')->when('N');
 
     $row = $form->addRow()->addClass('timeOptions');
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -117,11 +117,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     });
 
     $dayOfWeek = $container->get(DaysOfWeekGateway::class)->getDayOfWeekByDate($date);
-    
+
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
     $table->setTitle(__('Substitute Availability'));
-    $table->setDescription(Format::dateReadable($dateObject->format('Y-m-d'), '%A, %b %e'));
+    $table->setDescription(Format::dateReadable($dateObject->format('Y-m-d'), Format::FULL));
 
     $table->addHeaderAction('calendar', __('Weekly').' '.__('View'))
         ->setIcon('planner')
@@ -189,9 +189,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
                 $output .= '<br/>';
                 $output .= CoverageMiniCalendar::renderTimeRange($dayOfWeek, $person['dates'] ?? [], $dateObject);
             }
-            
-            
-            
+
+
+
             return $output;
         });
 

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,14 +42,13 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         try {
             $data = array('date' => $currentDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 
-            $sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonStudentEnrolment.gibbonYearGroupID, gibbonBehaviour.gibbonBehaviourID, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, staff.surname as staffSurname, staff.preferredName as staffPreferredName, gibbonBehaviour.descriptor, gibbonBehaviour.level, gibbonBehaviour.comment, gibbonBehaviour.followup, gibbonBehaviour.timestamp
+            $sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonStudentEnrolment.gibbonYearGroupID, gibbonBehaviour.gibbonBehaviourID, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, staff.surname as staffSurname, staff.preferredName as staffPreferredName, gibbonBehaviour.descriptor, gibbonBehaviour.level, gibbonBehaviour.comment, gibbonBehaviour.followup, gibbonBehaviour.timestamp, gibbonBehaviour.type
                     FROM gibbonBehaviour
                     JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                     JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     JOIN gibbonPerson as staff ON (gibbonBehaviour.gibbonPersonIDCreator=staff.gibbonPersonID)
                     WHERE gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND gibbonBehaviour.type='Negative'
                     AND gibbonBehaviour.date=:date
                     AND gibbonPerson.status='Full'
                     AND gibbonFormGroup.gibbonSchoolYearID=gibbonBehaviour.gibbonSchoolYearID
@@ -67,7 +68,7 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                 $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
                 $staffName = Format::name('', $row['staffPreferredName'], $row['staffSurname'], 'Staff', false, true);
 
-                $report .= date('g:i a', strtotime($row['timestamp'])).' - '.__('Negative').' '.__('Behaviour').' - '.$row['level'];
+                $report .= date('g:i a', strtotime($row['timestamp'])).' - '.__($row['type']).' '.__('Behaviour').' - '.$row['level'];
                 $report .= '<br/>';
 
                 $report .= sprintf(__('%1$s (%2$s) received a report for %3$s from %4$s'), '<b>'.$studentName.'</b>', $row['formGroup'], $row['descriptor'], $staffName);

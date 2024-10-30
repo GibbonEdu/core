@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 include '../../gibbon.php';
 
@@ -42,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     } else {
         //Proceed!
         $bookingGateway = $container->get(FacilityBookingGateway::class);
+        $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
         $data = [
             'foreignKey'     => $_POST['foreignKey'] ?? null,
@@ -54,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         
         $dates = $_POST['dates'] ?? '';
         $repeat = $_POST['repeat'] ?? '';
+        $override = $_POST['override'] ?? 'N';
         $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;
         $repeatWeekly = $repeat == 'Weekly' ? $_POST['repeatWeekly'] : null;
 
@@ -67,7 +72,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $available = '';
             //Scroll through all dates
             foreach ($dates as $date) {
-                $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd']);
+                $gibbonCourseClassID = null;
+                if ($override) {
+                    $available = true;
+                } else {
+                    $available = isSpaceFree($guid, $connection2, $data['foreignKey'], $data['foreignKeyID'], $date, $data['timeStart'], $data['timeEnd'], $gibbonCourseClassID);
+
+                    if (!$available && !empty($gibbonCourseClassID)) {
+                        $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $date);
+
+                        if ($offTimetable) {
+                            $available = true;
+                        }
+                    }
+                }
+
                 if ($available == false) {
                     ++$failCount;
                 } else {

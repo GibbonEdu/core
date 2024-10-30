@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,9 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $returns = array();
@@ -60,9 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
         //Check if courseschool year specified
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             $courseGateway = $container->get(CourseGateway::class);
 
@@ -70,13 +68,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             if ($highestAction == 'Unit Planner_all') {
                 $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $values = $result->fetch();
                 $yearName = $values['schoolYear'];
@@ -86,9 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
+                    $page->addError(__('You have not specified one or more required parameters.'));
                 } else {
 
                         $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
@@ -96,9 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The specified record cannot be found.');
-                        echo '</div>';
+                        $page->addError(__('The specified record cannot be found.'));
                     } else {
                         //Let's go!
                         $values = $result->fetch();
@@ -170,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                         FROM gibbonCourseClass
                                         LEFT JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID)
                                         WHERE gibbonCourseID=:gibbonCourseID
-                                        ORDER BY name";
+                                        ORDER BY gibbonCourseClass.nameShort";
                             $resultClass = $pdo->select($sqlClass, $dataClass)->toDataSet();
 
                             if (count($resultClass) == 0) {
@@ -293,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $form->addRow()->addHeading('Outcomes', __('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'));
                         $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
                         $row = $form->addRow();
-                            $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                            $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
                         $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
                         $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, category FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
@@ -317,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             ->addClass('addBlock');
 
                         $row = $form->addRow();
-                            $customBlocks = $row->addPlannerSmartBlocks('smart', $gibbon->session, $guid)
+                            $customBlocks = $row->addPlannerSmartBlocks('smart', $session, $guid)
                                 ->addToolInput($blockCreator);
 
                         $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);

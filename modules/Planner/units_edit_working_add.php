@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -67,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($highestAction == 'Unit Planner_all') {
         $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
+        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $session->get('gibbonPersonID'));
     }
 
     if ($result->rowCount() != 1) {
@@ -98,12 +100,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     $lessonTimes = $plannerEntryGateway->queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
 
-    $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/Planner/units_edit_working_addProcess.php?'.http_build_query($urlParams));
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/Planner/units_edit_working_addProcess.php?'.http_build_query($urlParams));
     $form->setTitle(__('Choose Lessons'));
     $form->setDescription(__('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.'));
 
     $form->setClass('w-full blank bulkActionForm');
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $table = $form->addRow()->addDataTable('lessons', $criteria)->withData($lessonTimes);
     $table->addMetaData('hidePagination', true);

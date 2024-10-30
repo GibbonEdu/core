@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,6 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
             $color = $_POST['color'.$i] ?? '';
             $colorBG = $_POST['colorBG'.$i] ?? '';
             $description = $_POST['description'.$i] ?? '';
+
+            // Filter valid colour values
+            $color = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($color, 0, 7));
+            $colorBG = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($colorBG, 0, 7));
 
             //Validate Inputs
             if ($gibbonAlertLevelID == '' or $name == '' or $nameShort == '' or $color == '' or $colorBG == '') {

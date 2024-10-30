@@ -1,0 +1,229 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if category %}
+<header class="mb-6 ">
+    
+    <a class="block mb-6 relative rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ category.backgroundImage }}'); background-size: 150%; background-position: center;" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}">
+        <div class="absolute w-full h-full rounded bg-blur bg-translucent-gray overflow-hidden">
+        </div>
+    
+        <div class="my-8">
+            <h1 class="relative text-center text-white text-3xl md:text-4xl mt-0 mb-1">
+                {{ category.name }}
+            </h1>
+
+            <div class="relative text-center text-white text-xs font-thin">
+                {% for date in category.eventDates|split(',') %}
+                    {{- formatUsing('dateReadable', date, 102) -}}
+                    {{- not loop.last ? ', ' -}}
+                {% endfor %}
+            </div>
+        </div>
+
+    </a>
+</header>
+{% endif %}
+
+{% if canViewInactive and category.viewable != "Y" %}
+<section class="w-full mb-6 relative">
+    <div class="w-full py-3 border border-gray-400 rounded text-center text-gray-700 text-lg font-thin">
+        {{ __m('This activity is not visible to the public.') }} 
+        {% if category.viewableDate %} {{ __m('It will be viewable on {date}', {'date': (category.viewableDate|date("M j \\a\\t g:ia")) }) }} {% endif %}<br/>
+        {{ __m('Some details seen here may not be finalised. Please do not share the activity details until access is open to all users.') }}
+    </div>
+</section>
+{% endif %}
+
+{% include 'activityPhotos.twig.html' %}
+
+<section class="w-full grid grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+
+    <div class="col-span-2 md:border-r md:pr-12">
+        <h2 class="text-4xl text-gray-900 normal-case mt-0">
+            {{ activity.name }}
+        </h2>
+
+        <!-- <div class="text-gray-600 font-thin leading-snug">
+            <span class="text-xl">Activity Type: {{ activity.type }}</span><br/>
+        </div> -->
+
+        <div class="mt-6 text-base font-normal leading-normal">
+            {{ activity.description|raw }}
+        </div>
+
+        {% if (isEnrolled or isStaff or canEdit) and not isPastEvent and activity.blocks is not empty %}
+            {% for block in activity.blocks %}
+                {% if block.type == 'Main' %}
+                {% if loop.first %}<hr class="border-gray-400 border-b-0">{% endif %}
+                <h3 class="text-xl text-gray-900 normal-case mt-0">{{ block.title }}</h3>
+
+                <div class="text-base font-normal leading-normal mb-6">
+                    {{ block.content|raw }}
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="col-span-2 md:col-span-1">
+
+        {% if signUpIsOpen and signUpAccess and canSignUp %}
+        <div class="mb-6 rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ activity.headerImage }}'); background-size: 150%; background-position: center;">
+            <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/Activities/explore_activity_signUp.php&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}&width=750&height=440" class="thickbox block px-10 py-4 rounded outline-inset bg-blue-500 bg-blur hover:bg-blur transition-all duration-300 text-center text-white text-xl font-light">
+                {{ __m('Sign Up') }}
+            </a>
+        </div>
+        {% else %}
+        <div class="mb-6 px-10 py-4 rounded bg-gray-300 text-center text-gray-600 text-lg font-thin italic">
+            {% if signUpIsOpen and (not signUpAccess or not canSignUp) %}
+                {% if activity.yearGroups is not empty %}
+                    {{ __m('Sign up is open for current') }}<br/>{{ activity.yearGroups|replace({'Y0':'Y'})|split(',')|join(', ', ' and ') }} {{ __m('students') }}
+                {% else %}
+                    {{ __m('Sign up is open until') }} {{ category.accessCloseDate|date("M j \\a\\t g:ia") }}
+                {% endif %}
+            {% elseif "now"|date("U") > category.endDate|date("U") %}
+                {{ __m('This event ended on') }} {{ category.endDate|date("M j") }}
+            {% elseif not signUpAccess  %}
+                {% if activity.yearGroups is not empty %}
+                    {{ __m('This activity is for current') }}<br/>{{ activity.yearGroups|replace({'Y0':'Y'})|split(',')|join(', ', ' and ') }} {{ __m('students') }}
+                {% else %}
+                    {{ __m('Sign up is not available') }}
+                {% endif %}
+            {% elseif "now"|date("U") < category.accessOpenDate|date("U") %}
+                {{ __m('Sign up opens') }} {{ category.accessOpenDate|date("M j \\a\\t g:ia") }}
+            {% elseif "now"|date("U") > category.accessCloseDate|date("U") %}
+                {{ __m('Sign up closed on') }} {{ category.accessCloseDate|date("M j \\a\\t g:ia") }}
+            {% else %}
+                {{ __m('Sign up is not available yet') }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+
+        <div class="mb-6 text-4xl normal-case font-thin">
+            <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
+                {{ __m('Cost') }}
+            </h4>
+            {% if activity.cost %}
+                {{ formatUsing('currency', activity.cost, false, 0) }}
+                
+                {%- if activity.costType -%}
+                    <div class="mt-0 text-sm font-normal text-gray-600 ">
+                    {{ activity.costType }}
+                    {% if activity.costStatus %}
+                    &nbsp;({{ activity.costStatus }})
+                    {% endif %}
+                    </div>
+                {% endif %}
+            {% else %}
+                {{ __m('Free') }}
+            {% endif %}
+        </div>
+
+        <div class="mb-6 text-4xl normal-case font-thin">
+            <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
+                {{ __m('Time') }}
+            </h4>
+            {{ activity.dayOfWeek }}
+                
+            <div class="mt-0 text-sm font-normal text-gray-600 ">
+                {{ activity.timeStart|date("g:ia") }} - {{ activity.timeEnd|date("g:ia") }}
+            </div>
+
+        </div>
+
+        {% if activity.space or activity.locationExternal %}
+        <div class="mb-6 text-xl normal-case">
+            <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
+                {{ __m('Location') }}
+            </h4>
+            {{ activity.space ? activity.space : activity.locationExternal }}
+        </div>
+        {% endif %}
+
+        {% if activity.provider %}
+        <div class="mb-6 text-xl normal-case">
+            <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
+                {{ __m('Provider') }}
+            </h4>
+            {{ activity.provider }}
+        </div>
+        {% endif %}
+
+        {% if (isEnrolled or isStaff or canEdit) and not isPastEvent and activity.blocks is not empty %}
+
+            {% for block in activity.blocks %}
+                {% if block.type == 'Sidebar' %}
+                <h4 class="mt-0 mb-2 text-sm font-normal normal-case">
+                    {{ block.title }}
+                </h4>
+
+                <div class="text-base font-normal leading-normal">
+                    {{ block.content|raw }}
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% for index, photo in activity.photos|slice(6) %}
+        
+            {% if photo.filePath %}
+            <!-- <div class="rounded overflow-hidden bg-gray-100">
+                <img src="{{ absoluteURL }}/{{ photo.filePath }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;">
+            </div> -->
+            {% endif %}
+        
+        {% endfor %}
+
+    </div>
+</section>
+
+<footer class="flex justify-between mt-12">
+    <div class="text-left">
+        {% if prevActivity %}
+        <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
+            {{ __m('Previous') }}
+        </div>
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ prevActivity.gibbonActivityID }}">
+            {{ prevActivity.name }}
+        </a>
+        {% else %}
+        <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
+            {{ __m('Back') }}
+        </div>
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}">
+            {{ category.name }}
+        </a>
+        {% endif %}
+    </div>
+    <div class="text-right">
+        {% if nextActivity %}
+        <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
+            {{ __m('Next') }}
+        </div>
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ nextActivity.gibbonActivityID }}">
+            {{ nextActivity.name }}
+        </a>
+        {% else %}
+        <div class="mb-1 text-sm text-gray-600 font-normal normal-case">
+            {{ __m('Back') }}
+        </div>
+        <a class="text-base md:text-xl text-gray-900 hover:text-blue-600" href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_category.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}">
+            {{ category.name }}
+        </a>
+        {% endif %}
+    </div>
+</footer>
+
+
+
+
+

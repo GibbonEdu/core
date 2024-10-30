@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -101,7 +103,7 @@ class FileUploader
      * @since    v14
      * @param    string  $filename    Desired filename
      * @param    string  $sourcePath  Absolute path of the temp file to upload
-     * @param    string  $destinationFolder  Relativeto the /uploads folder
+     * @param    string  $destinationFolder  Relative to the /uploads folder
      * @return   string|bool          Resulting path of the uploaded file, FALSE on failure.
      */
     public function upload($filename, $sourcePath, $destinationFolder = '')
@@ -110,6 +112,8 @@ class FileUploader
 
         // Trim and remove excess path info
         $filename = basename($filename);
+        $filename = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filename);
+
         $destinationFolder = trim($destinationFolder, '/');
 
         // Check the existence of the temp file to upload
@@ -181,7 +185,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange) && is_string($filenameChange)) {
-            $filenameChange =  preg_replace('/[^a-zA-Z0-9]/', '', $filenameChange);
+            $filenameChange =  preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
@@ -272,7 +276,7 @@ class FileUploader
             return false;
         }
 
-        $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize);
+        $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize, $quality);
 
         return $this->uploadFromPost($file, $filenameChange);
     }
@@ -289,7 +293,7 @@ class FileUploader
     public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80, $zoom = 100, $focalX = 50, $focalY = 50)
     {
         $extension = mb_substr(mb_strrchr(strtolower($sourcePath), '.'), 1);
-        if (!in_array($extension, $this->getFileExtensions('Graphics/Design'))) {
+        if (!empty($extension) && !in_array($extension, $this->getFileExtensions('Graphics/Design'))) {
             return $sourcePath;
         }
 
@@ -339,9 +343,33 @@ class FileUploader
             $srcY = ($height - $srcHeight) * ($focalY / 100.0);
         }
 
+        // Create and output the image
         if ($src = imagecreatefromstring(file_get_contents($sourcePath))) {
             $dst = imagecreatetruecolor($destWidth, $destHeight);
+
             imagecopyresampled($dst, $src, $destX, $destY, $srcX, $srcY, $destWidth, $destHeight, $srcWidth, $srcHeight);
+
+            // Handle Exif rotation
+            if (function_exists('exif_read_data')) {
+                $exif = exif_read_data($sourcePath);
+                if (!empty($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 3:
+                            $dstRotate = imagerotate($dst, 180, 0);
+                            break;
+                        case 6:
+                            $dstRotate = imagerotate($dst, -90, 0);
+                            break;
+                        case 8:
+                            $dstRotate = imagerotate($dst, 90, 0);
+                            break;
+                    } 
+
+                    if (!empty($dstRotate)) {
+                        $dst = $dstRotate;
+                    }
+                }
+            }
 
             if ($extension == 'png') {
                 imagepng($dst, $destPath);
@@ -388,7 +416,7 @@ class FileUploader
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         $name = mb_substr($filename, 0, mb_strrpos($filename, '.'));
-        $name = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
+        $name = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $name);
 
         // Use password policy to generate random string
         $randStrGenerator = new PasswordPolicy(true, true, false, 16);

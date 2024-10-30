@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -60,10 +62,18 @@ class HomeworkTable
         $allHomework = $this->plannerEntryGateway->queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID);
         $plannerClasses = $this->plannerEntryGateway->selectPlannerClassesByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetchKeyPair();
 
+        // Here be Dragons! Be warned that there are three tables that contain student homework
+        // Teacher Recorded - Online Submission = gibbonPlannerEntryHomework
+        // Teacher Recorded - Manual Checkbox = gibbonPlannerEntryStudentTracker
+        // Student Recorded - Manual Checkbox = gibbonPlannerEntryStudentHomework
+
         // Join homework submissions and tracker data
         if ($roleCategory == 'Student' || $roleCategory == 'Parent') {
-            $tracker = $this->plannerEntryGateway->selectHomeworkTrackerByStudent($gibbonSchoolYearID, $gibbonPersonID)->fetchGroupedUnique();
-            $allHomework->joinColumn('gibbonPlannerEntryID', 'tracker', $tracker);
+            $trackerTeacherRecorded = $this->plannerEntryGateway->selectTeacherRecordedHomeworkTrackerByStudent($gibbonSchoolYearID, $gibbonPersonID)->fetchGroupedUnique();
+            $allHomework->joinColumn('gibbonPlannerEntryID', 'trackerTeacher', $trackerTeacherRecorded);
+
+            $trackerStudentRecorded = $this->plannerEntryGateway->selectStudentRecordedHomeworkTrackerByStudent($gibbonSchoolYearID, $gibbonPersonID)->fetchGroupedUnique();
+            $allHomework->joinColumn('gibbonPlannerEntryID', 'trackerStudent', $trackerStudentRecorded);
 
             $submissions = $this->plannerEntryGateway->selectHomeworkSubmissionsByStudent($gibbonSchoolYearID, $gibbonPersonID)->fetchGrouped();
             $allHomework->joinColumn('gibbonPlannerEntryID', 'submissions', $submissions);
@@ -89,14 +99,17 @@ class HomeworkTable
         $table->addMetaData('filterOptions', $filterOptions);
 
         $table->modifyRows(function ($homework, $row) {
-            if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
+            // Teacher Recorded: Manual
+            if (!empty($homework['trackerTeacher']['homeworkComplete']) && $homework['trackerTeacher']['homeworkComplete'] == 'Y' && $homework['type'] == 'teacherRecorded') {
                 $row->addClass('success');
             }
 
-            if (!empty($homework['tracker']['homeworkComplete']) && $homework['homeworkSubmissionRequired'] != 'Required') {
+            // Student Recorded: Manual
+            if (!empty($homework['trackerStudent']['homeworkComplete']) && $homework['trackerStudent']['homeworkComplete'] == 'Y' && $homework['type'] == 'studentRecorded') {
                 $row->addClass('success');
             }
 
+            // Teacher Recorded: Online Submission
             if ($homework['type'] == 'teacherRecorded' && !empty($homework['submissions'])) {
                 $latestSubmission = current($homework['submissions']);
                 if ($latestSubmission['version'] == 'Final') $row->addClass('success');
@@ -180,9 +193,13 @@ class HomeworkTable
                         if ($latestSubmission['version'] == 'Final') return __('Yes');
                     }
 
+                    $isTeacherHomeworkComplete = !empty($homework['trackerTeacher']['homeworkComplete']) && $homework['trackerTeacher']['homeworkComplete'] == 'Y' && $homework['type'] == 'teacherRecorded';
+
+                    $isStudentHomeworkComplete = !empty($homework['trackerStudent']['homeworkComplete']) && $homework['trackerStudent']['homeworkComplete'] == 'Y' && $homework['type'] == 'studentRecorded';
+
                     if ($roleCategory == 'Student' && $homework['homeworkSubmissionRequired'] != 'Required') {
-                        return '<input id="complete'.$homework['gibbonPlannerEntryID'].'" type="checkbox" class="mark-complete" data-id="'.$homework['gibbonPlannerEntryID'].'" data-type="'.$homework['type'].'" '.(!empty($homework['tracker']['homeworkComplete']) ? 'checked' : '').'>';
-                    } else if (!empty($homework['tracker']['homeworkComplete']) && ($homework['tracker']['type'] == $homework['type'] || $homework['homeworkSubmissionRequired'] != 'Required')) {
+                        return '<input id="complete'.$homework['gibbonPlannerEntryID'].'" type="checkbox" class="mark-complete" data-id="'.$homework['gibbonPlannerEntryID'].'" data-type="'.$homework['type'].'" '.($isTeacherHomeworkComplete || $isStudentHomeworkComplete ? 'checked' : '').'>';
+                    } else if (!empty($homework['trackerTeacher']['homeworkComplete']) && ($homework['trackerTeacher']['type'] == $homework['type'] || $homework['homeworkSubmissionRequired'] != 'Required')) {
                         return __('Yes');
                     }
 
@@ -219,7 +236,11 @@ class HomeworkTable
             return Format::tooltip(__('N/A'), __('Student joined school after assessment was given.'));
         }
 
-        if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
+        if (!empty($homework['trackerTeacher']['homeworkComplete']) && $homework['trackerTeacher']['homeworkComplete'] == 'Y' && $homework['type'] == 'teacherRecorded') {
+            return __('On Time');
+        }
+
+        if (!empty($homework['trackerStudent']['homeworkComplete']) && $homework['trackerStudent']['homeworkComplete'] == 'Y' && $homework['type'] == 'studentRecorded') {
             return __('On Time');
         }
 

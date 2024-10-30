@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 use Gibbon\Forms\CustomFieldHandler;
 
@@ -33,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Set variables
         $today = date('Y-m-d');
@@ -50,11 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
-            $viewBy = $_GET['viewBy'];
+            $viewBy = $_GET['viewBy'] ?? '';
         }
         $subView = null;
         if (isset($_GET['subView'])) {
-            $subView = $_GET['subView'];
+            $subView = $_GET['subView'] ?? '';
         }
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
@@ -79,9 +80,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
-                $class = $_GET['class'];
+                $class = $_GET['class'] ?? '';
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
             $params += [
                 'viewBy' => 'class',
                 'date' => $class,
@@ -110,7 +111,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($result->rowCount() != 1) {
@@ -127,9 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         }
 
         if ($proceed == false) {
-            echo "<div class='error'>";
-            echo __('Your request failed because you do not have access to this action.');
-            echo '</div>';
+            $page->addError(__('Your request failed because you do not have access to this action.'));
         } else {
             $page->breadcrumbs
                 ->add(
@@ -150,8 +148,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
             $page->return->setEditLink($editLink);
 
-
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
+            $formId = 'action';
+            $autoSaveUrl = $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addAutoSave.php";
+            
+            $form = Form::create($formId, $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
             $form->setFactory(PlannerFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
@@ -250,21 +250,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Lesson Details'));
-                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
+                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description)->enableAutoSave($autoSaveUrl, $formId);
 
             $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
-                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
+                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes)->enableAutoSave($autoSaveUrl, $formId);
 
             //HOMEWORK
             $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
 
-            $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
+            $form->toggleVisibilityByClass('homework')->onClick('homework')->when('Y');
             $row = $form->addRow();
                 $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
-                $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                $row->addYesNo('homework')->required()->checked('N');
 
             $row = $form->addRow()->addClass('homework');
                 $row->addLabel('homeworkDueDate', __('Due Date'))->description(__('Date is required, time is optional.'));
@@ -279,12 +279,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
                 $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
-                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
+                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->enableAutoSave($autoSaveUrl, $formId);
 
-            $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
+            $form->toggleVisibilityByClass('homeworkSubmission')->onClick('homeworkSubmission')->when('Y');
             $row = $form->addRow()->addClass('homework');
                 $row->addLabel('homeworkSubmission', __('Online Submission?'));
-                $row->addRadio('homeworkSubmission')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                $row->addYesNo('homeworkSubmission')->required()->checked('N');
 
             $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
@@ -303,10 +303,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
             if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
-                $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
+                $form->toggleVisibilityByClass('homeworkCrowdAssess')->onClick('homeworkCrowdAssess')->when('Y');
                 $row = $form->addRow()->addClass('homeworkSubmission');
                     $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));
-                    $row->addRadio('homeworkCrowdAssess')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                    $row->addYesNo('homeworkCrowdAssess')->required()->checked('N');
 
                 $row = $form->addRow()->addClass('homeworkCrowdAssess');
                     $row->addLabel('homeworkCrowdAssessControl', __('Access Controls?'))->description(__('Decide who can see this {homeworkName}.', ['homeworkName' => __($homeworkNameSingular)]));
@@ -324,10 +324,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             //MARKBOOK
             $form->addRow()->addHeading('Markbook', __('Markbook'));
 
-            $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
+            $form->toggleVisibilityByClass('homework')->onClick('homework')->when('Y');
             $row = $form->addRow();
                 $row->addLabel('markbook', __('Create Markbook Column?'))->description(__('Linked to this lesson by default.'));
-                $row->addRadio('markbook')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                $row->addYesNo('markbook')->required()->checked('N');
 
             //ADVANCED
             $form->addRow()->addHeading('Advanced Options', __('Advanced Options'));
@@ -347,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
 
                 $row = $form->addRow()->addClass('advanced');
-                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+                    $row->addPlannerOutcomeBlocks('outcome', $session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
             }
 
             //Access
@@ -368,7 +368,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $row = $form->addRow()->addClass('advanced');
                 $row->addLabel('guests', __('Guest List'));
-                $row->addSelectUsers('guests')->selectMultiple();
+                $row->addSelectUsers('guests', $session->get('gibbonSchoolYearID'))->selectMultiple();
 
             $roles = array(
                 'Guest Student' => __('Guest Student'),
@@ -389,6 +389,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');
+
+            $formData = $container->get(FormSessionStorage::class);
+            $formData->load('plannerAdd');
+
+            if (!empty($nextDate)) {
+                $formData->addData(['date' => $nextDate, 'timeStart' => $nextTimeStart, 'timeEnd' => $nextTimeEnd]);
+            }
+            
+            $form->loadAllValuesFrom($formData->getData());
+            $form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
         }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,12 +25,12 @@ include './moduleFunctions.php';
 
 $page = $container->get('page');
 
-$id = $_GET['id'];
-$type = $_GET['type'];
-$gibbonOutcomeID = $_GET['gibbonOutcomeID'];
-$title = $_GET['title'];
-$category = $_GET['category'];
-$contents = $_GET['contents'];
-$allowOutcomeEditing = $_GET['allowOutcomeEditing'];
+$id = $_GET['id'] ?? '';
+$type = $_GET['type'] ?? '';
+$gibbonOutcomeID = $_GET['gibbonOutcomeID'] ?? '';
+$title = $_GET['title'] ?? '';
+$category = $_GET['category'] ?? '';
+$contents = $_GET['contents'] ?? '';
+$allowOutcomeEditing = $_GET['allowOutcomeEditing'] ?? '';
 
 makeBlockOutcome($guid,  $id, $type, $gibbonOutcomeID, $title, $category, $contents, '', false, $allowOutcomeEditing);

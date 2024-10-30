@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -65,18 +67,28 @@ class NewAbsenceWithCoverage extends Message
 
         foreach ($this->dates as $date) {
             $notes = !empty($date['notes']) ? ' ('.$date['notes'].')' : '';
-            $coverageDetails[$date['period']] = $date['contextName'].$notes;
+            if (!empty($date['period']) && !empty($date['contextName'])) {
+                $coverageDetails[$date['period']] = $date['contextName'].$notes;
+            } else {
+                $dateReadable = Format::dateReadable($date['date']);
+                $coverageDetails[$dateReadable] = (!empty($date['surnameCoverage']) ? Format::name($date['titleCoverage'], $date['preferredNameCoverage'], $date['surnameCoverage'], 'Staff', false, true) : __('Any available substitute')).$notes;
+            }
         }
 
-        return [
+        $details = [
             __('Staff')      => $this->details['name'],
             __('Type')       => $this->details['type'],
             __('Date')       => $this->details['date'],
             __('Time')       => $this->details['time'],
             __('Comment')    => $this->coverage['comment'],
-            __('Coverage')   => !empty($coverageDetails) ? Format::listDetails($coverageDetails) : $this->details['time'],
-            __('Notes')      => $this->coverage['notesStatus'],
         ];
+
+        if (!empty($coverageDetails)) {
+            $details[__('Coverage')] = Format::listDetails($coverageDetails);
+            $details[__('Notes')] = $this->coverage['notesStatus'];
+        }
+
+        return $details;
     }
 
     public function getModule() : string

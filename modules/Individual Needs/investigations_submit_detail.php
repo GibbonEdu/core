@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
         $contribution = $contributionsGateway->getContributionByID($gibbonINInvestigationContributionID);
 
-        if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
+        if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $session->get('gibbonPersonID')) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_submit_detailProcess.php");

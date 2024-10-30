@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_duplicate.php') == false) {
     $URL .= '&return=error0';
@@ -34,8 +36,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
 } else {
     // Proceed!
     $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? '';
-    $templateFileDestination = $_POST['templateFileDestination'] ?? '';
-    $templateFileDestination = trim($templateFileDestination, '/ ');
+
+    // Get filename and remove all potential path traversal information
+    $templateFileDestination = trim(basename($_POST['templateFileDestination'] ?? ''), '/ ');
+    $templateFileDestination = preg_replace('/[^a-zA-Z0-9\-\_.]/', '', $templateFileDestination);
+
+    // Check for required file extension
+    if (strtolower(mb_substr($templateFileDestination, -10, 10)) != '.twig.html' || stripos($templateFileDestination, './') !== false) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
 
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
 
@@ -46,14 +57,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         exit;
     }
     
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
     $sourcePath = $data['type'] == 'Core'
         ? $absolutePath.'/modules/Reports/templates/'.$data['templateFile']
         : $absolutePath.$customAssetPath.'/templates/'.$data['templateFile'];
 
-    $destinationPath = $absolutePath.$customAssetPath.'/templates/'.$templateFileDestination;
+    $sourceDir = str_replace('reports/', '', dirname($data['templateFile']));
+
+    $destinationPath = $absolutePath.$customAssetPath.'/templates/'.$sourceDir.'/'.$templateFileDestination;
 
     if (!is_dir(dirname($destinationPath))) {
         mkdir(dirname($destinationPath), 0755, true);
@@ -62,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     if (copy($sourcePath, $destinationPath)) {
         chmod($destinationPath, 0755);
         $data['type'] = 'Additional';
-        $data['templateFile'] = $templateFileDestination;
+        $data['templateFile'] = $sourceDir.'/'.$templateFileDestination;
         $duplicated = $prototypeGateway->insert($data);
     } else {
         $duplicated = false;

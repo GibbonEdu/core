@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,10 +38,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     //Deal with paramaters
     $tags = array();
     if (isset($_GET['tags'])) {
-        $tags = $_GET['tags'];
+        $tags = $_GET['tags'] ?? '';
     }
     else if (isset($_GET['tag'])) {
-        $tags[0] = $_GET['tag'];
+        $tags[0] = $_GET['tag'] ?? '';
     }
     $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
 
@@ -69,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -84,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 $sqlSelect = "SELECT gibbonDepartment.gibbonDepartmentID FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonDepartment.name";
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) { echo $e->getMessage(); }
+            } catch (PDOException $e) { }
             while ($rowSelect = $resultSelect->fetch()) {
                 $departments[$departmentCount] = $rowSelect['gibbonDepartmentID'];
                 $departmentCount ++;
@@ -120,14 +122,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo $page->getBlankSlate();
         }
         else {
             echo '<h2 class=\'bigTop\'>';

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +32,7 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 require_once __DIR__.'/moduleFunctions.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.php') == false) {
     $URL .= '&return=error0';
@@ -41,12 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $partialFail = false;
     $count = 0;
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
     // COMPONENTS
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
     $yaml = new Yaml();
+
+    $absolutePath = str_replace('\\', '/', $absolutePath);
+    $customAssetPath = str_replace('\\', '/', $customAssetPath);
 
     $parseAndUpdateComponents = function ($directoryPath, $templateType) use (&$prototypeGateway, &$yaml, &$partialFail, &$count) {
         // Get all twig files in this folder and sub-folders
@@ -54,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
 
         if (!is_dir($directoryPath)) {
-            mkdir($directoryPath, 0755);
+            mkdir($directoryPath, 0755, true);
         }
 
         $directoryFiles = [];
@@ -99,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
 
         if (!is_dir($directoryPath)) {
-            mkdir($directoryPath, 0755);
+            mkdir($directoryPath, 0755, true);
         }
         
         $directoryFiles = [];

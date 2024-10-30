@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,6 +63,10 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                 $color = $_POST['color'] ?? '';
                 $fontColor = $_POST['fontColor'] ?? '';
                 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
+
+                // Filter valid colour values
+                $color = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($color, 0, 7));
+                $fontColor = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($fontColor, 0, 7));
 
                 if ($name == '' or $nameShort == '' or $gibbonTTColumnID == '') {
                     $URL .= '&return=error3';

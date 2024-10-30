@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +39,7 @@ $identifiers = $_POST['identifier'] ?? [];
 $status = $_POST['status'] ?? 'Draft';
 $action = $_POST['action'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_single.php&gibbonReportID='.$gibbonReportID.'&contextData='.$contextData;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_single.php&gibbonReportID='.$gibbonReportID.'&contextData='.$contextData;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
     $URL .= '&return=error0';
@@ -64,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
     if ($action == 'Generate') {
         // Set reports to cache in a separate location
-        $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath').'/reports' : '/uploads/cache';
-        $container->get('twig')->setCache($gibbon->session->get('absolutePath').$cachePath);
+        $cachePath = $session->has('cachePath') ? $session->get('cachePath').'/reports' : '/uploads/cache';
+        $container->get('twig')->setCache($session->get('absolutePath').$cachePath);
 
         $reportBuilder = $container->get(ReportBuilder::class);
         $archive = $container->get(ReportArchiveGateway::class)->getByID($report['gibbonReportArchiveID']);
@@ -82,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
             // Archive
             if ($student = $studentGateway->getByID($identifier)) {
                 $path = $archiveFile->getSingleFilePath($gibbonReportID, $student['gibbonYearGroupID'], $identifier);
-                $renderer->render($template, $reports, $gibbon->session->get('absolutePath').$archive['path'].'/'.$path);
+                $renderer->render($template, $reports, $session->get('absolutePath').$archive['path'].'/'.$path);
 
                 $reportArchiveEntryGateway->insertAndUpdate([
                     'reportIdentifier'      => $report['name'],
@@ -118,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
                 if (!empty($entry)) {
                     // Remove the file itself
-                    $path = $gibbon->session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
+                    $path = $session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
                     if (!empty($archive) && file_exists($path)) {
                         unlink($path);
                     }

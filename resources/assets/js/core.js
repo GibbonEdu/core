@@ -1,6 +1,8 @@
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -525,13 +527,13 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']:not([type='file']):not([type='radio'])", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file']):not([type='radio']):not([type='checkbox'])", block).val(data[key]);
         $("input:radio[name='"+key+"']", block).each(function () {
             if ($(this).val() == data[key]) {
                 $(this).attr("checked", true);
             }
         });
-        $("input:checkbox[name='"+key+"[]']", block).each(function () {
+        $("input:checkbox[name='"+key+"'],input:checkbox[name='"+key+"[]']", block).each(function () {
             var options = Array.isArray(data[key]) ? data[key] : data[key].split(',');
             if (options.includes($(this).val())) {
                 $(this).attr("checked", true);
@@ -741,8 +743,8 @@ DataTable.prototype.refresh = function() {
 
     $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) {
         $('.bulkActionPanel').addClass('hidden');
-        tb_init('a.thickbox');
         clearTimeout(submitted);
+        htmx.process(this);
     });
 };
 
@@ -892,4 +894,47 @@ function gibbonFormSubmitted(form) {
             submitButton.wrap('<span class="submitted"></span>');
         }, 500);
     }
+}
+
+
+function debounce(func, timeout) {
+    timeout = timeout || 300;
+
+    var timer;
+
+    return function () {
+        clearTimeout(timer);
+        var args = arguments;
+        timer = setTimeout(function () {
+        func.apply(this, args);
+        }, timeout);
+    };
+}
+
+/**
+ * Store a map of debounced functions for AJAX form submissions
+ * 
+ * @type {Record<string, Function>}
+ */
+var __GIBBON_URL_DEBOUNCE_MAP = {};
+
+/**
+ * Gibbon Form Submit: a generic form submit function that can be used to submit forms via AJAX
+ * 
+ * @param {HTMLFormElement} form
+ */
+function gibbonFormSubmitQuiet(form, url) {
+    var submitData = $(form).serialize();
+
+    if (!__GIBBON_URL_DEBOUNCE_MAP[url]) {   
+        __GIBBON_URL_DEBOUNCE_MAP[url] = debounce(function(submitData) {
+            $.ajax({
+                type: 'POST',
+                data: submitData,
+                url: url
+            });
+        });
+    }
+
+    __GIBBON_URL_DEBOUNCE_MAP[url](submitData);
 }

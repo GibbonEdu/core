@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -93,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
     //Deal with resolution
     if ($isTutor && $investigation['status'] == 'Referral') {
-        $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+        $notificationGateway = $container->get(NotificationGateway::class);
+        $notificationSender = $container->get(NotificationSender::class);
 
         $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
         $status = ($_POST['resolvable'] == 'Y') ? 'Resolved' : 'Investigation';

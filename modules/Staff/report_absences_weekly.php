@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,8 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     $page->scripts->add('chart');
 
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['dateStart']) :new DateTimeImmutable();
+    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat('Y-m-d', $_REQUEST['dateStart']) :new DateTimeImmutable();
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
@@ -50,9 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $row = $form->addRow()->addClass('flex flex-wrap');
 
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php';
-    $lastWeek = $date->modify('-1 week')->format($dateFormat);
-    $thisWeek = (new DateTime('Today'))->format($dateFormat);
-    $nextWeek = $date->modify('+1 week')->format($dateFormat);
+    $lastWeek = $date->modify('-1 week')->format('Y-m-d');
+    $thisWeek = (new DateTime('Today'))->format('Y-m-d');
+    $nextWeek = $date->modify('+1 week')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
         $col->addButton(__('Last Week'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('dateStart')->setValue($date->format($dateFormat))->setClass('shortWidth');
+        $col->addDate('dateStart')->setValue($date->format('Y-m-d'))->setClass('shortWidth');
         $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     // SETUP DAYS OF WEEK
     $sql = "SELECT name, nameShort FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
     $result = $pdo->select($sql)->fetchAll();
-    
+
     $currentWeekday = $date->format('l');
     $weekdays = array_map(function ($weekday) use ($date, $currentWeekday) {
         $weekday['date'] = $currentWeekday == 'Sunday'
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
             ],
         ],
     ];
-    
+
     // QUERY
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->sortBy('date')
@@ -147,17 +148,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         }
 
         if (!isSchoolOpen($guid, $date->format('Y-m-d'), $connection2)) {
-            echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
+            echo '<h2>'.__(Format::dayOfWeekName($date->format('Y-m-d'))).'</h2>';
             echo Format::alert(__('School is closed on the specified day.'));
             continue;
         }
 
         $table = DataTable::create('staffAbsences'.$date->format('D'));
-        $table->setTitle(__(Format::dateReadable($date->format('Y-m-d'), '%A')));
+        $table->setTitle(__(Format::dayOfWeekName($date->format('Y-m-d'))));
         $table->setDescription(Format::dateReadable($date->format('Y-m-d')));
 
         $canView = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any');
-        
+
         // COLUMNS
         $table->addColumn('fullName', __('Name'))
             ->width('30%')

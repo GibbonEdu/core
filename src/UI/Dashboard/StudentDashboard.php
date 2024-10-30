@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -113,7 +115,6 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (\PDOException $e) {
-                $planner .= "<div class='error'>".$e->getMessage().'</div>';
             }
             $planner .= '<h2>';
             $planner .= __("Today's Lessons");
@@ -222,25 +223,16 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != ''
             && $this->session->get('gibbonRoleIDCurrentCategory')
         ) {
-            $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
             $_POST = (new Validator(''))->sanitize($_POST);
             $jsonQuery = [
                 'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
                 'ttDate' => $_POST['ttDate'] ?? '',
-                'fromTT' => $_POST['fromTT'] ?? '',
-                'personalCalendar' => $_POST['personalCalendar'] ?? '',
-                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
-                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
             ];
-            $timetable .= '
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    $("#tt").load('.json_encode($apiEndpoint).', '.json_encode($jsonQuery).');
-                });
-            </script>';
 
+            $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($jsonQuery);
+            
             $timetable .= '<h2>'.__('My Timetable').'</h2>';
-            $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
+            $timetable .= "<div hx-get='".$apiEndpoint."' hx-trigger='load' style='width: 100%; min-height: 40px; text-align: center'>";
             $timetable .= "<img style='margin: 10px 0 5px 0' src='".$this->session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
             $timetable .= '</div>';
         }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -48,6 +50,7 @@ class AttendanceView
      */
     protected $attendanceTypes = [];
     protected $attendanceTypesRestricted = [];
+    protected $userRoleIDs = [];
 
     /**
      * Attendance Reasons
@@ -72,11 +75,12 @@ class AttendanceView
      */
     public function __construct(Core $gibbon, Connection $pdo, SettingGateway $settingGateway)
     {
+        global $session;
         $this->pdo = $pdo;
         $this->settingGateway = $settingGateway;
 
         // Collect the current IDs of the user
-        $this->userRoleIDs = array_filter(array_column($gibbon->session->get('gibbonRoleIDAll'), 0));
+        $this->userRoleIDs = array_filter(array_column($session->get('gibbonRoleIDAll'), 0));
         // Get the current date
         $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 
@@ -247,8 +251,8 @@ class AttendanceView
 
                 $output .= '<td class="' . $class . '">';
                 $output .= '<a href="' . $link . '" title="' . $linkTitle . '">';
-                $output .= Format::dateReadable($currentDay, '%d') . '<br/>';
-                $output .= '<span>' . Format::dateReadable($currentDay, '%b') . '</span>';
+                $output .= Format::date($currentDay, 'd') . '<br/>';
+                $output .= '<span>' . Format::monthName($currentDay, true) . '</span>';
                 $output .= '</a>';
                 $output .= '</td>';
             }
@@ -267,7 +271,7 @@ class AttendanceView
 
         foreach ($attendanceTypes as $attendanceType) {
             $attendanceType['restricted'] = 'N';
-            
+
             // Check if a role is restricted - blank for unrestricted use
             if (!empty($attendanceType['gibbonRoleIDAll'])) {
                 $allowAttendanceType = false;
@@ -283,7 +287,7 @@ class AttendanceView
                 }
             }
 
-            $this->attendanceTypes[$attendanceType['name']] = $attendanceType; 
+            $this->attendanceTypes[$attendanceType['name']] = $attendanceType;
         }
     }
 }

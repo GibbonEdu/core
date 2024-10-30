@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,9 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $count = 0;
                     foreach ($rowIDs as $gibbonRubricRowID) {
                         $type = isset($_POST["type$count"])? $_POST["type$count"] : 'Standalone';
+                        $backgroundColor = !empty($rowColors[$count]) ? preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($rowColors[$count], 0, 7)) : null;
+
                         if ($type == 'Standalone' or $rowOutcomes[$count] == '') {
                             try {
-                                $data = array('title' => $rowTitles[$count], 'backgroundColor' => $rowColors[$count] ?? null, 'gibbonRubricRowID' => $gibbonRubricRowID);
+                                $data = array('title' => $rowTitles[$count], 'backgroundColor' => $backgroundColor ?? null, 'gibbonRubricRowID' => $gibbonRubricRowID);
                                 $sql = 'UPDATE gibbonRubricRow SET title=:title, backgroundColor=:backgroundColor, gibbonOutcomeID=NULL WHERE gibbonRubricRowID=:gibbonRubricRowID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
@@ -96,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                             }
                         } elseif ($type == 'Outcome Based') {
                             try {
-                                $data = array('gibbonOutcomeID' => $rowOutcomes[$count], 'backgroundColor' => $rowColors[$count] ?? null, 'gibbonRubricRowID' => $gibbonRubricRowID);
+                                $data = array('gibbonOutcomeID' => $rowOutcomes[$count], 'backgroundColor' => $backgroundColor ?? null, 'gibbonRubricRowID' => $gibbonRubricRowID);
                                 $sql = "UPDATE gibbonRubricRow SET title='', backgroundColor=:backgroundColor, gibbonOutcomeID=:gibbonOutcomeID WHERE gibbonRubricRowID=:gibbonRubricRowID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
@@ -133,9 +137,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     }
                     //If scale specified
                     else {
-                        $columnGrades = $_POST['gibbonScaleGradeID'];
+                        $columnGrades = $_POST['gibbonScaleGradeID'] ?? [];
                         $columnColors = $_POST['columnColor'] ?? [];
-                        $columnIDs = $_POST['gibbonRubricColumnID'];
+                        $columnIDs = $_POST['gibbonRubricColumnID'] ?? [];
                         $columnVisualises = isset($_POST['columnVisualise'])? $_POST['columnVisualise'] : array();
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {

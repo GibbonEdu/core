@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -126,11 +128,10 @@ class TextField extends Input
      */
     protected function getElement()
     {
-
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
         if (!empty($this->autocomplete)) {
-            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes($str)); }, $this->autocomplete));
+            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str ?? ''))); }, $this->autocomplete));
             $output .= '<script type="text/javascript">';
             $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
             $output .= '</script>';

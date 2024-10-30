@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $templates = $prototypeGateway->queryPrototypes($criteria);
     $fonts = $fontGateway->selectFontList()->fetchKeyPair();
 
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $templatePath = $absolutePath.'/modules/Reports/templates';
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
@@ -59,7 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         } elseif ($template['type'] == 'Additional' && !is_file($absolutePath.$customAssetPath.'/templates/'.$template['templateFile'])) {
             $template['status'] = __('Not Installed');
             $template['statusClass'] = 'error';
-        } else if (!empty($fontsMissing)) {
+        } else if (stripos(basename($template['templateFile']), '.twig.html') === false) {
+            $template['status'] = __('Invalid File Type');
+            $template['statusClass'] = 'error';
+            $template['statusTitle'] = __('The file {file} is missing the extension {ext} and may not work as expected.', ['file' => basename($template['templateFile']), 'ext' => '.twig.html']);
+        }else if (!empty($fontsMissing)) {
             $template['status'] = __('Missing Font');
             $template['statusClass'] = 'warning';
             $template['statusTitle'] = implode('<br/>', $fontsMissing);
@@ -130,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->fromPOST('manageFonts');
 
     $fonts = $fontGateway->queryFonts($criteria);
-    $absolutePath = $gibbon->session->get('absolutePath');
+    $absolutePath = $session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
 
     // Data TABLE

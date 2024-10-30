@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php-version: ["7.4", "8.0", "8.1", "8.2"]
+        php-version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
         experimental: [false]
         name: ["CI Test"]
     services:
@@ -29,12 +29,12 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: gettext, gd, zip, pdo-mysql
+          extensions: gettext, gd, zip, pdo-mysql, intl
           tools: composer:v2
           ini-values: date.timezone="Etc/UTC", xdebug.max_nesting_level=-1, opcache.jit="off"
 
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
           fetch-depth: 0
@@ -43,6 +43,7 @@ jobs:
         run: |
           cat <<- EOF |
           en_US.UTF-8 UTF-8
+          en_GB.UTF-8 UTF-8
           es_ES.UTF-8 UTF-8
           fr_FR.UTF-8 UTF-8
           zh_TW.UTF-8 UTF-8
@@ -62,7 +63,7 @@ jobs:
             >/dev/null 2>./tests/_logs/server_log &
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
@@ -87,6 +88,7 @@ jobs:
         run: composer test:phpstan
 
       - name: Check PHP warning and deprecated messages in server_log
+        if: success() || failure()
         run: |
           # Check number of uncaught exceptions.
           export NUM_EXCEPTION=$(grep --perl-regexp 'Uncaught Exception: ' ./tests/_logs/server_log | wc -l)
@@ -134,7 +136,23 @@ jobs:
             echo
             (exit 1)
           fi
-        continue-on-error: ${{ matrix.experimental }}
+        continue-on-error: true
+
+      - name: Check PHP notice in server_log
+        if: success() || failure()
+        run: |
+          # Check number of notice.
+          export NUM_NOTICE=$(grep --perl-regexp 'Notice: ' ./tests/_logs/server_log | wc -l)
+          if [ "$NUM_NOTICE" -eq 0 ]; then
+            echo -e '\e[32mNo Notice.\e[0m'
+            echo
+          else
+            echo -e "\e[1m\e[33mGot $NUM_NOTICE notice(s):\e[0m"
+            grep --line-number --color=always --perl-regexp 'Notice: ' ./tests/_logs/server_log
+            echo
+            (exit 1)
+          fi
+        continue-on-error: true
 
       - name: Export Database if Test Failed
         if: ${{ failure() }}

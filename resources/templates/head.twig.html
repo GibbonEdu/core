@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -18,6 +20,7 @@ all stylesheets and scripts with a 'head' context.
     <meta name="author" content="Ross Parker, International College Hong Kong"/>
     <meta name="robots" content="noindex"/>
     <meta name="Referrer‐Policy" value="no‐referrer | same‐origin"/>
+    <meta name="htmx-config" content='{"htmx.config.scrollBehavior":"smooth", "htmx.config.scrollIntoViewOnBoost": true}'>
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 {% endblock meta %}
 
@@ -40,7 +43,7 @@ all stylesheets and scripts with a 'head' context.
         {% if asset.type == 'inline' %}
             <script type="text/javascript">{{ asset.src|raw }}</script>
         {% else %}
-            <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}.{{ cacheString }}"></script>
+            <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}.{{ cacheString }}" {{ asset.type == 'defer' ? 'defer' }}></script>
         {% endif %}
     {% endfor %}
 

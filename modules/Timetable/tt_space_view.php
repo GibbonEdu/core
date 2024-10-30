@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-
+use Gibbon\Tables\DataTable;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -30,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $gibbonSpaceID = isset($_REQUEST['gibbonSpaceID']) ? $_REQUEST['gibbonSpaceID'] : '';
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
@@ -54,6 +54,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             $page->breadcrumbs
                 ->add(__('View Timetable by Facility'), 'tt_space.php')
                 ->add($row['name']);
+            
+            //Create Details Table
+            $table = DataTable::createDetails('basicInfo');
+
+            $table->addColumn('name', __('Name'));
+
+            $table->addColumn('type', __('Type'));
+
+            $table->addColumn('capacity', __('Capacity'));
+
+            $table->addColumn('projector', __('Projector'))
+                ->width('100%');
+            
+            $table->addColumn('phoneInternal', __('Phone Number'))
+                ->width('100%');
+
+            echo $table->render([$row]);
 
             if ($search != '') {
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
@@ -95,9 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             if ($tt != false) {
                 echo $tt;
             } else {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
+                echo $page->getBlankSlate();
             }
         }
     }

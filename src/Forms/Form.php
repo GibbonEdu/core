@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -334,6 +336,19 @@ class Form implements OutputableInterface
     }
 
     /**
+     * setOnKeyDown
+     * Add a javascript function to the form's onkeydown event.
+     * @param string $function
+     * @return self
+     */
+    public function enableAutoSave(string $formId, string $autoSaveUrl)
+    {
+        $keydownJS = "gibbonFormSubmitQuiet($('#$formId'), '$autoSaveUrl')";
+        $this->setAttribute('onkeydown', $keydownJS);
+        return $this;
+    }
+
+    /**
      * Adds a Trigger object that injects javascript to respond to form events.
      * @param  string  $selector
      * @param  object  $trigger
@@ -415,10 +430,10 @@ class Form implements OutputableInterface
 
     /**
      * Loads an array of $key => $value pairs into any form elements with a matching name.
-     * @param   array  &$data
+     * @param   array  $data
      * @return  self
      */
-    public function loadAllValuesFrom(&$data)
+    public function loadAllValuesFrom($data)
     {
         foreach ($this->getRows() as $row) {
             $row->loadFrom($data);

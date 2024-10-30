@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,6 +28,9 @@ use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use Gibbon\Domain\Messenger\MessengerTargetGateway;
 
 require_once '../../gibbon.php';
+
+//Module includes
+include './moduleFunctions.php';
 
 $gibbonMessengerID = $_POST['gibbonMessengerID'] ?? '';
 $sendTestEmail = $_POST['sendTestEmail'] ?? '';
@@ -77,13 +82,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $data = [
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
-        'messageWall_date1' => !empty($_POST['date1']) ? Format::dateConvert($_POST['date1']) : null,
-        'messageWall_date2' => !empty($_POST['date2']) ? Format::dateConvert($_POST['date2']) : null,
-        'messageWall_date3' => !empty($_POST['date3']) ? Format::dateConvert($_POST['date3']) : null,
+        'messageWall_dateStart' => !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null,
+        'messageWall_dateEnd' => !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null,
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
         'confidential'      => $_POST['confidential'] ?? 'N',
+        'includeSignature'  => $_POST['includeSignature'] ?? 'N',
         'timestamp'         => date('Y-m-d H:i:s'),
+        'enableSharingLink' => $_POST['enableSharingLink'] ?? 'N',
     ];
 
     if ($status == 'Draft') {
@@ -109,6 +115,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         exit;
     }
 
+    // Check for any emojis in the message and remove them
+    $containsEmoji = hasEmojis($data['body']);
+    if ($containsEmoji) { 
+        $data['body'] = removeEmoji($data['body']);
+    }
+    
     // Write to database
     $updated = $messengerGateway->update($gibbonMessengerID, $data);
     if (!$updated) {
@@ -141,6 +153,20 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             exit;
         }
 
+        if ($_POST["individuals"]=="Y") {
+            $partcipantCount = count($_POST["individualList"]);
+
+            if($partcipantCount > 50) {
+                $URL.="&return=warning4";
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+
+        if ($containsEmoji) {
+            $URLSend .= '&return=warning3';
+        }
+        
         header("Location: {$URLSend}");
         exit;
     } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {
@@ -151,9 +177,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $messengerTargetGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
     $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
 
-    $URL .= $partialFail
-        ? "&return=error4"
-        : "&return=success0";
+    if ($partialFail) {
+        $URL .= '&return=error4';
+    } else {
+        $URL .= $containsEmoji
+            ? "&return=warning3"
+            : "&return=success0";
+    }
     
     header("Location: {$URL}");
 }

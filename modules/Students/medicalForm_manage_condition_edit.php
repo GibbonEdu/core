@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -110,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 $row->addLabel('attachment', __('Attachment'))
                     ->description(__('Additional details about this medical condition. Attachments are only visible to users who manage medical data.'));
                 $row->addFileUpload('attachment')
-                    ->setAttachment('attachment', $gibbon->session->get('absoluteURL'), $values['attachment'] ?? '');
+                    ->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment'] ?? '');
 
             $row = $form->addRow();
                 $row->addFooter();

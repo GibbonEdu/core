@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_edit.php&gibbonModuleID='.$gibbonModuleID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_edit.php&gibbonModuleID='.$gibbonModuleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -57,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 $moduleGateway->update($module['gibbonModuleID'], $data);
 
                 // Reset cache to force top-menu reload
-                $gibbon->session->set('pageLoads', null);
+                $session->set('pageLoads', null);
 
                 $URL .= '&return=success0';
                 header("Location: {$URL}");

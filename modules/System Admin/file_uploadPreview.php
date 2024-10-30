@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +29,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         return;
     }
 
-    $tempDirectoryPath = $gibbon->session->get('absolutePath').'/uploads/temp';
+    $tempDirectoryPath = $session->get('absolutePath').'/uploads/temp';
     if (!is_dir($tempDirectoryPath)) {
-        mkdir($tempDirectoryPath, 0755);
+        mkdir($tempDirectoryPath, 0755, true);
     }
 
     $userGateway = $container->get(UserGateway::class);
@@ -152,11 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         return;
     }
 
-    $form = Form::create('fileUpload', $gibbon->session->get('absoluteURL').'/modules/System Admin/file_uploadProcess.php');
+    $form = Form::create('fileUpload', $session->get('absoluteURL').'/modules/System Admin/file_uploadProcess.php');
     $form->setTitle(__('Step 2 - Data Check & Confirm'));
     $form->setMultiPartForm($steps, $step);
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('type', $type);
     $form->addHiddenValue('gibbonPersonalDocumentTypeID', $gibbonPersonalDocumentTypeID);
     $form->addHiddenValue('gibbonCustomFieldID', $gibbonCustomFieldID);
@@ -193,6 +195,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         $row = $form->addRow();
             $row->addLabel('overwrite', __('Overwrite'))->description(__('Should uploaded files overwrite any existing files?'));
             $row->addYesNo('overwrite')->selected('Y');
+
+            $row = $form->addRow();
+            $row->addLabel('deleteFiles', __('Delete'))->description(__('Should original files be deleted from the server when overwriting files?'));
+            $row->addYesNo('deleteFiles')->selected('N');
     }
 
     // DATA TABLE

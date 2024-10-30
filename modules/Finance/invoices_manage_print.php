@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,13 +29,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     $page->addError(__('You do not have access to this action.'));
 } else {
     
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-    $status = $_GET['status'];
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-    $monthOfIssue = $_GET['monthOfIssue'];
-    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+    $status = $_GET['status'] ?? '';
+    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+    $monthOfIssue = $_GET['monthOfIssue'] ?? '';
+    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
     //Proceed!
     $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
@@ -87,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 						</td>
 						<td class="left">
 							<?php
-                            echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>"; ?>
+                            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>"; ?>
 						</td>
 					</tr>
 					<?php
@@ -108,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_manage_print_print.php&type=reminder1&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder1&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             ?>
 								</td>
 							</tr>
@@ -129,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_manage_print_print.php&type=reminder2&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder2&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             ?>
 								</td>
 							</tr>
@@ -150,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_manage_print_print.php&type=reminder3&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder3&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             ?>
 								</td>
 							</tr>
@@ -166,7 +168,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $return .= "<div class='error'>".$e->getMessage().'</div>';
                         }
 
                     if ($result->rowCount() < 1) {
@@ -177,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module').'/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                         ?>
 								</td>
 							</tr>
@@ -198,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$gibbon->session->get('absoluteURL').'/report.php?q=/modules/'.$gibbon->session->get('module')."/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                                     ?>
 								</td>
 							</tr>

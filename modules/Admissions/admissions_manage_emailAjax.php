@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,6 +27,7 @@ if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDP
 } else {
     $gibbonAdmissionsAccountID = isset($_POST['gibbonAdmissionsAccountID'])? $_POST['gibbonAdmissionsAccountID'] : '';
     $email = isset($_POST['email'])? $_POST['email'] : (isset($_POST['value'])? $_POST['value'] : '');
+    $email = filter_var(trim($email), FILTER_SANITIZE_EMAIL);
 
     $data = array('gibbonAdmissionsAccountID' => $gibbonAdmissionsAccountID, 'email' => $email);
     $sql = "SELECT COUNT(*) FROM gibbonAdmissionsAccount WHERE email=:email AND gibbonAdmissionsAccountID<>:gibbonAdmissionsAccountID";

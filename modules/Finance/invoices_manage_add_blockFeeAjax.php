@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,17 +23,17 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$id = $_GET['id'];
-$mode = $_GET['mode'];
-$feeType = $_GET['feeType'];
-$gibbonFinanceFeeID = $_GET['gibbonFinanceFeeID'];
-$name = $_GET['name'];
-$description = $_GET['description'];
-$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
-$fee = $_GET['fee'];
+$id = $_GET['id'] ?? '';
+$mode = $_GET['mode'] ?? '';
+$feeType = $_GET['feeType'] ?? '';
+$gibbonFinanceFeeID = $_GET['gibbonFinanceFeeID'] ?? '';
+$name = $_GET['name'] ?? '';
+$description = $_GET['description'] ?? '';
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
+$fee = $_GET['fee'] ?? '';
 $category = null;
 if (isset($_GET['category'])) {
-    $category = $_GET['category'];
+    $category = $_GET['category'] ?? '';
 }
 
 makeFeeBlock($guid, $connection2, $id, $mode, $feeType, $gibbonFinanceFeeID, $name, $description, $gibbonFinanceFeeCategoryID, $fee, $category);

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,10 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestProfileAction = getHighestGroupedAction($guid, '/modules/Students/student_view.php', $connection2);
+
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('View Timetable by Person'));
 
@@ -47,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $staffGateway = $container->get(StaffGateway::class);
 
         $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
+        $canViewFullProfile = ($highestProfileAction == 'View Student Profile_full' or $highestProfileAction == 'View Student Profile_fullNoNotes' or $highestProfileAction == 'View Student Profile_fullEditAllNotes');
 
         if ($canViewAllTimetables) {
             $criteria = $studentGateway->newQueryCriteria(true)
@@ -105,7 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
             $table = DataTable::createPaginated('timetables', $criteria);
 
-            $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+            if ($canViewFullProfile) {
+                $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+            }
 
             $table->addMetaData('filterOptions', [
                 'role:student'    => __('Role').': '.__('Student'),
@@ -125,9 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         }
 
         if (!$canViewAllTimetables && count($users) == 0) {
-            echo '<div class="error">';
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             return;
         }
 
@@ -138,10 +141,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 $roleCategory = ($person['roleCategory'] == 'Student' || !empty($person['yearGroup']))? 'Student' : 'Staff';
                 return Format::name('', $person['preferredName'], $person['surname'], $roleCategory, true, true);
             });
+
         if ($canViewAllTimetables) {
             $table->addColumn('roleCategory', __('Role Category'))
-                ->format(function($person) {
-                    return __($person['roleCategory']) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                ->format(function($person) use ($canViewFullProfile) {
+                    return $canViewFullProfile 
+                        ? __($person['roleCategory']) . '<br/>'.Format::small(Format::userStatusInfo($person))
+                        : __($person['roleCategory']);
                 });
         }
         $table->addColumn('yearGroup', __('Year Group'));

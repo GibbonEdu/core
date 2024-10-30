@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -101,7 +103,7 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
                     }
                 }
             }
-            $result["alert_${alertLevel['name']}"] = $pDescriptorAssigned;
+            $result["alert_{$alertLevel['name']}"] = $pDescriptorAssigned;
         }
         return $result;
     }, $allDescriptors);
@@ -113,13 +115,13 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
     $table->addColumn('gibbonINDescriptorName', __('Descriptor'))->context('primary');
     foreach ($alertLevels as $alertLevel) {
         $table
-        ->addColumn("alert_${alertLevel['name']}", $alertLevel['name'])
+        ->addColumn("alert_{$alertLevel['name']}", $alertLevel['name'])
         ->context('primary')
         ->format(function ($level) use ($alertLevel, $mode) {
-            $checked = $level["alert_${alertLevel['name']}"] == true ? 'checked' : '';
+            $checked = $level["alert_{$alertLevel['name']}"] == true ? 'checked' : '';
             $disabled = $mode == 'disabled' ? 'disabled' : '';
-            $value = "${level['gibbonINDescriptorID']}-${alertLevel['gibbonAlertLevelID']}";
-            return "<input type='checkbox' name='status[]' value=${value} ${checked} $disabled></input>";
+            $value = "{$level['gibbonINDescriptorID']}-{$alertLevel['gibbonAlertLevelID']}";
+            return "<input type='checkbox' name='status[]' value={$value} {$checked} $disabled></input>";
         });
     }
     $output .= $table->render($dataset);

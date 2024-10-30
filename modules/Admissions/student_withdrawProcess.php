@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
     // Validate the database relationships exist
     $person = $userGateway->getByID($gibbonPersonID);
-    $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
+    $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
 
     if (empty($person) || empty($student)) {
         $URL .= '&return=error2';
@@ -81,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
                 'title'                       => __('Student Withdrawn'),
                 'note'                        => $withdrawNote,
                 'gibbonPersonID'              => $gibbonPersonID,
-                'gibbonPersonIDCreator'       => $gibbon->session->get('gibbonPersonID'),
+                'gibbonPersonIDCreator'       => $session->get('gibbonPersonID'),
                 'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Academic') ?? null,
                 'timestamp'                   => date('Y-m-d H:i:s', time()),
             ]);
@@ -95,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
                 : __('Student Withdrawn');
 
             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $person['status'], 'statusNew' => $data['status'], 'reason' => $statusReason]);
+            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $person['status'], 'statusNew' => $data['status'], 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
         }
 
         $notify = $_POST['notify'] ?? [];
@@ -104,13 +106,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
         if (!empty($notify) || !empty($notificationList)) {
             // Create the notification body
             $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
-            $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
-                'student'   => $studentName,
-                'formGroup'   => $student['formGroup'],
-                'school'    => $gibbon->session->get('organisationNameShort'),
-                'date'      => Format::date($data['dateEnd']),
-            ]);
-
+                
+            $today = date("Y-m-d"); 
+            if ($today > $data['dateEnd']) {
+                $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
+                    'student'   => $studentName,
+                    'formGroup'   => $student['formGroup'],
+                    'school'    => $session->get('organisationNameShort'),
+                    'date'      => Format::date($data['dateEnd']),
+                ]);
+            } else {
+                $notificationString = __('{student} {formGroup} will withdraw from {school}, effective from {date}.', [
+                    'student'   => $studentName,
+                    'formGroup'   => $student['formGroup'],
+                    'school'    => $session->get('organisationNameShort'),
+                    'date'      => Format::date($data['dateEnd']),
+                ]);
+            }
+            
             if (!empty($withdrawNote)) {
                 $notificationString .= '<br/><br/>'.__('Withdraw Note').': '.$withdrawNote;
             }
@@ -120,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
             $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
             $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
             $event->setNotificationText($notificationString);
-            $event->setActionLink('/index.php?q=/modules/Admissions/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
+            $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
 
             // Notify Additional People
             foreach ($notificationList as $gibbonPersonIDNotify) {
@@ -129,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
             // Admissions Administrator
             if (in_array('admin', $notify)) {
-                $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+                $event->addRecipient($session->get('organisationAdmissions'));
             }
 
             // Head of Year
@@ -148,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
 
             // Class Teachers
             if (in_array('teachers', $notify)) {
-                $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
+                $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID);
                 foreach ($teachers as $teacher) {
                     $event->addRecipient($teacher['gibbonPersonID']);
                 }
@@ -163,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdra
             }
 
             // Add event listeners to the notification sender
-            $event->sendNotifications($pdo, $gibbon->session);
+            $event->sendNotifications($pdo, $session);
         }
     }
 

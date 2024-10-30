@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,10 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('My Coverage'));
-    
+
     $gibbonPersonID = $session->get('gibbonPersonID');
     $displayCount = 0;
-    
+
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
@@ -46,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     $settingGateway = $container->get(SettingGateway::class);
 
     $urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold');
+    $coverageMode =  $settingGateway->getSettingByScope('Staff', 'coverageMode');
 
     // TODAY'S COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
@@ -55,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         ->filterBy('dateEnd:'.date('Y-m-d'))
         ->fromPOST('staffCoverageToday');
 
-    $todaysCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID);
+    $todaysCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
     if (count($todaysCoverage) > 0) {
         $page->write('<h2>'.__("Today's Coverage").'</h2>');
@@ -88,11 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
     // TEACHER COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
-        // ->sortBy('dateStart')
+        ->sortBy('dateStart', 'DESC')
         ->filterBy('date:upcoming')
         ->fromPOST('staffCoverageSelf');
 
-    $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $gibbonPersonID, false);
+    $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
     if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') || $coverage->getResultCount() > 0) {
         $coverageByTimetable = count(array_filter($coverage->toArray(), function($item) {
             return !empty($item['gibbonTTDayRowClassID']);
@@ -121,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             $table->addColumn('date', __('Date'))
                 ->format(Format::using('dateReadable', 'date'))
                 ->formatDetails(function ($coverage) {
-                    return Format::small(Format::dateReadable($coverage['date'], '%A'));
+                    return Format::small(Format::dayOfWeekName($coverage['date']));
                 });
 
             $table->addColumn('period', __('Period'))
@@ -129,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     ->formatDetails([AbsenceFormats::class, 'timeDetails']);
 
             $table->addColumn('contextName', __('Cover'));
-        } else {            
+        } else {
             $table->addColumn('date', __('Date'))
                 ->context('primary')
                 ->format([AbsenceFormats::class, 'dateDetails']);
@@ -155,20 +158,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
-            ->format(function ($coverage, $actions) {
+            ->addParam('gibbonStaffAbsenceID')
+            ->format(function ($coverage, $actions) use ($guid, $connection2, $coverageMode) {
                 $actions->addAction('view', __('View Details'))
                     ->isModal(800, 550)
                     ->setURL('/modules/Staff/coverage_view_details.php');
 
-                if ($coverage['status'] == 'Requested' || $coverage['status'] == 'Accepted') {
+                if ($coverage['status'] == 'Requested' || $coverage['status'] == 'Pending' || $coverage['status'] == 'Accepted') {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
-                    
-                if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] >= date('Y-m-d'))) {
+                   
+                if (($coverage['status'] == 'Requested' || $coverage['status'] == 'Accepted' || $coverage['status'] == 'Pending') && ($coverage['dateEnd'] >= date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_cancel.php');
+                }
+
+                $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && (($coverageMode == 'Requested' && $coverage['absenceStatus'] == 'Approved') || ($coverageMode == 'Assigned' && $coverage['absenceStatus'] != 'Declined'));
+
+                if ($canRequestCoverage && !empty($coverage['gibbonStaffAbsenceID']) && $coverage['status'] == 'Declined') {
+                    $actions->addAction('coverage', __('Request Coverage'))
+                        ->setIcon('attendance')
+                        ->setURL('/modules/Staff/coverage_request.php');
                 }
             });
 
@@ -182,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     if (!empty($substitute)) {
         $criteria = $staffCoverageGateway->newQueryCriteria();
 
-        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
         $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
         $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
@@ -200,11 +212,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         // QUERY
         $criteria = $staffCoverageGateway->newQueryCriteria(true)
-            ->sortBy('date')
+            ->sortBy('date', 'DESC')
             ->filterBy('date:upcoming')
             ->fromPOST('staffCoverageOther');
 
-        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID);
+        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
         // DATA TABLE
         $table = DataTable::createPaginated('staffCoverageOther', $criteria);
@@ -241,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             ->width('30%')
             ->sortable(['surname', 'preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);
@@ -269,8 +281,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         echo $table->render($coverage);
         $displayCount++;
     }
-    
+
     if ($displayCount == 0) {
-        $page->addError(__('There are no records to display.'));
+        echo $page->getBlankSlate();
     }
 }

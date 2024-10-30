@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,19 +43,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
     $transport = null;
     if (isset($_GET['transport'])) {
-        $transport = $_GET['transport'];
+        $transport = $_GET['transport'] ?? '';
     }
     $prefix = null;
     if (isset($_GET['prefix'])) {
-        $prefix = $_GET['prefix'];
+        $prefix = $_GET['prefix'] ?? '';
     }
     $append = null;
     if (isset($_GET['append'])) {
-        $append = $_GET['append'];
+        $append = $_GET['append'] ?? '';
     }
     $hideName = null;
     if (isset($_GET['hideName'])) {
-        $hideName = $_GET['hideName'];
+        $hideName = $_GET['hideName'] ?? '';
     }
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', "get");
@@ -100,7 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";

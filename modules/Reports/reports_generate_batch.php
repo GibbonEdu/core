@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,12 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
 
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    
+
     $report = $reportGateway->getByID($gibbonReportID);
-    
+
     if (empty($gibbonReportID) || empty($report)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -64,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
     $logs = $logs[$gibbonReportID] ?? [];
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_generate_batchProcess.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Reports/reports_generate_batchProcess.php');
     $form->setTitle(__('Year Groups'));
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
 
@@ -131,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->addParam('gibbonReportID', $gibbonReportID)
         ->format(function ($report, $actions) use (&$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
-            
+
             if (count($reportLogs) == 0) {
                 $actions->addAction('run', __('Run'))
                         ->setIcon('run')

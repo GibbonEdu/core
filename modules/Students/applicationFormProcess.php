@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -92,7 +94,7 @@ if ($proceed == false) {
         $languageSecond = $_POST['languageSecond'] ?? '';
         $languageThird = $_POST['languageThird'] ?? '';
         $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-        $email = trim($_POST['email'] ?? '');
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $phone1Type = $_POST['phone1Type'] ?? '';
         if (!empty($_POST['phone1']) and $phone1Type == '') {
             $phone1Type = 'Other';
@@ -148,7 +150,7 @@ if ($proceed == false) {
         $parent1relationship = $_POST['parent1relationship'] ?? null;
         $parent1languageFirst = $_POST['parent1languageFirst'] ?? null;
         $parent1languageSecond = $_POST['parent1languageSecond'] ?? null;
-        $parent1email = trim($_POST['parent1email'] ?? '');
+        $parent1email = filter_var(trim($_POST['parent1email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $parent1phone1Type = $_POST['parent1phone1Type'] ?? null;
         if (isset($_POST['parent1phone1']) and $parent1phone1Type == '') {
             $parent1phone1Type = 'Other';
@@ -175,7 +177,7 @@ if ($proceed == false) {
         $parent2relationship = $_POST['parent2relationship'] ?? null;
         $parent2languageFirst = $_POST['parent2languageFirst'] ?? null;
         $parent2languageSecond = $_POST['parent2languageSecond'] ?? null;
-        $parent2email = trim($_POST['parent2email'] ?? '');
+        $parent2email = filter_var(trim($_POST['parent2email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $parent2phone1Type = $_POST['parent2phone1Type'] ?? null;
         if (isset($_POST['parent2phone1']) and $parent2phone1Type == '') {
             $parent2phone1Type = 'Other';
@@ -227,7 +229,13 @@ if ($proceed == false) {
         $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
 
         $agreement = isset($_POST['agreement']) ? ($_POST['agreement'] == 'on' ? 'Y' : 'N') : null;
-        $privacy = isset($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
+
+        $privacyOptionVisibility = $settingGateway->getSettingByScope('User Admin', 'privacyOptionVisibility');
+        if ($privacyOptionVisibility == 'Y') {
+            $privacy = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
+        } else {
+            $privacy = null;
+        }
 
         //VALIDATE INPUTS
         $familyFail = false;
@@ -338,10 +346,10 @@ if ($proceed == false) {
                 if ($requiredDocuments != '' and $requiredDocuments != false) {
                     $fileCount = 0;
                     if (isset($_POST['fileCount'])) {
-                        $fileCount = $_POST['fileCount'];
+                        $fileCount = $_POST['fileCount'] ?? 0;
                     }
 
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                     for ($i = 0; $i < $fileCount; ++$i) {
                         if (empty($_FILES["file$i"]['tmp_name'])) continue;
@@ -370,7 +378,7 @@ if ($proceed == false) {
                 $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));
                 $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                $event->sendNotifications($pdo, $session);
 
 
                 //Email reference form link to referee

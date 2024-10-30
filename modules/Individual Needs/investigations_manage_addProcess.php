@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $investigationGateway = $container->get(INInvestigationGateway::class);
 
     $data = [
-        'gibbonSchoolYearID'    => $gibbon->session->get('gibbonSchoolYearID'),
-        'gibbonPersonIDCreator' => $gibbon->session->get('gibbonPersonID'),
+        'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
+        'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
         'gibbonPersonIDStudent' => $_POST['gibbonPersonIDStudent'] ?? '',
         'status'                => 'Referral',
         'date'                  => Format::dateConvert($_POST['date']) ?? '',
@@ -65,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $gibbonINInvestigationID = $investigationGateway->insert($data);
 
     //Notify form tutors
-    $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    $notificationGateway = $container->get(NotificationGateway::class);
+    $notificationSender = $container->get(NotificationSender::class);
 
     // Raise a new notification event
     $event = new NotificationEvent('Individual Needs', 'New Investigation');

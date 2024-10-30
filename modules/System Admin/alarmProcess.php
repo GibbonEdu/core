@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +27,7 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
     $URL .= '&return=error0';
@@ -33,7 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 } else {
     //Proceed!
     $alarm = $_POST['alarm'] ?? '';
-    $attachmentCurrent = $_POST['attachmentCurrent'] ?? '';
     $alarmCurrent = $_POST['alarmCurrent'] ?? '';
 
     //Validate Inputs
@@ -42,10 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         header("Location: {$URL}");
     } else {
         //DEAL WITH CUSTOM SOUND SETTING
+        $alarmGateway = $container->get(AlarmGateway::class);
+        $settingGateway = $container->get(SettingGateway::class);
+
         $time = time();
+        $attachmentCurrent = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound');
+
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
-            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
@@ -58,11 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                 exit;
             }
         } else {
-            $attachment = $attachmentCurrent;
+            // Remove the attachment if it has been deleted, otherwise retain the original value
+            $attachment = empty($_POST['attachmentCurrent']) ? '' : $attachmentCurrent;
         }
-
-        $alarmGateway = $container->get(AlarmGateway::class);
-        $settingGateway = $container->get(SettingGateway::class);
+        
         //Write setting to database
         $dataWhere = ['scope' => 'System Admin', 'name' => 'customAlarmSound'];
         $settingGateway->updateWhere($dataWhere, ['value' => $attachment]);
@@ -79,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
             if (empty($alarmTest)) {
                 //Write alarm to database
-                $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
+                $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
                 $alarmGateway->insert($data);
             } else {
                 $alarmGateway->updateWhere(['gibbonAlarmID' => $alarmTest['gibbonAlarmID']], ['type' => $alarm]);

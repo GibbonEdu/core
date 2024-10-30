@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
         $studentGateway = $container->get(StudentGateway::class);
 
-        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonPersonID = $session->get('gibbonPersonID');
 
         $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
@@ -52,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
 
             if ($result->isEmpty()) {
-                $page->addMessage(__('There are no records to display.'));
+                echo $page->getBlankSlate();
             } else {
                 $table = DataTable::create('studentsView');
                 $table->setTitle($title);
@@ -99,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 'yearGroup' => __('Year Group'),
             );
 
-            $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+            $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Filter'));
             $form->setClass('noIntBorder fullWidth');
-            $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/student_view.php');
+            $form->addHiddenValue('q', '/modules/'.$session->get('module').'/student_view.php');
         
             $searchDescription = $canViewFullProfile 
                 ? __('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.') 
@@ -124,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+                $row->addSearchSubmit($session, __('Clear Search'));
             
             echo $form->getOutput();
 
@@ -153,8 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             // COLUMNS
             $table->addColumn('student', __('Student'))
                 ->sortable(['surname', 'preferredName'])
-                ->format(function ($person) {
-                    return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                ->format(function ($person) use ($canViewFullProfile) {
+                    $output = Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/>';
+                    if ($canViewFullProfile) {
+                        $output .= '<small><i>'.Format::userStatusInfo($person).'</i></small>';
+                    }
+                    return $output;
                 });
             $table->addColumn('yearGroup', __('Year Group'));
             $table->addColumn('formGroup', __('Form Group'));

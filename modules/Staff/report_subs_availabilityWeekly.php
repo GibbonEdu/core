@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,9 +30,7 @@ use Gibbon\Domain\School\DaysOfWeekGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $subGateway = $container->get(SubstituteGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
 
-    $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
+    $date = isset($_REQUEST['date']) ? Format::dateConvert($_REQUEST['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
     $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
@@ -135,14 +135,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $dateRange = new DatePeriod($dateStart, new DateInterval('P1D'), $dateEnd);
     $daysOfWeekGateway = $container->get(DaysOfWeekGateway::class);
-    
+
     foreach ($dateRange as $weekday) {
         if (!isSchoolOpen($guid, $weekday->format('Y-m-d'), $connection2)) continue;
 
         $dayOfWeek = $daysOfWeekGateway->getDayOfWeekByDate($weekday->format('Y-m-d'));
 
         $url = './index.php?q=/modules/Staff/report_subs_availability.php&date='.Format::date($weekday->format('Y-m-d'));
-        $columnTitle = Format::link($url, Format::dateReadable($weekday->format('Y-m-d'), '%a, %b %e'));
+        $columnTitle = Format::link($url, Format::dateReadable($weekday->format('Y-m-d'), Format::FULL_NO_YEAR));
 
         $table->addColumn($weekday->format('D'), $columnTitle)
             ->context('primary')

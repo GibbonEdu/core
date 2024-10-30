@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -70,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
 
     $criteria = $staffCoverageGateway->newQueryCriteria();
 
-    $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+    $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
     $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
     $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
@@ -89,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         ->fromPOST();
 
     $dates = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
-    
+
     $bulkActions = array(
         'Delete' => __('Delete'),
     );
@@ -134,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
 
     echo $form->getOutput();
 
-    
+
     $form = Form::create('staffAvailability', $session->get('absoluteURL').'/modules/Staff/coverage_availability_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));

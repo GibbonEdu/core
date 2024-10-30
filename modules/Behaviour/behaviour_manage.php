@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourFollowUpGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -38,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('Manage Behaviour Records'));
 
@@ -79,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 
@@ -94,14 +95,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->filterBy('type', $type)
             ->fromPOST();
 
-
-        if ($highestAction == 'Manage Behaviour Records_all') {
+        
+            if ($highestAction == 'Manage Behaviour Records_all') {
             $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
         } else if ($highestAction == 'Manage Behaviour Records_my') {
             $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
         } else {
             return;
         }
+
+        $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
+         // Join follow up based on behaviour ID
+         $behaviourIDs = $records->getColumn('gibbonBehaviourID');
+        
+         $followUpData = $behaviourFollowUpGateway->selectFollowUpsByBehaviorID($behaviourIDs)->fetchGrouped();
+
+         $records->joinColumn('gibbonBehaviourID', 'followUps', $followUpData);
 
         // DATA TABLE
         $table = DataTable::createPaginated('behaviourManage', $criteria);
@@ -139,9 +148,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $output .= '<strong>'.__('Incident').'</strong><br/>';
                     $output .= nl2br($beahviour['comment']).'<br/>';
                 }
-                if (!empty($beahviour['followup'])) {
-                    $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                    $output .= nl2br($beahviour['followup']).'<br/>';
+
+                if (!empty($beahviour['followUps'])) {
+                    foreach ($beahviour['followUps'] as $followUp) { 
+                        $output .= '<br/><strong>'.__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname'].'</strong><br/>';
+                        $output .= nl2br($followUp['followUp']).'<br/>';
+                    }
                 }
                 return $output;
             });

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,9 +27,7 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
     $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
@@ -37,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
         __('View Messages').' ('.$date.')');
 
     // Update messenger last read timestamp
-    $gibbon->session->set('messengerLastRead', date('Y-m-d H:i:s'));
-    $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['messengerLastRead' => date('Y-m-d H:i:s')]);
+    $session->set('messengerLastRead', date('Y-m-d H:i:s'));
+    $container->get(UserGateway::class)->update($session->get('gibbonPersonID'), ['messengerLastRead' => date('Y-m-d H:i:s')]);
 
     // Handle attendance student registration message
     if (isset($_GET['return'])) {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,6 +27,7 @@ use Gibbon\Tables\DataTable;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use Gibbon\Http\Url;
 
 /**
  * CoverageCalendar
@@ -63,25 +66,25 @@ class CoverageCalendar
                 $coverageListByDay = $coverageByDate[$date->format('Y-m-d')] ?? [];
 
                 $coverageCount = count($coverageListByDay);
-    
+
                 $days[$dayCount] = [
                     'date'    => $date,
                     'number'  => $dayCount,
                     'count'   => $coverageCount,
                     'weekend' => $date->format('N') >= 6,
                     'coverage' => current($coverageListByDay),
-                    'exception' => isset($exceptionsByDate[$date->format('Y-m-d')]) 
-                        ? current($exceptionsByDate[$date->format('Y-m-d')]) 
+                    'exception' => isset($exceptionsByDate[$date->format('Y-m-d')])
+                        ? current($exceptionsByDate[$date->format('Y-m-d')])
                         : null,
                 ];
             }
-    
+
             $calendar[] = [
-                'name'  => Format::dateReadable($month ,'%b'),
+                'name'  => Format::monthName($month, true),
                 'days'  => $days,
             ];
         }
-    
+
         $table = DataTable::create('staffAbsenceCalendar')
             ->setTitle(__('Calendar'));
 
@@ -92,7 +95,7 @@ class CoverageCalendar
         });
 
         $table->addColumn('name', '')->notSortable()->context('primary');
-    
+
         for ($dayCount = 1; $dayCount <= 31; $dayCount++) {
             $table->addColumn($dayCount, '')
                 ->context('primary')
@@ -100,17 +103,17 @@ class CoverageCalendar
                 ->format(function ($month) use ($dayCount) {
                     $day = $month['days'][$dayCount] ?? null;
                     if (empty($day['coverage']) || ($day['count'] <= 0 && !$day['exception'])) return '';
-    
-                    $coverage = $day['coverage'];
-    
-                    $url = 'fullscreen.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffCoverageID='.$coverage['gibbonStaffCoverageID'].'&width=800&height=550';
 
-                    $params['title'] = Format::dateReadable($day['date'], '%A').'<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
+                    $coverage = $day['coverage'];
+
+                    $url = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'coverage_view_details.php')->withQueryParams(['gibbonStaffCoverageID' => $coverage['gibbonStaffCoverageID']]);
+
+                    $params['title'] = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     $params['class'] = '';
                     if ($coverage['allDay'] == 'N') {
                         $params['class'] = $coverage['timeStart'] < '12:00:00' ? 'half-day-am' : 'half-day-pm';
                     }
-                    
+
                     if ($day['count'] > 0) {
                         $name = Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true);
                         if (empty($name)) {
@@ -126,32 +129,32 @@ class CoverageCalendar
                         $url = 'index.php?q=/modules/Staff/coverage_availability.php&gibbonPersonID='.$day['exception']['gibbonPersonID'];
                         $params['title'] .= '<br/>'.__($day['exception']['reason'] ?? 'Not Available');
                     }
-    
+
                     return Format::link($url, $day['number'], $params);
                 })
                 ->modifyCells(function ($month, $cell) use ($dayCount) {
                     $day = $month['days'][$dayCount] ?? null;
                     if (empty($day)) return '';
-    
+
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
-                    
+
                     switch ($day['coverage']['status'] ?? '') {
                         case 'Requested': $cellColor = 'bg-chart2'; break;
                         case 'Accepted':  $cellColor = 'bg-chart0'; break;
                         default:          $cellColor = 'bg-gray-500';
                     }
-                    
+
                     if ($day['count'] > 0) $cell->addClass($cellColor);
                     elseif ($day['exception']) $cell->addClass('bg-gray-500');
                     elseif ($day['weekend']) $cell->addClass('bg-gray-200');
                     else $cell->addClass('bg-white');
 
                     $cell->addClass('h-3 sm:h-6');
-    
+
                     return $cell;
                 });
         }
-    
+
         return $table->withData(new DataSet($calendar));
     }
 }

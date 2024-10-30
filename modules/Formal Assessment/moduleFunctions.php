@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +42,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
         $resultYears = $connection2->prepare($sqlYears);
         $resultYears->execute($dataYears);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($resultYears->rowCount() < 1) {
@@ -63,7 +64,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                 $resultInternalAssessment = $connection2->prepare($sqlInternalAssessment);
                 $resultInternalAssessment->execute($dataInternalAssessment);
             } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($resultInternalAssessment->rowCount() > 0) {
@@ -118,7 +118,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         $output .= __('Unmarked').'<br/>';
                     }
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$rowInternalAssessment['attachment'])) {
-                        $output .= " | <a title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
+                        $output .= " | <a target='_blank' title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
                     $output .= '</span>';
                     $output .= '</td>';
@@ -138,7 +138,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $resultAttainment = $connection2->prepare($sqlAttainment);
                             $resultAttainment->execute($dataAttainment);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultAttainment->rowCount() == 1) {
                             $rowAttainment = $resultAttainment->fetch();
@@ -165,7 +164,6 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $resultEffort = $connection2->prepare($sqlEffort);
                             $resultEffort->execute($dataEffort);
                         } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultEffort->rowCount() == 1) {
                             $rowEffort = $resultEffort->fetch();
@@ -194,7 +192,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $output .= $rowInternalAssessment['comment'].'<br/>';
                         }
                         if ($rowInternalAssessment['response'] != '') {
-                            $output .= "<a title='".__('Uploaded Response')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
+                            $output .= "<a target='_blank' title='".__('Uploaded Response')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
                         }
                         $output .= '</td>';
                     }
@@ -286,7 +284,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
     } else {
         while ($rowAssessments = $resultAssessments->fetch()) {
             echo '<h2>';
-            echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".Format::monthName(mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))).' '.substr($rowAssessments['date'], 0, 4).')</span>';
+            echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".Format::monthName(mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2)), true).' '.substr($rowAssessments['date'], 0, 4).')</span>';
             if ($manage == true) {
                 echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 echo "<a href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents&width=600&height=135' class='thickbox'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>";

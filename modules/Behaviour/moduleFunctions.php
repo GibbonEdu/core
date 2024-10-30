@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
-function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
+function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gibbonPersonIDCreator = null)
 {
     global $session;
 
@@ -64,8 +66,8 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 ->sortBy('timestamp', 'DESC')
                 ->fromPOST($schoolYear['gibbonSchoolYearID']);
 
-            $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID);
-
+            $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID, $gibbonPersonIDCreator);
+            
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);
             $table->setTitle($schoolYear['name']);
 
@@ -95,15 +97,15 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 
             if ($highestViewAction == 'View Behaviour Records_all') {
                 $table->addExpandableColumn('comment')
-                    ->format(function($beahviour) {
+                    ->format(function($behaviour) {
                         $output = '';
-                        if (!empty($beahviour['comment'])) {
+                        if (!empty($behaviour['comment'])) {
                             $output .= '<strong>'.__('Incident').'</strong><br/>';
-                            $output .= nl2br($beahviour['comment']).'<br/>';
+                            $output .= nl2br($behaviour['comment']).'<br/>';
                         }
-                        if (!empty($beahviour['followup'])) {
+                        if (!empty($behaviour['followup'])) {
                             $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                            $output .= nl2br($beahviour['followup']).'<br/>';
+                            $output .= nl2br($behaviour['followup']).'<br/>';
                         }
                         return $output;
                     });
@@ -111,22 +113,22 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 
             $table->addColumn('date', __('Date'))
                 ->context('primary')
-                ->format(function($beahviour) {
-                    if (substr($beahviour['timestamp'], 0, 10) > $beahviour['date']) {
-                        return __('Updated:').' '.Format::date($beahviour['timestamp']).'<br/>'
-                            . __('Incident:').' '.Format::date($beahviour['date']).'<br/>';
+                ->format(function($behaviour) {
+                    if (substr($behaviour['timestamp'], 0, 10) > $behaviour['date']) {
+                        return __('Updated:').' '.Format::date($behaviour['timestamp']).'<br/>'
+                            . __('Incident:').' '.Format::date($behaviour['date']).'<br/>';
                     } else {
-                        return Format::date($beahviour['timestamp']);
+                        return Format::date($behaviour['timestamp']);
                     }
                 });
 
             $table->addColumn('type', __('Type'))
                 ->context('secondary')
                 ->width('5%')
-                ->format(function($beahviour) use ($session) {
-                    if ($beahviour['type'] == 'Negative') {
+                ->format(function($behaviour) use ($session) {
+                    if ($behaviour['type'] == 'Negative') {
                         return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
-                    } elseif ($beahviour['type'] == 'Positive') {
+                    } elseif ($behaviour['type'] == 'Positive') {
                         return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
                     }
                 });

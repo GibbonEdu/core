@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -116,13 +118,14 @@ class ReportingAccessGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->cols(["LPAD(gibbonCourseClass.gibbonCourseClassID, 8, '0')  as scopeTypeID", 'gibbonCourse.name as criteriaName', "CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as criteriaNameShort",
             "(SELECT COUNT(*) FROM gibbonReportingCriteria as criteria WHERE criteria.gibbonReportingScopeID=:gibbonReportingScopeID AND criteria.target='Per Student') as targetCount",
-            "(SELECT COUNT(*) FROM gibbonCourseClassPerson as students JOIN gibbonPerson as student ON (student.gibbonPersonID=students.gibbonPersonID) WHERE students.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND students.role='Student' AND students.reportable='Y' $onlyFullStudents) as totalCount",
+            "(SELECT COUNT(*) FROM gibbonCourseClassPerson as students JOIN gibbonPerson as student ON (student.gibbonPersonID=students.gibbonPersonID) JOIN gibbonStudentEnrolment as enrolment ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND FIND_IN_SET(enrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList) AND students.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND students.role='Student' AND students.reportable='Y' $onlyFullStudents) as totalCount",
             "(SELECT COUNT(*) FROM gibbonReportingProgress as progress JOIN gibbonPerson AS student ON (student.gibbonPersonID=progress.gibbonPersonIDStudent) WHERE progress.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete' $onlyFullStudents) as progressCount",
             "(SELECT COUNT(*) FROM gibbonReportingProgress as progress JOIN gibbonPerson AS student ON (student.gibbonPersonID=progress.gibbonPersonIDStudent) WHERE progress.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete' AND (student.status='Left' OR student.dateStart>:today OR student.dateEnd<:today)) as leftCount"])
             ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonCourseID=gibbonCourse.gibbonCourseID')
+            ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingCriteria.gibbonReportingCycleID')
             ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClass.reportable='Y'")
@@ -139,7 +142,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->cols(["LPAD(gibbonYearGroup.gibbonYearGroupID, 3, '0') as scopeTypeID", 'gibbonYearGroup.name as criteriaName', 'gibbonYearGroup.nameShort as criteriaNameShort',
             "(SELECT COUNT(*) FROM gibbonReportingCriteria as criteria WHERE criteria.gibbonReportingScopeID=:gibbonReportingScopeID AND criteria.target='Per Student') as targetCount",
-            "(SELECT COUNT(*) FROM gibbonStudentEnrolment as enrolment JOIN gibbonPerson as student ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND enrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID $onlyFullStudents) as totalCount",
+            "(SELECT COUNT(*) FROM gibbonStudentEnrolment as enrolment JOIN gibbonPerson as student ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND FIND_IN_SET(enrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList) AND enrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID $onlyFullStudents) as totalCount",
             "(SELECT COUNT(*) FROM gibbonReportingProgress as progress JOIN gibbonPerson AS student ON (student.gibbonPersonID=progress.gibbonPersonIDStudent) WHERE progress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete' $onlyFullStudents) as progressCount",
             "(SELECT COUNT(*) FROM gibbonReportingProgress as progress JOIN gibbonPerson AS student ON (student.gibbonPersonID=progress.gibbonPersonIDStudent) WHERE progress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete' AND (student.status='Left' OR student.dateStart>:today OR student.dateEnd<:today)) as leftCount"
             ])
@@ -159,7 +162,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->cols(["LPAD(gibbonFormGroup.gibbonFormGroupID, 5, '0') as scopeTypeID", 'gibbonFormGroup.name as criteriaName', 'gibbonFormGroup.nameShort as criteriaNameShort',
             "(SELECT COUNT(*) FROM gibbonReportingCriteria as criteria WHERE criteria.gibbonReportingScopeID=:gibbonReportingScopeID AND criteria.target='Per Student') as targetCount",
-            "(SELECT COUNT(*) FROM gibbonStudentEnrolment as enrolment JOIN gibbonPerson as student ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND enrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID $onlyFullStudents) as totalCount",
+            "(SELECT COUNT(*) FROM gibbonStudentEnrolment as enrolment JOIN gibbonPerson as student ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND FIND_IN_SET(enrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList)AND enrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID $onlyFullStudents) as totalCount",
             "(SELECT COUNT(*) FROM gibbonReportingProgress as progress JOIN gibbonPerson AS student ON (student.gibbonPersonID=progress.gibbonPersonIDStudent) WHERE progress.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete' $onlyFullStudents) as progressCount",
             "(SELECT COUNT(*) FROM gibbonReportingProgress as progress JOIN gibbonPerson AS student ON (student.gibbonPersonID=progress.gibbonPersonIDStudent) WHERE progress.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete' AND (student.status='Left' OR student.dateStart>:today OR student.dateEnd<:today)) as leftCount"])
             ->innerJoin('gibbonFormGroup', '(gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)')
@@ -307,14 +310,20 @@ class ReportingAccessGateway extends QueryableGateway
                 ->where('gibbonStudentEnrolment.gibbonFormGroupID=:scopeTypeID')
                 ->groupBy(['gibbonStudentEnrolment.gibbonPersonID']);
         } elseif ($scopeType == 'Course') {
-            $query->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
-                ->innerJoin('gibbonCourseClassPerson', "gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student'")
+            $query->cols(['gibbonCourseClassPerson.role'])
+                ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
+                ->innerJoin('gibbonCourseClassPerson', "gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND ".($allStudents ? "(gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Student - Left')" : "gibbonCourseClassPerson.role='Student'"))
                 ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
                 ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID AND gibbonReportingProgress.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID')
                 ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID')
                 ->where("gibbonCourseClassPerson.reportable='Y'")
                 ->where("gibbonCourseClass.reportable='Y'")
                 ->groupBy(['gibbonCourseClassPerson.gibbonCourseClassPersonID']);
+
+                if (!$allStudents) {
+                    $query->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+                    ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList)');
+                }
         }
 
         return $this->runSelect($query);

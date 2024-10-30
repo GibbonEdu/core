@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,16 +25,16 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$nameShortDisplay = $_POST['nameShortDisplay'];
-$active = $_POST['active'];
-$count = $_POST['count'];
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$nameShortDisplay = $_POST['nameShortDisplay'] ?? '';
+$active = $_POST['active'] ?? '';
+$count = $_POST['count'] ?? '';
 $gibbonYearGroupIDList = (isset($_POST["gibbonYearGroupID"]) ? implode(',', $_POST["gibbonYearGroupID"]) : '');
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonTTID = $_POST['gibbonTTID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonTTID = $_POST['gibbonTTID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_edit.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'] ?? '').'/tt_edit.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.($_POST['gibbonSchoolYearID'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.php') == false) {
     $URL .= '&return=error0';

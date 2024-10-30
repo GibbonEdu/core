@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,7 +59,7 @@ if (!$session->has('gibbonPersonID')) {
                 $multiple = true;
             }
 
-            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
             //Insert files
             for ($i = 1; $i < 5; ++$i) {
@@ -77,6 +79,7 @@ if (!$session->has('gibbonPersonID')) {
                     } else {
                         $extension = strrchr($attachment, '.');
                         $name = mb_substr(basename($file['name']), 0, mb_strrpos(basename($file['name']), '.'));
+                        $name = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $name);
 
                         if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
                             $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$attachment."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$attachment."'></a>";

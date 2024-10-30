@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
     $everything = array();
     $count = 0;
     while ($rowList = $resultList->fetch()) {
-        if ($rowList['dob'] != '') {
+        if (!empty($rowList['dob'])) {
             $age = floor(($today - strtotime($rowList['dob'])) / 31556926);
             if (isset($ages[$age]) == false) {
                 $ages[$age] = $age;
@@ -54,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
     $years = getYearGroups($connection2);
 
     if (count($ages) < 1 or count($years) < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo $page->getBlankSlate();
     } else {
         echo '<div style="overflow-x: scroll;">';
         echo "<table class='mini' cellspacing='0' style='max-width: 100%'>";
@@ -119,6 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
                 echo "<td style='text-align: center'>";
                 $cellCount = 0;
                 foreach ($everything as $thing) {
+                    if (empty($thing[0])) continue;
                     if ($thing[2] == $years[$i - 1] and $thing[1] == 'M' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                         ++$cellCount;
                     }
@@ -130,6 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
                 echo "<td style='text-align: center'>";
                 $cellCount = 0;
                 foreach ($everything as $thing) {
+                    if (empty($thing[0])) continue;
                     if ($thing[2] == $years[$i - 1] and $thing[1] == 'F' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                         ++$cellCount;
                     }
@@ -142,6 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
             echo "<td style='text-align: center'>";
             $cellCount = 0;
             foreach ($everything as $thing) {
+                if (empty($thing[0])) continue;
                 if ($thing[1] == 'M' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                     ++$cellCount;
                 }
@@ -153,6 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
             echo "<td style='text-align: center'>";
             $cellCount = 0;
             foreach ($everything as $thing) {
+                if (empty($thing[0])) continue;
                 if ($thing[1] == 'F' and floor(($today - strtotime($thing[0])) / 31556926) == $age) {
                     ++$cellCount;
                 }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
     $step = null;
     if (isset($_GET['step'])) {
-        $step = $_GET['step'];
+        $step = $_GET['step'] ?? '';
     }
     if ($step != 1 and $step != 2 and $step != 3) {
         $step = 1;
@@ -86,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         echo __('Step 2');
         echo '</h3>';
 
-        $nextYearID = $_POST['nextYear'];
+        $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo "<div class='error'>";
@@ -180,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             }
         }
     } elseif ($step == 3) {
-        $nextYearID = $_POST['nextYear'];
+        $nextYearID = $_POST['nextYear'] ?? '';
         $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
         if (empty($nextYearID) or $nextYearBySession === false or $nextYearID != $nextYearBySession['gibbonSchoolYearID']) {
             echo "<div class='error'>";
@@ -209,9 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $rollTeachers = isset($_POST['rollTeachers'])? $_POST['rollTeachers'] : '';
 
                 if ($rollStudents != 'on' and $rollTeachers != 'on') {
-                    echo "<div class='error'>";
-                    echo __('Your request failed because your inputs were invalid.');
-                    echo '</div>';
+                    $page->addError(__('Your request failed because your inputs were invalid.'));
                 } else {
                     $classes = isset($_POST['gibbonCourseClassIDNext'])? $_POST['gibbonCourseClassIDNext'] : array();
                     $classes = array_filter($classes);

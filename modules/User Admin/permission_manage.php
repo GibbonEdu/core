@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $row->addSelect('gibbonRoleID')->fromQuery($pdo, $sql)->selected($gibbonRoleID)->placeholder();
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -75,7 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     try {
@@ -89,7 +90,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $resultRoles = $connection2->prepare($sqlRoles);
         $resultRoles->execute($dataRoles);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     
@@ -99,9 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $resultPermissions->execute($dataPermissions);
 
     if ($resultRoles->rowCount() < 1 or $resultModules->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('Your request failed due to a database error.');
-        echo '</div>';
+        $page->addError(__('Your request failed due to a database error.'));
     } else {
         //Fill role and permission arrays
         $roleArray = ($resultRoles->rowCount() > 0)? $resultRoles->fetchAll() : array();

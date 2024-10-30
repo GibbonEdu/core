@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,18 +47,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         ->sortBy(['timestamp'], 'DESC')
         ->fromPOST();
 
-    $form = Form::create('searchForm', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
     $form->setTitle(__('Search'));
 
-    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/messenger_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/messenger_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row->addSearchSubmit($session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -106,9 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $output = Format::date($values['timestamp']).'<br/>';
 
             if ($values['messageWall'] == 'Y') {
-                if (!empty($values['messageWall_date1'])) $output .= Format::small(Format::date($values['messageWall_date1'])).'<br/>';
-                if (!empty($values['messageWall_date2'])) $output .= Format::small(Format::date($values['messageWall_date2'])).'<br/>';
-                if (!empty($values['messageWall_date3'])) $output .= Format::small(Format::date($values['messageWall_date3'])).'<br/>';
+                $output .= Format::small(Format::dateRange($values['messageWall_dateStart'], $values['messageWall_dateEnd']));
             }
             return $output;
         });
@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 <script>
 $('.statusBar').each(function(index, element) {
     var refresh = setInterval(function () {
-        var path = "<?php echo $gibbon->session->get('absoluteURL') ?>/modules/Messenger/messenger_manage_ajax.php";
+        var path = "<?php echo $session->get('absoluteURL') ?>/modules/Messenger/messenger_manage_ajax.php";
         var postData = { gibbonLogID: $(element).data('id') };
         $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
             if (responseText.indexOf('Sent') >= 0) {

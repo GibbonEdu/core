@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,8 +29,11 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
+//Module includes
+include './moduleFunctions.php';
+
 $address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_post.php&sidebar=true';
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_post.php&sidebar=true';
 $URLSend = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_send.php&sidebar=true';
 $URLEdit = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true';
 
@@ -43,14 +48,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $sendTestEmail = $_POST['sendTestEmail'] ?? 'N';
     $saveMode = $_POST['saveMode'] ?? 'Preview';
     $data = [
-        'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'),
+        'gibbonSchoolYearID'=> $session->get('gibbonSchoolYearID'),
         'status'            => $_POST['status'] ?? 'Draft',
         'email'             => $_POST['email'] ?? 'N',
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
-        'messageWall_date1' => !empty($_POST['date1']) ? Format::dateConvert($_POST['date1']) : null,
-        'messageWall_date2' => !empty($_POST['date2']) ? Format::dateConvert($_POST['date2']) : null,
-        'messageWall_date3' => !empty($_POST['date3']) ? Format::dateConvert($_POST['date3']) : null,
+        'messageWall_dateStart' => !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null,
+        'messageWall_dateEnd' => !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null,
         'sms'               => $_POST['sms'] ?? 'N',
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
@@ -58,6 +62,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'emailReplyTo'      => $_POST['emailReplyTo'] ?? $session->get('email'),
         'emailReceipt'      => $_POST['emailReceipt'] ?? 'N',
         'emailReceiptText'  => $_POST['emailReceiptText'] ?? '',
+        'enableSharingLink' => $_POST['enableSharingLink'] ?? 'N',
+        'individualNaming'  => $_POST['individualNaming'] ?? 'N',
+        'includeSignature'  => $_POST['includeSignature'] ?? 'N',
         'confidential'      => $_POST['confidential'] ?? 'N',
         'gibbonPersonID'    => $session->get('gibbonPersonID'),
         'timestamp'         => date('Y-m-d H:i:s'),
@@ -75,6 +82,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         $URL .= "&return=error5";
         header("Location: {$URL}");
         exit;
+    }
+
+    // Check for any emojis in the message and remove them
+    $containsEmoji = hasEmojis($data['body']);
+    if($containsEmoji) { 
+        $data['body'] = removeEmoji($data['body']);
     }
 
     // Insert the message and get the ID
@@ -102,6 +115,20 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             exit;
         }
 
+        if ($_POST["individuals"]=="Y") {
+            $partcipantCount = count($_POST["individualList"]);
+
+            if($partcipantCount > 50) {
+                $URLEdit.="&return=warning4";
+                header("Location: {$URLEdit}");
+                exit;
+            }
+        }
+        
+        if ($containsEmoji) {
+            $URLSend .= '&return=warning3';
+        }
+        
         header("Location: {$URLSend}");
         exit;
     } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {
@@ -111,9 +138,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     // Otherwise save any edits to targets
     $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
 
-    $URLEdit .= $partialFail
-        ? "&return=warning1"
-        : "&return=success0";
+    if ($partialFail) {
+        $URLEdit .= '&return=warning1';
+    } else {
+        $URLEdit .= $containsEmoji
+            ? "&return=warning3"
+            : "&return=success0";
+    }
 
     header("Location: {$URLEdit}") ;
 }

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -167,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             // Participants
             $table = $container->get(ClassGroupTable::class);
-            $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
+            $table->build($session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
 
             echo $table->getOutput();
 
@@ -182,7 +184,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                     $resultCourse = $connection2->prepare($sqlCourse);
                     $resultCourse->execute($dataCourse);
                 } catch (PDOException $e) {
-                    $sidebarExtra .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultCourse->rowCount() > 0) {

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -134,7 +136,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $newFields = json_decode($fields, true);
                 $newFields = is_array($newFields) ? $newFields : []; // make sure this is an array
                 foreach ($newFields as $key => $fieldValue) {
-                    if (!isset($existingFields[$key]) || $existingFields[$key] != $fieldValue) {
+                    if (empty($existingFields[$key]) && empty($fieldValue)) continue; // Nulls, false and empty strings should cause no change
+
+                    if ((empty($existingFields[$key]) && !empty($fieldValue)) || $existingFields[$key] != $fieldValue) {
                         $dataChanged = true;
                     }
                 }
@@ -161,6 +165,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $count = $_POST['count'] ?? 0;
 
                 for ($i = 0; $i < $count; ++$i) {
+                    // Get the values of the current condition
+                    $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
+                    $condition = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
+                    if (empty($condition)) {
+                        $dataChanged = true;
+                    }
+
                     $data = [
                         'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
                         'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID,
@@ -179,24 +190,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     if (!empty($_FILES["attachment$i"]['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
-                        $fileUploader = new FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new FileUploader($pdo, $session);
                         $data['attachment'] = $fileUploader->uploadFromPost($_FILES["attachment$i"]);
 
                         if (empty($data['attachment'])) {
                             $partialFail = true;
                         }
-                    }
-
-                    // Get the values of the current condition
-                    $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
-                    $condition = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
-                    if (empty($condition)) {
-                        $dataChanged = true;
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $data['attachment'] = empty($_POST["attachment$i"]) ? null : $condition['attachment'];
                     }
 
                     // Check for values that have changed
                     foreach ($condition as $key => $value) {
                         if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+                        if (empty($data[$key]) && empty($value)) continue; // Nulls, false and empty strings should cause no change
+
                         if ($data[$key] != $value) {
                             $dataChanged = true;
                         }
@@ -237,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     if (!empty($_FILES['attachment']['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
-                        $fileUploader = new FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new FileUploader($pdo, $session);
                         $data['attachment'] = $fileUploader->uploadFromPost($_FILES['attachment']);
 
                         if (empty($data['attachment'])) {
@@ -264,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     $event->setNotificationText(__('A medical data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_medical_manage.php');
 
-                    $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $session);
                 }
 
                 if ($partialFail == true) {

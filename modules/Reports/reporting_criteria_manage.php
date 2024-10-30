@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     $page->breadcrumbs->add(__('Manage Criteria'));
 
-    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
@@ -116,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     }
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+        $row->addSearchSubmit($session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -182,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
                 return Format::link($url, $reportingCriteria['scopeTypeName']);
             });
     } else {
-        $table->addDraggableColumn('gibbonReportingCriteriaID', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editOrderAjax.php', ['gibbonReportingCycleID' => $urlParams['gibbonReportingCycleID'], 'gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID']]);
+        $table->addDraggableColumn('gibbonReportingCriteriaID', $session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editOrderAjax.php', ['gibbonReportingCycleID' => $urlParams['gibbonReportingCycleID'], 'gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID']]);
     }
 
     $table->addColumn('name', __('Criteria'));

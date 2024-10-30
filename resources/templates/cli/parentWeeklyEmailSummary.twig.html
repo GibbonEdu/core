@@ -1,6 +1,8 @@
 {#<!--
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
@@ -26,7 +28,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% set difference = date(item.homeworkDueDateTime).diff(date()) %}
         {% set latestSubmission = (item.submissions|first) %}
 
-        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') or (item.type == 'studentRecorded' and item.tracker.homeworkComplete == 'Y') %}
+        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == 'teacherRecorded' and item.trackerTeacher.homeworkComplete == 'Y') or (item.type == 'studentRecorded' and item.trackerStudent.homeworkComplete == 'Y') %}
             {% set style = "background-color: #c6f6d5;color: #2f855a;border: 0px solid #2f855a;border-right-width: 8px;" %}
             {% set tag = "<div style='display: inline-block; margin-left: 8px; color: #2f855a; background-color: #c6f6d5; border-radius: 3px;'>" ~  __('Complete') ~ ' - ' ~ latestSubmission.status|default(item.status)|default('On Time')  ~ "</div>" %}
         {% else %}
@@ -62,6 +64,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <br/>
             <span style="font-size: 80%; font-style: italic;">
                 {{ __('Due at {time} on {date}', {'time': formatUsing('time', item.homeworkDueDateTime), 'date': formatUsing('date', item.homeworkDueDateTime) })|raw }} 
+
+                {% if item.type == 'studentRecorded' %}
+                    • {{ __('Student Recorded') }}
+                {% endif %}
 
                 {{ tag|raw }}
 

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -91,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder();
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
+            $row->addSearchSubmit($session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
         $form->loadAllValuesFrom($request);
 
@@ -128,13 +130,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $bulkActions = array('export' => __('Export'));
         switch($criteria->getFilterValue('status')) {
             case 'Pending':
-                $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')); break;
             case 'Issued - Overdue':
-                $bulkActions = array('reminders' => __('Issue Reminders'), 'paid' => __('Mark as Paid')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('reminders' => __('Issue Reminders'), 'paid' => __('Mark as Paid')); break;
             case 'Paid - Partial':
-                $bulkActions = array('reminders' => __('Issue Reminders')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('reminders' => __('Issue Reminders')); break;
             case 'Issued':
-                $bulkActions = array('paid' => __('Mark as Paid')) + $bulkActions; break;
+                $bulkActions = $bulkActions + array('paid' => __('Mark as Paid')); break;
         }
 
         $form->toggleVisibilityByClass('bulkPaid')->onSelect('action')->when('paid');

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -29,7 +32,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML
 include './moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].($_POST['params'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     $URL .= '&return=error0';
@@ -90,8 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 }
 
                 // Initialize the notification sender & gateway objects
-                $notificationGateway = new NotificationGateway($pdo);
-                $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                $notificationGateway = $container->get(NotificationGateway::class);
+                $notificationSender = $container->get(NotificationSender::class);
+
+                $personName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
 
                 //Create notification for all people in class except me
                 $dataClassGroup = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
@@ -100,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $resultClassGroup->execute($dataClassGroup);
                 while ($rowClassGroup = $resultClassGroup->fetch()) {
                     if ($rowClassGroup['gibbonPersonID'] != $session->get('gibbonPersonID') and $rowClassGroup['gibbonPersonID'] != $replyToID) {
-                        $notificationText = sprintf(__('Someone has commented on your lesson plan "%1$s".'), $row['name']);
+                        $notificationText = __('{person} has commented on your lesson plan {lessonName}.', ['person' => $personName, 'lessonName' => $row['name']]);
 
                         $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
                     }
@@ -110,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                 //Create notification to person I am replying to
                 if (is_null($replyToID) == false) {
-                    $notificationText = sprintf(__('Someone has replied to a comment you made on lesson plan "%1$s".'), $row['name']);
+                    $notificationText = __('{person} has replied to a comment you made on lesson plan {lessonName}.', ['person' => $personName, 'lessonName' => $row['name']]);
                     $notificationSender->addNotification($replyToID, $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
 
                     $notificationSender->sendNotificationsAsBcc();

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -77,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $milestones = substr($milestones, 0, -1);
             $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
             $notes = $_POST['notes'] ?? '';
-            $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'];
+            $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'] ?? '';
             $questions = $_POST['questions'] ?? '';
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $surname = $_POST['surname'] ?? '';
@@ -91,10 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
             $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-            $email = $_POST['email'] ?? '';
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $phone1Type = null;
             if (isset($_POST['phone1Type'])) {
-                $phone1Type = $_POST['phone1Type'];
+                $phone1Type = $_POST['phone1Type'] ?? '';
                 if ($_POST['phone1'] != '' and $phone1Type == '') {
                     $phone1Type = 'Other';
                 }
@@ -146,10 +148,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
                         $fileCount = 0;
                         if (isset($_POST['fileCount'])) {
-                            $fileCount = $_POST['fileCount'];
+                            $fileCount = $_POST['fileCount'] ?? '';
                         }
 
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         for ($i = 0; $i < $fileCount; ++$i) {
                             if (empty($_FILES["file$i"]['tmp_name'])) continue;

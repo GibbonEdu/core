@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,8 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         } else {
             //Proceed!
             //Validate Inputs
-            $viewBy = $_GET['viewBy'];
-            $subView = $_GET['subView'];
+            $viewBy = $_GET['viewBy'] ?? '';
+            $subView = $_GET['subView'] ?? '';
             if ($viewBy != 'date' and $viewBy != 'class') {
                 $viewBy = 'date';
             }
@@ -281,8 +283,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 //Notify participants
                 if (isset($_POST['notify'])) {
                     //Create notification for all people in class except me
-                    $notificationGateway = new NotificationGateway($pdo);
-                    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+                    $notificationGateway = $container->get(NotificationGateway::class);
+                    $notificationSender = $container->get(NotificationSender::class);
 
                     try {
                         $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);

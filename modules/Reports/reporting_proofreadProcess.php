@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,10 +35,10 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $page = $_POST['page'] ?? '';
 $filter = $_POST['filter'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page.'&filter='.$filter;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page.'&filter='.$filter;
 
 if (!empty($_POST['override'])) {
-    $URL .= '&override='.$_POST['override'];
+    $URL .= '&override='.($_POST['override'] ?? '');
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofread.php') == false) {
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             if (!empty($gibbonReportingProofID)) {
                 $data = [
                     'status'                 => $status == 'Revised' ? 'Accepted' : $status,
-                    'gibbonPersonIDActioned' => $gibbon->session->get('gibbonPersonID'),
+                    'gibbonPersonIDActioned' => $session->get('gibbonPersonID'),
                     'timestampActioned'      => date('Y-m-d H:i:s'),
                 ];
                 $updated = $reportingProofGateway->update($gibbonReportingProofID, $data);
@@ -90,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 'status'                 => $status,
                 'comment'                => $status == 'Edited' ? ($comments[$gibbonReportingValueID] ?? '') : '',
                 'reason'                 => $reasons[$gibbonReportingValueID] ?? '',
-                'gibbonPersonIDProofed'  => $gibbon->session->get('gibbonPersonID'),
+                'gibbonPersonIDProofed'  => $session->get('gibbonPersonID'),
                 'timestampProofed'       => date('Y-m-d H:i:s'),
             ];
 

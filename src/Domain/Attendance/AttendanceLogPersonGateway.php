@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -94,7 +96,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 AND gibbonAttendanceLogPerson.context = 'Class'")
             ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
             ->leftJoin('gibbonPerson as takenBy', 'gibbonAttendanceLogPerson.gibbonPersonIDTaker=takenBy.gibbonPersonID')
-            ->joinSubSelect('LEFT', $subSelect, 'timetable', '(timetable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND timetable.date=:date)')
+            ->joinSubSelect('LEFT', $subSelect, 'timetable', '(timetable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND timetable.date=:date AND (gibbonAttendanceLogPerson.gibbonTTDayRowClassID IS NULL OR gibbonAttendanceLogPerson.gibbonTTDayRowClassID=timetable.gibbonTTDayRowClassID))')
             ->where("gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID")
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->where("gibbonCourseClassPerson.role = 'Student'")
@@ -208,7 +210,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date' .( $countClassAsSchool == 'N' ? " AND gibbonAttendanceLogPerson.context<>'Class'" : ""))
             ->joinSubSelect(
                 'LEFT',
                 $subSelect,
@@ -269,7 +271,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->from('gibbonPerson')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date '.( $countClassAsSchool == 'N' ? " AND gibbonAttendanceLogPerson.context<>'Class'" : "") )
             ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
             ->joinSubSelect(
                 'LEFT',
@@ -349,7 +351,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $gibbonPersonID, $date)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'gibbonCourseClassID' => $gibbonCourseClassID];
-        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, direction, context, timestampTaken FROM gibbonAttendanceLogPerson
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, direction, context, timestampTaken, gibbonAttendanceLogPerson.gibbonTTDayRowClassID FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                 AND date=:date
@@ -374,7 +376,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     public function selectFutureAttendanceLogsByPersonAndDate($gibbonPersonID, $date)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $date);
-        $sql = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName 
+        $sql = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName, gibbonAttendanceLogPerson.gibbonTTDayRowClassID
             FROM gibbonAttendanceLogPerson 
             JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) 
             LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
@@ -389,7 +391,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];
-        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceCode.scope
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceCode.scope, gibbonAttendanceLogPerson.gibbonTTDayRowClassID
                 FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
@@ -399,6 +401,24 @@ class AttendanceLogPersonGateway extends QueryableGateway
             $sql .= " AND NOT context='Class'";
         }
         $sql .= " ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    function selectNonAbsentAttendanceLogsByDate($gibbonPersonIDList, $date)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonIDList) ? implode(',', $gibbonPersonIDList) : $gibbonPersonIDList;
+
+        $data = ['gibbonPersonIDList' => $gibbonPersonIDList, 'date' => $date];
+        $sql = "SELECT gibbonAttendanceLogPerson.gibbonPersonID, GROUP_CONCAT(DISTINCT type SEPARATOR ',') 
+                FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE date=:date
+                AND gibbonAttendanceLogPerson.context='Class'
+                AND gibbonAttendanceLogPerson.type<>'Absent'
+                AND FIND_IN_SET(gibbonAttendanceLogPerson.gibbonPersonID, :gibbonPersonIDList)
+                GROUP BY gibbonAttendanceLogPerson.gibbonPersonID
+                ORDER BY timestampTaken DESC";
 
         return $this->db()->select($sql, $data);
     }

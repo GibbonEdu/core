@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('View Assessment'));
 
     // Get lesson variable
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
     if (empty($gibbonPlannerEntryID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
@@ -83,8 +85,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $table = DataTable::create('crowdAssessmentStudents');
     $table->addMetaData('blankSlate', __('There is currently no work to assess.'));
 
+    $highestStudentAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+    $canViewProfile = !empty($highestStudentAction) && ($highestStudentAction == 'View Student Profile_brief' || stripos($highestStudentAction, 'full') !== false);
+
     $table->addColumn('name', __('Student'))
-        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, true]));
+        ->format(function ($values)  use ($canViewProfile) {
+            return $canViewProfile
+                ? Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], 'Student', true, true)
+                : Format::name('', $values['preferredName'], $values['surname'], 'Student', true, true);
+        });
+        
     $table->addColumn('read', __('Read'))
         ->format(function($student) {
             $homework = $student['homework'];

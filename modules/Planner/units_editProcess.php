@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -67,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                 if ($highestAction == 'Unit Planner_all') {
                     $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
                 } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $session->get('gibbonPersonID'));
                 }
 
                 if ($result->rowCount() != 1) {
@@ -94,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $partialFail = false;
                         //Move attached file, if there is one
                         if (!empty($_FILES['file']['tmp_name'])) {
-                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                            $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
@@ -107,7 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $content = $attachment;
                             }
                         } else {
-                            $attachment = $_POST['attachment'] ?? '';
+                            // Remove the attachment if it has been deleted, otherwise retain the original value
+                            $attachment = empty($_POST['attachment']) ? null : $row['attachment'];
                         }
 
                         //Update classes
@@ -163,15 +166,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 foreach ($order as $i) {
                                     $title = '';
                                     if ($_POST["title$i"] != "Block $i") {
-                                        $title = $_POST["title$i"];
+                                        $title = $_POST["title$i"] ?? '';
                                     }
                                     $type2 = '';
                                     if ($_POST["type$i"] != 'type (e.g. discussion, outcome)') {
-                                        $type2 = $_POST["type$i"];
+                                        $type2 = $_POST["type$i"] ?? '';
                                     }
                                     $length = '';
                                     if ($_POST["length$i"] != 'length (min)') {
-                                        $length = $_POST["length$i"];
+                                        $length = $_POST["length$i"] ?? '';
                                     }
                                     $contents = $_POST["contents$i"] ?? '';
                                     $teachersNotes = $_POST["teachersNotes$i"] ?? '';
@@ -195,7 +198,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             $resultBlock = $connection2->prepare($sqlBlock);
                                             $resultBlock->execute($dataBlock);
                                         } catch (PDOException $e) {
-                                            echo $e->getMessage();
                                             $partialFail = true;
                                         }
                                         $dataRemove["gibbonUnitBlockID$sequenceNumber"] = $connection2->lastInsertId();
@@ -215,7 +217,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $resultRemove = $connection2->prepare($sqlRemove);
                                 $resultRemove->execute($dataRemove);
                             } catch (PDOException $e) {
-                                echo $e->getMessage();
                                 $partialFail = true;
                             }
                         }

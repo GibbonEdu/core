@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,24 +19,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
     //Acess denied
-    print "<div class='error'>" ;
-        print __("You do not have access to this action.") ;
-    print "</div>" ;
+    $page->addError(__("You do not have access to this action."));
 }
 else {
     //Get action with highest precendence
     $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
     if ($highestAction==FALSE) {
-        print "<div class='error'>" ;
-        print __("The highest grouped action cannot be determined.") ;
-        print "</div>" ;
+        $page->addError(__("The highest grouped action cannot be determined."));
     }
     else {
         $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? null;
@@ -44,10 +43,6 @@ else {
         $page->breadcrumbs
             ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
             ->add(__('View Send Report'));
-
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
 
         $nonConfirm = 0;
         $noConfirm = 0;
@@ -60,9 +55,7 @@ else {
         $result->execute($data);
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         }
         else {
             $values = $result->fetch();
@@ -90,15 +83,20 @@ else {
             $confirmationIndicator = function($recipient, $emailReceipt = false) use ($icon) {
                 if ($emailReceipt == 'N') return '';
                 if (empty($recipient['key'])) return __('N/A');
-                return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png');
+                return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png').' '.Format::small(Format::yesNo($recipient['confirmed']));
             };
 
             $sender = false;
-            if ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all') {
+            if ($values['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all')  {
                 $sender = true;
             }
 
-            if ($values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
+            if ($highestAction != 'Manage Messages_all' && $values['gibbonPersonID'] != $session->get('gibbonPersonID') && $values['enableSharingLink'] == 'N') {
+                $page->addError(__("You do not have access to this action."));
+                return;
+            }
+
+            if ($sender && $values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
                 $alertText = __('Email read receipts have been enabled for this message. You can use the Resend action along with the checkboxes next to recipients who have not yet confirmed to send a reminder to these users.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.');
 
                 if (!empty($values['emailReceiptText'])) {
@@ -106,9 +104,13 @@ else {
                 }
 
                 echo Format::alert($alertText, 'success');
-            } elseif ($values['email'] == 'Y' && $values['emailReceipt'] == 'N') {
+            } elseif ($sender && $values['email'] == 'Y' && $values['emailReceipt'] == 'N') {
                 echo Format::alert(__('Email read receipts have not been enabled for this message, however you can still use the Resend action to manually send messages.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.'), 'message');
             }
+
+            echo '<h2>';
+            echo __('Report Data');
+            echo '</h2>';
 
             // CONFIRMATION MODE
             if ($values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
@@ -134,6 +136,10 @@ else {
 
                 $form->setClass('noIntBorder fullWidth auto-submit pb-1');
 
+                $row = $form->addRow();
+                    $row->addLabel('subjectLabel', __('Message'));
+                    $row->addTextField('subject')->readonly()->setValue($values['subject']);
+
                 $confirmationOptions = [];
                 if ($parents) {
                     $confirmationOptions['One'] = __('At Least One Parent');
@@ -147,6 +153,13 @@ else {
                 $row = $form->addRow();
                     $row->addLabel('confirmationMode', __('Confirmation Required By'));
                     $row->addSelect('confirmationMode')->fromArray($confirmationOptions)->selected($confirmationMode);
+
+                if ($values['enableSharingLink'] == 'Y'  && $values['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+                    $linkURL = Url::fromModuleRoute('Messenger', 'messenger_manage_report')->withQueryParams(['gibbonMessengerID' => $gibbonMessengerID])->withAbsoluteUrl(true);
+                    $row = $form->addRow();
+                        $row->addLabel('sharingLink', __('Shareable Send Report'))->description(__('You can copy this link to share it with other users.'));
+                        $row->addTextField('sharingLink')->setValue(urldecode($linkURL));
+                    }
 
                 echo $form->getOutput();
             }
@@ -180,9 +193,7 @@ else {
                         $result->execute($data);
 
                     if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
+                        echo $page->getBlankSlate();
                     } else {
                         //Store receipt for this message data in an array
 
@@ -195,8 +206,10 @@ else {
                         $form = BulkActionForm::create('resendByRecipient', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
                         $form->addHiddenValue('address', $session->get('address'));
 
-                        $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
+                        if ($sender) {
+                            $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
                             $row->addSubmit(__('Go'));
+                        }
 
                         $formGroups = $result->fetchAll(\PDO::FETCH_GROUP);
                         $countTotal = 0;
@@ -345,8 +358,10 @@ else {
 
                         $form->addHiddenValue('address', $session->get('address'));
 
-                        $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
+                        if ($sender) {
+                            $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
                             $row->addSubmit(__('Go'));
+                        }
 
                         $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
 
@@ -376,7 +391,7 @@ else {
                                 $row->addContent($recipient['contactDetail']);
                                 $row->addContent(Format::yesNo($recipient['sent']));
                                 $row->addContent($confirmationIndicator($recipient));
-                                $row->addContent(Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
+                                $row->addContent(!empty($recipient['confirmedTimestamp']) ? Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5) : '');
 
                                 if ($sender == true && $recipient['contactType'] == 'Email') {
                                     $row->onlyIf($recipient['confirmed'] == 'N' || $values['emailReceipt'] == 'N')

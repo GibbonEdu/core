@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,15 +35,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     
     $form->addHiddenValue('address', $session->get('address'));
 
+    // SYSTEM SETTINGS
+    $form->addRow()->addHeading('System Settings', __('Interface'));
+
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('System', 'organisationLogo', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'].'File', __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
+            ->setAttachment('organisationLogo', $session->get('absoluteURL'), $setting['value'])->required();
 
-    $theme = getThemeManifest($gibbon->session->get('gibbonThemeName'), $guid);
+    $theme = getThemeManifest($session->get('gibbonThemeName'), $guid);
     if (!empty($theme['themeColours'])) {
         $setting = $settingGateway->getSettingByScope('System', 'themeColour', true);
         $row = $form->addRow();
@@ -54,13 +59,25 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->setAttachment('organisationBackground', $gibbon->session->get('absoluteURL'), $setting['value']);
+            ->setAttachment('organisationBackground', $session->get('absoluteURL'), $setting['value']);
 
     $setting = $settingGateway->getSettingByScope('System', 'mainMenuCategoryOrder', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
+
+    $form->addRow()->addHeading('System Settings', __('Notifications'));
+
+    $setting = $settingGateway->getSettingByScope('System', 'notificationIntervalStaff', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->required()->minimum(10000)->maximum(1000000)->maxLength(7);
     
+    $setting = $settingGateway->getSettingByScope('System', 'notificationIntervalOther', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->required()->minimum(10000)->maximum(1000000)->maxLength(7);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

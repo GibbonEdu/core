@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+        $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
@@ -98,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $criteria = $attendanceLogGateway->newQueryCriteria()
                         ->sortBy(['timeStart', 'timeEnd', 'timestampTaken']);
 
-                    $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
+                    $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
                     $classLogs->transform(function (&$log) use (&$classLogCount) {
                         if (!empty($log['gibbonAttendanceLogPersonID'])) $classLogCount++;
                     });
@@ -127,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (empty($log['timestampTaken'])) return Format::small(__('N/A'));
 
                         return $currentDate != substr($log['timestampTaken'], 0, 10)
-                            ? Format::dateTimeReadable($log['timestampTaken'], '%H:%M, %b %d')
-                            : Format::dateTimeReadable($log['timestampTaken'], '%H:%M');
+                            ? Format::dateReadable($log['timestampTaken'])
+                            : Format::dateReadable($log['timestampTaken']);
                     });
 
                 $table->addColumn('direction', __('Attendance'))
@@ -194,12 +196,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 // Class Attendance
                 if ($countClassAsSchool == 'N') {
-                    if ($classLogCount > 0) {
-                        $classTable = clone $table;
-                        $classTable->setTitle(__('Class Attendance'));
+                    $classTable = clone $table;
+                    $classTable->setTitle(__('Class Attendance'));
 
-                        echo $classTable->render($classLogs);
-                    }
+                    echo $classTable->render($classLogs);
                 }
                 echo '<br/>';
 

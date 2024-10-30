@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,6 +26,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Http\Url;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -40,9 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $gibbonYearGroupIDList = $_GET['gibbonYearGroupIDList'] ?? [];
     $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
     $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
-
-    require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students Not Present'));
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -103,9 +103,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     }
     $criteria->fromPOST();
 
-    $attendance = $attendanceGateway->queryStudentsNotPresent($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate, $allStudents, $countClassAsSchool);
+    $attendance = $attendanceGateway->queryStudentsNotPresent($criteria, $session->get('gibbonSchoolYearID'), $currentDate, $allStudents, $countClassAsSchool);
 
-    $table = ReportTable::createPaginated('attendanceReport', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $students = $attendance->getColumn('gibbonPersonID');
+    $attendanceConflictData = $attendanceGateway->selectNonAbsentAttendanceLogsByDate($students, $currentDate)->fetchKeyPair();
+    $attendance->joinColumn('gibbonPersonID', 'conflicts', $attendanceConflictData);
+
+    $table = ReportTable::createPaginated('attendanceReport', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report Data'));
 
     $table->addMetaData('blankSlate', __('All students are present.'));
@@ -115,13 +119,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $table->addColumn('name', __('Name'))
         ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-        ->format(function ($student) {
-            return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Attendance']);
+        ->format(function ($student) use ($currentDate) {
+            $url = Url::fromModuleRoute('Attendance', 'attendance_take_byPerson.php')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'currentDate' => $currentDate]);
+            return Format::link($url, Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true));
         });
     $table->addColumn('status', __('Status'))
         ->context('primary')
+        ->width('20%')
         ->format(function ($student) {
-            return !empty($student['type']) ? __($student['type']) : Format::small(__('Not registered'));
+            $output = !empty($student['type']) ? __($student['type']) : Format::small(__('Not registered'));
+            if (!empty($student['conflicts']) && $student['conflicts'] != $student['type'] && stripos($student['type'], 'Left') === false) {
+                $output .= Format::tag(__('Conflict'), 'warning text-xxs ml-2', $student['conflicts']);
+            }
+            return $output;
         });
     $table->addColumn('reason', __('Reason'))->context('secondary');
     $table->addColumn('comment', __('Comment'))

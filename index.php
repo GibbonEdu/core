@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -167,7 +169,6 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                $page->addError($e->getMessage());
                             }
 
                             if ($result->rowCount() == 0) {
@@ -224,13 +225,13 @@ $session->set('sidebarExtra', '');
 $session->set('sidebarExtraPosition', 'top');
 
 // Check the current Action 'entrySidebar' to see if we should display a sidebar
-$showSidebar = $page->getAction()
+$page['showSidebar'] = $page->getAction()
     ? $page->getAction()['entrySidebar'] != 'N'
     : true;
 
 // Override showSidebar if the URL 'sidebar' param is explicitly set
 if (!empty($_GET['sidebar'])) {
-    $showSidebar = strtolower($_GET['sidebar']) !== 'false';
+    $page['showSidebar'] = strtolower($_GET['sidebar']) !== 'false';
 }
 
 /**
@@ -259,19 +260,9 @@ if ($isLoggedIn) {
 /**
  * LOCALE
  *
- * Sets the i18n locale for jQuery UI DatePicker (if the file exists, otherwise
- * falls back to en-GB)
+ * Allow the URL to override system default from the i18l param
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
-$localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
-$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/datepicker-%1$s.js';
-
-$datepickerLocale = 'en-GB';
-if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
-    $datepickerLocale = $localeCode;
-} elseif (is_file(sprintf($localePath, $localeCodeShort))) {
-    $datepickerLocale = $localeCodeShort;
-}
 
 // Allow the URL to override system default from the i18l param
 if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
@@ -295,14 +286,6 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
  */
 $javascriptConfig = [
     'config' => [
-        'datepicker' => [
-            'locale' => $datepickerLocale,
-            'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
-            'firstDay' => $session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
-        ],
-        'thickbox' => [
-            'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
-        ],
         'tinymce' => [
             'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
         ]
@@ -325,6 +308,8 @@ $page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'core'           => 'resources/assets/js/core.min.js',
+    'htmx'           => 'lib/htmx/htmx.min.js',
+    
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
@@ -335,25 +320,19 @@ $page->scripts->addMultiple([
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
 
-//This sets the default for en-US, or changes for none en-US
-if($datepickerLocale !== 'en-US'){
-    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/datepicker-'.$datepickerLocale.'.js');
-}
-
 // Set page scripts: foot - misc
-$thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
-$page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
 $page->scripts->addMultiple([
-    'thickbox' => 'lib/thickbox/thickbox-compressed.js',
     'tinymce'  => 'lib/tinymce/tinymce.min.js',
-], ['context' => 'foot']);
+    'alpineFocus'   => 'lib/htmx/alpine.focus.min.js',
+    'alpine'   => 'lib/htmx/alpine.min.js',
+], ['context' => 'foot', 'type' => 'defer']);
 
 // Set page scripts: foot - core
 $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
-$page->scripts->register('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
+$page->scripts->add('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
 $page->scripts->register('instascan', 'lib/instascan/instascan.min.js', ['context' => 'head']);
 
 // Set system analytics code from session cache
@@ -365,7 +344,6 @@ $page->addHeadExtra($session->get('analytics'));
 $page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
-    'thickbox'     => 'lib/thickbox/thickbox.css',
 ], ['weight' => -1]);
 
 // Add right-to-left stylesheet
@@ -467,19 +445,11 @@ if ($isLoggedIn) {
 }
 
 /**
- * MENU ITEMS & FAST FINDER
+ * MENU ITEMS 
  *
  * TODO: Move this somewhere more sensible.
  */
 if ($isLoggedIn && !$upgrade) {
-    if ($cacheLoad || !$session->has('fastFinder')) {
-        $templateData = getFastFinder($connection2, $guid);
-        $templateData['enrolmentCount'] = $container->get(StudentGateway::class)->getStudentEnrolmentCount($session->get('gibbonSchoolYearID'));
-
-        $fastFinder = $page->fetchFromTemplate('finder.twig.html', $templateData);
-        $session->set('fastFinder', $fastFinder);
-    }
-
     /**
      * @var ModuleGateway
      */
@@ -496,6 +466,7 @@ if ($isLoggedIn && !$upgrade) {
         }
 
         // Update the menu items to indicate the current active action
+        $menuItemActive = '';
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
@@ -504,11 +475,13 @@ if ($isLoggedIn && !$upgrade) {
                     $item['moduleName'],
                     preg_replace('/\.php$/i', '', $item['entryURL'])
                 );
+                $menuItemActive = $item['active'] ? $item['actionName'] : $menuItemActive;
             }
         }
 
         $session->set('menuModuleItems', $menuModuleItems);
         $session->set('menuModuleName', $currentModule);
+        $session->set('menuItemActive', $menuItemActive);
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
@@ -570,7 +543,7 @@ if ($isLoggedIn) {
     $page->addData([
         'menuMain'       => $session->get('menuMainItems', []),
         'menuModule'     => $session->get('menuModuleItems', []),
-        'fastFinder'     => $session->get('fastFinder'),
+        'menuItemActive' => $session->get('menuItemActive', []),
     ]);
 }
 
@@ -681,7 +654,7 @@ if (!$session->has('address')) {
 } else {
     $address = trim($page->getAddress(), ' /');
 
-    if ($page->isAddressValid($address) == false) {
+    if ($page->isAddressValid($address, true) == false) {
         $page->addError(__('Illegal address detected: access denied.'));
     } else {
         // Pass these globals into the script of the included file, for backwards compatibility.
@@ -715,9 +688,10 @@ if ($isLoggedIn) {
     $header = $container->get(Gibbon\UI\Components\Header::class);
 
     $page->addData([
-        'currentUser'       => $header->getUserDetails(),
-        'minorLinks'        => $header->getMinorLinks(),
-        'statusTray'        => $header->getStatusTray(),
+        'currentUser'  => $header->getUserDetails(),
+        'minorLinks'   => $header->getMinorLinks(),
+        'statusTray'   => $header->getStatusTray(),
+        'roleCategory' => $session->get('gibbonRoleIDCurrentCategory'),
     ]);
 }
 
@@ -733,18 +707,19 @@ if (!empty($_GET['return'])) {
         }
     }
 }
+
 /**
  * GET SIDEBAR CONTENT
  *
  * TODO: rewrite the Sidebar class as a template file.
  */
 $sidebarContents = '';
-if ($showSidebar) {
+if ($page['showSidebar']) {
     $page->addSidebarExtra($session->get('sidebarExtra'));
     $session->set('sidebarExtra', '');
 
     $page->addData([
-        'sidebar'         => $showSidebar,
+        'sidebar'         => $page['showSidebar'],
         'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);

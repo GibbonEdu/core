@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,11 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     }
 
 	$row = $form->addRow();
-        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
-		$col = $row->addColumn('date1')->addClass('stacked');
-		$col->addDate('date1')->setValue(Format::date(date('Y-m-d')))->required();
-		$col->addDate('date2');
-		$col->addDate('date3');
+        $row->addLabel('datePublished', __('Publication Dates'));
+		$col = $row->addColumn('dateStart')->addClass('stacked');
+        $col->addLabel('dateStart', __('Start Date'));
+        $col->addDate('dateStart')->chainedTo('dateEnd')->required();
+        $col->addLabel('dateEnd', __('End Date'));
+		$col->addDate('dateEnd')->chainedFrom('dateStart')->required();
 
 	$form->addRow()->addHeading('Message Details', __('Message Details'));
 

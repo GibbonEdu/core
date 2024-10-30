@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,6 +26,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Forms\Input\Editor;
+use Gibbon\Data\Validator;
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be masterAdd, masterEdit, workingDeploy, workingEdit, plannerEdit, embed
@@ -198,7 +201,9 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 
 function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links = true, $narrow = false)
 {
-    global $session;
+    global $session, $container;
+
+    $validator = $container->get(Validator::class);
 
     $output = '';
 
@@ -213,7 +218,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
         $resultDiscuss = $connection2->prepare($sqlDiscuss);
         $resultDiscuss->execute($dataDiscuss);
     } catch (PDOException $e) {
-        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($level == 0 and $resultDiscuss->rowCount() == 0) {
@@ -244,7 +248,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
             $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";
             $output .= "</tr>";
             $output .= "<tr>";
-            $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2>".$rowDiscuss['comment'].'</td>';
+            $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2>".$validator->sanitizeRichText($rowDiscuss['comment']).'</td>';
             $output .= "</tr>";
             $output .= "<tr>";
             if ($links == true) {
@@ -266,7 +270,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
                 $resultReplies->execute($dataReplies);
             } catch (PDOException $e) {
                 $replies = false;
-                $output .= print "<div class='error'>".$e->getMessage().'</div>';
             }
 
             if ($replies) {
@@ -369,9 +372,9 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
             if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
-                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
             } elseif ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
-                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableStudents')->fetchAll();
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableStudents')->fetchAll();
             }
 
             $output .= $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
@@ -404,10 +407,19 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
         // Show class picker in sidebar
         $courseGateway = $container->get(CourseGateway::class);
 
+        if (!empty($_GET['courseName'])) {
+            $session->set('courseNameUnitPlanner', $_GET['courseName']);
+        }
+
         if ($highestAction == 'Unit Planner_all') {
-            $courses = $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
+            $courses = [
+                __('Department Courses') => $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair(),
+                __('All Courses') => $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair(),
+            ];
         } elseif ($highestAction == 'Unit Planner_learningAreas') {
-            $courses = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
+            $courses = [
+                __('Department Courses') => $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair(),
+            ];
         }
 
         $form = Form::create('courseChooser', $session->get('absoluteURL').'/index.php', 'get');
@@ -669,7 +681,8 @@ function getResourcesTagCloud($guid, $connection2, $tagCount = 50) {
             ++$count;
         }
 
-        $tags = msort($tags, 0, true);
+        // Sort tags by the value of their tag name (i.e. key=0) asecendingly.
+        usort($tags, fn($a, $b) => $a[0] <=> $b[0]);
 
         $min_font_size = 16;
         $max_font_size = 30;

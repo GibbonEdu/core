@@ -23,8 +23,10 @@ class ReportBuilder
     protected $reportTemplateGateway;
     protected $templateSectionGateway;
     protected $templateFontGateway;
+    protected $templateGateway;
     protected $settingGateway;
 
+    protected $absoluteURL;
     protected $absolutePath;
     protected $customAssetPath;
 

@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -97,9 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
         $dataChecker = function($dateUpdated) use ($dateCutoff) {
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
-            $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
 
-            return empty($dateUpdated) || $dateCutoff > $date
+            return empty($dateUpdated) || $dateCutoff > DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated)
                 ? '<span style="color: #ff0000; font-weight: bold">'.$dateDisplay.'</span>'
                 : $dateDisplay;
         };

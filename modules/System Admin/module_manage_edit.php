@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,9 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $page->addError(__('The specified record cannot be found.'));
         } else {
             // Let's go!
-            $form = Form::create('moduleEdit', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/module_manage_editProcess.php?gibbonModuleID='.$module['gibbonModuleID']);
+            $form = Form::create('moduleEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/module_manage_editProcess.php?gibbonModuleID='.$module['gibbonModuleID']);
 
-            $form->addHiddenValue('address', $gibbon->session->get('address'));
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));

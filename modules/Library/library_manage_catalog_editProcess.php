@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +26,7 @@ use Gibbon\Domain\Library\LibraryTypeGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['imageLink' => 'URL', 'fieldLink' => 'URL']);
 
 include './moduleFunctions.php';
 
@@ -90,10 +92,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $replacementCost = null;
     if ($replacement == 'Y') {
         if ($_POST['gibbonSchoolYearIDReplacement'] != '') {
-            $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'];
+            $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'] ?? '';
         }
         if ($_POST['replacementCost'] != '') {
-            $replacementCost = $_POST['replacementCost'];
+            $replacementCost = $_POST['replacementCost'] ?? '';
         }
     } else {
         $replacement == 'N';
@@ -104,9 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $ownershipType = $_POST['ownershipType'] ?? '';
     $gibbonPersonIDOwnership = null;
     if ($ownershipType == 'School' and $_POST['gibbonPersonIDOwnershipSchool'] != '') {
-        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'];
+        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'] ?? '';
     } elseif ($ownershipType == 'Individual' and $_POST['gibbonPersonIDOwnershipIndividual'] != '') {
-        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'];
+        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'] ?? '';
     }
     $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
     $bookable = $_POST['bookable'] ?? '';
@@ -168,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     // Move attached image  file, if there is one
     if (!empty($_FILES['imageFile']['tmp_name']) && $imageType == 'File') {
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader = new Gibbon\FileUploader($pdo, $session);
         $fileUploader->getFileExtensions('Graphics/Design');
 
         $file = (isset($_FILES['imageFile']))? $_FILES['imageFile'] : null;

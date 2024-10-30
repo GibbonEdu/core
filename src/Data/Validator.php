@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
-use Gibbon\Contracts\Services\Session;
 
 /**
  * Validaton & Sanitization Class
@@ -31,16 +32,23 @@ class Validator
 {
     protected $allowableHTML;
     protected $allowableHTMLString;
+    protected $allowableIframeSources;
 
-    public function __construct(string $allowableHTMLString)
+    public function __construct(string $allowableHTMLString, string $allowableIframeSources = '')
     {
         $this->allowableHTMLString = $allowableHTMLString;
         $this->allowableHTML = $this->parseTagsFromString($this->allowableHTMLString);
+        $this->allowableIframeSources = explode(',', mb_strtolower($allowableIframeSources));
     }
 
     public function getAllowableHTML()
     {
         return $this->allowableHTML;
+    }
+
+    public function getAllowableIframeSources()
+    {
+        return $this->allowableIframeSources;
     }
 
     /**
@@ -54,17 +62,26 @@ class Validator
     public function sanitize($input, $allowableTags = [], $utf8_encode = true)
     {
         $output = [];
+        $urls = [];
 
         // Default allowable tags
         $allowableTags['*CustomEditor'] = 'HTML';
 
         // Match wildcard * in allowable tags and add these fields to the list
         foreach ($allowableTags as $field => $value) {
-            if (stripos($field, '*') === false) continue;
+            if (mb_stripos($field, '*') === false) continue;
+
             if ($keys = $this->getWildcardArrayKeyMatches($input, $field)) {
                 foreach ($keys as $key) {
                     $allowableTags[$key] = $value;
                 }
+            }
+        }
+
+        // Check allowable fields for URLs
+        foreach ($allowableTags as $field => $value) {
+            if (is_string($value) && strtoupper($value) == 'URL') {
+                $urls[$field] = $field;
             }
         }
 
@@ -81,8 +98,11 @@ class Validator
                 $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $value);
                 $value = preg_replace('/\\\\+0+/', '', $value);
 
-                // Sanitize HTML
-                if (!empty($allowableTags[$field])) {
+                if (!empty($urls[$field])) {
+                    // Sanitize URL
+                    $value = $this->sanitizeUrl($value);
+                } elseif (!empty($allowableTags[$field])) {
+                    // Sanitize HTML
                     if (strtoupper($allowableTags[$field]) == 'RAW') {
                         $output[$field] = $value;
                         continue;
@@ -102,6 +122,7 @@ class Validator
                         }
                     }
                 } else {
+                    // Sanitize all
                     $value = strip_tags($value);
                 }
 
@@ -168,6 +189,30 @@ class Validator
     }
 
     /**
+     * Sanitize invalid characters in a URL.
+     *
+     * @param string $url
+     * @return string
+     */
+    public function sanitizeUrl($url)
+    {
+        if ($url === '') return $url;
+
+        // Replace and remove disallowed characters
+        $url = str_replace(' ', '%20', ltrim($url));
+        $url = str_replace('"', '%22', $url);
+	    $url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', $url);
+        $url = str_replace("'", '&#039;', $url);
+
+        // If there is no protocol, add a default one
+        if (mb_stripos($url, '://') === false) {
+            $url = 'https://'.$url;
+        }
+
+        return $url;
+    }
+
+    /**
      * Sanitize values used in URL parameters.
      *
      * @param string $value
@@ -178,8 +223,10 @@ class Validator
         $values = $this->sanitize($values);
 
         if (is_array($values)) {
-            array_walk($values, function ($value, $key) { 
-                return mb_substr($key, -2) == 'ID' ? preg_replace('/[^a-zA-Z0-9]/', '', $value) : $value;
+            array_walk($values, function (&$value, $key) { 
+                $value = mb_substr($key, -2) == 'ID' 
+                    ? preg_replace('/[^a-zA-Z0-9-_]/', '', $value) 
+                    : preg_replace('/[\<\>\'\"\;]/', '', $value);
             });
         }
 
@@ -224,7 +271,11 @@ class Validator
 
         if ($dom->loadHTML('<body>'.$value.'</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
             // Iterate over the DOM and remove attributes not in the whitelist
-            foreach ($dom->getElementsByTagName('*') as $node) {
+            $nodeList = $dom->getElementsByTagName('*');
+            $length = $nodeList->length;
+
+            for ($n = $length-1; $n >= 0; $n--) {
+                $node = $nodeList->item($n);
                 if (isset($allowableTags[$node->nodeName])) {
                     for ($i = $node->attributes->length-1; $i >= 0; $i--){
                         $attribute = $node->attributes->item($i);
@@ -234,8 +285,20 @@ class Validator
                         if (mb_stripos($attribute->value, 'javascript:') !== false) {
                             $node->removeAttributeNode($attribute);
                         }
+
+                        // Handle iframes with an allowlist of src domains
+                        if ($node->nodeName == 'iframe' && $attribute->name == 'src' && !empty($attribute->value)) {
+                            $host = parse_url(mb_strtolower($attribute->value), \PHP_URL_HOST);
+                            $host = str_replace('www.', '', $host);
+
+                            if (empty($host) || !in_array($host, $this->getAllowableIframeSources())) {
+                                $node->parentNode->appendChild(new \DOMComment(__('iFrame removed due to security policy')));
+                                $node->parentNode->removeChild($node);
+                            }
+                        }
                     }
                 }
+                
             }
 
             // Unwrap the body element, required because libxml needs an outer element (otherwise it adds one)

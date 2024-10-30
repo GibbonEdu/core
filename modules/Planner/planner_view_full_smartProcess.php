@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +30,7 @@ include './moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $mode = $_POST['mode'] ?? '';
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID".$_POST['params'];
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID".($_POST['params'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     $URL .= '&return=error0';
@@ -64,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                 $partialFail = false;
                 if ($mode == 'view') {
-                    $ids = $_POST['gibbonUnitClassBlockID'];
+                    $ids = $_POST['gibbonUnitClassBlockID'] ?? '';
                     for ($i = 0; $i < count($ids); ++$i) {
                         if ($ids[$i] == '') {
                             $partialFail = true;
@@ -83,7 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $result->execute($data);
                             } catch (PDOException $e) {
                                 echo 'Here';
-                                echo $e->getMessage();
                                 $partialFail = true;
                             }
                         }

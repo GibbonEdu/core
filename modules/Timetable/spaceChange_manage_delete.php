@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,18 +28,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         //Check if gibbonTTSpaceChangeID and gibbonCourseClassID specified
-        $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'] ?? '';
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonTTSpaceChangeID == '' OR $gibbonCourseClassID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             try {
                 if ($highestAction == 'Manage Facility Changes_allClasses') {
@@ -55,15 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
-                echo '</div>';
+                $page->addError(__('Your request failed due to a database error.'));
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record cannot be found.');
-                echo '</div>';
+                $page->addError(__('The specified record cannot be found.'));
             } else {
                 $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/spaceChange_manage_deleteProcess.php?gibbonTTSpaceChangeID=$gibbonTTSpaceChangeID");
                 echo $form->getOutput();

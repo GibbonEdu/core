@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -68,14 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     if (empty($date)) return;
 
     if ($date > $today) {
-        echo "<div class='error'>" ;
-        echo __('The specified date is in the future: it must be today or earlier.');
-        echo "</div>" ;
+        $page->addError(__('The specified date is in the future: it must be today or earlier.'));
         return;
     } else if (isSchoolOpen($guid, $date, $connection2)==FALSE) {
-        echo "<div class='error'>" ;
-        echo __('School is closed on the specified date, and so attendance information cannot be recorded.') ;
-        echo "</div>" ;
+        $page->addError(__('School is closed on the specified date, and so attendance information cannot be recorded.'));
         return;
     }
 

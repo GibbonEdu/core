@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -30,19 +33,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('View Behaviour Records'));
 
         $search = $_GET['search'] ?? '';
 
-        if ($highestAction == 'View Behaviour Records_all') {
+        if ($highestAction == 'View Behaviour Records_all' || $highestAction == 'View Behaviour Records_my') {
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Search'));
             $form->setClass('noIntBorder fullWidth');
-
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
             $row = $form->addRow();
@@ -50,12 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 $row->addTextField('search')->setValue($search)->maxLength(30);
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+                $row->addSearchSubmit($session, __('Clear Search'));
 
             echo $form->getOutput();
         }
 
         $studentGateway = $container->get(StudentGateway::class);
+        $behaviourGateway = $container->get(BehaviourGateway::class);
 
         // DATA TABLE
         if ($highestAction == 'View Behaviour Records_all') {
@@ -65,7 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 ->sortBy(['surname', 'preferredName'])
                 ->fromPOST();
 
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), false);
+            $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
+
 
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle(__('Choose A Student'));
@@ -75,11 +77,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
-        } else if ($highestAction == 'View Behaviour Records_my') {
+        } else if ($highestAction == 'View Behaviour Records_myself') {
             $students = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('Behaviour'));
+
+        } else if ($highestAction == 'View Behaviour Records_my') {
+            
+            $criteria = $studentGateway->newQueryCriteria(true)
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->fromPOST();
+
+            $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
+
+            $table = DataTable::createPaginated('behaviour', $criteria);
+            $table->setTitle( __('My Students'));
+
         } else {
             return;
         }

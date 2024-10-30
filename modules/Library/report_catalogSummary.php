@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -71,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
         $row = $form->addRow();
             $row->addFooter(false);
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -87,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     $catalog = $reportGateway->queryCatalogSummary($criteria);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Catalog Summary'));
 
     $table->addColumn('id', __('School ID'))
@@ -117,9 +119,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
-        ->format(function ($item) use ($gibbon) {
+        ->format(function ($item) use ($session) {
             if ($item['ownershipType'] == 'School') {
-                return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
+                return sprintf('<b>%1$s</b><br/>', $session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
                 return sprintf('<b>%1$s</b><br/>', __('Individual'));
             }

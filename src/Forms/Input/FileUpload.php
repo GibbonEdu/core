@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -93,6 +95,7 @@ class FileUpload extends Input
     }
 
     /**
+     * @deprecated v27 No longer needs separate scripts.
      * Set the URL to visit if the delete action is clicked.
      * @param  string  $actionURL
      */
@@ -191,10 +194,12 @@ class FileUpload extends Input
         if (!empty($this->attachments)) {
             // jQuery needs brackets in input names escaped, php needs backslashes escaped = double-escaped
             $idEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $this->getID());
+            
 
             foreach ($this->attachments as $attachmentName => $attachmentPath) {
 
                 if (!empty($attachmentPath)) {
+
                     $output .= '<div class="input-box rounded-sm standardWidth">';
 
                     $output .= '<div class="inline-label">';
@@ -223,7 +228,7 @@ class FileUpload extends Input
                     $output .= '</div>';
                 }
 
-                $output .= '<input type="hidden" id="'.$attachmentName.'" name="'.$attachmentName.'" value="'.$attachmentPath.'">';
+                $output .= '<input type="hidden" id="'.$attachmentName.'" name="'.$attachmentName.'" value="'.($attachmentPath ?? '').'">';
             }
 
             if ($this->getAttribute('multiple') == true) {

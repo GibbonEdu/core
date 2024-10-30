@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -81,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $values = $result->fetch();
             $step = '';
             if (isset($_GET['step'])) {
-                $step = $_GET['step'];
+                $step = $_GET['step'] ?? '';
             }
             if ($step != 1 and $step != 2) {
                 $step = 1;
@@ -402,7 +404,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $insertOK = false;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                         $partialFailures[] = 'insertOK';
                     }
                     if ($insertOK == true) {
@@ -478,7 +479,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $result->execute($data);
                             } catch (PDOException $e) {
                                 $enrolmentOK = false;
-                                echo "<div class='error'>".$e->getMessage().'</div>';
                             }
                         } else {
                             $enrolmentOK = false;
@@ -554,7 +554,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $paymentOK = false;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                         $partialFailures[] = 'paymentOK';
                     }
 
@@ -590,7 +589,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     $result->execute($data);
                                 } catch (PDOException $e) {
                                     $insertFail == true;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                     $partialFailures[] = 'failFamily1';
                                 }
                                 if ($insertFail == false) {
@@ -610,7 +608,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $sqlParent = 'SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND surname=:parentSurname AND preferredName=:parentPreferredName';
                                         $resultParent = $pdo->executeQuery($dataParent, $sqlParent);
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
 
                                     if (isset($resultParent) && $resultParent->rowCount() == 1) {
@@ -623,7 +620,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $sqlParent = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                             $resultParentRelationship = $pdo->executeQuery($dataParent, $sqlParent);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
                                     }
                                 }
@@ -676,7 +672,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $result->execute($data);
                                     }
                                 } else {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                             }
                         }
@@ -728,7 +723,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $insertOK = false;
-                            echo "<div class='error'>".$e->getMessage().'</div>';
                             $partialFailures[] = 'failFamily3';
                         }
 
@@ -773,7 +767,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $result->execute($data);
                                         } catch (PDOException $e) {
                                             $insertOK = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
                                             $partialFailures[] = 'failFamily4';
                                         }
                                         if ($insertOK == true) {
@@ -827,7 +820,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                 $result->execute($data);
                                             } catch (PDOException $e) {
                                                 $insertOK = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
                                             }
                                             if ($insertOK == true) {
                                                 $failFamily = false;
@@ -875,7 +867,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $insertOK = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($insertOK == true) {
                                         $failParent1 = false;
@@ -932,7 +923,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {
                                                     $insertOK = false;
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
                                                 if ($insertOK == true) {
                                                     $failFamily = false;
@@ -986,7 +976,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $result->execute($data);
                                     } catch (PDOException $e) {
                                         $insertOK = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($insertOK == true) {
                                         $failParent2 = false;
@@ -1043,7 +1032,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {
                                                     $insertOK = false;
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
                                                 if ($insertOK == true) {
                                                     $failFamily = false;
@@ -1127,9 +1115,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informParentsEntry['email'];
                                 $subject = sprintf(__('Welcome to %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informParentsEntry['username'], $informParentsEntry['password'], $session->get('systemName')).$notificationParentsMessage.'<br/><br/>'.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $session->get('organisationAdmissionsName'), $session->get('systemName'));
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/user-guides/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informParentsEntry['username'], $informParentsEntry['password'], $session->get('systemName')).$notificationParentsMessage.'<br/><br/>'.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $session->get('organisationAdmissionsName'), $session->get('systemName'));
                                 } else {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informParentsEntry['username'], $informParentsEntry['password'], $session->get('systemName')).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $session->get('organisationAdmissionsName'), $session->get('systemName'));
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/user-guides/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informParentsEntry['username'], $informParentsEntry['password'], $session->get('systemName')).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $session->get('organisationAdmissionsName'), $session->get('systemName'));
                                 }
 
                                 $mail = $container->get(Mailer::class);
@@ -1178,7 +1166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $event->setNotificationText($notificationText);
                     $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=".$values['gibbonSchoolYearIDEntry']."&search=");
 
-                    $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $session);
 
 
                     // Raise a new notification event for SEN
@@ -1194,7 +1182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&allStudents=on');
 
                         // Send all notifications
-                        $event->sendNotifications($pdo, $gibbon->session);
+                        $event->sendNotifications($pdo, $session);
                     }
 
                     //SET STATUS TO ACCEPTED
@@ -1206,7 +1194,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $failStatus = true;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                         $partialFailures[] = 'failStatus';
                     }
 

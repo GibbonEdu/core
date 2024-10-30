@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -56,12 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             $themeGateway->update($gibbonThemeID, ['active' => 'Y']);
 
             // Clear template cache, invalidate front-end cache
-            $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
-            removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates', true);
-            $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $gibbon->session->get('cacheString'));
+            $cachePath = $session->has('cachePath') ? $session->get('cachePath') : '/uploads/cache';
+            removeDirectoryContents($session->get('absolutePath').$cachePath.'/templates', true);
+            $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $session->get('cacheString'));
            
             // Update the theme name in the session
-            $gibbon->session->set('gibbonThemeName', $theme['name']);
+            $session->set('gibbonThemeName', $theme['name']);
 
 
             $URL .= '&return=success0';

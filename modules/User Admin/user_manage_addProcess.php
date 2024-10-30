@@ -1,7 +1,9 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +30,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
 
@@ -52,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $passwordForceReset = $_POST['passwordForceReset'] ?? '';
     $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'] ?? '';
     $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-    $email = trim($_POST['email'] ?? '');
-    $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
     $address1 = $_POST['address1'] ?? '';
     $address1District = $_POST['address1District'] ?? '';
     $address1Country = $_POST['address1Country'] ?? '';
@@ -84,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     }
     $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
     $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-    $website = $_POST['website'] ?? '';
+    $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
     $languageFirst = $_POST['languageFirst'] ?? '';
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
@@ -163,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     if (!empty($_FILES['file1']['tmp_name']))
                     {
                         $path = $session->get('absolutePath');
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                        $fileUploader = new Gibbon\FileUploader($pdo, $session);
 
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
@@ -208,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     // Create the status log
-                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created')]);
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';
@@ -227,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 'jobTitle' => $_POST['jobTitle'] ?? '',
                             ]));
                             $event->setActionLink('/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$AI.'&allStaff=&search=');
-                            $event->sendNotifications($pdo, $gibbon->session);
+                            $event->sendNotifications($pdo, $session);
                         }
                     }
 
