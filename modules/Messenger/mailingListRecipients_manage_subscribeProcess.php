@@ -28,24 +28,23 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/mailingListRecipients_manage_add.php";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php";
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecipients_manage_add.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
-    exit;
-} else {
-    // Proceed!
-    $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+$mode = $_POST['mode'] ?? 'subscribe';
+$mode = ($mode == 'subscribe' || $mode == 'unsubscribe') ? $mode : 'subscribe';
+
+$mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+
+if ($mode == 'subscribe') {
     $randStrGenerator = new PasswordPolicy(true, true, false, 40);
-    
+
     $data = [
         'surname'                           => $_POST['surname'] ?? '',
         'preferredName'                     => $_POST['preferredName'] ?? '',
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'key'                               => $randStrGenerator->generate(),    
         'organisation'                      => $_POST['organisation'] ?? '',
-        'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),
+        'gibbonMessengerMailingListIDList'  => implode(',', $_POST['gibbonMessengerMailingListIDList']) ?? '',
     ];
 
     // Validate the required values are present
@@ -66,11 +65,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     $gibbonMessengerMailingListRecipientID = $mailingListRecipientGateway->insert($data);
 
     if ($gibbonMessengerMailingListRecipientID) {
-        $URL .= "&return=success0&editID=$gibbonMessengerMailingListRecipientID";
+        $URL .= "&return=success0";
     }
     else {
         $URL .= "&return=error2";
     }
 
     header("Location: {$URL}");
+} else {
+    $data = [
+        'surname'                           => $_POST['surname'] ?? '',
+        'preferredName'                     => $_POST['preferredName'] ?? '',
+        'organisation'                      => $_POST['organisation'] ?? '',
+        'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),
+    ];
+
+    // Validate the required values are present
+    if (empty($data['surname']) || empty($data['preferredName'])) {
+        $URL .= "&return=error1&mode=$mode&email=$email&key=$key";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Validate email and key
+    $email = $_POST['email'] ?? '';
+    $key = $_POST['key'] ?? '';
+    $keyCheck = $mailingListRecipientGateway->keyCheck($email, $key);
+    
+    if ($keyCheck->rowCount() != 1) {
+        $URL .= "&return=error1&mode=$mode&email=$email&key=$key";
+        header("Location: {$URL}");
+        exit;
+    } else {
+        // Update the record
+        $values = $keyCheck->fetchAll()[0];
+        $updated = $mailingListRecipientGateway->update($values['gibbonMessengerMailingListRecipientID'], $data);
+
+        $URL .= !$updated
+            ? "&return=error2&mode=$mode&email=$email&key=$key"
+            : "&return=success0&mode=$mode&email=$email&key=$key";
+
+        header("Location: {$URL}");
+    }
+    
 }

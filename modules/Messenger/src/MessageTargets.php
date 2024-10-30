@@ -2192,13 +2192,13 @@ class MessageTargets
                         //Get email addresses
                         try {
                             $dataEmail=array("gibbonMessengerMailingListID"=>$t);
-                            $sqlEmail="SELECT DISTINCT email, gibbonMessengerMailingListRecipientID FROM gibbonMessengerMailingList JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerMailingListRecipient.gibbonMessengerMailingListIDList LIKE CONCAT('%', gibbonMessengerMailingList.gibbonMessengerMailingListID, '%')) WHERE NOT email='' AND gibbonMessengerMailingList.gibbonMessengerMailingListID=:gibbonMessengerMailingListID" ;
+                            $sqlEmail="SELECT DISTINCT email, gibbonMessengerMailingListRecipientID, `key` FROM gibbonMessengerMailingList JOIN gibbonMessengerMailingListRecipient ON (gibbonMessengerMailingListRecipient.gibbonMessengerMailingListIDList LIKE CONCAT('%', gibbonMessengerMailingList.gibbonMessengerMailingListID, '%')) WHERE NOT email='' AND gibbonMessengerMailingList.gibbonMessengerMailingListID=:gibbonMessengerMailingListID" ;
                             $resultEmail=$connection2->prepare($sqlEmail);
                             $resultEmail->execute($dataEmail);
                         }
                         catch(\PDOException $e) {}
                         while ($rowEmail=$resultEmail->fetch()) {
-                            $this->reportAdd($emailReceipt, $rowEmail['gibbonMessengerMailingListRecipientID'], 'Mailing List', $t, 'Email', $rowEmail["email"]);
+                            $this->reportAdd($emailReceipt, $rowEmail['gibbonMessengerMailingListRecipientID'], 'Mailing List', $t, 'Email', $rowEmail["email"], null, null, $rowEmail["key"]);
                         }
                     }       
                 }
@@ -2261,8 +2261,8 @@ class MessageTargets
             try {
                 $confirmed = $reportEntry[5] != '' ? 'N' : null;
 
-                $data = ["gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed, "gibbonPersonIDListStudent" => $reportEntry[6], 'nameListStudent' => json_encode($reportEntry[7])];
-                $sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, confirmedTimestamp=NULL, gibbonPersonIDListStudent=:gibbonPersonIDListStudent, nameListStudent=:nameListStudent" ;
+                $data = ["gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed, "gibbonPersonIDListStudent" => $reportEntry[6], 'nameListStudent' => json_encode($reportEntry[7]), 'unsubscribeKey' => $reportEntry[8]];
+                $sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, confirmedTimestamp=NULL, gibbonPersonIDListStudent=:gibbonPersonIDListStudent, nameListStudent=:nameListStudent, unsubscribeKey=:unsubscribeKey" ;
                 $result=$connection2->prepare($sql);
                 $result->execute($data);
             }
@@ -2285,9 +2285,10 @@ class MessageTargets
      * @param [type] $contactDetail
      * @param [type] $gibbonPersonIDListStudent
      * @param [type] $nameStudent
+     * @param [type] $unsubscribeKey
      * @return array
      */
-    private function reportAdd($emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null)
+    private function reportAdd($emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null, $unsubscribeKey = null, )
     {
         if ($contactDetail != '' AND is_null($contactDetail) == false) {
             $count = 0;
@@ -2320,6 +2321,8 @@ class MessageTargets
                 }
                 $this->report[$count][6] = $gibbonPersonIDListStudent;
                 $this->report[$count][7] = [$nameStudent];
+                $this->report[$count][8] = $unsubscribeKey;
+                
             }
             else { //Entry is not unique, so apend student details
                 $this->report[$uniqueCount][6] = (empty($this->report[$uniqueCount][6])) ? $gibbonPersonIDListStudent : (!empty($gibbonPersonIDListStudent) ? $this->report[$uniqueCount][6].','.$gibbonPersonIDListStudent : $this->report[$uniqueCount][6]);

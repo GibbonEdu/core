@@ -40,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     exit;
 } else {
     // Proceed!
-    $MailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
-    $values = $MailingListRecipientGateway->getByID($gibbonMessengerMailingListRecipientID);
+    $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+    $values = $mailingListRecipientGateway->getByID($gibbonMessengerMailingListRecipientID);
 
     if (empty($values)) {
         $URL .= '&return=error2';
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
         exit;
     }
 
-    $deleted = $MailingListRecipientGateway->delete($gibbonMessengerMailingListRecipientID);
+    $deleted = $mailingListRecipientGateway->delete($gibbonMessengerMailingListRecipientID);
 
     $URL .= !$deleted
         ? '&return=error2'

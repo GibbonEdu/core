@@ -38,14 +38,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
 } else {
 
     // Proceed!
-    $MailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+    $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
 
     $data = [
         'surname'                           => $_POST['surname'] ?? '',
         'preferredName'                     => $_POST['preferredName'] ?? '',
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'organisation'                      => $_POST['organisation'] ?? '',
-        'gibbonMessengerMailingListIDList'  => implode(',', $_POST['gibbonMessengerMailingListIDList']) ?? '',
+        'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),
     ];
 
     // Validate the required values are present
@@ -56,14 +56,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     }
 
     // Validate that this record is unique
-    if (!$MailingListRecipientGateway->unique($data, ['email'], $gibbonMessengerMailingListRecipientID)) {
+    if (!$mailingListRecipientGateway->unique($data, ['email'], $gibbonMessengerMailingListRecipientID)) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }
 
     // Update the record
-    $updated = $MailingListRecipientGateway->update($gibbonMessengerMailingListRecipientID, $data);
+    $updated = $mailingListRecipientGateway->update($gibbonMessengerMailingListRecipientID, $data);
 
     $URL .= !$updated
         ? "&return=error2"
