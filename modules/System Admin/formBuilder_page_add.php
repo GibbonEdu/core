@@ -49,6 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    if ($redirect == 'design') {
+        $form->removeMeta();
+    }
     
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);

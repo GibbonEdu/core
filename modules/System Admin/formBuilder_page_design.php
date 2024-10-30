@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
             ->addParams($urlParams)
             ->getOutput()
-        )->addClass('text-right');
+        )->setClass('flex-1 relative flex justify-end items-center gap-2 text-right');
     }
 
     // $formFields->clearTriggers();
