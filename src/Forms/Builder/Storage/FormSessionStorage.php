@@ -53,4 +53,10 @@ class FormSessionStorage extends AbstractFormStorage
 
         return $this->session->exists('form'.$identifier);
     }
+
+    public function clear(string $identifier)
+    {
+        $this->session->forget('form'.$identifier);
+        $this->setData([]);
+    }
 }
