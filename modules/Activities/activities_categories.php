@@ -31,6 +31,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
     $page->breadcrumbs
         ->add(__('Manage Categories'));
 
+    echo Format::alert("Welcome to the new activities sign-up system, which offers much more balanced and feature-rich sign-up process. These categories replace the old competitive activity sign-up system, which can still be found in School Admin > Activity Settings. This new system gives students better backup choices, and reduces the stress of sign-up by removing the time pressure, which is also better for server load. It also has a visual page to explore activities with photos and descriptions.<br/></br>If you do not plan to use the new system right away, please disable Explore Activities in User Admin > Manage Permissions. Otherwise, when using the new system, be sure to leave any of the old registration settings off in School Admin > Activity Settings<br/></br><b>The old competitive sign-up system will be deprecated and removed in Gibbon v30.0.00</b>", 'message');
+
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
