@@ -1,0 +1,97 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if category %}
+<header class="mb-6 ">
+    
+    <div class="mb-6 relative rounded overflow-hidden" style="background: url('{{ absoluteURL }}/{{ category.backgroundImage }}'); background-size: 150%; background-position: center;">
+        <div class="absolute w-full h-full rounded bg-blur bg-translucent-gray overflow-hidden">
+        </div>
+    
+        <div class="my-8">
+            <h1 class="relative text-center text-white text-3xl md:text-4xl mt-0 mb-1">
+                {{ category.name }}
+            </h1>
+
+            <div class="relative text-center text-white text-xs font-thin">
+                {% for date in category.eventDates|split(',') %}
+                    {{- formatUsing('dateReadable', date, 102) -}}
+                    {{- not loop.last ? ', ' -}}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-gray-800 text-xs">
+        {{ category.description|raw }}
+    </div>
+</header>
+{% endif %}
+
+{% if canViewInactive and category.viewable != "Y" %}
+<section class="w-full mb-6 relative">
+    <div class="w-full py-3 border border-gray-400 rounded text-center text-gray-700 text-lg font-thin">
+        {% if category.viewableDate is not empty %}
+            {{ __m('This activity category is not visible to the public, and will be viewable on') }} <b>{{ category.viewableDate|date("M j \\a\\t g:ia") }}</b>.<br/> 
+        {% else %}
+            {{ __m('This activity category is not visible to the public, and will be viewable in the future') }}.<br/>
+        {% endif %}
+        {{ __m('Some details seen here may not be finalised. Please do not share the activity details until access is open to all users.') }}
+    </div>
+</section>
+{% elseif category.accessOpenDate and category.accessCloseDate %}
+<section class="w-full mb-6 relative">
+    <div class="w-full py-3 border border-gray-400 rounded text-center text-gray-700 text-lg font-thin">
+    {% if "now"|date("U") > category.endDate|date("U") %}
+        {{ __m('This activity category ended on') }} {{ category.endDate|date("M j") }}
+    {% elseif "now"|date("U") < category.accessOpenDate|date("U") %}
+        {{ __m('Sign up opens on') }} {{ category.accessOpenDate|date("M j \\a\\t g:ia") }}
+    {% elseif "now"|date("U") > category.accessCloseDate|date("U") %}
+        {{ __m('Sign up closed on') }} {{ category.accessCloseDate|date("M j \\a\\t g:ia") }}
+    {% else %}
+        {{ __m('Sign up is currently open, and will close on') }} {{ category.accessCloseDate|date("M j \\a\\t g:ia") }}
+    {% endif %}
+    </div>
+</section>
+{% endif %}
+
+
+
+{% if activities is not empty %}
+    <section class="w-full grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for activity in activities %}
+        <a class="flex flex-col justify-start relative " href="{{ absoluteURL }}/index.php?q=/modules/Activities/explore_activity.php&sidebar=false&gibbonActivityCategoryID={{ category.gibbonActivityCategoryID }}&gibbonActivityID={{ activity.gibbonActivityID }}">
+            <div class="absolute top-0 left-0 w-full h-40 sm:h-48 lg:h-56 rounded flex justify-center items-center group transition-all duration-150 hover:bg-blur">
+                <div class="w-auto px-10 py-3 border border-white hover:bg-translucent hidden group-hover:block transition-all duration-150 rounded-sm text-center text-white text-base font-light">
+                    {{ __('Learn More') }}
+                </div>
+            </div>
+            <div class="w-full h-40 sm:h-48 lg:h-56 rounded overflow-hidden">
+                {% if activity.headerImage %}
+                    <img src="{{ absoluteURL }}/{{ activity.headerImage }}" class="w-full max-w-full h-full" style="object-position: center; object-fit: cover;">
+                {% else %}
+                    <div class="w-full max-w-full h-full bg-gray-200"></div>
+                {% endif %}
+            </div>
+
+            <h3 class="normal-case text-base mt-3">
+                {{ activity.name }}
+            </h3>
+        </a>
+    {% endfor %}
+    </section>
+{% else %}
+    <div class="h-48 rounded-sm border bg-gray-100 overflow-hidden">
+        {% include 'components/blankSlate.twig.html' with {blankSlate: __("There's nothing here yet. Check back soon!")} %}
+    </div>
+{% endif %}
+
+

@@ -59,9 +59,11 @@ class ActivityGateway extends QueryableGateway
                 "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status = 'Accepted' THEN gibbonActivityStudent.gibbonPersonID END) as enrolment",
                 "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status = 'Waiting List' THEN gibbonActivityStudent.gibbonPersonID END) as waiting",
                 "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status = 'Pending' THEN gibbonActivityStudent.gibbonPersonID END) as pending",
+                "gibbonActivityPhoto.filePath as headerImage"
             ])
             ->leftJoin('gibbonYearGroup', 'FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)')
             ->leftJoin('gibbonActivityType', 'gibbonActivity.type=gibbonActivityType.name')
+            ->leftJoin('gibbonActivityPhoto', 'gibbonActivity.gibbonActivityID=gibbonActivityPhoto.gibbonActivityID AND gibbonActivityPhoto.sequenceNumber=0')
             ->leftJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
@@ -93,6 +95,11 @@ class ActivityGateway extends QueryableGateway
                     ->where('gibbonActivity.active = :active')
                     ->bindValue('active', $active);
             },
+            'category' => function ($query, $gibbonActivityCategoryID) {
+                return $query
+                    ->where('gibbonActivity.gibbonActivityCategoryID = :gibbonActivityCategoryID')
+                    ->bindValue('gibbonActivityCategoryID', $gibbonActivityCategoryID);
+            },
             'registration' => function ($query, $registration) {
                 return $query
                     ->where('gibbonActivity.registration = :registration')
@@ -123,26 +130,53 @@ class ActivityGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
-            ->from($this->getTableName())
             ->cols([
-                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.active', 'gibbonActivity.type', 'gibbonActivityStudent.status', 'NULL AS role'
+                'gibbonActivity.gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.name', 'gibbonActivity.type', 'gibbonActivityStudent.status', 'NULL AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', 'NULL AS choices', 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate'
             ])
+            ->from($this->getTableName())
             ->innerJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->leftJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonActivityStudent.gibbonPersonID = :gibbonPersonID')
-            ->bindValue('gibbonPersonID', $gibbonPersonID);
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->where('gibbonActivity.active="Y"')
+            ->where('(gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR ((CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate AND CURRENT_TIMESTAMP >= gibbonActivityCategory.viewableDate) AND gibbonActivityCategory.active="Y"))');
 
         $query->unionAll()
-            ->from($this->getTableName())
             ->cols([
-                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.active', 'gibbonActivity.type', 'NULL AS status', 'gibbonActivityStaff.role AS role'
+                'gibbonActivity.gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.name', 'gibbonActivity.type', 'NULL AS status', 'gibbonActivityStaff.role AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', 'NULL AS choices', 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate'
             ])
+            ->from($this->getTableName())
             ->innerJoin('gibbonActivityStaff', 'gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->leftJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonActivityStaff.gibbonPersonID = :gibbonPersonID')
-            ->bindValue('gibbonPersonID', $gibbonPersonID);
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->where('gibbonActivity.active="Y" AND gibbonActivityCategory.active="Y"')
+            ->where('gibbonActivityCategory.viewableDate IS NOT NULL')
+            ->groupBy(['gibbonActivityCategory.gibbonActivityCategoryID', 'gibbonActivity.gibbonActivityID']);
+
+        $query->unionAll()
+            ->cols([
+                'NULL as gibbonActivityID', 'gibbonActivityCategory.gibbonActivityCategoryID', "NULL as name", 'NULL as type', '"Pending" as status', 'NULL AS role', 'gibbonActivityCategory.name as category', 'gibbonActivityCategory.sequenceNumber', "GROUP_CONCAT(gibbonActivity.name ORDER BY gibbonActivityChoice.choice SEPARATOR ',') AS choices", 'gibbonActivityCategory.accessOpenDate', 'gibbonActivityCategory.accessCloseDate', 'gibbonActivityCategory.accessEnrolmentDate'
+            ])
+            ->from('gibbonActivityCategory')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID')
+            ->leftJoin('gibbonActivityChoice', 'gibbonActivityChoice.gibbonActivityCategoryID=gibbonActivityCategory.gibbonActivityCategoryID AND gibbonActivityChoice.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->leftJoin('gibbonActivity', 'gibbonActivity.gibbonActivityID=gibbonActivityChoice.gibbonActivityID AND gibbonActivity.active="Y"')
+            ->leftJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=gibbonActivityChoice.gibbonPersonID')
+            ->where('gibbonStudentEnrolment.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityCategory.active="Y"')
+            ->where('(gibbonActivityCategory.accessEnrolmentDate IS NULL OR CURRENT_TIMESTAMP < gibbonActivityCategory.accessEnrolmentDate)')
+            ->where('CURRENT_TIMESTAMP >= gibbonActivityCategory.viewableDate')
+            ->groupBy(['gibbonActivityCategory.gibbonActivityCategoryID'])
+            ;
+
 
         return $this->runQuery($query, $criteria);
     }
@@ -156,6 +190,7 @@ class ActivityGateway extends QueryableGateway
                 'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonActivitySlot.locationExternal', 'gibbonSpace.name as space', 'gibbonDaysOfWeek.name as dayOfWeek',
             ])
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->innerJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
             ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
             ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
@@ -170,7 +205,8 @@ class ActivityGateway extends QueryableGateway
             ->bindValue('today', $date ?? date('Y-m-d'))
             ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
-            ->bindValue('dateType', $dateType);
+            ->bindValue('dateType', $dateType)
+            ->where('CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate');
 
         if ($dateType == 'Term') {
             $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])
@@ -242,8 +278,10 @@ class ActivityGateway extends QueryableGateway
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonActivity.gibbonActivityID AS groupBy, gibbonActivityStudent.* FROM gibbonActivityStudent 
                 JOIN gibbonActivity ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
+                JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID)
                 WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID";
+                AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID
+                AND CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate";
 
         return $this->db()->select($sql, $data);
     }
@@ -275,12 +313,94 @@ class ActivityGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectActivitiesByCategoryAndSchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonActivity.gibbonActivityCategoryID, gibbonActivity.gibbonActivityID, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectActivitiesByCategory($gibbonActivityCategoryID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
+        $sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity WHERE gibbonActivityCategoryID=:gibbonActivityCategoryID AND active='Y' ORDER BY name, programStart";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectActivitiesByCategoryAndPerson($gibbonActivityCategoryID, $gibbonPersonID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonActivity.gibbonActivityID AS value, gibbonActivity.name 
+                FROM gibbonActivity
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList))
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID 
+                AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
+                AND gibbonActivity.active='Y'
+                ORDER BY gibbonActivity.name, gibbonActivity.programStart";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function getActivityDetailsByID($gibbonActivityID)
     {
         $data = ['gibbonActivityID' => $gibbonActivityID];
-        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
+        $sql = "SELECT gibbonActivity.*,
+                gibbonActivity.payment as cost,
+                gibbonActivity.paymentType as costType,
+                gibbonActivity.paymentFirmness as costStatus,
+                gibbonActivityType.access,
+                gibbonActivityType.maxPerStudent,
+                gibbonActivityType.enrolmentType,
+                gibbonActivityType.backupChoice,
+                gibbonSpace.gibbonSpaceID,
+                gibbonActivitySlot.timeStart,
+                gibbonActivitySlot.timeEnd,
+                gibbonActivitySlot.locationExternal,
+                gibbonSpace.name as space,
+                gibbonDaysOfWeek.name as dayOfWeek,
+                GROUP_CONCAT(DISTINCT gibbonYearGroup.nameShort ORDER BY gibbonYearGroup.sequenceNumber SEPARATOR ', ') as yearGroups,
+                COUNT(DISTINCT gibbonYearGroup.gibbonYearGroupID) as yearGroupCount
+            FROM gibbonActivity 
+            LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList))
+            LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)
+            LEFT JOIN gibbonActivitySlot ON (gibbonActivity.gibbonActivityID=gibbonActivitySlot.gibbonActivityID)
+            LEFT JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)
+            LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
+            WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID
+            GROUP BY gibbonActivity.gibbonActivityID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectActivityDetailsByCategory($gibbonActivityCategoryID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID];
+        $sql = "SELECT gibbonActivity.gibbonActivityID as groupBy, 
+                gibbonActivity.*,
+                gibbonSpace.gibbonSpaceID,
+                gibbonActivitySlot.timeStart,
+                gibbonActivitySlot.timeEnd,
+                gibbonActivitySlot.locationExternal,
+                gibbonSpace.name as space,
+                gibbonDaysOfWeek.name as dayOfWeek,
+                COUNT(DISTINCT gibbonActivityStudent.gibbonActivityStudentID) as enrolmentCount,
+                GROUP_CONCAT(DISTINCT gibbonYearGroup.nameShort ORDER BY gibbonYearGroup.sequenceNumber SEPARATOR ', ') as yearGroups,
+                COUNT(DISTINCT gibbonYearGroup.gibbonYearGroupID) as yearGroupCount
+            FROM gibbonActivity 
+            LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList))
+            LEFT JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Accepted')
+            LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)
+            LEFT JOIN gibbonActivitySlot ON (gibbonActivity.gibbonActivityID=gibbonActivitySlot.gibbonActivityID)
+            LEFT JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID)
+            LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
+            WHERE gibbonActivity.gibbonActivityCategoryID=:gibbonActivityCategoryID
+            AND gibbonActivity.active='Y'
+            GROUP BY gibbonActivity.gibbonActivityID";
+
+        return $this->db()->select($sql, $data);
     }
 
     function getStudentActivityCountByType($type, $gibbonPersonID)
@@ -327,6 +447,37 @@ class ActivityGateway extends QueryableGateway
         }
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getActivitySignUpAccess($gibbonActivityID, $gibbonPersonID)
+    {
+        $data = ['gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonStudentEnrolment.gibbonStudentEnrolmentID
+                FROM gibbonActivity
+                JOIN gibbonActivityCategory ON (gibbonActivity.gibbonActivityCategoryID=gibbonActivityCategory.gibbonActivityCategoryID)
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList))
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID
+                AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
+                GROUP BY gibbonActivity.gibbonActivityID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getNextActivityByID($gibbonActivityCategoryID, $gibbonActivityID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MIN(name) FROM gibbonActivity WHERE name > (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getPreviousActivityByID($gibbonActivityCategoryID, $gibbonActivityID)
+    {
+        $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonActivityID' => $gibbonActivityID];
+        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MAX(name) FROM gibbonActivity WHERE name < (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 
 }

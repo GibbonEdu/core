@@ -45,15 +45,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         //Get current role category
         $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
+        $gibbonPersonID = null;
+
+        //If student, set gibbonPersonID to self
+        if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
+            $gibbonPersonID = $session->get('gibbonPersonID');
+        }
+        
         //Check access controls
         $settingGateway = $container->get(SettingGateway::class);
+
+        $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
+
         $allActivityAccess = $settingGateway->getSettingByScope('Activities', 'access');
         $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
 
         if (!($allActivityAccess == 'View' or $allActivityAccess == 'Register')) {
             echo Format::alert(__('Activity listing is currently closed.'), 'error');
         } else {
-            if ($allActivityAccess == 'View') {
+            if ($allActivityAccess == 'View' && $canAccessRegistration) {
                 echo "<div class='warning'>";
                 echo __('Registration is currently closed, but you can still view activities.');
                 echo '</div>';
@@ -66,12 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             }
 
-            $gibbonPersonID = null;
-
-            //If student, set gibbonPersonID to self
-            if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
-                $gibbonPersonID = $session->get('gibbonPersonID');
-            }
+           
             //IF PARENT, SET UP LIST OF CHILDREN
             $countChild = 0;
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
@@ -209,8 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $schoolTerms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
                 $yearGroups = getYearGroups($connection2);
 
-                // Toggle Features
-                $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
+                // Toggle Features 
                 $paymentOn = $settingGateway->getSettingByScope('Activities', 'payment') != 'None' && $settingGateway->getSettingByScope('Activities', 'payment') != 'Single';
 
                 $activityGateway = $container->get(ActivityGateway::class);

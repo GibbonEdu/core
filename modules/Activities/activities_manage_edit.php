@@ -22,10 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Activities\ActivityPhotoGateway;
+use Gibbon\Domain\Activities\ActivityCategoryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -91,6 +93,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         'External' => __('External')
                     ]);
 
+            $categories = $container->get(ActivityCategoryGateway::class)->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+            $row = $form->addRow();
+                $row->addLabel('gibbonActivityCategoryID', __('Category'));
+                $row->addSelect('gibbonActivityCategoryID')->fromArray($categories)->placeholder();
+                
             $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
 
             if (!empty($activityTypes)) {
@@ -157,6 +164,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     ->setRows(10)
                     ->showMedia();
 
+            // PHOTOS
+            $form->addRow()->addHeading(__('Photos'));
+
+            $addBlockButton = $form->getFactory()->createButton(__('Add Photo'))->addClass('addBlock');
+
+            $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
+            $row = $blockTemplate->addRow()->addClass('w-full flex justify-between items-center mt-1 ml-2');
+                $row->addFileUpload('fileUpload')->accepts('.jpg,.jpeg,.gif,.png')
+                    ->setAttachment('filePath', $session->get('absoluteURL'), '')
+                    ->setMaxUpload(false)
+                    ->append("<input type='hidden' id='gibbonActivityPhotoID' name='gibbonActivityPhotoID' value=''/>");
+                $row->addTextField('caption')->setClass('w-4/5 ml-6 mr-6')->placeholder(__('Caption (optional)'));
+
+            // Custom Blocks
+            $row = $form->addRow();
+            $customBlocks = $row->addCustomBlocks('photos', $session, true)
+                ->fromTemplate($blockTemplate)
+                ->settings(['inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true, 'orderName' => 'photoOrder',])
+                ->placeholder(__('Photos will be listed here...'))
+                ->addToolInput($addBlockButton);
+
+            $photos = $container->get(ActivityPhotoGateway::class)->selectPhotosByActivity($gibbonActivityID);
+            while ($photo = $photos->fetch()) {
+                $customBlocks->addBlock($photo['gibbonActivityPhotoID'], [
+                    'gibbonActivityPhotoID' => $photo['gibbonActivityPhotoID'],
+                    'filePath'              => $photo['filePath'],
+                    'caption'               => $photo['caption'],
+                ]);
+            }
+
+            // COST
             $payment = $settingGateway->getSettingByScope('Activities', 'payment');
             if ($payment != 'None' && $payment != 'Single') {
                 $form->addRow()->addHeading('Cost', __('Cost'));
@@ -309,6 +347,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             <script type="text/javascript">
                 //All of this javascript is due to limitations of CustomBlocks. If these limitaions are fixed in the future, the corresponding block of code should be removed.
                 var radio = 'input[type="radio"][name$="[location]"]';
+
+                $(document).ready(function () {
+
+                    $('input[id^=fileUpload][name^=photos]').each(function() {
+                        
+                        var filePath = $('input[id^=filePath]', $(this).parent());
+                        if (filePath != undefined) {
+                            var img = document.createElement("img");
+                            img.src = "<?php echo $session->get('absoluteURL'); ?>/"+filePath.val();
+                            img.style.height = '100px';
+                            img.style.maxWidth = '200px';
+
+                            $(this).parent().append(img);
+
+                            $('.input-box-meta', $(this).parent()).hide();
+                            $(this).parent().parent().attr('title', '');
+                            $(this).hide();
+                        }
+                    });
+                });
 
                 function locationSwap() {
                     var block = $(this).closest('tbody');

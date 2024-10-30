@@ -38,6 +38,37 @@ class Time extends TextField
     protected $showDuration;
 
     /**
+     * Overload the base loadFrom method to handle converting time formats.
+     * @param   array  &$data
+     * @return  self
+     */
+    public function loadFrom(&$data)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($data[$name])) {
+            $this->setValue($data[$name]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the input's value.
+     * @param  string  $value
+     * @return $this
+     */
+    public function setValue($value = '')
+    {
+        if (strlen($value) == 19) {
+            $value = substr($value, 11);
+        }
+
+        $this->setAttribute('value', $value);
+        return $this;
+    }
+
+    /**
      * Set the format to output time values (default 'H:i').
      * @param  string  $format
      */

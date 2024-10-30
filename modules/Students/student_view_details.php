@@ -2362,12 +2362,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonSchoolYearTerm ON (FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStudent.status <> 'Not Accepted' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivityStudent.status, gibbonActivity.name";
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role 
+                                        FROM gibbonActivity 
+                                        JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+                                        LEFT JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID) 
+                                        LEFT JOIN gibbonSchoolYearTerm ON (FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)) 
+                                        WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
+                                        AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
+                                        AND gibbonActivity.active='Y' 
+                                        AND gibbonActivityStudent.status <> 'Not Accepted' 
+                                        AND (gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate)
+                                        GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivityStudent.status, gibbonActivity.name";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                         $resultData = $result->fetchAll();
                                     } catch (PDOException $e) {
-                                        exit;
                                     }
 
                                     $table = DataTable::create('activities');
