@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Element;
+use Gibbon\View\Component;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 
 /**
  * TextField
@@ -30,9 +32,23 @@ use Gibbon\Forms\Element;
  */
 class TextField extends Input
 {
+    use ButtonGroupTrait;
+    
     protected $autocomplete;
     protected $unique;
 
+    /**
+     * Create an HTML form input.
+     * @param  string  $name
+     */
+    public function __construct($name)
+    {
+        $this->setAttribute('type', 'text');
+
+        parent::__construct($name);
+    }
+
+    
     /**
      * Set a max character count for this text field.
      * @param   string  $value
@@ -61,6 +77,18 @@ class TextField extends Input
     }
 
     /**
+     * Sets the input type that is used, such as url or email.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setType($value = '')
+    {
+        $this->setAttribute('type', $value);
+
+        return $this;
+    }
+
+    /**
      * Enables javascript autocompletion from the supplied set of values.
      * @param   string|array  $value
      * @return  self
@@ -68,7 +96,8 @@ class TextField extends Input
     public function autocomplete($value = '')
     {
         $this->autocomplete = (is_array($value))? $value : array($value);
-        $this->setAttribute('autocomplete', 'on');
+        // $this->setAttribute('autocomplete', 'on');
+        $this->setAttribute('list', $this->getID().'DataList');
 
         return $this;
     }
@@ -121,28 +150,18 @@ class TextField extends Input
         return false;
     }
 
-
     /**
      * Gets the HTML output for this form element.
      * @return  string
      */
     protected function getElement()
     {
-        $output = '<input type="text" '.$this->getAttributeString().'>';
-
-        if (!empty($this->autocomplete)) {
-            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', addslashes(trim($str ?? ''))); }, $this->autocomplete));
-            $output .= '<script type="text/javascript">';
-            $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
-            $output .= '</script>';
-        }
-
-        if (!empty($this->unique)) {
-            $output .= '<script type="text/javascript">
-                $("#'.$this->getID().'").gibbonUniquenessCheck('.json_encode($this->unique).');
-            </script>';
-        }
-
-        return $output;
+        return Component::render(TextField::class, $this->getAttributeArray() + [
+            'groupClass'       => $this->getGroupClass(),
+            'unique'           => $this->unique ? json_encode($this->unique) : '',
+            'autocompleteList' => $this->autocomplete
+                ? $this->autocomplete
+                : '',
+        ]);
     }
 }

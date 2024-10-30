@@ -155,11 +155,12 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         if (empty($filters)) return '';
 
+        $groupAlign = $dataSet->getTotalCount() > 25 ? 'right' : '';
+
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('filters float-none w-24 pl-2 border leading-none h-full sm:h-8 ')
-            ->addClass($dataSet->getTotalCount() > 25 ?: 'rounded-l')
-            ->addClass($this->criteria->hasFilter() ?: 'rounded-r')
+            ->setClass('filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200')
+            ->groupAlign($this->criteria->hasFilter() && $groupAlign  ? 'middle' : ($this->criteria->hasFilter() ? 'left' : $groupAlign) )
             ->placeholder(__('Filters'))
             ->getOutput();
     }
@@ -188,8 +189,8 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         return $this->factory->createSelect('limit')
             ->fromArray($options)
-            ->setClass('limit float-none w-16 pl-2 rounded-l border leading-none h-full sm:h-8 ')
-            ->addClass(!empty($filters) ?: 'rounded-r')
+            ->setClass('limit float-none w-16 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200')
+            ->groupAlign(!empty($filters) ? 'left' : '')
             ->selected($dataSet->getPageSize())
             ->getOutput();
     }

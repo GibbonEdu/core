@@ -206,6 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
                     if ($repeat == 'No') {
                         $gibbonCourseClassID = null;
+                        $offTimetable = false;
                         $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd, $gibbonCourseClassID);
 
                         if (!$available && !empty($gibbonCourseClassID)) {

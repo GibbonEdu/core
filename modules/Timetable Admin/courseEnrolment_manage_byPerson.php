@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo '</h3>'; 
         
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/courseEnrolment_manage_byPerson.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

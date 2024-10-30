@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
             $form = Form::createTable('updatePerson', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
 
-            $form->setClass('fullWidth colorOddEven');
+            $form->setClass('w-full colorOddEven');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $oldValues['gibbonPersonID']);
 

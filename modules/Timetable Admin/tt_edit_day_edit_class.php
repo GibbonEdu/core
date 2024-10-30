@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                         ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_delete.php');
 
                     $actions->addAction('exceptions', __('Exceptions'))
-                        ->setIcon('attendance')
+                        ->setIcon('user-minus')
                         ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_exception.php');
                 });
 

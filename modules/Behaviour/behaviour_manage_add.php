@@ -78,7 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
             if (!empty($policyLink)) {
                 $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
-                    ->setExternalURL($policyLink);
+                    ->setExternalURL($policyLink)
+                    ->setIcon('document')
+                    ->displayLabel();
             }
             if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID) or !empty($type)) {
                 $form->addHeaderAction('back', __('Back to Search Results'))
@@ -88,8 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
                     ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
                     ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
-                    ->addParam('type', $_GET['type'])
-                    ->prepend((!empty($policyLink)) ? ' | ' : '');
+                    ->addParam('type', $_GET['type']);
             }
             
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
@@ -148,13 +149,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('comment', __('Incident'));
-            	$column->addTextArea('comment')->setRows(5)->setClass('fullWidth');
+            	$column->addTextArea('comment')->setRows(5)->setClass('w-full');
 
             //Follow Up
             $row = $form->addRow();
             	$column = $row->addColumn();
             	$column->addLabel('followup', __('Follow Up'));
-            	$column->addTextArea('followUp')->setRows(5)->setClass('fullWidth');
+            	$column->addTextArea('followUp')->setRows(5)->setClass('w-full');
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);

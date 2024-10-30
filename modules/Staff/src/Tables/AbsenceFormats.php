@@ -108,7 +108,7 @@ class AbsenceFormats
             $output .= '<br/>'.Format::small($absence['reason']);
         }
         if ($absence['status'] != 'Approved') {
-            $output .= '<br/><span class="small emphasis">'.__($absence['status']).'</span>';
+            $output .= '<br/><span class="text-xs italic">'.__($absence['status']).'</span>';
         }
         return $output;
     }

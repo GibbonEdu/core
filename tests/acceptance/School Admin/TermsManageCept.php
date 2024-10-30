@@ -43,5 +43,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'schoolYearTerm_manage_delete.php', array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

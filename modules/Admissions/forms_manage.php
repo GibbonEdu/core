@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     // SEARCH
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php','get');
     $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/forms_manage.php');
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

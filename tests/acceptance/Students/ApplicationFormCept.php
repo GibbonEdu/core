@@ -211,7 +211,7 @@ $I->see(basename($file1path));
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
 $I->amOnModulePage('Students', 'applicationForm_manage_delete.php', $urlParams );
 
-$I->click('Yes');
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete Files ------------------------------------------------

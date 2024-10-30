@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
         echo '</div>';
 
-        echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
+        echo "<table cellspacing='0' class='w-full colorOddEven'>";
         echo "<tr class='head'>";
         echo '<th width="140px">';
         echo __('Class');

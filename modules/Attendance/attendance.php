@@ -53,7 +53,7 @@ $form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get
 
 $form->setTitle(__('View Daily Attendance'));
 $form->setFactory(DatabaseFormFactory::create($pdo));
-$form->setClass('noIntBorder fullWidth');
+$form->setClass('noIntBorder w-full');
 
 $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.php');
 

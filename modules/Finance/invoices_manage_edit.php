@@ -198,9 +198,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         ->required()
                         ->placeholder(__('Value').(!empty($session->get('currency'))? ' ('.$session->get('currency').')' : ''));
 
-                $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
+                $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                     $col->addLabel('description', __('Description'));
-                    $col->addTextArea('description')->setRows('auto')->setClass('fullWidth floatNone noMargin');
+                    $col->addTextArea('description')->setRows('auto')->setClass('w-full floatNone noMargin');
 
                 // Custom Blocks for Fees
                 $row = $form->addRow();

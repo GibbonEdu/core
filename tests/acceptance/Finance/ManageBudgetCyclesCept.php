@@ -41,5 +41,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('Finance', 'budgetCycles_manage_delete.php', array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

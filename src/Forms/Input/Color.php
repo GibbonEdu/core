@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\View\Component;
+
 /**
  * Color
  *
@@ -50,13 +52,8 @@ class Color extends Input
      */
     protected function getElement()
     {
-        $value = !empty($this->getValue()) ? $this->getValue() : '#ffffff';
-
-        $output = '<div class="flex">';
-        $output .= '<input type="color" data-for="'.$this->getID().'" class="colorPicker mr-2 w-16" style="padding: 4px; min-width: 36px; height:36px; border-width: 1px;" value="'.$value.'">';
-        $output .= '<input type="text" '.$this->getAttributeString().'>';
-        $output .= '</div>';
-
-        return $output;
+        return Component::render(Color::class, $this->getAttributeArray() + [
+            'color' => !empty($this->getValue()) ? $this->getValue() : '#ffffff'
+        ]);
     }
 }

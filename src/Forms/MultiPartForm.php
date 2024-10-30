@@ -44,7 +44,7 @@ class MultiPartForm extends Form
      * @param    string  $class
      * @return   object  Form object
      */
-    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth standardForm')
+    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder w-full standardForm')
     {
         global $container;
 

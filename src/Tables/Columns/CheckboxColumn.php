@@ -63,7 +63,7 @@ class CheckboxColumn extends Column
     public function getLabel()
     {
         return (new Checkbox('checkall'))
-            ->setClass('floatNone checkall')
+            ->setClass('checkall text-gray-500 focus:ring-gray-600')
             ->checked(!is_callable($this->checked) ? $this->checked : false)
             ->wrap('<div class="text-center">', '</div>')
             ->alignCenter()

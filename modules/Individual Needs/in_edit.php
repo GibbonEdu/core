@@ -122,8 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     return $item['archiveTitle'].' ('.Format::date(substr($item['archiveTimestamp'], 0, 10)).')';
                 }, $archivedIEPs);
 
-                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-                $form->setClass('blank fullWidth');
+                $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
                 $form->addHiddenValue('address', $session->get('address'));
 
                 $col = $form->addRow()->addColumn()->addClass('flex justify-end items-center');
@@ -148,10 +147,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             echo $table->render([$student]);
 
-            $form = Form::create('individualNeeds', $session->get('absoluteURL').'/modules/'.$session->get('module')."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+            $form = Form::createBlank('individualNeeds', $session->get('absoluteURL').'/modules/'.$session->get('module')."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('w-full blank');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
@@ -173,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $form->addRow()->addSubheading(__('Educational Assistants'))->setClass('mt-4 mb-2');
 
                 if (!empty($educationalAssistants)) {
-                    $table = $form->addRow()->addTable()->addClass('smallIntBorder fullWidth colorOddEven');
+                    $table = $form->addRow()->addTable()->addClass('smallIntBorder w-full colorOddEven');
                     $header = $table->addHeaderRow();
                         $header->addContent(__('Name'));
                         $header->addContent(__('Comment'));
@@ -204,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             if (empty($gibbonINArchiveID) && $highestAction == 'Individual Needs Records_viewEdit') {
                 $form->addRow()->addSubheading(__('Add New Assistants'))->setClass('mt-4 mb-2');
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
 
                 $row = $table->addRow();
                     $row->addLabel('staff', __('Staff'))->addClass('w-1/2');
@@ -218,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             // DISPLAY AND EDIT IEP
 
 
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full mt-2');
 
             $table->addRow()->addHeading('Individual Education Plan', __('Individual Education Plan'))->setClass('mt-4 mb-2');
 
@@ -276,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute')) {
-                $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')->addRow()->addSubmit();
+                $form->addRow()->addTable()->setClass('smallIntBorder w-full mt-2')->addRow()->addSubmit();
             }
 
             echo $form->getOutput();

@@ -23,6 +23,7 @@ namespace Gibbon\Tables;
 
 use Gibbon\Forms\Layout\WebLink;
 use Gibbon\Http\Url;
+use Gibbon\View\Component;
 
 /**
  * Action link representation for HTML listings.
@@ -68,7 +69,7 @@ class Action extends WebLink
      *
      * @var string|Gibbon\Url
      */
-    protected $icon;
+    protected $icon = null;
 
     /**
      * Boolean flag indicate if the link opens a modal box.
@@ -113,24 +114,7 @@ class Action extends WebLink
 
         // Pre-defined settings for common actions
         switch ($this->name) {
-            case 'add':     $this->setIcon('page_new');
-                            break;
-            case 'addMultiple':
-                            $this->setIcon('page_new_multi');
-                            break;
-            case 'edit':    $this->setIcon('config');
-                            break;
-            case 'delete':  $this->setIcon('garbage')->modalWindow(650, 250);
-                            break;
-            case 'print':   $this->setIcon('print');
-                            break;
-            case 'export':  $this->setIcon('download');
-                            break;
-            case 'import':  $this->setIcon('upload');
-                            break;
-            case 'view':    $this->setIcon('zoom');
-                            break;
-            case 'accept':   $this->setIcon('iconTick');
+            case 'delete':  $this->modalWindow(650, 250);
                             break;
         }
     }
@@ -244,13 +228,7 @@ class Action extends WebLink
      */
     public function modalWindow($width = 650, $height = 650)
     {
-        $this->modal = true;
-
-        $this->setAttribute('hx-boost', 'true')
-            ->setAttribute('hx-target', '#modalContent')
-            ->setAttribute('hx-push-url', 'false')
-            ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
-            ->setAttribute('x-on:click', "modalType = '{$this->name}'");
+        $this->modal = !empty($width);
 
         return $this;
     }
@@ -291,21 +269,6 @@ class Action extends WebLink
             return $this->getLabel();
         }
 
-        if ($icon = $this->getIcon()) {
-            // Allow modules to specify their own icons if needed
-            $icon = substr($icon, 0, 4) != 'http'
-                ? $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/'.$icon.'.png'
-                : $icon;
-
-            $this->setContent(sprintf('%1$s<img alt="%2$s" title="%2$s" src="'.$icon.'" width="25" height="25" class="ml-1">',
-                ($this->displayLabel? $this->getLabel() : ''),
-                $this->getLabel(),
-                $this->getIcon()
-            ));
-        } else {
-            $this->setContent($this->getLabel());
-        }
-
         $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
         // Allow ActionColumn level params to auto-fill from the row data, if they're not set
@@ -318,10 +281,22 @@ class Action extends WebLink
             $queryParams[$key] = $value;
         }
 
-        if (!$this->external && !$this->direct && !$this->modal) {
+        if ($this->modal) {
             $this->setAttribute('hx-boost', 'true')
-                ->setAttribute('hx-target', '#content-inner')
-                ->setAttribute('hx-select', '#content-inner')
+                ->setAttribute('hx-target', '#modalContent')
+                ->setAttribute('hx-push-url', 'false')
+                ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
+                ->setAttribute('x-on:click', "modalType = '{$this->name}'")
+                ->setAttribute('hx-swap', 'innerHTML show:no-scroll swap:0s');
+        } elseif (!$this->external && !$this->direct && $this->url != '#') {
+            $this->setAttribute('hx-boost', 'true')
+                ->setAttribute('hx-target', '#content-wrap')
+                ->setAttribute('hx-select', '#content-wrap')
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
+        } elseif (!empty($this->getAttribute('hx-confirm'))) {
+            $this->setAttribute('hx-post', Url::fromHandlerRoute(ltrim($this->url, '/')) )
+                ->setAttribute('hx-target', '#content-wrap')
+                ->setAttribute('hx-select', '#content-wrap')
                 ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
         }
 
@@ -336,12 +311,17 @@ class Action extends WebLink
         } else if ($this->modal) {
             $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
                 ->withQueryParams($queryParams));
-        } else {
+        } else if ($this->url != '#') {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         }
 
-        return parent::getOutput();
+        return Component::render(Action::class, $this->getAttributeArray() + [
+            'action' => $this->name,
+            'icon'   => $this->icon,
+            'label'  => $this->label,
+            'displayLabel'  => $this->displayLabel,
+        ]);
     }
 }

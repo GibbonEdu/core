@@ -185,7 +185,7 @@ $I->seeInFormFields('#content form', $formValues);
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
 $I->amOnModulePage('Students', 'applicationForm_manage_delete.php', $urlParams );
 
-$I->click('Yes');
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 
 // Restore Original Settings -----------------------------------

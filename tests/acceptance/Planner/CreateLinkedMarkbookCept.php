@@ -57,7 +57,7 @@ $I->seeInField('viewableParents', 'N');
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
 $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', $urlParams );
 
-$I->click('Yes');
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete Planner ------------------------------------------------
@@ -65,7 +65,7 @@ $I->see('Your request was completed successfully.', '.success');
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'viewBy' => 'class');
 $I->amOnModulePage('Planner', 'planner_delete.php', $urlParams );
 
-$I->click('Yes');
+$I->click('Delete');
 $I->see('Your request was completed successfully.', '.success');
 
 // Force Cleanup (for failed tests) ------------------------------

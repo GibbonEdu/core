@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $table->addColumn('name', __('Activity'))
         ->format(function($activity) {
-            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+            return $activity['name'].'<br/><span class="text-xs italic">'.$activity['type'].'</span>';
         });
     $table->addColumn('enrolment', __('Accepted'))->width('20%');
     $table->addColumn('registered', __('Registered'))->description(__('Excludes "Not Accepted"'))->width('20%');

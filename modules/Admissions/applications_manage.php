@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // SEARCH
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php','get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setTitle(__('Search'));
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/applications_manage.php');
@@ -93,8 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')
-            ->displayLabel()
-            ->append(' | ');
+            ->displayLabel();
     }
 
     $table->addHeaderAction('add', __('Add'))
@@ -199,14 +198,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->addParam('search', $search)
         ->addParam('gibbonAdmissionsApplicationID')
         ->format(function ($application, $actions) {
-            if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
-                $actions->addAction('accept', __('Accept'))
-                    ->setIcon('iconTick')
-                    ->setURL('/modules/Admissions/applications_manage_accept.php');
-
-                $actions->addAction('reject', __('Reject'))
-                    ->setIcon('iconCross')
-                    ->setURL('/modules/Admissions/applications_manage_reject.php');
+            if ($application['status'] != 'Incomplete') {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Admissions/applications_manage_edit.php');
             }
 
             if ($application['status'] == 'Incomplete' && empty($application['owner'])) {
@@ -217,15 +211,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
                     ->addParam('accessID', $application['accessID'])
                     ->setIcon('page_right');
             }
+            
+            if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
+                $actions->addAction('accept', __('Accept'))
+                    ->setIcon('iconTick')
+                    ->setURL('/modules/Admissions/applications_manage_accept.php');
+
+                $actions->addAction('reject', __('Reject'))
+                    ->setIcon('iconCross')
+                    ->setURL('/modules/Admissions/applications_manage_reject.php');
+            }
 
             if ($application['status'] == 'Accepted' || $application['status'] == 'Incomplete') {
                 $actions->addAction('view', __('View & Print Application'))
                     ->setURL('/modules/Admissions/applications_manage_view.php');
-            }
-
-            if ($application['status'] != 'Incomplete') {
-                $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Admissions/applications_manage_edit.php');
             }
 
             $actions->addAction('delete', __('Delete'))

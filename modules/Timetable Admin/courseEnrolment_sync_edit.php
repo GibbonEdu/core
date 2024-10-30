@@ -42,8 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         return;
     }
 
-    $form = Form::create('courseEnrolmentSyncEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_addEditProcess.php');
-    $form->setClass('w-full blank');
+    $form = Form::createBlank('courseEnrolmentSyncEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_addEditProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));
@@ -93,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             });
 
             $form->addRow()->addHeading($courseName);
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven w-full standardForm');
 
             $header = $table->addHeaderRow();
                 $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($optionsSelected))->setClass();
@@ -105,16 +104,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $row = $table->addRow();
                     $row->addCheckbox('syncEnabled['.$class['gibbonCourseClassID'].']')
                         ->checked(!empty($class['syncTo']))
-                        ->setClass($course['gibbonCourseID'])
-                        ->description('&nbsp;&nbsp;');
+                        ->setClass($course['gibbonCourseID'].' w-12');
                     $row->addLabel('syncEnabled['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])
                         ->setTitle($class['courseNameShort'])
-                        ->setClass('mediumWidth');
+                        ->setClass('w-36');
                     $row->addContent((empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )
-                        ->setClass('shortWidth right');
+                        ->setClass('w-1/3 text-right');
                     $row->addSelectFormGroup('syncTo['.$class['gibbonCourseClassID'].']', $gibbonSchoolYearID)
                         ->selected($class['syncTo'])
-                        ->setClass('mediumWidth');
+                        ->setClass('flex-1');
             }
 
             // Checkall by course
@@ -128,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
     }
 
-    $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven w-full standardForm');
 
     $row = $table->addRow();
         $row->addFooter();

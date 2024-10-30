@@ -58,8 +58,7 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
             ->addParam('orientation', $orientation == 'P' ? 'L' : 'P')
             ->setIcon('refresh')
             ->displayLabel()
-            ->directLink()
-            ->prepend(' | ');
+            ->directLink();
 
         return parent::renderHeader($table, $dataSet);
     }

@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
     $form->setTitle(__('Choose Concept'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/conceptExplorer.php');
 

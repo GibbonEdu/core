@@ -37,7 +37,7 @@ class Documents extends Input
 {
     protected $view;
     protected $factory;
-    protected $validation;
+    protected $validationOutput;
     protected $absoluteURL;
     protected $mode;
 
@@ -63,7 +63,7 @@ class Documents extends Input
      */
     public function getValidationOutput()
     {
-        return $this->validation;
+        return $this->validationOutput;
     }
 
     public function setAttachments(&$attachments)
@@ -89,11 +89,14 @@ class Documents extends Input
             $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-start">';
             
-            $icon = !empty($this->attachments[$document]) ? 'check' : 'cross';
-            $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                'icon' => $this->mode =='edit' ? $icon : 'file',
-                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
-            ]);
+            $iconClass = 'size-6 fill-current mr-3 -my-2';
+            if ($this->mode != 'edit') {
+                $output .= icon('large', 'file', $iconClass);
+            } elseif (!empty($this->attachments[$document])) {
+                $output .= icon('basic', 'check', $iconClass.' text-green-600');
+            } else {
+                $output .= icon('basic', 'cross', $iconClass.' text-red-700');
+            }
 
             $output .= __($document);
 
@@ -126,7 +129,7 @@ class Documents extends Input
                 $input->setAttachment($fieldName.'File', $this->absoluteURL, $this->attachments[$document]);
             }
 
-            $this->validation .= $input->getValidationOutput();
+            $this->validationOutput .= $input->getValidationOutput();
 
             $output .= $input->getOutput();
             

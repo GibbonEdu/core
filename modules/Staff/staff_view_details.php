@@ -182,8 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
-                                ->displayLabel()
-                                ->append(' | ');
+                                ->displayLabel();
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php')) {
@@ -255,8 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     ->setURL('/modules/Timetable/tt_manage_subscription.php')
                                     ->addParam('gibbonPersonID', $gibbonPersonID)
                                     ->setIcon('download')
-                                    ->displayLabel()
-                                    ->prepend(' | ');
+                                    ->displayLabel();
                             }
 
                             echo $table->render(['' => '']);
@@ -284,8 +282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
-                                ->displayLabel()
-                                ->append(' | ');
+                                ->displayLabel();
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php')) {
@@ -527,7 +524,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         $table->addColumn('name', __('Activity'))
                             ->format(function ($activity) {
-                                return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+                                return $activity['name'].'<br/><span class="text-xs italic">'.$activity['type'].'</span>';
                             });
                         $table->addColumn('role', __('Role'))
                             ->format(function ($activity) {

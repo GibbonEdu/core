@@ -102,11 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     }, array());    
        
     // INSTALLED THEMES
-    $form = Form::create('theme_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/theme_manageProcess.php');
+    $form = Form::createBlank('theme_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/theme_manageProcess.php');
     
-    $form->setClass('fullWidth');
+    $form->setClass('w-full');
     $form->addHiddenValue('address', $session->get('address'));
-    $form->setClass('w-full blank');
 
     // DATA TABLE
     $table = $form->addRow()->addDataTable('themeManage', $criteria)->withData($themes);
@@ -148,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             }
         });     
             
-    $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth standardForm');
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full standardForm');
     $table->addRow()->addSubmit();
     
     echo $form->getOutput();

@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenses_manage.php')->withQueryParams($params));
                             }
                             ?>
-                                <table class='smallIntBorder fullWidth' cellspacing='0'>
+                                <table class='smallIntBorder w-full' cellspacing='0'>
                                     <tr class='break'>
                                         <td colspan=2>
                                             <h3><?php echo __('Basic Information') ?></h3>
@@ -159,10 +159,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             ?>
                                             <input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
                                             <input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
-                                            <script type="text/javascript">
-                                                var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
-                                                gibbonFinanceBudgetCycleID.add(Validate.Presence);
-                                            </script>
                                         </td>
                                     </tr>
                                     <tr>
@@ -282,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         <tr id="paymentDateRow">
                                             <td>
                                                 <b><?php echo __('Date Paid') ?></b><br/>
-                                                <span class="emphasis small"><?php echo __('Date of payment, not entry to system.') ?></span>
+                                                <span class="italic small"><?php echo __('Date of payment, not entry to system.') ?></span>
                                             </td>
                                             <td class="right">
                                                 <input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo Format::date($row['paymentDate']) ?>" type="text" class="standardWidth">
@@ -291,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         <tr id="paymentAmountRow">
                                             <td>
                                                 <b><?php echo __('Amount Paid') ?></b><br/>
-                                                <span class="emphasis small"><?php echo __('Final amount paid.') ?>
+                                                <span class="italic small"><?php echo __('Final amount paid.') ?>
                                                 <?php
                                                 if ($session->get('currency') != '') {
                                                     echo "<span style='font-style: italic; font-size: 85%'>".$session->get('currency').'</span>';
@@ -306,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         <tr id="payeeRow">
                                             <td>
                                                 <b><?php echo __('Payee') ?></b><br/>
-                                                <span class="emphasis small"><?php echo __('Staff who made, or arranged, the payment.') ?></span>
+                                                <span class="italic small"><?php echo __('Staff who made, or arranged, the payment.') ?></span>
                                             </td>
                                             <td class="right">
                                                 <?php
@@ -335,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         <tr id="paymentIDRow">
                                             <td>
                                                 <b><?php echo __('Payment ID') ?></b><br/>
-                                                <span class="emphasis small"><?php echo __('Transaction ID to identify this payment.') ?></span>
+                                                <span class="italic small"><?php echo __('Transaction ID to identify this payment.') ?></span>
                                             </td>
                                             <td class="right">
                                                 <input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php echo $row['paymentID'] ?>" type="text" class="standardWidth">

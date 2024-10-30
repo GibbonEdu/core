@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('purchaseDetails', __('Purchase Details'));
-                        $column->addTextArea('purchaseDetails')->setRows(8)->setClass('fullWidth');
+                        $column->addTextArea('purchaseDetails')->setRows(8)->setClass('w-full');
 
                     $row = $form->addRow();
                         $row->addFooter();

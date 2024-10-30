@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 
 /**
@@ -31,7 +30,7 @@ use Gibbon\Forms\FormFactoryInterface;
  * @version v14
  * @since   v14
  */
-class Column extends Row implements OutputableInterface, ValidatableInterface
+class Column extends Row implements OutputableInterface
 {
     protected $class = 'column';
 
@@ -71,35 +70,12 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         $output = '';
 
         foreach ($this->getElements() as $element) {
-            $output .= '<div class="'.$this->getContainerClass($element).' mb-1">';
-            $output .= $element->getOutput();
-            $output .= '</div>';
-        }
-
-        return $output;
-    }
-
-    /**
-     * Dead-end stub for interface: columns cannot validate.
-     * @param   string  $name
-     * @return  self
-     */
-    public function addValidation($name)
-    {
-        return $this;
-    }
-
-    /**
-     * Iterate over each element in the collection and get the combined validation output.
-     * @return  string
-     */
-    public function getValidationOutput()
-    {
-        $output = '';
-
-        foreach ($this->getElements() as $element) {
-            if ($element instanceof ValidatableInterface) {
-                $output .= $element->getValidationOutput();
+            if ($class = $this->getContainerClass($element)) {
+                $output .= '<div class="'.$class.'">';
+                $output .= $element->getOutput();
+                $output .= '</div>';
+            } else {
+                $output .= $element->getOutput();
             }
         }
 

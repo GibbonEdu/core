@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_summary_byDate.php");
 
@@ -300,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             // echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_summary_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             // echo '</div>';
 
-            echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
+            echo '<table cellspacing="0" class="w-full colorOddEven" >';
 
             echo "<tr class='head'>";
             echo '<th style="width:80px" rowspan=2>';

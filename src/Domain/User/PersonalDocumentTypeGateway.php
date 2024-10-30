@@ -48,7 +48,7 @@ class PersonalDocumentTypeGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonalDocumentTypeID', 'name', 'description', 'active', 'required','type', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther' 
+                'gibbonPersonalDocumentTypeID', 'name', 'description', 'active', 'required', 'document', 'type', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther' 
             ]);
 
         $criteria->addFilterRules([

@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $form = Form::create('manageInvoices', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(FinanceFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/Finance/invoices_manage.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -143,12 +143,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $col = $form->createBulkActionColumn($bulkActions);
             $col->addSelectPaymentMethod('paymentType')
-                ->setClass('bulkPaid shortWidth displayNone')
+                ->setClass('bulkPaid shortWidth hidden')
                 ->required()
                 ->addValidationOption('onlyOnSubmit: true')
                 ->placeholder(__('Payment Type').'...');
             $col->addDate('paidDate')
-                ->setClass('bulkPaid shortWidth displayNone')
+                ->setClass('bulkPaid shortWidth hidden')
                 ->required()
                 ->addValidationOption('onlyOnSubmit: true')
                 ->placeholder(__('Date Paid'));
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->sortable(['surname', 'preferredName'])
             ->format(function($invoice) {
                 $output = '<b>'.Format::name('', $invoice['preferredName'], $invoice['surname'], 'Student', true).'</b>';
-                $output .= '<br/><span class="small emphasis">'.__($invoice['invoiceTo']).'</span>';
+                $output .= '<br/><span class="text-xs italic">'.__($invoice['invoiceTo']).'</span>';
                 return $output;
             });
 
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 $output = Format::currency($totalFee);
                 if (!empty($invoice['paidAmount'])) {
                     $class = Format::number($invoice['paidAmount']) != Format::number($totalFee)? 'textOverBudget' : '';
-                    $output .= '<br/><span class="small emphasis '.$class.'">'.Format::currency($invoice['paidAmount']).'</span>';
+                    $output .= '<br/><span class="text-xs italic '.$class.'">'.Format::currency($invoice['paidAmount']).'</span>';
                 }
                 return $output;
             });
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->description(__('Due Date'))
             ->format(function ($invoice) {
                 $output = !is_null($invoice['invoiceIssueDate'])? Format::date($invoice['invoiceIssueDate']) : __('N/A');
-                $output .= '<br/><span class="small emphasis">'.Format::date($invoice['invoiceDueDate']).'</span>';
+                $output .= '<br/><span class="text-xs italic">'.Format::date($invoice['invoiceDueDate']).'</span>';
                 return $output;
             });
 

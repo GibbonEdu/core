@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
 
         $form->setTitle(__('Choose Date'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_attendance_byDate.php');
         $form->addHiddenValue('address', $session->get('address'));

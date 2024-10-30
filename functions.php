@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Locale;
+use Gibbon\UI\Icon;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +29,6 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Input\Editor;
-use Gibbon\Locale;
 
 function getIPAddress()
 {
@@ -177,6 +178,21 @@ function __m(string $text, array $params = [], array $options = [])
     }
 
     return $gibbon->locale->translate($text, $params, $options);
+}
+
+/**
+ * Return an SVG icon from a specified icon library.
+ * Many of the icons come from: https://heroicons.com
+ *
+ * @param string $library   One of: basic, solid, outline
+ * @param string $icon      The name of an icon
+ * @param string $class     Applies a class to the svg returned
+ * @param array $options    Eg: strokeWidth for outline icons
+ * @return string
+ */
+function icon(string $library, string $icon, string $class = '', array $options = []) : string
+{
+    return Icon::get($library, $icon, $class, $options);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
@@ -362,8 +378,8 @@ function getFastFinder($connection2, $guid)
 {
     global $session;
 
-    $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
-    $form->setClass('blank fullWidth');
+    $form = Form::createBlank('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
+    $form->setClass('w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
 
@@ -702,6 +718,9 @@ function msort($array, $id = 'id', $sort_ascending = true)
 /**
  * Returns preformatted HTML indicator of max file upload size
  *
+ * Deprecated. Built into FileUpload class now.
+ * 
+ * @deprecated v28
  * @since 2013
  * @version v26
  *
@@ -709,33 +728,7 @@ function msort($array, $id = 'id', $sort_ascending = true)
  */
 function getMaxUpload($multiple = false)
 {
-    // For backwards compatibilty
-    global $guid;
-    if ($multiple === $guid) {
-        $multiple = func_get_args()[1] ?? false;
-    }
-
-    $output = '';
-    $post = substr(ini_get('post_max_size'), 0, (strlen(ini_get('post_max_size')) - 1));
-    $file = substr(ini_get('upload_max_filesize'), 0, (strlen(ini_get('upload_max_filesize')) - 1));
-
-    $output .= "<div style='margin-top: 10px; font-style: italic; color: #c00'>";
-    if ($multiple == true) {
-        if ($post < $file) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post) . '<br/>';
-        } else {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file) . '<br/>';
-        }
-    } else {
-        if ($post < $file) {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $post) . '<br/>';
-        } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $file) . '<br/>';
-        }
-    }
-    $output .= '</div>';
-
-    return $output;
+    return '';
 }
 
 //Encode strring using htmlentities with the ENT_QUOTES option

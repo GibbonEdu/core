@@ -71,8 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $form->addHeaderAction('back', __('Back to Search Results'))
                 ->setURL('/modules/Staff/applicationForm_manage.php')
                 ->addParam('search', $search)
-                ->displayLabel()
-                ->append(' | ');
+                ->displayLabel();
             }
 
             $form->addHeaderAction('print', __('Print'))
@@ -135,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('notes', __('Notes'));
-                $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('notes')->setRows(5)->setClass('w-full');
 
             $form->addRow()->addHeading('Job Related Information', __('Job Related Information'));
 

@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/course_manage.php");
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -94,8 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 ->setIcon('copy')
                 ->onCLick('return confirm("'.__('Are you sure you want to do this? All courses and classes, but not their participants, will be copied.').'");')
                 ->displayLabel()
-                ->directLink()
-                ->append(' | ');
+                ->directLink();
         }
 
         $table->addHeaderAction('add', __('Add'))

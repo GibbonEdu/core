@@ -42,12 +42,8 @@ class DraggableColumn extends Column
              ->context('action')
              ->width('3%; max-width: 1.8rem; min-width: 1.8rem;');
 
-        $this->format(function ($values) {
-            return '<div class="drag-handle w-2 h-6 ml-3 px-px border-4 border-dotted cursor-move"></div>';
-        });
-
-        $this->modifyCells(function ($values, $cell) use ($id) {
-            return $cell->addClass('draggable border-r-0')->addData('drag-id', $values[$id] ?? '');
+        $this->format(function ($values) use ($id) {
+            return '<div class="drag-handle w-2 h-5 px-px border-4 border-dotted hover:border-gray-500 cursor-move"></div><input type="hidden" name="order[]" value="'.$values[$id].'">';
         });
 
         $table->addMetaData('draggable', ['url' => $ajaxURL, 'data' => json_encode($data)]);

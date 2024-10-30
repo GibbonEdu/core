@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
     $form = Form::create('resourcesView', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/resources_view.php');
 

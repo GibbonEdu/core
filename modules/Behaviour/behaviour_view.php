@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         if ($highestAction == 'View Behaviour Records_all' || $highestAction == 'View Behaviour Records_my') {
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Search'));
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
             $row = $form->addRow();

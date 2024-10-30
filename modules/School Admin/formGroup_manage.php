@@ -69,8 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
             ->setIcon('copy')
             ->onClick('return confirm("'.__('Are you sure you want to continue?').' '.__('This operation cannot be undone.').'");')
             ->displayLabel()
-            ->directLink()
-            ->append('&nbsp;|&nbsp;');
+            ->directLink();
     }
 
     $table->addHeaderAction('add', __('Add'))

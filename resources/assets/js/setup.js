@@ -18,55 +18,42 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Initialize all legacy Thickbox links as HTMX AJAX calls
-Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
-    if (element.nodeName != 'A') return;
+
+htmx.onLoad(function (content) {
     
-    element.setAttribute('hx-boost', 'true');
-    element.setAttribute('hx-target', '#modalContent');
-    element.setAttribute('hx-push-url', 'false');
-    element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
-    element.classList.remove('thickbox');
+    // Initialize all legacy Thickbox links as HTMX AJAX calls
+    Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
+        if (element.nodeName != 'A') return;
+        
+        element.setAttribute('hx-boost', 'true');
+        element.setAttribute('hx-target', '#modalContent');
+        element.setAttribute('hx-push-url', 'false');
+        element.setAttribute('hx-swap', 'innerHTML show:no-scroll swap:0s');
+        element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
+        element.classList.remove('thickbox');
 
-    if (element.getAttribute('href').includes('_delete')) {
-        element.setAttribute('x-on:click', "modalType = 'delete'");
-    }
-});
+        element.setAttribute('x-on:click', element.getAttribute('href').includes('_delete') ? "modalType = 'delete'" : "modalType = 'view'");
 
+        htmx.process(element);
+    });
 
-$(document).ready(function(){
+    // Convert all title attributes into x-tooltip attributes
+    Array.from(document.querySelectorAll('[title]')).forEach((element) => {
+        if (element.title != undefined && element.title != '') {
+            element.setAttribute('x-tooltip', element.title);
+            element.title = '';
+        }
+    });
 
     $(document).trigger('gibbon-setup');
 
-    // Initialize tooltip
-    if ($(window).width() > 768) {
-        $(document).tooltip({
-            show: 800,
-            hide: false,
-            items: "*[title]:not(.tox-edit-area__iframe):not(.tox-collection__item):not(.tox-button):not(.tox-tbtn--select)",
-            content: function () {
-                return $(this).prop('title');
-            },
-            open: function(event, ui) {
-                ui.tooltip.delay(3000).fadeTo(1000, 0);
-            },
-            position: {
-                my: "center bottom-20",
-                at: "center top",
-                using: function (position, feedback) {
-                    $(this).css(position);
-                    $("<div>").
-                        addClass("arrow").
-                        addClass(feedback.vertical).
-                        addClass(feedback.horizontal).
-                        appendTo(this);
-                }
-            }
-        });
-    }
-
     // Initialize latex
     $(".latex").latex();
+
+    document.dispatchEvent(new Event('tinymceSetup'));
+    
+    // Unload tinymce if it exists, via ajax
+    if (tinymce != undefined) tinymce.remove();
 
     // Initialize tinymce
     tinymce.init({
@@ -114,15 +101,5 @@ $(document).ready(function(){
         ],
     });
 
-    // Sticky Observer
-    const el = document.querySelector(".submitRow.sticky");
-    const observer = new IntersectionObserver( 
-        function([e]) { 
-            e.target.classList.toggle("shadow-top", e.intersectionRatio < 1);
-            e.target.classList.toggle("bg-gray-300", e.intersectionRatio < 1);
-        },
-        { threshold: [1] }
-    );
-
-    if (el != undefined) observer.observe(el);
+    
 });

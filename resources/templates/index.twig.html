@@ -17,7 +17,7 @@ TODO: add template variable details.
         {{ include('head.twig.html') }}
         {% endblock head %}
     </head>
-    <body x-data="{ modalOpen: false, modalType: 'none' }"
+    <body x-data="{ modalOpen: false, modalType: 'none', globalShowHide: false }"
         class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: linear-gradient(to left top, #402568 2%, #935ee1 65%, #a871ec) no-repeat fixed' : '' }}">
         <a id="top"></a>
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
@@ -38,9 +38,9 @@ TODO: add template variable details.
                             {{ currentUser.name }}
                         </a>
 
-                        <div class="group relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}">
+                        <div class="relative px-4 py-4 {{ rightToLeft ? '-ml-3' : '-mr-3' }}" x-data="{menuOpen: false}" @mouseleave="menuOpen = false" @click.outside="menuOpen = false">
 
-                            <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-{{ themeColour }}-600 cursor-pointer">
+                            <a @mouseenter="menuOpen = true" @click="menuOpen = !menuOpen" :class="{'ring-opacity-75': menuOpen, 'ring-opacity-25': !menuOpen}" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 ring-white ring-2 cursor-pointer">
                             {% if currentUser.image_240 %}
                                 <img class="w-full -mt-1" src="{{ absoluteURL }}/{{ currentUser.image_240 }}" />
                             {% else %}
@@ -48,11 +48,15 @@ TODO: add template variable details.
                             {% endif %}
                             </a>
 
-                            <ul class="list-none m-0 bg-gray-800 hidden group-hover:block absolute w-48 mt-1 p-1 z-50 cursor-pointer {{ rightToLeft ? 'left-0' : 'right-0' }}">
+                            <ul x-cloak x-show="menuOpen" x-transition:enter.duration.250ms x-transition:leave.duration.100ms class="list-none m-0 bg-black bg-opacity-75 backdrop-blur-lg backdrop-contrast-125 backdrop-saturate-150 absolute rounded-md w-48 mt-1 p-1 sm:p-1.5 z-50 cursor-pointer {{ rightToLeft ? 'left-0' : 'right-0' }}">
                                 {% for link in minorLinks|reverse %}
-                                <li class="hover:bg-{{ themeColour }}-700">
-                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-1 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
+                                <li class="hover:bg-{{ themeColour }}-700 rounded">
+                                    <a @click="menuOpen = false" href="{{ link.url }}" class="flex justify-between items-center text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-1 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                         {{- link.name|raw -}}
+
+                                        {% if link.target == '_blank' %}
+                                            {{ icon('basic', 'external-link', 'size-4 text-white text-opacity-50 pointer-events-none') }}
+                                        {% endif %}
                                     </a>
                                 </li>
                                 {% endfor %}
@@ -62,7 +66,7 @@ TODO: add template variable details.
                         {% else %}
                             {% for link in minorLinks %}
                                 {{ link.prepend }}&nbsp;
-                                <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
+                                <a href="{{ link.url }}" class="text-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                     {{- link.name|raw -}}
                                 </a>
                                 {{ link.append }}
@@ -88,9 +92,9 @@ TODO: add template variable details.
                 {% block beforePage %}
                 {% endblock beforePage %}
 
-                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
+                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex flex-col' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
 
-                    <div class="block lg:hidden w-full shadow bg-white rounded px-4 mx-4 sm:mx-0 mb-4">
+                    <div class="block md:hidden shadow bg-white rounded px-4 mx-4 sm:mx-0 mb-4">
                         {% for type, alerts in page.alerts %}
                             {% for text in alerts %}
                                 <div class="{{ type }}">{{ text|raw }}</div>
@@ -99,7 +103,7 @@ TODO: add template variable details.
                         </div>
 
                     {% if sidebar and (sidebarContents or menuModule) %}
-                        <div id="sidebar" class="w-full lg:w-sidebar lg:max-w-xs {{ sidebarPos == 'left' and not rightToLeft ? 'lg:mr-6' : 'lg:ml-6' }}">
+                        <div id="sidebar" class="w-full lg:w-sidebar lg:min-w-72 lg:max-w-72 {{ sidebarPos == 'left' and not rightToLeft ? 'lg:mr-6' : 'lg:ml-6' }}">
                             {% block sidebar %}
                             {{ include('navigation.twig.html') }}
                             {% endblock sidebar %}
@@ -110,9 +114,9 @@ TODO: add template variable details.
                         {{ include('navigation.twig.html') }}
                     {% endif %}
 
-                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }}">
+                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} {{ isLoggedIn and menuModuleName is empty ? 'bg-gray-100' : 'bg-white pb-6'}} w-full shadow  sm:rounded lg:flex-1 px-4 sm:px-8">
 
-                        <div id="content-inner" class="">
+                        <div id="content-inner" class="h-full">
 
                             {% block page %}
 
@@ -142,7 +146,7 @@ TODO: add template variable details.
                 <div class="relative text-sm text-gray-700 px-6 lg:px-12 mt-4 pt-2 pb-6 leading-normal border-t border-gray-300 {{ rightToLeft ? 'text-right' : 'text-left' }}">
                     {{ include('footer.twig.html') }}
 
-                    <img class="absolute top-0 -mt-1 hidden sm:block w-32 {{ rightToLeft ? 'left-0 sm:ml-0 md:ml-16' : 'right-0 sm:mr-0 md:mr-16' }}" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
+                    <img class="absolute top-0 -mt-1 hidden sm:block w-32 {{ rightToLeft ? 'left-0 sm:ml-0 md:ml-16' : 'right-0 sm:mr-0 md:mr-16' }}" alt="Logo text-xs" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
                 </div>
             {% endblock %}
 

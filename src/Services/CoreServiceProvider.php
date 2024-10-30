@@ -180,6 +180,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 return Format::$method(...$args);
             }, ['is_safe' => ['html']]));
 
+            $twig->addFunction(new \Twig\TwigFunction('icon', function ($library, $icon, $class = '', $options = []) {
+                return icon($library, $icon, $class, $options);
+            }, ['is_safe' => ['html']]));
+
             $twig->addFilter(new \Twig\TwigFilter('jsonDecode', 'json_decode', ['is_safe' => ['html']]));
 
             return $twig;

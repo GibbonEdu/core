@@ -78,8 +78,8 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                 if (!empty($policyLink)) {
                     $table->addHeaderAction('policy', __('View Behaviour Policy'))
                         ->setExternalURL($policyLink)
-                        ->displayLabel()
-                        ->prepend('&nbsp|&nbsp');
+                        ->setIcon('document')
+                        ->displayLabel();
                 }
             }
 
@@ -115,9 +115,9 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                 ->width('5%')
                 ->format(function($behaviour) use ($session) {
                     if ($behaviour['type'] == 'Negative') {
-                        return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
+                        return icon('solid', 'cross', 'size-6 fill-current text-red-700');
                     } elseif ($behaviour['type'] == 'Positive') {
-                        return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
+                        return icon('solid', 'check', 'size-6 fill-current text-green-600');
                     }
                 });
 

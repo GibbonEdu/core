@@ -213,7 +213,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {{ formatUsing('name', '', person.preferredName, person.surname, 'Student') }}<br />
                     {% endif %}
                 </b>
-                <span class="small emphasis text-gray-700">{{ __('Status') }}: {{ __(person.status) }}</span>
+                <span class="text-xs italic text-gray-700">{{ __('Status') }}: {{ __(person.status) }}</span>
             </div>
         </div>
         {% endfor %}

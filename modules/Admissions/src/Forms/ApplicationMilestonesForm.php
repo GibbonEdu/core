@@ -61,17 +61,14 @@ class ApplicationMilestonesForm extends Form
         $milestonesData = json_decode($milestones ?? '', true);
 
         // Build the form
-        $form = Form::create('applicationMilestones', $action);
+        $form = Form::createBlank('applicationMilestones', $action);
 
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);
         $form->addHiddenValue('tab', 1);
-        $form->setClass('w-full blank');
 
-        $col = $form->addRow()->addColumn();
-
-        $checkIcon = $this->view->fetchFromTemplate('ui/icons.twig.html', ['icon' => 'check', 'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2']);
-        $crossIcon = $this->view->fetchFromTemplate('ui/icons.twig.html', ['icon' => 'cross', 'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2']);
+        $checkIcon = icon('basic', 'check', 'milestoneCheck size-6 fill-current mr-3 -my-2 text-green-600');
+        $crossIcon = icon('basic', 'cross', 'milestoneCross size-6 fill-current mr-3 -my-2 text-red-700');
 
         foreach ($milestonesList as $index => $milestone) {
             $data = $milestonesData[$milestone] ?? [];
@@ -82,14 +79,17 @@ class ApplicationMilestonesForm extends Form
                 $dateInfo = Format::dateReadable($milestonesData[$milestone]['date']).' '.__('By').' '.Format::name('', $user['preferredName'], $user['surname'], 'Staff', false, true);
             }
 
-            $description = '<div class="milestone flex-1 text-left"><span class="milestoneCheck '.($checked ? '' : 'hidden').'">'.$checkIcon.'</span><span class="milestoneCross '.($checked ? 'hidden' : '').'">'.$crossIcon.'</span><span class="text-base leading-normal">'.__($milestone).'</span></div><div class="flex-1 text-left">'.$dateInfo.'</div>';
-            $col->addCheckbox("milestones[{$milestone}]")
+            $row = $form->addRow()->addClass('milestoneInput flex justify-between items-center border rounded p-4 my-2 '. ($checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'));
+
+            $row->addContent($checked ? $checkIcon : $crossIcon)->setClass('w-12');
+            $row->addContent(__($milestone))->addClass('flex-1 text-base font-medium');
+            $row->addContent($dateInfo)->addClass('flex-1 text-xs');
+
+            $row->addCheckbox("milestones[{$milestone}]")
                 ->setValue('Y')
                 ->checked($checked ? 'Y' : 'N')
-                ->description($description)
                 ->alignRight()
-                ->setLabelClass('w-full flex items-center')
-                ->addClass('milestoneInput border rounded p-4 my-2 '. ($checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'));
+                ->setClass('w-24');
         }
 
         $form->addRow()->addSubmit();

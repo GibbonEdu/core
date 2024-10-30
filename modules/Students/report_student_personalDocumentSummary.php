@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_pe
         $form->setTitle(__('Choose Students'));
         $form->setDescription(__('This report prints a summary of personal documents including passports and ID cards for the selected students.'));
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Students'));

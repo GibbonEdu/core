@@ -285,7 +285,7 @@ class MessageForm extends Form
             foreach ($roles AS $role) {
                 $arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
             }
-            $row = $form->addRow()->addClass('role bg-blue-100');
+            $row = $form->addRow()->addClass('role bg-blue-50');
                 $row->addLabel('roles[]', __('Select Roles'));
                 $row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
@@ -299,7 +299,7 @@ class MessageForm extends Form
 
             $data = array();
             $sql = 'SELECT DISTINCT category AS value, category AS name FROM gibbonRole ORDER BY category';
-            $row = $form->addRow()->addClass('roleCategory bg-blue-100');
+            $row = $form->addRow()->addClass('roleCategory bg-blue-50');
                 $row->addLabel('roleCategories[]', __('Select Role Categories'));
                 $row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->required()->placeholder()->selected($selected);
         } else if ($sent && $values['messageWall'] == 'Y' && !empty($selectedRoleCategory) && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
@@ -330,20 +330,20 @@ class MessageForm extends Form
 
             $data = array();
             $sql = 'SELECT gibbonYearGroupID AS value, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-            $row = $form->addRow()->addClass('yearGroup bg-blue-100');
+            $row = $form->addRow()->addClass('yearGroup bg-blue-50');
                 $row->addLabel('yearGroups[]', __('Select Year Groups'));
                 $row->addSelect('yearGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
-            $row = $form->addRow()->addClass('yearGroup bg-blue-100');
+            $row = $form->addRow()->addClass('yearGroup bg-blue-50');
                 $row->addLabel('yearGroupsStaff', __('Include Staff?'));
                 $row->addYesNo('yearGroupsStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('yearGroup bg-blue-100');
+            $row = $form->addRow()->addClass('yearGroup bg-blue-50');
                 $row->addLabel('yearGroupsStudents', __('Include Students?'));
                     $row->addYesNo('yearGroupsStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
-                $row = $form->addRow()->addClass('yearGroup bg-blue-100');
+                $row = $form->addRow()->addClass('yearGroup bg-blue-50');
                     $row->addLabel('yearGroupsParents', __('Include Parents?'));
                     $row->addYesNo('yearGroupsParents')->selected($selectedByRole['parents']);
             }
@@ -374,20 +374,20 @@ class MessageForm extends Form
                     $sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
                 }
             }
-            $row = $form->addRow()->addClass('formGroup bg-blue-100');
+            $row = $form->addRow()->addClass('formGroup bg-blue-50');
                 $row->addLabel('formGroups[]', __('Select Form Groups'));
                 $row->addSelect('formGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
-            $row = $form->addRow()->addClass('formGroup bg-blue-100');
+            $row = $form->addRow()->addClass('formGroup bg-blue-50');
                 $row->addLabel('formGroupsStaff', __('Include Staff?'));
                 $row->addYesNo('formGroupsStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('formGroup bg-blue-100');
+            $row = $form->addRow()->addClass('formGroup bg-blue-50');
                 $row->addLabel('formGroupsStudents', __('Include Students?'));
                 $row->addYesNo('formGroupsStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-                $row = $form->addRow()->addClass('formGroup bg-blue-100');
+                $row = $form->addRow()->addClass('formGroup bg-blue-50');
                     $row->addLabel('formGroupsParents', __('Include Parents?'));
                     $row->addYesNo('formGroupsParents')->selected($selectedByRole['parents']);
             }
@@ -416,20 +416,20 @@ class MessageForm extends Form
                         WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' GROUP BY gibbonCourse.gibbonCourseID ORDER BY name";
             }
 
-            $row = $form->addRow()->addClass('course bg-blue-100');
+            $row = $form->addRow()->addClass('course bg-blue-50');
                 $row->addLabel('courses[]', __('Select Courses'));
                 $row->addSelect('courses[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
 
-            $row = $form->addRow()->addClass('course bg-blue-100');
+            $row = $form->addRow()->addClass('course bg-blue-50');
                 $row->addLabel('coursesStaff', __('Include Staff?'));
                 $row->addYesNo('coursesStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('course bg-blue-100');
+            $row = $form->addRow()->addClass('course bg-blue-50');
                 $row->addLabel('coursesStudents', __('Include Students?'));
                 $row->addYesNo('coursesStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
-                $row = $form->addRow()->addClass('course bg-blue-100');
+                $row = $form->addRow()->addClass('course bg-blue-50');
                     $row->addLabel('coursesParents', __('Include Parents?'));
                     $row->addYesNo('coursesParents')->selected($selectedByRole['parents']);
             }
@@ -458,20 +458,20 @@ class MessageForm extends Form
                     WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY gibbonCourseClass.name";
             }
 
-            $row = $form->addRow()->addClass('class bg-blue-100');
+            $row = $form->addRow()->addClass('class bg-blue-50');
                 $row->addLabel('classes[]', __('Select Classes'));
                 $row->addSelect('classes[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
 
-            $row = $form->addRow()->addClass('class bg-blue-100');
+            $row = $form->addRow()->addClass('class bg-blue-50');
                 $row->addLabel('classesStaff', __('Include Staff?'));
                 $row->addYesNo('classesStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('class bg-blue-100');
+            $row = $form->addRow()->addClass('class bg-blue-50');
                 $row->addLabel('classesStudents', __('Include Students?'));
                 $row->addYesNo('classesStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
-                $row = $form->addRow()->addClass('class bg-blue-100');
+                $row = $form->addRow()->addClass('class bg-blue-50');
                     $row->addLabel('classesParents', __('Include Parents?'));
                     $row->addYesNo('classesParents')->selected($selectedByRole['parents']);
             }
@@ -499,20 +499,20 @@ class MessageForm extends Form
                     $sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND status='Accepted' AND active='Y' ORDER BY name";
                 }
             }
-            $row = $form->addRow()->addClass('activity bg-blue-100');
+            $row = $form->addRow()->addClass('activity bg-blue-50');
                 $row->addLabel('activities[]', __('Select Activities'));
                 $row->addSelect('activities[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
 
-            $row = $form->addRow()->addClass('activity bg-blue-100');
+            $row = $form->addRow()->addClass('activity bg-blue-50');
                 $row->addLabel('activitiesStaff', __('Include Staff?'));
                 $row->addYesNo('activitiesStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('activity bg-blue-100');
+            $row = $form->addRow()->addClass('activity bg-blue-50');
                 $row->addLabel('activitiesStudents', __('Include Students?'));
                 $row->addYesNo('activitiesStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
-                $row = $form->addRow()->addClass('activity bg-blue-100');
+                $row = $form->addRow()->addClass('activity bg-blue-50');
                     $row->addLabel('activitiesParents', __('Include Parents?'));
                     $row->addYesNo('activitiesParents')->selected($selectedByRole['parents']);
             }
@@ -530,7 +530,7 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('applicants')->onRadio('applicants')->when('Y');
 
             $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber DESC";
-            $row = $form->addRow()->addClass('applicants bg-blue-100');
+            $row = $form->addRow()->addClass('applicants bg-blue-50');
                 $row->addLabel('applicantList[]', __('Select Years'));
                 $row->addSelect('applicantList[]')->fromQuery($pdo, $sql)->selectMultiple()->setSize(6)->required()->selected($selected);
 
@@ -560,7 +560,7 @@ class MessageForm extends Form
                 $data = array('gibbonPersonID' => $this->session->get('gibbonPersonID'));
                 $sql = "SELECT gibbonHouse.gibbonHouseID as value, name FROM gibbonHouse JOIN gibbonPerson ON (gibbonHouse.gibbonHouseID=gibbonPerson.gibbonHouseID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY name";
             }
-            $row = $form->addRow()->addClass('houses bg-blue-100');
+            $row = $form->addRow()->addClass('houses bg-blue-50');
                 $row->addLabel('houseList[]', __('Select Houses'));
                 $row->addSelect('houseList[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
         }
@@ -585,20 +585,20 @@ class MessageForm extends Form
             }, []));
             sort($transportList, SORT_NATURAL);
 
-            $row = $form->addRow()->addClass('transport bg-blue-100');
+            $row = $form->addRow()->addClass('transport bg-blue-50');
                 $row->addLabel('transports[]', __('Select Transport'));
                 $row->addSelect('transports[]')->fromArray($transportList)->selectMultiple()->setSize(6)->required()->selected($selected);
 
-            $row = $form->addRow()->addClass('transport bg-blue-100');
+            $row = $form->addRow()->addClass('transport bg-blue-50');
                 $row->addLabel('transportStaff', __('Include Staff?'));
                 $row->addYesNo('transportStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('transport bg-blue-100');
+            $row = $form->addRow()->addClass('transport bg-blue-50');
                 $row->addLabel('transportStudents', __('Include Students?'));
                 $row->addYesNo('transportStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
-                $row = $form->addRow()->addClass('transport bg-blue-100');
+                $row = $form->addRow()->addClass('transport bg-blue-50');
                     $row->addLabel('transportParents', __('Include Parents?'));
                     $row->addYesNo('transportParents')->selected($selectedByRole['parents']);
             }
@@ -631,15 +631,15 @@ class MessageForm extends Form
             });
             $attendanceCodes = array_column($attendanceCodes, 'name');
 
-            $row = $form->addRow()->addClass('attendance bg-blue-100');
+            $row = $form->addRow()->addClass('attendance bg-blue-50');
                 $row->addLabel('attendanceStatus[]', __('Select Attendance Status'));
                 $row->addSelect('attendanceStatus[]')->fromArray($attendanceCodes)->selectMultiple()->setSize(6)->required()->selected($selected);
 
-            $row = $form->addRow()->addClass('attendance bg-blue-100');
+            $row = $form->addRow()->addClass('attendance bg-blue-50');
                 $row->addLabel('attendanceStudents', __('Include Students?'));
                 $row->addYesNo('attendanceStudents')->selected($selectedByRole['students']);
 
-            $row = $form->addRow()->addClass('attendance bg-blue-100');
+            $row = $form->addRow()->addClass('attendance bg-blue-50');
                 $row->addLabel('attendanceParents', __('Include Parents?'));
                 $row->addYesNo('attendanceParents')->selected($selectedByRole['parents']);
         }
@@ -667,20 +667,20 @@ class MessageForm extends Form
                     ";
             }
 
-            $row = $form->addRow()->addClass('messageGroup bg-blue-100');
+            $row = $form->addRow()->addClass('messageGroup bg-blue-50');
                 $row->addLabel('groups[]', __('Select Groups'));
                 $row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
 
-            $row = $form->addRow()->addClass('messageGroup bg-blue-100');
+            $row = $form->addRow()->addClass('messageGroup bg-blue-50');
                 $row->addLabel('groupsStaff', __('Include Staff?'));
                 $row->addYesNo('groupsStaff')->selected($selectedByRole['staff']);
 
-            $row = $form->addRow()->addClass('messageGroup bg-blue-100');
+            $row = $form->addRow()->addClass('messageGroup bg-blue-50');
                 $row->addLabel('groupsStudents', __('Include Students?'));
                 $row->addYesNo('groupsStudents')->selected($selectedByRole['students']);
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
-                $row = $form->addRow()->addClass('messageGroup bg-blue-100');
+                $row = $form->addRow()->addClass('messageGroup bg-blue-50');
                     $row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
                     $row->addYesNo('groupsParents')->selected($selectedByRole['parents']);
             }
@@ -734,7 +734,7 @@ class MessageForm extends Form
             }, array());
             $selectedIndividuals = array_intersect_key($individuals, array_flip($selected));
 
-            $row = $form->addRow()->addClass('individuals bg-blue-100');
+            $row = $form->addRow()->addClass('individuals bg-blue-50');
                 $col = $row->addColumn();
                 $col->addLabel('individualList', __('Select Individuals'));
                 $select = $col->addMultiSelect('individualList')->required();
@@ -760,9 +760,9 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('noEmail')->onRadio('email')->when('N');
 
             $row = $form->addRow('stickySubmit');
-                $col = $row->addColumn()->addClass('items-center');
-                    $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('rounded-sm w-auto mr-2');
-                $col = $row->addColumn()->addClass('items-center');
+                $col = $row->addColumn()->setClass('flex-shrink items-center');
+                    $col->addButton(__('Save Draft'))->setAttribute('@click', 'checkDraft(); if ($validate.isComplete("messengerMessage")) { saveDraft() } else { invalid = true; }');
+                $col = $row->addColumn()->setID('Submit')->addClass('items-center');
                     $col->addSubmit(__('Preview & Send'))->addClass('email');
                     $col->addSubmit()->addClass('noEmail');
         }

@@ -65,6 +65,9 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                 'gibbonBehaviour.date',
                 'gibbonBehaviour.timestamp',
                 'gibbonBehaviour.comment',
+                'gibbonBehaviour.gibbonPersonIDCreator',
+                'gibbonStudentEnrolment.gibbonFormGroupID',
+                'gibbonStudentEnrolment.gibbonYearGroupID',
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
@@ -108,6 +111,46 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                     ->bindValue('type', $type);
             },
         ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryBehaviourByFormGroup(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonFormGroupID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonBehaviour.gibbonBehaviourID',
+                'gibbonBehaviour.type',
+                'gibbonBehaviour.descriptor',
+                'gibbonBehaviour.level',
+                'gibbonBehaviour.date',
+                'gibbonBehaviour.timestamp',
+                'gibbonBehaviour.comment',
+                'gibbonBehaviour.gibbonPersonIDCreator',
+                'gibbonStudentEnrolment.gibbonFormGroupID',
+                'gibbonStudentEnrolment.gibbonYearGroupID',
+                'student.gibbonPersonID',
+                'student.surname',
+                'student.preferredName',
+                'gibbonFormGroup.nameShort AS formGroup',
+                'creator.title AS titleCreator',
+                'creator.surname AS surnameCreator',
+                'creator.preferredName AS preferredNameCreator',
+            ])
+            ->innerJoin('gibbonPerson AS student', 'gibbonBehaviour.gibbonPersonID=student.gibbonPersonID')
+            ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonBehaviour.gibbonSchoolYearID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
+            ->leftJoin('gibbonPerson AS creator', 'gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID')
+            ->where('gibbonBehaviour.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
+            ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
 
         return $this->runQuery($query, $criteria);
     }

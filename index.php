@@ -19,14 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
@@ -288,7 +287,10 @@ $javascriptConfig = [
     'config' => [
         'tinymce' => [
             'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
-        ]
+        ],
+        'htmx' => [
+            'unload_confirm' => __("Are you sure you want to leave this page? Information you've entered may not be saved."),
+        ],
     ],
 ];
 
@@ -301,16 +303,26 @@ $javascriptConfig = [
 
 // Set page scripts: head
 $page->scripts->addMultiple([
-    'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
+    // 'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
+    'htmx'           => 'lib/htmx/htmx.min.js',
+    'core'           => 'resources/assets/js/core.min.js',
+    
+], ['context' => 'head']);
+
+$page->scripts->addMultiple([
     'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
     'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
-    'core'           => 'resources/assets/js/core.min.js',
-    'htmx'           => 'lib/htmx/htmx.min.js',
-    
-], ['context' => 'head']);
+    'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
+    'alpineCollapse' => 'lib/htmx/alpine.collapse.min.js',
+    'alpineValidate' => 'lib/htmx/alpine.validate.min.js',
+    'alpine'         => 'lib/htmx/alpine.min.js',
+], ['context' => 'head', 'type' => 'defer']);
+
+// Set page scripts: foot - core
+$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 
 // Set page scripts: foot - jquery
 $page->scripts->addMultiple([
@@ -318,18 +330,13 @@ $page->scripts->addMultiple([
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
-], ['context' => 'foot']);
+], ['context' => 'foot', 'type' => 'defer']);
 
 // Set page scripts: foot - misc
 $page->scripts->addMultiple([
-    'tinymce'  => 'lib/tinymce/tinymce.min.js',
-    'alpineFocus'   => 'lib/htmx/alpine.focus.min.js',
-    'alpine'   => 'lib/htmx/alpine.min.js',
+    'core-setup'     => 'resources/assets/js/setup.js',
+    'tinymce'        => 'lib/tinymce/tinymce.min.js',
 ], ['context' => 'foot', 'type' => 'defer']);
-
-// Set page scripts: foot - core
-$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
-$page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
@@ -478,7 +485,8 @@ if ($isLoggedIn && !$upgrade) {
                 $menuItemActive = $item['active'] ? $item['actionName'] : $menuItemActive;
             }
         }
-
+        
+        
         $session->set('menuModuleItems', $menuModuleItems);
         $session->set('menuModuleName', $currentModule);
         $session->set('menuItemActive', $menuItemActive);
@@ -543,7 +551,8 @@ if ($isLoggedIn) {
     $page->addData([
         'menuMain'       => $session->get('menuMainItems', []),
         'menuModule'     => $session->get('menuModuleItems', []),
-        'menuItemActive' => $session->get('menuItemActive', []),
+        'menuModuleName' => $session->get('menuModuleName', ''),
+        'menuItemActive' => $session->get('menuItemActive', ''),
     ]);
 }
 

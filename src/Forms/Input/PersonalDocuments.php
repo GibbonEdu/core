@@ -37,7 +37,7 @@ class PersonalDocuments extends Input
     protected $view;
     protected $factory;
     protected $documents;
-    protected $validation;
+    protected $validationOutput;
 
     protected $absoluteURL;
     protected $nationalityList;
@@ -63,7 +63,7 @@ class PersonalDocuments extends Input
      */
     public function getValidationOutput()
     {
-        return $this->validation;
+        return $this->validationOutput;
     }
 
     /**
@@ -83,11 +83,8 @@ class PersonalDocuments extends Input
 
             $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-between">';
-            
-            $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                'icon' => strtolower($document['document']),
-                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
-            ]);
+
+            $output .= icon('large', strtolower($document['document']), 'size-6 fill-current mr-3 -my-2');
 
             $output .= __($document['name']);
 
@@ -162,8 +159,10 @@ class PersonalDocuments extends Input
                     $input->loadFrom($document)->setName($fieldName)->setID($fieldID);
                     
                     $output .= $label->setClass('inline-block w-32 font-medium text-xs text-gray-700')->getOutput();
+                    $output .= '<div class="flex-1 relative flex justify-end items-center">';
                     $output .= $input->getOutput();
-                    $this->validation .= $input->getValidationOutput();
+                    $output .= '</div>';
+                    $this->validationOutput .= $input->getValidationOutput();
                 }
                 $output .= '</div>';
             }
