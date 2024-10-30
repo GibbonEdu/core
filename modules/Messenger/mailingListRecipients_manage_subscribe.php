@@ -25,7 +25,7 @@ use Gibbon\Domain\Messenger\MailingListRecipientGateway;
 $return = $_GET['return'] ?? '';
 
 $mode = $_GET['mode'] ?? 'subscribe';
-$mode = ($mode == 'subscribe' || $mode == 'unsubscribe') ? $mode : 'subscribe';
+$mode = ($mode == 'subscribe' || $mode == 'unsubscribe' || $mode == 'manage') ? $mode : 'subscribe';
 
 $page->breadcrumbs->add(__('Mailing List Subscription'));
 
@@ -75,7 +75,7 @@ if ($mode == 'subscribe') {
 
         echo $form->getOutput();
     }
-} else {
+} else if ($mode == 'manage' || $mode == 'unsubscribe') {
     // Get and check email and key
     $email = $_GET['email'] ?? '';
     $key = $_GET['key'] ?? '';
@@ -87,21 +87,22 @@ if ($mode == 'subscribe') {
     if ($keyCheck->rowCount() != 1) {
         $page->addError(__('The specified record cannot be found.'));
     } else {
-        $page->addAlert(__('Please use the form below to edit your subscription to our mailing lists as per your interests.'), 'message');
+        if ($mode == 'manage') {
+            $page->addAlert(__('Please use the form below to manage your subscription preferences.'), 'message');
 
-        $form->addHiddenValue('email', $email);
-        $form->addHiddenValue('key', $key);
+            $form->addHiddenValue('email', $email);
+            $form->addHiddenValue('key', $key);
 
-        $values = $keyCheck->fetchAll()[0];
-        $values['gibbonMessengerMailingListIDList'] = explode(',', $values['gibbonMessengerMailingListIDList'] ?? ''); 
+            $values = $keyCheck->fetchAll()[0];
+            $values['gibbonMessengerMailingListIDList'] = explode(',', $values['gibbonMessengerMailingListIDList'] ?? ''); 
 
-        $form->loadAllValuesFrom($values);
+            $form->loadAllValuesFrom($values);
 
-        echo $form->getOutput();
-
+            echo $form->getOutput();
+        } else {
+            $page->addAlert(__('Please {linkOpen}click here{linkClose} if you wish to re-subscribe to our mailing lists.', ['linkOpen' => '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php&mode=manage&email='.$email.'&key='.$key.'">', 'linkClose' => '</a>']), 'message');
+        }
     }
-
-    
 }
 
 

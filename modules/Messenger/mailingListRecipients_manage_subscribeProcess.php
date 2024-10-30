@@ -30,8 +30,8 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php";
 
-$mode = $_POST['mode'] ?? 'subscribe';
-$mode = ($mode == 'subscribe' || $mode == 'unsubscribe') ? $mode : 'subscribe';
+$mode = $_REQUEST['mode'] ?? 'subscribe';
+$mode = ($mode == 'subscribe' || $mode == 'unsubscribe' || $mode == 'manage') ? $mode : 'subscribe';
 
 $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
 
@@ -72,7 +72,7 @@ if ($mode == 'subscribe') {
     }
 
     header("Location: {$URL}");
-} else {
+} else if ($mode == 'manage') {
     $data = [
         'surname'                           => $_POST['surname'] ?? '',
         'preferredName'                     => $_POST['preferredName'] ?? '',
@@ -106,6 +106,31 @@ if ($mode == 'subscribe') {
             : "&return=success0&mode=$mode&email=$email&key=$key";
 
         header("Location: {$URL}");
-    }
+    } 
+} else {
+    $data = [
+        'gibbonMessengerMailingListIDList'  => ''
+    ];
+
+    // Validate email and key
+    $email = $_GET['email'] ?? '';
+    $key = $_GET['key'] ?? '';
+    $keyCheck = $mailingListRecipientGateway->keyCheck($email, $key);
     
+    if ($keyCheck->rowCount() != 1) {
+        $URL .= "&return=error1&mode=$mode&email=$email&key=$key";
+        header("Location: {$URL}");
+        exit;
+    } else {
+        // Update the record
+        $values = $keyCheck->fetchAll()[0];
+        $updated = $mailingListRecipientGateway->update($values['gibbonMessengerMailingListRecipientID'], $data);
+
+        $URL .= !$updated
+            ? "&return=error2&mode=$mode&email=$email&key=$key"
+            : "&return=success0&mode=$mode&email=$email&key=$key";
+
+        header("Location: {$URL}");
+    } 
+
 }
