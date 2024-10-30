@@ -169,6 +169,10 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
                     $validations[] = 'email';
                     $message = __('Please enter a valid email address');
                     break;
+                case 'url':
+                    $validations[] = 'url';
+                    $message = __('Please enter a valid URL');
+                    break;
                 case 'confirmation':
                     $match = $params['match'] ?? '';
                     $expression = '$el.value === $validate.value("'.$match.'")';

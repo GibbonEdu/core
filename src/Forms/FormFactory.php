@@ -196,7 +196,9 @@ class FormFactory implements FormFactoryInterface
 
     public function createEmail($name)
     {
-        return (new Input\TextField($name))->addValidation('Validate.Email')->maxLength(75);
+        return (new Input\TextField($name))
+            ->addValidation('Validate.Email')
+            ->maxLength(75);
     }
 
     //A URL web link
@@ -205,10 +207,7 @@ class FormFactory implements FormFactoryInterface
         return (new Input\TextField($name) )
             ->setType('url')
             ->placeholder('http://')
-            ->addValidation(
-                'Validate.Format',
-                'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "'.__('Must start with http:// or https://').'"'
-            );
+            ->addValidation('Validate.URL');
     }
 
     public function createNumber($name)
