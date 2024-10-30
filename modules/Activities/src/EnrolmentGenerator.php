@@ -34,6 +34,7 @@ class EnrolmentGenerator
     protected $activityGateway;
     protected $activityStudentGateway;
     protected $activityChoiceGateway;
+    protected $activityCategoryGateway;
 
     protected $newStudentPriority = true;
     protected $yearGroupPriority = true;
@@ -46,13 +47,12 @@ class EnrolmentGenerator
     protected $choices;
     protected $groups;
 
-    public function __construct(ActivityGateway $activityGateway, ActivityStudentGateway $activityStudentGateway, ActivityChoiceGateway $activityChoiceGateway)
+    public function __construct(ActivityGateway $activityGateway, ActivityStudentGateway $activityStudentGateway, ActivityChoiceGateway $activityChoiceGateway, ActivityCategoryGateway $activityCategoryGateway)
     {
         $this->activityGateway = $activityGateway;
         $this->activityStudentGateway = $activityStudentGateway;
         $this->activityChoiceGateway = $activityChoiceGateway;
-
-        $this->signUpChoices = 3;
+        $this->activityCategoryGateway = $activityCategoryGateway;
     }
 
     public function getActivities()
@@ -104,6 +104,9 @@ class EnrolmentGenerator
 
     public function loadChoices(string $gibbonActivityCategoryID)
     {
+        $category = $this->activityCategoryGateway->getByID($gibbonActivityCategoryID);
+        $this->signUpChoices = $category['signUpChoices'] ?? 3;
+
         $choices = $this->activityChoiceGateway->selectChoicesByCategory($gibbonActivityCategoryID)->fetchGroupedUnique();
         $this->choices = [];
 

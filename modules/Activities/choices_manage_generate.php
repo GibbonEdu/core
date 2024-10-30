@@ -51,7 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
     $activityGateway = $container->get(ActivityGateway::class);
     $activityChoiceGateway = $container->get(ActivityChoiceGateway::class);
     
-    $signUpChoices = 3;
+    $category = $categoryGateway->getByID($params['gibbonActivityCategoryID']);
+    $signUpChoices = $category['signUpChoices'] ?? 3;
     $choiceList = [1 => __('First Choice'), 2 => __('Second Choice'), 3 => __('Third Choice'), 4 => __('Fourth Choice'), 5 => __('Fifth Choice')];
 
     $pageUrl = Url::fromModuleRoute('Activities', 'choices_manage_generate.php')->withQueryParams($params);

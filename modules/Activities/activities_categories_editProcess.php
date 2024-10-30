@@ -44,6 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
         'gibbonSchoolYearID'    => $gibbonSchoolYearID,
         'name'                  => $_POST['name'] ?? '',
         'nameShort'             => $_POST['nameShort'] ?? '',
+        'signUpChoices'         => $_POST['signUpChoices'] ?? '3',
         'description'           => $_POST['description'] ?? '',
         'backgroundImage'       => $_POST['backgroundImage'] ?? '',
         'active'                => $_POST['active'] ?? '',

@@ -41,11 +41,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
         'error4' => __(''),
     ]);
 
-    $activityCategoryGateway = $container->get(ActivityCategoryGateway::class);
+    $categoryGateway = $container->get(ActivityCategoryGateway::class);
     $activityGateway = $container->get(ActivityGateway::class);
     $activityStudentGateway = $container->get(ActivityStudentGateway::class);
 
-    $categories = $activityCategoryGateway->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+    $categories = $categoryGateway->selectCategoriesBySchoolYear($session->get('gibbonSchoolYearID'))->fetchKeyPair();
     
     $params = [
         'sidebar' => 'false',
@@ -72,7 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     if (empty($params['gibbonActivityCategoryID'])) return;
 
     // Get groups
-    $signUpChoices = 3;
+    $category = $categoryGateway->getByID($params['gibbonActivityCategoryID']);
+    $signUpChoices = $category['signUpChoices'] ?? 3;
     $choiceList = [1 => __('First Choice'), 2 => __('Second Choice'), 3 => __('Third Choice'), 4 => __('Fourth Choice'), 5 => __('Fifth Choice')];
 
     $activities = $activityGateway->selectActivityDetailsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();

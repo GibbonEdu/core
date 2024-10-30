@@ -67,7 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
     }
 
     $existingChoices = $choiceGateway->selectChoicesByPerson($params['gibbonActivityCategoryID'], $params['gibbonPersonID'])->fetchGroupedUnique();
-    $signUpChoices = 3;
+
+    $category = $categoryGateway->getByID($params['gibbonActivityCategoryID']);
+    $signUpChoices = $category['signUpChoices'] ?? 3;
 
     // Update the sign up choices
     $choiceIDs = [];

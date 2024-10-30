@@ -61,7 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
     $activityChainedTo = array_combine(array_column($activities, 'gibbonActivityID'), array_column($activities, 'gibbonActivityCategoryID'));
     $activityCategories = array_count_values(array_filter($activityChainedTo));
 
-    $signUpChoices = 3;
+    $category = $categoryGateway->getByID($params['gibbonActivityCategoryID']);
+    $signUpChoices = $category['signUpChoices'] ?? 3;
     $choiceList = [1 => __('First Choice'), 2 => __('Second Choice'), 3 => __('Third Choice'), 4 => __('Fourth Choice'), 5 => __('Fifth Choice')];
 
     if ($params['mode'] == 'edit') {    

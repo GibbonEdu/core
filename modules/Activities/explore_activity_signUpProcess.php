@@ -95,7 +95,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/explore_activit
     // Get experiences and choices
     $activities = $activityGateway->selectActivitiesByCategoryAndPerson($params['gibbonActivityCategoryID'], $gibbonPersonID)->fetchKeyPair();
     $choicesSelected = $choiceGateway->selectChoicesByPerson($params['gibbonActivityCategoryID'], $gibbonPersonID)->fetchGroupedUnique();
-    $signUpChoices = 3;
+
+    $category = $categoryGateway->getByID($params['gibbonActivityCategoryID']);
+    $signUpChoices = $category['signUpChoices'] ?? 3;
 
     // Lower the choice limit if there are less options
     if (count($activities) < $signUpChoices) {

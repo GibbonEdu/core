@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage.
     // CRITERIA
     $criteria = $choiceGateway->newQueryCriteria(true)
         ->searchBy($choiceGateway->getSearchableColumns(), $params['search'])
-        ->filterBy('event', $params['gibbonActivityCategoryID'])
+        ->filterBy('category', $params['gibbonActivityCategoryID'])
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
@@ -83,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage.
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Activities/choices_manage_addEdit.php')
+        ->addParam('gibbonActivityCategoryID', $params['gibbonActivityCategoryID'])
         ->addParam('mode', 'add')
         ->displayLabel();
 
