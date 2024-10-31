@@ -158,7 +158,7 @@ class CoverageRequestForm
         }, []);
 
         // FORM
-        $form = Form::create('staffAbsenceEdit', '');
+        $form = Form::createBlank('staffAbsenceEdit', '');
 
         $form->setFactory(DatabaseFormFactory::create($this->db));
 
