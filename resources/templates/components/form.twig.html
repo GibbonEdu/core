@@ -8,7 +8,8 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% set standardLayout = "noIntBorder" not in form.getClass and "blank" not in form.getClass %}
+{% set standardLayout = "noIntBorder" not in form.getClass and "form-small" not in form.getClass and "blank" not in form.getClass %}
+{% set smallLayout = "form-small" in form.getClass %}
 {% set useSections = "noIntBorder" not in form.getClass %}
 
 {% if quickSave and form.getAction %}
@@ -104,7 +105,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-4' %}
                 {% set rowClass = section == 'submit' ? rowClass ~ ' sm:items-center' : rowClass ~ ' sm:items-start' %}
 
-                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
   
                 {% if quickSave and section == 'submit' %}
                     <span class="text-xs text-gray-600">

@@ -234,9 +234,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         ->setAttribute('x-show', 'changeAll')
         ->setAttribute('x-cloak');
         
-    $col->addSelect('set-all-type')->fromArray($attendance->getAttendanceTypes())->groupAlign('left');
-    $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->groupAlign('middle');
-    $col->addTextField('set-all-comment')->maxLength(255)->setClass('w-36 -ml-px')->groupAlign('middle');
+    $col->addSelect('set-all-type')->fromArray($attendance->getAttendanceTypes())->groupAlign('left')->setClass('flex-1');
+    $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->groupAlign('middle')->setClass('flex-1 -ml-px');
+    $col->addTextField('set-all-comment')->maxLength(255)->groupAlign('middle')->setClass('flex-1 -ml-px');
     $col->addButton(__('Apply'))->setID('set-all')->groupAlign('right')->setAttribute('@click', 'changeAll = false');
 
     $row->addSubmit()->addClass('flex-shrink');

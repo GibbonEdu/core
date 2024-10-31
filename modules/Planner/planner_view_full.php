@@ -1162,39 +1162,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd'])->fetchAll();
                         $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y'];
 
-                        // Build attendance data
-                        foreach ($participants as $key => $student) {
-                            if ($student['role'] != 'Student') continue;
-
-                            $result = $attendanceGateway->selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $student['gibbonPersonID'], $values['date']);
-
-                            $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
-                            $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
-
-                            //Check for school prefill if attendance not taken in this class
-                            if ($result->rowCount() == 0) {
-                                $result = $attendanceGateway->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $values['date'], $crossFillClasses);
-
-                                $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
-                                $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
-
-                                if ($log['prefill'] == 'N') {
-                                    $log = $defaults;
-                                }
-                            }
-
-                            $participants[$key]['cellHighlight'] = '';
-                            if ($attendance->isTypeAbsent($log['type'])) {
-                                $participants[$key]['cellHighlight'] = 'bg-red-200';
-                            } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
-                                $participants[$key]['cellHighlight'] = 'bg-blue-200';
-                            } elseif ($attendance->isTypeLate($log['type'])) {
-                                $participants[$key]['cellHighlight'] = 'bg-orange-200';
-                            }
-
-                            $participants[$key]['log'] = $log;
-                        }
-
                         // ATTENDANCE FORM
                         $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
                         $form->setClass('w-full font-sans text-xs text-gray-700');
@@ -1203,6 +1170,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
+                            // Build attendance data
+                            foreach ($participants as $key => $student) {
+                                if ($student['role'] != 'Student') continue;
+
+                                $result = $attendanceGateway->selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $student['gibbonPersonID'], $values['date']);
+
+                                $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+                                $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
+
+                                //Check for school prefill if attendance not taken in this class
+                                if ($result->rowCount() == 0) {
+                                    $result = $attendanceGateway->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $values['date'], $crossFillClasses);
+
+                                    $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                                    $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
+
+                                    if ($log['prefill'] == 'N') {
+                                        $log = $defaults;
+                                    }
+                                }
+
+                                $participants[$key]['cellHighlight'] = '';
+                                if ($attendance->isTypeAbsent($log['type'])) {
+                                    $participants[$key]['cellHighlight'] = 'bg-red-200';
+                                } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
+                                    $participants[$key]['cellHighlight'] = 'bg-blue-200';
+                                } elseif ($attendance->isTypeLate($log['type'])) {
+                                    $participants[$key]['cellHighlight'] = 'bg-orange-200';
+                                }
+
+                                $participants[$key]['log'] = $log;
+                            }
+
                             // Try to determine the timetable period for this lesson
                             $form->addHiddenValue('gibbonTTDayRowClassID', $ttPeriod['gibbonTTDayRowClassID'] ?? '');
 
@@ -1222,7 +1222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         }
 
-                        $grid = $form->addRow()->addGrid('attendance')->setClass('border bg-blue-50 rounded p-2 lg:p-4')->setBreakpoints('w-1/2');
+                        $grid = $form->addRow()->addGrid('attendance')->setClass('border bg-blue-50 rounded p-2 ')->setBreakpoints('w-1/2');
 
                         // Display attendance grid
                         $count = 0;

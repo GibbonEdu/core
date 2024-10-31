@@ -80,7 +80,7 @@ if (!$session->has('gibbonPersonID')) {
 
     $row = $form->addRow();
         $row->addContent(getMaxUpload(true));
-        $row->addSubmit(__('Upload'), 'bg-purple');
+        $row->addSubmit(__('Upload'))->setColor('purple');
 
     $output .= $form->getOutput();
 

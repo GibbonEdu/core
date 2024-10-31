@@ -5,6 +5,8 @@ if ($disabled) {
     $bgClass = ' bg-gray-100 text-gray-600';
 } else if ($color == 'red') {
     $bgClass = ' border-red-700 bg-red-700 hover:bg-red-900 hover:border-red-900 text-white';
+} else if ($color == 'purple') {
+    $bgClass = ' border-purple-600 bg-purple-600 hover:bg-purple-800 hover:border-purple-800 text-white';
 } else if ($type == 'submit') {
     $bgClass = ' border-gray-800 bg-gray-800 hover:bg-gray-900 text-white';
 } else {

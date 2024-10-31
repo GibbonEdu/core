@@ -150,6 +150,7 @@ class Time extends TextField
         ];
 
         $output = '<script type="text/javascript">';
+        $output .= '$(document).ready(function () {';
         $output .= '$("#'.$this->getID().'").timepicker('.json_encode($jsonData).');';
         if (!empty($this->chained)) {
             // On change, update this time and set duration
@@ -158,6 +159,7 @@ class Time extends TextField
             $output .= '$("#'.$this->getID().'").timepicker({ "minTime": $(this).val(), "timeFormat" : "'.$this->format.'", "showDuration" : "'.$this->showDuration.'"});';
             $output .= '});';
         }
+        $output .= '});';
         $output .= '</script>';
 
         return Component::render(Time::class, $this->getAttributeArray() + [

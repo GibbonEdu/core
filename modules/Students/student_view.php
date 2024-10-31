@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID')
                     ->format(function ($row, $actions) {
-                        $actions->addAction('view', __('View Details'))
+                        $actions->addAction('profile', __('View'))
                             ->setURL('/modules/Students/student_view_details.php');
                     });
 

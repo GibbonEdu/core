@@ -55,13 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $nextWeek = $date->modify('+1 week')->format('Y-m-d');
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
-        $col->addButton(__('Last Week'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
-        $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
-        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
+        $col->addButton(__('Last Week'))->groupAlign('left')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
+        $col->addButton(__('This Week'))->groupAlign('middle')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
+        $col->addButton(__('Next Week'))->groupAlign('right')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addDate('dateStart')->setValue($date->format('Y-m-d'))->setClass('shortWidth');
-        $col->addSubmit(__('Go'));
+        $col->addDate('dateStart')->groupAlign('left')->setValue($date->format('Y-m-d'))->setClass('w-36');
+        $col->addSubmit(__('Go'))->groupAlign('right');
 
     echo $form->getOutput();
 
