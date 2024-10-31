@@ -53,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
     
     $category = $categoryGateway->getByID($params['gibbonActivityCategoryID']);
     $signUpChoices = $category['signUpChoices'] ?? 3;
+
     $choiceList = [1 => __('First Choice'), 2 => __('Second Choice'), 3 => __('Third Choice'), 4 => __('Fourth Choice'), 5 => __('Fifth Choice')];
 
     $pageUrl = Url::fromModuleRoute('Activities', 'choices_manage_generate.php')->withQueryParams($params);
@@ -104,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         $activities = $activityGateway->selectActivityDetailsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
         $choiceCounts = $activityChoiceGateway->selectChoiceCountsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
 
-        $table = $form->addRow()->addTable()->setClass('mini fullWidth');
+        $table = $form->addRow()->addTable()->setClass('mini w-full');
         $table->addClass('bulkActionForm colorOddEven');
 
         $header = $table->addHeaderRow();
@@ -187,8 +188,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
             'mode' => 'student',
         ]));
 
-        $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
-        $row = $table->addRow()->addSubmit(__('Submit'));
+        $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
+        $row = $table->addRow()->addSubmit(__('Submit'))->addClass('text-right');
     } elseif ($form->getCurrentPage() >= 3) {
         // STEP 4
         $enrolmentList = $_POST['person'] ?? [];

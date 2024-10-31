@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
         'mode'        => 'staff',
     ]));
 
-    $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
-    $row = $table->addRow()->addSubmit(__('Submit'));
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
+    $row = $table->addRow()->addSubmit(__('Submit'))->addClass('text-right');
     
     echo $form->getOutput();
 }

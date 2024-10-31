@@ -303,16 +303,15 @@ $javascriptConfig = [
 
 // Set page scripts: head
 $page->scripts->addMultiple([
-    // 'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
+    'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
+    'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
     'htmx'           => 'lib/htmx/htmx.min.js',
     'core'           => 'resources/assets/js/core.min.js',
     
 ], ['context' => 'head']);
 
 $page->scripts->addMultiple([
-    'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
-    'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'alpineFocus'    => 'lib/htmx/alpine.focus.min.js',
