@@ -13,14 +13,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set useSections = "noIntBorder" not in form.getClass and "blank" not in form.getClass %}
 
 {% if quickSave and form.getAction %}
-    <form {{ form.getAttributeString|raw }} hx-trigger="keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'invalid': false, 'submitting': false, 'showTimeout': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout);" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000); $dispatch('saved');" x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
+    <form x-validate {{ form.getAttributeString|raw }} hx-trigger="quicksave, keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'invalid': false, 'submitting': false, 'showTimeout': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout);" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000); $dispatch('saved');" x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
 
     <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
         <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
         <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
     </div>
 {% elseif form.getAction != 'ajax' %}
-    <form x-validate   {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
+    <form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
 {% endif %}
 
     {% if form.hasPages %}
@@ -76,7 +76,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 document.getElementById(formElement.id).addEventListener('input', (evt) => {
                     this.changed = true;
                     window.onbeforeunload = function(event) {
-                        if (event.target.activeElement.type=='submit' || event.target.activeElement.value=='Submit' || event.target.activeElement.value=='Next' || event.target.activeElement.value=='Save') return;
+                        if (event.target.activeElement.nodeName == 'INPUT' || event.target.activeElement.type=='submit' || event.target.activeElement.value=='Submit' || event.target.activeElement.value=='Next' || event.target.activeElement.value=='Save') return;
                         return Gibbon.config.htmx.unload_confirm;
                     };
                 });
