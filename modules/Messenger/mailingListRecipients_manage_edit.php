@@ -68,9 +68,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     
     $sql = "SELECT gibbonMessengerMailingListID as value, name FROM gibbonMessengerMailingList WHERE active='Y' ORDER BY name";
     $lists = $pdo->select($sql)->fetchKeyPair();
-    $row = $form->addRow();
-        $row->addLabel('gibbonMessengerMailingListIDList', __('Mailing Lists'));
-        $row->addCheckbox('gibbonMessengerMailingListIDList')->fromArray($lists);
+    if (count($lists) > 0) {
+        $row = $form->addRow();
+            $row->addLabel('gibbonMessengerMailingListIDList', __('Mailing Lists'));
+            $row->addCheckbox('gibbonMessengerMailingListIDList')->fromArray($lists);
+    }
     
     $values['gibbonMessengerMailingListIDList'] = explode(',', $values['gibbonMessengerMailingListIDList'] ?? ''); 
 
