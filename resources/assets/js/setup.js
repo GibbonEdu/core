@@ -99,6 +99,12 @@ htmx.onLoad(function (content) {
             "#000000", "Black", 
             "#ffffff", "White", 
         ],
+        init_instance_callback: (editor) => {
+            editor.on('blur', (e) => {
+                tinymce.triggerSave();
+                e.target.targetElm.dispatchEvent(new Event('blur'));
+            });
+          }
     });
 
     

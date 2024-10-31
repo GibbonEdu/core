@@ -370,8 +370,9 @@ input[type="checkbox"] + .error-msg {
     width: auto !important;
 }
 
-.tinymce + .error-msg {
-    @apply top-auto bottom-0 mb-2;
+.tinymce + .error-msg,
+.tox-tinymce + .error-msg  {
+    @apply top-auto bottom-0 mb-6 ml-2;
 }
 
 *[aria-invalid="true"] {
@@ -380,9 +381,11 @@ input[type="checkbox"] + .error-msg {
 
 input[aria-invalid="true"],
 select[aria-invalid="true"],
-textarea[aria-invalid="true"] {
+textarea[aria-invalid="true"],
+textarea[aria-invalid="true"] + .tox-tinymce {
     @apply border border-red-700  hover:border-red-700;
 }
+
 
 input + .error-msg::before {
     content: "";

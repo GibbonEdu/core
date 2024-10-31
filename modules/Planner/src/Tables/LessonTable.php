@@ -113,7 +113,7 @@ class LessonTable
             $today = date('Y-m-d');
             
             if (!empty($values['closure'])) {
-                $row->addClass('magic');
+                $row->addClass('message');
             } elseif ($now > $values['timeStart'] && $now < $values['timeEnd'] && $values['date'] == $today) {
                 $row->addClass('current');
             } else if ($values['date'] < $today || ($values['date'] == $today && $now > $values['timeEnd']) ) {
@@ -335,7 +335,7 @@ class LessonTable
                 if ($term['firstDay'] !== false && $lesson['date'] > $term['firstDay']) {
                     $lessonData[] = [
                         'lessonNumber' => __('Start of').' '.$term['name'],
-                        'closure' => Format::date($term['firstDay']),
+                        'closure'      => Format::date($term['firstDay']),
                     ];
                     $terms[$termID]['firstDay'] = false;
                 }
@@ -343,7 +343,7 @@ class LessonTable
                 if ($term['lastDay'] !== false && $lesson['date'] > $term['lastDay']) {
                     $lessonData[] = [
                         'lessonNumber' => __('End of').' '.$term['name'],
-                        'closure' => Format::date($term['lastDay']),
+                        'closure'      => Format::date($term['lastDay']),
                     ];
                     $terms[$termID]['lastDay'] = false;
                 }

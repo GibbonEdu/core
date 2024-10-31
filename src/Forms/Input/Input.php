@@ -78,6 +78,13 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      */
     public function addValidation($type, $params = '')
     {
+        if (!empty($params) && is_string($params)) {
+            $paramList = array_chunk(preg_split('/[:]|, /', $params), 2);
+            $params = !empty($paramList)
+                ? array_map('trim', array_combine(array_column($paramList, 0), array_column($paramList, 1)))
+                : [];
+        }
+
         $this->validation[] = ['type' => $type, 'params' => $params];
         return $this;
     }
@@ -139,7 +146,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
 
         foreach ($this->validation as $valid) {
             $type = !empty($valid['type']) ? trim(strtolower(strrchr($valid['type'], '.')), '. ') : '';
-            $params = !empty($valid['params']) && is_string($valid['params']) ? '{'.json_decode($valid['params'], true).'}' : [];
+            $params = $valid['params'] ?? [];
 
             switch ($type) {
                 case 'length':
@@ -183,7 +190,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
                     $validations[] = $onlyInteger ? 'integer' : 'number';
                     $message = $onlyInteger 
                         ? __('May contain only whole numbers')
-                        :__('May contain only numbers');
+                        : __('May contain only numbers');
                     // $expression = !empty($this->getAttribute('maxlength'))
                     //     ? '$el.value?.match("^.{0,'. $this->getAttribute('maxlength').'}$") !== null'
                     //     : '';

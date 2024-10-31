@@ -91,7 +91,7 @@ class Password extends TextField
      */
     public function addConfirmation($fieldName)
     {
-        $this->addValidation('Validate.Confirmation', "match: '$fieldName'");
+        $this->addValidation('Validate.Confirmation', ['match' => $fieldName]);
 
         return $this;
     }
