@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     // Check which recipients who have been manually unchecked
     $recipientList = $_POST['gibbonMessengerReceiptID'] ?? []; 
     for ($i = 0; $i < count($recipientList); $i++) {
-        $recipientList[$i] = mb_str_pad($recipientList[$i], 14, "0", STR_PAD_LEFT);
+        $recipientList[$i] = str_pad($recipientList[$i], 14, "0", STR_PAD_LEFT);
     }
     $recipients = $messengerReceiptGateway->selectMessageRecipientList($gibbonMessengerID)->fetchAll();
     $unselected = array_diff(array_column($recipients, 'gibbonMessengerReceiptID'), $recipientList);
