@@ -547,10 +547,10 @@ class Format
      * @param int $length
      * @return string
      */
-    public static function truncate($value, $length = 40)
+    public static function truncate($value, $length = 40, $class = '')
     {
         return is_string($value) && strlen($value) > $length
-            ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
+            ? "<span title='".htmlPrep($value)."' class='".$class."'>".substr(htmlPrep($value), 0, $length).'...</span>'
             : $value;
     }
 
@@ -625,6 +625,7 @@ class Format
             $url = filter_var($url, FILTER_SANITIZE_EMAIL);
             $url = 'mailto:'.$url;
         } else {
+            $url = str_replace(' ', '%20', $url);
             $url = filter_var($url, FILTER_SANITIZE_URL);
         }
 

@@ -3,6 +3,8 @@
 <?php 
 if ($disabled) {
     $bgClass = ' bg-gray-100 text-gray-600';
+} else if ($color == 'gray') {
+    $bgClass = ' bg-gray-100 hover:bg-gray-200 text-gray-800';
 } else if ($color == 'red') {
     $bgClass = ' border-red-700 bg-red-700 hover:bg-red-900 hover:border-red-900 text-white';
 } else if ($color == 'purple') {
@@ -19,7 +21,7 @@ if ($disabled) {
     <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> "><?= $value; ?></button>
 
 <?php } elseif ($type == 'submit') { ?>
-    <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, '<?= $bgClass; ?>' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-8 py-2 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border <?= $bgClass; ?>" />
+    <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, '<?= $bgClass; ?>' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-8 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border <?= $bgClass; ?>" />
     <span :class="{'opacity-0': submitting}"><?= $value; ?></span>
     </button>
 <?php } elseif ($type == 'quickSubmit') { ?>

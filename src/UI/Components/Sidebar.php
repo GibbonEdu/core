@@ -140,7 +140,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setTitle(__('Single Sign-on'));
                 $form->setClass('loginTableOAuth2');
-                $form->setAttribute('x-data', "{'options': false}");
+                $form->setAttribute('x-data', "{'submitting': false, 'options': false}");
 
                 $view = $this->getContainer()->get(View::class);
 
@@ -221,7 +221,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
 
                 $form = Form::createBlank('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) )
-                    ->setAttribute('x-data', "{'options': false}");
+                    ->setAttribute('x-data', "{'submitting': false, 'options': false}");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);

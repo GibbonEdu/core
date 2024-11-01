@@ -300,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
 
     if ($canWriteReport) {
         $col = $form->addRow()->addColumn()->setClass('flex items-center justify-end gap-2');
-            $col->addButton(__('Save'))->onClick('save()')
+            $col->addSubmit(__('Save'))->onClick('save()')->setColor('gray')
                 ->prepend(sprintf('<span class="unsavedChanges tag message mr-2" style="display:none;" title="%1$s">%1$s</span>', __('Unsaved Changes')));
             $col->addSubmit(__('Save & Next'));
     }

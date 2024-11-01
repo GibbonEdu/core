@@ -76,7 +76,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 document.getElementById(formElement.id).addEventListener('input', (evt) => {
                     this.changed = true;
                     window.onbeforeunload = function(event) {
-                        if (event.target.activeElement.nodeName == 'INPUT' || event.target.activeElement.type=='submit' || event.target.activeElement.value=='Submit' || event.target.activeElement.value=='Next' || event.target.activeElement.value=='Save') return;
+                        if (event.target.activeElement.nodeName == 'INPUT' || event.target.activeElement.type=='submit' || event.target.activeElement.classList.contains('submitButton')) return;
                         return Gibbon.config.htmx.unload_confirm;
                     };
                 });

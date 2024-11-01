@@ -9,7 +9,7 @@
 
 
     <span class="pointer-events-none absolute top-0.5 right-0.5">
-        <?= icon('outline', 'clock', 'pointer-events-none size-9 p-2 rounded bg-white text-gray-600 hover:text-gray-800'); ?>
+        <?= icon('outline', 'clock', 'pointer-events-none size-9 p-2 rounded text-gray-600 hover:text-gray-800'); ?>
     </span>
 
 </div>

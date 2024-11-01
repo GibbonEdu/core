@@ -416,7 +416,7 @@ class DataTable implements OutputableInterface
      */
     public function addHeaderAction($name, $label = '')
     {
-        $this->header[$name] = new Action($name, $label);
+        $this->header[$name] = (new Action($name, $label))->displayLabel(true);
 
         return $this->header[$name];
     }

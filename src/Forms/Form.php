@@ -476,7 +476,7 @@ class Form implements OutputableInterface
             ->setAttribute('hx-select', '#content-wrap')
             ->setAttribute('hx-target', '#content-wrap')
             ->setAttribute('hx-replace-url', 'true')
-            ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0.2s')
+            ->setAttribute('hx-swap', 'outerHTML show:none swap:0.2s')
             ->setAttribute('x-on:htmx:before-request', 'submitting = true')
             ->setAttribute('x-on:htmx:after-swap', 'submitting = false');
     }
@@ -603,7 +603,7 @@ class Form implements OutputableInterface
      */
     public function addHeaderAction($name, $label = '')
     {
-        $this->header[$name] = new Action($name, $label);
+        $this->header[$name] = (new Action($name, $label))->displayLabel(true);
 
         return $this->header[$name];
     }
