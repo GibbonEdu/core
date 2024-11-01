@@ -80,9 +80,13 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     {
         if (!empty($params) && is_string($params)) {
             $paramList = array_chunk(preg_split('/[:]|, /', $params), 2);
+            
             $params = !empty($paramList)
-                ? array_map('trim', array_combine(array_column($paramList, 0), array_column($paramList, 1)))
+                ? array_combine(array_column($paramList, 0), array_column($paramList, 1))
                 : [];
+            $params = array_map(function ($item) {
+                return trim($item, ' \'"');
+            }, $params);
         }
 
         $this->validation[] = ['type' => $type, 'params' => $params];
@@ -136,8 +140,8 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         }
 
         $validations = [];
-        $message = '';
-        $expression = '';
+        $message = $expression = '';
+        $failureMessage = null;
 
         if ($this->getRequired() == true) {
             $validations[] = 'required';
@@ -147,30 +151,42 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         foreach ($this->validation as $valid) {
             $type = !empty($valid['type']) ? trim(strtolower(strrchr($valid['type'], '.')), '. ') : '';
             $params = $valid['params'] ?? [];
+            $failureMessage = $params['failureMessage'] ?? $failureMessage;
 
             switch ($type) {
-                case 'length':
-                    $this->setAttribute('pattern', '.{0,'. $this->getAttribute('maxlength').'}');
-                    break;
                 case 'presence':
                     $validations[] = 'required';
                     $message = $this instanceof Select ? __('Please select an option') : __('This field is required');
                     break;
                 case 'format':
-                    // $pattern = $params['pattern'] ?? '';
-                    // if (!empty($pattern)) {
-                    //     $this->setAttribute('pattern', $pattern);
-                    // }
+                    $pattern = $params['pattern'] ?? '';
+                    if (!empty($pattern)) {
+                        $this->setAttribute('pattern', trim($pattern, ' \/'));
+                    }
                     break;
                 case 'inclusion':
-                    // $within = $params['within'] ?? '';
-                    // $expression = '$el.value?.includes("'.$within.'")';
-                    // $message = __('Should include').' '.$within;
+                    $within = $params['within'] ?? '';
+                    $within = stripos($within, '[') === false ? '['.$within.']' : $within;
+
+                    if (!empty($within)) {
+                        $expression = !empty($params['partialMatch']) && $params['partialMatch'] == 'true'
+                        ? strtolower($within).'.some(needle=>$el.value?.toLowerCase().includes(needle));'
+                        : strtolower($within).'.some(needle=>$el.value?.toLowerCase() == needle);';
+                    }
+
+                    $message = __('Should include').' '.trim($within, '\'[]');
                     break;
                 case 'exclusion':
-                    // $within = $params['within'] ?? '';
-                    // $expression = '!$el.value?.includes("'.$within.'")';
-                    // $message = __('Should not include').' '.$within;
+                    $within = $params['within'] ?? '';
+                    $within = stripos($within, '[') === false ? '['.$within.']' : $within;
+
+                    if (!empty($within)) {
+                        $expression = !empty($params['partialMatch']) && $params['partialMatch'] == 'true'
+                        ? strtolower($within).'.every(needle=>!$el.value?.toLowerCase().includes(needle));'
+                        : strtolower($within).'.every(needle=>$el.value?.toLowerCase() != needle);';
+                    }
+
+                    $message = __('Should not include').' '.trim($within, '\'[]');
                     break;
                 case 'email':
                     $validations[] = 'email';
@@ -191,9 +207,6 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
                     $message = $onlyInteger 
                         ? __('May contain only whole numbers')
                         : __('May contain only numbers');
-                    // $expression = !empty($this->getAttribute('maxlength'))
-                    //     ? '$el.value?.match("^.{0,'. $this->getAttribute('maxlength').'}$") !== null'
-                    //     : '';
                     break;
                 case 'acceptance':
                     $validations[] = 'group';
@@ -202,6 +215,8 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
                     break;
             }
         }
+
+        $message = $failureMessage ?? $message;
 
         if (!empty($this->validation) || !empty($validations)) {
             $validations = !empty($validations)? '.'.implode('.', array_unique($validations)) : '';

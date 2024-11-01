@@ -49,17 +49,23 @@ class Password extends TextField
         $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
         $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
 
+        $patterns = [];
         if ($alpha == 'Y') {
-            $this->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
+            $patterns[] = '(?=.*[a-z])(?=.*[A-Z])';
         }
         if ($numeric == 'Y') {
-            $this->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+            $patterns[] = "(?=.*[0-9])";
         }
         if ($punctuation == 'Y') {
-            $this->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+            $patterns[] = "(?=.*[^a-zA-Z0-9])";
         }
         if (!empty($minLength) && is_numeric($minLength)) {
-            $this->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
+            $patterns[] = '.{'.$minLength.',}';
+        }
+        
+        if (!empty($patterns)) {
+            $patternString = '/'.implode('', $patterns).'/';
+            $this->addValidation('Validate.Format', 'pattern: '.$patternString.', failureMessage: "'.__('Does not meet password policy.').'"');
         }
 
         return $this;
