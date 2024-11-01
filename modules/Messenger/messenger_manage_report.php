@@ -70,7 +70,7 @@ else {
                     ? icon('solid', 'check', 'size-6 mr-2 fill-current text-green-600')   
                     : icon('solid', 'cross', 'size-6 mr-2 fill-current text-red-700'); 
 
-                return Format::tooltip($icon, Format::yesNo($recipient['confirmed']));
+                return Format::tooltip($icon, Format::yesNo($recipient['confirmed']), 'inline-block align-middle');
             };
 
             $sender = false;
@@ -283,34 +283,34 @@ else {
                             $row->addContent($count);
 
                             $studentReceipt = isset($receipts[$recipient['gibbonPersonID']])? $receipts[$recipient['gibbonPersonID']] : null;
-                            $col = $row->addColumn()->addColumn()->setClass('flex items-center justify-start')->addClass(!empty($studentReceipt) && $studentReceipt['confirmed'] != 'Y' && $studentReceipt['sent'] != 'Y' ? 'bg-orange-300' : '');
+                            $col = $row->addColumn()->setClass('')->addClass(!empty($studentReceipt) && $studentReceipt['confirmed'] != 'Y' && $studentReceipt['sent'] != 'Y' ? 'bg-orange-300' : '');
                                 $col->addContent($confirmationIndicator($studentReceipt, $values['emailReceipt']));
                                 $col->onlyIf($sender == true && !empty($studentReceipt) && ($studentReceipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                     ->setValue($studentReceipt['gibbonMessengerReceiptID'] ?? '')
-                                    ->setClass('')
+                                    ->setClass('inline-block align-middle')
                                     ->alignLeft();
-                                $col->addContent(!empty($studentName)? $studentName : __('N/A'))->addClass('w-full');
+                                $col->addContent(!empty($studentName)? $studentName : __('N/A'))->addClass('w-auto inline-block align-middle');
 
                             $parent1Receipt = isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null;
-                            $col = $row->addColumn()->addColumn()->setClass('flex items-center justify-start')->addClass(!empty($parent1Receipt) && $parent1Receipt['confirmed'] != 'Y' && $parent1Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
+                            $col = $row->addColumn()->setClass('')->addClass(!empty($parent1Receipt) && $parent1Receipt['confirmed'] != 'Y' && $parent1Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
                                 $col->addContent($confirmationIndicator($parent1Receipt, $values['emailReceipt']));
                                 $col->onlyIf($sender == true && !empty($parent1Receipt) && ($parent1Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                     ->setValue($parent1Receipt['gibbonMessengerReceiptID'] ?? '')
-                                    ->setClass('')
+                                    ->setClass('inline-block align-middle')
                                     ->alignLeft();
-                                $col->addContent(!empty($recipient['parent1surname'])? $parent1Name : __('N/A'))->addClass('w-full');
+                                $col->addContent(!empty($recipient['parent1surname'])? $parent1Name : __('N/A'))->addClass('w-auto inline-block align-middle');
 
                             $parent2Receipt = isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null;
-                            $col = $row->addColumn()->addColumn()->setClass('flex items-center justify-start')->addClass(!empty($parent2Receipt) && $parent2Receipt['confirmed'] != 'Y' && $parent2Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
+                            $col = $row->addColumn()->setClass('')->addClass(!empty($parent2Receipt) && $parent2Receipt['confirmed'] != 'Y' && $parent2Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
                                 $col->addContent($confirmationIndicator($parent2Receipt, $values['emailReceipt']));
                                 $col->onlyIf($sender == true && !empty($parent2Receipt) && ($parent2Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                     ->setValue($parent2Receipt['gibbonMessengerReceiptID'] ?? '')
-                                    ->setClass('')
+                                    ->setClass('inline-block align-middle')
                                     ->alignLeft();
-                                $col->addContent(!empty($recipient['parent2surname'])? $parent2Name : __('N/A'))->addClass('w-full');
+                                $col->addContent(!empty($recipient['parent2surname'])? $parent2Name : __('N/A'))->addClass('w-auto inline-block align-middle');
                     }
                 }
 

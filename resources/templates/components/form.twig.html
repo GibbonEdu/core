@@ -133,7 +133,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
                     {% set class = hasClass ? class ~ ' ' ~  element.getClass : class %}
-                    <div class="{{ class }} {{ 'flex-' not in class and not section == 'submit' ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
+                    <div class="{{ class }} {{ 'flex-' not in class and section != 'submit' ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
 
                         {% if standardLayout and element.getAttribute('id') == 'Submit' %}
                             <span x-cloak x-show="changed" class="tag message mr-4 whitespace-nowrap">{{ __('Unsaved Changes') }}</span>

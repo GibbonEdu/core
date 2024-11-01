@@ -198,7 +198,7 @@ class CustomBlocks implements OutputableInterface
             $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
    
             $output .= '<div class="blockTemplate relative '.($this->compact ? 'compact h-min' : '').'" style="display: none;">';
-                $output .= '<div class="blockInputs flex py-2 pr-4">';
+                $output .= '<div class="blockInputs flex py-3 pr-4">';
                 $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';
 
@@ -214,9 +214,7 @@ class CustomBlocks implements OutputableInterface
         $output .= '</div>';
 
         $output .= '<script type="text/javascript">
-            $(function(){
-                $("#'.$this->name.'").gibbonCustomBlocks('.json_encode($this->settings).');
-            });
+            $("#'.$this->name.'").gibbonCustomBlocks('.json_encode($this->settings).');
         </script>';
 
         return $output;

@@ -94,7 +94,11 @@ class MessageForm extends Form
             $row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
 
             if ($sent) {
-                $row->addContent($values['email'] == 'Y' ? Format::icon('iconTick', __('Sent by email.')) : Format::icon('iconCross', __('Not sent by email.')))->addClass('right');
+                
+                $row->addContent($values['email'] == 'Y'
+                    ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'), __('Sent by email.'))
+                    : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'), __('Not sent by email.'))
+                )->addClass('right');
             } else {
                 $row->addYesNoRadio('email')->checked('Y')->required();
 
@@ -163,7 +167,10 @@ class MessageForm extends Form
                 $row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
 
                 if ($sent) {
-                    $row->addContent($values['sms'] == 'Y' ? Format::icon('iconTick', __('Sent by SMS.')) : Format::icon('iconCross', __('Not sent by SMS.')))->addClass('right');
+                    $row->addContent($values['sms'] == 'Y'
+                        ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Sent by SMS.'))
+                        : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('Not sent by SMS.'))
+                    )->addClass('right');
                 } else {
                     $row->addYesNoRadio('sms')->checked('N')->required();
 
@@ -225,7 +232,10 @@ class MessageForm extends Form
             $row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
 
             if ($sent) {
-                $row->addContent($values['emailReceipt'] == 'Y' ? Format::icon('iconTick', __('Yes')) : Format::icon('iconCross', __('No')))->addClass('right');
+                $row->addContent($values['emailReceipt'] == 'Y'
+                    ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Yes'))
+                    : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('No'))
+                )->addClass('right');
             } else {
                 $row->addYesNoRadio('emailReceipt')->checked($values['emailReceipt'] ?? 'N')->required();
 

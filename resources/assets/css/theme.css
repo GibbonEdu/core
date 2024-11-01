@@ -390,8 +390,7 @@ textarea[aria-invalid="true"] + .tox-tinymce {
 input + .error-msg::before {
     content: "";
     background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22rgb(197%2048%2048)%22%20class%3D%22size-4%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M8%2015A7%207%200%201%200%208%201a7%207%200%200%200%200%2014Zm2.78-4.22a.75.75%200%200%201-1.06%200L8%209.06l-1.72%201.72a.75.75%200%201%201-1.06-1.06L6.94%208%205.22%206.28a.75.75%200%200%201%201.06-1.06L8%206.94l1.72-1.72a.75.75%200%201%201%201.06%201.06L9.06%208l1.72%201.72a.75.75%200%200%201%200%201.06Z%22%20clip-rule%3D%22evenodd%22%20%2F%3E%3C%2Fsvg%3E');
-    background-color: #ffffff;
-    outline: 3px solid #ffffff;
+    background-color: inherit;
     top: -1.75rem;
     right: 0.5rem;
     position: absolute;
@@ -524,6 +523,10 @@ input + .error-msg::before {
         padding: 0.5rem;
         height: auto !important;
     }
+}
+
+#modal thead.sticky {
+    @apply -top-6;
 }
 
 /*

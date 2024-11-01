@@ -394,8 +394,8 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             // Build a mini list for the hover-over info
             // TODO: Move this stuff into markbookColumn class
-            $info = '<h6 style="color:#ffffff;">'.$column->getData('description').'</h6>';
-            $info .= '<ul style="margin: 0;">';
+            $info = '<div class="font-bold text-sm leading-6 mb-2">'.$column->getData('description').'</div>';
+            $info .= '<ul class="m-0 w-48 text-xs">';
             $info .= '<li>'.__('Type').' - '.$markbook->getTypeDescription( $columnType ) .'</li>';
 
             $weightInfo = '';
@@ -447,7 +447,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             echo ($canEditThisClass) ? "<div class='dragtable-drag-handle'></div>" :  "<br/>";
 
-            echo "<span title='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
+            echo "<span x-tooltip.bottom='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
             echo "<span class='details'>";
 
 
@@ -464,25 +464,25 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             echo '</span>';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
-                echo '<div class="columnActions">';
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                echo '<div class="columnActions flex items-center justify-center gap-2">';
+                echo "<a class='inline-block text-gray-600 hover:text-gray-800' title='".__('Edit')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'>".icon('solid', 'edit', 'size-6')."</a>";
 
-                echo "<a class='miniIcon' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/> ";
+                echo "<a class='inline-block text-gray-600 hover:text-gray-800' title='".__('Enter Data')."' class='miniIcon' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'>".icon('solid', 'markbook', 'size-6');
 
                     // Add mini checkmarks if the column is marked and included in calculations
-                    if ( $includeMarks ) {
-                        $weightInfo = __('Marked on').' '.Format::date($column->getData('completeDate') ).'<br/>';
-                        echo "<img title='$weightInfo' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick_double.png'/>";
+                    if ($includeMarks) {
+                        $weightInfo = __('Marked on').' '.Format::date($column->getData('completeDate') ).'<br/>'.$weightInfo;
+                        echo '<div class="absolute right-0 bottom-0 -mr-1 -mb-1" title="'.$weightInfo.'">'.icon('solid', 'check', 'size-4 text-green-600 bg-gray-150 rounded-full').'</div>';
                     } else {
                         if ($markbook->getSetting('enableColumnWeighting') == 'Y' ) {
                             $weightInfo = '<strong>'.__('Excluded from averages').':</strong><br/>'. $weightInfo;
                         }
-                        echo "<img title='$weightInfo' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/>";
+                        echo '<div class="absolute right-0 bottom-0 -mr-1 -mb-1" title="'.$weightInfo.'">'.icon('solid', 'cross', 'size-4 text-red-700 bg-gray-150 rounded-full').'</div>';
                     }
 
-                echo "</a> ";
-                echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-                echo "<a href='".$session->get('absoluteURL').'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
+                echo "</a>";
+                echo "<a class='thickbox inline-block text-gray-600 hover:text-gray-800' title='".__('Delete')."' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."&width=650&height=135'>".icon('solid', 'delete', 'size-6')."</a> ";
+                echo "<a class='inline-block text-gray-600 hover:text-gray-800' title='".__('Export to Excel')."' href='".$session->get('absoluteURL').'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".icon('solid', 'download', 'size-6')."</a>";
                 echo '</div>';
             }
 
@@ -806,14 +806,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                 }
                             }
                             if ($column->hasAttainmentRubric()) {
-                                echo "<a class='thickbox rubricIcon' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img title='".__('View Rubric')."' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
+                                echo "<a title='".__('View Rubric')."' class='thickbox rubricIcon text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'>".icon('solid', 'markbook', 'size-4')."</a>";
                             }
 
                             if ($column->hasAttainmentGrade()) {
 
                                 if (empty($attainment) && $column->hasAttainmentRubric() == false) {
                                     if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                        print "<a class='markbookQuickEdit' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Edit") . "' src='./themes/" . $session->get("gibbonThemeName") . "/img/config.png' width='14' height='14'/></a> " ;
+                                        print "<a title='" . __("Edit") . "' class='markbookQuickEdit text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'>".icon('solid', 'edit', 'size-4')."</a> " ;
                                     }
                                 }
 
@@ -839,14 +839,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                 echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>" . $effort;
                             }
                             if ($column->hasEffortRubric()) {
-                                echo "<a class='thickbox rubricIcon' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img title='".__('View Rubric')."' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
+                                echo "<a title='".__('View Rubric')."' class='thickbox rubricIcon text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'>".icon('solid', 'markbook', 'size-4')."</a>";
                             }
                             if ($column->hasEffortGrade()) {
 
                                 if (empty($effort) && $column->hasEffortRubric() == false) {
 
                                     if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                        print "<a class='markbookQuickEdit' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Edit") . "' src='./themes/" . $session->get("gibbonThemeName") . "/img/config.png' width='14' height='14'/></a> " ;
+                                        print "<a  title='" . __("Edit") . "' class='markbookQuickEdit text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'>".icon('solid', 'edit', 'size-4')."</a> " ;
                                     }
                                 }
 
@@ -878,7 +878,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     } else {
                         $editLink = '';
                         if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                            $editLink = "<a class='markbookQuickEdit' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $session->get("gibbonThemeName") . "/img/page_new_mini.png'/></a> " ;
+                            $editLink = "<a title='".__("Add")."' class='markbookQuickEdit inline-block' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'>".icon('solid', 'add', 'size-4 text-green-600 mt-1')."</a> " ;
                         }
 
                         if ($enableModifiedAssessment == 'Y') {

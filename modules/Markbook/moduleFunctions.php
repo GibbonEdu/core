@@ -89,7 +89,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $col->addContent(__('Search').':')->setClass('flex-shrink');
     $col->addTextField('search')
-        ->setClass('shortWidth')
+        ->setClass('flex-1')
         ->setValue($search);
 
     // TERM
@@ -116,7 +116,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             ->fromArray(array('-1' => __('All Terms')))
             ->fromArray($terms)
             ->selected($selectTerm)
-            ->setClass('shortWidth');
+            ->setClass('flex-1');
 
         $session->set('markbookTermName', isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm);
         $session->set('markbookTerm', $selectTerm);
@@ -140,7 +140,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             'preferredName' => __('Preferred Name'),
         );
         $col->addContent(__('Sort By').':')->setClass('flex-shrink');
-        $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('shortWidth');
+        $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('flex-1');
 
         $session->set('markbookOrderBy', $selectOrderBy);
     }
@@ -161,12 +161,12 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $col->addSelect('markbookFilter')
         ->fromArray($filters)
         ->selected($selectFilter)
-        ->setClass('shortWidth');
+        ->setClass('flex-1');
 
     // CLASS
     $col->addContent(__('Class').':')->setClass('flex-shrink');
     $col->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
-        ->setClass('mediumWidth')
+        ->setClass('flex-1')
         ->selected($gibbonCourseClassID);
 
     $col->addSubmit(__('Go'))->setClass('max-w-24');

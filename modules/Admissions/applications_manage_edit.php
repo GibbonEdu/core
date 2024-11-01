@@ -120,13 +120,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $page->navigator->addHeaderAction('accept', __('Accept'))
             ->setURL('/modules/Admissions/applications_manage_accept.php')
             ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->setIcon('iconTick')
+            ->setIcon('check')
             ->displayLabel();
 
         $page->navigator->addHeaderAction('reject', __('Reject'))
             ->setURL('/modules/Admissions/applications_manage_reject.php')
             ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->setIcon('iconCross')
+            ->setIcon('cross')
             ->displayLabel();
     }
 

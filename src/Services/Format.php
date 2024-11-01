@@ -591,11 +591,13 @@ class Format
      * Formats a string of additional details for a hover-over tooltip.
      *
      * @param string $value
+     * @param string $tooltip
+     * @param string $class
      * @return string
      */
-    public static function tooltip($value, $tooltip = '')
+    public static function tooltip($value, $tooltip = '', $class = '')
     {
-        return '<span title="'.$tooltip.'">'.$value.'</span>';
+        return '<span title="'.$tooltip.'" class="'.$class.'">'.$value.'</span>';
     }
 
     /**

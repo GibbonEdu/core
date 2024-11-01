@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 echo '<h2>';
                 echo __('Overview');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'>".icon('solid', 'edit', 'size-6 text-gray-600')."</a> ";
                 }
                 echo '</h2>';
                 echo '<p>';
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 $sidebarExtra .= '<h4>';
                 $sidebarExtra .= __('Useful Reading');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    $sidebarExtra .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                    $sidebarExtra .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'>".icon('solid', 'edit', 'size-6 text-gray-600')."</a> ";
                 }
                 $sidebarExtra .= '</h4>';
 

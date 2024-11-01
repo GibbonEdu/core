@@ -235,29 +235,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
             return $output;
         });
-
+        
     $table->addColumn('email', __('Email'))->format(function ($values) use (&$session) {
         if ($values['status'] == 'Draft') return '';
 
         return $values['email'] == 'Y'
-            ? Format::icon('iconTick', __('Sent by email.'))
-            : Format::icon('iconCross', __('Not sent by email.'));
+            ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'), __('Sent by email.'))
+            : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'), __('Not sent by email.'));
     });
 
     $table->addColumn('messageWall', __('Wall'))->format(function ($values) use (&$session) {
         if ($values['status'] == 'Draft') return '';
 
         return $values['messageWall'] == 'Y'
-            ? Format::icon('iconTick', __('Sent by message wall.'))
-            : Format::icon('iconCross', __('Not sent by message wall.'));
+            ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Sent by message wall.'))
+            : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('Not sent by message wall.'));
     });
 
     $table->addColumn('sms', __('SMS'))->format(function ($values) use (&$session) {
         if ($values['status'] == 'Draft') return '';
 
         return $values['sms'] == 'Y'
-            ? Format::icon('iconTick', __('Sent by SMS.'))
-            : Format::icon('iconCross', __('Not sent by SMS.'));
+            ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Sent by SMS.'))
+            : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('Not sent by SMS.'));
     });
 
     // ACTIONS

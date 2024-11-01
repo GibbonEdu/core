@@ -50,12 +50,12 @@ Rich Text Editor
                 <span>{{ __('Shared Resources') }}:</span> 
         
                 <a title="{{ __('Insert Existing Resource') }}" class="{{ id }}show_hide mx-1" onclick='$(".{{ id }}resourceSlider").load("{{ absoluteURL }}/modules/Planner/resources_insert_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                    <img src="{{ absoluteURL  }}/themes/Default/img/search_mini.png" alt="{{ __('Insert Existing Resource') }}" onclick="return false;" />
+                    {{ icon('solid', 'search', 'size-5 text-gray-600') }}
                 </a>
             
                 {% if allowUpload %}
                 <a title="{{ __('Create & Insert New Resource') }}" class="{{ id }}show_hideAdd mx-1" onclick='$(".{{ id }}resourceAddSlider").load("{{ absoluteURL }}/modules/Planner/resources_add_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                    <img src="{{ absoluteURL  }}/themes/Default/img/upload_mini.png" alt="{{ __('Create & Insert New Resource') }}" onclick="return false;" />
+                    {{ icon('solid', 'zoom', 'size-5 text-gray-600') }}
                 </a>
                 {% endif %}
             </div>
@@ -65,7 +65,7 @@ Rich Text Editor
                 <span>{{ __('Quick File Upload') }}:</span> 
 
                 <a title="{{ __('Quick Add') }}" class="{{ id }}show_hideQuickAdd mx-1" onclick='$(".{{ id }}resourceQuickSlider").load("{{ absoluteURL }}/modules/Planner/resources_addQuick_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                    <img src="{{ absoluteURL  }}/themes/Default/img/page_new_mini.png" alt="{{ __('Quick Add') }}" onclick="return false;" />
+                    {{ icon('solid', 'add', 'size-5 text-gray-600') }}
                 </a>
             </div>
             {% endif %}

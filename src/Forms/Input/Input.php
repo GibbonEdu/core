@@ -157,20 +157,20 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
                     $message = $this instanceof Select ? __('Please select an option') : __('This field is required');
                     break;
                 case 'format':
-                    $pattern = $params['pattern'] ?? '';
-                    if (!empty($pattern)) {
-                        $this->setAttribute('pattern', $pattern);
-                    }
+                    // $pattern = $params['pattern'] ?? '';
+                    // if (!empty($pattern)) {
+                    //     $this->setAttribute('pattern', $pattern);
+                    // }
                     break;
                 case 'inclusion':
-                    $within = $params['within'] ?? '';
-                    $expression = '$el.value?.includes("'.$within.'")';
-                    $message = __('Should include').' '.$within;
+                    // $within = $params['within'] ?? '';
+                    // $expression = '$el.value?.includes("'.$within.'")';
+                    // $message = __('Should include').' '.$within;
                     break;
                 case 'exclusion':
-                    $within = $params['within'] ?? '';
-                    $expression = '!$el.value?.includes("'.$within.'")';
-                    $message = __('Should not include').' '.$within;
+                    // $within = $params['within'] ?? '';
+                    // $expression = '!$el.value?.includes("'.$within.'")';
+                    // $message = __('Should not include').' '.$within;
                     break;
                 case 'email':
                     $validations[] = 'email';

@@ -355,7 +355,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                                 ->wrap('<span title="'.$outcome['description'].'">', '</span>');
                             // Highlight unit outcomes with a checkmark
                             if (isset($unitOutcomes[$rows[$i]['gibbonOutcomeID']])) {
-                                $content->append('<img style="float: right" title="'.__('This outcome is one of the unit outcomes.').'" src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>');
+                                $content->append(Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('This outcome is one of the unit outcomes.')));
                             }
                             $rows[$i]['title'] = $outcomes[$rows[$i]['gibbonOutcomeID']]['name'];
                             $rows[$i]['title'];
