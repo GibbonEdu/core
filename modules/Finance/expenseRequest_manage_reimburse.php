@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('body', __('Description'));
-                        $column->addContent($values['body'])->setClass('fullWidth');
+                        $column->addContent($values['body'])->setClass('w-full');
 
                     $row = $form->addRow();
                         $row->addLabel('cost', __('Total Cost'));
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('purchaseDetails', __('Purchase Details'));
-                        $column->addContent($values['purchaseDetails'])->setClass('fullWidth');
+                        $column->addContent($values['purchaseDetails'])->setClass('w-full');
 
                     $form->addRow()->addHeading('Log', __('Log'));
 
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('comment', __('Comment'));
-                        $column->addTextArea('comment')->setRows(8)->setClass('fullWidth');
+                        $column->addTextArea('comment')->setRows(8)->setClass('w-full');
 
                     $form->toggleVisibilityByClass('payment')->onSelect('status')->when('Paid');
 

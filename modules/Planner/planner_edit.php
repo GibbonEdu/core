@@ -426,7 +426,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addSelect('role')->fromArray($roles);
 
                 $row = $form->addRow();
-                    $row->addFooter();
                     $row->addCheckbox('notify')->description(__('Notify all class participants'));
                     $row->addSubmit();
 

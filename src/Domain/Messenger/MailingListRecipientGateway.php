@@ -56,4 +56,15 @@ class MailingListRecipientGateway extends QueryableGateway
     
         return $this->runQuery($query, $criteria);
     }
+
+    public function keyCheck($email, $key) {
+        $data = ['email' => $email, 'key' => $key];
+        $sql = "SELECT * FROM gibbonMessengerMailingListRecipient WHERE email=:email AND `key`=:key";
+
+        return $this->db()->select($sql, $data);
+    }
+
+
+
+    
 }

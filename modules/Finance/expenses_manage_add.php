@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 			$row = $form->addRow();
 				$column = $row->addColumn();
 				$column->addLabel('purchaseDetails', __('Purchase Details'));
-				$column->addTextArea('purchaseDetails')->setRows(8)->setClass('fullWidth');
+				$column->addTextArea('purchaseDetails')->setRows(8)->setClass('w-full');
 
 			$form->toggleVisibilityByClass('paymentInfo')->onSelect('status')->when('Paid');
 

@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         // SEARCH
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rubrics.php');
         $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Rubric name.'));

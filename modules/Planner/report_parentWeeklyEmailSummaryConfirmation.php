@@ -139,21 +139,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
 
             echo "<td style='width:15%'>";
 
-            if (!empty($rowData)) {
-                echo "<img title='".__('Sent')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
-            } else {
-                echo "<img title='".__('Not Sent')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
-            }
+            echo !empty($rowData)
+                ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Sent'))
+                : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('Not Sent'));
+            
             echo '</td>';
             echo "<td style='width:15%'>";
             if (empty($rowData)) {
                 echo __('NA');
             } else {
-                if ($rowData['confirmed'] == 'Y') {
-                    echo "<img title='".__('Confirmed')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
-                } else {
-                    echo "<img title='".__('Not Confirmed')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
-                }
+                echo $rowData['confirmed'] == 'Y'
+                    ? Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Confirmed'))
+                    : Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('Not Confirmed'));
             }
             echo '</td>';
             echo '</tr>';

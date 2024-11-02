@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
+            $URL .= '&return=error7';
             header("Location: {$URL}");
         } else {
             //Write to database

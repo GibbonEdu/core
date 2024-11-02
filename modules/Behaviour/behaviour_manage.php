@@ -50,12 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $type = $_GET['type'] ?? '';
 
-        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder fullWidth');
+        $form = Form::createSearch();
         $form->setFactory(DatabaseFormFactory::create($pdo));
-
-        $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID',__('Student'));
@@ -79,8 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelect('type')->fromArray($arrTypes)->selected($type)->placeholder();
 
 
-        $row = $form->addRow();
-            $row->addSearchSubmit($session, __('Clear Filters'));
+        $row = $form->addRow()->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 
@@ -122,8 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
-            ->displayLabel()
-            ->append('&nbsp|&nbsp');
+            ->displayLabel();
 
         $table->addHeaderAction('addMultiple', __('Add Multiple'))
             ->setURL('/modules/Behaviour/behaviour_manage_addMulti.php')
@@ -137,21 +131,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         if (!empty($policyLink)) {
             $table->addHeaderAction('policy', __('View Behaviour Policy'))
                 ->setExternalURL($policyLink)
-                ->displayLabel()
-                ->prepend('&nbsp|&nbsp');
+                ->displayLabel();
         }
 
         $table->addExpandableColumn('comment')
             ->format(function($beahviour) {
                 $output = '';
                 if (!empty($beahviour['comment'])) {
-                    $output .= '<strong>'.__('Incident').'</strong><br/>';
+                    $output .= Format::bold(__('Incident')).'<br/>';
                     $output .= nl2br($beahviour['comment']).'<br/>';
                 }
 
                 if (!empty($beahviour['followUps'])) {
                     foreach ($beahviour['followUps'] as $followUp) { 
-                        $output .= '<br/><strong>'.__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname'].'</strong><br/>';
+                        $output .= '<br/>'.Format::bold(__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname']).'<br/>';
                         $output .= nl2br($followUp['followUp']).'<br/>';
                     }
                 }
@@ -182,11 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addColumn('type', __('Type'))
             ->context('secondary')
             ->width('5%')
-            ->format(function($beahviour) use ($session) {
+            ->format(function($beahviour) {
                 if ($beahviour['type'] == 'Negative') {
-                    return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
+                    return icon('solid', 'cross', 'size-6 fill-current text-red-700');
                 } elseif ($beahviour['type'] == 'Positive') {
-                    return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
+                    return icon('solid', 'check', 'size-6 fill-current text-green-600');
                 }
             });
 

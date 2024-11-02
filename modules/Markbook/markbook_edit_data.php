@@ -355,7 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->addParam('width', '1100')
                             ->addParam('height', '550');
 
-                        $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
+                        $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full colorOddEven noMargin noPadding noBorder');
 
                         $detailsText = ($values['unitName'] != '')? $values['unitName'].'<br/>' : '';
                         $detailsText .= !empty($values['completeDate'])? __('Marked on').' '.Format::date($values['completeDate']) : __('Unmarked');
@@ -378,7 +378,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $header->addTableCell($values['name'])
                             ->setTitle($values['description'])
-                            ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$detailsText.'</span>')
+                            ->append('<br><span class="text-xs italic" style="font-weight:normal;">'.$detailsText.'</span>')
                             ->setClass('textCenter')
                             ->colSpan(5);
 

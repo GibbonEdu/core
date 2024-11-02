@@ -30,6 +30,7 @@ use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Services\Format;
 
 class AdmissionsFields extends AbstractFieldGroup
 {
@@ -89,6 +90,7 @@ class AdmissionsFields extends AbstractFieldGroup
                 'label'       => __('Previous Schools'),
                 'description' => __('Please give information on the last two schools attended by the applicant.'),
                 'acquire'     => ['schoolName1' => 'varchar', 'schoolAddress1' => 'varchar', 'schoolGrades1' => 'varchar', 'schoolLanguage1' => 'varchar', 'schoolDate1' => 'date','schoolName2' => 'varchar', 'schoolAddress2' => 'varchar', 'schoolGrades2' => 'varchar', 'schoolLanguage2' => 'varchar', 'schoolDate2' => 'date'],
+                'columns'     => 3,
             ],
             'howDidYouHear' => [
                 'label'       => __('How Did You Hear About Us?'),
@@ -198,10 +200,10 @@ class AdmissionsFields extends AbstractFieldGroup
 
                 for ($i = 1; $i < 3; ++$i) {
                     $tableRow = $table->addRow();
-                    $tableRow->addTextField('schoolName'.$i)->maxLength(50)->setSize(18)->required($required);
-                    $tableRow->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
-                    $tableRow->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
-                    $tableRow->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
+                    $tableRow->addTextField('schoolName'.$i)->maxLength(50)->setSize(18)->required($required)->addClass('min-w-24');
+                    $tableRow->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20)->addClass('min-w-24');
+                    $tableRow->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8)->addClass('min-w-24');
+                    $tableRow->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10)->addClass('min-w-24');
                     $tableRow->addDate('schoolDate'.$i)->setSize(10);
                 }
                 break;
@@ -210,21 +212,17 @@ class AdmissionsFields extends AbstractFieldGroup
                 $howDidYouHear = $this->settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
                 $howDidYouHearList = array_map('trim', explode(',', $howDidYouHear));
 
-                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
-
-                $col = $colGroup->addColumn()->setClass('flex flex-row justify-between items-center');
-                $col->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
+                $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
                 if (empty($howDidYouHear)) {
-                    $col->addTextField('howDidYouHear')->required()->maxLength(30);
+                    $row->addTextField('howDidYouHear')->required()->maxLength(30);
                 } else {
-                    $col->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
+                    $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
+                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('');
 
-                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
-
-                    $col = $colGroup->addColumn()->setClass('tellUsMore flex flex-row justify-between items-center');
-                        $col->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-                        $col->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
+                    $row = $form->addRow()->addClass('tellUsMore');
+                        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+                        $row->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
                 }
                 
         }
@@ -252,6 +250,24 @@ class AdmissionsFields extends AbstractFieldGroup
             if ($formGroup = $this->formGroupGateway->getByID($fieldValue, ['name'])) {
                 return $formGroup['name'];
             }
+        }
+
+        if ($fieldName == 'previousSchools') {
+            $schools = [];
+
+            for ($i = 1; $i <= 3; ++$i) {
+                if (empty($data['schoolName'.$i])) continue;
+
+                $schools[] = [
+                    __('School Name')                                  => $data['schoolName'.$i] ?? '',
+                    __('Address')                                      => $data['schoolAddress'.$i] ?? '',
+                    sprintf(__('Grades%1$sAttended'), '<br/>')         => $data['schoolGrades'.$i] ?? '',
+                    sprintf(__('Language of%1$sInstruction'), '<br/>') => $data['schoolLanguage'.$i] ?? '',
+                    __('Joining Date')                                 => Format::date($data['schoolDate'.$i] ?? ''),
+                ];
+            }
+
+            return Format::table($schools);
         }
 
         return parent::displayFieldValue($formBuilder, $fieldName, $field, $data);

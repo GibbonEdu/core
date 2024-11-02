@@ -33,7 +33,7 @@ $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 $coverageStatus = $_POST['coverageStatus'] ?? '';
 $date = $_POST['date'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php&sidebar=true&date='.Format::date($date);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_planner.php&sidebar=true&date='.$date;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php') == false) {
     $URL .= '&return=error0';

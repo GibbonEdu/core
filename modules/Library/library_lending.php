@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/library_lending.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_lending.php");
 

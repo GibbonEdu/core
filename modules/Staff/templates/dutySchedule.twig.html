@@ -17,7 +17,7 @@
                 <div class="dutySection" style="min-height: 3.2rem;" data-duty="{{ dutyItem.gibbonStaffDutyID }}" data-weekday="{{ dutyItem.gibbonDaysOfWeekID }}">
 
                 {% for person in dutyItem.roster %}
-                <div class="dutyPerson z-10 flex items-center bg-white shadow rounded-sm mb-2 p-2 text-sm border  {% if canEdit %}hover:bg-blue-100 hover:border-blue-500 cursor-move group{% endif %}" style="width: 15rem;" data-person="{{ person.gibbonStaffDutyPersonID }}">
+                <div class="dutyPerson z-10 flex items-center bg-white shadow rounded-sm mb-2 p-2 text-sm border  {% if canEdit %}hover:bg-blue-50 hover:border-blue-500 cursor-move group{% endif %}" style="width: 15rem;" data-person="{{ person.gibbonStaffDutyPersonID }}">
                     <div class="rounded-full w-8 h-8 mr-2 overflow-hidden cursor-move" style="background-image: url('{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_75.jpg'); background-size: cover; background-position: 50% 45%;">
                         {% if person.image_240 is not empty %}
                         <img src="{{ absoluteURL }}/{{ person.image_240 }}" class="w-full -mt-1">

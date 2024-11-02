@@ -168,7 +168,7 @@ trait MultipleOptionsTrait
      */
     public function getOptionCount()
     {
-        return count($this->options, COUNT_RECURSIVE);
+        return is_array($this->options) ? count($this->options, COUNT_RECURSIVE) : !empty($this->options);
     }
 
     /**

@@ -109,13 +109,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs be investigated?'));;
-                    	$column->addTextArea('reason')->setRows(5)->setClass('fullWidth')->required()->readonly(!$canEdit || $investigation['status'] != 'Referral');
+                    	$column->addTextArea('reason')->setRows(5)->setClass('w-full')->required()->readonly(!$canEdit || $investigation['status'] != 'Referral');
 
                     //Strategies Tried
                     $row = $form->addRow();
                     	$column = $row->addColumn();
                     	$column->addLabel('strategiesTried', __('Strategies Tried'));
-                    	$column->addTextArea('strategiesTried')->setRows(5)->setClass('fullWidth')->readonly(!$canEdit || $investigation['status'] != 'Referral');
+                    	$column->addTextArea('strategiesTried')->setRows(5)->setClass('w-full')->readonly(!$canEdit || $investigation['status'] != 'Referral');
 
                     //Parents Informed?
                     $row = $form->addRow();
@@ -129,12 +129,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $row = $form->addRow()->addClass('parentsInformedYes');
                     	$column = $row->addColumn();
                     	$column->addLabel('parentsResponseYes', __('Parent Response'));
-                    	$column->addTextArea('parentsResponseYes')->setName('parentsResponse')->setRows(5)->setClass('fullWidth')->readonly(!$canEdit || $investigation['status'] != 'Referral');
+                    	$column->addTextArea('parentsResponseYes')->setName('parentsResponse')->setRows(5)->setClass('w-full')->readonly(!$canEdit || $investigation['status'] != 'Referral');
 
                     $row = $form->addRow()->addClass('parentsInformedNo');
                     	$column = $row->addColumn();
                     	$column->addLabel('parentsResponseNo', __('Reason'))->description(__('Reasons why parents are not aware of the situation.'));
-                    	$column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('fullWidth')->readonly(!$canEdit || $investigation['status'] != 'Referral')->required();
+                    	$column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('w-full')->readonly(!$canEdit || $investigation['status'] != 'Referral')->required();
 
                     //Form Tutor Resolution
                     if ($investigation['status'] == 'Resolved' || ($investigation['status'] == 'Referral' && $isTutor)) {
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                         $row = $form->addRow()->addClass('resolutionDetails');
                             $column = $row->addColumn();
                             $column->addLabel('resolutionDetails', __('Resolution Details'));
-                            $column->addTextArea('resolutionDetails')->setRows(5)->setClass('fullWidth')->readonly(!$isTutor || $investigation['status'] != 'Referral');
+                            $column->addTextArea('resolutionDetails')->setRows(5)->setClass('w-full')->readonly(!$isTutor || $investigation['status'] != 'Referral');
 
                         //Not resolvable by tutor
                         $resultClass = $investigationGateway->queryTeachersByInvestigation($investigation['gibbonSchoolYearID'], $investigation['gibbonPersonIDStudent']);

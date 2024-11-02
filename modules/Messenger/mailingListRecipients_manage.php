@@ -31,14 +31,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
+    $page->addAlert(__('Please copy and share {linkOpen}this link{linkClose} to allow members of the public to subscribe to your mailing lists.', ['linkOpen' => '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/mailingListRecipients_manage_subscribe.php&mode=subscribe">', 'linkClose' => '</a>']), 'message');
        
     // QUERY
-    $MailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
-    $criteria = $MailingListRecipientGateway->newQueryCriteria(true)
+    $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+    $criteria = $mailingListRecipientGateway->newQueryCriteria(true)
         ->sortBy('surname', 'preferredName')
         ->fromPOST();
 
-    $mailingLists = $MailingListRecipientGateway->queryMailingList($criteria);
+    $mailingLists = $mailingListRecipientGateway->queryMailingList($criteria);
 
     // TABLE
     $table = DataTable::createPaginated('mailingLists', $criteria);

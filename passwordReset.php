@@ -56,9 +56,7 @@ if ($step == 1) {
         $row->addLabel('email', __('Username/Email'));
         $row->addTextField('email')->maxLength(255)->required();
 
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+    $row = $form->addRow()->addSubmit();
 
     echo $form->getOutput();
 }
@@ -90,8 +88,6 @@ else {
         echo '</div>';
 
         $form = Form::create('action', $session->get('absoluteURL').'/passwordResetProcess.php?'.http_build_query($urlParams));
-
-        $form->setClass('smallIntBorder fullWidth standardForm');
         $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));
@@ -117,9 +113,7 @@ else {
                 ->required()
                 ->maxLength(30);
 
-        $row = $form->addRow();
-            $row->addFooter();
-            $row->addSubmit();
+        $row = $form->addRow()->addSubmit();
 
         echo $form->getOutput();
     }

@@ -299,6 +299,10 @@ class Format
             return '';
         }
 
+        if ($dateFrom == $dateTo) {
+            return static::date($dateFrom, $format);
+        }
+
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
     }
 
@@ -543,10 +547,10 @@ class Format
      * @param int $length
      * @return string
      */
-    public static function truncate($value, $length = 40)
+    public static function truncate($value, $length = 40, $class = '')
     {
         return is_string($value) && strlen($value) > $length
-            ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
+            ? "<span title='".htmlPrep($value)."' class='".$class."'>".substr(htmlPrep($value), 0, $length).'...</span>'
             : $value;
     }
 
@@ -587,11 +591,13 @@ class Format
      * Formats a string of additional details for a hover-over tooltip.
      *
      * @param string $value
+     * @param string $tooltip
+     * @param string $class
      * @return string
      */
-    public static function tooltip($value, $tooltip = '')
+    public static function tooltip($value, $tooltip = '', $class = '')
     {
-        return '<span title="'.$tooltip.'">'.$value.'</span>';
+        return '<span title="'.$tooltip.'" class="'.$class.'">'.$value.'</span>';
     }
 
     /**
@@ -619,6 +625,7 @@ class Format
             $url = filter_var($url, FILTER_SANITIZE_EMAIL);
             $url = 'mailto:'.$url;
         } else {
+            $url = str_replace(' ', '%20', $url);
             $url = filter_var($url, FILTER_SANITIZE_URL);
         }
 
@@ -1060,7 +1067,7 @@ class Format
 
         if ($daysUntilNextBirthday == 0) {
             $title = __("{name}'s birthday today!", ['name' => $preferredName]);
-            $icon = 'gift_pink.png';
+            $iconClass = 'bg-pink-500 text-white';
         } else {
             $title = __n(
                 "{count} day until {name}'s birthday!",
@@ -1068,10 +1075,10 @@ class Format
                 $daysUntilNextBirthday,
                 ['name' => $preferredName]
             );
-            $icon = 'gift.png';
+            $iconClass = 'text-gray-600 bg-white';
         }
 
-        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+        return Format::tooltip(icon('outline', 'gift', 'absolute bottom-0 -ml-4 size-7 shadow p-0.5 rounded-md '.$iconClass, ['stroke-width' => '1.8']), $title);
     }
 
     /**

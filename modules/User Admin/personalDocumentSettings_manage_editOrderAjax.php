@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
     exit;
 } else {
     // Proceed!
-    $order = json_decode($_POST['order']);
+    $order = $_POST['order'];
 
     if (empty($order)) {
         exit;

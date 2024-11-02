@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             } else {
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rollover.php&step=2');
 
-                $form->setClass('smallIntBorder fullWidth');
+                $form->setClass('smallIntBorder w-full');
 
                 $form->addHiddenValue('nextYear', $nextYearBySession['gibbonSchoolYearID']);
 
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 $form = Form::createTable('rollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/rollover.php&step=3");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->setClass('smallIntBorder fullWidth');
+                $form->setClass('smallIntBorder w-full');
 
                 $form->addHiddenValue('nextYear', $nextYearID);
 

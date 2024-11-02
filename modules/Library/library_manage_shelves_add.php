@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
                 ->placeholder('Please select...')
                 ->required();
 
-        $form->toggleVisibilityByClass('autoFill')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
+        $form->toggleVisibilityByClass('autoFill')->onSelect('gibbonLibraryTypeID')->whenNot('');
         
         $row = $form->addRow()->addClass('autoFill');
             $row->addLabel('field', __('Category'));
@@ -142,4 +142,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_she
         echo $form->getOutput();
     }
 }
-?>

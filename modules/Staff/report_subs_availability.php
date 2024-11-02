@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
 
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('sidebar', $_GET['sidebar'] ?? '');

@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 
                                 $col = $form->addRow()->addColumn();
                                     $col->addLabel('comment', __('Comment'));
-                                    $col->addTextArea('comment')->setRows(8)->setClass('fullWidth');
+                                    $col->addTextArea('comment')->setRows(8)->setClass('w-full');
                             }
 
                             $row = $form->addRow();

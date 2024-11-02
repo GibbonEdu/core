@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
 
     $form = Form::createTable('dataUpdaterSettingsFields', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataUpdaterSettingsFieldsProcess.php');
     
-    $form->setClass('fullWidth rowHighlight');
+    $form->setClass('w-full rowHighlight');
     $form->addHiddenValue('address', $session->get('address'));
     
     // Default settings

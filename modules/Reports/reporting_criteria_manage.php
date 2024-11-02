@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/Reports/reporting_criteria_manage.php');
@@ -170,8 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $table->addHeaderAction('criteria', __('Manage Criteria Types'))
             ->setIcon('markbook')
             ->setURL('/modules/Reports/criteriaTypes_manage.php')
-            ->displayLabel()
-            ->prepend(' | ');
+            ->displayLabel();
 
     if (empty($scopeTypeID)) {
         $table->addColumn('scopeTypeName', $reportingScope['scopeType'])

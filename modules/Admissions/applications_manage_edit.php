@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Proceed!
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $search = $_REQUEST['search'] ?? '';
-    $tab = $_REQUEST['tab'] ?? 0;
+    $tab = $_REQUEST['tab'] ?? 1;
 
     $page->breadcrumbs
         ->add(__('Manage Applications'), 'applications_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search])
@@ -120,13 +120,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $page->navigator->addHeaderAction('accept', __('Accept'))
             ->setURL('/modules/Admissions/applications_manage_accept.php')
             ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->setIcon('iconTick')
+            ->setIcon('check')
             ->displayLabel();
 
         $page->navigator->addHeaderAction('reject', __('Reject'))
             ->setURL('/modules/Admissions/applications_manage_reject.php')
             ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->setIcon('iconCross')
+            ->setIcon('cross')
             ->displayLabel();
     }
 
@@ -200,18 +200,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         }
     }
 
+    // Tabs
+    $tabs = [];
+
+    $tabs['Overview'] = [
+        'label'   => __('Overview'),
+        'content' => $officeForm->getOutput(),
+    ];
+
+    if (!empty($milestonesForm)) {
+        $tabs['Milestones'] = [
+            'label'   => __('Milestones'),
+            'content' => $milestonesForm->getOutput(),
+        ];
+    }
+    if (!empty($editForm)) {
+        $tabs['Application Form'] = [
+            'label'   => __('Application Form'),
+            'content' => $editForm->getOutput(),
+        ];
+    }
+
+    if (!empty($uploadsTable)) {
+        $tabs['Documents'] = [
+            'label'   => __('Documents'),
+            'content' => $uploadsTable->getOutput(),
+        ];
+    }
+
+    if (!empty($accountForm) || !empty($familyTable)) {
+        $tabs['Family'] = [
+            'label'   => __('Family'),
+            'content' => $accountForm->getOutput().$familyTable->getOutput(),
+        ];
+    }
+
+    if (!empty($processForm)) {
+        $tabs['Process'] = [
+            'label'   => __('Process'),
+            'content' => $processForm->getOutput(),
+        ];
+    }
+
+    if (!empty($resultsForm)) {
+        $tabs['Results'] = [
+            'label'   => __('Results'),
+            'content' => $resultsForm->getOutput(),
+        ];
+    }
+
     // Display the tabbed view
-    echo $page->fetchFromTemplate('applicationEdit.twig.html', [
-        'defaultTab'     => $tab,
-        'officeForm'     => $officeForm,
-        'editForm'       => $editForm,
-        'milestonesForm' => $milestonesForm ?? null,
-        'accountForm'    => $accountForm ?? null,
-        'processForm'    => $processForm ?? null,
-        'resultsForm'    => $resultsForm ?? null,
-        'formsTable'     => $formsTable ?? null,
-        'uploadsTable'   => $uploadsTable ?? null,
-        'familyTable'    => $familyTable ?? null,
+    echo $page->fetchFromTemplate('ui/tabs.twig.html', [
+        'selected' => $tab,
+        'tabs'     => $tabs,
+        'class'    => 'mt-6',
+        'outset'   => false,
+        'icons'    => false,
     ]);
 
 }

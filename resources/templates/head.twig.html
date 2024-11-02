@@ -24,7 +24,6 @@ all stylesheets and scripts with a 'head' context.
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 {% endblock meta %}
 
-
 {% block styles %}
     {% for asset in page.stylesheets %}
         {% set assetVersion = asset.version is not empty ? asset.version : version %}
@@ -36,8 +35,8 @@ all stylesheets and scripts with a 'head' context.
     {% endfor %}
 {% endblock styles %}
 
-
 {% block scripts %}
+
     {% for asset in page.scriptsHead %}
         {% set assetVersion = asset.version is not empty ? asset.version : version %}
         {% if asset.type == 'inline' %}
@@ -50,4 +49,5 @@ all stylesheets and scripts with a 'head' context.
     {% for code in page.extraHead %}
         {{ code|raw }}
     {% endfor %}
+
 {% endblock scripts %}

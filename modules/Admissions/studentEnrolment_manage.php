@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
         echo '</h3>';
 
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php','get');
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/studentEnrolment_manage.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
         $table->addColumn('formGroup', __('Form Group'))
             ->description(__('Roll Order'))
             ->format(function($row) {
-                return $row['formGroup'] . (!empty($row['rollOrder']) ? '<br/><span class="small emphasis">'.$row['rollOrder'].'</span>' : '');
+                return $row['formGroup'] . (!empty($row['rollOrder']) ? '<br/><span class="text-xs italic">'.$row['rollOrder'].'</span>' : '');
             });
 
         $table->addActionColumn()

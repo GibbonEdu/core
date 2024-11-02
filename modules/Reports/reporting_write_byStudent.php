@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $form->addHiddenValue('allStudents', $urlParams['allStudents']);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
-    $form->addRow()->addClass('reportStatus')->addContent($scopeDetails['name'])->wrap('<h4 class="mt-3 p-0">', '</h4>');
+    $form->addRow()->addClass('reportStatus')->addContent($scopeDetails['name'])->wrap('<h4 class="p-0">', '</h4>');
 
     // HOOKS
     // Custom hooks can replace form fields by criteria type using a custom include.
@@ -299,10 +299,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             ->setDisabled(!$canWriteReport);
 
     if ($canWriteReport) {
-        $row = $form->addRow();
-            $row->addSubmit(__('Save & Next'))
-                ->prepend(sprintf('<input type="button" value="%s" onclick="save()">',__('Save')))
+        $col = $form->addRow()->addColumn()->setClass('flex items-center justify-end gap-2');
+            $col->addSubmit(__('Save'))->onClick('save()')->setColor('gray')
                 ->prepend(sprintf('<span class="unsavedChanges tag message mr-2" style="display:none;" title="%1$s">%1$s</span>', __('Unsaved Changes')));
+            $col->addSubmit(__('Save & Next'));
     }
 
     echo $form->getOutput();
@@ -372,27 +372,25 @@ function updateStatus() {
 
 function displayStatus(){
     if (readonly) {
-        $('.reportStatus div').addClass('bg-gray-300');
+        $('.reportStatus div').addClass('dull');
         $('.reportStatus h4').html('<?php echo __('Read-only') ?>');
     } else if (complete) {
-        $('#reportingWrite .standardForm').removeClass('border-blue-600').addClass('border-green-600');
-        $('.reportStatus div').removeClass('bg-blue-200').addClass('bg-green-200');
+        $('.reportStatus').parent().removeClass('border-blue-600').addClass('border-green-600');
+        $('.reportStatus div').removeClass('message').addClass('success');
         $('.reportStatus h4').html('<?php echo __('Complete') ?>');
     } else if (edited) {
-        $('#reportingWrite .standardForm').removeClass('border-green-600').addClass('border-blue-600');
-        $('.reportStatus div').removeClass('bg-green-200').addClass('bg-blue-200');
+        $('.reportStatus').parent().removeClass('border-green-600').addClass('border-blue-600');
+        $('.reportStatus div').removeClass('success').addClass('message');
         $('.reportStatus h4').html('<?php echo __('Editing') ?>');
     } else {
-        $('#reportingWrite .standardForm').removeClass('border-green-600');
-        $('.reportStatus div').removeClass('bg-green-200');
+        $('.reportStatus').parent().removeClass('border-green-600');
+        $('.reportStatus div').removeClass('success');
     }
 
-    $('input[value="Save & Next"]').toggle(complete);
+    $('button[value="Save & Next"]').toggle(complete);
 
     if (edited) {
         $('.unsavedChanges').show();
-        $('#reportingWrite .standardForm').removeClass('border-green-600').addClass('border-blue-600');
-        $('.reportStatus div').removeClass('bg-green-200').addClass('bg-blue-200');
         $('.reportStatus h4').html($('.reportStatus h4').html() + '<span class="inline-block pl-4 normal-case font-normal text-gray-700 text-xs align-middle"><?php echo __('There are unsaved changes on this page.') ?></span>');
     }
 }

@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             echo '</div>';
                             ?>
-							<table class='smallIntBorder fullWidth' cellspacing='0'>
+							<table class='smallIntBorder w-full' cellspacing='0'>
 								<tr class='break'>
 									<td colspan=2>
 										<h3><?php echo __('Basic Information') ?></h3>

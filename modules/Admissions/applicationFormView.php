@@ -185,12 +185,10 @@ if (!$proceed) {
     }
 
     // FORM
-    $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applicationForm.php');
+    $form = Form::createBlank('admissionsAccount', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applicationForm.php');
 
     $form->setTitle(__('New Application Form'));
     $form->setDescription((count($submissions) > 0 ? __('You may continue submitting applications with the form below and they will be linked to your account data.').' ' : '').__('Some information has been pre-filled for you, feel free to change this information as needed.'));
-
-    $form->setClass('w-full blank');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('accessID', $account['accessID'] ?? '');
@@ -198,7 +196,7 @@ if (!$proceed) {
     // Display all available public forms
     $firstForm = current($forms);
     foreach ($forms as $index => $applicationForm) {
-        $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
+        $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-50 mb-2');
 
         $row = $table->addRow();
             $row->addLabel('gibbonFormID'.$index, __($applicationForm['name']))->description($applicationForm['description'])->setClass('block w-full p-6 font-medium text-sm text-gray-700');

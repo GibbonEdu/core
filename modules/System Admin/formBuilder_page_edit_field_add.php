@@ -58,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     $form = Form::create('formFieldAdd', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->removeMeta();
 
     $form->addHiddenValue('address', '/modules/System Admin/formBuilder_page_edit.php');
     $form->addHiddenValue('fieldGroup', $fieldGroup);
@@ -160,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('optionsFile', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
         $row->addTextField('optionsFile')->setName('options');
 
-        $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot('Please select...');
+        $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot('');
 
         $row = $form->addRow()->addClass('optionsRequired');
         $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
@@ -223,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                         ->description($description)
                         ->alignLeft()
                         ->setLabelClass('w-full p-4')
-                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-100');
+                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-50');
                 }
             }
         }

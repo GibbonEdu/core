@@ -56,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_editProcess.php');
+    $form->removeMeta();
     
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValues($urlParams);

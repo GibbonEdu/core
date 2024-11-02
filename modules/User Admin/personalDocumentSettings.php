@@ -58,6 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
 
     $table->addDraggableColumn('gibbonPersonalDocumentTypeID', $session->get('absoluteURL').'/modules/User Admin/personalDocumentSettings_manage_editOrderAjax.php');
 
+    $table->addColumn('icon', '')
+        ->width('3%')
+        ->notSortable()
+        ->format(function ($values) {
+            return icon('large', strtolower($values['document'] ?? ''), 'size-6 fill-current');
+        });
     $table->addColumn('name', __('Name'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
     $table->addColumn('required', __('Required'))->format(Format::using('yesNo', 'required'));

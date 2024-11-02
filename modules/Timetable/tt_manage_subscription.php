@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 }
     ?>
         <script>
-        const button = document.querySelector('#timetableSubManage input[type=submit]');
+        const button = document.querySelector('#timetableSubManage [type=submit]');
         button.addEventListener('click', event => {
                 setTimeout(()=>{
                   tb_remove();

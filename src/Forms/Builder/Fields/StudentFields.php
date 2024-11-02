@@ -207,16 +207,17 @@ class StudentFields extends AbstractFieldGroup
                 break;
 
             case 'phone':
-                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
+                $colGroup = $row->addColumn()->setClass('flex-col flex-1 justify-between items-start gap-2');
                 $phoneCount = $field['options'] ?? 2;
                 for ($i = 1; $i <= $phoneCount; ++$i) {
-                    $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
-                    $col->addLabel('phone'.$i, __('Phone').' '.$i)->description(__($field['description']));
-                    $col->addPhoneNumber('phone'.$i)->required($required && $i == 1);
+                    $col = $colGroup->addColumn()->setClass('flex flex-col sm:flex-row content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start');
+                    $col->addLabel('phone'.$i, __('Phone').' '.$i)->description(__($field['description']))->addClass('sm:w-2/5');
+                    $col->addPhoneNumber('phone'.$i)->required($required && $i == 1)->addClass('flex-1');
                 }
                 break;
         }
 
         return $row;
     }
+    
 }

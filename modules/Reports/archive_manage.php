@@ -47,8 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage.php
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Reports/archive_manage_add.php')
-        ->displayLabel()
-        ->append(' | ');
+        ->displayLabel();
 
     $table->addHeaderAction('migrate', __('Migrate Reports'))
         ->setIcon('delivery2')

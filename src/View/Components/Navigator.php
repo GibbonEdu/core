@@ -73,7 +73,7 @@ class Navigator
 
     public function addHeaderAction($name, $label = '')
     {
-        $this->actions[$name] = new Action($name, $label);
+        $this->actions[$name] = (new Action($name, $label))->displayLabel(true);
 
         return $this->actions[$name];
     }

@@ -16,7 +16,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <div id="activities" class="activitiesContainer w-3/4">
         {% for gibbonActivityID, activity in activities %}
-        <div class="bg-gray-100 border p-3 mb-4 mr-4 rounded-sm">
+        <div class="bg-gray-100 border p-3 mb-4 mr-4 rounded-md">
             <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
                 <div class="flex-1 font-bold text-base text-gray-800">
                     {{ activity.name }}
@@ -65,7 +65,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <div class="sticky h-full top-0 w-1/4">
         <div id="unassigned"
-            class="unassignedContainer w-full bg-gray-100 border p-3 mb-4 pb-4 rounded-sm h-full max-h-screen overflow-y-scroll">
+            class="unassignedContainer w-full bg-gray-100 border p-3 mb-4 pb-4 rounded-md h-full max-h-screen overflow-y-scroll">
 
             <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
                 <h5 class="mt-0 p-0">
@@ -98,7 +98,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 </section>
 
 {% macro enrolment(person, signUpChoices) %}
-<div class="enrolmentPerson flex items-center justify-between bg-white shadow rounded-sm mb-2 p-3 text-sm border hover:bg-blue-100 hover:border-blue-500 cursor-move group"
+<div class="enrolmentPerson flex items-center justify-between bg-white shadow rounded-md mb-2 p-3 text-sm border hover:bg-blue-100 hover:border-blue-500 cursor-move group"
     style="max-width: 18rem;" data-person="{{ person.gibbonPersonID }}" data-choice1="{{ person.choice1 }}"
     data-choice2="{{ person.choice2 }}" data-choice3="{{ person.choice3 }}" data-choice4="{{ person.choice4 }}"
     data-choice5="{{ person.choice5 }}" data-preferredName="{{ person.preferredName }}"
@@ -121,7 +121,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% endmacro enrolment %}
 
 {% macro staffing(person) %}
-<div class="groupStaff enrolmentPerson cursor-move hover:bg-blue-100 hover:border-blue-500 flex items-center justify-between bg-white shadow rounded-sm mb-2 p-3 text-sm border group"
+<div class="groupStaff enrolmentPerson cursor-move hover:bg-blue-100 hover:border-blue-500 flex items-center justify-between bg-white shadow rounded-md mb-2 p-3 text-sm border group"
     style="max-width: 18rem;" data-person="{{ person.gibbonPersonID }}" data-preferredName="{{ person.preferredName }}"
     data-surname="{{ person.surname }}">
 

@@ -21,11 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Http\Url;
 use Gibbon\Tables\Action;
+use Gibbon\Forms\View\FormBlankView;
 use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
+use League\Container\ContainerAwareTrait;
 
 /**
  * Form
@@ -36,11 +39,15 @@ use Gibbon\Forms\Traits\BasicAttributesTrait;
 class Form implements OutputableInterface
 {
     use BasicAttributesTrait;
+    use ContainerAwareTrait;
 
     protected $title;
     protected $description;
     protected $factory;
     protected $renderer;
+
+    protected $meta;
+    protected $metaData = [];
 
     protected $rows = [];
     protected $triggers = [];
@@ -74,7 +81,7 @@ class Form implements OutputableInterface
      * @param    string  $class
      * @return   object  Form object
      */
-    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth standardForm')
+    public static function create($id, $action, $method = 'post', $class = 'standardForm')
     {
         global $container;
 
@@ -84,17 +91,58 @@ class Form implements OutputableInterface
             ->setAction($action)
             ->setMethod($method);
 
+        // Enable quick save by default on edit and settings pages
+        if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
+            $form->enableQuickSave();
+        }
+
+        // Add meta sidebar by default
+        if ($form->checkActionList($action, ['addProcess', 'addMultiProcess', 'addMultipleProcess', 'editProcess', 'duplicate'])) {
+            $form->addMeta()->addDefaultContent($action);
+        }
+
         return $form;
     }
 
-    public static function createTable($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth')
+    public static function createSearch($id = 'search', $action = '', $method = 'get', $class = '')
     {
-        global $container;
+        $form = static::create($id, $action ?? Url::fromRoute(), $method, $class);
+        $form->renderer->setTemplate('components/formSearch.twig.html');
+        $form->addHiddenValue('q', $_GET['q']);
 
-        $form = static::create($id, $action, $method, $class);
-        $form->setRenderer($container->get(FormTableView::class));
+        $form->setAttribute('hx-get', Url::fromRoute())
+            ->setAttribute('hx-trigger', 'submit')
+            ->setAttribute('hx-select', '#content-inner')
+            ->setAttribute('hx-target', '#content-inner')
+            ->setAttribute('hx-swap', 'outerHTML show:none swap:0.2s')
+            ->setAttribute('x-on:htmx:before-request', 'submitting = true')
+            ->setAttribute('x-on:htmx:after-swap', 'submitting = false');
 
         return $form;
+    }
+
+    public static function createTable($id, $action, $method = 'post', $class = 'smallIntBorder w-full')
+    {
+        $form = static::create($id, $action, $method, $class);
+        $form->renderer->setTemplate('components/formTable.twig.html');
+
+        return $form;
+    }
+
+    public static function createBlank($id, $action, $method = 'post', $class = '')
+    {
+        $form = static::create($id, $action, $method, $class);
+        $form->renderer->setTemplate('components/formBlank.twig.html');
+
+        return $form;
+    }
+
+    protected function checkActionList($actionString, $validActions)
+    {
+        foreach ($validActions as $action) {
+            if (stripos($actionString, $action) !== false) return true;
+        }
+        return false;
     }
 
     /**
@@ -244,25 +292,84 @@ class Form implements OutputableInterface
         });
     }
 
+    /**
+     * Get the total number of rows in a form.
+     * @return  array
+     */
+    public function getRowCount()
+    {
+        return count($this->rows);
+    }
+
+    /**
+     * Gets the rows in the form, grouped by heading.
+     *
+     * @return array
+     */
     public function getRowsByHeading()
     {
-        $rowCount = count($this->rows);
-        return array_reduce($this->rows, function ($group, $row) use (&$rowCount) {
-
-            if (($row->getHeading() == 'submit' && $rowCount > 10) || $row->getID() == 'stickySubmit') {
-                $row->addClass('submitRow sticky -bottom-px bg-gray-100 border-t -mt-px mb-px z-50');
-            }
+        return array_reduce($this->rows, function ($group, $row) {
             $group[$row->getHeading()][] = $row;
             return $group;
         }, []);
     }
 
-    public function hasHeading($heading)
+    /**
+     * Checks whether a given heading exists in the form. Used by the form builder.
+     *
+     * @param string $heading
+     * @return bool
+     */
+    public function hasHeading(string $heading)
     {
         return count(array_filter($this->rows, function ($row) use ($heading) {
             return $row->getHeading() == $heading;
         }));
     }
+
+    /**
+     * Adds a Meta object to the form and returns it.
+     * @param  string  $id
+     * @return object Meta
+     */
+    public function addMeta()
+    {
+        if (empty($this->meta)) {
+            $this->meta = $this->factory->createMeta();
+        }
+
+        return $this->meta;
+    }
+
+    /**
+     * Get the Meta object, if it exists.
+     * @return  object|null
+     */
+    public function getMeta()
+    {
+        return !empty($this->meta)? $this->meta : null;
+    }
+
+    /**
+     * Gets whether the Meta object exists.
+     * @return  object|null
+     */
+    public function hasMeta()
+    {
+        return !empty($this->meta);
+    }
+
+    /**
+     * Removes the Meta object from this form.
+     * @return  self
+     */
+    public function removeMeta()
+    {
+        $this->meta = null;
+
+        return $this;
+    }
+
 
     /**
      * Adds an input type=hidden value to the form.
@@ -346,6 +453,32 @@ class Form implements OutputableInterface
         $keydownJS = "gibbonFormSubmitQuiet($('#$formId'), '$autoSaveUrl')";
         $this->setAttribute('onkeydown', $keydownJS);
         return $this;
+    }
+
+    /**
+     * Enables submitting the form and reloading without a page refresh.
+     * @return self
+     */
+    public function enableQuickSave()
+    {
+        $this->renderer->addData('quickSave', true);
+        return $this;
+    }
+
+    /**
+     * Enables submitting the form and reloading without a page refresh.
+     * @return self
+     */
+    public function enableQuickSubmit()
+    {     
+        return $this->setAttribute($this->getMethod() == 'post' ? 'hx-post' : 'hx-get', $this->getAction())
+            ->setAttribute('hx-trigger', 'submit')
+            ->setAttribute('hx-select', '#content-wrap')
+            ->setAttribute('hx-target', '#content-wrap')
+            ->setAttribute('hx-replace-url', 'true')
+            ->setAttribute('hx-swap', 'outerHTML show:none swap:0.2s')
+            ->setAttribute('x-on:htmx:before-request', 'submitting = true')
+            ->setAttribute('x-on:htmx:after-swap', 'submitting = false');
     }
 
     /**
@@ -439,6 +572,10 @@ class Form implements OutputableInterface
             $row->loadFrom($data);
         }
 
+        if ($this->hasMeta()) {
+            $this->getMeta()->loadFrom($data);
+        }
+
         return $this;
     }
 
@@ -466,7 +603,7 @@ class Form implements OutputableInterface
      */
     public function addHeaderAction($name, $label = '')
     {
-        $this->header[$name] = new Action($name, $label);
+        $this->header[$name] = (new Action($name, $label))->displayLabel(true);
 
         return $this->header[$name];
     }

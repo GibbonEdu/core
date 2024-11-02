@@ -34,6 +34,9 @@ class Toggle extends Input
     protected $onValue = '1';
     protected $offValue = '0';
 
+    protected $toggleType = 'OnOff';
+    protected $toggleSize = 'md';
+
     protected $onLabel;
     protected $offLabel;
 
@@ -63,6 +66,18 @@ class Toggle extends Input
         $this->setAttribute('value', $value);
         return $this;
     }
+    
+    /**
+     * Set the toggle's size
+     * @param  string  $value
+     * @return $this
+     */
+    public function setSize($value = '')
+    {
+        $this->toggleSize = $value;
+
+        return $this;
+    }
 
     /**
      * Sets the state of the toggle input.
@@ -89,7 +104,7 @@ class Toggle extends Input
      * @param   mixed  $value
      * @return  self
      */
-    public function inline($value)
+    public function inline($value = true)
     {
         return $this;
     }
@@ -111,15 +126,43 @@ class Toggle extends Input
      */
     public function setYesNo()
     {
-        $this->onValue = 'Y';
-        $this->offValue = 'N';
-        $this->onLabel = __('Yes');
-        $this->offLabel = __('No');
+        $this->toggleType = 'YesNo';
+        $this->setToggle('Y', __('Yes'), 'N', __('No'));
         $this->setValue('Y');
 
         return $this;
     }
 
+    /**
+     * Sets the labels used for on/off the toggle states.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setActiveInactive()
+    {
+        $this->toggleType = 'ActiveInactive';
+        $this->setToggle('Y', __('Active'), 'N', __('Inactive'));
+        $this->setValue('Y');
+
+        return $this;
+    }
+
+    /**
+     * Sets the labels used for on/off the toggle states.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setToggle($onValue, $onLabel, $offValue, $offLabel, $toggleType = null)
+    {
+        $this->toggleType = $toggleType ?? $this->toggleType;
+        $this->onValue = $onValue;
+        $this->offValue = $offValue;
+        $this->onLabel = $onLabel;
+        $this->offLabel = $offLabel;
+        $this->setValue($offValue);
+
+        return $this;
+    }
 
     /**
      * Gets the HTML output for this form element.
@@ -127,12 +170,13 @@ class Toggle extends Input
      */
     protected function getElement()
     {
-        return Component::render(Toggle::class, [
-            'element'  => $this->getAttributeArray(),
-            'onValue'  => $this->onValue,
-            'offValue' => $this->offValue,
-            'onLabel'  => $this->onLabel,
-            'offLabel' => $this->offLabel,
+        return Component::render(Toggle::class, $this->getAttributeArray() + [
+            'toggleType' => $this->toggleType,
+            'toggleSize' => $this->toggleSize,
+            'onValue'    => $this->onValue,
+            'offValue'   => $this->offValue,
+            'onLabel'    => $this->onLabel,
+            'offLabel'   => $this->offLabel,
         ]);
     }
 }

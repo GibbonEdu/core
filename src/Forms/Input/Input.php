@@ -21,11 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Layout\Element;
-use Gibbon\Forms\RowDependancyInterface;
-use Gibbon\Forms\ValidatableInterface;
-use Gibbon\Forms\Traits\InputAttributesTrait;
 use Gibbon\Forms\Input\Date;
+use Gibbon\Forms\Layout\Element;
+use Gibbon\Forms\ValidatableInterface;
+use Gibbon\Forms\RowDependancyInterface;
+use Gibbon\Forms\Traits\InputAttributesTrait;
 
 /**
  * Abstract base class for form input elements.
@@ -39,8 +39,8 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
 
     protected $row;
 
-    protected $validationOptions = array();
-    protected $validation = array();
+    protected $validationOptions = [];
+    protected $validation = [];
 
     /**
      * Create an HTML form input.
@@ -50,7 +50,6 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     {
         $this->setID($name);
         $this->setName($name);
-        $this->setClass('standardWidth');
     }
 
     /**
@@ -79,7 +78,18 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      */
     public function addValidation($type, $params = '')
     {
-        $this->validation[] = array('type' => $type, 'params' => $params);
+        if (!empty($params) && is_string($params)) {
+            $paramList = array_chunk(preg_split('/[:]|, /', $params), 2);
+            
+            $params = !empty($paramList)
+                ? array_combine(array_column($paramList, 0), array_column($paramList, 1))
+                : [];
+            $params = array_map(function ($item) {
+                return trim($item, ' \'"');
+            }, $params);
+        }
+
+        $this->validation[] = ['type' => $type, 'params' => $params];
         return $this;
     }
 
@@ -88,7 +98,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      * @return bool
      */
     public function isValidatable() {
-        return !empty($this->getID()) && !$this->getReadonly() && !$this instanceof Toggle && !$this instanceof Date;
+        return !empty($this->getID()) && !$this->getReadonly() && !$this instanceof Toggle;
     }
 
     /**
@@ -101,63 +111,127 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     }
 
     /**
-     * Get a stringified json object of the current validations.
-     * @return string
-     */
-    public function getValidationAsJSON()
-    {
-        return json_encode($this->buildValidations());
-    }
-
-    /**
      * Get the HTML output of the content element.
      * @return  string
      */
     public function getOutput()
     {
-        $class = $this instanceof Checkbox ? 'inline flex-1 relative' : 'flex-1 relative';
-        return $this->prepended."<div class='{$class}'>".$this->getElement()."</div>".$this->appended;
+        $this->setValidation()->enableValidation();
+
+        return $this->prepended.$this->getElement().$this->appended;
     }
 
     /**
-     * Gets the HTML output for this form element.
+     * An internal method that can be overridden to add custom validation.
+     * @return self
+     */
+    protected function setValidation()
+    {
+        return $this;
+    }
+    
+     /**
+     * Enabled validation by adding attributes to this input.
+     */
+    public function enableValidation()
+    {
+        if (!$this->isValidatable()) {
+            return;
+        }
+
+        $validations = [];
+        $message = $expression = '';
+        $failureMessage = null;
+
+        if ($this->getRequired() == true) {
+            $validations[] = 'required';
+            $message = $this instanceof Select ? __('Please select an option') : __('This field is required');
+        }
+
+        foreach ($this->validation as $valid) {
+            $type = !empty($valid['type']) ? trim(strtolower(strrchr($valid['type'], '.')), '. ') : '';
+            $params = $valid['params'] ?? [];
+            $failureMessage = $params['failureMessage'] ?? $failureMessage;
+
+            switch ($type) {
+                case 'presence':
+                    $validations[] = 'required';
+                    $message = $this instanceof Select ? __('Please select an option') : __('This field is required');
+                    break;
+                case 'format':
+                    $pattern = $params['pattern'] ?? '';
+                    if (!empty($pattern)) {
+                        $this->setAttribute('pattern', trim($pattern, ' \/'));
+                    }
+                    break;
+                case 'inclusion':
+                    $within = $params['within'] ?? '';
+                    $within = stripos($within, '[') === false ? '['.$within.']' : $within;
+
+                    if (!empty($within)) {
+                        $expression = !empty($params['partialMatch']) && $params['partialMatch'] == 'true'
+                        ? strtolower($within).'.some(needle=>$el.value?.toLowerCase().includes(needle));'
+                        : strtolower($within).'.some(needle=>$el.value?.toLowerCase() == needle);';
+                    }
+
+                    $message = __('Should include').' '.trim($within, '\'[]');
+                    break;
+                case 'exclusion':
+                    $within = $params['within'] ?? '';
+                    $within = stripos($within, '[') === false ? '['.$within.']' : $within;
+
+                    if (!empty($within)) {
+                        $expression = !empty($params['partialMatch']) && $params['partialMatch'] == 'true'
+                        ? strtolower($within).'.every(needle=>!$el.value?.toLowerCase().includes(needle));'
+                        : strtolower($within).'.every(needle=>$el.value?.toLowerCase() != needle);';
+                    }
+
+                    $message = __('Should not include').' '.trim($within, '\'[]');
+                    break;
+                case 'email':
+                    $validations[] = 'email';
+                    $message = __('Please enter a valid email address');
+                    break;
+                case 'url':
+                    $validations[] = 'url';
+                    $message = __('Please enter a valid URL');
+                    break;
+                case 'confirmation':
+                    $match = $params['match'] ?? '';
+                    $expression = '$el.value === $validate.value("'.$match.'")';
+                    $message = __('Please ensure both passwords match');
+                    break;
+                case 'numericality':
+                    $onlyInteger = $params['onlyInteger'] ?? false;
+                    $validations[] = $onlyInteger ? 'integer' : 'number';
+                    $message = $onlyInteger 
+                        ? __('May contain only whole numbers')
+                        : __('May contain only numbers');
+                    break;
+                case 'acceptance':
+                    $validations[] = 'group';
+                    $expression = 1;
+                    $message = __('Please check to confirm');
+                    break;
+            }
+        }
+
+        $message = $failureMessage ?? $message;
+
+        if (!empty($this->validation) || !empty($validations)) {
+            $validations = !empty($validations)? '.'.implode('.', array_unique($validations)) : '';
+            $this->setAttribute('x-validate' . $validations, $expression);
+            $this->setAttribute('data-error-msg', $message);
+        }
+    }
+
+    /**
+     * Deprecated. Replaced with Alpine validation.
+     * @deprecated v28
      * @return  string
      */
     public function getValidationOutput()
     {
-        $output = '';
-
-        if ($this->hasValidation()) {
-            $safeID = 'lv'.preg_replace('/[^a-zA-Z0-9_]/', '', $this->getID());
-            
-            $output .= 'var '.$safeID.'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
-
-            foreach ($this->buildValidations() as $valid) {
-                $output .= $safeID.'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
-            }
-        }
-
-        return $output;
-    }
-
-    /**
-     * Get the array of current validations for this input.
-     * @return array
-     */
-    protected function buildValidations()
-    {
-        if (!$this->isValidatable()) {
-            return array();
-        }
-
-        if ($this->getRequired() == true) {
-            if ($this instanceof Checkbox && $this->getOptionCount() == 1) {
-                $this->addValidation('Validate.Acceptance');
-            } else {
-                $this->addValidation('Validate.Presence');
-            }
-        }
-
-        return $this->validation;
+        return '';
     }
 }

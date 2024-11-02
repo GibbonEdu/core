@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
+use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Database\Connection;
@@ -33,6 +34,7 @@ use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
+use Gibbon\Tables\Prefab\TodaysLessonsTable;
 
 /**
  * Parent Dashboard View Composer
@@ -48,11 +50,17 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
     protected $session;
     protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
+    /**
+     * @var View
+     */
+    private $view;
+
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway, View $view)
     {
         $this->db = $db;
         $this->session = $session;
         $this->settingGateway = $settingGateway;
+        $this->view = $view;
     }
 
     public function getOutput()
@@ -141,7 +149,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     $output .= $dashboardContents;
                 }
                 $output .= '</div>';
-                $output .= '</section>';
+                $output .= '</section><br class="clearfix"/>';
             }
         }
 
@@ -172,103 +180,13 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__('Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParam('search', $gibbonPersonID)."'>".__('View Planner').'</a></span>';
 
             $date = date('Y-m-d');
-            if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $this->session->get('username') != '') {
-                try {
-                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $gibbonPersonID, 'date2' => $date, 'gibbonPersonID2' => $gibbonPersonID);
-                    $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (\PDOException $e) {
-                }
-                if ($result->rowCount() > 0) {
-                    $classes = true;
-                    $plannerOutput .= "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>";
-                    $plannerOutput .= "<tr class='head'>";
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __('Class').'<br/>';
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __('Lesson').'<br/>';
-                    $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>".__('Summary').'</span>';
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __($homeworkNameSingular);
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '<th>';
-                    $plannerOutput .= __('Action');
-                    $plannerOutput .= '</th>';
-                    $plannerOutput .= '</tr>';
-
-                    $count2 = 0;
-                    $rowNum = 'odd';
-                    while ($row = $result->fetch()) {
-                        if ($count2 % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count2;
-
-                        //Highlight class in progress
-                        if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                            $rowNum = 'current';
-                        }
-
-                        //COLOR ROW BY STATUS!
-                        $plannerOutput .= "<tr class=$rowNum>";
-                        $plannerOutput .= '<td>';
-                        $plannerOutput .= '<b>'.$row['course'].'.'.$row['class'].'</b><br/>';
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td id="wordWrap">';
-                        $plannerOutput .= $row['name'].'<br/>';
-                        $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonCourseClassID']);
-                        if (isset($unit[0])) {
-                            $plannerOutput .= $unit[0];
-                            if ($unit[1] != '') {
-                                $plannerOutput .= '<br/><i>'.$unit[1].' '.__('Unit').'</i><br/>';
-                            }
-                        }
-                        $plannerOutput .= "<div style='font-size: 85%; font-weight: normal; font-style: italic'>";
-                        $plannerOutput .= $row['summary'];
-                        $plannerOutput .= '</div>';
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td>';
-                        if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                            $plannerOutput .= __('No');
-                        } else {
-                            if ($row['homework'] == 'Y') {
-                                $plannerOutput .= __('Yes').': '.__('Teacher Recorded').'<br/>';
-                                if ($row['homeworkSubmission'] == 'Y') {
-                                    $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
-                                    if ($row['homeworkCrowdAssess'] == 'Y') {
-                                        $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
-                                    }
-                                }
-                            }
-                            if ($row['myHomeworkDueDateTime'] != '') {
-                                $plannerOutput .= __('Yes').': '.__('Student Recorded').'</br>';
-                            }
-                        }
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '<td>';
-                        $plannerOutput .= "<a href='" . Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
-                            'search' => $gibbonPersonID,
-                            'viewBy' => 'date',
-                            'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
-                            'date' => $date,
-                            'width' => 1000,
-                            'height' => 550,
-                        ]) . "'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
-                        $plannerOutput .= '</td>';
-                        $plannerOutput .= '</tr>';
-                    }
-                    $plannerOutput .= '</table>';
-                }
-            }
-            if ($classes == false) {
-                $plannerOutput .= "<div style='margin-top: 2px' class='warning'>";
-                $plannerOutput .= __('There are no records to display.');
-                $plannerOutput .= '</div>';
+            if (isSchoolOpen($guid, $date, $connection2) == true && $this->session->has('username')) {
+                $classes = true;
+                $plannerOutput = $this
+                    ->getContainer()
+                    ->get(TodaysLessonsTable::class)
+                    ->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent')
+                    ->getOutput();   
             }
         }
 
@@ -550,9 +468,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $gradesOutput .= '</table>';
             }
             if ($grades == false) {
-                $gradesOutput .= "<div style='margin-top: 2px' class='warning'>";
-                $gradesOutput .= __('There are no records to display.');
-                $gradesOutput .= '</div>';
+                $gradesOutput .= Format::alert(__('There are no records to display.'), 'empty');
             }
         }
 
@@ -739,104 +655,66 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             }
         }
 
-        // GET HOOKS INTO DASHBOARD
+        // TABS
+        $tabs = [];
+
+        if (!empty($plannerOutput) || !empty($gradesOutput) || !empty($deadlinesOutput)) {
+            $tabs['Planner'] = [
+                'label'   => __('Planner'),
+                'content' => $plannerOutput.$gradesOutput.$deadlinesOutput,
+                'icon'    => 'book-open',
+            ];
+        }
+
+        if (!empty($timetableOutput)) {
+            $tabs['Timetable'] = [
+                'label'   => __('Timetable'),
+                'content' => $timetableOutput,
+                'icon'    => 'calendar',
+            ];
+        }
+        
+        if (!empty($activitiesOutput)) {
+            $tabs['Activities'] = [
+                'label' =>  __('Activities'),
+                'content' => $activitiesOutput,
+                'icon'    => 'star',
+            ];
+        }
+
+        // Dashboard Hooks
         $hooks = $this->getContainer()->get(HookGateway::class)->getAccessibleHooksByType('Parental Dashboard', $this->session->get('gibbonRoleIDCurrent'));
+        foreach ($hooks as $hookData) {
 
-        if ($classes == false and $grades == false and $deadlines == false and $timetable == false and $activities == false and count($hooks) < 1) {
-            $return .= "<div class='warning'>";
-            $return .= __('There are no records to display.');
-            $return .= '</div>';
-        } else {
-            $parentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'parentDashboardDefaultTab');
-            $parentDashboardDefaultTabCount = null;
+            // Set the module for this hook for translations
+            $this->session->set('module', $hookData['sourceModuleName']);
+            $include = $this->session->get('absolutePath').'/modules/'.$hookData['sourceModuleName'].'/'.$hookData['sourceModuleInclude'];
 
-            $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
-            $return .= '<ul>';
-            $tabCountExtraReset = 0;
-            if ($classes != false or $grades != false or $deadlines != false) {
-                $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Learning').'</a></li>';
-                $tabCountExtraReset++;
-                if ($parentDashboardDefaultTab == 'Planner')
-                    $parentDashboardDefaultTabCount = $tabCountExtraReset;
+            if (!file_exists($include)) {
+                $hookOutput = Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
+            } else {
+                $hookOutput = include $include;
             }
-            if ($timetable != false) {
-                $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Timetable').'</a></li>';
-                $tabCountExtraReset++;
-                if ($parentDashboardDefaultTab == 'Timetable')
-                    $parentDashboardDefaultTabCount = $tabCountExtraReset;
-            }
-            if ($activities != false) {
-                $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Activities').'</a></li>';
-                $tabCountExtraReset++;
-                if ($parentDashboardDefaultTab == 'Activities')
-                    $parentDashboardDefaultTabCount = $tabCountExtraReset;
-            }
-            $tabCountExtra = $tabCountExtraReset;
-            foreach ($hooks as $hook) {
-                ++$tabCountExtra;
-                $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($hook['name'], [], $hook['sourceModuleName']).'</a></li>';
-            }
-            $return .= '</ul>';
 
-            $tabCountExtraReset = 0;
-            if ($classes != false or $grades != false or $deadlines != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
-                $return .= $plannerOutput;
-                $return .= $gradesOutput;
-                $return .= $deadlinesOutput;
-                $return .= '</div>';
-                $tabCountExtraReset++;
-            }
-            if ($timetable != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
-                $return .= $timetableOutput;
-                $return .= '</div>';
-                $tabCountExtraReset++;
-            }
-            if ($activities != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
-                $return .= $activitiesOutput;
-                $return .= '</div>';
-                $tabCountExtraReset++;
-            }
-            $tabCountExtra = $tabCountExtraReset;
-            foreach ($hooks as $hook) {
-                // Set the module for this hook for translations
-                $this->session->set('module', $hook['sourceModuleName']);
-
-                if ($parentDashboardDefaultTab == $hook['name'])
-                    $parentDashboardDefaultTabCount = $tabCountExtra+1;
-                ++$tabCountExtra;
-                $return .= "<div style='min-height: 100px' id='tabs".$tabCountExtra."'>";
-                $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
-                if (!file_exists($include)) {
-                    $return .= "<div class='error'>";
-                    $return .= __('The selected page cannot be displayed due to a hook error.');
-                    $return .= '</div>';
-                } else {
-                    $return .= include $include;
-                }
-                $return .= '</div>';
-            }
-            $return .= '</div>';
+            $tabs[$hookData['name']] = [
+                'label'   => __($hookData['name'], [], $hookData['sourceModuleName']),
+                'content' => $hookOutput,
+                'icon'    => $hookData['name'],
+            ];
         }
 
-        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
+        // Set the default tab
+        $parentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'parentDashboardDefaultTab');
+        $defaultTab = !isset($_GET['tab']) && !empty($parentDashboardDefaultTab)
+            ? array_search($parentDashboardDefaultTab, array_keys($tabs))+1
+            : preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 1);
 
-        if (!isset($_GET['tab']) && !empty($parentDashboardDefaultTabCount)) {
-            $defaultTab = $parentDashboardDefaultTabCount-1;
-        }
-        $return .= "<script type='text/javascript'>";
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '</script>';
+        $return .= $this->view->fetchFromTemplate('ui/tabs.twig.html', [
+            'selected' => $defaultTab ?? 1,
+            'tabs'     => $tabs,
+            'outset'   => false,
+            'icons'    => true,
+        ]);
 
         return $return;
     }

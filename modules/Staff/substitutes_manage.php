@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.p
     // SEARCH FORM
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/substitutes_manage.php');

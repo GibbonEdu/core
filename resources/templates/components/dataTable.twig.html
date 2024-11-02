@@ -24,7 +24,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% block header %}
     
             {% if table.getHeader %}
-            <div class="linkTop mt-0">
+            <div class="linkTop mt-0 flex justify-end gap-2 mb-2 h-10 py-px">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}
@@ -34,11 +34,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock header %}
     </header>
 
-    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' : 'overflow-x-auto xl:overflow-x-unset' }}">
+    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' : '' }}">
 
    
     {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
-    <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
+    <div class="h-32 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
         {% block blankslate %}
         {{ include('components/blankSlate.twig.html') }}
         {% endblock blankslate %}
@@ -46,9 +46,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% else %}
 
     {% block tableInner %}
-    
-        <table class="{{ class }} w-full mb-2" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
-            <thead>
+
+        <table class="{{ class }} w-full mb-2 relative" cellspacing=0 {% if draggable %}data-draggable="true" hx-post="{{ draggable.url }}" hx-trigger="end" hx-swap="none" hx-include="this" hx-vals="{{ draggable.data is not empty and draggable.data != '[]' ? draggable.data : '' }}"{% endif %}>
+            <thead class="sticky top-0 z-20">
             {% for rowIndex, headerRow in headers %}
 
                 <tr class="head text-xs">
@@ -87,25 +87,25 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% for columnIndex, column in columns %}
                         {% set cell = rowData.cells[columnIndex] %}
                         
-                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }}">
+                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }};">
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 
                                 {% block actions %}
-                                <nav class="relative group">
+                                <nav class="relative " x-data="{ open: false }" x-on:keydown.escape.prevent.stop="open = false" @click.outside="open = false">
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
 
-                                    <div class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}">
+                                    <div  {{ actions|length > 1 ? 'x-cloak="mobile" :class="{\'block\': open, \'hidden sm:flex\': !open}"' }} class="{{ column.getClass() }} {{ actions|length == 1 ? 'justify-center sm:justify-start' : 'justify-start sm:flex absolute sm:static top-0 right-0 p-4 -mr-1 -mt-5 rounded-lg ring ring-2 ring-inset ring-blue-500 sm:ring-0 shadow sm:shadow-none bg-white sm:bg-transparent sm:m-0 sm:p-0' }} flex  gap-4 sm:gap-2" >
                                         {% for actionName, action in actions %}
-                                            {% do action.addClass('p-3 sm:p-0') %}
+                                            {% do action.displayLabel(loop.first) %}
                                             {{ action.getOutput(rowData.data, column.getParams)|raw }}
                                         {% endfor %}
                                     </div>
 
                                     {% if actions|length > 1 %}
-                                    <button class="block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray-300 text-2xl text-gray-600 font-sans font-bold leading-none" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
-                                        <span class="block -mt-3">...</span>
+                                    <button type="button" @click="open = true" class="block sm:hidden rounded-md mx-auto my-1 p-1 shadow-sm bg-white border border-gray-400 hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-sans font-bold leading-none" >
+                                        {{ icon('basic', 'ellipsis-horizontal', 'pointer-events-none block size-7 sm:size-6' ) }}
                                     </button>
                                     {% endif %}
                                 </nav>

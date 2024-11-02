@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
     $form = Form::create('filter', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance_take_byCourseClass.php');
 
@@ -347,15 +347,22 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $row = $form->addRow();
 
                         // Drop-downs to change the whole group at once
-                        $row->addButton(__('Change All').'?')->addData('toggle', '.change-all')->addClass('w-32 m-px sm:self-center');
+                        $row = $form->addRow()->setAttribute('x-data', "{'changeAll': false}");
+                        $row->addButton(__('Change All').'?')
+                            ->setAttribute('@click', 'changeAll = !changeAll')
+                            ->addClass('flex-shrink m-px sm:self-center');
 
-                        $col = $row->addColumn()->setClass('change-all hidden flex flex-col sm:flex-row items-stretch sm:items-center');
-                            $col->addSelect('set-all-type')->fromArray($attendance->getAttendanceTypes())->addClass('m-px');
-                            $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->addClass('m-px');
-                            $col->addTextField('set-all-comment')->maxLength(255)->addClass('m-px');
-                        $col->addButton(__('Apply'))->setID('set-all');
+                        $col = $row->addColumn()
+                            ->setClass('flex-grow flex flex-col sm:flex-row items-stretch sm:items-center')
+                            ->setAttribute('x-show', 'changeAll')
+                            ->setAttribute('x-cloak');
+                            
+                        $col->addSelect('set-all-type')->fromArray($attendance->getAttendanceTypes())->groupAlign('left')->setClass('flex-1');
+                        $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->groupAlign('middle')->setClass('flex-1 -ml-px');
+                        $col->addTextField('set-all-comment')->maxLength(255)->groupAlign('middle')->setClass('flex-1 -ml-px');
+                        $col->addButton(__('Apply'))->setID('set-all')->groupAlign('right')->setAttribute('@click', 'changeAll = false');
 
-                        $row->addSubmit();
+                        $row->addSubmit()->addClass('flex-shrink');
 
                         echo $form->getOutput();
                     }

@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
+use Gibbon\View\Component;
 
 /**
  * Checkbox
@@ -144,16 +145,6 @@ class Checkbox extends Input
     }
 
     /**
-     * Aligns the list options to the right edge.
-     * @return  self
-     */
-    public function selectableGroups($value = true)
-    {
-        $this->selectableGroups = $value;
-        return $this;
-    }
-
-    /**
      * Sets multiple checkbox elements to display horizontally.
      * @param   bool    $value
      * @return  self
@@ -230,90 +221,45 @@ class Checkbox extends Input
      */
     protected function getElement()
     {
-        $output = '';
-
-        if (!empty($this->getOptions())) {
-            // Multiple checkboxes - ensure the form values are returned as an array
-            $name = (stripos($this->getName(), '[') === false)? $this->getName().'[]' : $this->getName();
+        // If the checkbox has multiple values, ensure it is handled as an array
+        if ($this->getOptionCount() > 0) {
+            $this->setName(stripos($this->getName(), '[') === false ? $this->getName().'[]' : $this->getName());
         } else {
-            // Single checkbox - build an options array
-            $this->options = array($this->getValue() => $this->description);
-            $name = $this->getName();
+            $this->options = [$this->getValue() => $this->description];
         }
+
+        $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
+        $hasMultiple = $this->getOptionCount() > 1;
+        $options = [];
 
         if (!empty($this->options) && is_array($this->options)) {
-            $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
-            $hasMultiple = count($this->options, COUNT_RECURSIVE) > 1;
-
-            if ($hasMultiple) {
-                $output .= '<fieldset id="'.$this->getID().'" class="'.($this->inline && $this->align == 'left' ? 'flex text-left items-center' : '').'" style="border: 0px;">';
-            }
+            $optionGroups = !is_array(current($this->options))?  ['' => $this->options] : $this->options;
             
-            if (!empty($this->checkall)) {
-                $checked = (count($this->options) == count($this->checked))? 'checked' : '';
-                $output .= '<div class="flex mt-1 '.($this->align == 'right' ? 'justify-end text-right' : '').'">';
-                $output .= '<label for="checkall'.$identifier.'" class="mr-1">'.$this->checkall.'</label> ';
-                $output .= '<input id="checkall'.$identifier.'" class="checkall" type="checkbox" '.$checked.'><br/>';
-                $output .= '</div>';
-            }
+            foreach ($optionGroups as $group => $optionsList) {
 
-            $this->addClass('flex-none');
-
-            $count = 0;
-
-            $optionGroups = !is_array(current($this->options))
-                    ? ['' => $this->options]
-                    : $this->options;
-
-            foreach ($optionGroups as $group => $options) {
-            
-                if (!empty($group)) {
-                    $output .= '<label class="flex justify-between font-bold pb-1 border-b border-gray-400 '.($this->selectableGroups ? 'mt-4' : '').'"><span class="flex-1">'.$group.'</span>';
-                    if ($this->selectableGroups) {
-                        $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $group);
-                        $output .= '<input type="checkbox" name="'.$name.'" value="'.$groupName.'" class="text-right"><br/>';
-                    }
-                    $output .= '</label>';
+                foreach ($optionsList as $value => $label) {
+                    $options[$group][$value] = [
+                        'value'    => $value,
+                        'label'    => $label,
+                        'checked'  => $this->getIsChecked($value) ? 'checked' : '',
+                        'disabled' => $this->getIsDisabled($value) ? 'disabled' : '',
+                    ];
                 }
-                foreach ($options as $value => $label) {
-                    if ($hasMultiple) {
-                        $this->setID($identifier.$count);
-                    }
-                    $this->setName($name);
-                    $this->setAttribute('checked', $this->getIsChecked($value));
-                    $this->setAttribute('disabled', $this->getIsDisabled($value));
-
-                    if ($value != 'on') $this->setValue($value);
-
-                    $this->addClass('w-4 h-4');
-
-                    if ($this->inline) {
-                        $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
-                        $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
-                    } elseif ($this->align == 'center') {
-                        $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
-                        $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>';
-                    } elseif ($this->align == 'left') {
-                        $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
-                        $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
-                        $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
-                        $output .= '</div>';
-                    } else {
-                        $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
-                        $output .= '<label class="leading-compact mr-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
-                        $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
-                        $output .= '</div>';
-                    }
-
-                    $count++;
-                }
-            }
-
-            if ($hasMultiple) {
-                $output .= '</fieldset>';
             }
         }
 
-        return $output;
+        return Component::render(Checkbox::class, $this->getAttributeArray() + [
+            'identifier'     => $identifier,
+            'options'        => $options,
+            'totalOptions'   => $this->getOptionCount(),
+            'checkedOptions' => count($this->checked),
+            'attributes'     => $this->getAttributeString('', 'id,name,class,value,type'),
+            'hasMultiple'    => $hasMultiple,
+            'labelClass'     => $this->labelClass,
+            'checkall'       => $this->checkall,
+            'inline'         => $this->inline,
+            'align'          => $this->align,
+            'count'          => 0,
+        ]);
     }
 }

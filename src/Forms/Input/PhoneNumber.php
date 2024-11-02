@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\View\Component;
 
 /**
  * PhoneNumber
@@ -66,17 +67,17 @@ class PhoneNumber extends Input
             ->addSelect($name.'Type')
             ->fromArray($types)
             ->placeholder()
-            ->setClass('mr-1 w-1/3 sm:w-1/4');
+            ->addClass('inline-flex mr-1 w-1/3 sm:w-1/4');
         
         $this->phoneCodes = $this->column
             ->addSelect($name.'CountryCode')
             ->fromArray($countryCodes)
             ->placeholder()
-            ->setClass('mr-1 w-1/3 sm:w-1/4');
+            ->addClass('inline-flex w-1/3 sm:w-1/4 rounded-r-none border-r-0');
             
         $this->phoneNumber = $this->column
             ->addTextField($name)
-            ->setClass('w-2/3 sm:w-1/2');
+            ->addClass('inline-flex flex-1 rounded-l-none border-l-0');
     }
 
     /**
@@ -144,11 +145,11 @@ class PhoneNumber extends Input
         $this->phoneNumber->setSize($this->getSize());
         $this->phoneNumber->setDisabled($this->getDisabled());
 
-        $output = '<div class="w-full sm:max-w-xs flex justify-between">';
-        $output .= $this->phoneType->getElement();
-        $output .= $this->phoneCodes->getElement();
-        $output .= $this->phoneNumber->getElement();
-        $output .= '</div>';
+        return Component::render(PhoneNumber::class, $this->getAttributeArray() + [
+            'phoneType' => $this->phoneType->getElement(),
+            'phoneCodes' => $this->phoneCodes->getElement(),
+            'phoneNumber' => $this->phoneNumber->getElement(),
+        ]);
 
         return $output;
     }

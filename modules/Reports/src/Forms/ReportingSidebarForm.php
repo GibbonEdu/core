@@ -52,28 +52,28 @@ class ReportingSidebarForm extends Form
     {
         $gibbonPersonID = $urlParams['gibbonPersonID'] ?? $this->session->get('gibbonPersonID');
 
-        $form = parent::create('reportingSelector', $this->session->get('absoluteURL').'/index.php', 'get');
+        $form = parent::createBlank('reportingSelector', $this->session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit()->setAttribute('hx-trigger', 'change from:.auto-submit');
         $form->setFactory($this->databaseFormFactory);
-        $form->setClass('smallIntBorder w-full mt-4');
+        $form->setClass('w-full mt-2');
 
         $form->addHiddenValue('q', '/modules/Reports/reporting_write.php');
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
         $form->addHiddenValue('allStudents', $urlParams['allStudents'] ?? '');
         $form->addHiddenValue('gibbonPersonIDStudent', $urlParams['gibbonPersonIDStudent'] ?? '');
 
-        $row = $form->addRow();
-            $row->addLabel('gibbonSchoolYearID', __('School Year'))->addClass('sm:text-xxs');
+        $row = $form->addRow()->addClass('py-1');
+            $row->addLabel('gibbonSchoolYearID', __('School Year'))->addClass('sm:text-xs/6');
             $row->addSelectSchoolYear('gibbonSchoolYearID', 'Recent')
-                ->setClass('auto-submit w-64 lg:w-40')
+                ->setClass('auto-submit flex-grow')
                 ->selected($urlParams['gibbonSchoolYearID'])
                 ->placeholder(null);
 
         $reportingCycles = $this->reportingCycleGateway->selectReportingCyclesBySchoolYear($urlParams['gibbonSchoolYearID']);
-        $row = $form->addRow();
-            $row->addLabel('gibbonReportingCycleID', __('Reporting Cycle'))->addClass('sm:text-xxs');
+        $row = $form->addRow()->addClass('py-1');
+            $row->addLabel('gibbonReportingCycleID', __('Reporting Cycle'))->addClass('sm:text-xs/6');
             $row->addSelect('gibbonReportingCycleID')
                 ->fromResults($reportingCycles)
-                ->setClass('auto-submit w-64 lg:w-40')
+                ->setClass('auto-submit flex-grow')
                 ->selected($urlParams['gibbonReportingCycleID'])
                 ->placeholder();
 
@@ -81,11 +81,11 @@ class ReportingSidebarForm extends Form
             $criteria = $this->reportingCriteriaGateway->newQueryCriteria()->sortBy(['sequenceNumber', 'nameOrder']);
             $criteriaGroups = $this->reportingCriteriaGateway->queryReportingCriteriaGroupsByCycle($criteria, $urlParams['gibbonReportingCycleID']);
 
-            $row = $form->addRow();
-                $row->addLabel('criteriaSelector', __('Scope'))->addClass('sm:text-xxs');
+            $row = $form->addRow()->addClass('py-1');
+                $row->addLabel('criteriaSelector', __('Scope'))->addClass('sm:text-xs/6');
                 $row->addSelect('criteriaSelector')
                     ->fromDataSet($criteriaGroups, 'value', 'name', 'scopeName')
-                    ->setClass('auto-submit w-64 lg:w-40')
+                    ->setClass('auto-submit flex-grow')
                     ->selected($urlParams['gibbonReportingScopeID'].'-'.$urlParams['scopeTypeID'])
                     ->placeholder();
         } else {

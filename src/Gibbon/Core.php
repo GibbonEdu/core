@@ -87,7 +87,7 @@ class Core
         $db = $container->get('db');
         $this->session = $container->get('session');
 
-        if (empty($this->session->get('systemSettingsSet'))) {
+        if (!$this->session->has('systemSettingsSet') || !$this->session->has('absoluteURL')) {
             SessionFactory::populateSettings($this->session, $db);
         }
 

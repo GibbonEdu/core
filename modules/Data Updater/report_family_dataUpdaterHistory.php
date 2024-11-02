@@ -109,10 +109,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
         $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $session) {
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
-
             return empty($dateUpdated) || $dateCutoff > DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated)
-                ? "<img title='".$title.' '.__('Update Required').': '.$dateDisplay."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png' width='18' />"
-                : "<img title='".$title.' '.__('Up to date').': '.$dateDisplay."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png' width='18' />";
+                ? Format::tooltip(icon('solid', 'cross', 'size-6 fill-current text-red-700'),  __('Update Required').': '.$dateDisplay)
+                : Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('Up to date').': '.$dateDisplay);
         };
 
         // DATA TABLE
@@ -145,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             $table->addColumn('familyAdults', __('Adults'))
                 ->notSortable()
                 ->format(function($row) use ($dataChecker, $requiredUpdatesByType) {
-                    $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    $output = '<table class="smallIntBorder w-full colorOddEven" cellspacing=0>';
                     foreach ($row['familyAdults'] as $adult) {
                         $output .= '<tr>';
                         $output .= '<td style="width:90%">'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</td>';
@@ -161,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             $table->addColumn('familyChildren', __('Children'))
                 ->notSortable()
                 ->format(function($row) use ($dataChecker, $requiredUpdatesByType) {
-                    $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    $output = '<table class="smallIntBorder w-full colorOddEven" cellspacing=0>';
                     foreach ($row['familyChildren'] as $child) {
                         $output .= '<tr>';
                         $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';
@@ -181,6 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         $table->addColumn('familyAdultsEmail', __('Parent Email'))
             ->notSortable()
+            ->width('25%')
             ->format(function($row) {
                 return trim(implode(', ', array_column($row['familyAdults'], 'email')), ', ');
             });

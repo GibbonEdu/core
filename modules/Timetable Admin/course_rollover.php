@@ -138,12 +138,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     return $currentCourse;
                 }, $currentCourses);
 
-                $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
-                $form->setClass('w-full blank');
+                $form = Form::createBlank('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
 
                 $form->addHiddenValue('nextYear', $nextYearID);
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mb-4');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full mb-4');
                 $row = $table->addRow();
                     $row->addLabel('rollStudents', __('Include Students'));
                     $row->addCheckbox('rollStudents')->checked('on');
@@ -155,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $form->addRow()->addSubheading(__('Map Classes'));
                 $form->addRow()->addContent(__('Determine which classes from this year roll to which classes in next year, and which not to rollover at all.'))->wrap('<p>', '<p>');
 
-                $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth rowHighlight');
+                $table = $form->addRow()->addTable()->setClass('colorOddEven w-full rowHighlight');
 
                 $header = $table->addHeaderRow();
                     $header->addContent(__('Class'));
@@ -173,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                             ->setClass('mediumWidth');
                 }
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
                 $row = $table->addRow();
                     $row->addFooter();
                     $row->addSubmit(__('Proceed'));

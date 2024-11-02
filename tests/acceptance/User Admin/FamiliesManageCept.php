@@ -47,5 +47,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'family_manage_delete.php', array('gibbonFamilyID' => $gibbonFamilyID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

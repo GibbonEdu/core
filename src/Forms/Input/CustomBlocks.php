@@ -62,7 +62,7 @@ class CustomBlocks implements OutputableInterface
         $this->name = $name;
 
         $this->toolsTable = $factory->createTable()->setClass('inputTools w-full');
-        $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank w-full');
+        $this->blockButtons = $factory->createGrid()->setClass('blockButtons inline-flex gap-2');
 
         $this->settings = [
             'placeholder'      => __('Blocks will appear here...'),
@@ -136,7 +136,8 @@ class CustomBlocks implements OutputableInterface
         $iconPath = './themes/'.$this->session->get("gibbonThemeName").'/img/';
         $iconSrc = stripos($icon, '/') === false? $iconPath.$icon : $icon;
         
-        $button = $this->factory->createWebLink(sprintf('<img title=%1$s src="%2$s" style="margin-right:4px;" />', $title, $iconSrc))
+        $button = $this->factory->createAction($name, $title)
+            ->modalWindow(false)
             ->setURL('#')
             ->addClass('blockButton');
 
@@ -197,12 +198,12 @@ class CustomBlocks implements OutputableInterface
             $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
    
             $output .= '<div class="blockTemplate relative '.($this->compact ? 'compact h-min' : '').'" style="display: none;">';
-                $output .= '<div class="blockInputs flex py-2 pr-10">';
+                $output .= '<div class="blockInputs flex py-3 pr-4">';
                 $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';
 
-                $output .= '<div class="blockSidebar absolute top-0 right-0 mt-2">';
-                    $output .= $this->blockButtons->getOutput();
+                $output .= '<div class="blockSidebar absolute top-0 right-0 mt-2 mr-2">';
+                    $output .= $this->blockButtons->addClass('flex gap-2')->getOutput();
                 $output .= '</div>';
             $output .= '</div>';
 
@@ -213,9 +214,7 @@ class CustomBlocks implements OutputableInterface
         $output .= '</div>';
 
         $output .= '<script type="text/javascript">
-            $(function(){
-                $("#'.$this->name.'").gibbonCustomBlocks('.json_encode($this->settings).');
-            });
+            $("#'.$this->name.'").gibbonCustomBlocks('.json_encode($this->settings).');
         </script>';
 
         return $output;
@@ -239,7 +238,6 @@ class CustomBlocks implements OutputableInterface
             if ($element instanceof Input && $element->hasValidation()) {
                 // Trigger the output before getting validations: some Inputs add these on getOutput();
                 $elementOutput = $element->getOutput();
-                $element->addData('validation', $element->getValidationAsJSON());
             }
         };
 

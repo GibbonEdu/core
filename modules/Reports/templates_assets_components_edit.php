@@ -65,8 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         ->setIcon('help')
         ->addClass('underline')
         ->displayLabel()
-        ->modalWindow()
-        ->append(' | ');
+        ->modalWindow();
 
     $form->addHeaderAction('view', __('Preview'))
         ->setURL('/modules/Reports/templates_assets_components_preview.php')

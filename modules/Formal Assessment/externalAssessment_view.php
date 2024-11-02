@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
                     $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get");
-                    $form->setClass('noIntBorder fullWidth standardForm');
+                    $form->setClass('noIntBorder w-full standardForm');
 
                     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment_view.php');
                     $form->addHiddenValue('address', $session->get('address'));

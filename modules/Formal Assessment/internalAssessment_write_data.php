@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $form->addRow()->addHeading('Students', __('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
                     } else {
-                        $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
+                        $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full colorOddEven noMargin noPadding noBorder');
 
                         $completeText = !empty($values['completeDate'])? __('Marked on').' '.Format::date($values['completeDate']) : __('Unmarked');
                         $detailsText = $values['type'];
@@ -144,8 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $header->addTableCell(__('Student'))->rowSpan(2);
                             $header->addTableCell($values['name'])
                                 ->setTitle($values['description'])
-                                ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$completeText.'</span>')
-                                ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$detailsText.'</span>')
+                                ->append('<br><span class="text-xs italic" style="font-weight:normal;">'.$completeText.'</span>')
+                                ->append('<br><span class="text-xs italic" style="font-weight:normal;">'.$detailsText.'</span>')
                                 ->setClass('textCenter')
                                 ->colSpan(3);
 

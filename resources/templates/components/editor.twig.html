@@ -50,12 +50,12 @@ Rich Text Editor
                 <span>{{ __('Shared Resources') }}:</span> 
         
                 <a title="{{ __('Insert Existing Resource') }}" class="{{ id }}show_hide mx-1" onclick='$(".{{ id }}resourceSlider").load("{{ absoluteURL }}/modules/Planner/resources_insert_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                    <img src="{{ absoluteURL  }}/themes/Default/img/search_mini.png" alt="{{ __('Insert Existing Resource') }}" onclick="return false;" />
+                    {{ icon('solid', 'search', 'size-5 text-gray-600') }}
                 </a>
             
                 {% if allowUpload %}
                 <a title="{{ __('Create & Insert New Resource') }}" class="{{ id }}show_hideAdd mx-1" onclick='$(".{{ id }}resourceAddSlider").load("{{ absoluteURL }}/modules/Planner/resources_add_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                    <img src="{{ absoluteURL  }}/themes/Default/img/upload_mini.png" alt="{{ __('Create & Insert New Resource') }}" onclick="return false;" />
+                    {{ icon('solid', 'zoom', 'size-5 text-gray-600') }}
                 </a>
                 {% endif %}
             </div>
@@ -65,7 +65,7 @@ Rich Text Editor
                 <span>{{ __('Quick File Upload') }}:</span> 
 
                 <a title="{{ __('Quick Add') }}" class="{{ id }}show_hideQuickAdd mx-1" onclick='$(".{{ id }}resourceQuickSlider").load("{{ absoluteURL }}/modules/Planner/resources_addQuick_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                    <img src="{{ absoluteURL  }}/themes/Default/img/page_new_mini.png" alt="{{ __('Quick Add') }}" onclick="return false;" />
+                    {{ icon('solid', 'add', 'size-5 text-gray-600') }}
                 </a>
             </div>
             {% endif %}
@@ -114,23 +114,14 @@ Rich Text Editor
 
 
 <div id="editorcontainer" class="relative">
-    <textarea class="tinymce w-full ml-0 float-none focus:shadow-none focus:border-gray-500" name="{{ name }}" id="{{ id }}" rows="{{ rows }}" style="height: {{ rows * 18 }}px;">
+    <textarea class="tinymce w-full ml-0 float-none focus:shadow-none focus:border-gray-500" name="{{ name }}" id="{{ id }}" rows="{{ rows }}" style="height: {{ rows * 18 }}px;" {% if required %} x-validate.required data-error-msg="{{__('This field is required') }}" {% endif %} >
         {{- value -}}
     </textarea>
-
-    {% if required %}
-        <script type="text/javascript">
-        var {{ id }} = new LiveValidation('{{ id }}');
-        {{ id }}.add(Validate.Presence, { tinymce: true, tinymceField: '{{ id }}'});
-        {% if initiallyHidden %}
-            {{ id }}.disable();
-        {% endif %}
-        </script>
-    {% endif %}
 </div>
 
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('tinymceSetup', function (event) {
+
     {% if tinymceInit %}
         tinyMCE.execCommand('mceAddControl', false, '{{ id }}');
     {% endif %}
@@ -151,24 +142,12 @@ $(document).ready(function(){
         $('#{{ id }}edButtonPreview').removeClass('active') ;
         $(".{{ id }}resourceSlider").hide();
         $("#{{ id }}mediaInner").hide();
-        {% if required %}
-            {{ id }}.destroy();
-            $('.LV_validation_message').css('display','none');
-            {{ id }}=new LiveValidation('{{ id }}');
-            {{ id }}.add(Validate.Presence);
-        {% endif %}
     }) ;
     $('#{{ id }}edButtonPreview').click(function(){
         tinyMCE.execCommand('mceAddEditor', false, '{{ id }}');
         $('#{{ id }}edButtonPreview').addClass('active');
         $('#{{ id }}edButtonHTML').removeClass('active'); 
         $("#{{ id }}mediaInner").show();
-        {% if required %}
-            {{ id }}.destroy();
-            $('.LV_validation_message').css('display','none');
-            {{ id }}=new LiveValidation('{{ id }}');
-            {{ id }}.add(Validate.Presence, { tinymce: true, tinymceField: '{{ id }}'});
-        {% endif %}
     });
 });
 </script>

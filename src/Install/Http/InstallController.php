@@ -209,8 +209,8 @@ class InstallController
         $nonce = $this->nonceService->generate('install:locale');
 
         //PROCEED
-        $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-        $falseIcon = "<img title='" . __('No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+        $trueIcon =  icon('solid', 'check', 'size-6 mr-2 fill-current text-green-600');
+        $falseIcon = icon('solid', 'cross', 'size-6 mr-2 fill-current text-red-700');
 
         $versionTitle = __('%s Version');
         $versionMessage = __('%s requires %s version %s or higher');
@@ -223,7 +223,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
-        $form->setClass('smallIntBorder standardForm w-full');
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(1);
 
@@ -358,6 +358,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 2]));
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(2);
 
@@ -483,6 +484,7 @@ class InstallController
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 3]));
         $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(3);
 
@@ -853,6 +855,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', "./install.php?step=4");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form->setClass('smallIntBorder w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(4);
 

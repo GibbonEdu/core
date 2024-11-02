@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment.php');
 

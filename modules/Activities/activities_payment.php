@@ -51,9 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     } else {
         $lastPerson = '';
 
-        $form = Form::create('generateInvoices', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_paymentProcessBulk.php');
+        $form = Form::createBlank('generateInvoices', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_paymentProcessBulk.php');
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
-        $form->setClass('w-full blank bulkActionForm');
+        $form->setClass('bulkActionForm');
         $form->addHiddenValue('address', $session->get('address'));
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $header->addContent(__('Form Group'));
         $header->addContent(__('Student'));
         $header->addContent(__('Activity'));
-        $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$session->get('currency').'</span>');
+        $header->addContent(__('Cost'))->append('<br/><span class="text-xs italic">'.$session->get('currency').'</span>');
         $header->addCheckbox('checkall')->setClass('floatNone textCenter checkall');
 
         while ($student = $result->fetch()) {

@@ -172,7 +172,7 @@ class FileUpload extends Input
             $output .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.(1024 * (1024 * $this->maxUpload)).'">';
         }
 
-        $output .= '<div class="input-box-meta max-upload standardWidth right" style="'.$hidden.'">';
+        $output .= '<div class="input-box-meta max-upload " style="'.$hidden.'">';
         if ($this->getAttribute('multiple') == true) {
             $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label);
         } else {
@@ -191,6 +191,8 @@ class FileUpload extends Input
     {
         $output = '';
 
+        $output .= '<div class="w-full flex flex-col items-start">';
+        
         if (!empty($this->attachments)) {
             // jQuery needs brackets in input names escaped, php needs backslashes escaped = double-escaped
             $idEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $this->getID());
@@ -200,9 +202,9 @@ class FileUpload extends Input
 
                 if (!empty($attachmentPath)) {
 
-                    $output .= '<div class="input-box rounded-sm standardWidth">';
+                    $output .= '<div class="input-box rounded-md w-full">';
 
-                    $output .= '<div class="inline-label">';
+                    $output .= '<div class="inline-label text-xs">';
                     $output .= __('Current attachment:').'<br/>';
                     $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
 
@@ -214,14 +216,20 @@ class FileUpload extends Input
 
                     $output .= '</div>';
 
-                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.$attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+                    $output .=  "<a download title='".__('Download')."' class='inline-button text-gray-600' href='".$this->absoluteURL.$attachmentPath."'>";
+                    $output .= icon('solid', 'download', 'size-6 sm:size-5');
+                    $output .= '</a>';
 
                     if ($this->canDelete) {
                         $attachmentNameEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $attachmentName);
                         if (!empty($this->deleteAction)) {
-                            $output .=  "<a class='inline-button' href='".$this->absoluteURL.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
+                            $output .=  "<a title='".__('Delete')."' class='inline-button text-gray-600' href='".$this->absoluteURL.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'>";
+                            $output .= icon('solid', 'delete', 'size-6 sm:size-5');
+                            $output .= '</a>';
                         } else {
-                            $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"#".$attachmentNameEscaped."\").val(\"\"); $(\"#".$idEscaped."\").show(); $(\"#".$idEscaped." + .max-upload\").show(); $(\"#".$idEscaped."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                            $output .= "<div title='".__('Delete')."' class='inline-button text-gray-600' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"#".$attachmentNameEscaped."\").val(\"\"); $(\"#".$idEscaped."\").show(); $(\"#".$idEscaped." + .max-upload\").show(); $(\"#".$idEscaped."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'>";
+                            $output .= icon('solid', 'delete', 'size-6 sm:size-5');
+                            $output .= '</div>';
                         }
                     }
 
@@ -243,11 +251,14 @@ class FileUpload extends Input
             }
         }
 
+        $this->addClass('w-full rounded-md bg-white border border-gray-400 font-sans p-2 text-sm text-gray-900  placeholder:text-gray-500');
+
         $output .= '<input type="file" '.$this->getAttributeString().'>';
 
         if ($this->maxUpload !== false) {
             $output .= $this->getMaxUploadText();
         }
+        $output .= '</div>';
 
         return $output;
     }

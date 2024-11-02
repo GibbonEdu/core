@@ -57,11 +57,11 @@ $gibbonExternalAssessmentFieldID = $I->grabEditIDFromURL();
 // Delete Field ------------------------------------------
 $I->amOnModulePage('School Admin', 'externalAssessments_manage_edit_field_delete.php', array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'externalAssessments_manage_delete.php', array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

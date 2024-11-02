@@ -38,6 +38,7 @@ v28.0.00
         System: refactored the Fast Finder using HTMX and Alpine
         System: updated Core modules to have Gibbon Foundation as author
         System: updates the timetable navigation to use AJAX reloading rather than page refresh
+        System: moved the login form to the bottom of the page when viewing subpages and not logged in
         Attendance: added an index to the attendance log to help speed up attendance pages
         Attendance: added an indicator to Student Not Present/Onsite when attendance logs conflict
         Activities: updated Activity Attendance to always count participants for dates in the past
@@ -59,10 +60,12 @@ v28.0.00
 
     Bug Fixes
         Admissions: fixed the search results on the Manage Application page to include json data
+        Admissions: fixed missing Previous Schools section in Application Form view and print pages
         Behaviour: fixed users notified of behaviour records unable to add follow up
         Finance: fixed bulk exporting invoice fees for Pending invoices
         Form Groups: fixed Year Group Summary list when looking at non-current school years
         Individual Needs: fixed an error on the IN Archive page that prevented access to it
+        Markbook: fixed SQL error in Markbook when using external assessments for a baseline
         Planner: fixed next lesson plan date not auto populating in Add Lesson Plan
         Reports: fixed Send Report option to enable sending to students without needing parent details
         Reports: fixed Scan Asset Directories not working on Windows servers 

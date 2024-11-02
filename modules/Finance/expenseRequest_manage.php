@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
-                    $form->setClass('noIntBorder fullWidth');
+                    $form->setClass('noIntBorder w-full');
 
                     $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
                     $form->addHiddenValue('q', "/modules/".$session->get('module')."/expenseRequest_manage.php");

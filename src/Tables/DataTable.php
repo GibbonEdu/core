@@ -36,6 +36,7 @@ use Gibbon\Tables\View\PaginatedView;
 use Gibbon\View\View;
 use Gibbon\Tables\View\DetailsView;
 use Gibbon\Tables\Columns\RadioColumn;
+use Gibbon\Forms\Layout\Element;
 
 /**
  * DataTable
@@ -187,6 +188,17 @@ class DataTable implements OutputableInterface
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * Get whether the table has a DataSet with data in in.
+     *
+     * @param DataSet|array $data
+     * @return self
+     */
+    public function hasData()
+    {
+        return !empty($this->data) && !empty($this->data->getResultCount());
     }
 
     /**
@@ -404,7 +416,15 @@ class DataTable implements OutputableInterface
      */
     public function addHeaderAction($name, $label = '')
     {
-        $this->header[$name] = new Action($name, $label);
+        $this->header[$name] = (new Action($name, $label))->displayLabel(true);
+
+        return $this->header[$name];
+    }
+
+    public function addHeaderContent($content = '')
+    {
+        $name = substr(preg_replace('/[^a-zA-Z0-9]/', '', $content), 0, 30);
+        $this->header[$name] = new Element($content);
 
         return $this->header[$name];
     }

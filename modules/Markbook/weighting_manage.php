@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
                 $form = Form::create('searchForm', $session->get('absoluteURL').'/modules/'.$session->get('module').'/weighting_manage_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->setClass('noIntBorder fullWidth');
+                $form->setClass('noIntBorder w-full');
 
                 $col = $form->addRow()->addColumn()->addClass('inline right');
                     $col->addContent(__('Copy from').' '.__('Class').':');

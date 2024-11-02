@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/activities_attendance_sheet.php");
 

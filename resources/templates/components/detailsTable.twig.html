@@ -16,14 +16,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block table %}
 
-    <header class="relative flex justify-between">
+    <header class="relative w-full flex justify-between items-end">
         {% block header %}
             {% if table.getTitle %}
                 <h2>{{ table.getTitle|raw }}</h2>
             {% endif %}
 
             {% if table.getHeader %}
-            <div class="linkTop flex-1">
+            <div class="linkTop flex-1 flex justify-end items-end gap-2 mb-2 h-10 py-px">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}
@@ -50,14 +50,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     <h4>{{ __(heading) }}</h4>
                 {% endif %}
 
-                <div class="grid {{ gridClass|default('grid-cols-1 md:grid-cols-3') }} rounded border bg-gray-100 text-xs text-gray-700">
+                <div class="sm:grid {{ gridClass|default('grid-cols-3') }} rounded border bg-gray-100 text-xs text-gray-700">
             
                 {% for columnIndex, column in headingColumns %}
 
                     <div class="p-2 border-b -mb-px {{ column.getClass }}" 
                         style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}" >
                         <span class="block text-sm font-bold mb-1">{{ column.getLabel | raw }}</span>
-                        <span class="block text-gray-700 ">{{ column.getOutput(rowData) | raw }}</span>
+                        <span class="block text-gray-700 overflow-x-auto">{{ column.getOutput(rowData) | raw }}</span>
                     </div>
 
                 {% endfor %}

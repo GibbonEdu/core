@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     exit;
 } else {
     // Proceed!
-    $MailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
+    $mailingListRecipientGateway = $container->get(MailingListRecipientGateway::class);
     $randStrGenerator = new PasswordPolicy(true, true, false, 40);
     
     $data = [
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'key'                               => $randStrGenerator->generate(),    
         'organisation'                      => $_POST['organisation'] ?? '',
-        'gibbonMessengerMailingListIDList'  => implode(',', $_POST['gibbonMessengerMailingListIDList']) ?? '',
+        'gibbonMessengerMailingListIDList'  => ((is_array($_POST['gibbonMessengerMailingListIDList'])) ? implode(',', $_POST['gibbonMessengerMailingListIDList']) : ''),
     ];
 
     // Validate the required values are present
@@ -56,14 +56,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/mailingListRecip
     }
 
     // Validate that this record is unique
-    if (!$MailingListRecipientGateway->unique($data, ['email'])) {
+    if (!$mailingListRecipientGateway->unique($data, ['email'])) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }
 
     // Create the record
-    $gibbonMessengerMailingListRecipientID = $MailingListRecipientGateway->insert($data);
+    $gibbonMessengerMailingListRecipientID = $mailingListRecipientGateway->insert($data);
 
     if ($gibbonMessengerMailingListRecipientID) {
         $URL .= "&return=success0&editID=$gibbonMessengerMailingListRecipientID";

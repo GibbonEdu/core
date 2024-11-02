@@ -8,8 +8,19 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% if form.getAction != 'ajax' %}
-<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+{% set standardLayout = "noIntBorder" not in form.getClass and "form-small" not in form.getClass and "blank" not in form.getClass %}
+{% set smallLayout = "form-small" in form.getClass %}
+{% set useSections = "noIntBorder" not in form.getClass and "blank" not in form.getClass %}
+
+{% if quickSave and form.getAction %}
+    <form x-validate {{ form.getAttributeString|raw }} hx-trigger="quicksave, keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'invalid': false, 'submitting': false, 'showTimeout': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout);" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000); $dispatch('saved');" x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
+
+    <div class="formStatus fixed bottom-0 right-4 z-50" x-cloak>
+        <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
+        <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
+    </div>
+{% elseif form.getAction != 'ajax' %}
+    <form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
 {% endif %}
 
     {% if form.hasPages %}
@@ -41,10 +52,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     {% block header %}
-        <header class="relative flex justify-between">
+        <header class="relative flex justify-between items-end mb-2 {{ standardLayout ? '' }}">
             {% if form.getHeader %}
                 <h2>{{ form.getTitle }}</h2>
-                <div class="linkTop">
+                <div class="linkTop flex justify-end gap-2 h-10 py-px">
                     {% for action in form.getHeader %}
                         {{ action.getOutput|raw }}
                     {% endfor %}
@@ -57,86 +68,147 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and "blank" not in form.getClass ? 'flex' : 'table' %}
-
     {% if form.getRows|length > 0 %}
-        <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
+    <section id="form" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
+        {% if "noIntBorder" not in form.getClass%}
+        x-data="{changed: false, 
+            checkInput(formElement) {  
+                document.getElementById(formElement.id).addEventListener('input', (evt) => {
+                    this.changed = true;
+                    window.onbeforeunload = function(event) {
+                        if (event.target.activeElement.nodeName == 'INPUT' || event.target.activeElement.type=='submit' || event.target.activeElement.classList.contains('submitButton')) return;
+                        return Gibbon.config.htmx.unload_confirm;
+                    };
+                });
+            },
+            afterSave() {
+                this.changed = false;
+                window.onbeforeunload = null;
+            },
+        }" x-init="checkInput($el)" @saved.window="afterSave()"
+        {% endif %}
+        >
+
+        <div class="{{ standardLayout and form.hasMeta ? 'col-span-6' : 'col-span-8' }}">
 
         {% for section, rows in form.getRowsByHeading %}
             {% set sectionLoop = loop %}
 
+            {% if useSections %}
+            <div class="{{ (rows|first).class|split(' ')|first }} mb-6 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
+            {% endif %}
+
             {% for num, row in rows %}
 
                 {% set rowLoop = loop %}
-                {% if true or renderStyle == 'flex' %}
-                    {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
+
+                {% set rowClass = section == 'submit' 
+                    ? 'flex flex-row content-center p-0 gap-2 sm:gap-4 justify-end sm:items-center' 
+                    : 'flex flex-col sm:flex-row  content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start' 
+                %}
+
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
+  
+                {% if quickSave and section == 'submit' %}
+                    <span class="text-xs text-gray-600 flex-1">
+                        {{ __('Press {shortcut} to {action}', {shortcut: '<kbd class="bg-white">⌘ Cmd</kbd> + <kbd class="bg-white">S</kbd>', action: __('quick save')} )|raw }}
+                    </span>
                 {% endif %}
-
-                {% set firstElement = (row.getElements|first) %}
-                {% if firstElement.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') and firstElement.getTag == 'h3' %}
-                    {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' bg-gray-300' : rowClass ~ ' my-2' %}
-                {% endif %}
-
-
-                <div id="{{ row.getID }}" class="formRow {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}" {{ row.getAttributeString("data-drag-id")|raw }}>
 
                 {% if "draggableRow" in row.getClass %}
-                    <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>
+                    <div class="drag-handle w-2 h-6 -ml-4 px-px border-4 border-dotted cursor-move"></div>
                 {% endif %}
         
                 {% for element in row.getElements %}
-                    {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
 
                     {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
                         {% set class = 'flex-grow justify-center' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                        {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0' %}
+                        {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
-                        {% set class = loop.last and loop.length == 2 ? 'w-full max-w-full sm:max-w-sm flex justify-end' : 'w-full ' %}
-                    {% elseif loop.last and loop.length == 2 and renderStyle == 'flex' %}
-                        {% set class = 'w-full max-w-full sm:max-w-sm flex justify-end items-center' %}
+                        {% set class = loop.last and loop.length == 2 ? 'flex-1 relative flex justify-end items-center' : '' %}
+                    {% elseif loop.last and (loop.length == 2 or "noIntBorder" in form.getClass) %}
+                        {% set class = 'flex-1 relative flex justify-end items-center' %}
                     {% else %}
-                        {% set class = loop.last and loop.length > 2 ? '' : 'flex-1' %}
-                    {% endif %}
-
-                    {% if renderStyle == 'table' and element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                        {% set class = class ~ " lg:w-2/5" %}
-                    {% endif %}
-
-                    {% if "standardForm" in form.getClass %}
-                        {% set class = class ~ " px-4 py-4" %}
-                    {% elseif "blank" not in form.getClass %}
-                    {% set class = class ~ " px-3 py-2" %}
+                        {% set class = '' %}
                     {% endif %}
 
                     {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
-                    <div class="{{ class }} {{ hasClass ? element.getClass|replace({'standardWidth': ''}) : '' }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
-                        {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
+                    {% set class = hasClass ? class ~ ' ' ~  element.getClass : class %}
+                    <div class="{{ class }} {{ 'flex-' not in class and section != 'submit' ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
 
-                        {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
-                        <script type="text/javascript">
-                            {{ element.getValidationOutput|raw }}
-                        </script>
+                        {% if standardLayout and element.getAttribute('id') == 'Submit' %}
+                            <span x-cloak x-show="changed" class="tag message mr-4 whitespace-nowrap">{{ __('Unsaved Changes') }}</span>
+
+                            <span x-cloak x-show="invalid" class="tag error mr-4 whitespace-nowrap">{{ __('Please Check Form') }}</span>
                         {% endif %}
+
+                        {{ element.getOutput|raw }}
                     </div>
                 {% endfor %}
 
                 </div>
             {% endfor %}
+
+            {% if useSections %}
+            </div>
+            {% endif %}
+
         {% endfor %}
-    </div>
+        </div>
+
+        {% if form.hasMeta and form.getMeta.getElementCount > 0 %}
+        <aside class="hidden xl:flex flex-col col-span-2 h-min bg-gray-50 rounded border border-gray-400 border-t-4 border-t-gray-400">
+            {% for element in form.getMeta.getElements %}
+                {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
+            
+                <div class="p-4 {{ not loop.last ? 'border-b'}} {{ hasClass ? element.getClass }}" 
+                    {{ element.getAttributeString('', 'id,class')|raw }}>
+                    {{ element.getOutput|raw }}
+                </div>
+            {% endfor %}
+
+            <template x-if="invalid">
+                <div class="p-4 border-t">
+                    <span class="tag error">{{ __('Please check these fields') }}:</span>
+
+                    <ul class="ml-6">
+                    <template x-for="v in $validate.data($refs.form)" >
+                        <template x-if="!v.valid && v.node.labels.length > 0">
+                        <li>
+                            <span x-text="v.node.labels[0].ariaLabel" :aria-label="v.name" class="text-xs"></span>
+                        </li>
+                        </template>
+                    </template>
+                    
+
+                    </ul>
+                </div>
+            </template>
+        </aside>
+        {% endif %}
+
+    </section>
     {% endif %}
 
     {% if postScript %}
-        <p>{{ postScript|raw }}</p>
+    <p>{{ postScript|raw }}</p>
     {% endif %}
 
     <script type="text/javascript">
+        {% if quickSave and form.getAction %}
+        $(document).keydown(function(event) {
+            if (!((String.fromCharCode(event.which).toLowerCase() == 's' || event.keyCode == 13) && event.metaKey) && !(event.which == 19)) return true;
+            event.preventDefault();
+            return false;
+        });
+        {% endif %}
+
         {% for code in javascript %}
             {{ code|raw }}
         {% endfor %}
     </script>
 
-{% if form.getAction %}
+{% if form.getAction != 'ajax' %}
 </form>
 {% endif %}

@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
 } else {
     // Proceed!
     $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $order = $_POST['order'];
 
     if (empty($order) || empty($data['gibbonReportingCycleID'])) {
         exit;

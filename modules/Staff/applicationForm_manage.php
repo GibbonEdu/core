@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/applicationForm_manage.php");
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             } else {
                 $output = Format::name('', $row['applicationPreferredName'], $row['applicationSurname'], 'Staff', true, true);
             }
-            return $output.'<br/><span class="small emphasis">'.Format::dateTime($row['timestamp']).'</span>';
+            return $output.'<br/><span class="text-xs italic">'.Format::dateTime($row['timestamp']).'</span>';
         });
 
     $table->addColumn('jobTitle', __('Position'));
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->format(function($row) {
             $output = '<strong>'.__($row['status']).'</strong>';
             if ($row['status'] == 'Pending') {
-                $output .= '<br/><span class="small emphasis">'.trim(str_replace(',', '<br/>', $row['milestones'])).'</span>';
+                $output .= '<br/><span class="text-xs italic">'.trim(str_replace(',', '<br/>', $row['milestones'])).'</span>';
             }
             return $output;
         });

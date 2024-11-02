@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('PayPal');
     $form->toggleVisibilityByClass('stripeSettings')->onSelect($setting['name'])->when('Stripe');
-    $form->toggleVisibilityByClass('paymentTest')->onSelect($setting['name'])->whenNot('Please select...');
+    $form->toggleVisibilityByClass('paymentTest')->onSelect($setting['name'])->whenNot('');
 
     $setting = $settingGateway->getSettingByScope('System', 'paymentAPIUsername', true);
     $row = $form->addRow()->addClass('paypalSettings');
@@ -172,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row = $form->addRow()->addClass('paymentTest');
             $row->addLabel('paymentTest', __('Test Payment'))->description(__('You can use this tool to make a small payment in {currency} to test your gateway configuration.', ['currency' => $session->get('currency')]));
             $col = $row->addColumn();
-            $col->addCurrency('paymentTest')->setValue(10)->addClass('w-full');
-            $col->addButton(__('Go'), 'testPayment()')->addClass('-ml-px w-24');
+            $col->addCurrency('paymentTest')->setValue(10)->groupAlign('left');
+            $col->addButton(__('Send'), 'testPayment()')->groupAlign('right')->setIcon('arrow-right-circle');
     }
 
     // SMS
@@ -241,8 +241,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row = $form->addRow()->addClass('smsTest');
             $row->addLabel('smsTest', __('Test SMS'))->description(__('You can use this tool to send an sms to test your SMS Gateway configuration.'));
             $col = $row->addColumn();
-            $col->addPhoneNumber('smsTest')->setValue($session->get('sms'))->addClass('w-full');
-            $col->addButton(__('Go'), 'testSMS()')->addClass('-ml-px w-24');
+            $col->addPhoneNumber('smsTest')->setValue($session->get('sms'))->groupAlign('left');
+            $col->addButton(__('Send'), 'testSMS()')->groupAlign('right')->setIcon('arrow-right-circle');
     }
 
     // SMTP MAIL
@@ -291,8 +291,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $row = $form->addRow()->addClass('emailTest');
         $row->addLabel('emailTest', __('Test Email'))->description(__('You can use this tool to send an email to test your SMTP configuration.'));
         $col = $row->addColumn();
-        $col->addEmail('emailTest')->setValue($session->get('email'))->addClass('w-full');
-        $col->addButton(__('Go'), 'testEmail()')->addClass('-ml-px w-24');
+        $col->addEmail('emailTest')->setValue($session->get('email'))->groupAlign('left');
+        $col->addButton(__('Send'), 'testEmail()')->groupAlign('right')->setIcon('arrow-right-circle');
     
 
     $row = $form->addRow();

@@ -25,11 +25,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
     {% else %}
 
-        <div class="flex flex-wrap {{ table.getMetaData('gridClass')|default('py-2') }}">
-            <div class="w-full">
-                {{ gridHeader|raw }}
-            </div>
+        <div class="w-full">
+            {{ gridHeader|raw }}
+        </div>
 
+        <div class="flex flex-wrap {{ table.getMetaData('gridClass')|default('py-2') }}">
+            
             {% for rowIndex, rowData in rows %}
                 {{ rowData.row.getPrepended|raw }}
 
@@ -53,11 +54,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             {% endfor %}
 
-            <div class="w-full">
-                {{ gridFooter|raw }}
-            </div>
+            
         </div>
     {% endif %}
+
+    <div class="w-full">
+        {{ gridFooter|raw }}
+    </div>
 
     {{ block("footer") }}
         

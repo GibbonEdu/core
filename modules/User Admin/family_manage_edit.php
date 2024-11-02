@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $form->setDescription(Format::alert(__('There are not enough people in this family to form relationships.')));
             } else {
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->setClass('colorOddEven fullWidth');
+                $form->setClass('colorOddEven w-full');
 
                 $form->addHiddenValue('address', $session->get('address'));
 

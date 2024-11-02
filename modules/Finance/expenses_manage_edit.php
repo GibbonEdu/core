@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                                     $col = $form->addRow()->addColumn();
                                         $col->addLabel('reimbursementComment', __('Reimbursement Comment'));
-                                        $col->addTextArea('reimbursementComment')->setRows(4)->setClass('fullWidth');
+                                        $col->addTextArea('reimbursementComment')->setRows(4)->setClass('w-full');
                                 }
                             }
 

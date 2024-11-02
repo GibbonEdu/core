@@ -46,8 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     // DATE SELECTOR
-    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
-    $form->setClass('blank fullWidth');
+    $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addClass('flex flex-wrap');
@@ -59,14 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $nextWeek = $dateObject->modify('+1 week')->format($dateFormat);
 
     $col = $row->addColumn()->setClass('flex-1 flex items-center ');
-        $col->addButton(__('Last Week'))->addClass('rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastWeek}&allStaff={$allStaff}'");
-        $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisWeek}&allStaff={$allStaff}'");
-        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('Last Week'))->groupAlign('left')->onClick("window.location.href='{$link}&date={$lastWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('This Week'))->groupAlign('middle')->onClick("window.location.href='{$link}&date={$thisWeek}&allStaff={$allStaff}'");
+        $col->addButton(__('Next Week'))->groupAlign('right')->onClick("window.location.href='{$link}&date={$nextWeek}&allStaff={$allStaff}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
         $col->addCheckbox('allStaff')->description(__('All Staff'))->setValue('Y')->checked($allStaff)->setClass('mr-4');
-        $col->addDate('date')->setValue($dateObject->format($dateFormat))->setClass('shortWidth');
-        $col->addSubmit(__('Go'));
+        $col->addDate('date')->groupAlign('left')->setValue($dateObject->format($dateFormat))->setClass('w-36');
+        $col->addSubmit(__('Go'))->groupAlign('right');
 
     // DATA
     $firstDayOfTheWeek = $container->get(SettingGateway::class)->getSettingByScope('System', 'firstDayOfTheWeek');
