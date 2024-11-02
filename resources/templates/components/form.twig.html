@@ -95,15 +95,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set sectionLoop = loop %}
 
             {% if useSections %}
-            <div class="{{ ((rows|first).getElements|first).class }} mb-6 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
+            <div class="{{ (rows|first).class|split(' ')|first }} mb-6 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? ' py-2 sm:py-3 ' : ''}}" >
             {% endif %}
 
             {% for num, row in rows %}
 
                 {% set rowLoop = loop %}
 
-                {% set rowClass = 'flex flex-col sm:flex-row  content-center p-0 gap-2 sm:gap-4' %}
-                {% set rowClass = section == 'submit' ? rowClass ~ ' justify-end sm:items-center' : rowClass ~ ' justify-between sm:items-start' %}
+                {% set rowClass = section == 'submit' 
+                    ? 'flex flex-row content-center p-0 gap-2 sm:gap-4 justify-end sm:items-center' 
+                    : 'flex flex-col sm:flex-row  content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start' 
+                %}
 
                 <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
   
