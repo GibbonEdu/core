@@ -64,7 +64,7 @@ class Table implements OutputableInterface
     {
         $this->factory = $factory;
         $this->setID($id);
-        $this->setClass('w-full formTable');
+        $this->setClass('w-full formTable overflow-x-scroll');
     }
 
     /**

@@ -184,9 +184,9 @@ class FinanceFields extends AbstractFieldGroup
                     $existingFeeCategoryIDList = is_array($existingFeeCategoryIDList) ? implode(',', $existingFeeCategoryIDList) : $existingFeeCategoryIDList;
                     $existingFeeCategoryIDList = !empty($existingFeeCategoryIDList) ? $existingFeeCategoryIDList : $default;
 
-                    $col = $row->addClass('paymentCompanyCategories')->addColumn()->setClass('flex flex-row justify-between');
-                        $col->addLabel('gibbonFinanceFeeCategoryIDList', __($field['label']))->description(__($field['description']));
-                        $col->addCheckbox('gibbonFinanceFeeCategoryIDList')
+                    $row->addClass('paymentCompanyCategories');
+                        $row->addLabel('gibbonFinanceFeeCategoryIDList', __($field['label']))->description(__($field['description']));
+                        $row->addCheckbox('gibbonFinanceFeeCategoryIDList')
                             ->fromArray($categories)
                             ->fromArray(['0001' => __('Other')])
                             ->loadFromCSV($existingFeeCategoryIDList);  

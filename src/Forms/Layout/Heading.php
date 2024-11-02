@@ -57,7 +57,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
         $this->row = $row;
         $this->headingClass = $row->getClass();
 
-        $this->row->addClass($this->tag == 'h3' ? 'break top-0 z-10 text-sm text-gray-600 font-light ' : 'm-0 p-0 text-sm text-gray-600 font-light');
+        $this->row->addClass($this->tag == 'h3' ? 'formHeading break top-0 z-10 text-sm text-gray-600 font-light ' : 'formHeading m-0 p-0 text-sm text-gray-600 font-light');
 
         $headingID = preg_replace('/[^a-zA-Z0-9]/', '', substr($this->id, 0, 60)); 
         $this->row->setID($headingID);

@@ -216,9 +216,9 @@ class FamilyFields extends AbstractFieldGroup
 
                 for ($i = 1; $i <= 3; ++$i) {
                     $tableRow = $table->addRow();
-                    $tableRow->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
+                    $tableRow->addTextField('siblingName'.$i)->maxLength(50)->setSize(26)->addClass('min-w-24');
                     $tableRow->addDate('siblingDOB'.$i)->setSize(10);
-                    $tableRow->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
+                    $tableRow->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30)->addClass('min-w-24');
                     $tableRow->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
                 }
                 

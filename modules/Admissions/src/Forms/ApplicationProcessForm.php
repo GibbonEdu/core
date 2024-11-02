@@ -51,6 +51,7 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
         $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
         $form = Form::create('applicationProcess', $action);
+        $form->removeMeta();
 
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);

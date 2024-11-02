@@ -210,21 +210,17 @@ class AdmissionsFields extends AbstractFieldGroup
                 $howDidYouHear = $this->settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
                 $howDidYouHearList = array_map('trim', explode(',', $howDidYouHear));
 
-                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
-
-                $col = $colGroup->addColumn()->setClass('flex flex-row justify-between items-center');
-                $col->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
+                $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
                 if (empty($howDidYouHear)) {
-                    $col->addTextField('howDidYouHear')->required()->maxLength(30);
+                    $row->addTextField('howDidYouHear')->required()->maxLength(30);
                 } else {
-                    $col->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
+                    $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->selected($default);
+                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('');
 
-                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
-
-                    $col = $colGroup->addColumn()->setClass('tellUsMore flex flex-row justify-between items-center');
-                        $col->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-                        $col->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
+                    $row = $form->addRow()->addClass('tellUsMore');
+                        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+                        $row->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
                 }
                 
         }
