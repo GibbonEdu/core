@@ -253,6 +253,7 @@ class Checkbox extends Input
             'options'        => $options,
             'totalOptions'   => $this->getOptionCount(),
             'checkedOptions' => count($this->checked),
+            'attributes'     => $this->getAttributeString('', 'id,name,class,value,type'),
             'hasMultiple'    => $hasMultiple,
             'labelClass'     => $this->labelClass,
             'checkall'       => $this->checkall,

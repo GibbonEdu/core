@@ -21,18 +21,18 @@
         <?php $itemClass = 'h-4 w-4 rounded text-blue-500 focus:ring-blue-600 ' . $class; ?>
         
         <?php if ($inline) { ?>
-            <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
+            <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> <?= $attributes; ?> >
             <label for="<?= $itemId; ?>" class="flex-1 text-left text-sm <?= $labelClass; ?>"><?= $checkbox['label']; ?></label>
 
         <?php } elseif ($align == 'right') { ?>
             
             <div class="w-full inline-flex gap-2 justify-center items-center text-right">
             <label class="leading-compact flex-1 text-sm <?= $labelClass; ?>" for="<?= $itemId; ?>"><?= $checkbox['label']; ?></label>
-            <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
+            <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> <?= $attributes; ?> >
             </div>
         <?php } else { ?>
             <div class="w-full inline-flex gap-2 justify-center items-center text-left">
-            <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> >
+            <input type="checkbox" name="<?= $name; ?>" id="<?= $itemId; ?>" class="<?= $itemClass; ?>" value="<?= $checkboxValue; ?>" <?= $checkbox['checked'] ?> <?= $checkbox['disabled'] ?> <?= $attributes; ?> >
             <label class="leading-compact flex-1 text-sm <?= $labelClass; ?>" for="<?= $itemId; ?>"><?= $checkbox['label']; ?></label>
             </div>
         <?php } ?>
