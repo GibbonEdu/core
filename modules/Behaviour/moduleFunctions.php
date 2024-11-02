@@ -45,6 +45,14 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
 
     $schoolYears = $studentGateway->selectAllStudentEnrolmentsByPerson($gibbonPersonID)->fetchAll();
 
+    $highestViewAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $viewingSelf = $session->get('gibbonPersonID') == $gibbonPersonID;
+
+    if ($highestViewAction == 'View Behaviour Records_my' && !$viewingSelf) {
+        echo Format::alert(__('You do not have access to this action.'));
+        return;
+    }
+
     if (empty($schoolYears)) {
         $output .= "<div class='error'>";
         $output .= __('There are no records to display.');
@@ -63,8 +71,10 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
             $table = DataTable::createPaginated('behaviour'.$schoolYear['gibbonSchoolYearID'], $criteria);
             $table->setTitle($schoolYear['name']);
 
-            if ($schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
-                if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php')) {
+            $canManageBehaviour = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php');
+
+            if (!$viewingSelf && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
+                if ($canManageBehaviour) {
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Behaviour/behaviour_manage_add.php')
                         ->addParam('gibbonPersonID', $gibbonPersonID)
@@ -85,19 +95,21 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
 
             $table->addMetaData('hidePagination', true);
 
-            $table->addExpandableColumn('comment')
-                ->format(function($behaviour) {
-                    $output = '';
-                    if (!empty($behaviour['comment'])) {
-                        $output .= '<strong>'.__('Incident').'</strong><br/>';
-                        $output .= nl2br($behaviour['comment']).'<br/>';
-                    }
-                    if (!empty($behaviour['followup'])) {
-                        $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                        $output .= nl2br($behaviour['followup']).'<br/>';
-                    }
-                    return $output;
-                });
+            if ($highestViewAction == 'View Behaviour Records_all') {
+                $table->addExpandableColumn('comment')
+                    ->format(function($behaviour) {
+                        $output = '';
+                        if (!empty($behaviour['comment'])) {
+                            $output .= '<strong>'.__('Incident').'</strong><br/>';
+                            $output .= nl2br($behaviour['comment']).'<br/>';
+                        }
+                        if (!empty($behaviour['followup'])) {
+                            $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
+                            $output .= nl2br($behaviour['followup']).'<br/>';
+                        }
+                        return $output;
+                    });
+            }
 
             $table->addColumn('date', __('Date'))
                 ->context('primary')
@@ -125,7 +137,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                 $table->addColumn('descriptor', __('Descriptor'))->context('primary');
             }
 
-            if ($enableLevels == 'Y') {
+            if ($highestViewAction == 'View Behaviour Records_all' && $enableLevels == 'Y') {
                 $table->addColumn('level', __('Level'))->width('15%');
             }
 
@@ -137,8 +149,8 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                     return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
                 });
 
-            if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
-                $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
+            if ($canManageBehaviour && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
+                $highestManageAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonID)
@@ -146,8 +158,9 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                     ->addParam('gibbonYearGroupID', '')
                     ->addParam('type', '')
                     ->addParam('gibbonBehaviourID')
-                    ->format(function ($person, $actions) use ($session, $highestAction) {
-                        if ($highestAction == 'Manage Behaviour Records_all' || $highestAction == 'Manage Behaviour Records_my') {
+                    ->format(function ($person, $actions) use ($session, $highestManageAction) {
+                        if ($highestManageAction == 'Manage Behaviour Records_all'
+                        || ($highestManageAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
                             $actions->addAction('edit', __('Edit'))
                                 ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
                         }

@@ -77,6 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
+        } else if ($highestAction == 'View Behaviour Records_myself') {
+            $students = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
+
+            $table = DataTable::create('behaviour');
+            $table->setTitle( __('Behaviour'));
 
         } else if ($highestAction == 'View Behaviour Records_my') {
             
