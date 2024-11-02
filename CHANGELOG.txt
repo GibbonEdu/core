@@ -64,6 +64,7 @@ v28.0.00
         Finance: fixed bulk exporting invoice fees for Pending invoices
         Form Groups: fixed Year Group Summary list when looking at non-current school years
         Individual Needs: fixed an error on the IN Archive page that prevented access to it
+        Markbook: fixed dynamic SQL statement in cacheExternalAssessments in MarkbookView
         Planner: fixed next lesson plan date not auto populating in Add Lesson Plan
         Reports: fixed Send Report option to enable sending to students without needing parent details
         Reports: fixed Scan Asset Directories not working on Windows servers 
