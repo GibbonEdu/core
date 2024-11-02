@@ -39,7 +39,7 @@ if ($disabled) {
 
     <?php $svgClass = 'text-gray-600 block m-0.5 size-5 '.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5 ' : '').($iconClass ?? ''); ?>
 
-    <?= !empty($icon) ? icon('solid', $icon, $svgClass ) : ''; ?>
+    <?= !empty($icon) ? icon($iconLibrary ?? 'solid', $icon, $svgClass ) : ''; ?>
 
     <?= $value; ?>
 

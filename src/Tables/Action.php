@@ -62,14 +62,28 @@ class Action extends WebLink
      *
      * @var string
      */
-    protected $urlFragment = null;
+    protected $urlFragment;
 
     /**
      * The icon name, without any path or filetype
      *
-     * @var string|Gibbon\Url
+     * @var string
      */
-    protected $icon = null;
+    protected $icon;
+
+    /**
+     * The icon css class
+     *
+     * @var string
+     */
+    protected $iconClass;
+
+    /**
+     * The icon library (basic, solid, outline, etc.)
+     *
+     * @var string
+     */
+    protected $iconLibrary;
 
     /**
      * Boolean flag indicate if the link opens a modal box.
@@ -195,9 +209,11 @@ class Action extends WebLink
      * @param string $icon
      * @return self
      */
-    public function setIcon($icon)
+    public function setIcon($icon, $class = '', $library = 'solid')
     {
         $this->icon = $icon;
+        $this->iconClass = $class;
+        $this->iconLibrary = $library;
 
         return $this;
     }
@@ -318,10 +334,12 @@ class Action extends WebLink
         }
 
         return Component::render(Action::class, $this->getAttributeArray() + [
-            'action' => $this->name,
-            'icon'   => $this->icon,
-            'label'  => $this->label,
-            'displayLabel'  => $this->displayLabel,
+            'action'       => $this->name,
+            'icon'         => $this->icon,
+            'iconClass'    => $this->iconClass,
+            'iconLibrary'  => $this->iconLibrary,
+            'label'        => $this->label,
+            'displayLabel' => $this->displayLabel,
         ]);
     }
 }

@@ -40,6 +40,7 @@ class Button extends Element
     private $type;
     private $icon;
     private $iconClass;
+    private $iconLibrary;
     private $size;
     private $color;
 
@@ -86,10 +87,11 @@ class Button extends Element
      * @param string $class
      * @return self
      */
-    public function setIcon($value, $class = '')
+    public function setIcon($icon, $class = '', $library = 'solid')
     {
-        $this->icon = $value;
+        $this->icon = $icon;
         $this->iconClass = $class;
+        $this->iconLibrary = $library;
         return $this;
     }
 
@@ -136,13 +138,14 @@ class Button extends Element
     protected function getElement()
     {
         return Component::render(Button::class, $this->getAttributeArray() + [
-            'groupAlign' => $this->getGroupAlign(),
-            'groupClass' => $this->getGroupClass(),
-            'type'       => $this->type,
-            'icon'       => $this->icon,
-            'iconClass'  => $this->iconClass,
-            'size'       => $this->size,
-            'color'      => $this->color,
+            'groupAlign'  => $this->getGroupAlign(),
+            'groupClass'  => $this->getGroupClass(),
+            'type'        => $this->type,
+            'icon'        => $this->icon,
+            'iconClass'   => $this->iconClass,
+            'iconLibrary' => $this->iconLibrary,
+            'size'        => $this->size,
+            'color'       => $this->color,
         ]);
     }
 }
