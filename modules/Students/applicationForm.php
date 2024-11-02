@@ -868,7 +868,7 @@ if ($proceed == false) {
     } else {
         $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder()->loadFrom($application);
 
-        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('Please select...');
+        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot('');
 
         $row = $form->addRow()->addClass('tellUsMore');
             $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));

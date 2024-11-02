@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('PayPal');
     $form->toggleVisibilityByClass('stripeSettings')->onSelect($setting['name'])->when('Stripe');
-    $form->toggleVisibilityByClass('paymentTest')->onSelect($setting['name'])->whenNot('Please select...');
+    $form->toggleVisibilityByClass('paymentTest')->onSelect($setting['name'])->whenNot('');
 
     $setting = $settingGateway->getSettingByScope('System', 'paymentAPIUsername', true);
     $row = $form->addRow()->addClass('paypalSettings');

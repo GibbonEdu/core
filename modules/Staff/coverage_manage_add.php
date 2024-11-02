@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $row = $form->addRow();
         $row->addContent('<div class="datesTable"></div>');
 
-    $form->toggleVisibilityByClass('subSelected')->onSelect('gibbonPersonIDCoverage')->whenNot('Please select...');
+    $form->toggleVisibilityByClass('subSelected')->onSelect('gibbonPersonIDCoverage')->whenNot('');
 
     $row = $form->addRow()->addClass('subSelected');
         $row->addLabel('gibbonPersonID', __('Created For'));
