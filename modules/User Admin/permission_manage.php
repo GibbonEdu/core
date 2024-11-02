@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                 ->append(sprintf(__('This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=%1$s</i> to your php.ini file on your server.'), $total_vars_rounded));
         } else {
             $row = $form->addRow();
-            $row->addSubmit();
+            $row->addSubmit()->addClass('text-right');
         }
 
         echo $form->getOutput();
