@@ -39,6 +39,7 @@ v28.0.00
         System: updated Core modules to have Gibbon Foundation as author
         System: updates the timetable navigation to use AJAX reloading rather than page refresh
         System: moved the login form to the bottom of the page when viewing subpages and not logged in
+        System: added a password strength checker and improved password policy display
         Attendance: added an index to the attendance log to help speed up attendance pages
         Attendance: added an indicator to Student Not Present/Onsite when attendance logs conflict
         Activities: updated Activity Attendance to always count participants for dates in the past

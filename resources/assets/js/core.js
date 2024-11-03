@@ -253,6 +253,8 @@ htmx.onLoad(function (content) {
         $('input[name="' + $(this).data("confirm") + '"]')
             .val(text)
             .blur();
+        document.getElementById($(this).data("source")).dispatchEvent(new Event('blur'));
+
         prompt($(this).data("alert"), text);
     });
 

@@ -21,9 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\Component;
+use Gibbon\Data\PasswordPolicy;
 
 /**
  * Password
@@ -33,39 +32,19 @@ use Gibbon\View\Component;
  */
 class Password extends TextField
 {
+    protected $policy;
+
     /**
      * Attach the validation requirements for the system-wide password policy.
-     * @param Connection $pdo
+     * @param PasswordPolicy $policy
      * @return self
      */
-    public function addPasswordPolicy(Connection $pdo)
+    public function addPasswordPolicy(PasswordPolicy $policy)
     {
-        global $container;
+        $this->policy = $policy;
 
-        $settingGateway = $container->get(SettingGateway::class);
-
-        $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
-        $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
-        $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
-        $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
-
-        $patterns = [];
-        if ($alpha == 'Y') {
-            $patterns[] = '(?=.*[a-z])(?=.*[A-Z])';
-        }
-        if ($numeric == 'Y') {
-            $patterns[] = "(?=.*[0-9])";
-        }
-        if ($punctuation == 'Y') {
-            $patterns[] = "(?=.*[^a-zA-Z0-9])";
-        }
-        if (!empty($minLength) && is_numeric($minLength)) {
-            $patterns[] = '.{'.$minLength.',}';
-        }
-        
-        if (!empty($patterns)) {
-            $patternString = '/'.implode('', $patterns).'/';
-            $this->addValidation('Validate.Format', 'pattern: '.$patternString.', failureMessage: "'.__('Does not meet password policy.').'"');
+        if ($patternString = $policy->getValidationPattern()) {
+            $this->addValidation('Validate.Format', 'pattern: /'.$patternString.'/, failureMessage: "'.__('Does not meet password policy.').'"');
         }
 
         return $this;
@@ -109,7 +88,9 @@ class Password extends TextField
     protected function getElement()
     {
         return Component::render(Password::class, $this->getAttributeArray() + [
-            'group' => $this->group,
+            'group'  => $this->group,
+            'policy' => !empty($this->policy) ? $this->policy->describe() : [],
+            'policyPattern' => !empty($this->policy) ? $this->policy->getValidationPattern() : '',
         ]);
     }
 }

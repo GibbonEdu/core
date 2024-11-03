@@ -76,6 +76,36 @@ class PasswordPolicy
     }
 
     /**
+     * Get the regex pattern to use in HTML input fields.
+     *
+     * @return string
+     */
+    public function getValidationPattern() : string
+    {
+        $patterns = [];
+
+        if ($this->alpha == 'Y') {
+            $patterns[] = '(?=.*[a-z])(?=.*[A-Z])';
+        }
+
+        if ($this->numeric == 'Y') {
+            $patterns[] = "(?=.*[0-9])";
+        }
+
+        if ($this->punctuation == 'Y') {
+            $patterns[] = "(?=.*[^a-zA-Z0-9])";
+        }
+
+        if (!empty($this->minLength) && is_numeric($this->minLength)) {
+            $patterns[] = '.{'.$this->minLength.',}';
+        }
+        
+        return !empty($patterns)
+            ? implode('', $patterns)
+            : '';
+    }
+
+    /**
      * Check if a password is valid.
      *
      * @param string $password
@@ -189,16 +219,17 @@ class PasswordPolicy
             throw new \Exception(__('Internal Error: Password policy setting incorrect.'));
         }
         if ($this->alpha) {
-            $rules[] = __('Contain at least one lowercase letter, and one uppercase letter.');
+            $rules['(?=.*[a-z])(?=.*[A-Z])'] = __('Contain at least one lowercase letter, and one uppercase letter.');
         }
         if ($this->numeric) {
-            $rules[] = __('Contain at least one number.');
+            $rules['[0-9]+'] = __('Contain at least one number.');
         }
         if ($this->punctuation) {
-            $rules[] = __('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).');
+            $rules['[^a-zA-Z0-9]'] = __('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).');
         }
         if ($this->minLength > 0) {
-            $rules[] = sprintf(__('Must be at least %1$s characters in length.'), $this->minLength);
+            $pattern = '.{'.$this->minLength.',}';
+            $rules[$pattern] = sprintf(__('Must be at least %1$s characters in length.'), $this->minLength);
         }
         return $rules;
     }
@@ -222,7 +253,7 @@ class PasswordPolicy
         }
 
         $output = __('The password policy stipulates that passwords must:').'<br/>';
-        $output .= '<ul>';
+        $output .= '<ul class="text-xs ml-6">';
         $output .= implode('', array_map(function ($description) {
             return '<li>' . $description . '</li>';
         }, $descriptions));

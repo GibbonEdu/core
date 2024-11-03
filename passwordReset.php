@@ -93,15 +93,15 @@ else {
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));
 
         /** @var PasswordPolicy */
-        $policies = $container->get(PasswordPolicy::class);
-        if (($policiesHTML = $policies->describeHTML()) !== '') {
+        $passwordPolicy = $container->get(PasswordPolicy::class);
+        if (($policiesHTML = $passwordPolicy->describeHTML()) !== '') {
             $form->addRow()->addAlert($policiesHTML, 'warning');
         }
 
         $row = $form->addRow();
             $row->addLabel('passwordNew', __('New Password'));
             $row->addPassword('passwordNew')
-                ->addPasswordPolicy($pdo)
+                ->addPasswordPolicy($passwordPolicy)
                 ->addGeneratePasswordButton($form)
                 ->required()
                 ->maxLength(30);

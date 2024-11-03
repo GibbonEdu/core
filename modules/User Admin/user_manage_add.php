@@ -146,15 +146,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             ->required()
             ->addGenerateUsernameButton($form);
 
-    /** @var PasswordPolicy */
-    $policies = $container->get(PasswordPolicy::class);
-    if (($policiesHTML = $policies->describeHTML()) !== '') {
-        $form->addRow()->addAlert($policiesHTML, 'warning');
-    }
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('Password'));
         $row->addPassword('passwordNew')
-            ->addPasswordPolicy($pdo)
+            ->addPasswordPolicy($container->get(PasswordPolicy::class))
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);

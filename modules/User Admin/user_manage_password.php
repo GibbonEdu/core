@@ -68,14 +68,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
             }
 
-            /** @var PasswordPolicy */
-            $policies = $container->get(PasswordPolicy::class);
-            if (($policiesHTML = $policies->describeHTML()) !== '') {
-                echo "<div class='warning'>";
-                echo $policiesHTML;
-                echo '</div>';
-            }
-
             $form = Form::create('resetUserPassword', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 
             $form->addHiddenValue('address', $session->get('address'));
@@ -87,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $row = $form->addRow();
                 $row->addLabel('passwordNew', __('Password'));
                 $row->addPassword('passwordNew')
-                    ->addPasswordPolicy($pdo)
+                    ->addPasswordPolicy($container->get(PasswordPolicy::class))
                     ->addGeneratePasswordButton($form)
                     ->required()
                     ->maxLength(30);

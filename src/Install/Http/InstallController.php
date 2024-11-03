@@ -17,6 +17,7 @@ use Gibbon\Services\Format;
 use Gibbon\View\Page;
 use Psr\Container\ContainerInterface;
 use Gibbon\Forms\MultiPartForm;
+use Gibbon\Data\PasswordPolicy;
 
 class InstallController
 {
@@ -221,12 +222,25 @@ class InstallController
 
         $readyToInstall = true;
 
+        $directoryError = '';
+        try {
+            $this->context->validateConfigPath();
+        } catch (\Exception $e) {
+            $directoryError = $e->getMessage();
+            $readyToInstall = false;
+        }
+        
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
         $form->setClass('smallIntBorder w-full');
+
+        if (!empty($directoryError)) {
+            $form->setDescription(Format::alert($directoryError, 'error'));
+            return $form->getOutput();
+        }
+
         $form->addPages(static::getSteps());
         $form->setCurrentPage(1);
-
         $form->addHiddenValue('nonce', $nonce);
         $form->addRow()->addHeading('System Requirements', __('System Requirements'));
 
@@ -268,13 +282,6 @@ class InstallController
             }
         }
 
-        $directoryError = '';
-        try {
-            $this->context->validateConfigPath();
-        } catch (\Exception $e) {
-            $directoryError = $e->getMessage();
-            $readyToInstall = false;
-        }
         $row = $form->addRow();
             $row->addLabel('systemLabel', 'Directory');
             $row->addTextField('directory')->setValue(empty($directoryError) ? __('Ready') : __('Not Ready'))->readonly();
@@ -283,8 +290,6 @@ class InstallController
         // Finally check if the environment is ready for installation
         if ($readyToInstall) {
             $form->setDescription(Format::alert(__('Ready to install.'), 'success'));
-        } elseif (!empty($directoryError)) {
-            $form->setDescription(Format::alert($directoryError, 'error'));
         } else {
             $form->setDescription(Format::alert(__('Not ready to install.'), 'error'));
         }
@@ -517,40 +522,12 @@ class InstallController
             $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
             $row->addTextField('username')->setValue($data['username'] ?? '')->required()->maxLength(20);
 
-        try {
-            $message = static::renderPasswordPolicy(
-                $installer->getPasswordPolicy()
-            );
-            if (!empty($message)) {
-                $form->addRow()->addAlert($message, 'warning');
-            }
-        } catch (\Exception $e) {
-            $form->addRow()->addAlert(__('An error occurred.'), 'warning');
-        }
-
         $row = $form->addRow();
             $row->addLabel('passwordNew', __('Password'));
-            $password = $row->addPassword('passwordNew')
+            $row->addPassword('passwordNew')
+                ->addPasswordPolicy(new PasswordPolicy(true, true, false, 8))
                 ->required()
                 ->maxLength(30);
-
-        $alpha = $installer->getSetting('passwordPolicyAlpha');
-        $numeric = $installer->getSetting('passwordPolicyNumeric');
-        $punctuation = $installer->getSetting('passwordPolicyNonAlphaNumeric');
-        $minLength = $installer->getSetting('passwordPolicyMinLength');
-
-        if ($alpha == 'Y') {
-            $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-        if ($numeric == 'Y') {
-            $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-        if ($punctuation == 'Y') {
-            $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-        if (!empty($minLength) && is_numeric($minLength)) {
-            $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
-        }
 
         $row = $form->addRow();
             $row->addLabel('passwordConfirm', __('Confirm Password'));
@@ -621,7 +598,7 @@ class InstallController
         $setting = $installer->getSetting('statsCollection', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addYesNo($setting['name'])->selected(($data[$setting['name']] ?? 'N') == 'Y')->required();
+            $row->addYesNo($setting['name'])->selected(($data[$setting['name']] ?? 'Y') == 'Y')->required();
 
         $form->addRow()->addHeading('Organisation Settings', __('Organisation Settings'));
 

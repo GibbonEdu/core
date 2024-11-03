@@ -210,7 +210,7 @@ $page->addData([
     'gibbonThemeName' => 'Default',
     'absolutePath'    => realpath(dirname(__DIR__)),
     'absoluteURL'     => InstallController::guessAbsoluteUrl(),
-    'sidebar'         => true,
+    'sidebar'         => false,
     'contentClass'    => 'max-w-4xl mx-auto px-12 pt-6 pb-12',
     'step'            => $step,
 ]);
