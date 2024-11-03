@@ -232,7 +232,7 @@ class InstallController
         
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
-        $form->setClass('smallIntBorder w-full');
+        $form->setClass('smallIntBorder w-full disable-warnings');
 
         if (!empty($directoryError)) {
             $form->setDescription(Format::alert($directoryError, 'error'));
@@ -363,7 +363,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 2]));
-        $form->setClass('smallIntBorder w-full');
+        $form->setClass('smallIntBorder w-full disable-warnings');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(2);
 
@@ -489,7 +489,7 @@ class InstallController
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 3]));
         $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
-        $form->setClass('smallIntBorder w-full');
+        $form->setClass('smallIntBorder w-full disable-warnings');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(3);
 
@@ -544,7 +544,7 @@ class InstallController
         $setting = $installer->getSetting('absoluteURL', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addURL($setting['name'])->setValue($absoluteURL)->maxLength(100)->required();
+            $row->addTextField($setting['name'])->setValue($absoluteURL)->maxLength(100)->required();
 
         $setting = $installer->getSetting('absolutePath', 'System', true);
         $row = $form->addRow();
@@ -832,7 +832,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', "./install.php?step=4");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setClass('smallIntBorder w-full');
+        $form->setClass('smallIntBorder w-full disable-warnings');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(4);
 

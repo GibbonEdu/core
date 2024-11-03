@@ -11,6 +11,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set standardLayout = "noIntBorder" not in form.getClass and "form-small" not in form.getClass and "blank" not in form.getClass %}
 {% set smallLayout = "form-small" in form.getClass %}
 {% set useSections = "noIntBorder" not in form.getClass and "blank" not in form.getClass %}
+{% set useSaveWarning = "noIntBorder" not in form.getClass and "disable-warnings" not in form.getClass %}
 
 {% if quickSave and form.getAction %}
     <form x-validate {{ form.getAttributeString|raw }} hx-trigger="quicksave, keydown[metaKey&&key=='s'] from:body" hx-post="{{ form.getAction }}" hx-target=".formStatusReturn" hx-select="#alerts" hx-on:htmx:before-request="" hx-swap="innerHTML show:none swap:0.5s" x-data="{'show': true, 'saving': false, 'invalid': false, 'submitting': false, 'showTimeout': false}" x-on:htmx:before-request="saving = true; show = true; clearTimeout(showTimeout);" x-on:htmx:after-swap="saving = false" x-on:htmx:after-settle="showTimeout = setTimeout(() => show = false, 5000); $dispatch('saved');" x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
@@ -70,7 +71,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% if form.getRows|length > 0 %}
     <section id="form" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
-        {% if "noIntBorder" not in form.getClass%}
+        {% if useSaveWarning %}
         x-data="{changed: false, 
             checkInput(formElement) {  
                 document.getElementById(formElement.id).addEventListener('input', (evt) => {
@@ -137,9 +138,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set class = hasClass ? class ~ ' ' ~  element.getClass : class %}
                     <div class="{{ class }} {{ 'flex-' not in class and section != 'submit' ? 'flex-1' }}" {{ element.getAttributeString('x-show')|raw }}>
 
-                        {% if standardLayout and element.getAttribute('id') == 'Submit' %}
+                        {% if useSaveWarning and element.getAttribute('id') == 'Submit' %}
                             <span x-cloak x-show="changed" class="tag message mr-4 whitespace-nowrap">{{ __('Unsaved Changes') }}</span>
+                        {% endif %}
 
+                        {% if standardLayout and element.getAttribute('id') == 'Submit' %}
                             <span x-cloak x-show="invalid" class="tag error mr-4 whitespace-nowrap">{{ __('Please Check Form') }}</span>
                         {% endif %}
 
