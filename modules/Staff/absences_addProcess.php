@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         exit;
     }
 
-    $start = new DateTime(Format::dateConvert($dateStart).' 00:00:00');
-    $end = new DateTime(Format::dateConvert($dateEnd).' 23:00:00');
+    $start = new DateTime($dateStart.' 00:00:00');
+    $end = new DateTime($dateEnd.' 23:00:00');
 
     $dateRange = new DatePeriod($start, new DateInterval('P1D'), $end);
     $partialFail = false;

@@ -7,8 +7,10 @@ Gibbon™, Gibbon Education Ltd. (Hong Kong)
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
-    
+
+{% if form.getAction != 'ajax' %}
 <form {{ form.getAttributeString|raw }} x-data="{'submitting': false}">
+{% endif %}
 
     {% if form.getTitle and not form.getHeader %}
         <h2>{{ form.getTitle }}</h2>
@@ -70,4 +72,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endfor %}
     </script>
 
+{% if form.getAction != 'ajax' %}
 </form>
+{% endif %}

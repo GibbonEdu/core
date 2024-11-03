@@ -36,8 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     die(Format::alert(__('You have not specified one or more required parameters.'), 'error flex-1'));
 } else {
     // Proceed!
-    $dateStart = Format::dateConvert($dateStart);
-    $dateEnd = Format::dateConvert($dateEnd);
     $allDay = $_POST['allDay'] ?? '';
     $timeStart = $_POST['timeStart'] ?? '';
     $timeEnd = $_POST['timeEnd'] ?? '';
