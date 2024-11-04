@@ -155,6 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     // FORM
     $form = Form::create('reportingWrite', $session->get('absoluteURL').'/modules/Reports/reporting_write_byStudentProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->enableQuickSave();
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $urlParams['gibbonSchoolYearID']);

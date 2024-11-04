@@ -60,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('View'));
     $form->setClass('noIntBorder w-full');
+    $form->enableQuickSave();
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', '/modules/Reports/reporting_proofread.php');

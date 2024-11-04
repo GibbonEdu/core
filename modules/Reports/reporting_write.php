@@ -127,6 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     if (!empty($reportingCriteria)) {
         $form = Form::create('reportingWriteGlobal', $session->get('absoluteURL').'/modules/Reports/reporting_writeProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->enableQuickSave();
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonSchoolYearID', $urlParams['gibbonSchoolYearID']);
