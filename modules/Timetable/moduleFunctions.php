@@ -746,7 +746,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
                     ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
                     ->filterBy('status', 'Accepted');
-                $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
+                $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
                 $staffCoverage = [];
 
                 foreach ($coverageList as $coverage) {
