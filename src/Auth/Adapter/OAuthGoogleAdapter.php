@@ -118,7 +118,7 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
         }
 
         $session->set('googleAPIAccessToken', $accessToken);
-        $session->set('googleAPICalendarEnabled', mb_stripos($accessToken['scope'] ?? '', 'https://www.googleapis.com/auth/calendar.readonly') !== false);
+        $session->set('googleAPICalendarEnabled', mb_stripos($accessToken['scope'] ?? '', 'https://www.googleapis.com/auth/calendar') !== false);
 
         // Update the refresh token for this user, if we received one
         if (!empty($accessToken['refresh_token'])) {
