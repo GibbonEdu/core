@@ -428,57 +428,6 @@ function updatePlaceholders(element) {
 }
 
 /**
- * TextField Uniqueness Check
- */
-$.prototype.gibbonUniquenessCheck = function (settings) {
-    // var uniqueField = this;
-    // var validation;
-
-    // $(uniqueField).ready(function () {
-    //     // Get the existing LiveValidation object, otherwise create one
-    //     validation = window["lv" + $(uniqueField).attr("id") + "Validate"];
-    //     if (validation == null || typeof validation != "object") {
-    //         validation = new LiveValidation($(uniqueField).attr("id"));
-    //     }
-
-    //     validation.onValid = function () {
-    //         // Pass the current value as POST['value'] (optionally by a defined fieldName)
-    //         settings.ajaxData[settings.ajaxData.fieldName || "value"] =
-    //             $(uniqueField).val();
-
-    //         // Send an AJAX request to check uniqueness, and use LiveValidation messages to display response
-    //         $.ajax({
-    //             type: "POST",
-    //             data: settings.ajaxData,
-    //             url: settings.ajaxURL,
-    //             success: function (responseText) {
-    //                 // The response should be the count of matching values, so 0 is unique and -1 is an error
-    //                 if (responseText < 0) {
-    //                     validation.message = validation.invalidMessage =
-    //                         settings.alertError;
-    //                     validation.validationFailed = true;
-    //                 } else if (responseText == 0) {
-    //                     validation.message = validation.validMessage =
-    //                         settings.alertSuccess;
-    //                     validation.validationFailed = false;
-    //                 } else if (responseText > 0) {
-    //                     validation.message = validation.invalidMessage =
-    //                         settings.alertFailure;
-    //                     validation.validationFailed = true;
-    //                     validation.add(Validate.Exclusion, {
-    //                         within: [$(uniqueField).val()],
-    //                         failureMessage: settings.alertFailure,
-    //                     });
-    //                 }
-    //                 validation.insertMessage(validation.createMessageSpan());
-    //                 validation.addFieldClass();
-    //             },
-    //         });
-    //     };
-    // });
-};
-
-/**
  * Custom Blocks
  */
 // Define the CustomBlocks behaviour

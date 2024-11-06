@@ -9,7 +9,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% if form.getAction != 'ajax' %}
-<form {{ form.getAttributeString|raw }} x-data="{'submitting': false}">
+<form {{ form.getAttributeString|raw }} x-data="{'submitting': false, 'invalid': false}">
 {% endif %}
 
     {% if form.getTitle and not form.getHeader %}
@@ -49,7 +49,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% for element in row.getElements %}
 
                 {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
-                <div class="{{ hasClass ? element.getClass : '' }}" >
+                <div class="{{ hasClass ? element.getClass : 'flex-1' }}" >
+
                     {{ element.getOutput|raw }}
 
                     {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}

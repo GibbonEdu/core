@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 ->directLink();
         }
 
-        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn();
+        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper relative smallIntBorder w-full max-w-full')->addColumn();
 
         // Headings as a separate table
         $table = $row->addTable()->setClass('mini w-full m-0 border-0');
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('italic subdued right');
 
-        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600 -mt-1')
+        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600')
             ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
 
         $row = $table->addRow();
@@ -218,25 +218,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             )->addClass('w-10 mx-auto whitespace-nowrap');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
-                $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
-                    ->setURL('')
-                    ->addClass('editColumn')
+                $col->addButton(__('Edit'))
+                    ->addClass('editColumn text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
+                    ->setIcon('edit')
+                    ->setType('blank')
                     ->addData('checked', '')
                     ->addData('column', strval($i))
                     ->addData('date', $sessionTimestamp);
             } else {
-                $col->addWebLink(sprintf($icon, __('Add'), 'page_new.png'))
-                    ->setURL('')
-                    ->addClass('editColumn')
+                $col->addButton(__('Add'))
+                    ->addClass('editColumn text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
+                    ->setIcon('add')
+                    ->setType('blank')
                     ->addData('checked', 'checked')
                     ->addData('column', strval($i))
                     ->addData('date', $sessionTimestamp);
                 $dateLabel->addClass('subdued');
             }
 
-            $col->addWebLink(sprintf($icon, __('Clear'), 'garbage.png'))
-                ->setURL('')
-                ->addClass('clearColumn hidden')
+            $col->addButton(__('Clear'))
+                ->addClass('clearColumn hidden text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
+                ->setIcon('delete')
+                ->setType('blank')
                 ->addData('column', strval($i));
 
             $i++;
@@ -303,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full doublescroll-wrapper')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
                 ->wrap('<span class="text-xs italic">', '</span>');
-            $row->addSubmit();
+            $row->addSubmit()->addClass('text-right');
 
         echo $form->getOutput();
 

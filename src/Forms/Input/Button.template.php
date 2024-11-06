@@ -18,7 +18,15 @@ if ($disabled) {
 
 <?php if ($type == 'blank') { ?>
 
-    <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> "><?= $value; ?></button>
+    <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> ">
+    
+        <?php $svgClass = 'text-gray-600 block m-0.5 size-5 '.($iconClass ?? ''); ?>
+
+        <?= !empty($icon) ? icon($iconLibrary ?? 'solid', $icon, $svgClass ) : ''; ?>
+        
+        <?= $value; ?>
+
+    </button>
 
 <?php } elseif ($type == 'submit') { ?>
     <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, '<?= $bgClass; ?>' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-8 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border <?= $bgClass; ?>" />

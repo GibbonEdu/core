@@ -124,13 +124,18 @@ class TextField extends Input
         $label = $this->row->getElement('label'.$this->getName());
         $fieldLabel = (!empty($label))? $label->getLabelText() : ucfirst($this->getName());
 
-        $this->unique = array(
+        $this->unique = [
             'ajaxURL'      => $ajaxURL,
             'ajaxData'     => array_replace(array('fieldName' => $this->getName()), $data),
             'alertSuccess' => sprintf(__('%1$s available'), $fieldLabel),
             'alertFailure' => sprintf(__('%1$s already in use'), $fieldLabel),
             'alertError'   => __('An error has occurred.'),
-        );
+        ];
+
+        $this->setAttribute('x-model', "uniqueValue");
+        $this->setAttribute('hx-post', $ajaxURL);
+        $this->setAttribute('hx-trigger', 'input delay:300ms');
+        $this->setAttribute('x-on:htmx:after-request.camel', 'console.log($event.detail); unique = $event.detail.xhr.responseText <= 0');
 
         return $this;
     }
@@ -158,7 +163,8 @@ class TextField extends Input
     {
         return Component::render(TextField::class, $this->getAttributeArray() + [
             'groupClass'       => $this->getGroupClass(),
-            'unique'           => $this->unique ? json_encode($this->unique) : '',
+            'unique'           => !empty($this->unique) ? $this->unique : [],
+            'uniqueData'       => !empty($this->unique) ? json_encode($this->unique['ajaxData']) : '',
             'autocompleteList' => $this->autocomplete
                 ? $this->autocomplete
                 : '',

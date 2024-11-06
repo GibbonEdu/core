@@ -260,6 +260,27 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 }
 
 
+/*
+ --------------------------------------------------------------------------
+  Tables
+ --------------------------------------------------------------------------
+*/
+
+.dataTable tr:not([class]):hover {
+    @apply bg-gray-100;
+}
+
+.navigation-link::after { 
+    @apply bg-purple-600 rounded-md;
+    content: "";
+    position: absolute;
+    height: 1.25rem;
+    left: calc(0.5rem*-1);
+    top: calc(50% - 0.625rem);
+    width: 0.25rem;
+}
+
+
 
 /*
  --------------------------------------------------------------------------
@@ -356,12 +377,19 @@ input[type="color"]::-moz-color-swatch {
  --------------------------------------------------------------------------
 */
 
+.error-msg,
+.inline-msg {
+    @apply absolute block w-full left-0 top-10 text-xs font-bold leading-relaxed pointer-events-none whitespace-nowrap;
+}
+
 .error-msg {
-    @apply absolute block w-full left-0 top-10 text-xs font-bold text-red-700 leading-relaxed pointer-events-none whitespace-nowrap;
+    @apply text-red-700;
 }
 
 .error-msg[hidden],
-.error-msg:empty {
+.error-msg:empty,
+.inline-msg[hidden]
+.inline-msg:empty {
     @apply opacity-0 hidden;
 }
 
@@ -463,32 +491,6 @@ input:not([type='checkbox']) + .error-msg::before {
 #token-input-fastFinderSearch {
     width: 100% !important;
 }
-
-/*
- --------------------------------------------------------------------------
-  Tables
- --------------------------------------------------------------------------
-*/
-
-.dataTable tr:not([class]):hover {
-    @apply bg-gray-100;
-}
-
-.dataTable tr[class]:hover {
-    @apply backdrop-brightness-125 bg-opacity-90;
-}
-
-
-.navigation-link::after {
-    @apply bg-purple-600 rounded-md;
-    content: "";
-    position: absolute;
-    height: 1.25rem;
-    left: calc(0.5rem*-1);
-    top: calc(50% - 0.625rem);
-    width: 0.25rem;
-}
-
 
 /*
  --------------------------------------------------------------------------

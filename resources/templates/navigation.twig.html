@@ -51,7 +51,7 @@ collapsed drop-down list in 'mini' view-mode.
     {% endif %}
     
     {% if menuModule %}
-    <nav x-cloak="{{ sidebar ? 'mobile' : 'on' }}"  :class="moduleMenu ? 'block' : 'hidden'" x-data="{ menuItemActive: '{{ menuItemActive|replace({' ': '-', '&': ''}) }}' }" class="{{ sidebarClass }} w-full font-sans absolute top-0 z-30 sm:mt-16 pt-6 pt-12 sm:pt-6
+    <nav x-cloak="{{ sidebar ? 'mobile' : 'on' }}"  :class="moduleMenu ? 'block' : 'hidden'" x-data="{ menuItemActive: '{{ menuItemActive|replace({' ': '-', '&': '', '\'': ''}) }}' }" class="{{ sidebarClass }} w-full font-sans absolute top-0 z-30 sm:mt-16 pt-6 pt-12 sm:pt-6
         {{ sidebar ? 'lg:block lg:static lg:p-0 lg:py-6 lg:mx-0 lg:mt-0' : '' }}" >
 
         <ul class="w-full  list-none column-1 sm:column-2 md:column-3 m-0 px-0  
@@ -67,8 +67,8 @@ collapsed drop-down list in 'mini' view-mode.
                     {% for item in items %}
                         <li class="-mx-4 -my-1">
                             <a @click="moduleMenu = false" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:window:top swap:0s" 
-                            @click="menuItemActive = '{{ item.actionName|replace({' ': '-'}) }}'"
-                            href="{{ item.url }}" class="block relative text-gray-700 no-underline px-3 py-1  text-sm leading-normal lg:leading-normal rounded transition cursor-pointer hover:bg-gray-200" :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-'}) }}' ) ? 'navigation-link text-gray-900 bg-gray-300 font-semibold' : '' ] ">
+                            @click="menuItemActive = '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}'"
+                            href="{{ item.url }}" class="block relative text-gray-700 no-underline px-3 py-1  text-sm leading-normal lg:leading-normal rounded transition cursor-pointer hover:bg-gray-200" :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}' ) ? 'navigation-link text-gray-900 bg-gray-300 font-semibold' : '' ] ">
                                 {{ __(item.name, item.textDomain) }}
                             </a>
                         </li>

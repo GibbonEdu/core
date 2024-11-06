@@ -85,5 +85,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     echo $table->getOutput();
-    echo '<script type="text/javascript">'.$table->getValidationOutput().'</script>';
 }

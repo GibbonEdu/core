@@ -27,7 +27,7 @@ TODO: add template variable details.
             {% block header %}
                 <div id="header" class="relative flex justify-between items-center">
 
-                    <a id="header-logo" hx-boost="true" hx-target="#wrapOuter" hx-select="#wrapOuter" hx-swap="outerHTML show:no-scroll swap:0s" class="block my-4 max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                    <a id="header-logo" class="block my-4 max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
                         <img class="block max-w-full {{ isLoggedIn ? 'h-12' : 'h-20 mt-4 mb-4' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("themes/Default/img/logo.png")|trim('/', 'left') }}" style="max-height:100px;" />
                     </a>
 

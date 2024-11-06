@@ -64,7 +64,7 @@ class PlannerEntryGateway extends QueryableGateway
                 ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID')
                 ->leftJoin('gibbonPlannerEntryStudentHomework', 'gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
                 ->bindValue('gibbonPersonID', $gibbonPersonID)
-                ->where('gibbonCourseClassPerson.role NOT LIKE "Left"')
+                ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"')
                 ->where('(gibbonPlannerEntry.timeStart != "" AND gibbonPlannerEntry.timeStart IS NOT NULL)');
 
             $this->unionAllWithCriteria($query, $criteria)
@@ -115,7 +115,7 @@ class PlannerEntryGateway extends QueryableGateway
                 ->leftJoin('gibbonPlannerEntryStudentHomework', 'gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
                 ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID')
                 ->bindValue('gibbonPersonID', $gibbonPersonID)
-                ->where('gibbonCourseClassPerson.role NOT LIKE "Left"');
+                ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"');
 
             $this->unionAllWithCriteria($query, $criteria)
                 ->cols(array_merge($cols, ['gibbonPlannerEntryGuest.role', 'NULL AS myHomeworkDueDateTime', 'NULL as teacherIDs']))

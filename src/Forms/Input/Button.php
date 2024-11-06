@@ -110,7 +110,7 @@ class Button extends Element
     /**
      * Sets a display color for the button.
      *
-     * @param string $value     One of: sm, md, ld
+     * @param string $value     One of: red, gray, purple
      * @return self
      */
     public function setColor($value)

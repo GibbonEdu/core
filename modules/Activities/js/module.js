@@ -37,7 +37,7 @@ jQuery(function($){
 
 	
 	// Fills the column with checkboxes to create the attenance formdata (naming pattern --> $_POST data)
-    $("a.editColumn").click( function(){
+    $("button.editColumn").click( function(){
     	var editing = $(this).parent().data('editing');
 
     	if (!editing || editing == false) {
@@ -53,10 +53,10 @@ jQuery(function($){
                 if ($(this).hasClass('unchecked')) checked = '';
                 
 		    	$(this).html("<input type='checkbox' name='attendance["+ column +"]["+ $(this).parent().data('student') +"]' "+ checked +">");
-		    	$(this).addClass('highlight');
+		    	$(this).addClass('bg-purple-100');
 		    });
 
-			$(this).parent().parent().addClass('highlight');
+			$(this).parent().parent().addClass('bg-purple-100');
 			$(this).parent().parent().append("<input type='hidden' name='sessions["+ column +"]' value='" + date + "'>");
 
 		    $(this).addClass('hidden');
@@ -66,7 +66,7 @@ jQuery(function($){
     } );
 
     // Clears the column checkboxes
-    $("a.clearColumn").click(function(){
+    $("button.clearColumn").click(function(){
     	
     	if (confirm("Are you sure you want to clear the attendance recorded for this date?")) {
 

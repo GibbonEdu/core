@@ -53,9 +53,3 @@ function scanner(self) {
     $("#<?= $id; ?>").autocomplete({source: [<?= $autocomplete; ?>]});
     </script>
 <?php } ?>
-
-<?php if (!empty($unique)) { ?>
-    <script type="text/javascript">
-        $("#<?= $id; ?>").gibbonUniquenessCheck(<?= $unique; ?>);
-    </script>
-<?php } ?>

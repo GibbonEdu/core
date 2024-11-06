@@ -82,7 +82,11 @@ function checkDraft() {
     $('option', '#individualList').each(function() {
         $(this).prop('selected', true);
     });
-    document.getElementById('individualList').dispatchEvent(new Event('change'));
+
+    document.querySelectorAll('*[data-error-msg]').forEach(function (element) {
+        element.dispatchEvent(new Event('change'));
+        element.dispatchEvent(new Event('blur'));
+    });
 }
 
 function saveDraft() {
