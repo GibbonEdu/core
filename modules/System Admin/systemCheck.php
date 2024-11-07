@@ -98,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $row = $form->addRow();
         $row->addLabel('backgroundProcessingLabel', __('Background Processing'))->description(__('Requires PHP exec() function access'));
-        $row->addTextField('backgroundProcessing')->setValue($backgroundProcessing ? __('Enabled') : __('Not Available'))->readonly()
-            ->append((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+        $row->addTextField('backgroundProcessing')->setValue($backgroundProcessing ? __('Enabled') : __('Not Available'))->readonly();
+        $row->addContent($backgroundProcessing? $trueIcon : $falseIcon);
 
     // APACHE MODULES
     if ($apacheVersion !== false) {
