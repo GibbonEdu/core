@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
@@ -111,6 +112,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $row = $form->addRow();
         $row->addLabel('biography', __('Biography'));
         $row->addTextArea('biography')->setRows(10);
+
+    $internalCoverage = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageInternal');
+    if ($internalCoverage == 'Y') {
+        $form->addRow()->addHeading('Staff Coverage', __('Staff Coverage'));
+
+        $row = $form->addRow();
+            $row->addLabel('coverageExclude', __('Exclude from coverage?'))->description(__('If enabled, this user will be excluded from internal staff coverage lists.'));
+            $row->addYesNo('coverageExclude')->placeHolder()->setValue('N');
+
+        $form->toggleVisibilityByClass('coveragePriority')->onInput('coverageExclude')->when('N');
+        $row = $form->addRow()->addClass('coveragePriority');
+            $row->addLabel('coveragePriority', __('Priority'))->description(__('Higher priority substitutes appear first when booking coverage.'));
+            $row->addSelect('coveragePriority')->fromArray(range(-9, 9))->required()->selected(0);
+    }
 
     // Custom Fields
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Staff', ['requiredOverride' => 'N']);

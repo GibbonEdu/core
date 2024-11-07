@@ -882,5 +882,7 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (004, (
 ALTER TABLE gibbonMessengerReceipt ADD `unsubscribeKey` varchar(50) DEFAULT NULL AFTER `nameListStudent`;end
 UPDATE gibbonAction SET `URLList`='mailingListRecipients_manage.php, mailingListRecipients_manage_add.php, mailingListRecipients_manage_edit.php, mailingListRecipients_manage_delete.php' WHERE name='Manage Mailing List Recipients' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour'), 'View Behaviour Records_myself', '0', 'Behaviour Records', 'View basic details of behaviour records about themselves.', 'teachers/people/behaviour/', 'behaviour_view.php,behaviour_view_details.php', 'behaviour_view.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N');end
+ALTER TABLE `gibbonStaff` ADD `coverageExclude` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `biographicalGroupingPriority`;end
+ALTER TABLE `gibbonStaff` ADD `coveragePriority` INT(1) DEFAULT 0 AFTER `coverageExclude`;end
 
 ";

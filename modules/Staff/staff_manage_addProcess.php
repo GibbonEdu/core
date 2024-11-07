@@ -59,6 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $biographicalGrouping = $_POST['biographicalGrouping'] ?? '';
     $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'] ?? '';
     $biography = $_POST['biography'] ?? '';
+    $coverageExclude = $_POST['coverageExclude'] ?? 'N';
+    $coveragePriority = $_POST['coveragePriority'] ?? 0;
 
     //Validate Inputs
     if ($gibbonPersonID == '' or $type == '') {
@@ -97,8 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography, 'fields' => $fields);
-                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography, fields=:fields';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography, 'coveragePriority' => $coveragePriority,  'coverageExclude' => $coverageExclude, 'fields' => $fields);
+                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography, coveragePriority=:coveragePriority, coverageExclude=:coverageExclude, fields=:fields';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
