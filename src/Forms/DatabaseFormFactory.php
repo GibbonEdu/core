@@ -399,10 +399,10 @@ class DatabaseFormFactory extends FormFactory
     {
         $params = array_replace(['includeStudents' => false, 'includeStaff' => false, 'useMultiSelect' => false], $params);
 
-        $users = array();
+        $users = [];
+        $data = [];
 
         if ($params['includeStaff'] == true) {
-            $data = array('date' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
                     FROM gibbonPerson
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
@@ -430,6 +430,7 @@ class DatabaseFormFactory extends FormFactory
                      ";
 
             if (!empty($gibbonSchoolYearID)) {
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')];
                 $sql .= "WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                         AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                         AND (dateStart IS NULL OR dateStart<=:date)
@@ -438,7 +439,7 @@ class DatabaseFormFactory extends FormFactory
 
             $sql .= " ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
 
-            $result = $this->pdo->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')]);
+            $result = $this->pdo->select($sql, $data);
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
