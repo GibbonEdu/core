@@ -25,6 +25,18 @@ use Gibbon\Data\Validator;
 
 $page->breadcrumbs->add(__('Password Reset'));
 
+$page->return->addReturns([
+    'error0'   => __('Email address not set.'),
+    'error4'   => __('Your request failed due to incorrect, non-existent or non-unique email address or username.'),
+    'error3'   => __('Email failed to send to {email}', ['email' => $_GET['email'] ?? '']),
+    'error5'   => __('Your request failed due to non-matching passwords.'),
+    'error6'   => __('Your request failed because your password does not meet the minimum requirements for strength.'),
+    'error7'   => __('Your request failed because your new password is the same as your current password.'),
+    'fail2'    => __('You do not have sufficient privileges to login.'),
+    'fail9'    => __('Your primary role does not support the ability to log into the specified year.'),
+    'success0' => __('Password reset request successfully initiated, please check your email.'),
+]);
+
 $step = 1;
 if (isset($_GET['step']) and $_GET['step'] == 2) {
     $step = 2;
@@ -36,19 +48,10 @@ if ($step == 1) {
         <?php echo sprintf(__('Enter your %1$s username, or the email address you have listed in the system, and press submit: a unique password reset link will be emailed to you.'), $session->get('systemName')); ?>
     </p>
     <?php
-    $returns = array();
-    $returns['error0'] = __('Email address not set.');
-    $returns['error4'] = __('Your request failed due to incorrect, non-existent or non-unique email address or username.');
-    $returns['error3'] = __('Failed to send update email.');
-    $returns['error5'] = __('Your request failed due to non-matching passwords.');
-    $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
-    $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
-    $returns['fail2'] = __('You do not have sufficient privileges to login.');
-    $returns['fail9'] = __('Your primary role does not support the ability to log into the specified year.');
-    $returns['success0'] = __('Password reset request successfully initiated, please check your email.');
-    $page->return->addReturns($returns);
+    
 
     $form = Form::create('action', $session->get('absoluteURL').'/passwordResetProcess.php?step=1');
+    $form->addClass('disable-warnings');
 
     $form->addHiddenValue('address', $session->get('address'));
 
@@ -88,6 +91,8 @@ else {
         echo '</div>';
 
         $form = Form::create('action', $session->get('absoluteURL').'/passwordResetProcess.php?'.http_build_query($urlParams));
+        $form->addClass('disable-warnings');
+
         $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));
