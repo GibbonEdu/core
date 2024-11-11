@@ -93,7 +93,7 @@ class PlannerEntryGateway extends QueryableGateway
 
     public function queryPlannerByDate($criteria, $gibbonSchoolYearID, $gibbonPersonID, $date, $viewingAs = 'Student')
     {
-        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.summary', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'timeStart', 'timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'date'];
+        $cols = ['gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.summary', 'gibbonPlannerEntry.gibbonUnitID', 'gibbonUnit.name as unit', 'gibbonPlannerEntry.gibbonCourseClassID', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonPlannerEntry.name as lesson', 'gibbonPlannerEntry.timeStart', 'gibbonPlannerEntry.timeEnd', 'viewableStudents', 'viewableParents', 'homework', 'homeworkSubmission', 'homeworkCrowdAssess', 'gibbonPlannerEntry.date'];
 
         $query = $this
             ->newQuery()
@@ -110,15 +110,23 @@ class PlannerEntryGateway extends QueryableGateway
             ->groupBy(['gibbonPlannerEntry.gibbonPlannerEntryID']);
 
         if (!empty($gibbonPersonID)) {
-            $query->cols(['gibbonCourseClassPerson.role', 'gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime'])
+            $query->cols(['gibbonCourseClassPerson.role', 'gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime', 'gibbonTTDayRowClass.gibbonTTDayRowClassID'])
                 ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
                 ->leftJoin('gibbonPlannerEntryStudentHomework', 'gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
+
+                ->leftJoin('gibbonTTDayDate', 'gibbonTTDayDate.date=gibbonPlannerEntry.date')
+                ->leftJoin('gibbonTTDay', 'gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID')
+                ->leftJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID AND gibbonTTColumnRow.timeStart=gibbonPlannerEntry.timeStart AND gibbonTTColumnRow.timeEnd=gibbonPlannerEntry.timeEnd')
+                ->leftJoin('gibbonTTDayRowClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID AND gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID')
+                ->leftJoin('gibbonTTDayRowClassException', 'gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
+
                 ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID')
                 ->bindValue('gibbonPersonID', $gibbonPersonID)
-                ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"');
+                ->where('gibbonCourseClassPerson.role NOT LIKE "%Left"')
+                ->where('gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL');
 
             $this->unionAllWithCriteria($query, $criteria)
-                ->cols(array_merge($cols, ['gibbonPlannerEntryGuest.role', 'NULL AS myHomeworkDueDateTime', 'NULL as teacherIDs']))
+                ->cols(array_merge($cols, ['gibbonPlannerEntryGuest.role', 'NULL AS myHomeworkDueDateTime', 'NULL as teacherIDs', 'NULL as gibbonTTDayRowClassID']))
                 ->from('gibbonPlannerEntry')
                 ->innerJoin('gibbonCourseClass', 'gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
                 ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
