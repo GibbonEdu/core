@@ -1,4 +1,4 @@
-<div class="flex-grow relative flex items-center" <?= !empty($unique) ? 'x-data="{unique: true, uniqueValue: \''.$value.'\'}"' : ''; ?> >
+<div class="flex-grow relative flex items-center" <?= !empty($unique) ? 'x-data="{unique: true, uniqueValue: \''.($value ?? '').'\'}"' : ''; ?> >
     <input type="<?= $type ?? 'text'; ?>" <?= $attributes; ?> 
         class="<?= $class; ?> <?= $groupClass; ?> w-full min-w-0 py-2  placeholder:text-gray-500  sm:text-sm sm:leading-6 <?= $type != 'text' ? 'input-icon' : ''; ?>
         <?= !empty($readonly) ? 'border-dashed text-gray-600 cursor-not-allowed focus:ring-0 focus:border-gray-400' : 'text-gray-900 focus:ring-1 focus:ring-inset focus:ring-blue-500'; ?>"
