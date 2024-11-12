@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full doublescroll-wrapper')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
                 ->wrap('<span class="text-xs italic">', '</span>');
-            $row->addSubmit()->addClass('text-right');
+            $row->addSubmit();
 
         echo $form->getOutput();
 

@@ -321,7 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $form->toggleVisibilityByClass('unavailableSub')->onCheckbox('showUnavailable')->when('Y');
 
     $row = $form->addRow();
-        $row->addSubmit()->addClass('text-right');
+        $row->addSubmit();
 
     echo $form->getOutput();
 }

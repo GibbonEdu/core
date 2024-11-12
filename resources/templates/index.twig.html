@@ -92,7 +92,7 @@ TODO: add template variable details.
                 {% block beforePage %}
                 {% endblock beforePage %}
 
-                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start gap-4 lg:gap-6 {{ sidebar ? 'flex flex-col' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} {{ sidebar and not isLoggedIn and address is not empty ? 'flex-col-reverse'}} clearfix">
+                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'gap-4 lg:gap-6 flex flex-col' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} {{ not isHomePage and not isLoggedIn ? 'flex-col-reverse'}} clearfix">
 
                     <div class="block md:hidden shadow bg-white rounded px-4 mx-4 sm:mx-0 mb-4">
                         {% for type, alerts in page.alerts %}
@@ -113,7 +113,7 @@ TODO: add template variable details.
                         {{ include('navigation.twig.html') }}
                     {% endif %}
 
-                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} {{ isLoggedIn and menuModuleName is empty ? 'bg-gray-100' : 'bg-white pb-6'}} w-full shadow  sm:rounded lg:flex-1 px-4 sm:px-8">
+                    <div id="content" class="{{ contentClass ? contentClass : 'max-w-full' }} {{ isHomePage and isLoggedIn ? 'bg-gray-100' : 'bg-white pb-6'}} w-full shadow  sm:rounded lg:flex-1 px-4 sm:px-8">
 
                         <div id="content-inner" class="h-full">
 

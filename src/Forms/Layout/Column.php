@@ -23,6 +23,7 @@ namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\Input\Button;
 
 /**
  * Holds a collection of form elements to be output vertically.
@@ -70,7 +71,8 @@ class Column extends Row implements OutputableInterface
         $output = '';
 
         foreach ($this->getElements() as $element) {
-            if ($class = $this->getContainerClass($element)) {
+            $class = $this->getContainerClass($element);
+            if (!empty($class) && !$element instanceof Button) {
                 $output .= '<div class="'.$class.'">';
                 $output .= $element->getOutput();
                 $output .= '</div>';

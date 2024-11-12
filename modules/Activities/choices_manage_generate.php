@@ -189,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
         ]));
 
         $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
-        $row = $table->addRow()->addSubmit(__('Submit'))->addClass('text-right');
+        $row = $table->addRow()->addSubmit(__('Submit'));
     } elseif ($form->getCurrentPage() >= 3) {
         // STEP 4
         $enrolmentList = $_POST['person'] ?? [];

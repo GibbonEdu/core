@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
 	$form->addHiddenValue('address', $session->get('address'));
 
-	$row = $form->addRow()->addClass('flex flex-wrap');
+	$row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
 	$link = $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php';
 	$prevDay = DateTime::createFromFormat('Y-m-d', $date)->modify('-1 day')->format('Y-m-d');

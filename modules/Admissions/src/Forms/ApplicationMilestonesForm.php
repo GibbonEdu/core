@@ -92,7 +92,7 @@ class ApplicationMilestonesForm extends Form
                 ->setClass('w-24');
         }
 
-        $form->addRow()->addSubmit()->addClass('text-right');
+        $form->addRow()->addSubmit();
 
         return $form;
     }

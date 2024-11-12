@@ -203,7 +203,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     }
 
     if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
-        $eventsSchool = array();
+        $eventsSchool = [];
 
         // Create a Graph client
         $oauthProvider = $container->get('Microsoft_Auth');
@@ -261,7 +261,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
     if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) {
 
-        $eventsSchool = array();
+        $eventsSchool = [];
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
@@ -278,7 +278,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         }
 
         if ($getFail) {
-            $eventsSchool = false;
+            $eventsSchool = [];
         } else {
             $count = 0;
             foreach ($calendarListEntry as $entry) {
@@ -341,7 +341,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
             }
         }
     } else {
-        $eventsSchool = false;
+        $eventsSchool = [];
     }
 
     $session->set($calendarEventsCache, $eventsSchool);
@@ -626,17 +626,15 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             //Get school calendar array
             $allDay = false;
-            $eventsSchool = false;
+            $eventsSchool = [];
             if ($self == true and $session->get('viewCalendarSchool') == 'Y' && $session->has('googleAPIAccessToken')) {
                 if ($session->get('calendarFeed') != '') {
                     $eventsSchool = getCalendarEvents($connection2, $guid,  $session->get('calendarFeed'), $startDayStamp, $endDayStamp);
                 }
                 //Any all days?
-                if ($eventsSchool != false) {
-                    foreach ($eventsSchool as $event) {
-                        if ($event[1] == 'All Day') {
-                            $allDay = true;
-                        }
+                foreach ($eventsSchool as $event) {
+                    if ($event[1] == 'All Day') {
+                        $allDay = true;
                     }
                 }
             }
@@ -686,16 +684,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
 
             //Get personal calendar array
-            $eventsPersonal = false;
+            $eventsPersonal = [];
             if ($self == true and $session->get('viewCalendarPersonal') == 'Y') {
                 $eventsPersonal = getCalendarEvents($connection2, $guid,  $session->get('calendarFeedPersonal'), $startDayStamp, $endDayStamp);
 
                 //Any all days?
-                if ($eventsPersonal != false) {
-                    foreach ($eventsPersonal as $event) {
-                        if ($event[1] == 'All Day') {
-                            $allDay = true;
-                        }
+                foreach ($eventsPersonal as $event) {
+                    if ($event[1] == 'All Day') {
+                        $allDay = true;
                     }
                 }
             }
@@ -801,13 +797,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $eventsCombined = false;
             $maxAllDays = 0;
             if ($allDay == true) {
-                if ($eventsPersonal != false and $eventsSchool != false) {
-                    $eventsCombined = array_merge($eventsSchool, $eventsPersonal);
-                } elseif ($eventsSchool != false) {
-                    $eventsCombined = $eventsSchool;
-                } elseif ($eventsPersonal != false) {
-                    $eventsCombined = $eventsPersonal;
-                }
+                $eventsCombined = array_merge($eventsSchool, $eventsPersonal);
 
                 // Sort $eventsCombined by the value of their start timestamp (key = 2) ascendingly.
                 // See getCalendarEvents() for field details of each events.

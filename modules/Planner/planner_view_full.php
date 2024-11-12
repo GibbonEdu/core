@@ -685,7 +685,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 
                                             $row = $form->addRow();
-                                                $row->addFooter();
                                                 $row->addSubmit();
 
                                             echo $form->getOutput();
@@ -1108,7 +1107,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $col->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->setValue($rowMyHomework['homeworkDetails'] ?? '');
 
                                 $row = $form->addRow();
-                                    $row->addFooter();
                                     $row->addSubmit();
 
                                 echo '<tr><td colspan="3">';
@@ -1298,7 +1296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $form->addHiddenValue('count', $count);
                             $form->addHiddenValues($params);
 
-                            $form->addRow()->addSubmit();
+                            $form->addRow()->addSubmit()->addClass('mt-2');
                         }
 
                         $page->addSidebarExtra($form->getOutput());

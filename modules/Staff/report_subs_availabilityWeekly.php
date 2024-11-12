@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false';
 
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     // Attach availability info to each sub
     $availability = $subGateway->selectUnavailableDatesByDateRange($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d'))->fetchAll();
     $subsAvailability = array_reduce($availability, function ($group, $item) {
-        $gibbonPersonID = str_pad($item['gibbonPersonID'], 10, '0', STR_PAD_LEFT);
+        $gibbonPersonID = str_pad($item['gibbonPersonID'] ?? '', 10, '0', STR_PAD_LEFT);
         if (!isset($group[$gibbonPersonID])) return $group;
 
         $group[$gibbonPersonID]['dates'][$item['date']][] = $item;

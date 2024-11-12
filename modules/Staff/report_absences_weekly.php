@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php');
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
     $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php';
     $lastWeek = $date->modify('-1 week')->format('Y-m-d');

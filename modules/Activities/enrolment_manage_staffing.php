@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/enrolment_manag
     ]));
 
     $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
-    $row = $table->addRow()->addSubmit(__('Submit'))->addClass('text-right');
+    $row = $table->addRow()->addSubmit(__('Submit'));
     
     echo $form->getOutput();
 }

@@ -536,6 +536,7 @@ if ($isLoggedIn && !$upgrade) {
 
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
+    'isHomePage'        => empty($page->getAddress()),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),

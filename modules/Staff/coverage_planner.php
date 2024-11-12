@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
     $form = Form::createBlank('dateNav', $link);
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
     $lastDay = $date->modify('-1 day')->format('Y-m-d');
     $thisDay = (new DateTime('Today'))->format('Y-m-d');
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_planner.php
         ->setIcon('duplicate')
         ->modalWindow(true)
         ->displayLabel()
-        ->setClass('float-right mt-4')
+        ->setClass('float-right')
         ->getOutput();
 
     echo '<h2>'.__(Format::dayOfWeekName($date->format('Y-m-d'))).'</h2>';

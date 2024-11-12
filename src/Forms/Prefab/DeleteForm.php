@@ -60,7 +60,7 @@ class DeleteForm extends Form
         }
 
         if ($submit) {
-            $form->addRow()->addClass('text-right mt-6')->addConfirmSubmit(__('Delete'))->setColor('red');
+            $form->addRow()->addClass('mt-6')->addConfirmSubmit(__('Delete'))->setColor('red');
         }
 
         return $form;
