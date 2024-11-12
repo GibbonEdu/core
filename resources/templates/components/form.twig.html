@@ -20,7 +20,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="formIndicator magic drop-shadow-md" x-show="saving" >{{ __('Saving') }} ...</div>
         <div class="formStatusReturn drop-shadow-md" x-show="!saving && show" ></div>
     </div>
-{% elseif form.getAction != 'ajax' %}
+{% elseif form.getAction and form.getAction != 'ajax' %}
     <form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
 {% endif %}
 
@@ -212,6 +212,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endfor %}
     </script>
 
-{% if form.getAction != 'ajax' %}
+{% if form.getAction and form.getAction != 'ajax' %}
 </form>
 {% endif %}

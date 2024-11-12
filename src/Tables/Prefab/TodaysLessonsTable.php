@@ -88,7 +88,7 @@ class TodaysLessonsTable
             ->width('12%')
             ->format(function ($values) {
                 return Format::bold(Format::courseClassName($values['course'], $values['class'])).'<br/>'
-                    .Format::small(Format::date($values['date']));
+                    .Format::small(Format::timeRange($values['timeStart'], $values['timeEnd']));
             });
 
         $table->addColumn('lesson', __('Lesson'))

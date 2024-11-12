@@ -129,7 +129,7 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public static function createBlank($id, $action, $method = 'post', $class = '')
+    public static function createBlank($id, $action = '', $method = 'post', $class = '')
     {
         $form = static::create($id, $action, $method, $class);
         $form->renderer->setTemplate('components/formBlank.twig.html');

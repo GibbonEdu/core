@@ -8,7 +8,7 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% if form.getAction != 'ajax' %}
+{% if form.getAction and form.getAction != 'ajax' %}
 <form {{ form.getAttributeString|raw }} x-data="{'submitting': false, 'invalid': false}">
 {% endif %}
 
@@ -67,12 +67,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </section>
     {% endif %}
 
+    {% if javascript %}
     <script type="text/javascript">
         {% for code in javascript %}
             {{ code|raw }}
         {% endfor %}
     </script>
+    {% endif %}
 
-{% if form.getAction != 'ajax' %}
+{% if form.getAction and form.getAction != 'ajax' %}
 </form>
 {% endif %}

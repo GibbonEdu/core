@@ -32,6 +32,7 @@ use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Forms\Form;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -372,6 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
 
                     } elseif ($subpage == 'Family') {
+
                         $familyGateway = $container->get(FamilyGateway::class);
 
                         // CRITERIA
@@ -387,6 +389,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $families->joinColumn('gibbonFamilyID', 'children', $childrenData);
                         $adultData = $familyGateway->selectAdultsByFamily($familyIDs, true)->fetchGrouped();
                         $families->joinColumn('gibbonFamilyID', 'adults', $adultData);
+
+                        $gibbonFamilyID = current($familyIDs);
+                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.php') == true && !empty($gibbonFamilyID)) {
+                            $form = Form::createBlank('buttons');
+                            $form->addHeaderAction('edit', __('Edit Family'))
+                                ->setURL('/modules/User Admin/family_manage_edit.php')
+                                ->addParam('gibbonFamilyID', $gibbonFamilyID)
+                                ->displayLabel();
+                            echo $form->getOutput();
+                        }
 
                         echo $page->fetchFromTemplate('profile/family.twig.html', [
                             'families' => $families,
@@ -413,9 +425,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
                         else {
                             if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                                echo '</div>';
+                                $form = Form::createBlank('buttons');
+                                $form->addHeaderAction('edit', __('Edit User'))
+                                    ->setURL('/modules/User Admin/user_manage_edit.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->displayLabel();
+                                echo $form->getOutput();
                             }
 
                             echo '<p>';
@@ -566,9 +581,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                                echo '</div>';
+                                $form = Form::createBlank('buttons');
+                                $form->addHeaderAction('edit', __('Edit'))
+                                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                    ->addParam('type', 'Staff')
+                                    ->addParam('allUsers', 'on')
+                                    ->displayLabel();
+                                echo $form->getOutput();
                             }
 
                             include './modules/Timetable/moduleFunctions.php';
