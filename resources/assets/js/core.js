@@ -87,7 +87,7 @@ document.addEventListener('alpine:init', () => {
         };
 
         let mouseLeave = function(event){
-            var tooltip = document.getElementById(event.target.dataset.tooltip);
+            var tooltip = document.getElementById(tooltipId);
             if (tooltip) tooltip.remove();
 
             tooltipActive = false;
@@ -927,6 +927,7 @@ DataTable.prototype.refresh = function () {
             $(".bulkActionPanel").addClass("hidden");
             clearTimeout(submitted);
             htmx.process(this);
+            htmx.trigger(this, 'htmx:load');
         }
     );
 };
