@@ -64,11 +64,11 @@ class Date extends TextField
      */
     public function setValue($value = '')
     {
-        if (stripos($value, '/') !== false) {
+        if (is_string($value) && stripos($value, '/') !== false) {
             $value = Format::dateConvert($value);
         }
 
-        if (strlen($value) == 19) {
+        if (is_string($value) && strlen($value) == 19) {
             $value = substr($value, 0, 10);
         }
 
@@ -85,19 +85,6 @@ class Date extends TextField
     {
         return $this->setValue($value);
     }
-
-    // /**
-    //  * Set if the input is required.
-    //  * @param  bool  $required
-    //  * @return $this
-    //  */
-    // public function setRequired($required = true)
-    // {
-    //     // if ($required) {
-    //     //     $this->setAttribute('required', 'required');
-    //     // }
-    //     return parent::setRequired($required);
-    // }
 
     /**
      * Adds date format to the label description (if not already present)

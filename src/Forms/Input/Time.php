@@ -65,7 +65,7 @@ class Time extends TextField
      */
     public function setValue($value = '')
     {
-        if (strlen($value) == 19) {
+        if (is_string($value) && strlen($value) == 19) {
             $value = substr($value, 11);
         }
 
