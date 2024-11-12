@@ -291,7 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$session->get('address'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', $session->get('address'));
-                    $form->enableQuickSave();
+                    // $form->enableQuickSave();
 
                     // Add header actions
                     if (!empty($values['gibbonPlannerEntryID'])) {
@@ -348,13 +348,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         // Create a rubric link object (for reusabilty)
                         $rubricLinkSource = $form->getFactory()
-                            ->createWebLink('<img title="'.__('Mark Rubric').'" src="./themes/'.$session->get('gibbonThemeName').'/img/rubric.png" style="margin-left:4px;"/>')
-                            ->setURL($session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php')
-                            ->setClass('thickbox')
+                            ->createAction('markbook', __('Mark Rubric'))
+                            ->setURL('/modules/Markbook/markbook_view_rubric.php')
                             ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
                             ->addParam('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
-                            ->addParam('width', '1100')
-                            ->addParam('height', '550');
+                            ->modalWindow(1100, 550)
+                            ->setClass('align-middle submit-button');
 
                         $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full colorOddEven noMargin noPadding noBorder');
 
