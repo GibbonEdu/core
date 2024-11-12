@@ -12,9 +12,9 @@ Main Menu: Displays the top-level categories and active modules.
 
 {% if statusTray.messageWall %}
 
-    <a id="messageWall" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="inline-block relative mr-5" title="{{ __('Message Wall') }}" href="{{ statusTray.messageWall.url }}">
+    <a id="messageWall" x-data="{ read: {{ currentUser.messengerRead ? 'true' : 'false' }} }" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="inline-block relative mr-5" title="{{ __('Message Wall') }}" href="{{ statusTray.messageWall.url }}" @click.debounce.500ms="read = true">
         {%if statusTray.messageWall.messages %}
-            <span class='badge {{ currentUser.messengerRead ? 'bg-{{ themeColour }}-400' : 'bg-red-500' }} -mr-2 right-0'>{{ statusTray.messageWall.messages }}</span>
+            <span class='badge  -mr-2 right-0' :class="read ? 'bg-{{ themeColour }}-400' : 'bg-red-500'">{{ statusTray.messageWall.messages }}</span>
         {% endif %}
 
         {{ icon('outline', 'message-wall', 'minorLinkIcon size-10 -my-1 fill-current text-white ' ~ (statusTray.messageWall.messages ? 'opacity-75' : 'opacity-25') ) }}
