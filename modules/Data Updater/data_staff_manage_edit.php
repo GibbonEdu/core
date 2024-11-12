@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
             ->displayLabel();    
      }
 
-    $row = $form->addRow()->setClass('head heading');
+    $row = $form->addRow()->setClass('head bg-gray-200');
         $row->addContent(__('Field'));
         $row->addContent(__('Current Value'));
         $row->addContent(__('New Value'));

@@ -268,7 +268,7 @@ class FormFactory implements FormFactoryInterface
         return new Input\MultiSelect($this, $name);
     }
 
-    public function createButton($label = 'Button', $onClick = '', $id = null)
+    public function createButton($label = 'Button', $onClick = null, $id = null)
     {
         return new Input\Button($label, 'button', $onClick, $id);
     }

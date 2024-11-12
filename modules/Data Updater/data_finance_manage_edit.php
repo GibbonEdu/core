@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonFinanceInvoiceeID', $oldValues['gibbonFinanceInvoiceeID']);
 
-            $row = $form->addRow()->setClass('head heading');
+            $row = $form->addRow()->setClass('head bg-gray-200');
                 $row->addContent(__('Field'));
                 $row->addContent(__('Current Value'));
                 $row->addContent(__('New Value'));

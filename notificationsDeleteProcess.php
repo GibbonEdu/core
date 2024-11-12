@@ -23,7 +23,7 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-$URL = Url::fromRoute('notifications');
+$URL = Url::fromRoute('notifications')->withQueryParam('sidebar', 'false');
 
 if (!isset($_GET['gibbonNotificationID'])) {
     header("Location: {$URL->withReturn('error1')}");

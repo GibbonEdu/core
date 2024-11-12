@@ -72,7 +72,7 @@ class Column extends Row implements OutputableInterface
 
         foreach ($this->getElements() as $element) {
             $class = $this->getContainerClass($element);
-            if (!empty($class) && !$element instanceof Button) {
+            if (!empty($class) ) {
                 $output .= '<div class="'.$class.'">';
                 $output .= $element->getOutput();
                 $output .= '</div>';

@@ -149,7 +149,7 @@ class PersonalDocumentHandler
         $changeCount = 0;
 
         foreach ($documentsOld as $gibbonPersonalDocumentTypeID => $document) {
-            $row = $form->addRow()->setClass('head heading')->addContent(__($document['name']));
+            $row = $form->addRow()->setClass('head bg-gray-200')->addContent(__($document['name']));
 
             // Add the existing document ID, so we can check against it later when processing the update
             if (!empty($documentsNew[$gibbonPersonalDocumentTypeID])) {

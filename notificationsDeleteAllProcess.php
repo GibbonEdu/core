@@ -23,7 +23,7 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-$URL = Url::fromRoute('notifications');
+$URL = Url::fromRoute('notifications')->withQueryParam('sidebar', 'false');
 
 try {
     $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));

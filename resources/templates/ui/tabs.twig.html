@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div class="overflow-y-hidden w-full">
         <div x-ref="tabButtons" @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()" class="flex flex-wrap justify-start items-end" role="tablist" aria-label="tab options">
             {% for tabID, tab in tabs %}
-            <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-400 border-b-white z-10 bg-white shadow' : 'text-gray-800 hover:bg-gray-200 border border-transparent  bg-transparent'" class="inline-flex flex-col sm:flex-row gap-1.5 items-center px-4 sm:px-5 xl:px-6 py-2 -mr-1 sm:-mr-2 font-normal rounded-t-md  " role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">
+            <button :id="$id(tabId)" @click="tabButtonClicked($el);" :aria-selected="tabActive($el)" type="button" :class="tabActive($el) ? 'text-gray-900 border border-gray-400 border-b-white z-10 bg-white shadow' : 'text-gray-800 hover:bg-gray-200 border border-transparent hover:border-b-gray-400 bg-transparent'" class="inline-flex flex-col sm:flex-row gap-1.5 items-center px-4 sm:px-5 xl:px-6 py-2 -mr-1 sm:-mr-2 font-normal rounded-t-md  " role="tab" tabindex="tabActive($el) ? '0' : '-1'" aria-selected="true">
                 {% if icons and tab.icon %}
                     <span x-cloak x-show="tabActive($el.parentElement)" class="inline-flex">
                     {{ icon('solid', tab.icon, 'inline-block size-5  sm:-ml-1 opacity-50') }}

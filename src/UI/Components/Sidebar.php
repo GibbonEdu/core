@@ -452,7 +452,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             }
                             echo '
                                 <script type="text/javascript">
-                                    $(document).ready(function(){
+                                    htmx.onLoad(function(){
                                         var order=['.$order."];
                                         var interval = 1;
 

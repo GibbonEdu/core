@@ -338,11 +338,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             // OUTCOMES
             if ($viewBy == 'date') {
-                $form->addRow()->addHeading('Outcomes', __('Outcomes'))->addClass('advanced');
-                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning')->addClass('advanced');
+                $form->addRow()->addClass('advanced')->addHeading('Outcomes', __('Outcomes'));
+                $form->addRow()->addClass('advanced')->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
             } else {
-                $form->addRow()->addHeading('Outcomes', __('Outcomes'))->addClass('advanced');
-                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'))->addClass('advanced');
+                $form->addRow()->addClass('advanced')->addHeading('Outcomes', __('Outcomes'));
+                $form->addRow()->addClass('advanced')->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
 
                 $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
 
@@ -351,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
 
             //Access
-            $form->addRow()->addHeading('Access', __('Access'))->addClass('advanced');
+            $form->addRow()->addClass('advanced')->addHeading('Access', __('Access'));
 
             $sharingDefaultStudents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents');
             $row = $form->addRow()->addClass('advanced');
@@ -364,7 +364,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addYesNo('viewableParents')->required()->selected($sharingDefaultParents);
 
             //Guests
-            $form->addRow()->addHeading('Guests', __('Guests'))->addClass('advanced');
+            $form->addRow()->addClass('advanced')->addHeading('Guests', __('Guests'));
 
             $row = $form->addRow()->addClass('advanced');
                 $row->addLabel('guests', __('Guest List'));

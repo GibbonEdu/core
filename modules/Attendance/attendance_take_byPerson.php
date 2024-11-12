@@ -134,12 +134,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     });
 
                 $table->addColumn('direction', __('Attendance'))
-                    ->format(function ($log) use ($session) {
+                    ->format(function ($log) {
                         if (empty($log['direction'])) return Format::small(__('Not Taken'));
 
                         $output = '<b>'.__($log['direction']).'</b> ('.__($log['type']). (!empty($log['reason'])? ', '.__($log['reason']) : '') .')';
                         if (!empty($log['comment'])) {
-                            $output .= '&nbsp;<img title="'.$log['comment'].'" src="./themes/'.$session->get('gibbonThemeName').'/img/messageWall.png" width=16 height=16/>';
+                            $output .= Format::tooltip(icon('solid', 'chat-bubble-text', 'size-4'), htmlPrep($log['comment']));
                         }
 
                         return $output;

@@ -39,7 +39,7 @@ if ($disabled) {
     </button>
 <?php } elseif ($type == 'input') { ?>
 
-    <input type="<?= $type; ?>" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?>  items-center border border-gray-400 px-8 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"/>
+    <input type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?>  items-center border border-gray-400 px-8 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"/>
 
 <?php } elseif ($type == 'button') { ?>
 

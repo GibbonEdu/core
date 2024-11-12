@@ -49,7 +49,7 @@ $(function(){
     $("select.columnOrder").on('change', function(){
 
         var currentSelection = $(this).val();
-        var textBox = $(this).parent().parent().parent().find('input.columnText');
+        var textBox = $(this).parent().parent().find('input.columnText');
 
         textBox.prop("readonly", currentSelection != columnDataCustom );
         textBox.prop("disabled", currentSelection != columnDataCustom );

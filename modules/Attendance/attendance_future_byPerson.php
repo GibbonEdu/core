@@ -52,7 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
     $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
-    $gibbonThemeName = $session->get('gibbonThemeName');
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
 
@@ -237,10 +236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                 $table->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
                 $table->addColumn('attendance', __('Attendance'))
-                    ->format(function($log) use ($gibbonThemeName) {
+                    ->format(function($log) {
                         $output = '<b>'.__($log['direction']).'</b> ('.__($log['type']). (!empty($log['reason'])? ', '.$log['reason'] : '') .')';
                         if (!empty($log['comment']) ) {
-                            $output .= '&nbsp;<img title="'.$log['comment'].'" src="./themes/'.$gibbonThemeName.'/img/messageWall.png" width=16 height=16/>';
+                            $output .= Format::tooltip(icon('solid', 'chat-bubble-text', 'size-4'), htmlPrep($log['comment']));
                         }
                         return $output;
                     });

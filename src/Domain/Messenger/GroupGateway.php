@@ -79,8 +79,9 @@ class GroupGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from('gibbonGroupPerson')
-            ->cols(['gibbonGroupPerson.gibbonGroupID', 'gibbonGroupPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.email'])
+            ->cols(['gibbonGroupPerson.gibbonGroupID', 'gibbonGroupPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.email', 'gibbonRole.category as roleCategory'])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonGroupPerson.gibbonPersonID')
+            ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
             ->where('gibbonGroupPerson.gibbonGroupID = :gibbonGroupID')
             ->bindValue('gibbonGroupID', $gibbonGroupID);
 

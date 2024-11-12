@@ -213,10 +213,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
             });
 
             if (!$form->hasHeading($view->getHeading())) {
-                $form->addRow()->addHeading($view->getHeading(), __($view->getHeading()))->addClass('bg-gray-400');
+                $form->addRow()->addClass('bg-gray-150')->addHeading($view->getHeading(), __($view->getHeading()));
             }
 
-            $row = $form->addRow()->addClass('bg-gray-300');
+            $row = $form->addRow()->addClass('bg-gray-150');
                 $row->addLabel($processName, $view->getName())->description($view->getDescription());
                 $col = $row->addColumn()->addClass('justify-start w-full sm:max-w-lg');
                 $col->addContent(__('Required fields: '))->addClass('w-48');

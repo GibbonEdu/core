@@ -14,7 +14,7 @@ collapsed drop-down list in 'mini' view-mode.
 
 {% set sidebarClass = 'shadow bg-white rounded px-6 mb-6' %}
 
-{% if sidebar or menuModule %}
+{% if sidebar or menuModule is not empty %}
 <div class="mx-4 sm:mx-0 relative sm:static" x-data="{moduleMenu: false}" @keydown.escape.window="moduleMenu = false" @click.outside="moduleMenu = false" x-init="moduleMenu = false">
 
     {% if menuModule %}

@@ -379,7 +379,7 @@ input[type="color"]::-moz-color-swatch {
 
 .error-msg,
 .inline-msg {
-    @apply absolute block w-full left-0 top-10 text-xs font-bold leading-relaxed pointer-events-none whitespace-nowrap;
+    @apply absolute block w-full left-0 top-10 text-xs font-bold leading-6 pointer-events-none whitespace-nowrap;
 }
 
 .error-msg {
@@ -395,6 +395,10 @@ input[type="color"]::-moz-color-swatch {
 
 input[type="checkbox"] + .error-msg {
     @apply top-5;
+}
+
+select[multiple] + .error-msg {
+    @apply top-auto -bottom-5;
 }
 
 .tinymce + .error-msg,

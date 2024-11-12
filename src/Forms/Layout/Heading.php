@@ -82,6 +82,6 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
      */
     protected function getElement()
     {
-        return sprintf('<%1$s class="m-0 p-0 pb-2 font-semibold text-gray-950 text-2xl/8 sm:text-xl/8"><a id="%3$s"></a>%2$s</%1$s>', $this->tag ?? 'h3', $this->content, $this->id);
+        return sprintf('<%1$s class="m-0 p-0 pt-2 pb-1 font-semibold text-gray-950 text-2xl/8 sm:text-xl/8"><a id="%3$s"></a>%2$s</%1$s>', $this->tag ?? 'h3', $this->content, $this->id);
     }
 }
