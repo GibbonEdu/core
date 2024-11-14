@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             : Format::small(Format::timeRange($lesson['timeStart'], $lesson['timeEnd']));
 
         // Display the heading
-        $heading = $form->addRow()->addHeading($lessonLink . $deleteLink)
+        $heading = $form->addRow()->addHeading('lesson'.$lesson['gibbonPlannerEntryID'], $lessonLink . $deleteLink)
             ->append(Format::small(Format::dateReadable($lesson['date'], Format::FULL)).'<br/>')
             ->append($lessonTiming.'<br/>')
             ->append(Format::small($times['spaceName'] ?? ''));
