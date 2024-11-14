@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+use Gibbon\Forms\Form;
 
 
 //Module includes
@@ -123,12 +124,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             //Let's go!
                             $row = $result->fetch();
 
-                            echo "<div class='linkTop'>";
+                            $form = Form::createBlank('buttons');
+
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a> | ';
+                                $form->addHeaderAction('search', __('Back to Search Results'))
+                                    ->setURL('/modules/Finance/expenses_manage.php')
+                                    ->addParam('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID)
+                                    ->addParam('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2)
+                                    ->addParam('status2', $status2)
+                                    ->displayLabel();
                             }
-                            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/expenses_manage_print_print.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-                            echo '</div>';
+
+                            $form->addHeaderAction('print', __('Print'))
+                                ->setURL('/report.php')
+                                ->addParam('q', '/modules/Finance/expenses_manage_print_print.php')
+                                ->addParam('gibbonFinanceExpenseID', $gibbonFinanceExpenseID)
+                                ->addParam('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID)
+                                ->addParam('format', 'print')
+                                ->setTarget('_blank')
+                                ->directLink();
+                            echo $form->getOutput();
 
                             ?>
 							<table class='smallIntBorder w-full' cellspacing='0'>

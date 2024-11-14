@@ -268,9 +268,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] == 'Issued') {
-                                echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'>".icon('solid', 'print', 'size-5')."</a>";
                             } elseif ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
-                                echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'>".icon('solid', 'print', 'size-5')."</a>";
                             }
                             echo "<script type='text/javascript'>";
                             echo '$(document).ready(function(){';

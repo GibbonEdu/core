@@ -43,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $settingGateway = $container->get(SettingGateway::class);
     $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
-    $dateEnd = (isset($_REQUEST['dateEnd']))? Format::dateConvert($_REQUEST['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_REQUEST['dateStart']))? Format::dateConvert($_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
+    $dateEnd = (isset($_REQUEST['dateEnd']))? $_REQUEST['dateEnd'] : date('Y-m-d');
+    $dateStart = (isset($_REQUEST['dateStart']))? $_REQUEST['dateStart'] : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {
@@ -294,11 +294,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                     $attendanceData[$gibbonPersonID]['total'] = ($attendanceData[$gibbonPersonID]['total'] ?? 0) + 1;
                 }
             }
-
-            // To avoid duplicating code, the print function has been removed until this report can be refactored
-            // echo "<div class='linkTop'>";
-            // echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_summary_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-            // echo '</div>';
 
             echo '<table cellspacing="0" class="w-full colorOddEven" >';
 

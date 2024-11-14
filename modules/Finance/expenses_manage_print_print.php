@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+use Gibbon\Forms\Form;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -111,9 +112,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             //Let's go!
                             $row = $result->fetch();
 
-                            echo "<div class='linkTop'>";
-                            echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-                            echo '</div>';
+                            $form = Form::createBlank('buttons');
+                            $form->addHeaderAction('print', __('Print'))
+                                ->setURL('#')
+                                ->onClick('javascript:window.print(); return false;');
+                            echo $form->getOutput();
+
                             ?>
 							<table class='smallIntBorder w-full' cellspacing='0'>
 								<tr class='break'>

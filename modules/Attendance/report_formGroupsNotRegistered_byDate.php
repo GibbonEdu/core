@@ -132,9 +132,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             //Produce array of form groups
             $formGroups = $result->fetchAll();
 
-            echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-            echo '</div>';
+            $form = Form::createBlank('buttons');
+            $form->addHeaderAction('print', __('Print'))
+                ->setURL('/report.php')
+                ->addParam('q', '/modules/Attendance/report_formGroupsNotRegistered_byDate_print.php')
+                ->addParam('dateStart', $dateStart)
+                ->addParam('dateEnd', $dateEnd)
+                ->addParam('format', 'print')
+                ->setTarget('_blank')
+                ->directLink();
+            echo $form->getOutput();
 
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";

@@ -81,9 +81,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         if ($result->rowCount() < 1) {
             echo $page->getBlankSlate();
         } else {
-            echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/activities_attendance_sheetPrint.php&gibbonActivityID=$gibbonActivityID&columns=$numberOfColumns'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-            echo '</div>';
+            $form = Form::createBlank('buttons');
+            $form->addHeaderAction('print', __('Print'))
+                ->setURL('/report.php')
+                ->addParam('q', '/modules/Activities/activities_attendance_sheetPrint.php')
+                ->addParam('gibbonActivityID', $gibbonActivityID)
+                ->addParam('numberOfColumns', $numberOfColumns)
+                ->addParam('format', 'print')
+                ->setTarget('_blank')
+                ->directLink();
+            echo $form->getOutput();
 
             $lastPerson = '';
 

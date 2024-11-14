@@ -310,20 +310,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 $row->addContent(Format::date(substr($expense['timestampCreator'], 0, 10)));
 
                             if ($budgetsActionAccess) {
-                                $col = $row->addColumn()->addClass('inline');
-                                    $col->addWebLink('<img title="'.__('View').'" src="./themes/'.$session->get('gibbonThemeName').'/img/plus.png" />')
-                                        ->setURL($session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/expenses_manage_view.php')
+                                $col = $row->addColumn()->addClass('flex items-center justify-end gap-4');
+                                    $col->addAction('view', __('View'))
+                                        ->setURL('/modules/'.$session->get('module').'/expenses_manage_view.php')
                                         ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
-                                        ->addParams($linkParams);
-                                    $col->addWebLink('<img title="'.__('Print').'" src="./themes/'.$session->get('gibbonThemeName').'/img/print.png"/>')
-                                        ->setURL($session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/expenses_manage_print.php')
+                                        ->addParams($linkParams)
+                                        ->displayLabel();
+                                    $col->addAction('print', __('Print'))
+                                        ->setURL('/modules/'.$session->get('module').'/expenses_manage_print.php')
                                         ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
                                         ->addParams($linkParams);
 
                                 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
                                     if ($expense['status'] == 'Requested' or $expense['status'] == 'Approved' or $expense['status'] == 'Ordered' or ($expense['status'] == 'Paid' && $expense['paymentReimbursementStatus'] == 'Requested')) {
-                                        $col->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$session->get('gibbonThemeName').'/img/config.png"  style="margin-left:4px;"/>')
-                                            ->setURL($session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/expenses_manage_edit.php')
+                                        $col->addAction('edit', __('Edit'))
+                                            ->setURL('/modules/'.$session->get('module').'/expenses_manage_edit.php')
                                             ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
                                             ->addParams($linkParams);
                                     }

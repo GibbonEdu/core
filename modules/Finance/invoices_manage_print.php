@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 						</td>
 						<td class="left">
 							<?php
-                            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>"; ?>
+                            echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print').icon('solid', 'print', 'size-5 text-gray-600')."</a>"; ?>
 						</td>
 					</tr>
 					<?php
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder1&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder1&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print').icon('solid', 'print', 'size-5 text-gray-600')."</a>";
                             ?>
 								</td>
 							</tr>
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder2&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder2&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print').icon('solid', 'print', 'size-5 text-gray-600')."</a>";
                             ?>
 								</td>
 							</tr>
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder3&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=reminder3&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print').icon('solid', 'print', 'size-5 text-gray-600')."</a>";
                             ?>
 								</td>
 							</tr>
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Print').icon('solid', 'print', 'size-5 text-gray-600')."</a>";
                         ?>
 								</td>
 							</tr>
@@ -199,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 								</td>
 								<td class="left">
 									<?php
-                                    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+                                    echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>".__('Print').icon('solid', 'print', 'size-5 text-gray-600')."</a>";
                                     ?>
 								</td>
 							</tr>

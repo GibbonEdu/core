@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Forms\Form;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
     $today = date('Y-m-d');
 
-    $dateEnd = (isset($_GET['dateEnd']))? Format::dateConvert($_GET['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
+    $dateEnd = (isset($_GET['dateEnd']))? $_GET['dateEnd'] : date('Y-m-d');
+    $dateStart = (isset($_GET['dateStart']))? $_GET['dateStart'] : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
 
     $datediff = strtotime($dateEnd) - strtotime($dateStart);
     $daysBetweenDates = floor($datediff / (60 * 60 * 24)) + 1;
@@ -84,9 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         //Produce array of form groups
         $formGroups = $result->fetchAll();
 
-        echo "<div class='linkTop'>";
-        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-        echo '</div>';
+        $form = Form::createBlank('buttons');
+        $form->addHeaderAction('print', __('Print'))
+            ->setURL('#')
+            ->onClick('javascript:window.print(); return false;');
+        echo $form->getOutput();
 
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
