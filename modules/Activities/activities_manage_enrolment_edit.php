@@ -23,6 +23,7 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -78,17 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $settingGateway = $container->get(SettingGateway::class);
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
-            $form = Form::create('activityEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_editProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+            $form = Form::create('activityEnrolment', Url::fromModuleRoute('Activities', 'activities_manage_enrolment_editProcess')->withQueryParams($urlParams + ['gibbonPersonID' => $gibbonPersonID])->directLink());
 
-            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                $params = [
-                    "search" => $_GET['search'] ?? '',
-                    "gibbonSchoolYearTermID" => $_GET['gibbonSchoolYearTermID'] ?? null,
-                    "gibbonActivityID" => $gibbonActivityID
-                ];
+            if (!empty($_GET['search']) != '' || !empty( $_GET['gibbonSchoolYearTermID'])) {
                 $form->addHeaderAction('back', __('Back'))
                     ->setURL('/modules/Activities/activities_manage_enrolment.php')
-                    ->addParams($params);
+                    ->addParams($urlParams);
 			}
 
             $form->addHiddenValue('address', $session->get('address'));
