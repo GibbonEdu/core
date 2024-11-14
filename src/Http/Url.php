@@ -187,15 +187,25 @@ class Url extends Uri implements UriInterface
         // fromRoute() or fromModuleRoute() methods.
         if (isset($this->routePath)) {
             $query = $this->getQueryParams();
-            $handler_path = $this->getPath() . '/' . $this->routeHandler;
-            $route_target = !empty($this->routePath) ? $this->routePath . '.php' : '';
-            $route_target = !empty($this->module)
-                ? '/modules/' . $this->module . '/' . $route_target
-                : $route_target;
 
-            if (!empty($route_target)) {
-                // overwrite "q" in query with module / core route path
-                $query = ['q' => $route_target] + $query;
+            if (!empty($this->routeHandler)) {
+                $handler_path = $this->getPath() . '/' . $this->routeHandler;
+                $route_target = !empty($this->routePath) ? $this->routePath . '.php' : '';
+                $route_target = !empty($this->module)
+                    ? '/modules/' . $this->module . '/' . $route_target
+                    : $route_target;
+
+                if (!empty($route_target)) {
+                    // overwrite "q" in query with module / core route path
+                    $query = ['q' => $route_target] + $query;
+                }
+            } else {
+                $route_target = !empty($this->routePath) ? $this->routePath . '.php' : '';
+                $route_target = !empty($this->module)
+                    ? '/modules/' . $this->module . '/' . $route_target
+                    : $route_target;
+
+                $handler_path = $this->getPath() . '/' . trim($route_target, ' /');
             }
 
             $new = $this
@@ -278,6 +288,22 @@ class Url extends Uri implements UriInterface
         }
         $new = clone $this;
         $new->isAbsolute = $isAbsolute;
+        return $new;
+    }
+
+    /**
+     * Create Uri instance that links directly to a path, rather than 
+     * going through a front-controller handler such as index.php 
+     *
+     * @return self
+     */
+    public function directLink(): self
+    {
+        if (empty($this->routeHandler)) {
+            return $this;
+        }
+        $new = clone $this;
+        $new->routeHandler = null;
         return $new;
     }
 
