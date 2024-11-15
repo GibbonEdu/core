@@ -108,7 +108,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     : 'flex flex-col sm:flex-row  content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start' 
                 %}
 
-                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }} {{ standardLayout and rowLoop.last ? 'pb-8' }} {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
+                <div id="{{ row.getID }}" class="{{ standardLayout ? ' px-4 sm:px-8 py-4' : smallLayout ? 'px-2 py-2' : "noIntBorder" in form.getClass ? 'py-2' }}  {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}  " {{ row.getAttributeString('', 'id,class')|raw }}>
   
                 {% if quickSave and section == 'submit' %}
                     <span class="text-xs text-gray-600 flex-1">
