@@ -162,8 +162,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             if ($viewBy == 'class') {
                 $form->addHiddenValue('gibbonCourseClassID', $values['gibbonCourseClassID']);
                 $row = $form->addRow();
-                    $row->addLabel('schoolYearName', __('Class'));
-                    $row->addTextField('schoolYearName')->setValue($values['course'].'.'.$values['class'])->required()->readonly();
+                    $row->addLabel('courseClassName', __('Class'));
+                    $row->addTextField('courseClassName')->setValue($values['course'].'.'.$values['class'])->required()->readonly();
             } else {
                 if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
                     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -392,6 +392,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $formData = $container->get(FormSessionStorage::class);
             $formData->load('plannerAdd');
 
+            if ($viewBy == 'class') {
+                $formData->addData(['courseClassName' => $extra ?? '']);
+            }
             if (!empty($nextDate)) {
                 $formData->addData(['date' => $nextDate, 'timeStart' => $nextTimeStart, 'timeEnd' => $nextTimeEnd]);
             }
