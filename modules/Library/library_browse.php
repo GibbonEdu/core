@@ -80,58 +80,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
 
-    $row = $form->addRow()->addClass('grid sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4');
-        $row->addTextField('everything')->setClass('w-full sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
-        $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
+    $row = $form->addRow()->addClass('flex items-center');
+        $row->addTextField('everything')->setClass('flex-1')->setValue($everything)->placeholder('Search for a Book!')->groupAlign('left');
+        $row->addSubmit(__('Search'))->groupAlign('right');
+        $row->addAdvancedOptionsToggle()->addClass('ml-2 inline-flex h-10');
 
-    $row = $form->addRow();
-        $row->setClass('advancedOptions hidden grid grid-cols-7 gap-4');
+    $row = $form->addRow()->advancedOptions();
+        $row->setClass('grid grid-cols-7 gap-4 items-center mt-2');
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('name', __('Title'));
         $col->setClass('');
-        $col->addTextField('name')->setClass('w-full')->setValue($name);
+        $col->addTextField('name')->setValue($name);
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('producer', __('Author/Producer'));
-        $col->addTextField('producer')->setClass('w-full')->setValue($producer);
+        $col->addTextField('producer')->setValue($producer);
 
     $form->toggleVisibilityByClass('allLocations')->onCheckbox('locationToggle')->when('on');
 
-    $col = $row->addColumn()->setClass('allLocations quarterWidth');
+    $col = $row->addColumn()->setClass('allLocations');
         $col->addLabel('location', __('Location'));
-        $col->addSelectSpace('location')->setClass('w-full')->setValue($location)->placeHolder()->selected($location);
+        $col->addSelectSpace('location')->setValue($location)->placeHolder()->selected($location);
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('type', __('Type'));
         $col->addSelect('type')
         ->fromArray($types)
-        ->setClass('w-full')
+        
         ->selected($type)
         ->placeholder();
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('collection', __('Collection'));
         $col->addSelect('collection')
         ->fromArray($collections)
         ->chainedTo('type', $collectionsChained)
-        ->setClass('w-full')
         ->selected($collection)
         ->placeholder();
         
-    $col = $row->addColumn()->setClass('w-full');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('readerAge', __('Readers Age'));
         $ageArray=range(2,21);
-        $col->addSelect('readerAge')->fromArray($ageArray)->setClass('w-full')->selected($readerAge)->placeholder();
+        $col->addSelect('readerAge')->fromArray($ageArray)->selected($readerAge)->placeholder();
 
 	$locationToggle = 'on';
-    $col = $row->addColumn()->setClass('quarterWidth');
-        $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
+    $row->addCheckBox('locationToggle')->description(__('Include Books Outside of Library?'))->checked(($locationToggle == 'on'))->setValue('on')->setLabelClass('text-xs');
 
-
-
-    $row = $form->addRow();
-        $row->addAdvancedOptionsToggle()->addClass('pt-2');
 
     echo $form->getOutput();
 

@@ -44,7 +44,7 @@ if ($mode == 'subscribe') {
         'email'                             => filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL),
         'key'                               => $randStrGenerator->generate(),    
         'organisation'                      => $_POST['organisation'] ?? '',
-        'gibbonMessengerMailingListIDList'  => implode(',', $_POST['gibbonMessengerMailingListIDList']) ?? '',
+        'gibbonMessengerMailingListIDList'  => implode(',', $_POST['gibbonMessengerMailingListIDList'] ?? []),
     ];
 
     // Validate the required values are present
@@ -55,14 +55,16 @@ if ($mode == 'subscribe') {
     }
 
     // Validate that this record is unique
-    if (!$mailingListRecipientGateway->unique($data, ['email'])) {
-        $URL .= '&return=error7';
-        header("Location: {$URL}");
-        exit;
-    }
+    $exists = $mailingListRecipientGateway->selectBy(['email' => $data['email']])->fetch();
+    if (!empty($exists)) {
+        // Update the record (rather than failing)
+        $gibbonMessengerMailingListRecipientID = $exists['gibbonMessengerMailingListRecipientID'];
+        $mailingListRecipientGateway->update($gibbonMessengerMailingListRecipientID, $data);
 
-    // Create the record
-    $gibbonMessengerMailingListRecipientID = $mailingListRecipientGateway->insert($data);
+    } else {
+        // Create the record
+        $gibbonMessengerMailingListRecipientID = $mailingListRecipientGateway->insert($data);
+    }
 
     if ($gibbonMessengerMailingListRecipientID) {
         $URL .= "&return=success0";

@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         $gibbonSpaceID = isset($_REQUEST['gibbonSpaceID']) ? $_REQUEST['gibbonSpaceID'] : '';
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
         $gibbonTTID = isset($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
+        $format = $_GET['format'] ?? '';
 
         
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
@@ -58,6 +59,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             //Create Details Table
             $table = DataTable::createDetails('basicInfo');
 
+            if ($format == 'print') {
+                $table->addHeaderAction('print', __('Print'))
+                    ->setURL('#')
+                    ->onClick('javascript:window.print(); return false;');
+            } else {
+                if ($search != '') {
+                    $table->addHeaderAction('searchResults', __('Back to Search Results'))
+                        ->setIcon('search')
+                        ->setUrl(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search))
+                        ->directLink();
+                }
+
+                $table->addHeaderAction('print', __('Print'))
+                    ->setURL('/report.php')
+                    ->addParam('q', '/modules/Timetable/tt_space_view.php')
+                    ->addParam('gibbonSpaceID', $gibbonSpaceID)
+                    ->addParam('gibbonTTID', $gibbonTTID)
+                    ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
+                    ->addParam('format', 'print')
+                    ->setTarget('_blank')
+                    ->directLink()
+                    ->displayLabel();
+            }
+
             $table->addColumn('name', __('Name'));
 
             $table->addColumn('type', __('Type'));
@@ -71,21 +96,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 ->width('100%');
 
             echo $table->render([$row]);
-
-            if ($search != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
-            }
-
-            $page->navigator->addHeaderAction('print', __('Print'))
-                ->setURL('/report.php')
-                ->addParam('q', '/modules/Timetable/tt_space_view.php')
-                ->addParam('gibbonSpaceID', $gibbonSpaceID)
-                ->addParam('gibbonTTID', $gibbonTTID)
-                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                ->setIcon('print')
-                ->setTarget('_blank')
-                ->directLink()
-                ->displayLabel();
 
             $ttDate = null;
             if (!empty($_REQUEST['ttDate'])) {

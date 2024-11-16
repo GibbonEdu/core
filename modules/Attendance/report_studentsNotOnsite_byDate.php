@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         ->width('20%')
         ->format(function ($student) {
             $output = !empty($student['type']) ? __($student['type']) : Format::small(__('Not registered'));
-            if (!empty($student['conflicts']) && $student['conflicts'] != $student['type'] && stripos($student['type'], 'Left') === false) {
+            if (!empty($student['conflicts']) && !empty($student['type']) && $student['conflicts'] != $student['type'] && stripos($student['type'], 'Left') === false) {
                 $output .= Format::tag(__('Conflict'), 'warning text-xxs ml-2', $student['conflicts']);
             }
             return $output;

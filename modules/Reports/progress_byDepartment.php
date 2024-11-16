@@ -92,6 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byDepartm
     
     $table->addColumn('class', __('Class'))
         ->width('15%')
+        ->sortable(['courseName', 'className'])
         ->format(function ($reporting) use (&$page) {
             return Format::courseClassName($reporting['courseName'], $reporting['className']);
         });
@@ -101,6 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byDepartm
 
     $table->addColumn('progress', __('Progress'))
         ->width('40%')
+        ->sortable(['progressCount', 'totalCount'])
         ->format(function ($reporting) use (&$page) {
             return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                 'progressCount' => $reporting['progressCount'],

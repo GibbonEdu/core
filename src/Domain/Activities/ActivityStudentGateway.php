@@ -38,7 +38,7 @@ class ActivityStudentGateway extends QueryableGateway
     private static $tableName = 'gibbonActivityStudent';
     private static $primaryKey = 'gibbonActivityStudentID';
 
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['surname', 'preferredName'];
 
     public function queryActivityEnrolment($criteria, $gibbonActivityID) {
         $query = $this

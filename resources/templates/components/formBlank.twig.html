@@ -9,7 +9,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% if form.getAction != 'ajax' %}
-<form {{ form.getAttributeString|raw }} x-data="{'submitting': false, 'invalid': false}">
+<form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
 {% endif %}
 
     {% if form.getTitle and not form.getHeader %}
@@ -50,14 +50,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
                 <div class="{{ hasClass ? element.getClass : 'flex-1' }}" >
-
                     {{ element.getOutput|raw }}
-
-                    {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
-                    <script type="text/javascript">
-                        {{ element.getValidationOutput|raw }}
-                    </script>
-                    {% endif %}
                 </div>
             {% endfor %}
 

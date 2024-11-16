@@ -214,13 +214,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
             $row = $table->addRow();
             $row->addLabel("choice{$i}", $choiceList[$i]);
             $row->addTextField("choice{$i}Value")->setClass('w-24')->readonly()->setValue( ($results["choice{$i}"] ?? 0) );
-            $row->addContent( round( ($results["choice{$i}"]/$results['total'])*100).'%');
+            $row->addContent( !empty($results['total']) ? round( ($results["choice{$i}"]/$results['total'])*100).'%' : '');
         }
 
         $row = $table->addRow();
             $row->addLabel('unassigned', __('Unassigned'));
             $row->addTextField('unassignedValue')->setClass('w-24')->readonly()->setValue( ($results['unassigned'] ?? 0) );
-            $row->addContent( round( ($results['unassigned']/$results['total'])*100).'%');
+            $row->addContent( !empty($results['total']) ? round( ($results['unassigned']/$results['total'])*100).'%' : '');
     }
 
     echo $form->getOutput();

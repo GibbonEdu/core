@@ -566,54 +566,57 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $output .= "<div id='tt' name='tt' x-data='{ ttDate: \"\", ttRefresh: false }' style='width: 100%; min-height: 40px; text-align: center'>";
 
-            $output .= "<form
-                        hx-post='".$apiEndpoint."' 
-                        hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
-                        hx-target='closest #tt' 
-                        hx-select='#tt'
-                        hx-swap='outerHTML' 
-                        hx-indicator='#indicator'
-                        hx-include='[name=\"ttDateChooser\"],[name=\"ttCalendarRefresh\"]'
-                        hx-vals='js:{\"edit\": \"".$edit."\"}'
-                        >";
+            $format = $_GET['format'] ?? '';
+            if ($format != 'print') {
+                $output .= "<form
+                            hx-post='".$apiEndpoint."' 
+                            hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
+                            hx-target='closest #tt' 
+                            hx-select='#tt'
+                            hx-swap='outerHTML' 
+                            hx-indicator='#indicator'
+                            hx-include='[name=\"ttDateChooser\"],[name=\"ttCalendarRefresh\"]'
+                            hx-vals='js:{\"edit\": \"".$edit."\"}'
+                            >";
 
-            $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
-            $output .= "<input type='hidden' name='ttDateNav' x-model='ttDate'>";
-            $output .= "<input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>";
+                $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
+                $output .= "<input type='hidden' name='ttDateNav' x-model='ttDate'>";
+                $output .= "<input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>";
 
-            $output .= "<div class='flex-1 text-left'>";
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
-            $output .= icon('basic', 'chevron-left', 'inline-block size-5');
-            $output .=" <span class='hidden sm:inline ml-1 sr-only'>".__('Last Week')."</span></button>";
+                $output .= "<div class='flex-1 text-left'>";
+                $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+                    x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
+                $output .= icon('basic', 'chevron-left', 'inline-block size-5');
+                $output .=" <span class='hidden sm:inline ml-1 sr-only'>".__('Last Week')."</span></button>";
 
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
+                $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+                    x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
 
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1 sr-only'>".__('Next Week')."</span>";
-            $output .= icon('basic', 'chevron-right', 'inline-block size-5');
-            $output .= "</button>";
-            $output .= "</div>";
+                $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+                    x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1 sr-only'>".__('Next Week')."</span>";
+                $output .= icon('basic', 'chevron-right', 'inline-block size-5');
+                $output .= "</button>";
+                $output .= "</div>";
 
-            $output .= "<div class='flex-shrink  hidden md:block'>";
-            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed mr-4 inline-block align-middle w-5 h-5 opacity-0"></span>';
-            $output .= "<div class='h-8 px-4 mr-6 text-xs/6 inline-flex items-center rounded border border-gray-400 text-gray-600 bg-gray-100 font-medium'>";
-            $output .= Format::dateRangeReadable($startDayStamp, $endDayStamp);
-            $output .= "</div>";
-            $output .= "</div>";
+                $output .= "<div class='flex-shrink  hidden md:block'>";
+                $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed mr-4 inline-block align-middle w-5 h-5 opacity-0"></span>';
+                $output .= "<div class='h-8 px-4 mr-6 text-xs/6 inline-flex items-center rounded border border-gray-400 text-gray-600 bg-gray-100 font-medium'>";
+                $output .= Format::dateRangeReadable($startDayStamp, $endDayStamp);
+                $output .= "</div>";
+                $output .= "</div>";
 
-            $output .= "<div class='flex-1 text-right inline-flex justify-end'>";
-            $output .= "<button type='button' class='ttNav inline-flex items-center rounded-l px-2 py-1 -mr-px text-base border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
-                    x-on:click='ttRefresh=true'>";
-            $output .= icon('basic', 'refresh', 'size-4');
-            $output .= "</button>";
-            $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='inline-flex border rounded-r bg-gray-100 text-sm/6 py-1 font-sans w-36 px-3'> ";
-            $output .= "</div>";
+                $output .= "<div class='flex-1 text-right inline-flex justify-end'>";
+                $output .= "<button type='button' class='ttNav inline-flex items-center rounded-l px-2 py-1 -mr-px text-base border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+                        x-on:click='ttRefresh=true'>";
+                $output .= icon('basic', 'refresh', 'size-4');
+                $output .= "</button>";
+                $output .= "<input name='ttDateChooser' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10 value='".date('Y-m-d', $startDayStamp)."' type='date' required class='inline-flex border rounded-r bg-gray-100 text-sm/6 py-1 font-sans w-36 px-3'> ";
+                $output .= "</div>";
 
-            $output .= '</nav>';
+                $output .= '</nav>';
 
-            $output .= '</form>';
+                $output .= '</form>';
+            }
 
             
 
@@ -2119,38 +2122,43 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $apiEndpoint = Url::fromHandlerRoute('index.php')->withQueryParams($urlParams);
 
         $output .= '<div id="ttSpace">';
-        $output .= "<form x-data='{ ttDate: \"".date('Y-m-d', $startDayStamp)."\" }'
-                    hx-post='".$apiEndpoint."' 
-                    hx-trigger='click from:(button), change from:(#ttDateChooser)'
-                    hx-target='#ttSpace'
-                    hx-select='#ttSpace' 
-                    hx-include='[name=\"ttDate\"]'
-                    >";
 
-        $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
-        // $output .= "<input type='hidden' name='ttDate' x-model='ttDate'>";
+        $format = $_GET['format'] ?? '';
+        if ($format != 'print') {
 
-        $output .= "<div>";
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
-            $output .= icon('basic', 'chevron-left', 'inline-block size-5');
-            $output .=" <span class='hidden sm:inline ml-1'>".__('Last Week')."</span></button>";
+            $output .= "<form x-data='{ ttDate: \"".date('Y-m-d', $startDayStamp)."\" }'
+                        hx-post='".$apiEndpoint."' 
+                        hx-trigger='click from:(button), change from:(#ttDateChooser)'
+                        hx-target='#ttSpace'
+                        hx-select='#ttSpace' 
+                        hx-include='[name=\"ttDate\"]'
+                        >";
 
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
+            $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
+            // $output .= "<input type='hidden' name='ttDate' x-model='ttDate'>";
 
-            $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-                x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1'>".__('Next Week')."</span>";
-            $output .= icon('basic', 'chevron-right', 'inline-block size-5');
-            $output .= "</button>";
+            $output .= "<div>";
+                $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+                    x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp - (7 * 24 * 60 * 60)))."\"'>";
+                $output .= icon('basic', 'chevron-left', 'inline-block size-5');
+                $output .=" <span class='hidden sm:inline ml-1'>".__('Last Week')."</span></button>";
 
-            $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
-            $output .= "</div>";
+                $output .= "<button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+                    x-on:click='ttDate=\"".date('Y-m-d', time())."\"'>".__('This Week')."</button>";
 
-        $output .= "<input x-model='ttDate' name='ttDate' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10  type='date' required class='self-end border rounded-md text-sm font-sans h-10 w-40 px-3'> ";
-        $output .= '</nav>';
+                $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+                    x-on:click='ttDate=\"".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."\"'><span class='hidden sm:inline mr-1'>".__('Next Week')."</span>";
+                $output .= icon('basic', 'chevron-right', 'inline-block size-5');
+                $output .= "</button>";
 
-        $output .= '</form>';
+                $output .= '<span id="indicator" class="htmx-indicator submitted leading-relaxed ml-4 opacity-0"></span>';
+                $output .= "</div>";
+
+            $output .= "<input x-model='ttDate' name='ttDate' id='ttDateChooser' aria-label='".__('Choose Date')."' maxlength=10  type='date' required class='self-end border rounded text-sm font-sans bg-gray-100 text-sm/6 py-1 w-40 px-3'> ";
+            $output .= '</nav>';
+
+            $output .= '</form>';
+        }
 
         //Check which days are school days
         $daysInWeek = 0;

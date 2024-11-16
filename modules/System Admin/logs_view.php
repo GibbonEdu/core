@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
                     $fieldValue = is_array($fieldValue)
                         ? htmlentities(json_encode($fieldValue))
-                        : htmlentities($fieldValue);
+                        : htmlentities($fieldValue ?? '');
                     $details .= sprintf('<tr><td><b>%1$s</b></td><td style="line-break: anywhere; width: 645px;">%2$s</td></tr>', $fieldName, (substr($fieldValue, 0, 2) == 'a:') ? __("Contains serialised data.") : $fieldValue);
                 }
                 $details .= "</table>";

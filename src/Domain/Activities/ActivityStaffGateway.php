@@ -38,7 +38,7 @@ class ActivityStaffGateway extends QueryableGateway
     private static $tableName = 'gibbonActivityStaff';
     private static $primaryKey = 'gibbonActivityStaffID';
 
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['surname', 'preferredName'];
 
     public function selectActivityStaff($gibbonActivityID) {
         $select = $this

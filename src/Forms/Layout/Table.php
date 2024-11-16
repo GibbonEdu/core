@@ -183,7 +183,7 @@ class Table implements OutputableInterface
 
     protected function getColspan($row, $element)
     {
-        return $row->getElementCount() < $this->totalColumns
+        return $row->isLastElement($element) && $row->getElementCount() < $this->totalColumns
             ? 'colspan="'.($this->totalColumns + 1 - $row->getElementCount()).'"'
             : '';
     }

@@ -8,7 +8,7 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
     
-<form {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'submitting': false}">
+<form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
 
     {% if form.getTitle and not form.getHeader %}
         <h2>{{ form.getTitle }}</h2>
@@ -59,12 +59,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 <div class="{{ class }}" >
                     {{ element.getOutput|raw }}
-
-                    {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
-                    <script type="text/javascript">
-                        {{ element.getValidationOutput|raw }}
-                    </script>
-                    {% endif %}
                 </div>
             {% endfor %}
 

@@ -283,6 +283,7 @@ class LessonTable
     protected function addYearOverviewColumns(&$table)
     {
         $table->addColumn('lessonNumber', __('Lesson<br/>Number'))
+            ->notSortable()
             ->format(function ($values) {
                 return Format::bold($values['lessonNumber']);
             });

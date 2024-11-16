@@ -39,11 +39,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $subGateway = $container->get(SubstituteGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
+    $coverageInternal = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     $date = isset($_REQUEST['date']) ? Format::dateConvert($_REQUEST['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
+    $allStaff = $_GET['allStaff'] ?? $coverageInternal;
 
     // DATE SELECTOR
     $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
@@ -62,10 +63,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         $col->addButton(__('This Week'))->groupAlign('middle')->onClick("window.location.href='{$link}&date={$thisWeek}&allStaff={$allStaff}'");
         $col->addButton(__('Next Week'))->groupAlign('right')->onClick("window.location.href='{$link}&date={$nextWeek}&allStaff={$allStaff}'");
 
+    
     $col = $row->addColumn()->addClass('flex items-center justify-end');
-        $col->addCheckbox('allStaff')->description(__('All Staff'))->setValue('Y')->checked($allStaff)->setClass('mr-4');
+        if ($coverageInternal != 'Y') {
+            $col->addCheckbox('allStaff')->description(__('All Staff'))->setValue('Y')->checked($allStaff)->setClass('mr-4');
+        }
         $col->addDate('date')->groupAlign('left')->setValue($dateObject->format($dateFormat))->setClass('w-36');
         $col->addSubmit(__('Go'))->groupAlign('right');
+    
 
     // DATA
     $firstDayOfTheWeek = $container->get(SettingGateway::class)->getSettingByScope('System', 'firstDayOfTheWeek');

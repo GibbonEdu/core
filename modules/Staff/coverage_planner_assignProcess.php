@@ -48,12 +48,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $coverage = $staffCoverageGateway->getByID($gibbonStaffCoverageID);
 
     if ($coverageStatus != 'Not Required' && (empty($coverage) || empty($gibbonPersonIDCoverage))) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit;
-    }
-
-    if ($coverageStatus == 'Not Required') {
+        $data = [
+            'gibbonPersonIDCoverage' => null,
+            'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),
+            'requestType'            => 'Individual',
+            'status'                 => 'Requested',
+        ];
+    } elseif ($coverageStatus == 'Not Required') {
         $data = [
             'gibbonPersonIDCoverage' => null,
             'gibbonPersonIDStatus'   => $session->get('gibbonPersonID'),

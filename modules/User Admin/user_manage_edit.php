@@ -550,7 +550,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $studentAgreementOptions = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions');
                 if (!empty($studentAgreementOptions)) {
                     $options = array_map('trim', explode(',', $studentAgreementOptions));
-                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements']));
+                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements'] ?? ''));
 
                     $row = $form->addRow();
                     $row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));

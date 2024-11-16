@@ -638,7 +638,7 @@ class DatabaseFormFactory extends FormFactory
         $default = array_search('Y', array_column($grades, 'isDefault'));
         $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
 
-        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect');
+        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect w-auto');
     }
 
     public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')

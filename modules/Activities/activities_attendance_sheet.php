@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $row = $form->addRow();
         $row->addLabel('numberOfColumns', __('Number of Columns'));
-        $row->addNumber('numberOfColumns')->decimalPlaces(0)->maximum(20)->maxLength(2)->setValue($numberOfColumns)->required();
+        $row->addSelect('numberOfColumns')->fromArray(range(1, 20))->selected($numberOfColumns)->required();
 
     $row = $form->addRow();
         $row->addFooter();

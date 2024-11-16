@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage.
 
     $table->addColumn('formGroup', __('FormGroup'))->context('secondary');
 
-    $table->addColumn('eventNameShort', __('Category'))
+    $table->addColumn('categoryName', __('Category'))
         ->width('8%');
 
     $table->addColumn('choiceList', __('Choices'))

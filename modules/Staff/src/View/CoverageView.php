@@ -73,7 +73,7 @@ class CoverageView
                         : __('Pending'),
                 ];
             } elseif ($coverage['requestType'] == 'Broadcast') {
-                if ($notificationList = json_decode($coverage['notificationList'])) {
+                if ($notificationList = json_decode($coverage['notificationList'] ?? '')) {
                     $notified = $this->userGateway->selectNotificationDetailsByPerson($notificationList)->fetchGroupedUnique();
                     $notified = Format::nameList($notified, 'Staff', false, true, ', ');
                 }

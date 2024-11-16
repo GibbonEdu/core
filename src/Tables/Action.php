@@ -335,6 +335,7 @@ class Action extends WebLink
 
         return Component::render(Action::class, $this->getAttributeArray() + [
             'action'       => $this->name,
+            'modal'        => $this->modal,
             'icon'         => $this->icon,
             'iconClass'    => $this->iconClass,
             'iconLibrary'  => $this->iconLibrary,

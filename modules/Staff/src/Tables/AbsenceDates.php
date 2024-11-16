@@ -92,7 +92,7 @@ class AbsenceDates
 
         if ($includeDetails) {
             $dateLabel = __($absence['type']).' '.__($absence['reason']);
-            $timeLabel = __n('{count} Day', '{count} Days', $absence['value'], ['count' => $absence['value']]);
+            $timeLabel = __n('{count} Day', '{count} Days', (int)$absence['value'], ['count' => $absence['value']]);
         } else {
             $dateLabel = __('Date');
             $timeLabel = __('Time');

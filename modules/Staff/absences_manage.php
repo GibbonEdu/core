@@ -152,6 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         ->format([AbsenceFormats::class, 'typeAndReason']);
 
     $table->addColumn('coverage', __('Coverage'))
+        ->sortable('coverageRequired')
         ->format([AbsenceFormats::class, 'coverageList']);
 
     $table->addColumn('timestampCreator', __('Created'))

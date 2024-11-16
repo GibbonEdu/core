@@ -611,6 +611,8 @@ class Format
      */
     public static function link($url, $text = '', $attr = [])
     {
+        $isExternal = stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url;
+
         if (empty($url)) {
             return $text;
         }
@@ -635,7 +637,7 @@ class Format
             $url = static::$settings['absoluteURL'].substr($url, 1);
         }
 
-        if (stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url) {
+        if ($isExternal) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank" rel="noopener noreferrer">'.$text.'</a>';
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';

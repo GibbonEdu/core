@@ -101,12 +101,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
 
     $table->addColumn('name', __('Name'))
         ->width('30%')
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['surname', 'preferredName'])
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Staff', true, true);
         });
     $table->addColumn('progress', __('Progress'))
         ->width('40%')
+        ->sortable(['progressCount', 'totalCount'])
         ->format(function ($reporting) use (&$page) {
             return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                 'progressCount' => $reporting['progressCount'],
