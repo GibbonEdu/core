@@ -240,17 +240,17 @@ class StudentGateway extends QueryableGateway
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, gibbonPerson.status, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy, gibbonStudentEnrolment.fields
                 FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
-                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
 
         if ($onlyFull) {
             $data['today'] = date('Y-m-d');
             $sql .= " AND gibbonPerson.status='Full'
                 AND (dateStart IS NULL OR dateStart<=:today)
-                AND (dateEnd IS NULL  OR dateEnd>=:today) ";
+                AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                AND gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL";
         }
 
         return $this->db()->select($sql, $data);

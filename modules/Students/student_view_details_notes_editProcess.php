@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         : $noteGateway->selectBy(['gibbonStudentNoteID' => $gibbonStudentNoteID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID')])->fetch();
 
     if (empty($studentNote)) {
-        $URL .= '&return=error2';
+        $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;
     }
