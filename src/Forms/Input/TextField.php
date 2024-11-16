@@ -135,7 +135,7 @@ class TextField extends Input
         $this->setAttribute('x-model', "uniqueValue");
         $this->setAttribute('hx-post', $ajaxURL);
         $this->setAttribute('hx-trigger', 'input delay:300ms');
-        $this->setAttribute('x-on:htmx:after-request.camel', 'console.log($event.detail); unique = $event.detail.xhr.responseText <= 0');
+        $this->setAttribute('x-on:htmx:after-request.camel', 'unique = $event.detail.xhr.responseText <= 0;');
 
         return $this;
     }
