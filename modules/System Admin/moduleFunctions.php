@@ -231,7 +231,7 @@ function getCurrentVersion($guid, $connection2, $version)
     $output .= '});';
     $output .= '</script>';
 
-    $output .= "<div id='status' class='dull' style='max-height: 49px;'>";
+    $output .= "<div id='status' class='dull' style='max-height: 66px;'>";
     $output .= "<div style='width: 100%; text-align: center'>";
     $output .= "<img style='margin: 0px 0 0px 0' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/loading.gif' alt='Loading'/><br/>";
     $output .= __('Checking for Gibbon updates.');
