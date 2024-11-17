@@ -71,24 +71,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
-                $name = $row['name' ];
+                $name = $row['name'] ?? '';
                 $count = $_POST['count'] ?? '';
                 $partialFail = false;
                 $attachmentFail = false;
                 $attainment = $row['attainment'];
-                $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'];
+                $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'] ?? '';
                 if ($enableEffort != 'Y') {
                     $effort = 'N';
                     $gibbonScaleIDEffort = null;
                 }
                 else {
-                    $effort = $row['effort'];
-                    $gibbonScaleIDEffort = $row['gibbonScaleIDEffort'];
+                    $effort = $row['effort'] ?? '';
+                    $gibbonScaleIDEffort = $row['gibbonScaleIDEffort'] ?? '';
                 }
-                $comment = $row['comment'];
-                $uploadedResponse = $row['uploadedResponse'];
-                $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'];
-                $gibbonScaleIDTarget = $row['gibbonScaleIDTarget'];
+                $comment = $row['comment'] ?? '';
+                $uploadedResponse = $row['uploadedResponse'] ?? '';
+                $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'] ?? '';
+                $gibbonScaleIDTarget = $row['gibbonScaleIDTarget'] ?? '';
 
                 for ($i = 1;$i <= $count;++$i) {
                     $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"] ?? '';
@@ -306,10 +306,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 }
                             } else {
                                 // Remove the attachment if it has been deleted, otherwise retain the original value
-                                $attachment = empty($_POST["attachment$i"]) ? null : $entry['response'];
+                                $attachment = empty($_POST["attachment$i"]) ? null : ($entry['response'] ?? '');
                             }
                         } else {
-                            $attachment = $entry['response'];
+                            $attachment = $entry['response'] ?? '';
                         }
 
                         if (empty($entry)) {
