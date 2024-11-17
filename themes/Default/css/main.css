@@ -169,15 +169,6 @@ table td {
     /* border-left: 1px solid #dfdfdf; */
 }
 
-.odd,
-table.colorOddEven tr:not([class]) {
-    /* background-color: #fefefe; */
-}
-.even,
-table.colorOddEven tr:nth-of-type(odd):not([class]) {
-    /* background-color: #f9f9f9; */
-}
-
 table tr:last-child > td {
     border-bottom: 0;
 }
@@ -233,9 +224,7 @@ table.smallIntBorder td {
     border-left: none !important ;
     padding: 0.5rem !important ;
 }
-table.smallIntBorder td:last-child {
-    /* text-align: left; */
-}
+
 tr.break td {
     background-color: #eaebec;
 }
@@ -288,7 +277,7 @@ textarea[disabled] {
     --tw-border-opacity: 0.5;
     --tw-ring-opacity: 0.5;
     --tw-text-opacity: 0.5;
-} */
+}
 
 /* PAGINATION */
 
