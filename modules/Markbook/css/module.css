@@ -84,6 +84,7 @@ th.dataColumn {
     min-width: 140px;
     position: relative;
     vertical-align: top;
+    height: 130px;
 }
 
 .marksColumn .columnActions {
