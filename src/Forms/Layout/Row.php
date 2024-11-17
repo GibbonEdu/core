@@ -179,7 +179,7 @@ class Row
      */
     public function isLastElement($element)
     {
-        return (end($this->formElements) == $element);
+        return (end($this->formElements) === $element);
     }
 
     /**
