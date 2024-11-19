@@ -107,7 +107,7 @@ class Header
 
             $links['preferences'] = [
                 'name' => __('Preferences'),
-                'url'  => Url::fromRoute('preferences'),
+                'url'  => Url::fromRoute('preferences')->withQueryParam('sidebar', 'false'),
             ];
 
             if ($this->session->has('emailLink')) {

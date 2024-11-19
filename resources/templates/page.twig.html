@@ -44,7 +44,7 @@ all stylesheets and scripts with a 'head' context.
     {% endif %}
 </div>
 
-<div id="alerts" class="hidden md:block">
+<div id="alerts" class="hidden lg:block">
     {% for type, alerts in page.alerts %}
         {% for text in alerts %}
             <div class="{{ type }}">{{ text|raw }}</div>
