@@ -283,14 +283,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                                 if (empty($attachment)) {
                                     $partialFail = true;
+                                } elseif (!empty($entry['response'])) {
+                                    @unlink($session->get('absolutePath').'/'.$entry['response']);
                                 }
 
                                 // Create a log of failed uploads
+                                $attachmentPath = $session->get('absolutePath').'/'.$attachment;
                                 $errorMessage = $fileUploader->getLastError();
-                                if (empty($errorMessage) && !file_exists($attachment)) {
+                                if (empty($errorMessage) && !file_exists($attachmentPath)) {
                                     $errorMessage = __('Uploaded file not found in the system.');
                                 }
-                                if (!empty($errorMessage) || filesize($attachment) === 0) {
+                                if (!empty($errorMessage) || filesize($attachmentPath) === 0) {
                                     $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
                                     $logGateway->addLog($session->get('gibbonSchoolYearID'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                         'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
