@@ -23,9 +23,14 @@ v28.0.00
 --------
 
     Headlines
-        Messenger: added new Mailing List feature
+        An exciting front-end refresh powered by HTMX and Alpine.js
+        Updated icons, menus, alerts and navigation elements
+        Improved forms with a quick-save shortcut and better validation
+        A new Activity registration system with a visual Explore Activities page
+        A Mailing List feature in Messenger to collect external email recipients
 
     Changes With Important Notices
+        Additional modules may need updated to v28 compatible versions
 
     Security
         User Admin: applied input and output filtering to all email address fields
@@ -40,9 +45,11 @@ v28.0.00
         System: updates the timetable navigation to use AJAX reloading rather than page refresh
         System: moved the login form to the bottom of the page when viewing subpages and not logged in
         System: added a password strength checker and improved password policy display
+        System: updated all Date fields to use the browser native date picker
         Attendance: added an index to the attendance log to help speed up attendance pages
         Attendance: added an indicator to Student Not Present/Onsite when attendance logs conflict
         Activities: updated Activity Attendance to always count participants for dates in the past
+        Behaviour: added a permission for students to view their own Behaviour Records (off by default)
         Formal Assessment: allowed users with edit access to edit grouped Internal Assessment columns
         Markbook: updated markbook columns to grey out students who joined after the Go Live date
         Messenger: limited the individual message target to a maximum of 50 people
@@ -50,7 +57,7 @@ v28.0.00
         Planner: improved default selected course in Unit Planner sidebar menu
         Planner: added an Add Block to All option in Deploy Working Copy
         Reports: added a Progress by Department report for viewing class criteria progress
-        Rubrics: allowed HTML in Rubrics cells
+        Rubrics: updated Edit Rubric page to allow HTML in rubric cells
         Staff: updated Manage Staff to override required custom fields when manually editing a staff member
         Staff: updated family page on Staff Profile to exclude personal details and addresses
         Staff: added the option to exclude staff from internal coverage or set a coverage priority
@@ -64,6 +71,7 @@ v28.0.00
     Bug Fixes
         Admissions: fixed the search results on the Manage Application page to include json data
         Admissions: fixed missing Previous Schools section in Application Form view and print pages
+        Admissions: fixed custom field validation for second parent in Application Form
         Behaviour: fixed users notified of behaviour records unable to add follow up
         Finance: fixed bulk exporting invoice fees for Pending invoices
         Form Groups: fixed Year Group Summary list when looking at non-current school years
@@ -78,6 +86,8 @@ v28.0.00
 
     Deprecations
         System: replaced the legacy Thickbox library with an AJAX-based modal window
+        System: replaced the legacy LiveValidation library with Alpine.js validation
+        System: replaced the legacy jQuery tooltip with Alpine.js
     
 v27.0.01
 --------
