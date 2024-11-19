@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 } else {
     // Proceed!
     $data = $_POST['data'] ?? [];
-    $order = $_POST['order'];
+    $order = json_decode($_POST['order']) ?? '';
 
     if (empty($order) || empty($data['gibbonFormPageID'])) {
         exit;
@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
         $count = 1;
         foreach ($order as $gibbonFormFieldID) {
+            if (empty($gibbonFormFieldID)) continue;
 
             $updated = $formFieldGateway->update($gibbonFormFieldID, ['sequenceNumber' => $count]);
             $count++;

@@ -83,22 +83,23 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 </style>
 
 <script>
-    $('#formFields .standardForm').sortable({
+    $('#formFields section').sortable({
         placeholder: "drag-placeholder bg-gray-400 shadow-inner",
         handle: ".drag-handle",
+        connectWith: 'section',
         start: function(event, ui) {
-            console.log('sort start');
+            // console.log('sort start');
             $(ui.item).addClass('bg-gray-100').addClass('border');
             $(ui.placeholder).outerHeight($(ui.item).outerHeight());
         },
         update: function(event, ui) {
             $(ui.item).removeClass('bg-gray-100').removeClass('border');
             var elementOrder = new Array();
-            $('.draggableRow', this).each(function() {
+            $('.draggableRow', '#formFields').each(function() {
                 elementOrder.push($(this).data('drag-id'));
             });
 
-            var container = $(this).parent();
+            var container = $('#formFields');
             $.ajax({
                 url: $(container).data('drag-url'),
                 data: {
@@ -107,7 +108,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 },
                 type: 'POST',
                 success: function(data) {
-                    console.log('success '+data);
+                    // console.log('success '+data);
                 }
             });
         },

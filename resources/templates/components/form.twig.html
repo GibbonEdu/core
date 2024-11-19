@@ -70,7 +70,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endfor %}
 
     {% if form.getRows|length > 0 %}
-    <section id="form" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
+    <div id="form" class="w-full grid grid-cols-5 xl:grid-cols-8 gap-2 sm:gap-4 font-sans text-xs text-gray-700  {{ "noIntBorder" in form.getClass ? 'border bg-blue-50 rounded p-4' }}" style="" cellspacing="0" 
         {% if useSaveWarning %}
         x-data="{changed: false, 
             checkInput(formElement) {  
@@ -96,7 +96,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set sectionLoop = loop %}
 
             {% if useSections %}
-            <div class="{{ (rows|first).class|split(' ')|first }} mb-6 pb-4 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? '  ' : ''}}" >
+            <section class="{{ (rows|first).class|split(' ')|first }} mb-6 pb-4 rounded bg-gray-50 border  {{ not sectionLoop.last ? 'border-t-4 focus-within:border-t-blue-500 transition' }} {{ section == 'submit' ? 'w-full sm:sticky -bottom-px -mt-px mb-px z-40' : standardLayout ? '  ' : ''}}" >
             {% endif %}
 
             {% set isformTable = ((rows|first).getElements|first).isInstanceOf('Gibbon\\Forms\\Layout\\Table') %}
@@ -156,7 +156,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endfor %}
 
             {% if useSections %}
-            </div>
+            </section>
             {% endif %}
 
         {% endfor %}
@@ -193,7 +193,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </aside>
         {% endif %}
 
-    </section>
+    </div>
     {% endif %}
 
     {% if postScript %}
