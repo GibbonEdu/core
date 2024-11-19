@@ -447,26 +447,25 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
         //link to other TTs
         if ($result->rowcount() > 1) {
-            $output .= "<table class='noIntBorder mt-2' cellspacing='0' style='width: 100%'>";
-            $output .= '<tr>';
-            $output .= '<td>';
-            $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
+            $output .= "<div class='w-full flex items-center justify-start gap-2 border bg-gray-100 text-xxs rounded mt-2 p-2'>";
+
+            $output .= "<span class='text-gray-700 font-semibold'>".__('Timetable Chooser').'</span>';
             while ($row = $result->fetch()) {
+                $output .= "<div class=''>";
                 $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
                 $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
-                $output .= "<input name='schoolCalendar' value='".($session->get('viewCalendarSchool') == 'Y' ? 'Y' : 'N')."' type='hidden'>";
-                $output .= "<input name='personalCalendar' value='".($session->get('viewCalendarPersonal') == 'Y' ? 'Y' : 'N')."' type='hidden'>";
-                $output .= "<input name='spaceBookingCalendar' value='".($session->get('viewCalendarSpaceBooking') == 'Y' ? 'Y' : 'N')."' type='hidden'>";
+                $output .= "<input name='schoolCalendar' value='".($session->get('viewCalendarSchool') == 'Y' ? 'Y' : '')."' type='hidden'>";
+                $output .= "<input name='personalCalendar' value='".($session->get('viewCalendarPersonal') == 'Y' ? 'Y' : '')."' type='hidden'>";
+                $output .= "<input name='spaceBookingCalendar' value='".($session->get('viewCalendarSpaceBooking') == 'Y' ? 'Y' : '')."' type='hidden'>";
                 $output .= "<input name='fromTT' value='Y' type='hidden'>";
-                $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
+                $output .= "<input class='button rounded-md ".($row['gibbonTTID'] == $gibbonTTID ? 'bg-blue-200 border-blue-600' : '')."' type='submit' value='".$row['name']."'>";
                 $output .= '</form>';
+                $output .= '</div>';
             }
+            $output .= '</div>';
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
-
-            $output .= '</td>';
-            $output .= '</tr>';
-            $output .= '</table>';
 
             if ($gibbonTTID != '') {
                 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php', 'View Master Timetable')) {
@@ -2053,34 +2052,33 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
     //link to other TTs
     if ($result->rowcount() > 1) {
-        $output .= "<table class='noIntBorder mt-2' style='width: 100%'>";
-        $output .= '<tr>';
-        $output .= '<td>';
-        $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
+        $output .= "<div class='w-full flex items-center justify-start gap-2 border bg-gray-100 text-xxs rounded mt-2 p-2'>";
+
+        $output .= "<span class='text-gray-700 font-semibold'>".__('Timetable Chooser').'</span>';
         while ($row = $result->fetch()) {
+            $output .= "<div class=''>";
             $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
             $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".($session->get('viewCalendarSchool') == 'Y' ? 'Y' : '')."' type='hidden'>";
             $output .= "<input name='personalCalendar' value='".($session->get('viewCalendarPersonal') == 'Y' ? 'Y' : '')."' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='".($session->get('viewCalendarSpaceBooking') == 'Y' ? 'Y' : '')."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
-            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
+            $output .= "<input class='button rounded-md ".($row['gibbonTTID'] == $gibbonTTID ? 'bg-blue-200 border-blue-600' : '')."' type='submit' value='".$row['name']."'>";
             $output .= '</form>';
+            $output .= '</div>';
         }
+        $output .= '</div>';
 
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '</table>';
-
         if ($gibbonTTID != '') {
-            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID, 'gibbonSpaceID' => $gibbonSpaceID);
-            $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSpaceID=:gibbonSpaceID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
+            $data = array( 'gibbonTTID' => $gibbonTTID);
+            $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT WHERE gibbonTT.gibbonTTID=:gibbonTTID";
 
             $ttResult = $connection2->prepare($sql);
             $ttResult->execute($data);
+
             if ($ttResult->rowCount() > 0) {
                 $result = &$ttResult;
             }
