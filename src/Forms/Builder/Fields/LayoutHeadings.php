@@ -50,6 +50,11 @@ class LayoutHeadings extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
         $row = $form->addRow();
+
+        // TODO: Fix this. Hack to make logged-in parent fields work :(
+        if ($formBuilder->hasConfig('gibbonPersonID') && $field['fieldName'] == 'headingParentGuardian1PersonalData') {
+            $field['options'] = '';
+        }
         
         switch ($field['fieldType']) {
             case 'heading':
