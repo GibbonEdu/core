@@ -392,9 +392,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $formData = $container->get(FormSessionStorage::class);
             $formData->load('plannerAdd');
 
-            if ($viewBy == 'class') {
-                $formData->addData(['courseClassName' => $extra ?? '']);
-            }
             if (!empty($nextDate)) {
                 $formData->addData(['date' => $nextDate, 'timeStart' => $nextTimeStart, 'timeEnd' => $nextTimeEnd]);
             }
