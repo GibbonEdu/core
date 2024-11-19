@@ -116,7 +116,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      */
     public function getOutput()
     {
-        $this->setValidation()->enableValidation();
+        $this->setValidation()->enableValidation($this);
 
         return $this->prepended.$this->getElement().$this->appended;
     }
@@ -130,12 +130,15 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         return $this;
     }
     
-     /**
-     * Enabled validation by adding attributes to this input.
+    /**
+     * Enables validation by adding attributes to this input.
+     *
+     * @param Input $element
+     * @return void
      */
-    public function enableValidation()
+    public function enableValidation(Input $element)
     {
-        if (!$this->isValidatable()) {
+        if (!$element->isValidatable()) {
             return;
         }
 
@@ -143,12 +146,12 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         $message = $expression = '';
         $failureMessage = null;
 
-        if ($this->getRequired() == true) {
+        if ($element->getRequired() == true) {
             $validations[] = 'required';
-            $message = $this instanceof Select ? __('Please select an option') : __('This field is required');
+            $message = $element instanceof Select ? __('Please select an option') : __('This field is required');
         }
 
-        foreach ($this->validation as $valid) {
+        foreach ($element->validation as $valid) {
             $type = !empty($valid['type']) ? trim(strtolower(strrchr($valid['type'], '.')), '. ') : '';
             $params = $valid['params'] ?? [];
             $failureMessage = $params['failureMessage'] ?? $failureMessage;
@@ -156,12 +159,12 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
             switch ($type) {
                 case 'presence':
                     $validations[] = 'required';
-                    $message = $this instanceof Select ? __('Please select an option') : __('This field is required');
+                    $message = $element instanceof Select ? __('Please select an option') : __('This field is required');
                     break;
                 case 'format':
                     $pattern = $params['pattern'] ?? '';
                     if (!empty($pattern)) {
-                        $this->setAttribute('pattern', trim($pattern, ' \/'));
+                        $element->setAttribute('pattern', trim($pattern, ' \/'));
                     }
                     break;
                 case 'inclusion':
@@ -218,10 +221,10 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
 
         $message = $failureMessage ?? $message;
 
-        if (!empty($this->validation) || !empty($validations)) {
+        if (!empty($element->validation) || !empty($validations)) {
             $validations = !empty($validations)? '.'.implode('.', array_unique($validations)) : '';
-            $this->setAttribute('x-validate' . $validations, $expression);
-            $this->setAttribute('data-error-msg', $message);
+            $element->setAttribute('x-validate' . $validations, $expression);
+            $element->setAttribute('data-error-msg', $message);
         }
     }
 

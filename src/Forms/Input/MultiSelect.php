@@ -217,14 +217,6 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         return $this->destinationSelect->addValidation($type, $params);
     }
 
-    /**
-     * Get the combined validation output from the right-hand select.
-     */
-    public function enableValidation()
-    {
-        return $this->destinationSelect->enableValidation();
-    }
-
     public function getClass() {
         return '';
     }
