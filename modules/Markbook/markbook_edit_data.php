@@ -475,17 +475,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $col->addContent($rubricLink->getOutput())->setClass('inline-block ml-1');
                         }
 
-                        $col = $row->onlyIf($hasAttainment)->addColumn();
-                        $effort = $col->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
-                            ->setClass('w-auto gradeSelect inline-block')
-                            ->selected($student['effortValue']);
+                        if ($hasEffort) {
+                            $col = $row->onlyIf($hasAttainment)->addColumn();
+                            $effort = $col->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
+                                ->setClass('w-auto gradeSelect inline-block')
+                                ->selected($student['effortValue']);
 
-                        if ($hasEffort && $hasEffortRubric) {
-                            $rubricLink = clone $rubricLinkSource;
-                            $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
-                            $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDEffort']);
-                            $rubricLink->addParam('type', 'effort');
-                            $effort->append($rubricLink->getOutput());
+                            if ($hasEffort && $hasEffortRubric) {
+                                $rubricLink = clone $rubricLinkSource;
+                                $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
+                                $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDEffort']);
+                                $rubricLink->addParam('type', 'effort');
+                                $effort->append($rubricLink->getOutput());
+                            }
                         }
 
                         $col = $row->onlyIf($hasComment || $hasUpload)->addColumn()->addClass('stacked');

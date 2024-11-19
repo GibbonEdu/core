@@ -177,7 +177,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     echo "<div class='linkTop flex justify-between items-center mt-4'>";
     
     // Print table header info
-    echo '<p class="pr-4 text-xs text-gray-600">';
+    echo '<p class="pr-4 text-xs text-gray-600 text-left">';
         if (!empty($teacherList)) {
             echo '<span class="text-sm font-semibold text-gray-800">'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</span>.<br/>';
         }
