@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = $_POST['order'];
+    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+    $order = $_POST['order'] ?? [];
 
-    if (empty($order) || empty($data['gibbonSchoolYearID'])) {
+    if (empty($order) || empty($gibbonSchoolYearID)) {
         exit;
     } else {
         $reportingCycleGateway = $container->get(ReportingCycleGateway::class);

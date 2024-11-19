@@ -29,8 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = $_POST['order'];
+    $order = $_POST['order'] ?? [];
 
     if (empty($order)) {
         exit;

@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = $_POST['order'];
+    $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
+    $order = $_POST['order'] ?? [];
 
-    if (empty($order) || empty($data['gibbonReportingCycleID'])) {
+    if (empty($order) || empty($gibbonReportingCycleID)) {
         exit;
     } else {
         $reportingScopeGateway = $container->get(ReportingScopeGateway::class);

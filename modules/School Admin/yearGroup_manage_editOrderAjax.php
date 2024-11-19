@@ -29,7 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
     $order = $_POST['order'] ?? [];
 
     if (empty($order)) {

@@ -29,16 +29,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
+    $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
     $order = $_POST['order'];
 
-    if (empty($order) || empty($data['gibbonReportTemplateID'])) {
+    if (empty($order) || empty($gibbonReportTemplateID)) {
         exit;
     } else {
         $templateSectionGateway = $container->get(ReportTemplateSectionGateway::class);
 
         $count = 1;
         foreach ($order as $gibbonReportTemplateSectionID) {
+            if (empty($gibbonReportTemplateSectionID)) continue;
 
             $updated = $templateSectionGateway->update($gibbonReportTemplateSectionID, ['sequenceNumber' => $count]);
             $count++;

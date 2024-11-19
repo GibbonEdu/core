@@ -337,8 +337,11 @@ htmx.onLoad(function (content) {
         });
 
         // Re-enable sorting on the `htmx:afterRequest` event
-        content.addEventListener("htmx:afterRequest", function () {
-            sortableInstance.option("disabled", false);
+        content.addEventListener("htmx:afterRequest", function (event) {
+            var sortableInstance = Sortable.get(event.target.querySelector('tbody'));
+            if (sortableInstance != undefined) {
+                sortableInstance.option("disabled", false);
+            }
         });
     }
 });

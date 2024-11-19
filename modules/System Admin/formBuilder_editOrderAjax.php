@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = $_POST['order'];
+    $gibbonFormID = $_POST['gibbonFormID'] ?? '';
+    $order = $_POST['order'] ?? [];
 
-    if (empty($order) || empty($data['gibbonFormID'])) {
+    if (empty($order) || empty($gibbonFormID)) {
         exit;
     } else {
         $formPageGateway = $container->get(FormPageGateway::class);
