@@ -886,3 +886,10 @@ ALTER TABLE `gibbonStaff` ADD `coverageExclude` ENUM('N','Y') NOT NULL DEFAULT '
 ALTER TABLE `gibbonStaff` ADD `coveragePriority` INT(1) DEFAULT 0 AFTER `coverageExclude`;end
 
 ";
+
+
+//v29.0.00
+++$count;
+$sql[$count][0] = '29.0.00';
+$sql[$count][1] = "
+";
