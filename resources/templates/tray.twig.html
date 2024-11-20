@@ -31,11 +31,9 @@ Main Menu: Displays the top-level categories and active modules.
         </a>
 
         <script type="text/javascript">
-            htmx.onLoad(function (content) {
-                setInterval(function() {
-                    refreshNotifications();
-                }, {{ statusTray.notifications.interval }});
-            });
+            setInterval(function() {
+                refreshNotifications();
+            }, {{ statusTray.notifications.interval }});
         </script>
     </div>
 {% endif %}
