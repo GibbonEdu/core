@@ -32,6 +32,8 @@ v29.0.00
         Staff: updated the Active filter for job openings to include the open date
     
     Bug Fixes
+        Behaviour: fixed behaviour fields hidden on Edit Behaviour Record screen
+        Behaviour: fixed users with Manage Behaviour Records_my unable to add follow up comments
 
 v28.0.00
 --------

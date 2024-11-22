@@ -2462,10 +2462,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $highestActionBehaviour = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_view.php', $connection2);
                             
                             //Print assessments
-                            if ($highestActionBehaviour == 'View Behaviour Records_all') {
-                                echo getBehaviourRecord($container, $gibbonPersonID);
-                            } else {
+                            if ($highestActionBehaviour == 'View Behaviour Records_my') {
                                 echo getBehaviourRecord($container, $gibbonPersonID, $session->get('gibbonPersonID'));
+                            } else {
+                                echo getBehaviourRecord($container, $gibbonPersonID);
                             }
                         }
                     }
