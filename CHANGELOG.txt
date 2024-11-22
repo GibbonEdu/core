@@ -29,6 +29,7 @@ v29.0.00
     Security
 
     Tweaks & Additions
+        Staff: updated the Active filter for job openings to include the open date
     
     Bug Fixes
 
