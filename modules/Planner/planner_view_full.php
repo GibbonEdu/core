@@ -598,14 +598,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														</td>
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
+                                                            $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 															if ($rowVersion['type'] == 'File') {
-																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
 															} else {
                                                                 if (strlen($rowVersion['location'])<=40) {
-                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
                                                                 }
                                                                 else {
-                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 50).'...'.'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".substr($rowVersion['location'], 0, 50).'...'.'</a>';
                                                                 }
 															}
 														?>
@@ -753,14 +754,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														</td>
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
+                                                            $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 															if ($rowVersion['type'] == 'File') {
-																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
 															} else {
                                                                 if (strlen($rowVersion['location'])<=40) {
-                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
                                                                 }
                                                                 else {
-                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 40).'...'.'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".substr($rowVersion['location'], 0, 40).'...'.'</a>';
                                                                 }
 															}
                                                             ?>
@@ -900,8 +902,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														if (strlen($locationPrint) > 15) {
 															$locationPrint = substr($locationPrint, 0, 15).'...';
 														}
+                                                        $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 														if ($rowVersion['type'] == 'File') {
-															echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."'>".$locationPrint.'</a>';
+															echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$locationPrint.'</a>';
 														} else {
 															echo "<a target='_blank' href='".$rowVersion['location']."'>".$locationPrint.'</a>';
 														}
