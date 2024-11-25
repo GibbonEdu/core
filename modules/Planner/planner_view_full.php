@@ -598,8 +598,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														</td>
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
-                                                            $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 															if ($rowVersion['type'] == 'File') {
+                                                                $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
 															} else {
                                                                 if (strlen($rowVersion['location'])<=40) {
@@ -754,8 +754,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														</td>
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
-                                                            $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 															if ($rowVersion['type'] == 'File') {
+                                                                $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
 															} else {
                                                                 if (strlen($rowVersion['location'])<=40) {
@@ -902,8 +902,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														if (strlen($locationPrint) > 15) {
 															$locationPrint = substr($locationPrint, 0, 15).'...';
 														}
-                                                        $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 														if ($rowVersion['type'] == 'File') {
+                                                            $rowVersion['location'] = str_replace('?', '%3F', $rowVersion['location'] ?? '');
 															echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$locationPrint.'</a>';
 														} else {
 															echo "<a target='_blank' href='".$rowVersion['location']."'>".$locationPrint.'</a>';
