@@ -635,6 +635,7 @@ class Format
         
         if (substr($url, 0, 2) == './') {
             $url = static::$settings['absoluteURL'].substr($url, 1);
+            $isExternal = false;
         }
 
         if ($isExternal) {
