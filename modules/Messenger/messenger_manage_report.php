@@ -62,15 +62,21 @@ else {
             $page->return->addReturns(['error2' => 'Some elements of your request failed, but others were successful.']);
 
             // Create a reusable confirmation closure
-            $confirmationIndicator = function($recipient, $emailReceipt = false)  {
+            $confirmationIndicator = function($recipient, $emailReceipt = false, $confirmationRequired = true)  {
                 if ($emailReceipt == 'N') return '';
                 if (empty($recipient['key'])) return '';
-
+                
+                $title = Format::yesNo($recipient['confirmed']);
                 $icon = $recipient['confirmed'] == 'Y'
                     ? icon('solid', 'check', 'size-6 mr-2 fill-current text-green-600')   
                     : icon('solid', 'cross', 'size-6 mr-2 fill-current text-red-700'); 
 
-                return Format::tooltip($icon, Format::yesNo($recipient['confirmed']), 'inline-block align-middle');
+                if (!$confirmationRequired && $recipient['confirmed'] != 'Y') {
+                    $icon = icon('solid', 'cross', 'size-6 mr-2 fill-current text-gray-700 opacity-50'); 
+                    $title = __('Not Required');
+                }
+
+                return Format::tooltip($icon, $title, 'inline-block align-middle');
             };
 
             $sender = false;
@@ -176,12 +182,13 @@ else {
             if ($result->rowCount() < 1) {
                 // echo $page->getBlankSlate();
             } else {
-                //Store receipt for this message data in an array
+                $confirmationRequired = [];
 
-                    $dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
-                    $sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, sent, `key`, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
-                    $resultReceipts = $connection2->prepare($sqlReceipts);
-                    $resultReceipts->execute($dataReceipts);
+                //Store receipt for this message data in an array
+                $dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
+                $sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, sent, `key`, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
+                $resultReceipts = $connection2->prepare($sqlReceipts);
+                $resultReceipts->execute($dataReceipts);
                 $receipts = $resultReceipts->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
                 $form = BulkActionForm::create('resendByRecipient', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
@@ -250,33 +257,30 @@ else {
                         $parent2Name = Format::name('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
 
                         //Tests for row completion, to set colour
-                        $studentReceived = isset($receipts[$recipient['gibbonPersonID']]);
-                        if ($studentReceived) {
-                            $studentComplete = ($receipts[$recipient['gibbonPersonID']]['confirmed'] == "Y");
-                        } else {
-                            $studentComplete = false;
-                        }
+                        $studentComplete = isset($receipts[$recipient['gibbonPersonID']]) && $receipts[$recipient['gibbonPersonID']]['confirmed'] == "Y";
+                        $parent1Complete = (isset($receipts[$recipient['parent1gibbonPersonID']]) && $receipts[$recipient['parent1gibbonPersonID']]['confirmed'] == "Y");
+                        $parent2Complete = (isset($receipts[$recipient['parent2gibbonPersonID']]) && $receipts[$recipient['parent2gibbonPersonID']]['confirmed'] == "Y");
+                            
+                        $bothParentsComplete = $parent1Complete && $parent2Complete;
+                        $anyParentComplete = $parent1Complete || $parent2Complete;
 
-                        $parentReceived = (isset($receipts[$recipient['parent1gibbonPersonID']]) || isset($receipts[$recipient['parent2gibbonPersonID']]));
-                        if ($parentReceived) {
-                            $parentComplete = ((isset($receipts[$recipient['parent1gibbonPersonID']]) && $receipts[$recipient['parent1gibbonPersonID']]['confirmed'] == "Y") || (isset($receipts[$recipient['parent2gibbonPersonID']]) && $receipts[$recipient['parent2gibbonPersonID']]['confirmed'] == "Y"));
-                            $bothParentsComplete = ((isset($receipts[$recipient['parent1gibbonPersonID']]) && $receipts[$recipient['parent1gibbonPersonID']]['confirmed'] == "Y") && (!isset($receipts[$recipient['parent2gibbonPersonID']]) || $receipts[$recipient['parent2gibbonPersonID']]['confirmed'] == "Y"));
-                        }
-                        else {
-                            $parentComplete = false;
-                            $bothParentsComplete = false;
-                        }
+
                         $class = $values['emailReceipt'] == 'Y' ? 'error' : '';
                         
-                        if ($confirmationMode == 'All' && $studentComplete && $parentComplete) {
+                        if ($confirmationMode == 'All' && $studentComplete && $anyParentComplete) {
                             $class = 'current';
-                        } elseif ($confirmationMode == 'One' && $parentComplete) {
+                        } elseif ($confirmationMode == 'One' && $anyParentComplete) {
                             $class = 'current';
                         } elseif ($confirmationMode == 'Both' && $bothParentsComplete) {
                             $class = 'current';
-                        } elseif ($confirmationMode == 'Any' && ($studentComplete || $parentComplete)) {
+                        } elseif ($confirmationMode == 'Any' && ($studentComplete || $anyParentComplete)) {
                             $class = 'current';
                         }
+
+                        // Store confirmation details for consistency
+                        $confirmationRequired[$recipient['gibbonPersonID']] = ($confirmationMode == 'Both' || $confirmationMode == 'Any') && !($studentComplete || $anyParentComplete) || ($confirmationMode == 'All' && !($studentComplete && $anyParentComplete));
+                        $confirmationRequired[$recipient['parent1gibbonPersonID']] = (($confirmationMode == 'All' || $confirmationMode == 'One') && !$anyParentComplete) || ($confirmationMode == 'Both' && !$bothParentsComplete) || ($confirmationMode == 'Any' && !($studentComplete || $anyParentComplete));
+                        $confirmationRequired[$recipient['parent2gibbonPersonID']] = (($confirmationMode == 'All' || $confirmationMode == 'One') && !$anyParentComplete) || ($confirmationMode == 'Both' && !$bothParentsComplete) || ($confirmationMode == 'Any' && !($studentComplete || $anyParentComplete));
 
                         $row = $table->addRow()->setClass($class);
                             $row->addContent($countTotal);
@@ -284,7 +288,7 @@ else {
 
                             $studentReceipt = isset($receipts[$recipient['gibbonPersonID']])? $receipts[$recipient['gibbonPersonID']] : null;
                             $col = $row->addColumn()->setClass('')->addClass(!empty($studentReceipt) && $studentReceipt['confirmed'] != 'Y' && $studentReceipt['sent'] != 'Y' ? 'bg-orange-300' : '');
-                                $col->addContent($confirmationIndicator($studentReceipt, $values['emailReceipt']));
+                                $col->addContent($confirmationIndicator($studentReceipt, $values['emailReceipt'], $confirmationRequired[$recipient['gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($studentReceipt) && ($studentReceipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                     ->setValue($studentReceipt['gibbonMessengerReceiptID'] ?? '')
@@ -294,7 +298,7 @@ else {
 
                             $parent1Receipt = isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null;
                             $col = $row->addColumn()->setClass('')->addClass(!empty($parent1Receipt) && $parent1Receipt['confirmed'] != 'Y' && $parent1Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
-                                $col->addContent($confirmationIndicator($parent1Receipt, $values['emailReceipt']));
+                                $col->addContent($confirmationIndicator($parent1Receipt, $values['emailReceipt'], $confirmationRequired[$recipient['parent1gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($parent1Receipt) && ($parent1Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                     ->setValue($parent1Receipt['gibbonMessengerReceiptID'] ?? '')
@@ -304,7 +308,7 @@ else {
 
                             $parent2Receipt = isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null;
                             $col = $row->addColumn()->setClass('')->addClass(!empty($parent2Receipt) && $parent2Receipt['confirmed'] != 'Y' && $parent2Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
-                                $col->addContent($confirmationIndicator($parent2Receipt, $values['emailReceipt']));
+                                $col->addContent($confirmationIndicator($parent2Receipt, $values['emailReceipt'], $confirmationRequired[$recipient['parent2gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($parent2Receipt) && ($parent2Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                     ->setValue($parent2Receipt['gibbonMessengerReceiptID'] ?? '')
@@ -375,17 +379,18 @@ else {
                         $row->addContent($recipient['contactType']);
                         $row->addContent($recipient['contactDetail']);
                         $row->addContent($recipient['sent'] == 'Y' ? __('Sent') : __('Undelivered') );
-                        $row->addContent($confirmationIndicator($recipient));
+                        $row->addContent($confirmationIndicator($recipient, false, $confirmationRequired[$recipient['gibbonPersonID']] ?? true));
                         $row->addContent(!empty($recipient['confirmedTimestamp']) ? Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5) : '');
 
                         if ($sender == true && $recipient['contactType'] == 'Email') {
-                            $row->onlyIf($recipient['confirmed'] == 'N' || $values['emailReceipt'] == 'N')
+                            $required = $confirmationRequired[$recipient['gibbonPersonID']] ?? true;
+                            $row->onlyIf($required)
                                 ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                 ->setValue($recipient['gibbonMessengerReceiptID'])
                                 ->addClass('bulkCheckbox')
                                 ->alignCenter();
 
-                            $row->onlyIf($recipient['confirmed'] != 'N' && $values['emailReceipt'] == 'Y')->addContent();
+                            $row->onlyIf(!$required)->addContent();
                         } else {
                             $row->addContent();
                         }
