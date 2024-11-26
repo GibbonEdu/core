@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_cate
     exit;
 } else {
     // Proceed!
-    $order = json_decode($_POST['order']);
+    $order = $_POST['order'] ?? [];
 
     if (empty($order)) {
         exit;
