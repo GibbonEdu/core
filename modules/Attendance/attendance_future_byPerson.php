@@ -413,7 +413,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     $row = $table->addRow();
                     $row->addCheckbox("courses[{$gibbonPersonIDList[0]}][]")
                         ->description($logName)
-                        ->setValue($class['gibbonCourseClassID'])
+                        ->setValue($class['gibbonCourseClassID'].'-'.$class['gibbonTTDayRowClassID'])
                         ->inline()
                         ->setClass('')
                         ->checked($checked ? $class['gibbonCourseClassID'] : '');
