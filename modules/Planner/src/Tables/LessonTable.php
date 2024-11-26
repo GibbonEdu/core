@@ -168,7 +168,7 @@ class LessonTable
             ->addParam('search', $gibbonPersonID)
             ->addParam('viewBy', $viewBy == 'date' ? 'date' : 'class')
             ->format(function ($values, $actions) use ($editAccess, $highestAction, $viewBy) {
-                $fullEditAccess = $editAccess && ($highestAction == 'Lesson Planner_viewEditAllClasses' || $values['isTeacher']);
+                $fullEditAccess = $editAccess && ($highestAction == 'Lesson Planner_viewEditAllClasses' || !empty($values['isTeacher']));
 
                 if (!empty($values['closure'])) return;
 
