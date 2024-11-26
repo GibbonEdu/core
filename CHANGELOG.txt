@@ -34,6 +34,7 @@ v29.0.00
     Bug Fixes
         Behaviour: fixed behaviour fields hidden on Edit Behaviour Record screen
         Behaviour: fixed users with Manage Behaviour Records_my unable to add follow up comments
+        Planner: fixed planner actions to return to Year Overview page if they originated there
         Timetable: fixed Date Unenrolled to be cleared when re-enrolling students in the same class
 
 v28.0.00
