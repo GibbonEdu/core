@@ -31,6 +31,7 @@ v29.0.00
     Tweaks & Additions
         Messenger: updated the check-all option in Send Report to only select required recipients
         Staff: updated the Active filter for job openings to include the open date
+        System Admin: added the option to define custom API scopes in Third Party Settings > Edit SSO Settings
     
     Bug Fixes
         Behaviour: fixed behaviour fields hidden on Edit Behaviour Record screen

@@ -153,6 +153,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $row->addLabel('usernameAttribute', __('Username attribute'))
                 ->description(__('Name of the attribute containing usernames in the OAuth service.'));
             $row->addTextField('usernameAttribute')->required();                       
+    } else {
+        $row = $form->addRow()->addClass('settingActive');
+        $row->addLabel('scopes', __('Custom API Scopes'))->description(__('Leave this blank unless you have specific API scopes you need to set.'));
+        $row->addTextField('scopes');
     }
 
     $row = $form->addRow();
