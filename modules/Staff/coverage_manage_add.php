@@ -88,13 +88,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
     $row = $form->addRow()->addClass('timeOptions');
         $row->addLabel('time', __('Time'));
-        $col = $row->addColumn('time')->addClass('right inline');
+        $col = $row->addColumn('time')->addClass('right inline gap-2');
         $col->addTime('timeStart')
-            ->setClass('shortWidth')
+            ->setClass('flex-1')
             ->isRequired();
         $col->addTime('timeEnd')
             ->chainedTo('timeStart')
-            ->setClass('shortWidth')
+            ->setClass('flex-1')
             ->isRequired();
 
     $row = $form->addRow();
