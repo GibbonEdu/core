@@ -314,6 +314,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
         }
 
         if ($submission['type'] == 'File') {
+            $submission['location'] = str_replace('?', '%3F', $submission['location'] ?? '');
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$session->get('absoluteURL').'/'.$submission['location']."'>$linkText</a></span>";
         } elseif ($submission['type'] == 'Link') {
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
