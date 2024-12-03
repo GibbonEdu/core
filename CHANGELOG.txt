@@ -39,6 +39,7 @@ v29.0.00
         System: fixed string format errors in Spanish and Hebrew translation files
         Behaviour: fixed behaviour fields hidden on Edit Behaviour Record screen
         Behaviour: fixed users with Manage Behaviour Records_my unable to add follow up comments
+        Messenger: fixed Submit button missing from New Message when only posting to message wall
         Messenger: fixed the PHP 7.4 syntax error in MessageTargets when sending a new message
         Messenger: fixed the appearance of the Message Wall widget in the sidebar, removed auto scrolling
         Planner: fixed planner actions to return to Year Overview page if they originated there

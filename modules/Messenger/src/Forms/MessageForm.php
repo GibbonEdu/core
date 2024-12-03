@@ -762,7 +762,7 @@ class MessageForm extends Form
                 $row->addSubmit();
         } else {
             // Preflight!
-            $form->addRow()->addClass('email')->addHeading('Preflight', __('Preflight'))->append(__("Before sending your message you'll have the option to preview the message as well as view a list of the recipients, based on your targets selected above. You can also choose to save your message as a draft and return to it later."));
+            $form->addRow()->addHeading('Preflight', __('Preflight'))->append(__("Before sending your message you'll have the option to preview the message as well as view a list of the recipients, based on your targets selected above. You can also choose to save your message as a draft and return to it later."))->addClass('email');
 
             $row = $form->addRow()->addClass('email');
                 $row->addCheckbox('sendTestEmail')->description(__('Send a test copy to {email}', ['email' => '<u>'.$this->session->get('email').'</u>']))->setValue('Y');
