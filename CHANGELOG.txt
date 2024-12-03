@@ -41,6 +41,7 @@ v29.0.00
         Planner: fixed the Add action missing for teachers on empty dates in the Year Overview
         Reports: fixed status message visual glitch on Write Reports page
         Timetable: fixed Date Unenrolled to be cleared when re-enrolling students in the same class
+        User Admin: fixed email validation on the Student Default Email setting
 
 v28.0.00
 --------
