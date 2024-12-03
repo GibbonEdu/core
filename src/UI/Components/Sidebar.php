@@ -420,8 +420,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                                 $messageBody = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message['body']);
                                 $messageBody = strip_tags($messageBody);
-                                echo strlen($messageBody) > 40
-                                    ? mb_substr($messageBody, 0, 40).'...'
+                                echo strlen($messageBody) > 46
+                                    ? mb_substr($messageBody, 0, 46).'...'
                                     : $messageBody;
 
                                 echo '</div>';
