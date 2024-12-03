@@ -2288,7 +2288,7 @@ class MessageTargets
      * @param [type] $unsubscribeKey
      * @return array
      */
-    private function reportAdd($emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null, $unsubscribeKey = null, )
+    private function reportAdd($emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null, $unsubscribeKey = null)
     {
         if ($contactDetail != '' AND is_null($contactDetail) == false) {
             $count = 0;
