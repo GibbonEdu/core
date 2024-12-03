@@ -374,8 +374,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             }
                             return $group;
                         }, []);
+                        shuffle($unpinnedMessages);
 
-                        echo '<div class="column-no-break overflow-x-scroll max-w-xs" >';
+                        echo '<div class="column-no-break overflow-x-hidden md:max-w-xs" >';
                         echo '<h2>';
                         echo __('Message Wall');
                         echo '</h2>';
@@ -393,19 +394,42 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                             } elseif (count($unpinnedMessages) == 2) {
                                 $height = 197;
                             }
-                            echo "<table id='messageWallWidget' style='height: ".$height."px;' class='w-full border bg-gray-50 p-1'>";
+                            echo "<div class='rounded overflow-hidden border'>";
+                            echo "<div id='messageWallWidget' style='height: ".$height."px;' class='w-full overflow-y-auto  bg-gray-50 rounded leading-relaxed'>";
                             //Content added by JS
                             $rand = rand(0, count($unpinnedMessages));
                             $total = count($unpinnedMessages);
-                            $order = '';
+
                             $i = 0;
                             foreach ($unpinnedMessages as $message) {
                                 $pos = ($rand + $i) % $total;
-                                $order .= "$pos, ";
 
                                 //COLOR ROW BY STATUS!
-                                echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
-                                echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
+                                echo "<div id='messageWall".$pos."' class='flex justify-between items-start p-2 sm:p-3 ".($i+1 < $total ? 'border-b border-gray-300' : '')."'>";
+                                echo "<div class=''>";
+                                
+                                //Message number
+                                // echo "<div class='mb-0.5 uppercase text-gray-500' style='font-size: 8px'>".__('Message').' '.($pos + 1).'</div>';
+                                
+                                //Title
+                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment(strval($message['gibbonMessengerID']));
+                                echo "<a class='block text-xs font-bold uppercase mb-1' href='$URL'>".Format::truncate($message['subject'], 20).'</a>';
+
+                                //Text
+                                echo "<div class='text-xs text-gray-700'>";
+
+                                $messageBody = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message['body']);
+                                $messageBody = strip_tags($messageBody);
+                                echo strlen($messageBody) > 40
+                                    ? mb_substr($messageBody, 0, 40).'...'
+                                    : $messageBody;
+
+                                echo '</div>';
+
+                                echo '</div>';
+
+                                echo "<div class=''>";
+
                                 //Image
                                 $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
                                 if (empty($message['image_240']) or (!empty($message['photo']) and !file_exists($this->session->get('absolutePath').'/'.$message['photo']))) {
@@ -413,92 +437,21 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 } else {
                                     echo "<img $style src='".$this->session->get('absoluteURL').'/'.$message['image_240']."'/>";
                                 }
-
-                                //Message number
-                                echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
-
-                                //Title
-                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment(strval($message['gibbonMessengerID']));
-                                if (strlen($message['subject']) <= 16) {
-                                    echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
-                                } else {
-                                    echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".mb_substr($message['subject'], 0, 16).'...</a><br/>';
-                                }
-
-                                //Text
-                                echo "<div style='margin-top: 5px'>";
-                                $message = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message);
-                                if (strlen(strip_tags($message['body'])) <= 40) {
-                                    echo strip_tags($message['body']).'<br/>';
-                                } else {
-                                    echo mb_substr(strip_tags($message['body']), 0, 40).'...<br/>';
-                                }
                                 echo '</div>';
-                                echo '</td>';
-                                echo '</tr>';
-                                echo "
-                                <script type=\"text/javascript\">
-                                    $(document).ready(function(){
-                                        $(\"#messageWall$pos\").hide();
-                                    });
-                                </script>";
+
+                                echo '</div>';
 
                                 $i++;
                             }
-                            echo '</table>';
-                            $order = substr($order, 0, strlen($order) - 2);
-                            if ($order == '0' || $order == '0, 1' || $order == '1, 0') {
-                                $order = '0,1,2';
-                            }
-                            echo '
-                                <script type="text/javascript">
-                                    htmx.onLoad(function(){
-                                        var order=['.$order."];
-                                        var interval = 1;
-
-                                            for(var i=0; i<order.length; i++) {
-                                                var tRow = $(\"#messageWall\".concat(order[i].toString()));
-                                                if(i<3) {
-                                                    tRow.show();
-                                                }
-                                                else {
-                                                    tRow.hide();
-                                                }
-                                            }
-                                            $(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
-                                            $(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
-                                            $(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
-
-                                        setInterval(function() {
-                                            if(order.length > 3) {
-                                                $(\"#messageWall\".concat(order[0].toString())).hide();
-                                                var fRow = $(\"#messageWall\".concat(order[0].toString()));
-                                                var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
-                                                fRow.insertAfter(lRow);
-                                                order.push(order.shift());
-                                                $(\"#messageWall\".concat(order[2].toString())).show();
-
-                                                if(interval%2===0) {
-                                                    $(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
-                                                    $(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
-                                                    $(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
-                                                }
-                                                else {
-                                                    $(\"#messageWall\".concat(order[0].toString())).attr('class', 'odd');
-                                                    $(\"#messageWall\".concat(order[1].toString())).attr('class', 'even');
-                                                    $(\"#messageWall\".concat(order[2].toString())).attr('class', 'odd');
-                                                }
-
-                                                interval++;
-                                            }
-                                        }, 8000);
-                                    });
-                                </script>";
+                            echo '</div>';
                         }
+                        echo '</div>';
+
                         echo "<p style='padding-top: 5px; text-align: right'>";
                         echo "<a href='".Url::fromModuleRoute('Messenger', 'messageWall_view')."'>".__('View Message Wall').'</a>';
                         echo '</p>';
                         echo '</div>';
+                        
                     }
                 }
             }
