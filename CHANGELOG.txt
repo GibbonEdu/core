@@ -46,6 +46,7 @@ v29.0.00
         Planner: fixed planner actions to return to Year Overview page if they originated there
         Planner: fixed the Add action missing for teachers on empty dates in the Year Overview
         Reports: fixed status message visual glitch on Write Reports page
+        Staff: fixed All Staff setting not persisting on the Substitute Availability weekly view
         Timetable: fixed Date Unenrolled to be cleared when re-enrolling students in the same class
         User Admin: fixed email validation on the Student Default Email setting
 
