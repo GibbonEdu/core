@@ -31,6 +31,7 @@ v29.0.00
     Tweaks & Additions
         System: added Chilean Peso (CLP $) as an available currency
         Attendance: prevent setting partial future absence if a full-day absence already exists
+        Behaviour: added level and descriptor details to behaviour notification events
         Messenger: updated the check-all option in Send Report to only select required recipients
         Staff: updated the Active filter for job openings to include the open date
         System Admin: added the option to define custom API scopes in Third Party Settings > Edit SSO Settings
