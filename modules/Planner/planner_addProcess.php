@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     exit();
                 } else {
                     // Clear autosave
-                    $container->get(FormSessionStorage::class)->clear('plannerAdd');
+                    $container->get(FormSessionStorage::class)->clear('plannerAdd'.$gibbonCourseClassID);
 
                     //Jump to Markbook?
                     $markbook = $_POST['markbook'] ?? '';

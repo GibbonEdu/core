@@ -390,14 +390,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');
 
             $formData = $container->get(FormSessionStorage::class);
-            $formData->load('plannerAdd');
+            $formData->load('plannerAdd'.$gibbonCourseClassID);
 
             if (!empty($nextDate)) {
                 $formData->addData(['date' => $nextDate, 'timeStart' => $nextTimeStart, 'timeEnd' => $nextTimeEnd]);
             }
             
-            //$form->loadAllValuesFrom($formData->getData());
-            //$form->enableAutoSave($formId, $autoSaveUrl);
+            $form->loadAllValuesFrom($formData->getData());
+            $form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
         }
