@@ -37,6 +37,7 @@ v29.0.00
         System Admin: added the option to define custom API scopes in Third Party Settings > Edit SSO Settings
     
     Bug Fixes
+        System: fixed the invalid character check when uploading files
         System: fixed string format errors in Spanish and Hebrew translation files
         Attendance: removed Left teachers from Classes Not Registered
         Behaviour: fixed behaviour fields hidden on Edit Behaviour Record screen

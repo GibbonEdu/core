@@ -73,6 +73,12 @@ class FileUploader
     protected static $illegalFileExtensions = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py','svg');
 
     /**
+     * Internal hard-coded string of characters that should be removed from filenames.
+     * @var  array
+     */
+    protected static $illegalCharactersRegex = '/[\\\~`!@%#\$%\^&\*\(\)\+=\{\}\[\]\|\:;"\'<>,\?\\/]/';
+
+    /**
      * @version  v14
      * @since    v14
      * @param    Connection  $pdo
@@ -112,7 +118,7 @@ class FileUploader
 
         // Trim and remove excess path info
         $filename = basename($filename);
-        $filename = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filename);
+        $filename = preg_replace(static::$illegalCharactersRegex, '', $filename);
 
         $destinationFolder = trim($destinationFolder, '/');
 
@@ -185,7 +191,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange) && is_string($filenameChange)) {
-            $filenameChange =  preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filenameChange);
+            $filenameChange =  preg_replace(static::$illegalCharactersRegex, '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
@@ -416,7 +422,7 @@ class FileUploader
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         $name = mb_substr($filename, 0, mb_strrpos($filename, '.'));
-        $name = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $name);
+        $name = preg_replace(static::$illegalCharactersRegex, '', $name);
 
         // Use password policy to generate random string
         $randStrGenerator = new PasswordPolicy(true, true, false, 16);
