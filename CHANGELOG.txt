@@ -30,6 +30,7 @@ v28.0.01
 
     Tweaks & Additions
         System: added Chilean Peso (CLP $) as an available currency
+        System: temporarily disabled MFA toggle in Preferences page
         Attendance: prevent setting partial future absence if a full-day absence already exists
         Behaviour: added level and descriptor details to behaviour notification events
         Messenger: updated the check-all option in Send Report to only select required recipients
