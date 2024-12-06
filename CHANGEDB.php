@@ -887,6 +887,10 @@ ALTER TABLE `gibbonStaff` ADD `coveragePriority` INT(1) DEFAULT 0 AFTER `coverag
 
 ";
 
+//v28.0.01
+++$count;
+$sql[$count][0] = '28.0.01';
+$sql[$count][1] = "";
 
 //v29.0.00
 ++$count;
