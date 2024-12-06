@@ -495,6 +495,7 @@ class FormFactory implements FormFactoryInterface
                 'BWP P' => 'Botswana Pula (P)',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
+                'CLP $' => 'Chilean Peso ($)',
                 'CNY ¥' => 'Chinese Renminbi (¥)',
                 'COP $' => 'Colombian Peso ($)',
                 'EGP £' => 'Egyptian Pound (£)',

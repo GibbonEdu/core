@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $date = isset($_REQUEST['date']) ? Format::dateConvert($_REQUEST['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $allStaff = $_GET['allStaff'] ?? $coverageInternal;
+    $allStaff = $_REQUEST['allStaff'] ?? $coverageInternal;
 
     // DATE SELECTOR
     $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
@@ -111,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->setIcon('rubric')
         ->setURL('/modules/Staff/report_subs_availability.php')
         ->addParam('date', Format::date($date))
+        ->addParam('allStaff', $allStaff)
         ->displayLabel();
 
     $table->addColumn('image_240', __('Photo'))

@@ -68,9 +68,15 @@ class NotificationGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectNotificationByStatus($data, $status = 'New')
+    public function selectNotificationByStatus($values, $status = 'New')
     {
-        $data['status'] = $status;
+        $data = [
+            'gibbonPersonID' => $values['gibbonPersonID'],
+            'text'           => $values['text'],
+            'moduleName'     => $values['moduleName'],
+            'actionLink'     => $values['actionLink'],
+            'status'         => $status,
+        ];
         $sql = "SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND actionLink=:actionLink AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) AND status=:status";
 
         return $this->db()->select($sql, $data);
@@ -84,8 +90,15 @@ class NotificationGateway extends QueryableGateway
         return $this->db()->update($sql, $data);
     }
 
-    public function insertNotification($data)
+    public function insertNotification($values)
     {
+        $data = [
+            'gibbonPersonID' => $values['gibbonPersonID'],
+            'text'           => $values['text'],
+            'moduleName'     => $values['moduleName'],
+            'actionLink'     => $values['actionLink'],
+        ];
+
         $sql = 'INSERT INTO gibbonNotification SET gibbonPersonID=:gibbonPersonID, gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName), text=:text, actionLink=:actionLink, timestamp=now()';
 
         return $this->db()->insert($sql, $data);

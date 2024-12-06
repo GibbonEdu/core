@@ -66,14 +66,15 @@ class NotificationSender
      * @param  string  $actionLink
      * @return self
      */
-    public function addNotification($gibbonPersonID, $text, $moduleName, $actionLink)
+    public function addNotification($gibbonPersonID, $text, $moduleName, $actionLink, $details = [])
     {
-        $this->notifications[] = array(
+        $this->notifications[] = [
             'gibbonPersonID' => $gibbonPersonID,
             'text'           => $text,
+            'details'        => $details,
             'moduleName'     => $moduleName,
             'actionLink'     => $actionLink
-        );
+        ];
 
         return $this;
     }
@@ -95,13 +96,13 @@ class NotificationSender
      */
     public function sendNotifications($bccMode = false)
     {
-        $sendReport = array(
+        $sendReport = [
             'count' => $this->getNotificationCount(),
             'inserts' => 0,
             'updates' => 0,
             'emailSent' => 0,
             'emailFailed' => 0
-        );
+        ];
 
         if ($this->getNotificationCount() == 0) {
             return $sendReport;
@@ -133,9 +134,10 @@ class NotificationSender
             if (!empty($emailPreference) && $emailPreference['receiveNotificationEmails'] == 'Y') {
                 // Format the email content
                 $mail->renderBody('mail/notification.twig.html', [
-                    'title'  => __('Notification').' - '.$notification['moduleName'],
-                    'body'   => $notification['text'],
-                    'button' => [
+                    'title'   => __('Notification').' - '.$notification['moduleName'],
+                    'body'    => $notification['text'],
+                    'details' => $notification['details'] ?? [],
+                    'button'  => [
                         'url'  => 'notificationsActionProcess.php?gibbonNotificationID='.$gibbonNotificationID,
                         'text' => __('View Details'),
                     ],

@@ -85,12 +85,16 @@ class AuthServiceProvider extends AbstractServiceProvider
 
             $ssoSettings = $settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
             $ssoSettings = json_decode($ssoSettings, true);
+            
+            $scopes = !empty($ssoSettings['scopes'])
+                ? array_map('trim', explode(',', $ssoSettings['scopes']))
+                : ['openid', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/calendar.readonly'];
 
             try {
                 // Setup the Client
                 $client = new Google_Client();
                 $client->setApplicationName($ssoSettings['clientName']);
-                $client->setScopes(['openid', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/calendar.readonly']);
+                $client->setScopes($scopes);
                 $client->setClientId($ssoSettings['clientID']);
                 $client->setClientSecret($ssoSettings['clientSecret']);
                 $client->setRedirectUri($session->get('absoluteURL').'/login.php');
@@ -144,6 +148,10 @@ class AuthServiceProvider extends AbstractServiceProvider
             $ssoSettings = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
             $ssoSettings = json_decode($ssoSettings, true);
 
+            $scopes = !empty($ssoSettings['scopes'])
+                ? $ssoSettings['scopes']
+                : 'openid profile offline_access email user.read.all calendars.read calendars.read.shared';
+
             try {
                 $oauthProvider =  new GenericProvider([
                     'clientId'                  => $ssoSettings['clientID'],
@@ -152,7 +160,7 @@ class AuthServiceProvider extends AbstractServiceProvider
                     'urlAuthorize'              => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
                     'urlAccessToken'            => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
                     'urlResourceOwnerDetails'   => 'https://outlook.office.com/api/v1.0/me',
-                    'scopes'                    => 'openid profile offline_access email user.read.all calendars.read calendars.read.shared',
+                    'scopes'                    => $scopes,
                 ]);
 
                 if (!$session->has('microsoftAPIAccessToken')) {
@@ -203,7 +211,9 @@ class AuthServiceProvider extends AbstractServiceProvider
                     'urlAuthorize'              => $ssoSettings['authorizeEndpoint'],
                     'urlAccessToken'            => $ssoSettings['tokenEndpoint'],
                     'urlResourceOwnerDetails'   => $ssoSettings['userEndpoint'],
-                    'scopes'                    => $ssoSettings['scopes'] ?? 'openid profile offline_access email groups'
+                    'scopes'                    => !empty($ssoSettings['scopes']) 
+                        ? $ssoSettings['scopes'] 
+                        : 'openid profile offline_access email groups'
                 ]);
             } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
                 throw new OAuthLoginError($e->getMessage());

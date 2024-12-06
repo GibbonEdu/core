@@ -40,6 +40,7 @@ class NotificationEvent
     protected $event;
     protected $text;
     protected $actionLink;
+    protected $details = [];
 
     protected $scopes = array();
     protected $recipients = array();
@@ -66,6 +67,16 @@ class NotificationEvent
     public function setNotificationText($text)
     {
         $this->text = $text;
+    }
+
+    /**
+     * Defines the additional details to be included in the notification when emailed to recipients, as a bullet list.
+     *
+     * @param  array  $details
+     */
+    public function setNotificationDetails($details)
+    {
+        $this->details = $details;
     }
 
     /**
@@ -183,7 +194,7 @@ class NotificationEvent
         }
 
         foreach ($this->recipients as $gibbonPersonID) {
-            $sender->addNotification($gibbonPersonID, $this->text, $this->moduleName, $this->actionLink);
+            $sender->addNotification($gibbonPersonID, $this->text, $this->moduleName, $this->actionLink, $this->details);
         }
 
         return $this->getRecipientCount();

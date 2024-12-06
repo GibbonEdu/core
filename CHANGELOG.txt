@@ -22,6 +22,36 @@ CHANGELOG
 v28.0.01
 --------
 
+    Headlines
+
+    Changes With Important Notices
+
+    Security
+
+    Tweaks & Additions
+        System: added Chilean Peso (CLP $) as an available currency
+        Attendance: prevent setting partial future absence if a full-day absence already exists
+        Behaviour: added level and descriptor details to behaviour notification events
+        Messenger: updated the check-all option in Send Report to only select required recipients
+        Staff: updated the Active filter for job openings to include the open date
+        System Admin: added the option to define custom API scopes in Third Party Settings > Edit SSO Settings
+    
+    Bug Fixes
+        System: fixed string format errors in Spanish and Hebrew translation files
+        System: fixed the invalid character check when uploading files
+        Attendance: removed Left teachers from Classes Not Registered report
+        Behaviour: fixed behaviour fields hidden on Edit Behaviour Record screen
+        Behaviour: fixed users with Manage Behaviour Records_my unable to add follow up comments
+        Messenger: fixed Submit button missing from New Message when only posting to message wall
+        Messenger: fixed the PHP 7.4 syntax error in MessageTargets when sending a new message
+        Messenger: fixed the appearance of the Message Wall widget in the sidebar, removed auto scrolling
+        Planner: fixed planner actions to return to Year Overview page if they originated there
+        Planner: fixed the Add action missing for teachers on empty dates in the Year Overview
+        Reports: fixed status message visual glitch on Write Reports page
+        Staff: fixed All Staff setting not persisting on the Substitute Availability weekly view
+        Timetable: fixed Date Unenrolled to be cleared when re-enrolling students in the same class
+        User Admin: fixed email validation on the Student Default Email setting
+
 v28.0.00
 --------
 

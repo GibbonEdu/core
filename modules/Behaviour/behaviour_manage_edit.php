@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 }
             
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                $form->addRow()->addClass('hidden')->addHeading('Step 1', __('Step 1'));
+                $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
 
                 //To show other students involved in the incident
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 if (!empty($values['gibbonMultiIncidentID'])) {
                     $row = $form->addRow();
                     $row->addLabel('otherStudents0', __('Other Students Involved'));
-                    $col = $row->addColumn()->addClass('flex flex-col pl-6');
+                    $col = $row->addColumn();
 
                     foreach ($students as $i => $student) {
                         if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
@@ -191,10 +191,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('comment', __('Incident'));
-                    $column->addContent('<p>'.$values['comment'].'</p>');
+                    $column->addContent('<p class="text-sm leading-4">'.$values['comment'].'</p>');
                 }
-
-                $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
                 $logs = [];
 
@@ -215,6 +213,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $logs = array_merge($logs, $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll());
 
                 if (!empty($logs) ) {
+                    $column = $form->addRow()->addColumn();
+                    $column->addLabel('followUpLog', __('Follow Up'))->addClass('-mb-4');
                     $form->addRow()->addContent($page->fetchFromTemplate('ui/discussion.twig.html', [
                     'discussion' => $logs
                 ]));

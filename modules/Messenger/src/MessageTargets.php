@@ -38,12 +38,10 @@ use Gibbon\Domain\User\RoleGateway;
 class MessageTargets
 {
     protected $report;
-
-    /**
-     * Role gateway
-     *
-     * @var RoleGateway
-     */
+    protected $session;
+    protected $db;
+    protected $settingGateway;
+    protected $logGateway;
     protected $roleGateway;
 
     public function __construct(
@@ -2288,7 +2286,7 @@ class MessageTargets
      * @param [type] $unsubscribeKey
      * @return array
      */
-    private function reportAdd($emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null, $unsubscribeKey = null, )
+    private function reportAdd($emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null, $unsubscribeKey = null)
     {
         if ($contactDetail != '' AND is_null($contactDetail) == false) {
             $count = 0;

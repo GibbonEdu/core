@@ -396,8 +396,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $formData->addData(['date' => $nextDate, 'timeStart' => $nextTimeStart, 'timeEnd' => $nextTimeEnd]);
             }
             
-            $form->loadAllValuesFrom($formData->getData());
-            $form->enableAutoSave($formId, $autoSaveUrl);
+            //$form->loadAllValuesFrom($formData->getData());
+            //$form->enableAutoSave($formId, $autoSaveUrl);
 
             echo $form->getOutput();
         }

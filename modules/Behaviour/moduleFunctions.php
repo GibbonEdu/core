@@ -45,10 +45,10 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
 
     $schoolYears = $studentGateway->selectAllStudentEnrolmentsByPerson($gibbonPersonID)->fetchAll();
 
-    $highestViewAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestViewAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_view.php', $connection2);
     $viewingSelf = $session->get('gibbonPersonID') == $gibbonPersonID;
 
-    if ($highestViewAction == 'View Behaviour Records_my' && !$viewingSelf) {
+    if ($highestViewAction == 'View Behaviour Records_myself' && !$viewingSelf) {
         echo Format::alert(__('You do not have access to this action.'));
         return;
     }
@@ -103,6 +103,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                             $output .= '<strong>'.__('Incident').'</strong><br/>';
                             $output .= nl2br($behaviour['comment']).'<br/>';
                         }
+                        
                         if (!empty($behaviour['followup'])) {
                             $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
                             $output .= nl2br($behaviour['followup']).'<br/>';
@@ -125,7 +126,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
             $table->addColumn('type', __('Type'))
                 ->context('secondary')
                 ->width('5%')
-                ->format(function($behaviour) use ($session) {
+                ->format(function($behaviour) {
                     if ($behaviour['type'] == 'Negative') {
                         return icon('solid', 'cross', 'size-6 fill-current text-red-700');
                     } elseif ($behaviour['type'] == 'Positive') {
@@ -162,6 +163,9 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                         if ($highestManageAction == 'Manage Behaviour Records_all'
                         || ($highestManageAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
                             $actions->addAction('edit', __('Edit'))
+                                ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
+                        } elseif ($highestManageAction == 'Manage Behaviour Records_my') {
+                            $actions->addAction('view', __('View'))
                                 ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
                         }
                     });
