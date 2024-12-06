@@ -922,7 +922,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                             }
 
                             if ($rowWork['type'] == 'File') {
-                                $rowWork['location'] = str_replace('?', '%3F', $rowWork['location'] ?? '');
+                                $rowWork['location'] = str_replace(['?','#'], ['%3F', '%23'], $rowWork['location'] ?? '');
                                 echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."' target='_blank'>$linkText</a></span>";
                             } elseif ($rowWork['type'] == 'Link') {
                                 echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."' target='_blank'>$linkText</a></span>";
