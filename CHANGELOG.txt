@@ -22,12 +22,6 @@ CHANGELOG
 v28.0.01
 --------
 
-    Headlines
-
-    Changes With Important Notices
-
-    Security
-
     Tweaks & Additions
         System: added Chilean Peso (CLP $) as an available currency
         System: temporarily disabled MFA toggle in Preferences page
