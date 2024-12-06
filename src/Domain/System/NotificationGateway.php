@@ -90,8 +90,15 @@ class NotificationGateway extends QueryableGateway
         return $this->db()->update($sql, $data);
     }
 
-    public function insertNotification($data)
+    public function insertNotification($values)
     {
+        $data = [
+            'gibbonPersonID' => $values['gibbonPersonID'],
+            'text'           => $values['text'],
+            'moduleName'     => $values['moduleName'],
+            'actionLink'     => $values['actionLink'],
+        ];
+
         $sql = 'INSERT INTO gibbonNotification SET gibbonPersonID=:gibbonPersonID, gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName), text=:text, actionLink=:actionLink, timestamp=now()';
 
         return $this->db()->insert($sql, $data);
