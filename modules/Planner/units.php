@@ -63,7 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     }
 
     if (empty($gibbonCourseID)) {
-        $courseList = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
+        if ($highestAction == 'Unit Planner_all') {
+            $courseList = $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
+        } elseif ($highestAction == 'Unit Planner_learningAreas') {
+            $courseList = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
+        }
+        
         $gibbonCourseID = key($courseList);
     }
     
