@@ -444,14 +444,14 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 $i++;
                             }
                             echo '</div>';
+                            echo '</div>';
                         }
-                        echo '</div>';
 
                         echo "<p style='padding-top: 5px; text-align: right'>";
                         echo "<a href='".Url::fromModuleRoute('Messenger', 'messageWall_view')."'>".__('View Message Wall').'</a>';
                         echo '</p>';
+
                         echo '</div>';
-                        
                     }
                 }
             }
