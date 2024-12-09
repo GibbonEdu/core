@@ -89,33 +89,34 @@ class LibraryGateway extends QueryableGateway
           "gibbonPerson.firstName",
           "gibbonSpace.name as 'spaceName'",
           "gibbonLibraryItem.locationDetail",
-          "IF(gibbonLibraryItem.status = 'On Loan' AND gibbonLibraryItem.returnExpected < CURRENT_DATE,'Y','N') as 'pastDue'"
+          "IF(gibbonLibraryItem.status = 'On Loan' AND gibbonLibraryItem.returnExpected < CURRENT_DATE,'Y','N') as 'pastDue'",
+          "(SELECT gibbonLibraryItemEventID FROM gibbonLibraryItemEvent WHERE gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID ORDER BY timestampOut DESC, timestampReturn DESC LIMIT 1) as gibbonLibraryItemEventID"
         ])
         ->where("gibbonLibraryItem.status IN ('Available','Repair','Reserved','On Loan')")
         ->where("ownershipType != 'Individual'")
         ->where("gibbonLibraryItem.borrowable = 'Y'");
 
         $criteria->addFilterRules([
-        'name' => function ($query, $name) {
-            return $query
-            ->where('(gibbonLibraryItem.name like :name OR gibbonLibraryItem.producer like :name OR gibbonLibraryItem.id like :name)')
-            ->bindValue('name', '%'.$name.'%');
-        },
-        'gibbonLibraryTypeID' => function ($query, $typeid) {
-            return $query
-            ->where('gibbonLibraryItem.gibbonLibraryTypeID = :typeid')
-            ->bindValue('typeid', $typeid);
-        },
-        'gibbonSpaceID' => function ($query, $spaceid) {
-            return $query
-            ->where('gibbonLibraryItem.gibbonSpaceID = :spaceid')
-            ->bindValue('spaceid', $spaceid);
-        },
-        'status' => function ($query, $status) {
-            return $query
-            ->where('gibbonLibraryItem.status = :status')
-            ->bindValue('status', $status);
-        }
+            'name' => function ($query, $name) {
+                return $query
+                ->where('(gibbonLibraryItem.name like :name OR gibbonLibraryItem.producer like :name OR gibbonLibraryItem.id like :name)')
+                ->bindValue('name', '%'.$name.'%');
+            },
+            'gibbonLibraryTypeID' => function ($query, $typeid) {
+                return $query
+                ->where('gibbonLibraryItem.gibbonLibraryTypeID = :typeid')
+                ->bindValue('typeid', $typeid);
+            },
+            'gibbonSpaceID' => function ($query, $spaceid) {
+                return $query
+                ->where('gibbonLibraryItem.gibbonSpaceID = :spaceid')
+                ->bindValue('spaceid', $spaceid);
+            },
+            'status' => function ($query, $status) {
+                return $query
+                ->where('gibbonLibraryItem.status = :status')
+                ->bindValue('status', $status);
+            }
         ]);
         return $this->runQuery($query, $criteria);
     }
@@ -352,7 +353,7 @@ class LibraryGateway extends QueryableGateway
     public function getByRecordID($id)
     {
         $data = ['id' => $id];
-        $sql = "SELECT * FROM gibbonLibraryItem WHERE id=:id";
+        $sql = "SELECT * FROM gibbonLibraryItem WHERE id=:id OR JSON_EXTRACT(gibbonLibraryItem.fields , '$.ISBN13')=:id";
 
         return $this->db()->selectOne($sql, $data);
     }

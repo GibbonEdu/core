@@ -42,26 +42,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
     $status = $_REQUEST['status'] ?? '';
 
-    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/library_lending.php');
+    $form = Form::create('action', $session->get('absoluteURL') . '/modules/Library/library_lendingProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder w-full');
 
-    $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_lending.php");
-
     $row = $form->addRow();
-        $row->addLabel('name', __('ID/Name/Producer'));
-        $row->addTextField('name')->setValue($name)->maxLength(50);
+    $row->addLabel('name', __('ID/Name/Producer'));
+    $row->addTextField('name')->setValue($name)->maxLength(50);
 
     $data = array();
     $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
-        $row->addLabel('gibbonLibraryTypeID', __('Type'));
-        $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, $data)->placeholder()->selected($gibbonLibraryTypeID);
+    $row->addLabel('gibbonLibraryTypeID', __('Type'));
+    $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, $data)->placeholder()->selected($gibbonLibraryTypeID);
 
     $row = $form->addRow();
-        $row->addLabel('gibbonSpaceID', __('Space'));
-        $row->addSelectSpace('gibbonSpaceID')->placeholder()->selected($gibbonSpaceID);
+    $row->addLabel('gibbonSpaceID', __('Space'));
+    $row->addSelectSpace('gibbonSpaceID')->placeholder()->selected($gibbonSpaceID);
 
     $statuses = array(
         'Available' => __('Available'),
@@ -70,23 +68,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         'Reserved' => __('Reserved')
     );
     $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
+    $row->addLabel('status', __('Status'));
+    $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($session);
+    $row->addFooter();
+    $row->addSearchSubmit($session);
 
     echo $form->getOutput();
 
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
-                        ->sortBy(['timestampStatus'], 'DESC')
-                        ->filterBy('name', $name)
-                        ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
-                        ->filterBy('gibbonSpaceID', $gibbonSpaceID)
-                        ->filterBy('status', $status)
-                        ->fromPOST();
+        ->sortBy(['timestampStatus'], 'DESC')
+        ->filterBy('name', $name)
+        ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+        ->filterBy('gibbonSpaceID', $gibbonSpaceID)
+        ->filterBy('status', $status)
+        ->fromPOST();
     $items = $gateway->queryLending($criteria);
 
     $table = DataTable::createPaginated('lending', $criteria);
@@ -122,15 +120,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         });
 
     $table->addActionColumn()
-          ->addParam('gibbonLibraryItemID')
-          ->addParam('name', $name)
-          ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
-          ->addParam('gibbonSpaceID', $gibbonSpaceID)
-          ->addParam('status', $status)
-          ->format(function ($item, $actions) {
-            $actions->addAction('edit', __('Edit'))
-              ->setURL('/modules/Library/library_lending_item.php');
-          });
+        ->addParam('gibbonLibraryItemID')
+        ->addParam('gibbonLibraryItemEventID')
+        ->addParam('name', $name)
+        ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+        ->addParam('gibbonSpaceID', $gibbonSpaceID)
+        ->addParam('status', $status)
+        ->format(function ($item, $actions) {
+
+            if ($item['status'] == 'Available') {
+                $actions->addAction('signout', __('Sign Out'))
+                    ->setURL('/modules/Library/library_lending_item_signout.php')
+                    ->setIcon('page_right');
+            } elseif ($item['status'] == 'On Loan' && !empty($item['gibbonPersonIDStatusResponsible'])) {
+                if (!empty($item['gibbonPersonIDStatusResponsible'])) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Library/library_lending_item_edit.php');
+                }
+
+                $actions->addAction('return', __('Return'))
+                    ->setIcon('page_left')
+                    ->setURL('/modules/Library/library_lending_item_return.php');
+
+                if (!empty($item['gibbonPersonIDStatusResponsible'])) {
+                    $actions->addAction('renew', __('Renew'))
+                        ->setIcon('page_right')
+                        ->setURL('/modules/Library/library_lending_item_renew.php');
+                }
+            }
+            $actions->addAction('lending', __('Lending'))
+                ->setURL('/modules/Library/library_lending_item.php')
+                ->setIcon('attendance');
+        });
 
     $table->modifyRows(function ($item, $row) {
         switch ($item['status']) {
@@ -138,12 +159,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
                 if ($item['pastDue'] == "Y") {
                     $row->addClass('error');
                 } else {
-                    $row->addClass('warning');
+                    $row->addClass('success');
                 }
-                break;
-
-            case 'Expired':
-                $row->addClass('error');
                 break;
         }
         return $row;

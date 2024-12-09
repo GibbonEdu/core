@@ -45,6 +45,7 @@ class LibraryReportGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonLibraryItem')
             ->cols([
+                'gibbonLibraryItem.gibbonLibraryItemID',
                 'gibbonLibraryItem.name',
                 'gibbonLibraryItem.producer',
                 'gibbonLibraryItem.id',
@@ -53,22 +54,51 @@ class LibraryReportGateway extends QueryableGateway
                 'gibbonLibraryItem.fields',
                 'gibbonLibraryType.fields as typeFields',
                 'gibbonLibraryItem.locationDetail',
+                'gibbonLibraryItem.ownershipType',
+                'gibbonLibraryItem.borrowable',
                 'gibbonSpace.name as spaceName',
+                'gibbonLibraryItemEvent.gibbonLibraryItemEventID',
                 'gibbonLibraryItemEvent.timestampOut',
                 'gibbonLibraryItemEvent.returnExpected',
                 'gibbonLibraryItemEvent.status',
                 'gibbonLibraryItemEvent.timestampReturn',
+                'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible',
                 "IF(gibbonLibraryItemEvent.returnExpected < CURRENT_DATE,'Y','N') as pastDue"
             ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID')
-            ->innerJoin('gibbonLibraryItemEvent', 'gibbonLibraryItemEvent.gibbonLibraryItemID = gibbonLibraryItem.gibbonLibraryItemID')
+            ->leftJoin('gibbonLibraryItemEvent', 'gibbonLibraryItemEvent.gibbonLibraryItemID = gibbonLibraryItem.gibbonLibraryItemID')
             ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID = gibbonLibraryItem.gibbonSpaceID');
 
         $criteria->addFilterRules([
-            'gibbonPersonID' => function ($query, $personid) {
+            'gibbonPersonID' => function ($query, $gibbonPersonID) {
                 return $query
-                    ->where('gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = :personid')
-                    ->bindValue('personid', $personid);
+                    ->where('gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+            'ownershipType' => function ($query, $ownershipType) {
+                return $query
+                    ->where('gibbonLibraryItem.ownershipType = :ownershipType')
+                    ->bindValue('ownershipType', $ownershipType);
+            },
+            'gibbonPersonIDOwnership' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('gibbonLibraryItem.gibbonPersonIDOwnership = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonLibraryItemEvent.status = :status')
+                    ->bindValue('status', $status);
+            },
+            'type' => function ($query, $type) {
+                return $query
+                    ->where('gibbonLibraryType.name = :type')
+                    ->bindValue('type', $type);
+            },
+            'notType' => function ($query, $type) {
+                return $query
+                    ->where('gibbonLibraryType.name <> :type')
+                    ->bindValue('type', $type);
             }
         ]);
 

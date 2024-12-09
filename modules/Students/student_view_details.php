@@ -48,6 +48,7 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Module\Students\View\LibraryBorrowingView;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -2254,68 +2255,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                     } elseif ($subpage == 'Library Borrowing') {
-                        if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
+                        if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php') == false) {
                             $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
-                            //Print borrowing record
-                            $libraryGateway = $container->get(LibraryReportGateway::class);
-                            $criteria = $libraryGateway->newQueryCriteria(true)
-                                ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
-                                ->filterBy('gibbonPersonID', $gibbonPersonID)
-                                ->fromPOST('lendingLog');
+                            $page->return->addReturns([
+                                'warning1' => __('This action is not possible for the selected record. Please check the status in the Lending & Activity Log.'),
+                                'warning3' => __('The specified record cannot be found.'),
+                            ]);
 
-                            $items = $libraryGateway->queryStudentReportData($criteria);
-                            $lendingTable = DataTable::createPaginated('lendingLog', $criteria);
-                            $lendingTable
-                              ->modifyRows(function ($item, $row) {
-                                if ($item['status'] == 'On Loan') {
-                                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row;
-                                }
-                                return $row;
-                              });
-                            $lendingTable
-                              ->addExpandableColumn('details')
-                              ->format(function ($item) {
-                                $detailTable = "<table>";
-                                $fields = json_decode($item['fields'], true) ?? [];
-                                $typeFields = json_decode($item['typeFields'], true) ?? [];
-                                foreach ($typeFields as $typeField) {
-                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']] ?? '');
-                                }
-                                $detailTable .= '</table>';
-                                return $detailTable;
-                              });
-                            $lendingTable
-                              ->addColumn('imageLocation')
-                              ->width('120px')
-                              ->format(function ($item) {
-                                return Format::photo($item['imageLocation'], 75);
-                              });
-                            $lendingTable
-                              ->addColumn('name', __('Name'))
-                              ->description(__('Author/Producer'))
-                              ->format(function ($item) {
-                                return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
-                              });
-                            $lendingTable
-                              ->addColumn('id', __('ID'))
-                              ->format(function ($item) {
-                                return sprintf('<b>%1$s</b>', $item['id']);
-                              });
-                            $lendingTable
-                              ->addColumn('spaceName', __('Location'))
-                              ->format(function ($item) {
-                                return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
-                              });
-                            $lendingTable
-                              ->addColumn('timestampOut', __('Return Date'))
-                              ->description(__('Borrow Date'))
-                              ->format(function ($item) {
-                                  return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : Format::date($item['timestampReturn']), Format::small(Format::date($item['timestampOut'])));
-                              });
-                            $lendingTable
-                              ->addColumn('status', __('Status'));
-                            echo $lendingTable->render($items);
+                            //Print borrowing record
+                            $libraryBorrowing = $container->get(LibraryBorrowingView::class);
+                            $libraryBorrowing->setStudent($gibbonPersonID)->compose($page);
                         }
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
@@ -2652,7 +2602,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Individual Needs'>".__('Individual Needs').'</a></li>';
                         ++$studentMenuCount;
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php')) {
+                    if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php')) {
                         $style = '';
                         if ($subpage == 'Library Borrowing') {
                             $style = "style='font-weight: bold'";

@@ -30,12 +30,17 @@ if ($disabled) {
 
 <?php } elseif ($type == 'submit') { ?>
     <button type="submit" <?= $attributes; ?> x-data="{ submitDisabled: false }" x-bind:disabled="submitDisabled" x-on:submit="submitDisabled = true" @click="submitting = true" :class="{'submitted bg-gray-100': submitting, '<?= $bgClass; ?>' : !submitting}" class="<?= $class; ?> <?= $groupClass; ?> items-center px-8 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border <?= $bgClass; ?>" />
-    <span :class="{'opacity-0': submitting}"><?= $value; ?></span>
+        <span :class="{'opacity-0': submitting}">
+            <?= $value; ?>
+        </span>
     </button>
 <?php } elseif ($type == 'quickSubmit') { ?>
 
-    <button type="submit" <?= $attributes; ?>  @click="submitting = true" :class="{'submitted': submitting}" class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> items-center px-4 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-400" >
-    <span :class="{'opacity-0': submitting}"><?= $value; ?></span>
+    <button type="submit" <?= $attributes; ?>  @click="submitting = true" :class="{'submitted': submitting}" class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> inline-flex items-center px-4 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 border border-gray-400" >
+        <?php $svgClass = 'inline text-gray-600 size-5 '.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5 ' : '').($iconClass ?? ''); ?>
+        <?= !empty($icon) ? icon($iconLibrary ?? 'solid', $icon, $svgClass ) : ''; ?>
+
+        <span :class="{'opacity-0': submitting}"><?= $value; ?></span>
     </button>
 <?php } elseif ($type == 'input') { ?>
 
@@ -46,7 +51,6 @@ if ($disabled) {
     <button type="button" <?= $attributes; ?> class="<?= $class; ?> <?= $groupClass; ?> <?= $bgClass; ?> flex items-center border border-gray-400 px-4 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">
 
     <?php $svgClass = 'text-gray-600 block m-0.5 size-5 '.(!empty($value) ? 'lg:-ml-0.5 lg:mr-1.5 ' : '').($iconClass ?? ''); ?>
-
     <?= !empty($icon) ? icon($iconLibrary ?? 'solid', $icon, $svgClass ) : ''; ?>
 
     <?= $value; ?>
