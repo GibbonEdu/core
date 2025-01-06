@@ -35,6 +35,7 @@ v29.0.00
         Library: enabled students to access the Library Borrowing page on their profile
     
     Bug Fixes
+        System Admin: fixed field validation for Student Default Email in Form Builder
 
 v28.0.01
 --------
