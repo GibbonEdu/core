@@ -89,7 +89,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         </div>
                     {% elseif day.specialDay %}
                         <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500" title="{{ __('School Closed') }}">
-                            {{ day.specialDay }}
+                            {{ day.dateDisplay }}<br/>
+                            <b>{{ day.specialDay }}</b>
+                        </div>
+                    {% elseif day.logs is empty and day.offTimetable %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-blue-100 border-blue-700 text-blue-700" title="{{ __('Off Timetable') }}">
+                            {{ day.dateDisplay }}<br/>
+                            <b>{{ day.offTimetable }}</b>
                         </div>
                     {% elseif day.logs is empty and day.classLogs is empty %}
                         <div class="{{ blockWidth }} {{ dayClass }} bg-gray-200 border-gray-600 text-gray-700" title="{{ __('No Data') }}">
@@ -104,7 +110,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ attendance.badge(day) }}
 
                             <span>{{ day.dateDisplay }}</span>
-                            <span class="mt-1 font-bold">{{ __(day.endOfDay.type) }}</span>
+                            <span class="mt-1 font-bold">{{ day.offTimetable ? __(day.offTimetable) : __(day.endOfDay.type) }}</span>
 
                             {% if printView %}
                                 <span class="mt-1">
