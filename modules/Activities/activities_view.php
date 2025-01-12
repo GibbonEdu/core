@@ -50,12 +50,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         //If student, set gibbonPersonID to self
         if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
             $gibbonPersonID = $session->get('gibbonPersonID');
+        }else if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+
         }
         
         //Check access controls
         $settingGateway = $container->get(SettingGateway::class);
 
-        $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
+        $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent'));
 
         $allActivityAccess = $settingGateway->getSettingByScope('Activities', 'access');
         $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
@@ -111,6 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($countChild == 0) {
                         echo $page->getBlankSlate();
+                        $canAccessRegistration = false;
                     }
                 }
             }
