@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -48,6 +49,9 @@ $studentOrderBy = $session->get('markbookOrderBy', null) ?? $_GET['markbookOrder
 
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart');
+
+//Get grade scale gateway
+$gradeScaleGateway = $container->get(GradeScaleGateway::class);
 
 // This script makes entering raw marks easier, by capturing the enter key and moving to the next field insted of submitting
 echo "<script type='text/javascript'>";
@@ -462,10 +466,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->setValue($student['attainmentValueRaw']);
                         $col->addContent('/ '.floatval($values['attainmentRawMax']))->setClass('inline-block ml-1');
 
+                        $attainmentSelected = !empty($student['attainmentValue']) ? $student['attainmentValue'] : $gradeScaleGateway->getDefaultGrade($values['gibbonScaleIDAttainment']);
                         $col = $row->onlyIf($hasAttainment)->addColumn();
                         $col->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
                             ->setClass('w-auto gradeSelect inline-block')
-                            ->selected($student['attainmentValue']);
+                            ->selected($attainmentSelected);
 
                         if ($hasAttainment && $hasAttainmentRubric) {
                             $rubricLink = clone $rubricLinkSource;
@@ -476,10 +481,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
 
                         if ($hasEffort) {
+                            $effortSelected = !empty($student['effortValue']) ? $student['effortValue'] : $gradeScaleGateway->getDefaultGrade($values['gibbonScaleIDEffort']);
                             $col = $row->onlyIf($hasAttainment)->addColumn();
                             $effort = $col->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
                                 ->setClass('w-auto gradeSelect inline-block')
-                                ->selected($student['effortValue']);
+                                ->selected($effortSelected);
 
                             if ($hasEffort && $hasEffortRubric) {
                                 $rubricLink = clone $rubricLinkSource;
