@@ -39,6 +39,7 @@ v29.0.00
     
     Bug Fixes
         System Admin: fixed field validation for Student Default Email in Form Builder
+        Activity registration: fix issue that registration button not shown to the parent.
 
 v28.0.01
 --------
