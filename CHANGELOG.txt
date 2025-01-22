@@ -38,7 +38,8 @@ v29.0.00
 
     
     Bug Fixes
-        Activity: fixed missing registration button for parents on View Activities page
+        Activities: fixed activity missing from the timetable if it doesn't have a category
+        Activities: fixed missing registration button for parents on View Activities page
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder
 

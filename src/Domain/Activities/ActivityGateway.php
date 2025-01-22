@@ -190,7 +190,7 @@ class ActivityGateway extends QueryableGateway
                 'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonActivitySlot.locationExternal', 'gibbonSpace.name as space', 'gibbonDaysOfWeek.name as dayOfWeek',
             ])
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
-            ->innerJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
+            ->leftJoin('gibbonActivityCategory', 'gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
             ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
             ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
@@ -206,7 +206,7 @@ class ActivityGateway extends QueryableGateway
             ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->bindValue('dateType', $dateType)
-            ->where('CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate');
+            ->where('(gibbonActivityCategory.gibbonActivityCategoryID IS NULL OR CURRENT_TIMESTAMP >= gibbonActivityCategory.accessEnrolmentDate)');
 
         if ($dateType == 'Term') {
             $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])
