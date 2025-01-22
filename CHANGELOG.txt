@@ -38,8 +38,9 @@ v29.0.00
 
     
     Bug Fixes
+        Activity: fixed missing registration button for parents on View Activities page
         System Admin: fixed field validation for Student Default Email in Form Builder
-        Activity registration: fix issue that registration button not shown to the parent.
+        System Admin: fixed uniqueness check when editing a page in Form Builder
 
 v28.0.01
 --------
