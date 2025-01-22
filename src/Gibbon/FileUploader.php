@@ -282,7 +282,7 @@ class FileUploader
             return false;
         }
 
-        $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize, $quality);
+        $file['tmp_name'] = $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize, $quality);
 
         return $this->uploadFromPost($file, $filenameChange);
     }
@@ -294,7 +294,7 @@ class FileUploader
      * @param string $destPath
      * @param int $maxSize
      * @param int $quality
-     * @return string
+     * @return string|false
      */
     public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80, $zoom = 100, $focalX = 50, $focalY = 50)
     {
@@ -303,7 +303,15 @@ class FileUploader
             return $sourcePath;
         }
 
+        if (!function_exists('getimagesize') || !function_exists('imagecreatefromstring')) {
+            return $sourcePath;
+        }
+
         $size = getimagesize($sourcePath);
+        if ($size === false) {
+            return false;
+        }
+
         $width = $srcWidth = $size[0];
         $height = $srcHeight = $size[1];
         $ratio = $height / $width;

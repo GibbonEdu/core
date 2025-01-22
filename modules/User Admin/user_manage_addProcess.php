@@ -173,20 +173,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
-                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+                            $attachment1 = $fileUploader->uploadAndResizeImage($file, $username.'_240', 480, 100);
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
-                            } else {
-                                //Check image sizes
-                                $size1 = getimagesize($path.'/'.$attachment1);
-                                $width1 = $size1[0];
-                                $height1 = $size1[1];
-                                $aspect1 = $height1 / $width1;
-                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
-                                    $attachment1 = '';
-                                    $imageFail = true;
-                                }
                             }
                         }
                     }
