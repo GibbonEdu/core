@@ -896,4 +896,10 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '29.0.00';
 $sql[$count][1] = "
+CREATE TABLE `gibbonFinancePettyCash` (`gibbonFinancePettyCashID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `gibbonSchoolYearID` VARCHAR(3) NOT NULL , `gibbonPersonID` INT(10) NOT NULL , `amount` DECIMAL(12,2) NOT NULL , `reason` VARCHAR(90) NULL , `notes` TEXT NULL , `gibbonPersonIDCreated` INT(10) NULL , `timestampCreated` TIMESTAMP NULL , `actionRequired` VARCHAR(60) NULL , `gibbonPersonIDStatus` INT(10) NULL , `timestampStatus` TIMESTAMP NULL , `status` VARCHAR(60) NOT NULL , PRIMARY KEY (`gibbonFinancePettyCashID`)) ENGINE = InnoDB CHARSET=utf8 COLLATE=utf8_general_ci;end
+INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance'), 'Petty Cash', 0, 'Expenses', 'Allows users to track basic payments and refunds of petty cash.', 'pettyCash.php,pettyCash_addEdit.php,pettyCash_delete.php,pettyCash_action.php','pettyCash.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Finance' AND gibbonAction.name='Petty Cash'));end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Finance', 'pettyCashReasons', 'Petty Cash Reasons', 'A comma-separated list.', 'Lunch Money,Small Purchase,Other');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Finance', 'pettyCashDefaultAction', 'Default Action Required', '', 'None');end
+
 ";
