@@ -623,9 +623,15 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql, $data);
 
         $grades = ($results->rowCount() > 0)? $results->fetchAll() : array();
-        $gradeOptions = array_reduce($grades, function ($group, $item) use ($params) {
+        $default = '';
+
+        $gradeOptions = array_reduce($grades, function ($group, $item) use ($params, &$default) {
             $identifier = $params['valueMode'] == 'id' ? 'gibbonScaleGradeID' : 'value';
             $value = $params['labelMode'] == 'descriptor' ? $item['descriptor'] : $item['value'];
+
+            if ($item['isDefault'] == 'Y') {
+                $default = $value;
+            }
 
             if ($params['labelMode'] == 'both') {
                 $value = $item['value'] == $item['descriptor'] ? $item['value'] : $item['value'].' - '.$item['descriptor'];
@@ -635,8 +641,7 @@ class DatabaseFormFactory extends FormFactory
             return $group;
         }, []);
 
-        $default = array_search('Y', array_column($grades, 'isDefault'));
-        $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
+        $selected = ($params['honourDefault'] && !empty($default))? $default: '';
 
         return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect w-auto');
     }

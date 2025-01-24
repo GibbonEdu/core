@@ -466,11 +466,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->setValue($student['attainmentValueRaw']);
                         $col->addContent('/ '.floatval($values['attainmentRawMax']))->setClass('inline-block ml-1');
 
-                        $attainmentSelected = !empty($student['attainmentValue']) ? $student['attainmentValue'] : $gradeScaleGateway->getDefaultGrade($values['gibbonScaleIDAttainment']);
                         $col = $row->onlyIf($hasAttainment)->addColumn();
                         $col->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
                             ->setClass('w-auto gradeSelect inline-block')
-                            ->selected($attainmentSelected);
+                            ->selected($student['attainmentValue'], false);
 
                         if ($hasAttainment && $hasAttainmentRubric) {
                             $rubricLink = clone $rubricLinkSource;
@@ -481,11 +480,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
 
                         if ($hasEffort) {
-                            $effortSelected = !empty($student['effortValue']) ? $student['effortValue'] : $gradeScaleGateway->getDefaultGrade($values['gibbonScaleIDEffort']);
                             $col = $row->onlyIf($hasAttainment)->addColumn();
                             $effort = $col->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
                                 ->setClass('w-auto gradeSelect inline-block')
-                                ->selected($effortSelected);
+                                ->selected($student['effortValue'], false);
 
                             if ($hasEffort && $hasEffortRubric) {
                                 $rubricLink = clone $rubricLinkSource;
