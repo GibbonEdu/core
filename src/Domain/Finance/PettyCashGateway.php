@@ -60,4 +60,35 @@ class PettyCashGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectPettyCashBalanceByStudent($gibbonSchoolYearID)
+    {
+        $select = $this
+        ->newSelect()
+        ->cols([ 
+            'DATE(gibbonFinancePettyCash.timestampCreated) as date', 
+            'SUM(gibbonFinancePettyCash.amount) as amount', 
+            'gibbonPerson.gibbonPersonID',
+            'gibbonPerson.preferredName as studentPreferredName',
+            'gibbonPerson.surname as studentSurname',
+            'gibbonPerson.officialName as studentOfficialName',
+          ])
+        ->from('gibbonFinancePettyCash')
+        ->innerJoin('gibbonPerson', 'gibbonFinancePettyCash.gibbonPersonID = gibbonPerson.gibbonPersonID')
+        ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID = gibbonPerson.gibbonRoleIDPrimary')
+        ->where('gibbonFinancePettyCash.status = "Pending"')
+        ->where('gibbonFinancePettyCash.actionRequired = "Repay"')
+        ->where('gibbonRole.category = "Student"')
+        ->where("gibbonPerson.status = 'Full'")
+        ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+        ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+        ->where('gibbonFinancePettyCash.gibbonSchoolYearID = :gibbonSchoolYearID')
+        ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->where('DATE(gibbonFinancePettyCash.timestampCreated) < :today')
+        ->bindValue('today', date('Y-m-d'))
+        ->groupBy(['gibbonPerson.gibbonPersonID'])
+        ->having('amount > 0');
+
+        return $this->runSelect($select);
+    }
 }

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash.php') ==
     $balance = $pettyCashGateway->queryPettyCashBalance($criteriaBalance, $gibbonSchoolYearID)->getRow(0);
 
     if (!empty($balance)) {
-        echo Format::alert(__('The balance for pending transactions in this list that need to be repaid is: {total}', ['total' => Format::currency($balance['total'])]), 'message');
+        echo Format::alert(__('Total petty cash needing repaid (in this list): {total}', ['total' => Format::currency($balance['total'])]), 'message');
     }
 
     $pettyCash = $pettyCashGateway->queryPettyCashBySchoolYear($criteria, $gibbonSchoolYearID);
