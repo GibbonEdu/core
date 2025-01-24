@@ -43,48 +43,35 @@ else {
     $familyGateway = $container->get(FamilyGateway::class);
 
     // Prepare the mailer & email template
-    $template = $container->get(EmailTemplate::class)->setTemplate('Student Petty Cash');
+    $template = $container->get(EmailTemplate::class)->setTemplate('Staff Petty Cash');
 
     $mail = $container->get(Mailer::class);
     $mail->SMTPKeepAlive = true;
 
     // Get a list of students with an outstanding balance
-    $students = $pettyCashGateway->selectPettyCashBalanceByStudent($session->get('gibbonSchoolYearID'))->fetchAll();
+    $staff = $pettyCashGateway->selectPettyCashBalanceByStaff($session->get('gibbonSchoolYearID'))->fetchAll();
     $emails = [];
     $emailIndex = 1;
 
-    foreach ($students as $student) {
-        // Get parent contact 1 for each student
-        $familyAdults = $familyGateway->selectContactPriority1AdultsByStudent($student['gibbonPersonID'])->fetchAll();
+    foreach ($staff as $templateData) {
+        // Setup the email recipients
+        $mail->ClearAddresses();
+        $mail->AddAddress($templateData['email']);
 
-        foreach ($familyAdults as $adult) {
-            // Format an email to send to the parent
-            $templateData = $student + [
-                'parentTitle'         => $adult['title'],
-                'parentPreferredName' => $adult['preferredName'],
-                'parentSurname'       => $adult['surname'],
-                'parentEmail'         => $adult['email'],
-            ];
+        $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
+        $mail->AddReplyTo($session->get('organisationEmail'));
+        $mail->setDefaultSender($template->renderSubject($templateData));
 
-            // Setup the email recipients
-            $mail->ClearAddresses();
-            $mail->AddAddress($adult['email']);
+        $mail->renderBody('mail/message.twig.html', [
+            'title'  => $template->renderSubject($templateData),
+            'body'   => $template->renderBody($templateData),
+        ]);
 
-            $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
-            $mail->AddReplyTo($session->get('organisationEmail'));
-            $mail->setDefaultSender($template->renderSubject($templateData));
+        // Send email and record the result
+        $sent = $mail->Send();
 
-            $mail->renderBody('mail/message.twig.html', [
-                'title'  => $template->renderSubject($templateData),
-                'body'   => $template->renderBody($templateData),
-            ]);
-
-            // Send email and record the result
-            $sent = $mail->Send();
-
-            $emails[$emailIndex] = Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').' ('.$adult['email'].') - '.__('Student').': '.$student['studentPreferredName'].' '.$student['studentSurname'].' ($'.$student['amount'].') - '. ($sent ? __('Sent') : __('Failed') );
-            $emailIndex++;
-        }
+        $emails[$emailIndex] = Format::name($templateData['title'], $templateData['preferredName'], $templateData['surname'], 'Staff').': '.$templateData['email'].' ($'.$templateData['amount'].') - '. ($sent ? __('Sent') : __('Failed') );
+        $emailIndex++;
     }
 
     // Raise a new notification event

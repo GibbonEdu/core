@@ -91,4 +91,34 @@ class PettyCashGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
+
+    public function selectPettyCashBalanceByStaff($gibbonSchoolYearID)
+    {
+        $select = $this
+        ->newSelect()
+        ->cols([ 
+            'DATE(gibbonFinancePettyCash.timestampCreated) as date', 
+            'SUM(gibbonFinancePettyCash.amount) as amount', 
+            'gibbonPerson.gibbonPersonID',
+            'gibbonPerson.title',
+            'gibbonPerson.preferredName',
+            'gibbonPerson.surname',
+            'gibbonPerson.email',
+          ])
+        ->from('gibbonFinancePettyCash')
+        ->innerJoin('gibbonPerson', 'gibbonFinancePettyCash.gibbonPersonID = gibbonPerson.gibbonPersonID')
+        ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID = gibbonPerson.gibbonRoleIDPrimary')
+        ->where('gibbonFinancePettyCash.status = "Pending"')
+        ->where('gibbonFinancePettyCash.actionRequired = "Repay"')
+        ->where('gibbonRole.category = "Staff"')
+        ->where("gibbonPerson.status = 'Full'")
+        ->where('gibbonFinancePettyCash.gibbonSchoolYearID = :gibbonSchoolYearID')
+        ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->where('DATE(gibbonFinancePettyCash.timestampCreated) < :today')
+        ->bindValue('today', date('Y-m-d'))
+        ->groupBy(['gibbonPerson.gibbonPersonID'])
+        ->having('amount > 0');
+
+        return $this->runSelect($select);
+    }
 }
