@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\Rubrics\RubricGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -54,14 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
             } else {
                 try {
                     if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID);
-                        $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
+                        $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
                     } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
+                        $result = $container->get(RubricGateway::class)->selectLARubricsByStaffAndDepartment($gibbonRubricID, $session->get('gibbonPersonID'));
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");

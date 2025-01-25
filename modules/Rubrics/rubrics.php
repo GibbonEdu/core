@@ -63,12 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
             $row->addLabel('search', __('Search For'))->description(__('Rubric name.'));
             $row->addTextField('search')->setValue($criteria->getSearchText());
 
-        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+        $results = $container->get(DepartmentGateway::class)->selectDepartmentsOfTypeLearningArea();
         $row = $form->addRow();
             $row->addLabel('filter2', __('Learning Areas'));
             $row->addSelect('filter2')
                 ->fromArray(array('' => __('All Learning Areas')))
-                ->fromQuery($pdo, $sql)
+                ->fromResults($results)
                 ->selected($department);
 
         $row = $form->addRow();

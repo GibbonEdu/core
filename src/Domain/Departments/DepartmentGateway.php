@@ -102,4 +102,20 @@ class DepartmentGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
+
+    public function selectDepartmentsOfTypeLearningArea()
+    {
+        $data = [];
+        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectDepartmentsOfTypeLearningAreaByStaff($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

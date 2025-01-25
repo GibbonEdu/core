@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit_field_add.php') == false) {
     // Access denied
@@ -77,10 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                 $row->addLabel('order', __('Order'))->description(__('Order in which fields appear within category<br/>Should be unique for this category.'));
                 $row->addNumber('order')->required()->maxLength(4);
 
-            $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+            $results = $container->get(GradeScaleGateway::class)->selectActiveGradeScales();
+
             $row = $form->addRow();
                 $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Grade scale used to control values that can be assigned.'));
-                $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->required()->placeholder();
+                $row->addSelect('gibbonScaleID')->fromResults($results)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('yearGroups', __('Year Groups'))->description(__('Year groups to which this field is relevant.'));

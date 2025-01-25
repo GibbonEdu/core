@@ -63,4 +63,12 @@ class OutcomeGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectOutcomesByYearGroup($gibbonYearGroupIDList)
+    {
+        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
+		$sql = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.scope, gibbonOutcome.category, gibbonOutcome.name FROM gibbonOutcome LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList)) WHERE gibbonOutcome.active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) GROUP BY gibbonOutcome.gibbonOutcomeID ORDER BY gibbonOutcome.category, gibbonOutcome.name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

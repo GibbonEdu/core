@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_manage_edit_grade_add.php') == false) {
     // Access denied
@@ -32,16 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data = array('gibbonScaleID' => $gibbonScaleID);
-            $sql = 'SELECT name FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $values = $container->get(GradeScaleGateway::class)->getByID($gibbonScaleID, ['name']);
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             $page->addError(__('The specified record does not exist.'));
         } else {
-            $values = $result->fetch();
-
             $page->breadcrumbs
                 ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
                 ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])

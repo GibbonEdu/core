@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Rubrics\RubricGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -54,17 +55,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
             } else {
                 try {
                     if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID);
-                        $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
+
+                        $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
+
                     } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
-                        $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
+
+                        $result = $container->get(RubricGateway::class)->selectLARubricsByStaffAndDepartment($gibbonRubricID, $session->get('gibbonPersonID'));
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
                 } catch (PDOException $e) {
                 }
-
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {

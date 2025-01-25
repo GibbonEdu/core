@@ -20,6 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Rubrics\RubricGateway;
+use Gibbon\Domain\Planner\OutcomeGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -72,10 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                 $page->addError(__('You have not specified one or more required parameters.'));
             } else {
                 
-                $data = array('gibbonRubricID' => $gibbonRubricID);
-                $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $container->get(RubricGateway::class)->selectBy(['gibbonRubricID' => $gibbonRubricID]);
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The specified record does not exist.'));
@@ -94,8 +95,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                         $row->addTextField('scope')->required()->readOnly();
 
                     if ($values['scope'] == 'Learning Area') {
-                        $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
-                        $result = $pdo->executeQuery(array('gibbonDepartmentID' => $values['gibbonDepartmentID']), $sql);
+
+                        $result = $container->get(DepartmentGateway::class)->selectBy(['gibbonDepartmentID' => $values['gibbonDepartmentID']], ['name']);
+
                         $learningArea = ($result->rowCount() > 0)? $result->fetchColumn(0) : $values['gibbonDepartmentID'];
 
                         $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);
@@ -111,15 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					$form->addRow()->addHeading('Rows', __('Rows'));
 
 					// Get outcomes by year group
-					$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList']);
-					$sql = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.scope, gibbonOutcome.category, gibbonOutcome.name 
-							FROM gibbonOutcome 
-							LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-							WHERE gibbonOutcome.active='Y' 
-							AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
-							GROUP BY gibbonOutcome.gibbonOutcomeID
-							ORDER BY gibbonOutcome.category, gibbonOutcome.name";
-					$result = $pdo->executeQuery($data, $sql);
+
+					$result = $container->get(OutcomeGateway::class)->selectOutcomesByYearGroup($values['gibbonYearGroupIDList']);
 					
 					// Build a set of outcomes grouped by scope
 					$outcomes = ($result->rowCount() > 0)? $result->fetchAll() : array();
@@ -130,11 +125,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					}, array());
 
 					$typeOptions = array('Standalone' => __('Standalone'), 'Outcome Based' => __('Outcome Based'));
-					
-					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID, backgroundColor FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
-                    $result = $pdo->executeQuery($data, $sql);
-					
+
+                    $result = $container->get(RubricGateway::class)->selectRowsInfoByRubric($gibbonRubricID);
+
 					if ($result->rowCount() <= 0) {
 						$form->addRow()->addAlert(__('There are no records to display.'), 'error');
 					} else {
@@ -180,10 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                         $row->addContent(__('Visualise?'))->setClass('font-bold text-center');
                         $row->addContent()->setClass('w-full sm:max-w-sm');
 
-					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
-                    $result = $pdo->executeQuery($data, $sql);
-					
+                    $result = $container->get(RubricGateway::class)->selectsColumnsInfoByRubric($gibbonRubricID);
+                   
 					if ($result->rowCount() <= 0) {
 						$form->addRow()->addAlert(__('There are no records to display.'), 'error');
 					} else {
@@ -210,11 +201,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                     ->setClass('flex-1 w-full')
 									->setValue($rubricColumn['title']);
 							} else {
-								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
-								$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
+                                $results = $container->get(GradeScaleGateway::class)->selectGradesByScale($values['gibbonScaleID']);
+                                
 								$col->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
-									->fromQuery($pdo, $sql, $data)
+									->fromResults($results)
                                     ->required()
                                     ->setClass('flex-1 w-full')
 									->selected($rubricColumn['gibbonScaleGradeID']);
