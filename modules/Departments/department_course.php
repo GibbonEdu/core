@@ -19,9 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\Planner\UnitGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -37,15 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
-            $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonDepartment.name AS department, gibbonCourse.name, gibbonCourse.description, gibbonSchoolYear.name AS year, gibbonCourse.gibbonSchoolYearID, gibbonCourse.fields FROM gibbonDepartment JOIN gibbonCourse ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonCourseID=:gibbonCourseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+            $result = $container->get(DepartmentGateway::class)->getCourseByDepartment($gibbonDepartmentID, $gibbonCourseID);
+          
+        if (empty($result)) {
             $page->addError(__('The specified record does not exist.'));
         } else {
-            $row = $result->fetch();
+            $row = $result;
 
             //Get role within learning area
             $role = null;
@@ -88,11 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             echo __('Units');
             echo '</h2>';
 
-
-                $dataUnit = array('gibbonCourseID' => $gibbonCourseID);
-                $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' ORDER BY ordering, name';
-                $resultUnit = $connection2->prepare($sqlUnit);
-                $resultUnit->execute($dataUnit);
+            $resultUnit = $container->get(UnitGateway::class)->selectActiveUnitsByCourse($gibbonCourseID);
 
             while ($rowUnit = $resultUnit->fetch()) {
                 echo '<h4>';
@@ -111,11 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
                 //Print class list
-
-                    $dataCourse = array('gibbonCourseID' => $gibbonCourseID);
-                    $sqlCourse = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID ORDER BY class';
-                    $resultCourse = $connection2->prepare($sqlCourse);
-                    $resultCourse->execute($dataCourse);
+                
+                $resultCourse = $container->get(CourseGateway::class)->selectClassesByCourse($gibbonCourseID);
 
                 if ($resultCourse->rowCount() > 0) {
                     $sidebarExtra .= '<div class="column-no-break">';
