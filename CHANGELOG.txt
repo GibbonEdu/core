@@ -99,6 +99,7 @@ v27.0.01
         Admissions: fixed username and password missing from re-sent Acceptance Email
         Attendance: fixed handling of Count Class as School setting in Students Not Onsite/Students Not Present reports
         Messenger: fixed error redirect for New Message sending users to a non-existing page
+        FileUploader: fixed the error shown when the FileUploader did an exif data check for some images
 
 v27.0.00
 --------
