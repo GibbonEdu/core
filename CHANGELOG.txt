@@ -39,6 +39,7 @@ v29.0.00
 
     
     Bug Fixes
+        Sidebar: fixed localization of Roles menu items.
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
         System Admin: fixed field validation for Student Default Email in Form Builder
