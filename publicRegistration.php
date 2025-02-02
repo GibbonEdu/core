@@ -128,7 +128,7 @@ if ($proceed == false) {
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('Password'));
         $row->addPassword('passwordNew')
-            ->addPasswordPolicy($pdo)
+            ->addPasswordPolicy($container->get(PasswordPolicy::class))
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);
