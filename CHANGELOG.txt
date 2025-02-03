@@ -23,7 +23,8 @@ v29.0.00
 --------
 
     Headlines
-        An improved library borrowing page with tabs and quick lending actions
+        An improved library borrowing page in Student Profile with tabs and quick lending actions
+        A simple Petty Cash system for tracking small expenses
 
     Changes With Important Notices
 
