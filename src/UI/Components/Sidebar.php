@@ -638,9 +638,13 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form->addHiddenValue('address', $this->session->get('address'));
 
                 $roles = $this->session->get('gibbonRoleIDAll', []);
+                $roles_array = array_combine(array_column($roles, 0), array_column($roles, 1));
+                foreach($roles_array as $index=>$role){
+                    $roles_array[$index] = __($role);
+                } 
                 $row = $form->addRow()->addClass('flex');
                     $row->addSelect('gibbonRoleID')
-                        ->fromArray(array_combine(array_column($roles, 0), array_column($roles, 1)))
+                        ->fromArray($roles_array)
                         ->placeholder(null)
                         ->addClass('flex-grow')
                         ->groupAlign('left')
