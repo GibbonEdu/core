@@ -25,6 +25,7 @@ class PettyCashGateway extends QueryableGateway
             'gibbonFinancePettyCash.actionRequired',
             'gibbonFinancePettyCash.status',
             'gibbonFinancePettyCash.timestampCreated',
+            'gibbonFinancePettyCash.timestampStatus',
             'gibbonPerson.gibbonPersonID',
             'gibbonPerson.preferredName',
             'gibbonPerson.title',

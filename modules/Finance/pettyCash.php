@@ -104,8 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash.php') ==
     $table->addColumn('roleCategory', __('Role'))->context('secondary');
 
     $table->addColumn('amount', __('Amount'))
+        ->description(__('Reason'))
         ->context('primary')
-        ->format(Format::using('currency', 'amount'));
+        ->format(Format::using('currency', 'amount'))
+        ->formatDetails(function ($values) {
+            return Format::small($values['reason']);
+        });
 
     $table->addColumn('timestampCreated', __('When'))
         ->format(Format::using('dateTimeReadable', 'timestampCreated'));
@@ -120,7 +124,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash.php') ==
             return Format::tag($values['status'], $tag);
         })
         ->formatDetails(function ($values) {
-            if ($values['status'] != 'Pending' || $values['actionRequired'] == 'None') return;
+            if ($values['status'] == 'Complete' || $values['actionRequired'] == 'None') return;
+
+            if ($values['status'] != 'Pending' && !empty($values['timestampStatus'])) {
+                return Format::small(Format::dateReadable($values['timestampStatus']));
+            }
 
             switch ($values['actionRequired']) {
                 case 'Repay': 

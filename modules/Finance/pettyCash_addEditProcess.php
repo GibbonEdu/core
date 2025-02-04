@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash_addEdit.
     ];
 
     // Validate the required values are present
-    if (empty($data['gibbonSchoolYearID']) || empty($data['gibbonPersonID']) || empty($data['amount'])) {
+    if (empty($data['gibbonSchoolYearID']) || empty($data['gibbonPersonID'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
