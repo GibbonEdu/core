@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
         } else {
             //Let's go!
 
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_finance_manage_deleteProcess.php", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_finance_manage_deleteProcess.php");
             $form->addHiddenValue('gibbonFinanceInvoiceeUpdateID', $gibbonFinanceInvoiceeUpdateID);
             echo $form->getOutput();
         }

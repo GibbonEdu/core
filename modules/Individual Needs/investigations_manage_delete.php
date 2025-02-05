@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/investigations_manage_deleteProcess.php", true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/investigations_manage_deleteProcess.php");
     $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);

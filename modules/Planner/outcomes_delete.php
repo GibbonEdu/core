@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
-                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/outcomes_deleteProcess.php?filter2=".$filter2, true);
+                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/outcomes_deleteProcess.php?filter2=".$filter2);
                     $form->addHiddenValue('gibbonOutcomeID', $gibbonOutcomeID);
                     echo $form->getOutput();
                 }

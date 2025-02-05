@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	    if ($resultPerson->rowCount() != 1) {
 	    	$page->addError(__('The specified record does not exist.'));
 	    } else {
-			$form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byPerson_deleteProcess.php', true);
+			$form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byPerson_deleteProcess.php');
 			$form->addHiddenValue('gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID);
 			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 			$form->addHiddenValue('currentDate', $currentDate);

@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/schoolYearSpecialDay_manage_deleteProcess.php", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/schoolYearSpecialDay_manage_deleteProcess.php");
             $form->addHiddenValue('gibbonSchoolYearSpecialDayID', $gibbonSchoolYearSpecialDayID);
             $form->addHiddenValue('gibbonSchoolYearID', $_GET['gibbonSchoolYearID']);
             echo $form->getOutput();

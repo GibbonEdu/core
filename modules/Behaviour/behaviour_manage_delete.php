@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if ($result->rowCount() != 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/behaviour_manage_deleteProcess.php?type=".$_GET['type'], true);
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/behaviour_manage_deleteProcess.php?type=".$_GET['type']);
 
                 $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
                 $form->addHiddenValue('gibbonPersonID', $_GET['gibbonPersonID']);

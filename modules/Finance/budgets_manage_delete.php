@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_del
         if ($result->rowCount() != 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgets_manage_deleteProcess.php", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgets_manage_deleteProcess.php");
             $form->addHiddenValue('gibbonFinanceBudgetID', $gibbonFinanceBudgetID);
             echo $form->getOutput();
         }
