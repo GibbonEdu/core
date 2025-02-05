@@ -1778,9 +1778,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                     //Check for lesson plan
                                     $bgImg = 'none';
 
-                                if (!empty($rowPeriods['gibbonCourseClassID']) && $height >= 30) {
+                                if (!empty($rowPeriods['gibbonCourseClassID'])) {
                                     $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Manage Exceptions')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>";
-                                    $output .= icon('solid', 'user-minus', 'size-6 text-gray-600 hover:text-gray-800');
+                                    $output .= icon('solid', 'user-minus', ($height >= 30 ? 'size-6' : 'size-3 -mb-1').' text-gray-600 hover:text-gray-800');
                                     $output .= "</a>";
                                 }
                                 $output .= '</div>';
