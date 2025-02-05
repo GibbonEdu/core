@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_de
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/inSettings_deleteProcess.php?gibbonINDescriptorID=$gibbonINDescriptorID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/inSettings_deleteProcess.php", true);
+            $form->addHiddenValue('gibbonINDescriptorID', $gibbonINDescriptorID);
             echo $form->getOutput();
         }
     }

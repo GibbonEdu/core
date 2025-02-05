@@ -45,7 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             $row = $result->fetch();
 
             //Proceed!
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/ttDates_edit_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp&gibbonTTDayID=$gibbonTTDayID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/ttDates_edit_deleteProcess.php");
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('dateStamp', $dateStamp);
+            $form->addHiddenValue('gibbonTTDayID', $gibbonTTDayID);
             echo $form->getOutput();
         }
     }

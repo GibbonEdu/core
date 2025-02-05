@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/attendanceSettings_manage_deleteProcess.php?gibbonAttendanceCodeID=$gibbonAttendanceCodeID", false, false);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/attendanceSettings_manage_deleteProcess.php", false, false);
+            $form->addHiddenValue('gibbonAttendanceCodeID', $gibbonAttendanceCodeID);
             $form->addRow()->addContent(__('These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.'));
             $form->addRow()->addConfirmSubmit();
 

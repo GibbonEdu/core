@@ -90,7 +90,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
 
-                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
+                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/weighting_manage_deleteProcess.php");
+                    $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
                     echo $form->getOutput();
                 }
             }

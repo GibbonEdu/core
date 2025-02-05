@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/jobOpenings_manage_deleteProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/jobOpenings_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonStaffJobOpeningID', $gibbonStaffJobOpeningID);
             echo $form->getOutput();
         }
     }

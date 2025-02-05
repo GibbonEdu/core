@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+$gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage_delete.php&gibbonFormGroupID=$gibbonFormGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 

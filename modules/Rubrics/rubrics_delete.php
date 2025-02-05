@@ -68,7 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
-                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2");
+                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_deleteProcess.php?search=$search&filter2=$filter2", true);
+                    $form->addHiddenValue('gibbonRubricID', $gibbonRubricID);
                     echo $form->getOutput();
                 }
             }

@@ -84,7 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                         echo __('This column is part of a set of columns, and so cannot be individually deleted.');
                         echo '</div>';
                     } else {
-                        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/markbook_edit_deleteProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID");
+                        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/markbook_edit_deleteProcess.php", true);
+                        $form->addHiddenValue('gibbonMarkbookColumnID', $gibbonMarkbookColumnID);
                         echo $form->getOutput();
                     }
                 }

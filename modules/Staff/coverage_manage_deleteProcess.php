@@ -25,7 +25,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
+$gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 $search = $_POST['search'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_manage.php&search='.$search;

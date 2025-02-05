@@ -43,7 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
         if ($result->rowCount() != 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/feeCategories_manage_deleteProcess.php?gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/feeCategories_manage_deleteProcess.php", true);
+            $form->addHiddenValue('gibbonFinanceFeeCategoryID', $gibbonFinanceFeeCategoryID);
             echo $form->getOutput();
         }
     }

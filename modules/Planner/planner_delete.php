@@ -129,7 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                     $extra = $row['course'].'.'.$row['class'];
                 }
 
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_deleteProcess.php", true);
+                $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
                 echo $form->getOutput();
             }
         }

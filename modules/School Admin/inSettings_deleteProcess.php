@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
+$gibbonINDescriptorID = $_POST['gibbonINDescriptorID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings_delete.php&gibbonINDescriptorID='.$gibbonINDescriptorID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
 

@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
+$gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? '';
 $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/medicalForm_manage_delete.php&gibbonPersonMedicalID='.$gibbonPersonMedicalID."&search=$search";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage.php&search=$search";
