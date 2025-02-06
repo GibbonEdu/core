@@ -194,7 +194,11 @@ class MpdfRenderer implements ReportRendererInterface
 
         $config = [
             'mode' => 'utf-8',
-            'format' => strtoupper($this->template->getData('pageSize', 'A4')) == 'LETTER' ? [215.9, 279.4] : [210, 297],
+            'format' => match(strtoupper($this->template->getData('pageSize', 'A4'))) {
+                'A3' => [297, 420],
+                'LETTER' => [215.9, 279.4],
+                default => [210, 297], // A4
+            },
             'orientation' => $this->template->getData('orientation', 'P'),
             'useOddEven' => '0',
             'mirrorMargins' => $this->hasMode(self::OUTPUT_MIRROR) ? '1' : '0',
