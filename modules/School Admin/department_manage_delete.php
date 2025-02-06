@@ -43,7 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         if ($result->rowCount() != 1) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/department_manage_deleteProcess.php?gibbonDepartmentID=$gibbonDepartmentID", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/department_manage_deleteProcess.php", true);
+            $form->addHiddenValue('gibbonDepartmentID', $gibbonDepartmentID);
             echo $form->getOutput();
         }
     }

@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $type = $_GET['type'] ?? '';
 $allUsers = $_GET['allUsers'] ?? '';
 $search = $_GET['search'] ?? '';

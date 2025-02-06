@@ -41,7 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
         return;
     }
     
-    $form = DeleteForm::createForm($session->get('absoluteURL')."/modules/Staff/staff_duty_deleteProcess.php?gibbonStaffDutyPersonID=$gibbonStaffDutyPersonID");
+    $form = DeleteForm::createForm($session->get('absoluteURL')."/modules/Staff/staff_duty_deleteProcess.php");
+    $form->addHiddenValue('gibbonStaffDutyPersonID', $gibbonStaffDutyPersonID);
     echo $form->getOutput();
         
 }

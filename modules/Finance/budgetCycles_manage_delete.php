@@ -42,7 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         } else {
             //Let's go!
             $row = $result->fetch();
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgetCycles_manage_deleteProcess.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgetCycles_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
             echo $form->getOutput();
         }
     }

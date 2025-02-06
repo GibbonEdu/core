@@ -42,7 +42,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/course_manage_class_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/course_manage_class_deleteProcess.php");
+            $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+            $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
             echo $form->getOutput();
         }
     }

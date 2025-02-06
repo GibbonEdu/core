@@ -23,8 +23,8 @@ use Gibbon\Module\Reports\Domain\ReportGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-$gibbonReportID = $_GET['gibbonReportID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+$gibbonReportID = $_POST['gibbonReportID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 

@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/house_manage_deleteProcess.php?gibbonHouseID=$gibbonHouseID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/house_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonHouseID', $gibbonHouseID);
             echo $form->getOutput();
         }
     }

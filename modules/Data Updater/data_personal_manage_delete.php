@@ -45,7 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         } else {
             //Let's go!
 
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_personal_manage_deleteProcess.php?gibbonPersonUpdateID=".$gibbonPersonUpdateID);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_personal_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonPersonUpdateID', $gibbonPersonUpdateID);
             echo $form->getOutput();
         }
     }
