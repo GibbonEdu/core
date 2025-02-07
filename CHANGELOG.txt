@@ -44,6 +44,7 @@ v29.0.00
         Sidebar: fixed localization of Roles menu items.
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
+        Planner: fixed empty sections displaying below the advanced options in Add Unit Plan
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder
         Timetable Admin: fixed support staff not editable in Course Enrolment by Person
