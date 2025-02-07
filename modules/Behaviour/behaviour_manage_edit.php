@@ -128,11 +128,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $row = $form->addRow();
                     $row->addLabel('otherStudents0', __('Other Students Involved'));
                     $col = $row->addColumn();
-
+                    
                     foreach ($students as $i => $student) {
                         if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
-                            $url = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
-                            $col->addContent('<b>'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)).'</b>');
+                            $url = Url::fromModuleRoute('Students', 'student_view_details')
+                                ->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
+                            
+                            // Add inline CSS for spacing
+                            $col->addContent('<span style="margin-right: 5px;"><b>' . Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)) . '</b>,</span>');
                         }
                     }
                 }
