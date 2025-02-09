@@ -38,6 +38,8 @@ v29.0.00
         Library: enabled students to access the Library Borrowing page on their profile
         User Admin: improved the image uploader in Manage Users, detect invalid images
         Markbook: implemented default grade from Manage Grade Scales in Markbook data entry view
+        System Admin: adjusted action access for Column Rows import
+        System Admin: added new imports for Columns and Tie Days to Dates in timetable
 
     
     Bug Fixes
