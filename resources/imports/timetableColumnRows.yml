@@ -1,11 +1,12 @@
 details:
     type: timetableColumnRows
-    name: Timetable - Column Rows
+    category: Timetable
+    name: Column Rows
     table: gibbonTTColumnRow
     modes: { update: true, insert: true, export: true }
 access:
     module: Timetable Admin
-    action: Manage Timetables
+    action: Manage Columns
 primaryKey:
     gibbonTTColumnRowID
 uniqueKeys:
