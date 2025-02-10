@@ -115,7 +115,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 if(!empty($values['gibbonMultiIncidentID'])) {
                     $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
-            
 
                 //Student
                 $row = $form->addRow();
@@ -129,15 +128,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $row->addLabel('otherStudents0', __('Other Students Involved'));
                     $col = $row->addColumn();
                     
+                    $studentNames = [];
                     foreach ($students as $i => $student) {
                         if ($student['gibbonPersonID'] != $values['gibbonPersonID']) {
                             $url = Url::fromModuleRoute('Students', 'student_view_details')
                                 ->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'subpage' => 'Behaviour']);
-                            
-                            // Add inline CSS for spacing
-                            $col->addContent('<span style="margin-right: 5px;"><b>' . Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)) . '</b>,</span>');
+
+                            $studentNames[] =  '<span class="font-bold">'.Format::link($url, Format::name('', $student['preferredNameStudent'], $student['surnameStudent'], 'Student', false, true)).'</span>';
                         }
                     }
+                    $col->addContent(implode(',&nbsp;', $studentNames));
                 }
 
                 //Date
