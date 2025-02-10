@@ -164,7 +164,6 @@ class TextField extends Input
         return Component::render(TextField::class, $this->getAttributeArray() + [
             'groupClass'       => $this->getGroupClass(),
             'unique'           => !empty($this->unique) ? $this->unique : [],
-            'uniqueData'       => !empty($this->unique) ? json_encode($this->unique['ajaxData']) : '',
             'autocompleteList' => $this->autocomplete
                 ? $this->autocomplete
                 : '',
