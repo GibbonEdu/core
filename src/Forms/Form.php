@@ -91,6 +91,9 @@ class Form implements OutputableInterface
             ->setAction($action)
             ->setMethod($method);
 
+        // Add the CSRF token to all forms
+        $form->addHiddenValue('token', $container->get('token'));
+
         // Enable quick save by default on edit and settings pages
         if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
             $form->enableQuickSave();

@@ -64,6 +64,11 @@ class Session implements SessionInterface
         $this->set('address', $address);
         $this->set('module', $module);
         $this->set('action', $action);
+
+        // Create a CSRF token
+        if (!$this->exists('token')) {
+            $this->set('token', bin2hex(random_bytes(16)));
+        }
     }
 
     public function setGuid(string $_guid)

@@ -144,4 +144,16 @@ if (!empty($session->get('module'))) {
 }
 
 // Sanitize incoming user-supplied GET variables
-$_GET = $container->get(\Gibbon\Data\Validator::class)->sanitizeUrlParams($_GET);
+$validator = $container->get(\Gibbon\Data\Validator::class);
+$_GET = $validator->sanitizeUrlParams($_GET);
+
+// Check for CSRF token when posting any form
+if (!empty($_POST) && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
+    if (!$validator->validateToken()) {
+        $URL .= $_SERVER['HTTP_REFERER'].'&return=error9';
+        header("Location: {$URL}");
+        exit;
+    }
+}
+
+

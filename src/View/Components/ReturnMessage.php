@@ -54,6 +54,7 @@ class ReturnMessage
             'error6' => __('Your request was completed successfully, but there was a problem saving some uploaded files.'),
             'error7' => __('Your request failed because some required values were not unique.'),
             'error8' => __('Your request failed because the link is invalid or has expired.'),
+            'error9' => __('Your request failed because your session authentication has expired. Please log out and log in again.'),
 
             //Warnings
             'warning0' => __('Your optional extra data failed to save.'),

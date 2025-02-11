@@ -257,6 +257,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $page;
         });
 
+        $container->share('token', function () {
+            return $this->getLeagueContainer()->get('session')->get('token');
+        });
+
         $container->add(MailerInterface::class, function () use ($container) {
             $view = new View($container->get('twig'));
             return (new Mailer($container->get('session')))->setView($view);
@@ -281,9 +285,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
            return $container->get(Payment::class);
         });
 
-        $container->add(Validator::class, function () {
+        $container->share(Validator::class, function () {
             $session = $this->getLeagueContainer()->get('session');
-            return new Validator($session->get('allowableHTML', ''), $session->get('allowableIframeSources', ''));
+            return new Validator($session->get('allowableHTML', ''), $session->get('allowableIframeSources', ''), $session->get('token', ''));
         });
 
         $container->add(PasswordPolicy::class, function () use ($container) {
