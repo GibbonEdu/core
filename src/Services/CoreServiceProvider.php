@@ -287,7 +287,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->share(Validator::class, function () {
             $session = $this->getLeagueContainer()->get('session');
-            return new Validator($session->get('allowableHTML', ''), $session->get('allowableIframeSources', ''), $session->get('token', ''));
+            return new Validator($session->get('allowableHTML', ''), $session->get('allowableIframeSources', ''));
         });
 
         $container->add(PasswordPolicy::class, function () use ($container) {

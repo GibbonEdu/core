@@ -23,12 +23,13 @@ namespace Gibbon\Forms;
 
 use Gibbon\Http\Url;
 use Gibbon\Tables\Action;
+use Gibbon\Session\TokenHandler;
 use Gibbon\Forms\View\FormBlankView;
 use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
+use League\Container\ContainerAwareTrait;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
-use League\Container\ContainerAwareTrait;
 
 /**
  * Form
@@ -94,6 +95,14 @@ class Form implements OutputableInterface
         // Add the CSRF token to all forms
         $form->addHiddenValue('token', $container->has('token') ? $container->get('token') : '');
 
+         // Generate a nonce and add it to the Session's Nonce List
+         $tokenHandler = $container->get(TokenHandler::class);
+         $nonce = bin2hex(random_bytes(16));
+         $tokenHandler->addNonce($nonce);
+         
+        // Add the nonce token to all forms
+         $form->addHiddenValue('nonce', $nonce);
+       
         // Enable quick save by default on edit and settings pages
         if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
             $form->enableQuickSave();

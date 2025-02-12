@@ -30,17 +30,15 @@ namespace Gibbon\Data;
  */
 class Validator
 {
-    protected $csrfToken;
     protected $allowableHTML;
     protected $allowableHTMLString;
     protected $allowableIframeSources;
 
-    public function __construct(string $allowableHTMLString, string $allowableIframeSources = '', string $csrfToken = '')
+    public function __construct(string $allowableHTMLString, string $allowableIframeSources = '')
     {
         $this->allowableHTMLString = $allowableHTMLString;
         $this->allowableHTML = $this->parseTagsFromString($this->allowableHTMLString);
         $this->allowableIframeSources = explode(',', mb_strtolower($allowableIframeSources));
-        $this->csrfToken = $csrfToken;
     }
 
     public function getAllowableHTML()
@@ -52,12 +50,7 @@ class Validator
     {
         return $this->allowableIframeSources;
     }
-
-    public function validateToken()
-    {
-        return !empty($this->csrfToken) && $this->csrfToken === $_POST['token'];
-    }
-
+    
     /**
      * Sanitize the input data.
      *

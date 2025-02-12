@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
+use Gibbon\Session\TokenHandler;
 
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {
@@ -144,13 +146,23 @@ if (!empty($session->get('module'))) {
 }
 
 // Sanitize incoming user-supplied GET variables
-$validator = $container->get(\Gibbon\Data\Validator::class);
+$validator = $container->get(Validator::class);
 $_GET = $validator->sanitizeUrlParams($_GET);
+$tokenHandler = $container->get(TokenHandler::class);
 
-// Check for CSRF token when posting any form
+// Check for CSRF token and nonce when posting any form
 if (!empty($_POST) && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
-    if (!$validator->validateToken()) {
+    
+    // Validate CSRF token
+    if (!$tokenHandler->validateCsrfToken()) {
         $URL .= $_SERVER['HTTP_REFERER'].'&return=error9';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Validate nonce
+    if (!$tokenHandler->validateNonce()) {
+        $URL .= $_SERVER['HTTP_REFERER'].'&return=error10';
         header("Location: {$URL}");
         exit;
     }
