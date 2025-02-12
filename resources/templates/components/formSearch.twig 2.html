@@ -1,0 +1,77 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+    
+<form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
+
+    {% if form.getTitle and not form.getHeader %}
+        <h2>{{ form.getTitle }}</h2>
+    {% endif %}
+
+    {% if form.getDescription %}
+        <p>{{ form.getDescription|raw }}</p>
+    {% endif %}
+    
+    {% block header %}
+        <header class="relative flex justify-between mb-2 {{ standardLayout ? '' }}">
+            {% if form.getHeader %}
+                <h2>{{ form.getTitle }}</h2>
+                <div class="linkTop flex justify-end gap-2">
+                    {% for action in form.getHeader %}
+                        {{ action.getOutput|raw }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </header>
+    {% endblock header %}
+
+    {% for values in form.getHiddenValues %}
+        <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
+    {% endfor %}
+
+    {% if form.getRows|length > 0 %}
+    <section class="w-full bg-blue-50 border rounded-md px-4 py-2">
+
+        {% for num, row in form.getRows %}
+
+            {% set rowLoop = loop %}
+            {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0 gap-2 sm:gap-6 sm:py-2' %}
+
+            <div id="{{ row.getID }}" class="{{ row.getClass }} {{ rowClass }}" {{ row.getAttributeString("data-drag-id,x-show,x-transition,x-cloak")|raw }}>
+    
+            {% for element in row.getElements %}
+
+                {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                    {% set class = 'sm:w-2/5 flex flex-col justify-center sm:mb-0 text-xs ' %}
+                {% elseif loop.last %}
+                    {% set class = 'flex-1 relative flex justify-end items-center' %}
+                {% else %}
+                    {% set class = '' %}
+                {% endif %}
+
+                {% set class = class ~ ' ' ~ element.getAttribute('class') %}
+
+                <div class="{{ class }}" >
+                    {{ element.getOutput|raw }}
+                </div>
+            {% endfor %}
+
+            </div>
+        {% endfor %}
+
+    </section>
+    {% endif %}
+
+    <script type="text/javascript">
+        {% for code in javascript %}
+            {{ code|raw }}
+        {% endfor %}
+    </script>
+
+</form>

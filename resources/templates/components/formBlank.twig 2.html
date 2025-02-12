@@ -1,0 +1,73 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if form.getAction != 'ajax' %}
+<form x-validate {{ form.getAttributeString|raw }} x-data="{'advancedOptions': false, 'invalid': false, 'submitting': false}"  x-ref="form" @submit="$validate.submit; invalid = !$validate.isComplete($el); if (invalid) submitting = false;" @change.debounce.750ms="if (invalid) invalid = !$validate.isComplete($el); ">
+{% endif %}
+
+    {% if form.getTitle and not form.getHeader %}
+        <h2>{{ form.getTitle }}</h2>
+    {% endif %}
+
+    {% if form.getDescription %}
+        <p>{{ form.getDescription|raw }}</p>
+    {% endif %}
+    
+    {% block header %}
+        <header class="relative flex justify-between items-end mb-2 {{ standardLayout ? '' }}">
+            {% if form.getHeader %}
+                <h2>{{ form.getTitle }}</h2>
+                <div class="linkTop flex justify-end gap-2 h-10 py-px">
+                    {% for action in form.getHeader %}
+                        {{ action.getOutput|raw }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </header>
+    {% endblock header %}
+
+    {% for values in form.getHiddenValues %}
+        <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
+    {% endfor %}
+
+    {% if form.getRows|length > 0 %}
+    <section class="w-full">
+
+        {% for num, row in form.getRows %}
+
+            {% set rowLoop = loop %}
+
+            <div id="{{ row.getID }}" class="{{ row.getClass }} " {{ row.getAttributeString("data-drag-id,x-show,x-transition,x-cloak")|raw }}>
+    
+            {% for element in row.getElements %}
+
+                {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
+                <div class="{{ hasClass ? element.getClass : 'flex-1' }}" >
+                    {{ element.getOutput|raw }}
+                </div>
+            {% endfor %}
+
+            </div>
+        {% endfor %}
+
+    </section>
+    {% endif %}
+
+    {% if javascript %}
+    <script type="text/javascript">
+        {% for code in javascript %}
+            {{ code|raw }}
+        {% endfor %}
+    </script>
+    {% endif %}
+
+{% if form.getAction != 'ajax' %}
+</form>
+{% endif %}
