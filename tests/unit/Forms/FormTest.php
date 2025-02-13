@@ -13,9 +13,12 @@ namespace Gibbon\Forms;
 
 use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Session\TokenHandler;
 use Gibbon\Services\ViewServiceProvider;
 use League\Container\Container;
 use Gibbon\Forms\View\FormView;
+use Gibbon\Contracts\Services\Session as SessionInterface;
+use Gibbon\Session\Session;
 
 /**
  * @covers Form
@@ -59,8 +62,12 @@ class FormTest extends TestCase
             return $twig;
         });
 
-        $container->share('token', 'test-token-value');
-
+        $container->share(SessionInterface::class, function () {
+            return new Session('test-guid');
+        });
+        $container->share(TokenHandler::class, function () use ($container) {
+            return new TokenHandler($container->get(SessionInterface::class));
+        });
         $service = new ViewServiceProvider();
         $service->setContainer($container);
         $service->register();
