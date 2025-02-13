@@ -26,6 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 
@@ -40,15 +41,17 @@ class TodaysLessonsTable
     protected $db;
     protected $settingGateway;
     protected $plannerEntryGateway;
+    protected $attendanceLogCourseClassGateway;
 
     protected $homeworkNameSingular;
     protected $homeworkNamePlural;
 
-    public function __construct(Connection $db, SettingGateway $settingGateway, PlannerEntryGateway $plannerEntryGateway)
+    public function __construct(Connection $db, SettingGateway $settingGateway, PlannerEntryGateway $plannerEntryGateway, AttendanceLogCourseClassGateway $attendanceLogCourseClassGateway)
     {
         $this->db = $db;
         $this->db = $settingGateway;
         $this->plannerEntryGateway = $plannerEntryGateway;
+        $this->attendanceLogCourseClassGateway = $attendanceLogCourseClassGateway;
 
         $this->homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
         $this->homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
@@ -99,6 +102,23 @@ class TodaysLessonsTable
                     ? Format::bold($values['lesson']).'<br/>'.Format::small($values['unit'])
                     : Format::bold($values['lesson']);
             });
+
+        if ($viewingAs == 'Teacher') {
+            $table->addColumn('attendance', __('Attendance'))
+                ->context('secondary')
+                ->format(function ($values) {
+                    $classLogs = $this->attendanceLogCourseClassGateway->selectClassAttendanceLogsByDate($values['gibbonCourseClassID'], $values['date'])->fetchAll();
+
+                    $icon = !empty($classLogs) 
+                        ? icon('solid', 'check', 'size-6 fill-current text-green-600') 
+                        : icon('solid', 'question-mark', 'size-6 fill-current text-gray-400');
+
+                    return Format::link(Url::fromModuleRoute('Attendance', 'attendance_take_byCourseClass')->withQueryParams([
+                        'gibbonCourseClassID' => $values['gibbonCourseClassID'],
+                        'date' => $values['date'],
+                    ]), $icon);
+                });
+        }
 
         $table->addColumn('homework', __($this->homeworkNameSingular))
             ->width('10%')

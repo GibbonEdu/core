@@ -29,6 +29,7 @@ v29.0.00
     Changes With Important Notices
 
     Security
+        System: added nonce and CSRF token handling to all POST forms
 
     Tweaks & Additions
         System: removed Date of Birth field from Public Registration when no minimum registration age is set
@@ -36,8 +37,11 @@ v29.0.00
         Library: improved the Library Borrowing page on student profiles
         Library: improved the Lending & Activity Log workflow when scanning in IDs from barcodes
         Library: enabled students to access the Library Borrowing page on their profile
-        User Admin: improved the image uploader in Manage Users, detect invalid images
         Markbook: implemented default grade from Manage Grade Scales in Markbook data entry view
+        Planner: added an attendance indicator to the Today's Lessons list for teachers
+        System Admin: adjusted action access for Column Rows import
+        System Admin: added new imports for Columns and Tie Days to Dates in timetable
+        User Admin: improved the image uploader in Manage Users, detect invalid images
 
     
     Bug Fixes
@@ -49,6 +53,7 @@ v29.0.00
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder
         Timetable Admin: fixed support staff not editable in Course Enrolment by Person
+        Timetable Admin: fixed vertical spacing of date names in Tie Days to Dates
         User Admin: fixed unique username check when values already exist
 
 v28.0.01

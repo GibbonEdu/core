@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                                 ->addClass('ttDates textCenter dull');
                         } else {
                             $column = $row->addColumn()->addClass('ttDates textCenter');
-                            $column->addContent($formattedDate);
+                            $column->addContent($formattedDate)->append('<br/>');
                             if (isset($specialDays[$date]) and $specialDays[$date]['type'] == 'Timing Change') {
                                 $column->addContent(__('Timing Change'))->wrap('<span style="color: #f00" title="'.$specialDays[$date]['name'].'">', '</span>');
                             } else {
