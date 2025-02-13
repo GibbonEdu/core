@@ -65,8 +65,9 @@ class FormTest extends TestCase
         $container->share(SessionInterface::class, function () {
             return new Session('test-guid');
         });
-        $container->share(TokenHandler::class);
-
+        $container->share(TokenHandler::class, function () use ($container) {
+            return new TokenHandler($container->get(SessionInterface::class));
+        });
         $service = new ViewServiceProvider();
         $service->setContainer($container);
         $service->register();
