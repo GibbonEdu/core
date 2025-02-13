@@ -59,6 +59,8 @@ class FormTest extends TestCase
             return $twig;
         });
 
+        $container->share('token', 'test-token-value');
+
         $service = new ViewServiceProvider();
         $service->setContainer($container);
         $service->register();
