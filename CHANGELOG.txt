@@ -29,6 +29,7 @@ v29.0.00
     Changes With Important Notices
 
     Security
+        System: added nonce and CSRF token handling to all POST forms
 
     Tweaks & Additions
         System: removed Date of Birth field from Public Registration when no minimum registration age is set
