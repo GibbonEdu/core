@@ -187,9 +187,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     }
 
     $table->addColumn('name', __('Criteria'));
-    $table->addColumn('criteriaType', __('Type'));
-    $table->addColumn('category', __('Category'))
-        ->format(function ($row) {
+    $table->addColumn('criteriaType', __('Type'))
+        ->description(__('Category'))
+        ->formatDetails(function ($row) {
             return $row['category'] ?? '';
         });
     $table->addColumn('target', __('Target'));
