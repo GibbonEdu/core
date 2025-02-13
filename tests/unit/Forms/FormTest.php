@@ -17,6 +17,8 @@ use Gibbon\Session\TokenHandler;
 use Gibbon\Services\ViewServiceProvider;
 use League\Container\Container;
 use Gibbon\Forms\View\FormView;
+use Gibbon\Contracts\Services\Session as SessionInterface;
+use Gibbon\Session\Session;
 
 /**
  * @covers Form
@@ -60,6 +62,9 @@ class FormTest extends TestCase
             return $twig;
         });
 
+        $container->share(SessionInterface::class, function () {
+            return new Session('test-guid');
+        });
         $container->share(TokenHandler::class);
 
         $service = new ViewServiceProvider();
