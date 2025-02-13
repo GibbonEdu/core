@@ -13,6 +13,7 @@ namespace Gibbon\Forms;
 
 use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Session\TokenHandler;
 use Gibbon\Services\ViewServiceProvider;
 use League\Container\Container;
 use Gibbon\Forms\View\FormView;
@@ -59,7 +60,7 @@ class FormTest extends TestCase
             return $twig;
         });
 
-        $container->share('token', 'test-token-value');
+        $container->share(TokenHandler::class);
 
         $service = new ViewServiceProvider();
         $service->setContainer($container);

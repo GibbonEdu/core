@@ -257,10 +257,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $page;
         });
 
-        $container->share('token', function () {
-            return $this->getLeagueContainer()->get('session')->get('token');
-        });
-
         $container->add(MailerInterface::class, function () use ($container) {
             $view = new View($container->get('twig'));
             return (new Mailer($container->get('session')))->setView($view);

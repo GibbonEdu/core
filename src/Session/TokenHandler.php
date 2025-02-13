@@ -52,6 +52,11 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
         }
     }
 
+    public function getCSRF()
+    {
+        return $this->session->get('token');
+    }
+
     public function validateCsrfToken()
     {
         return !empty($this->session->get('token')) && $this->session->get('token') === $_POST['token'];
@@ -70,15 +75,17 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
     }
 
     /**
-     * Add a nonce to the session's nonce list.
-     *
-     * @param string $nonce
+     * Create and add a nonce to the session's nonce list, then return it.
      */
-    public function addNonce(string $nonce)
+    public function getNonce()
     {
+        $nonce = bin2hex(random_bytes(16));
+
         $nonceList = $this->session->get('nonceList', []);
         $nonceList[] = $nonce;
         $this->session->set('nonceList', $nonceList);
+
+        return $nonce;
     }
 
     /**

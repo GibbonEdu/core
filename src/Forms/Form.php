@@ -92,16 +92,10 @@ class Form implements OutputableInterface
             ->setAction($action)
             ->setMethod($method);
 
-        // Add the CSRF token to all forms
-        $form->addHiddenValue('token', $container->has('token') ? $container->get('token') : '');
-
-         // Generate a nonce and add it to the Session's Nonce List
-         $tokenHandler = $container->get(TokenHandler::class);
-         $nonce = bin2hex(random_bytes(16));
-         $tokenHandler->addNonce($nonce);
-         
-        // Add the nonce token to all forms
-         $form->addHiddenValue('nonce', $nonce);
+        // Add the CSRF and Nonce tokens to all forms
+        $tokenHandler = $container->get(TokenHandler::class);
+        $form->addHiddenValue('token', $tokenHandler->getCSRF());
+        $form->addHiddenValue('nonce', $tokenHandler->getNonce());
        
         // Enable quick save by default on edit and settings pages
         if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
