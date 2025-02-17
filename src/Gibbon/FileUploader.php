@@ -394,7 +394,8 @@ class FileUploader
 
             // Handle Exif rotation
             if (function_exists('exif_read_data')) {
-                $exif = exif_read_data($sourcePath);
+                $imageType = exif_imagetype($sourcePath);
+                $exif = $imageType <= 3 ? exif_read_data($sourcePath) : [];
                 if (!empty($exif['Orientation'])) {
                     switch ($exif['Orientation']) {
                         case 3:
