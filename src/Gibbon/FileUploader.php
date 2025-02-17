@@ -307,13 +307,34 @@ class FileUploader
             return $sourcePath;
         }
 
-        $size = getimagesize($sourcePath);
-        if ($size === false) {
+        $imageInfo = getimagesize($sourcePath);
+        if ($imageInfo === false) {
             return false;
         }
 
-        $width = $srcWidth = $size[0];
-        $height = $srcHeight = $size[1];
+        // If the extension is empty for a temporary file, detect the image type and assign the correct extension
+        if (empty($extension)) {
+
+            $mimeToExtension = [
+                'IMAGETYPE_JPEG' => 'jpg',
+                'IMAGETYPE_PNG' => 'png',
+                'IMAGETYPE_GIF' => 'gif',
+            ];
+
+            $mimeType = $imageInfo[2];
+            $extension = $mimeToExtension[$mimeType] ?? 'jpg';
+
+            if (!in_array($extension, $this->getFileExtensions('Graphics/Design'))) {
+                return $sourcePath;
+            }
+
+            $tempPath = $sourcePath . '.' . $extension;
+            rename($sourcePath, $tempPath);
+            $sourcePath = $tempPath;
+        }
+
+        $width = $srcWidth = $imageInfo[0];
+        $height = $srcHeight = $imageInfo[1];
         $ratio = $height / $width;
         $maxWidth = $maxHeight = $maxSize;
         $srcX = $srcY = $destX = $destY = 0;
@@ -359,6 +380,14 @@ class FileUploader
 
         // Create and output the image
         if ($src = imagecreatefromstring(file_get_contents($sourcePath))) {
+            
+            $destWidth = (int)round($destWidth);
+            $destHeight = (int)round($destHeight);
+            $srcWidth = (int)round($srcWidth);
+            $srcHeight = (int)round($srcHeight);
+            $srcX = (int)round($srcX);
+            $srcY = (int)round($srcY);
+            
             $dst = imagecreatetruecolor($destWidth, $destHeight);
 
             imagecopyresampled($dst, $src, $destX, $destY, $srcX, $srcY, $destWidth, $destHeight, $srcWidth, $srcHeight);
@@ -393,6 +422,10 @@ class FileUploader
 
             if ($src) imagedestroy($src);
             if ($dst) imagedestroy($dst);
+        }
+
+        if (isset($tempPath)) {
+            rename($sourcePath, str_replace('.' . $extension, '', $sourcePath));
         }
 
         return $destPath;
