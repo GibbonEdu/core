@@ -94,7 +94,7 @@ class Form implements OutputableInterface
 
         // Add the CSRF and Nonce tokens to all POST forms
 
-        if($method == 'post') {
+        if(strtolower($method) == 'post') {
             $tokenHandler = $container->get(TokenHandler::class);
             $form->addHiddenValue('token', $tokenHandler->getCSRF());
             $form->addHiddenValue('nonce', $tokenHandler->getNonce());
