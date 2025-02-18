@@ -315,10 +315,6 @@ menu {
     text-transform: uppercase;
 }
 
-.text-xs {
-    font-size: var(--text-xs);
-}
-
 .margin-bottom-2xs {
     margin-bottom: var(--space-2xs);
 }
@@ -330,11 +326,6 @@ menu {
 .font-medium {
     font-weight: 500;
 }
-
-.text-lg {
-    font-size: var(--text-lg);
-}
-
 
 /** timegrid */
 

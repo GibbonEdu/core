@@ -974,7 +974,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '<div id="tt2">';
             $output .= "<div class='w-schedule js-tabs js-w-schedule' data-hide-panel-class='display@md' data-w-schedule-timeline='" . substr($timeStart, 0, 3) . "00" . "-" . substr($timeEnd, 0, 5) . "'>";
 
-
             $output .= '<ul class="w-schedule__controls js-tabs__controls" aria-label="Select day">';
 
             foreach ($days as $index => $day) {
@@ -1039,7 +1038,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $count = 0;
             $output .= '<div class="w-schedule__days js-tabs__panels">';
-            foreach ($days as $day) {
+            foreach ($days as $index=>$day) {
                 if ($day['schoolDay'] == 'Y') {
                     if ($count == 0) {
                         $firstSequence = $day['sequenceNumber'];
@@ -1155,21 +1154,22 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
     $timetableJS = "<script>" .
     "(function () {" .
+    "setInterval(() => {" .
     "var wSchedule = document.getElementsByClassName('js-w-schedule')[0];" .
     "if(wSchedule != undefined) {" .
-    "setTimeout(() => {" .
     "new WSchedule({" .
     "element: wSchedule," .
     "searchData: function (trigger, cb) {" .
     "}" .
     "});" .
-    "}, 2000);" .
     "}" .
+    "}, 200);" .
     "})();" .
     "</script>";
-    $timetableJS .= '<script type="text/javascript" src="/resources/assets/timetable/util.js"></script>';
-    $timetableJS .= '<script type="text/javascript" src="/resources/assets/timetable/weekly-schedule.min.js"></script>';
+    
+    $timetableJS .= '<script type="text/javascript" src="resources/assets/timetable/weekly-schedule.min.js"></script>';
     return $output . $timetableJS;
+
 }
 
 function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $staffCoverage, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $roleCategory = '', $edit = false)
