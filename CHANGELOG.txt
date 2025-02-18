@@ -39,6 +39,7 @@ v29.0.00
         Library: improved the Lending & Activity Log workflow when scanning in IDs from barcodes
         Library: enabled students to access the Library Borrowing page on their profile
         Markbook: implemented default grade from Manage Grade Scales in Markbook data entry view
+        Markbook: enabled filtering by term even if Group Columns by Term is off
         Planner: added an attendance indicator to the Today's Lessons list for teachers
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable
