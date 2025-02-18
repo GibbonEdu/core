@@ -41,6 +41,7 @@ v29.0.00
         Planner: added an attendance indicator to the Today's Lessons list for teachers
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable
+        Timetable Admin: added an Edit Timetable by Class button to Course Enrolment by Class
         User Admin: improved the image uploader in Manage Users, detect invalid images
 
     

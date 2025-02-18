@@ -28,6 +28,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\TimetableGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
     // Access denied
@@ -70,6 +71,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     "gibbonSchoolYearID" => $gibbonSchoolYearID
                 ];
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage.php')->withQueryParams($params));
+            }
+
+            $timetables = $container->get(TimetableGateway::class)->selectTimetablesByClass($gibbonCourseClassID)->fetchAll();
+            if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_byClass.php') && count($timetables) == 1) {
+                $gibbonTTID = $timetables[0]['gibbonTTID'];
+                $page->navigator->addHeaderAction('edit', __('Edit Timetable by Class'))
+                    ->setURL('/modules/Timetable Admin/tt_edit_byClass.php')
+                    ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                    ->addParam('gibbonTTID', $gibbonTTID)
+                    ->addParam('gibbonCourseID', $gibbonCourseID)
+                    ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                    ->displayLabel();
             }
 
             echo '<h2>';
