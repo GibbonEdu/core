@@ -957,16 +957,12 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</tr>';
             $output .= '</table>';
 
-
-            /////////////////////////////////////////////////////////////////////////////////
-            // from here custom timetable start.
-
             $output .= '<div id="tt2">';
             $output .= "<div class='w-schedule js-tabs js-w-schedule' data-hide-panel-class='display@md' data-w-schedule-timeline='" . substr($timeStart, 0, 3) . "00" . "-" . substr($timeEnd, 0, 5) . "'>";
 
-            // mobile tab
+
             $output .= '<ul class="w-schedule__controls js-tabs__controls" aria-label="Select day">';
-            // date loop    
+
             foreach ($days as $index => $day) {
                 if ($day['schoolDay'] == 'Y') {
                     if ($count == 0) {
@@ -1027,8 +1023,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= '</ul>';
 
-
-            // main tt view
             $count = 0;
             $output .= '<div class="w-schedule__days js-tabs__panels">';
             foreach ($days as $day) {
@@ -1078,7 +1072,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= "<div class='w-schedule__col-label text-sm font-medium line-height-1'>" . $specialDays[$dateCheck]['name'] . "</div>";
                     }
 
-                    // timeslot
                     $output .= '<ul class="w-schedule__events">';
                     $dateCorrection = ($day['sequenceNumber'] - 1) - ($firstSequence - 1);
 
@@ -1141,11 +1134,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '<div class="w-schedule__grid js-w-schedule__grid" aria-hidden="true"></div>';
             $output .= '</div>';
             $output .= '</div>';
-
-            // end of custom timetable
-            /////////////////////////////////////////////////////////////////////////////////
             $output .= '</div>';
-
             $output .= '</div>';
         }
     }
@@ -1174,11 +1163,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     global $session;
 
     $schoolCalendarAlpha = 1.0;
-    $ttAlpha = 1.0;
-
-    // if ($session->get('viewCalendarSchool') != 'N' or $session->get('viewCalendarPersonal') != 'N' or $session->get('viewCalendarSpaceBooking') != 'N') {
-    //     $ttAlpha = 0.75;
-    // }
 
     $date = date('Y-m-d', ($startDayStamp + (86400 * $count)));
 
@@ -1230,7 +1214,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
     if ($schoolOpen == false || $offTimetable == true) {
         $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-        // $output .= "<div style='position: relative'>";
         $output .= "<div class='".($offTimetable ? 'bg-blue-200 border border-blue-700 text-blue-700' : 'ttClosure text-red-700')."' style=' position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; '>";
         $output .= "<div style='position: relative; top: 50%' title='".($specialDay['description'] ?? '' )."'>";
         $output .= $offTimetable ? __('School Day').'<br/><br/>'.__('Off Timetable') : __('School Closed');
@@ -1332,7 +1315,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         if ($eventsSpaceBooking != false) {
             $dayTimeStart = $gridTimeStart;
             $startPad = 0;
-            // $output .= "<div style='position: relative'>";
 
             $height = 0;
             $width = (ceil(690 / $daysInWeek) - 20).'px';
@@ -1360,9 +1342,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     ++$zCount;
                 }
             }
-            // $output .= '</div>';
         }
-        // $output .= '</div>';
         $output .= '</td>';
     } else {
 
@@ -1419,7 +1399,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         if ($resultDay->rowCount() == 1) {
             $rowDay = $resultDay->fetch();
             $zCount = 0;
-            // $output .= "<div style='position: relative'>";
 
             //Draw outline of the day
             try {
@@ -1470,8 +1449,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $class = 'ttPeriodCurrent bg-green-100';
                     }
 
-                    // $output .= "<div class='display@md $class' $title style=' position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; '>";
-
                     $output .= "<li class='w-schedule__event-wrapper display@md' style='z-index: 1;'>";
                     $output .= "<div class='w-schedule__event js-w-schedule__event w-schedule__schedule' $title>";
                     $dt = getTimeStr($effectiveStart, $effectiveEnd);
@@ -1484,7 +1461,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= $rowPeriods['name'].'<br/>';
                         $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                     }
-                    // $output .= '</div>';
                     
                     $output .= '</div>';
                     $output .= '</li>';
@@ -1770,7 +1746,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 //Add planner link icons for staff looking at own TT.
                                     if ($self == true and $roleCategory == 'Staff') {
                                         if ($height >= 30) {
-                                            // $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                                 //Check for lesson plan
                                                 $bgImg = 'none';
 
@@ -1798,14 +1773,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                                     $output .= '</a>';
                                                 }
                                             }
-                                            // $output .= '</div>';
                                             ++$zCount;
                                             
                                         }
                                     }
                                     //Add planner link icons for any one else's TT
                                     else {
-                                        // $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                         //Check for lesson plan
                                         $bgImg = 'none';
 
@@ -1826,7 +1799,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                                 $output .= "<div style='float: right; margin: ".($height - 17)."px 5px 0 0'>".__('Multiple').'</div>';
                                             }
                                         }
-                                        // $output .= '</div>';
                                         ++$zCount;
                                     }
                             }
@@ -1891,7 +1863,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $dt = getTimeStr(date('H:i:s', $event[2]), date('H:i:s', $event[3]));
                         $output .= "<time class='text-sm opacity-60% text-xs@md' style='display:none;' datetime='" . $dt . "'></time><br/>";
 
-                        // $output .= "<div class='{$class}' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
                         if ($height >= 26) {
                             $output .= __('Activity').'<br/>';
                         }
@@ -1906,8 +1877,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         } elseif (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
                             $output .= $event[4].'<br/>';
                         }
-                        // $output .= '</div>';
-
 
                         $output .= '</div>';
                         $output .= '</div>';
@@ -2050,15 +2019,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     }
                 }
             }
-
-            // $output .= '</div>';
         }
 
         //Draw space bookings and staff coverage
         if ($eventsSpaceBooking != false) {
             $dayTimeStart = $gridTimeStart;
             $startPad = 0;
-            // $output .= "<div style='position: relative'>";
 
             $height = 0;
             $top = 0;
@@ -2084,7 +2050,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     ++$zCount;
                 }
             }
-            // $output .= '</div>';
         }
     }
 
@@ -2235,7 +2200,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         >";
 
             $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
-            // $output .= "<input type='hidden' name='ttDate' x-model='ttDate'>";
 
             $output .= "<div>";
                 $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
