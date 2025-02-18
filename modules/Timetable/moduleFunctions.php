@@ -912,214 +912,48 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $output .= '750px';
             }
             $output .= ";'>";
-                //Spit out controls for displaying calendars
-                if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
-                    $output .= "<tr class='head' style='height: 37px;'>";
-                    $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
+            //Spit out controls for displaying calendars
+            if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
+                $output .= "<tr class='head' style='height: 37px;'>";
+                $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
 
-                    $output .= "<form class='py-2'
-                        hx-post='".$apiEndpoint->withQueryParam('ttDate', date($session->get('i18n')['dateFormatPHP'], $startDayStamp))."' 
-                        hx-trigger='change'
-                        hx-target='closest #tt' 
-                        hx-select='#tt'
-                        hx-swap='outerHTML' 
-                        hx-vals='{\"ttCheckbox\": \"true\", \"edit\": \"".$edit."\"}'
-                    >";
+                $output .= "<form class='py-2'
+                    hx-post='".$apiEndpoint->withQueryParam('ttDate', date($session->get('i18n')['dateFormatPHP'], $startDayStamp))."' 
+                    hx-trigger='change'
+                    hx-target='closest #tt' 
+                    hx-select='#tt'
+                    hx-swap='outerHTML' 
+                    hx-vals='{\"ttCheckbox\": \"true\", \"edit\": \"".$edit."\"}'
+                >";
 
-                    $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
-                    if ($displayCalendars && $session->has('calendarFeed')) {
-                        $checked = $session->get('viewCalendarSchool') == 'Y' ? 'checked' : '';
-                        $output .= "<span class='ttSchoolCalendar rounded-sm'>".__('School Calendar');
-                        $output .= "<input $checked class='ml-2' type='checkbox' name='schoolCalendar' value='Y' class='ttCheckbox' />";
+                $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
+                if ($displayCalendars && $session->has('calendarFeed')) {
+                    $checked = $session->get('viewCalendarSchool') == 'Y' ? 'checked' : '';
+                    $output .= "<span class='ttSchoolCalendar rounded-sm'>".__('School Calendar');
+                    $output .= "<input $checked class='ml-2' type='checkbox' name='schoolCalendar' value='Y' class='ttCheckbox' />";
+                    $output .= '</span>';
+                }
+                if ($displayCalendars && $session->has('calendarFeedPersonal')) {
+                    $checked = $session->get('viewCalendarPersonal') == 'Y' ? 'checked' : '';
+                    $output .= "<span class='ttPersonalCalendar rounded-sm'>".__('Personal Calendar');
+                    $output .= "<input $checked class='ml-2' type='checkbox' name='personalCalendar' value='Y' class='ttCheckbox' />";
+                    $output .= '</span>';
+                }
+                if ($spaceBookingAvailable) {
+                    if ($session->get('viewCalendarSpaceBooking') != '') {
+                        $checked = $session->get('viewCalendarSpaceBooking') == 'Y' ? 'checked' : '';
+                        $output .= "<span class='ttSpaceBookingCalendar rounded-sm'><a style='color: #fff' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
+                        $output .= "<input $checked class='ml-2' type='checkbox' name='spaceBookingCalendar' value='Y' class='ttCheckbox' aria-label='".__('Space Booking Calendar')."' />";
                         $output .= '</span>';
                     }
-                    if ($displayCalendars && $session->has('calendarFeedPersonal')) {
-                        $checked = $session->get('viewCalendarPersonal') == 'Y' ? 'checked' : '';
-                        $output .= "<span class='ttPersonalCalendar rounded-sm'>".__('Personal Calendar');
-                        $output .= "<input $checked class='ml-2' type='checkbox' name='personalCalendar' value='Y' class='ttCheckbox' />";
-                        $output .= '</span>';
-                    }
-                    if ($spaceBookingAvailable) {
-                        if ($session->get('viewCalendarSpaceBooking') != '') {
-                            $checked = $session->get('viewCalendarSpaceBooking') == 'Y' ? 'checked' : '';
-                            $output .= "<span class='ttSpaceBookingCalendar rounded-sm'><a style='color: #fff' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
-                            $output .= "<input $checked class='ml-2' type='checkbox' name='spaceBookingCalendar' value='Y' class='ttCheckbox' aria-label='".__('Space Booking Calendar')."' />";
-                            $output .= '</span>';
-                        }
-                    }
-
-                    $output .= '</form>';
-
-                    $output .= '</th>';
-                    $output .= '</tr>';
                 }
 
-                            // if(false) {
+                $output .= '</form>';
 
-            $output .= "<tr class='head'>";
-            $output .= "<th style='vertical-align: top; width: 70px; text-align: center'>";
-            //Calculate week number
-            $week = getWeekNumber($startDayStamp, $connection2, $guid);
-            if ($week != false) {
-                $output .= sprintf(__('Week %1$s'), $week).'<br/>';
-            }
-            $output .= "<span style='font-weight: normal; font-style: italic;'>".__('Time').'<span>';
-            $output .= '</th>';
-            $count = 0;
-            foreach ($days as $day) {
-                if ($day['schoolDay'] == 'Y') {
-                    if ($count == 0) {
-                        $firstSequence = $day['sequenceNumber'];
-                    }
-                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
-
-                    unset($rowDay);
-                    $color = '';
-
-                    $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
-                    $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
-                    $resultDay = $connection2->prepare($sqlDay);
-                    $resultDay->execute($dataDay);
-                    if ($resultDay->rowCount() == 1) {
-                        $rowDay = $resultDay->fetch();
-                        if ($rowDay['color'] != '') {
-                            $color .= "; background-color: ".$rowDay['color']."; background-image: none";
-                        }
-                        if ($rowDay['fontColor'] != '') {
-                            $color .= "; color: ".$rowDay['fontColor'];
-                        }
-                    }
-
-                    $today = ((date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($session->get('i18n')['dateFormatPHP'])) ? "class='ttToday'" : '');
-                    $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
-
-                    if ($narrow == 'trim') {
-                        $output .= (550 / $daysInWeek);
-                    }
-                    elseif ($narrow == 'narrow') {
-                        $output .= (375 / $daysInWeek);
-                    }
-                    else {
-                        $output .= (550 / $daysInWeek);
-                    }
-                    $output .= "px".$color."'>";
-                    if ($nameShortDisplay != 'Timetable Day Short Name') {
-                        $output .= __($day['nameShort']).'<br/>';
-                    }
-                    else {
-                        if (!empty($rowDay['nameShort']) && $rowDay['nameShort'] != '') {
-                            $output .= $rowDay['nameShort'].'<br/>';
-                        }
-                        else {
-                            $output .= __($day['nameShort']).'<br/>';
-                        }
-                    }
-                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
-
-                    $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
-
-                    if (!empty($specialDays[$dateCheck]) && $specialDays[$dateCheck]['type'] == 'Timing Change') {
-                        $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$specialDays[$dateCheck]['name'].'</u></span>';
-                    }
-                    $output .= '</th>';
-                }
-                $count ++;
-            }
-            $output .= '</tr>';
-
-            //Space for all day events
-            if (($eventsSchool == true or $eventsPersonal == true) and $allDay == true and $eventsCombined != null) {
-                $output .= "<tr style='height: ".((31 * $maxAllDays) + 5)."px'>";
-                $output .= "<td style='vertical-align: top; width: 70px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
-                $output .= "<span style='font-size: 80%'><b>".sprintf(__('All Day%1$s Events'), '<br/>').'</b></span>';
-                $output .= '</td>';
-                $output .= "<td colspan=$daysInWeek style='vertical-align: top; width: 50px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
-                $output .= '</td>';
+                $output .= '</th>';
                 $output .= '</tr>';
             }
 
-            $output .= "<tr style='height:".(ceil($diffTime / 60) + 14)."px'>";
-            $output .= "<td class='ttTime' style='height: 300px; width: 55px; max-width: 55px; text-align: center; vertical-align: top'>";
-            $output .= "<div style='position: relative;'>";
-            $countTime = 0;
-            $time = $timeStart;
-            $output .= "<div $title style=' position: absolute; top: -3px; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
-            $output .= substr($time, 0, 5).'<br/>';
-            $output .= '</div>';
-            $time = date('H:i:s', strtotime($time) + 3600);
-            $spinControl = 0;
-            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
-                ++$countTime;
-                $output .= "<div $title style=' position: absolute; top:".(($countTime * 60) - 5)."px ; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
-                $output .= substr($time, 0, 5).'<br/>';
-                $output .= '</div>';
-                $time = date('H:i:s', strtotime($time) + 3600);
-                ++$spinControl;
-            }
-
-            $output .= '</div>';
-            $output .= '</td>';
-            //Run through days of the week
-            foreach ($days as $day) {
-                if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
-
-                    //Check to see if day is term time
-                    $isDayInTerm = false;
-                    try {
-                        $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                        $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-                        $resultTerm = $connection2->prepare($sqlTerm);
-                        $resultTerm->execute($dataTerm);
-                    } catch (PDOException $e) {
-                    }
-                    while ($rowTerm = $resultTerm->fetch()) {
-                        if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
-                            $isDayInTerm = true;
-                        }
-                    }
-
-                    $isSchoolOpen = true;
-                    $specialDayStart = '';
-                    $specialDayEnd = '';
-                    $specialDay = [];
-
-                    if ($isDayInTerm == true) {
-                        //Check for school closure day
-                        $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
-
-                        $specialDay = $specialDays[$dateCheck] ?? [];
-                        
-
-                        if (!empty($specialDay)) {
-                            $specialDay['gibbonYearGroupIDList'] = explode(',', $specialDay['gibbonYearGroupIDList'] ?? '');
-                            $specialDay['gibbonFormGroupIDList'] = explode(',', $specialDay['gibbonFormGroupIDList'] ?? '');
-
-                            if ($specialDay['type'] == 'School Closure') {
-                                $isSchoolOpen = false;
-                            } elseif ($specialDay['type'] == 'Timing Change' || $specialDay['type'] == 'Off Timetable') {
-                                $specialDayStart = $specialDay['schoolStart'];
-                                $specialDayEnd = $specialDay['schoolEnd'];
-                            } elseif ($specialDay['type'] == 'Off Timetable') {
-                                $specialDayStart = $specialDay['schoolStart'];
-                                $specialDayEnd = $specialDay['schoolEnd'];
-                            }
-                        }
-                    } else {
-                        $isSchoolOpen = false;
-                    }
-
-                    $dayOutput =  renderTTDay($guid, $connection2, $row['gibbonTTID'], $isSchoolOpen, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities ?? [], $staffDuty ?? [], $staffCoverage ?? [], $diffTime, $maxAllDays, $narrow, $specialDayStart, $specialDayEnd, $specialDay, $roleCategory, $edit);
-
-                    if ($dayOutput == '') {
-                        $dayOutput .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
-                    }
-
-                    $output .= $dayOutput;
-                }
-            }
-
-        // }
             $output .= '</tr>';
             $output .= '</table>';
 
