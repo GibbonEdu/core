@@ -191,16 +191,16 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 {
     global $container, $session;
 
-    $settingGateway = $container->get(SettingGateway::class);
-    $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
-    $ssoMicrosoft = json_decode($ssoMicrosoft, true);
     $calendarEventsCache = 'calendarCache-'.date('W', $startDayStamp).'-'.substr($xml, 0, 24);
-
     $calendarRefresh = $_REQUEST['ttCalendarRefresh'] ?? false;
 
     if ($session->has($calendarEventsCache) && (empty($calendarRefresh) || $calendarRefresh == 'false')) {
         return $session->get($calendarEventsCache);
     }
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
+    $ssoMicrosoft = json_decode($ssoMicrosoft, true);
 
     if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
         $eventsSchool = [];
@@ -282,6 +282,20 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         } else {
             $count = 0;
             foreach ($calendarListEntry as $entry) {
+                $hideEvent = false;
+
+                // Prevent displaying events that this user has declined
+                $email = $session->get('email');
+                $attendees = $entry['attendees'] ?? [];
+                foreach ($attendees as $attendee) {
+                    if (!empty($attendee['email']) && $attendee['email'] != $email) continue;
+                    if (!empty($attendee['responseStatus']) && strtolower($attendee['responseStatus'])  == 'declined') {
+                        $hideEvent = true;
+                    }
+                }
+
+                if ($hideEvent) continue;
+                
                 $multiDay = false;
                 if (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
                     $multiDay = true;

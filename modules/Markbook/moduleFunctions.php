@@ -92,38 +92,32 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         ->setClass('flex-1')
         ->setValue($search);
 
-    // TERM
-    if ($enableGroupByTerm == 'Y' ) {
-        $selectTerm = ($session->has('markbookTerm'))? $session->get('markbookTerm') : 0;
-        $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
+    $selectTerm = ($session->has('markbookTerm'))? $session->get('markbookTerm') : -1;
+    $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
 
-        if (!isset($_GET['gibbonSchoolYearTermID'])) { //Set to current term if not already set
-            $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-            $currentTerm = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
-            if (isset($currentTerm['gibbonSchoolYearTermID'])) {
-                $selectTerm = $currentTerm['gibbonSchoolYearTermID'];
-            }
-
+    if (!isset($_GET['gibbonSchoolYearTermID']) && $enableColumnWeighting == 'Y') { //Set to current term if not already set
+        $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+        $currentTerm = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+        if (isset($currentTerm['gibbonSchoolYearTermID'])) {
+            $selectTerm = $currentTerm['gibbonSchoolYearTermID'];
         }
-        
-        $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-        $result = $pdo->executeQuery($data, $sql);
-        $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':')->setClass('flex-shrink');
-        $col->addSelect('gibbonSchoolYearTermID')
-            ->fromArray(array('-1' => __('All Terms')))
-            ->fromArray($terms)
-            ->selected($selectTerm)
-            ->setClass('flex-1');
-
-        $session->set('markbookTermName', isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm);
-        $session->set('markbookTerm', $selectTerm);
-    } else {
-        $session->set('markbookTerm', 0);
-        $session->set('markbookTermName', __('All Columns'));
     }
+    
+    $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
+    $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+    $result = $pdo->executeQuery($data, $sql);
+    $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+    $col->addContent(__('Term').':')->setClass('flex-shrink');
+    $col->addSelect('gibbonSchoolYearTermID')
+        ->fromArray(array('-1' => __('All Terms')))
+        ->fromArray($terms)
+        ->selected($selectTerm)
+        ->setClass('flex-1');
+
+    $session->set('markbookTermName', isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm);
+    $session->set('markbookTerm', $selectTerm);
 
     // SORT BY
     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$session->get('gibbonSchoolYearID') );
