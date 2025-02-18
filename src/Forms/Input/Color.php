@@ -25,12 +25,15 @@ use Gibbon\View\Component;
 
 /**
  * Color
+ * 
+ * Color palette: https://tailscan.com/colors
  *
  * @version v21
  * @since   v21
  */
 class Color extends Input
 {
+    protected $showField = true;
     /**
      * Create an HTML color input.
      * @param  string  $name
@@ -46,6 +49,12 @@ class Color extends Input
         );
     }
 
+    public function hideField()
+    {
+        $this->showField = false;
+        return $this;
+    }
+
     /**
      * Gets the HTML output for this form element.
      * @return  string
@@ -53,7 +62,8 @@ class Color extends Input
     protected function getElement()
     {
         return Component::render(Color::class, $this->getAttributeArray() + [
-            'color' => !empty($this->getValue()) ? $this->getValue() : '#ffffff'
+            'color'     => !empty($this->getValue()) ? $this->getValue() : '#ffffff',
+            'showField' => $this->showField,
         ]);
     }
 }
