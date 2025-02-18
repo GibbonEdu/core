@@ -443,7 +443,9 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             $info .= '</ul>';
 
-            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='padding: 0px 0px 30px 0px !important; text-align: center;vertical-align: top;'>";
+            $columnColor =  $column->getData('columnColor');
+            $columnColor = !empty($columnColor) && strtolower($columnColor) != '#ffffff'? 'background-color: '.preg_replace('/[^a-zA-Z0-9\#]/', '', $columnColor).'88;' : '';
+            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='padding: 0px 0px 30px 0px !important; text-align: center;vertical-align: top; {$columnColor}'>";
 
             echo ($canEditThisClass) ? "<div class='dragtable-drag-handle'></div>" :  "<br/>";
 
@@ -493,13 +495,13 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             	echo '</th>';
             } else {
                 if ($enableModifiedAssessment == 'Y') {
-                    echo "<th class='columnLabel smallColumn'>";
+                    echo "<th class='columnLabel smallColumn' style='{$columnColor}'>";
                         echo __('Mod');
                     echo '</th>';
                 }
                 if ($column->displayAttainment() ) {
 
-                    echo "<th class='columnLabel medColumn'>";
+                    echo "<th class='columnLabel medColumn' style='{$columnColor}'>";
 
                     $scale = '';
                     if ($markbook->getSetting('enableRawAttainment') == 'Y' && $session->has('markbookFilter') ) {
@@ -528,7 +530,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     echo '</th>';
                 }
                 if ($column->displayEffort() ) {
-                    echo "<th class='columnLabel medColumn'>";
+                    echo "<th class='columnLabel medColumn' style='{$columnColor}'>";
                     
                         $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDEffort'));
                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -547,17 +549,17 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     echo '</th>';
                 }
                 if ($column->displayComment()) {
-                    echo "<th class='columnLabel largeColumn'>";
+                    echo "<th class='columnLabel largeColumn' style='{$columnColor}'>";
                     echo "<span title='".__('Comment')."'>".__('Com').'</span>';
                     echo '</th>';
                 }
                 if ($column->displayUploadedResponse()) {
-                    echo "<th class='columnLabel smallColumn'>";
+                    echo "<th class='columnLabel smallColumn' style='{$columnColor}'>";
                     echo "<span title='".__('Uploaded Response')."'>".__('Upl').'</span>';
                     echo '</th>';
                 }
                 if ($column->displaySubmission()) {
-                    echo "<th class='columnLabel smallColumn'>";
+                    echo "<th class='columnLabel smallColumn' style='{$columnColor}'>";
                     echo "<span title='".__('Submitted Work')."'>".__('Sub').'</span>';
                     echo '</th>';
 
