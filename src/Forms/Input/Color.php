@@ -34,6 +34,8 @@ use Gibbon\View\Component;
 class Color extends Input
 {
     protected $showField = true;
+    protected $palette = 'default';
+
     /**
      * Create an HTML color input.
      * @param  string  $name
@@ -49,6 +51,23 @@ class Color extends Input
         );
     }
 
+    /**
+     * Set a named color palette for this field to use.
+     *
+     * @param string $palette
+     * @return self
+     */
+    public function setPalette(string $palette)
+    {
+        $this->palette = $palette;
+        return $this;
+    }
+
+    /**
+     * Hides the text field that displays the hex color value.
+     *
+     * @return self
+     */
     public function hideField()
     {
         $this->showField = false;
@@ -64,6 +83,7 @@ class Color extends Input
         return Component::render(Color::class, $this->getAttributeArray() + [
             'color'     => !empty($this->getValue()) ? $this->getValue() : '#ffffff',
             'showField' => $this->showField,
+            'palette'   => $this->palette,
         ]);
     }
 }

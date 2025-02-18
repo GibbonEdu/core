@@ -1,9 +1,15 @@
 <div class="flex-grow relative inline-flex items-center gap-2" x-data="{'colorSelected': '<?= $color; ?>', isOpen: false, colors: [
-'#ffffff','#f5f5f5','#d4d4d4','#737373','#404040','#171717','#000000',
-'#b91c1c','#c2410c','#a16207','#15803d','#0e7490','#1d4ed8','#6d28d9','#be185d',
-'#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#3b82f6','#8b5cf6','#ec4899',
-'#fca5a5','#fdba74','#fde047','#86efac','#5eead4','#93c5fd','#c4b5fd','#f9a8d4',
-'#fee2e2','#ffedd5','#fef9c3','#dcfce7','#ccfbf1','#dbeafe','#ede9fe','#fce7f3',
+<?php if ($palette == 'background') { ?>
+    '#ffffff','#f5f5f5','#e5e5e5','#d4d4d4','#a3a3a3','#737373','#525252',
+    '#fca5a5','#fdba74','#fde047','#86efac','#5eead4','#93c5fd','#c4b5fd','#f9a8d4',
+    '#fee2e2','#ffedd5','#fef9c3','#dcfce7','#ccfbf1','#dbeafe','#ede9fe','#fce7f3',
+<?php } else { ?>
+    '#ffffff','#f5f5f5','#d4d4d4','#737373','#404040','#171717','#000000',
+    '#b91c1c','#c2410c','#a16207','#15803d','#0e7490','#1d4ed8','#6d28d9','#be185d',
+    '#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#3b82f6','#8b5cf6','#ec4899',
+    '#fca5a5','#fdba74','#fde047','#86efac','#5eead4','#93c5fd','#c4b5fd','#f9a8d4',
+    '#fee2e2','#ffedd5','#fef9c3','#dcfce7','#ccfbf1','#dbeafe','#ede9fe','#fce7f3',
+<?php }  ?>
 ],}" x-cloak>
 
     <button type="button" @click="isOpen = !isOpen"
@@ -19,8 +25,8 @@
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-75 transform"
         x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-        class="absolute z-50 left-0 top-0 mt-12 rounded-md shadow-lg">
-        <div class="rounded-md bg-white shadow-xs px-4 pt-4 pb-3">
+        class="absolute z-50 top-0 mt-12 rounded-md shadow-lg <?= $showField ? 'left-0' : 'right-0'; ?>">
+        <div class="rounded-md bg-white shadow-xs w-80 px-4 pt-4 pb-3">
             <div class="grid grid-cols-8 justify-center items-center gap-1">
 
             <div class="w-8 h-8 overflow-hidden inline-flex justify-center items-center rounded-full cursor-pointer border-4 border-white focus:outline-none focus:ring"  title="<?= __('Custom Colour'); ?>">
