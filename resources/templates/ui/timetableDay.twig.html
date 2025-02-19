@@ -1,0 +1,47 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
+
+    {% set column = structure.getColumn(day.date) %}
+
+
+    <div class="relative flex flex-col  rounded-b border-b border-r border-l {{ not column ? 'flex-1' }} ">
+        
+        {% set lastTimeEnd = timeRange.getStartDate.format('H:i:s') %}
+
+        {% for item in column %}
+            {% if lastTimeEnd is not empty and item.timeStart != lastTimeEnd %}
+            <div class="flex border-t border-gray-300 {{ not loop.first ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(structure.timeDifference(lastTimeEnd, item.timeStart)) }}px">
+            </div>
+            {% endif %}
+
+            <div class="relative group flex items-start justify-start cursor-pointer border-t border-gray-300 hover:bg-gray-100 transition duration-300 {{ not loop.first ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(item.duration) }}px">
+
+                <div class="flex w-full items-start justify-between border-gray-500 px-3 py-1">
+                    <span class="text-xxs text-gray-500">{{ item.duration >= 20 ? item.name }}</span>
+                    <span class="inline md:hidden lg:inline text-xxs text-gray-500 opacity-0 group-hover:opacity-100 transition duration-300">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+                </div>
+            </div>
+            {% set lastTimeEnd = item.timeEnd %}
+        {% endfor %}
+
+        {% for layer in layers %}
+            {% for item in layer.getItemsByDate(day.date|date('Y-m-d')) %}
+                <div class="absolute left-0 w-full" style="top: {{ structure.timeToPixels(item.timeStart) }}px">
+                {{ include('ui/timetableItem.twig.html') }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+    </div>
+
+
+</div>

@@ -20,6 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\UI\Timetable\Layers\ClassesLayer;
+use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableLayer;
+use Gibbon\UI\Timetable\Layers\TestLayer;
 
 //Gibbon system-wide includes
 include './gibbon.php';
@@ -37,7 +41,7 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-$id = $_REQUEST['gibbonTTID'] ?? '';
+$gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 $narrow = $_REQUEST['narrow'] ?? 'trim';
 
@@ -46,19 +50,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
     include './modules/Timetable/moduleFunctions.php';
-    $ttDate = '';
+    $ttDate = null;
 
     if (!empty($_REQUEST['ttDateNav'])) {
-        $ttDate = Format::timestamp($_REQUEST['ttDateNav']);
+        $ttDate = $_REQUEST['ttDateNav'];
     } elseif (!empty($_REQUEST['ttDateChooser'])) {
-        $ttDate = Format::timestamp($_REQUEST['ttDateChooser']);
+        $ttDate = $_REQUEST['ttDateChooser'];
     } elseif (!empty($_REQUEST['ttDate'])) {
-        $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
+        $ttDate = Format::dateConvert($_REQUEST['ttDate']);
     }
+
+    echo $container->get(Timetable::class)
+        ->create($ttDate)
+        ->setTimetable('00000015', $gibbonPersonID)
+        ->addLayer($container->get(TestLayer::class))
+        ->addLayer($container->get(ClassesLayer::class))
+        ->addCoreLayers()
+        ->getOutput(); 
 
     $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
 
-    $tt = renderTT($guid, $connection2, $gibbonPersonID, $id, false, $ttDate, '', '', $narrow, $edit);
+    $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, Format::timestamp($ttDate), '', '', $narrow, $edit);
     if ($tt != false) {
         $output .= $tt;
     } else {

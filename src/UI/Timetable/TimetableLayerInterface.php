@@ -19,39 +19,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
-
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\QueryableGateway;
+namespace Gibbon\UI\Timetable;
 
 /**
- * School Year Special Day Gateway
+ * Timetable UI: TimetableLayerInterface
  *
- * @version v25
- * @since   v25
+ * @version  v29
+ * @since    v29
  */
-class DaysOfWeekGateway extends QueryableGateway
+interface TimetableLayerInterface
 {
-    use TableAware;
+    public function getName() : string;
 
-    private static $tableName = 'gibbonDaysOfWeek';
-    private static $primaryKey = 'gibbonDaysOfWeekID';
+    public function getActive() : bool;
 
-    public function selectSchoolWeekdays()
-    {
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
+    public function getOrder() : int;
 
-        return $this->db()->select($sql);
-    }
+    public function loadItems(string $dateStart, string $dateEnd, string $gibbonTTID = null, string $gibbonPersonID = null);
 
-    public function getDayOfWeekByDate($date)
-    {
-        $data = ['dayOfWeek' => date('l', strtotime($date))];
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name=:dayOfWeek";
-
-        return $this->db()->selectOne($sql, $data);
-    }
-
-    
+    public function getItemsByDate(string $date, bool $allDay = false) : array;
 }

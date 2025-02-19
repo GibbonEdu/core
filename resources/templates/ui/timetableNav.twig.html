@@ -1,0 +1,56 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<form
+        hx-post='{{ apiEndpoint }}' 
+        hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
+        hx-target='closest #timetable' 
+        hx-select='#timetable'
+        hx-swap='outerHTML' 
+        hx-indicator='#indicator'
+        hx-include='[name="ttDateChooser"],[name="ttCalendarRefresh"]'
+        hx-vals='js:{"edit": "{{ edit }}"}'
+    >
+        <nav id='#ttNav' cellspacing='0' class='flex justify-between items-end w-full mt-2 mb-4'>
+        <input type='hidden' name='ttDateNav' x-model='ttDate'>
+        <input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>
+
+        <div class='flex-1 text-left flex'>
+        <button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+            x-on:click='ttDate="{{ structure.getCurrentDate.modify("-1 week")|date('Y-m-d') }}"'>
+        {{ icon('basic', 'chevron-left', 'inline-block size-5') }}
+        <span class='hidden sm:inline ml-1 sr-only'>{{ __('Last Week') }}</span></button>
+
+        <button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+            x-on:click='ttDate="{{ structure.today.format('Y-m-d') }}"'>{{ __('This Week') }}</button>
+
+        <button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
+            x-on:click='ttDate="{{ structure.getCurrentDate.modify("+1 week")|date('Y-m-d') }}"'><span class='hidden sm:inline mr-1 sr-only'>{{ __('Next Week') }}</span>
+        {{ icon('basic', 'chevron-right', 'inline-block size-5') }}
+        </button>
+        </div>
+
+        <div class='flex-shrink  hidden md:block'>
+        <span id="indicator" class="htmx-indicator submitted leading-relaxed mr-4 inline-block align-middle w-5 h-5 opacity-0"></span>
+        <div class='h-8 px-4 mr-6 text-xs/6 inline-flex items-center rounded border border-gray-400 text-gray-600 bg-gray-100 font-medium'>
+        {{ formatUsing('dateRangeReadable', structure.getStartDate, structure.getEndDate) }}
+        </div>
+        </div>
+
+        <div class='flex-1 text-right inline-flex justify-end'>
+        <button type='button' class='ttNav inline-flex items-center rounded-l px-2 py-1 -mr-px text-base border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
+                x-on:click='ttRefresh=true'>
+        {{ icon('basic', 'refresh', 'size-4') }}
+        </button>
+        <input name='ttDateChooser' id='ttDateChooser' aria-label='{{ __('Choose Date') }}' maxlength=10 value='{{ structure.getCurrentDate|date('Y-m-d') }}' type='date' required class='inline-flex border rounded-r bg-gray-100 text-sm/6 py-1 font-sans w-36 px-3'> 
+        </div>
+
+        </nav>
+    </form>

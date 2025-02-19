@@ -1,0 +1,55 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set duration = structure.timeDifference(item.timeStart, item.timeEnd) %}
+
+{% set colors = {
+    'gray': {
+        'background': 'bg-gray-200',
+        'text'      : 'text-gray-700',
+        'textHover' : 'hover:text-gray-800',
+        'outline'   : 'outline-gray-400',
+        'outlineHover': 'hover:outline-gray-600',
+    },
+    'blue': {
+        'background': 'bg-blue-200',
+        'text'      : 'text-blue-800',
+        'textHover' : 'hover:text-blue-800',
+        'outline'   : 'outline-blue-700/50',
+        'outlineHover': 'hover:outline-blue-600',
+    },
+} %}
+
+{% set color = attribute(colors, item.color|default('gray')) %}
+
+<a class="block  rounded w-full outline outline-1 hover:ring {{ color.background }} {{ color.outline }} {{ color.outlineHover }} " style="height: {{ structure.minutesToPixels(duration) - 6 }}px ">
+
+    {% if duration > 30 %}
+    <div class="flex items-start justify-between  border-gray-500 py-1 px-1.5">
+        <span class="text-xxs text-gray-700 ">{{ item.period }}</span>
+        <span class="inline md:hidden lg:inline text-xxs text-gray-700 ">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+    </div>
+    {% endif %}
+
+    <div class="flex flex-col justify-center gap-1">
+        <span class="text-sm {{ color.text }} font-bold">{{ item.title }}</span>
+        <span class="text-xxs text-gray-700">{{ item.room }}</span>
+    </div>
+
+    {% if false and duration > 40 %}
+    <div class="absolute right-0 bottom-0 mr-1">
+        {% if random(1) == 1 %}
+        {{ icon('solid', 'check', 'size-6 ' ~ color.text ~ ' ' ~ color.textHover ) }}
+        {% else %}
+        {{ icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800') }}
+        {% endif %}
+    </div>
+    {% endif %}
+</a>
