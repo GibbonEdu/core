@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Finance\InvoiceGateway;
-use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -28,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('Manage Fee Categories'));
 
     $gateway = $container->get(InvoiceGateway::class);
