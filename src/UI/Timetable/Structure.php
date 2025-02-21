@@ -108,7 +108,7 @@ class Structure
         }
     }
 
-    public function getTimeRange()
+    public function getTimeRange() : \DatePeriod
     {
         $interval = new \DateInterval('PT1H');
         $this->timeRangeStart = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->getCurrentDate()->format('Y-m-d').' '.$this->timeStart);
@@ -119,7 +119,7 @@ class Structure
         return $timeRange;
     }
 
-    public function getDateRange()
+    public function getDateRange() : \DatePeriod
     {
         return $this->dateRange;
     }
@@ -157,7 +157,7 @@ class Structure
     public function timeToPixels($time)
     {
         if (empty($time)) return 0;
-        
+
         $date = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->getCurrentDate()->format('Y-m-d').' '.$time);
         $diff = $date->diff($this->timeRangeStart);
 
@@ -201,7 +201,6 @@ class Structure
             $this->updateTimeRange($column['timeStart'], $column['timeEnd']);
 
             $column['duration'] = $this->timeDifference($column['timeStart'], $column['timeEnd']);
-
             $columns[$column['date']][$column['nameShort']] = $column;
         }
 

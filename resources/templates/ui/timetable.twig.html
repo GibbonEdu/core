@@ -41,7 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
 
         {% for day in structure.getWeekdays %}
-        <div class="flex-1 flex-col border-r border-l" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
+        <div class="flex-1 flex-col border-r border-l pb-1" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
     
             {% for layer in layers %}
                 {% for item in layer.getItemsByDate(day.date|date('Y-m-d'), true) %}
@@ -58,7 +58,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div class="relative flex flex-row gap-2 xl:gap-3 w-full">
     
         {% if structure.isCurrentWeek and timeRange.getStartDate.format('H:i:s') <= now and timeRange.getEndDate.format('H:i:s') >= now %}
-        <div class="absolute ml-1 w-full left-0" style="top: {{ structure.timeToPixels(now) }}px">
+        <div class="z-10 absolute ml-1 w-full left-0" style="top: {{ structure.timeToPixels(now) }}px">
             <div class="border-b border-blue-500 w-full"></div>
             <div class="absolute origin-center left-0 -mt-3 rounded-full border border-blue-500 bg-blue-500 w-10 shadow">
                 <span class="inline-block text-xxs text-white uppercase leading-loose">{{ structure.getToday.format('G:i') }}</span>
@@ -84,3 +84,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 </div>
    
+<script>
+
+htmx.onLoad(function (content) {
+    $('.ttItem').draggable({
+        // connectToSortable: ".sortableArea",
+        // helper: "clone"
+        containment: '#timetable',
+        revert: true,
+        zIndex: 50,
+        cursor: 'move',
+    });
+});
+
+</script>

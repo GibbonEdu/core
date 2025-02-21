@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\UI\Timetable\Layers\ClassesLayer;
 use Gibbon\UI\Timetable\Timetable;
 use Gibbon\UI\Timetable\TimetableLayer;
 use Gibbon\UI\Timetable\Layers\TestLayer;
@@ -61,11 +60,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     }
 
     echo $container->get(Timetable::class)
-        ->create($ttDate)
+        ->setDate($ttDate)
         ->setTimetable('00000015', $gibbonPersonID)
-        ->addLayer($container->get(TestLayer::class))
-        ->addLayer($container->get(ClassesLayer::class))
-        ->addCoreLayers()
+        // ->addLayer($container->get(TestLayer::class))
+        ->addCoreLayers($container)
         ->getOutput(); 
 
     $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');

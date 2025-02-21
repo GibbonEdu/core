@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\UI\Timetable\TimetableItem;
+use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\UI\Timetable\TimetableLayerInterface;
 
 /**
@@ -35,6 +36,7 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
     protected $name = '';
     protected $active = true;
     protected $type = '';
+    protected $color = '';
     protected $order = 0;
 
     protected $items = [];
@@ -52,6 +54,11 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
     public function getOrder() : int
     {
         return $this->order;
+    }
+
+    public function getColor() : string
+    {
+        return $this->color;
     }
 
     public function createItem(string $date, bool $allDay = false)
@@ -82,5 +89,5 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
         return $this->items[$key] ?? [];
     }
 
-    public abstract function loadItems(string $dateStart, string $dateEnd, string $gibbonTTID = null, string $gibbonPersonID = null);
+    public abstract function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 }

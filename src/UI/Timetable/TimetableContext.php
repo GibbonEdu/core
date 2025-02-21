@@ -21,25 +21,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Timetable;
 
-use Gibbon\UI\Timetable\TimetableContext;
-
 /**
- * Timetable UI: TimetableLayerInterface
+ * Timetable UI: TimetableContext
+ * 
+ * A simple data model to hold contextual information for loading timetable layers.
  *
  * @version  v29
  * @since    v29
  */
-interface TimetableLayerInterface
+class TimetableContext
 {
-    public function getName() : string;
+    protected $data;
 
-    public function getActive() : bool;
+    public function has($key)
+    {
+        return !empty($this->data[$key]);
+    }
 
-    public function getOrder() : int;
+    public function get($key, $default = null)
+    {
+        return $this->data[$key] ?? $default;
+    }
 
-    public function getColor() : string;
+    public function set($key, $value, $default = null)
+    {
+        $this->data[$key] = $value ?? $default;
+    }
 
-    public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
+    public function loadData(array $data)
+    {
+        $this->data = array_merge($this->data, $data);
 
-    public function getItemsByDate(string $date, bool $allDay = false) : array;
+        return $this;
+    }
 }

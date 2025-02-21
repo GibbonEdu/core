@@ -21,10 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Timetable\Layers;
 
-use Gibbon\Domain\Timetable\TimetableDayDateGateway;
-use Gibbon\UI\Timetable\TimetableItem;
-use Gibbon\UI\Timetable\TimetableLayerInterface;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\UI\Timetable\TimetableContext;
 
 /**
  * Timetable UI: ClassesLayer
@@ -41,21 +40,23 @@ class ClassesLayer extends AbstractTimetableLayer
         $this->timetableDayDateGateway = $timetableDayDateGateway;
 
         $this->name = 'Classes';
+        $this->color = 'blue';
         $this->order = 1;
     }
     
-    public function loadItems(string $dateStart, string $dateEnd, string $gibbonTTID = null, string $gibbonPersonID = null) 
+    public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        $classes = $this->timetableDayDateGateway->getTimetabledPeriodsByPersonAndDateRange($gibbonTTID, $gibbonPersonID, $dateStart, $dateEnd)->fetchAll();
+        if (!$context->has('gibbonTTID') || !$context->has('gibbonPersonID')) return;
+
+        $classes = $this->timetableDayDateGateway->getTimetabledPeriodsByPersonAndDateRange($context->get('gibbonTTID'), $context->get('gibbonPersonID'), $dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'))->fetchAll();
 
         foreach ($classes as $class) {
             $this->createItem($class['date'])->loadData([
+                'type'      => $class['period'],
                 'title'     => Format::courseClassName($class['course'], $class['class']),
-                'room'      => $class['roomName'],
-                'period'    => $class['period'],
+                'subtitle'  => $class['roomName'],
                 'timeStart' => $class['timeStart'],
                 'timeEnd'   => $class['timeEnd'],
-                'color'     => 'blue',
             ]);
         }
     }

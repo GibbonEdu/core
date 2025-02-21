@@ -25,8 +25,15 @@ use Gibbon\Http\Url;
 use Gibbon\View\View;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\UI\Timetable\Layers\StaffDutyLayer;
 use Gibbon\UI\Timetable\Structure;
 use Gibbon\UI\Timetable\TimetableLayerInterface;
+use Gibbon\UI\Timetable\Layers\ClassesLayer;
+use Gibbon\UI\Timetable\Layers\ActivitiesLayer;
+use Gibbon\UI\Timetable\Layers\BookingsLayer;
+use Gibbon\UI\Timetable\Layers\CalendarAPILayer;
+use Gibbon\UI\Timetable\Layers\StaffCoverLayer;
+use Gibbon\UI\Timetable\Layers\StaffAbsenceLayer;
 
 /**
  * Timetable UI
@@ -43,26 +50,37 @@ class Timetable implements OutputableInterface
     protected $gibbonPersonID;
     protected $gibbonTTID;
 
+    protected $context;
+
     protected $layers = [];
     
-    public function __construct(View $view, Session $session, Structure $structure)
+    public function __construct(View $view, Session $session, Structure $structure, TimetableContext $context)
     {
         $this->view = $view;
         $this->session = $session;
         $this->structure = $structure;
+        $this->context = $context;
     }
 
-    public function create(string $date = null)
+    public function setDate(string $date = null)
     {
         $this->structure->setDate($date);
         
         return $this;
     }
 
+    public function setContext(TimetableContext $context)
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
     public function setTimetable(string $gibbonTTID, string $gibbonPersonID = null)
     {
-        $this->gibbonPersonID = $gibbonPersonID;
-        $this->gibbonTTID = $gibbonTTID;
+        $this->context->set('gibbonSchoolYearID', $this->session->get('gibbonSchoolYearID'));
+        $this->context->set('gibbonPersonID', $gibbonPersonID);
+        $this->context->set('gibbonTTID', $gibbonTTID);
 
         $this->structure->setTimetable($gibbonTTID);
 
@@ -76,8 +94,16 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
-    public function addCoreLayers()
+    public function addCoreLayers($container)
     {
+        $this->addLayer($container->get(ClassesLayer::class));
+        $this->addLayer($container->get(StaffDutyLayer::class));
+        $this->addLayer($container->get(StaffCoverLayer::class));
+        $this->addLayer($container->get(StaffAbsenceLayer::class));
+        $this->addLayer($container->get(ActivitiesLayer::class));
+        $this->addLayer($container->get(BookingsLayer::class));
+        $this->addLayer($container->get(CalendarAPILayer::class));
+
         return $this;
     }
 
@@ -92,7 +118,7 @@ class Timetable implements OutputableInterface
 
         return $this->view->fetchFromTemplate('ui/timetable.twig.html', [
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
-            'gibbonPersonID' => $this->gibbonPersonID,
+            'gibbonPersonID' => $this->context->get('gibbonPersonID'),
             'structure'      => $this->structure,
             'layers'         => $this->getLayers(),
         ]);
@@ -108,7 +134,7 @@ class Timetable implements OutputableInterface
         foreach ($this->layers as $layer) {
             if (!$layer->getActive()) continue;
 
-            $layer->loadItems($this->structure->getStartDate(), $this->structure->getEndDate(), $this->gibbonTTID, $this->gibbonPersonID);
+            $layer->loadItems($this->structure->getDateRange(), $this->context);
 
             foreach ($layer->getItems() as $item) {
                 if (!$item->allDay) $this->structure->updateTimeRange($item->timeStart, $item->timeEnd);
@@ -145,8 +171,8 @@ class Timetable implements OutputableInterface
     {
         return [
             'q'                    => $_GET['q'] ?? '',
-            'gibbonPersonID'       => $this->gibbonPersonID,
-            'gibbonTTID'           => $this->gibbonTTID,
+            'gibbonPersonID'       => $this->context->get('gibbonPersonID'),
+            'gibbonTTID'           => $this->context->get('gibbonTTID'),
             'schoolCalendar'       => $this->session->get('viewCalendarSchool'),
             'personalCalendar'     => $this->session->get('viewCalendarPersonal'),
             'spaceBookingCalendar' => $this->session->get('viewCalendarSpaceBooking'),

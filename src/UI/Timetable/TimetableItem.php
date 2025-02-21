@@ -32,8 +32,12 @@ namespace Gibbon\UI\Timetable;
 class TimetableItem 
 {
     protected $title;
+    protected $subtitle;
     protected $description;
-    protected $room;
+
+    protected $link;
+    protected $type;
+    protected $index;
 
     protected $color;
     protected $style;
@@ -41,7 +45,6 @@ class TimetableItem
     protected $date;
     protected $allDay;
     
-    protected $period;
     protected $timeStart;
     protected $timeEnd;
 
@@ -54,30 +57,39 @@ class TimetableItem
     /**
      * Allow read-only access of model properties.
      *
-     * @param string $name
+     * @param string $property
      * @return mixed
      */
-    public function __get(string $name)
+    public function __get(string $property)
     {
-        return isset($this->$name) ? $this->$name : null;
+        return isset($this->$property) ? $this->$property : null;
     }
 
     /**
      * Check if a model property exists.
      *
-     * @param string $name
+     * @param string $property
      * @return mixed
      */
-    public function __isset(string $name)
+    public function __isset(string $property)
     {
-        return isset($this->$name);
+        return isset($this->$property);
+    }
+
+    public function set($key, $value, $default = null)
+    {
+        $this->$key = $value ?? $default;
     }
 
     public function loadData(array $data)
     {
         $this->title = $data['title'] ?? $this->title;
+        $this->subtitle = $data['subtitle'] ?? $this->subtitle;
         $this->description = $data['description'] ?? $this->description;
-        $this->room = $data['room'] ?? $this->room;
+        
+        $this->type = $data['type'] ?? $this->type;
+        $this->link = $data['link'] ?? $this->link;
+        $this->index = $data['index'] ?? $this->index;
 
         $this->color = $data['color'] ?? $this->color;
         $this->style = $data['style'] ?? $this->style;
@@ -85,7 +97,6 @@ class TimetableItem
         $this->date = $data['date'] ?? $this->date;
         $this->allDay = $data['allDay'] ?? $this->allDay;
 
-        $this->period = $data['period'] ?? $this->period;
         $this->timeStart = $data['timeStart'] ?? $this->timeStart;
         $this->timeEnd = $data['timeEnd'] ?? $this->timeEnd;
 

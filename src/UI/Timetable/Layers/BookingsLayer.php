@@ -22,47 +22,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 /**
- * Timetable UI: TestLayer
+ * Timetable UI: BookingsLayer
  *
  * @version  v29
  * @since    v29
  */
-class TestLayer extends AbstractTimetableLayer
+class BookingsLayer extends AbstractTimetableLayer
 {
-    public function __construct()
+    protected $facilityBookingGateway;
+
+    public function __construct(FacilityBookingGateway $facilityBookingGateway)
     {
-        $this->name = 'Test Layer';
-        // $this->color = 'purple';
-        $this->order = 10;
+        $this->facilityBookingGateway = $facilityBookingGateway;
+
+        $this->name = 'Bookings';
+        $this->color = 'orange';
+        $this->order = 3;
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        $this->createItem('2025-02-20')->loadData([
-            'type' => 'Event',
-            'title'     => 'Test 1',
-            'timeStart' => '10:45:00',
-            'timeEnd'   => '11:50:00',
-            'color'     => 'red',
-        ]);
+        $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'))->fetchAll();
 
-        $this->createItem('2025-02-21')->loadData([
-            'type' => 'Event',
-            'title'     => 'Test 2',
-            'timeStart' => '07:30:00',
-            'timeEnd'   => '08:55:00',
-        ]);
-
-        $this->createItem('2025-02-18', true)->loadData([
-            'title'     => 'Test 3',
-        ]);
-
-        $this->createItem('2025-02-18')->loadData([
-            'title'     => 'Test 4',
-            'timeStart' => '16:45:00',
-            'timeEnd'   => '18:45:00',
-        ]);
+        foreach ($bookings as $booking) {
+            $this->createItem($booking['date'])->loadData([
+                'type'    => __('Booking'),
+                'title'     => $booking['reason'],
+                'subtitle'  => $booking['name'],
+                'timeStart' => $booking['timeStart'],
+                'timeEnd'   => $booking['timeEnd'],
+            ]);
+        }
     }
 }
