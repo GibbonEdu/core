@@ -45,7 +45,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     
             {% for layer in layers %}
                 {% for item in layer.getItemsByDate(day.date|date('Y-m-d'), true) %}
-                    <div class="" style="top: {{ structure.timeToPixels(item.timeStart) }}px">
+                    <div class="relative" style="top: {{ structure.timeToPixels(item.timeStart) }}px">
                     {{ include('ui/timetableItem.twig.html') }}
                     </div>
                 {% endfor %}
@@ -85,16 +85,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 </div>
    
 <script>
-
 htmx.onLoad(function (content) {
     $('.ttItem').draggable({
-        // connectToSortable: ".sortableArea",
-        // helper: "clone"
         containment: '#timetable',
         revert: true,
         zIndex: 50,
         cursor: 'move',
     });
 });
-
 </script>

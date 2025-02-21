@@ -85,8 +85,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set color = attribute(colors, (item.color ?? layer.getColor)|default('gray')) %}
 {% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
 
-
-<a class="{{ not item.allDay ? 'ttItem' }} flex flex-col w-full rounded outline outline-1 hover:ring overflow-hidden {{ color.background }} {{ color.outline }} {{ color.outlineHover }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} " style="height: {{ structure.minutesToPixels(duration) -1 }}px; " >
+<div class="{{ not item.allDay ? 'ttItem' }} flex flex-col w-full rounded outline outline-1 hover:ring overflow-hidden {{ color.background }} {{ color.outline }} {{ color.outlineHover }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} " style="height: {{ structure.minutesToPixels(duration) -1 }}px; " >
 
     {% if duration >= 40 %}
     <div class="flex items-start justify-between  border-gray-500 py-1 px-1.5">
@@ -97,9 +96,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% if duration >= 15 %}
     <div class="flex flex-col items-center h-full px-2 {{ duration >= 40 ? 'justify-start' : 'justify-center' }}">
-        <span class="inline-block {{ duration > 30 and item.title|length <= 12 ? 'text-sm' : 'text-xxs' }} {{ color.text }} font-bold">
+        <a href="{{ item.link }}" class="inline-block {{ duration > 30 and item.title|length <= 12 ? 'text-sm' : 'text-xxs' }} {{ color.text }} font-bold">
             {{ formatUsing('truncate', item.title, 22) }}
-        </span>
+        </a>
         {% if duration >= 40 %}
         <span class="inline-block text-xxs text-gray-700">
             {{ formatUsing('truncate', item.subtitle, 40) }}
@@ -108,13 +107,21 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
     {% endif %}
 
-    {% if false and duration >= 40 %}
-    <div class="absolute right-0 bottom-0 mr-1">
-        {% if random(1) == 1 %}
-        {{ icon('solid', 'check', 'size-6 ' ~ color.text ~ ' ' ~ color.textHover ) }}
-        {% else %}
-        {{ icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800') }}
-        {% endif %}
-    </div>
+    {% set iconSize = duration >= 50 ? 'size-6' : duration >= 30 ? 'size-5' : 'size-3' %}
+
+    {% if item.primaryAction and duration >= 20 %}
+        {% set action = item.primaryAction %}
+        
+        <a href="{{ action.url }}" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
+            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' text-gray-600 hover:text-gray-800') }}
+        </a>
     {% endif %}
-</a>
+
+    {% if item.secondaryAction and duration >= 20 %}
+        {% set action = item.secondaryAction %}
+
+        <a href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
+            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' text-gray-600 hover:text-gray-800') }}
+        </a>
+    {% endif %}
+</div>

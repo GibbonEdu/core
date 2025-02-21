@@ -24,6 +24,7 @@ namespace Gibbon\UI\Timetable;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\DaysOfWeekGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
 
@@ -38,11 +39,13 @@ class Structure
     protected $session;
     protected $settingGateway;
     protected $daysOfWeekGateway;
+    protected $specialDayGateway;
     protected $timetableGateway;
     protected $timetableColumnGateway;
 
     protected $weekdays;
     protected $columns;
+    protected $specialDays;
 
     protected $currentDate;
     protected $today;
@@ -60,11 +63,12 @@ class Structure
 
     private $pixelRatio = 1.0;
 
-    public function __construct(Session $session, SettingGateway $settingGateway, DaysOfWeekGateway $daysOfWeekGateway, TimetableGateway $timetableGateway, TimetableColumnGateway $timetableColumnGateway)
+    public function __construct(Session $session, SettingGateway $settingGateway, DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, TimetableGateway $timetableGateway, TimetableColumnGateway $timetableColumnGateway)
     {
         $this->session = $session;
         $this->settingGateway = $settingGateway;
         $this->daysOfWeekGateway = $daysOfWeekGateway;
+        $this->specialDayGateway = $specialDayGateway;
         $this->timetableGateway = $timetableGateway;
         $this->timetableColumnGateway = $timetableColumnGateway;
     }
@@ -96,9 +100,10 @@ class Structure
     public function setTimetable($gibbonTTID)
     {
         $this->columns = $this->loadColumns($gibbonTTID);
+        $this->specialDays = $this->loadSpecialDays();
     }
 
-    public function updateTimeRange($timeStart, $timeEnd)
+    public function expandTimeRange($timeStart, $timeEnd)
     {
         if ($timeStart < $this->timeStart || empty($this->timeStart)) {
             $this->timeStart = $timeStart;
@@ -186,10 +191,46 @@ class Structure
         $weekdays = $this->daysOfWeekGateway->selectSchoolWeekdays()->fetchAll();
 
         foreach ($weekdays as $weekday) {
-            $this->updateTimeRange($weekday['schoolStart'], $weekday['schoolEnd']);
+            $this->expandTimeRange($weekday['schoolStart'], $weekday['schoolEnd']);
         }
 
         return $weekdays;
+    }
+
+    protected function loadSpecialDays()
+    {
+        $specialDays = $this->specialDayGateway->selectSpecialDaysByDateRange($this->getStartDate(), $this->getEndDate())->fetchGroupedUnique();
+
+        foreach ($specialDays as $specialDay) {
+
+            if ($specialDay['type'] == 'School Closure') {
+                unset($this->columns[$specialDay['date']]);
+                continue;
+            }
+
+            foreach ($this->getColumn($specialDay['date']) as $index => $period) {
+                if (!($period['timeStart'] >= $specialDay['schoolStart'] && $period['timeStart'] < $specialDay['schoolEnd']) 
+                && !($specialDay['schoolStart'] >= $period['timeStart'] && $specialDay['schoolStart'] < $period['timeEnd'])) {
+                    unset($this->columns[$specialDay['date']][$index]);
+                    continue;
+                }
+
+                if (!empty($specialDay['schoolStart']) && $specialDay['schoolStart'] > $period['timeStart']) {
+                    $period['timeStart'] = $specialDay['schoolStart'];
+                }
+
+                if (!empty($specialDay['schoolEnd']) && $specialDay['schoolEnd'] < $period['timeEnd']) {
+                    $period['timeEnd'] = $specialDay['schoolEnd'];
+                }
+                $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
+
+                $this->columns[$specialDay['date']][$index] = $period;
+            }
+        }
+
+        
+
+        return $specialDays;
     }
 
     protected function loadColumns($gibbonTTID)
@@ -197,11 +238,11 @@ class Structure
         $columnList = $this->timetableColumnGateway->selectTTColumnsByDateRange($gibbonTTID, $this->getStartDate(), $this->getEndDate())->fetchAll();
         $columns = [];
 
-        foreach ($columnList as $column) {
-            $this->updateTimeRange($column['timeStart'], $column['timeEnd']);
+        foreach ($columnList as $period) {
+            $this->expandTimeRange($period['timeStart'], $period['timeEnd']);
 
-            $column['duration'] = $this->timeDifference($column['timeStart'], $column['timeEnd']);
-            $columns[$column['date']][$column['nameShort']] = $column;
+            $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
+            $columns[$period['date']][$period['nameShort']] = $period;
         }
 
         return $columns;

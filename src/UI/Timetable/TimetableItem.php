@@ -48,6 +48,9 @@ class TimetableItem
     protected $timeStart;
     protected $timeEnd;
 
+    protected $primaryAction;
+    protected $secondaryAction;
+
     public function __construct(string $date, bool $allDay = false)
     {
         $this->date = $date;
@@ -79,6 +82,8 @@ class TimetableItem
     public function set($key, $value, $default = null)
     {
         $this->$key = $value ?? $default;
+
+        return $this;
     }
 
     public function loadData(array $data)

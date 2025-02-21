@@ -34,7 +34,6 @@ class TestLayer extends AbstractTimetableLayer
     public function __construct()
     {
         $this->name = 'Test Layer';
-        // $this->color = 'purple';
         $this->order = 10;
     }
     
@@ -57,12 +56,38 @@ class TestLayer extends AbstractTimetableLayer
 
         $this->createItem('2025-02-18', true)->loadData([
             'title'     => 'Test 3',
+        ])->set('primaryAction', [
+            'name'  => 'add',
+            'label' => __('Add lesson plan'),
+            'url'   => '#',
+            'icon'  => 'add',
+        ])->set('secondaryAction', [
+            'name'  => 'view',
+            'label' => __('Add lesson plan'),
+            'url'   => '#',
+            'icon'  => 'view',
         ]);
 
         $this->createItem('2025-02-18')->loadData([
             'title'     => 'Test 4',
             'timeStart' => '16:45:00',
             'timeEnd'   => '18:45:00',
+        ]);
+
+        $this->createItem('2025-02-18')->loadData([
+            'title'     => 'Test 5',
+            'timeStart' => '13:10:00',
+            'timeEnd'   => '14:00:00',
+        ])->set('primaryAction', [
+            'name'  => 'add',
+            'label' => __('Add lesson plan'),
+            'url'   => '#',
+            'icon'  => 'add',
+        ])->set('secondaryAction', [
+            'name'  => 'view',
+            'label' => __('Add lesson plan'),
+            'url'   => '#',
+            'icon'  => 'view',
         ]);
     }
 }

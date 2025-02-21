@@ -110,7 +110,7 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
                     }
                     if ($overlap) break;
                     
-                    $overlap = (($itemA->timeStart >= $itemB->timeStart && $itemA->timeStart < $itemB->timeEnd) || ($itemB->timeStart >= $itemA->timeStart && $itemB->timeStart < $itemA->timeEnd));
+                    $overlap = ($itemA->timeStart >= $itemB->timeStart && $itemA->timeStart < $itemB->timeEnd) || ($itemB->timeStart >= $itemA->timeStart && $itemB->timeStart < $itemA->timeEnd);
                 }
 
                 $itemA->set('index', $overlapIndex);
@@ -129,7 +129,11 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
         $calendarEventsCache = 'calendarAPICache-'.date('W', $startDayStamp).'-'.substr($calendarFeed, 0, 24);
         $calendarRefresh = $_REQUEST['ttCalendarRefresh'] ?? false;
     
-        if ($this->session->has($calendarEventsCache) && (empty($calendarRefresh) || $calendarRefresh == 'false')) {
+        if (!(empty($calendarRefresh) || $calendarRefresh == 'false')) {
+            $this->session->forget($calendarEventsCache);
+        }
+
+        if ($this->session->exists($calendarEventsCache) ) {
             return $this->session->get($calendarEventsCache);
         }
     
@@ -193,8 +197,6 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
         $ssoGoogle = $this->settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
         $ssoGoogle = json_decode($ssoGoogle, true);
     
-        
-    
         if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $this->session->has('googleAPIAccessToken') && $this->session->has('googleAPICalendarEnabled')) {
     
             $eventsSchool = [];
@@ -241,8 +243,6 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
                     } elseif (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
                         $multiDay = true;
                     }
-
-                    $eventsSchool[$count]['date'] = substr($entry['start']['dateTime'], 0, 10);
     
                     if ($multiDay) { //This event spans multiple days
                         if ($entry['start']['date'] != $entry['start']['end']) {

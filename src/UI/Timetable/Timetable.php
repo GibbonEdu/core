@@ -46,11 +46,10 @@ class Timetable implements OutputableInterface
     protected $view;
     protected $session;
     protected $structure;
+    protected $context;
 
     protected $gibbonPersonID;
     protected $gibbonTTID;
-
-    protected $context;
 
     protected $layers = [];
     
@@ -107,11 +106,6 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
-    public function getLayers()
-    {
-        return $this->layers;
-    }
-
     public function getOutput() : string
     {
         $this->loadLayers()->sortLayers();
@@ -120,7 +114,7 @@ class Timetable implements OutputableInterface
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
             'structure'      => $this->structure,
-            'layers'         => $this->getLayers(),
+            'layers'         => $this->layers,
         ]);
     }
 
@@ -137,7 +131,7 @@ class Timetable implements OutputableInterface
             $layer->loadItems($this->structure->getDateRange(), $this->context);
 
             foreach ($layer->getItems() as $item) {
-                if (!$item->allDay) $this->structure->updateTimeRange($item->timeStart, $item->timeEnd);
+                if (!$item->allDay) $this->structure->expandTimeRange($item->timeStart, $item->timeEnd);
             }
         }
 

@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Timetable\Layers;
 
+use Gibbon\Http\Url;
+use Gibbon\Tables\Action;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 use Gibbon\UI\Timetable\TimetableContext;
@@ -57,6 +59,11 @@ class ClassesLayer extends AbstractTimetableLayer
                 'subtitle'  => $class['roomName'],
                 'timeStart' => $class['timeStart'],
                 'timeEnd'   => $class['timeEnd'],
+            ])->set('primaryAction', [
+                'name'  => 'add',
+                'label' => __('Add lesson plan'),
+                'url'   => Url::fromModuleRoute('Planner', 'planner_add'),
+                'icon'  => 'add',
             ]);
         }
     }

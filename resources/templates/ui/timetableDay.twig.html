@@ -9,6 +9,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% set isToday = structure.getToday.format('Y-m-d') == day.date|date('Y-m-d') %}
+{% set indexDepth = {0: '', 1: 'pl-2', 2: 'pl-4', 3: 'pl-6', 4: 'pl-8'} %}
 
 <div class="flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
 
@@ -37,7 +38,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% for layer in layers %}
             {% for item in layer.getItemsByDate(day.date|date('Y-m-d')) %}
-                <div class="absolute left-0 w-full {{ item.index > 0 ? 'pl-' ~ (item.index * 2) }}" style="top: {{ structure.timeToPixels(item.timeStart) }}px">
+                <div class="absolute left-0 w-full {{ attribute(indexDepth, item.index) }}" style="top: {{ structure.timeToPixels(item.timeStart) }}px">
                 {{ include('ui/timetableItem.twig.html') }}
                 </div>
             {% endfor %}
