@@ -61,7 +61,90 @@ class Structure
     protected $timestampStart;
     protected $timestampEnd;
 
-    private $pixelRatio = 1.0;
+    protected $pixelRatio = 1.0;
+
+    protected $colors = [
+        'gray' => [
+            'background'   => 'bg-gray-200',
+            'textLight'       => 'text-gray-400',
+            'text'         => 'text-gray-700',
+            'textHover'    => 'hover:text-gray-800',
+            'outline'      => 'outline-gray-400',
+            'outlineHover' => 'hover:outline-gray-600',
+        ],
+        'blue' => [
+            'background'   => 'bg-blue-200',
+            'textLight'       => 'text-blue-400',
+            'text'         => 'text-blue-800',
+            'textHover'    => 'hover:text-blue-900',
+            'outline'      => 'outline-blue-700/50',
+            'outlineHover' => 'hover:outline-blue-600',
+        ],
+        'cyan' => [
+            'background'   => 'bg-cyan-200',
+            'textLight'       => 'text-cyan-400',
+            'text'         => 'text-cyan-800',
+            'textHover'    => 'hover:text-cyan-900',
+            'outline'      => 'outline-cyan-700/50',
+            'outlineHover' => 'hover:outline-cyan-600',
+        ],
+        'pink' => [
+            'background'   => 'bg-pink-300',
+            'textLight'       => 'text-pink-400',
+            'text'         => 'text-pink-800',
+            'textHover'    => 'hover:text-pink-900',
+            'outline'      => 'outline-pink-800/50',
+            'outlineHover' => 'hover:outline-pink-600',
+        ],
+        'green' => [
+            'background'   => 'bg-green-200',
+            'textLight'       => 'text-green-400',
+            'text'         => 'text-green-800',
+            'textHover'    => 'hover:text-green-900',
+            'outline'      => 'outline-green-700/50',
+            'outlineHover' => 'hover:outline-green-600',
+        ],
+        'teal' => [
+            'background'   => 'bg-teal-200',
+            'textLight'       => 'bg-teal-400',
+            'text'         => 'text-teal-800',
+            'textHover'    => 'hover:text-teal-900',
+            'outline'      => 'outline-teal-700/50',
+            'outlineHover' => 'hover:outline-teal-600',
+        ],
+        'yellow' => [
+            'background'   => 'bg-yellow-200',
+            'textLight'       => 'text-yellow-400',
+            'text'         => 'text-yellow-800',
+            'textHover'    => 'hover:text-yellow-900',
+            'outline'      => 'outline-yellow-700/50',
+            'outlineHover' => 'hover:outline-yellow-600',
+        ],
+        'orange' => [
+            'background'   => 'bg-orange-200',
+            'textLight'       => 'text-orange-400',
+            'text'         => 'text-orange-800',
+            'textHover'    => 'hover:text-orange-800',
+            'outline'      => 'outline-orange-700/50',
+            'outlineHover' => 'hover:outline-orange-600',
+        ],
+        'purple' => [
+            'background'   => 'bg-purple-200',
+            'textLight'       => 'text-purple-400',
+            'text'         => 'text-purple-800',
+            'textHover'    => 'hover:text-purple-900',
+            'outline'      => 'outline-purple-700/50',
+            'outlineHover' => 'hover:outline-purple-600',
+        ],
+        'red' => [
+            'background'   => 'bg-red-200',
+            'textLight'       => 'text-red-400',
+            'text'         => 'text-red-800',
+            'textHover'    => 'hover:text-red-900',
+            'outline'      => 'outline-red-700/50',
+            'outlineHover' => 'hover:outline-red-600',
+        ],
+    ];
 
     public function __construct(Session $session, SettingGateway $settingGateway, DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, TimetableGateway $timetableGateway, TimetableColumnGateway $timetableColumnGateway)
     {
@@ -90,7 +173,7 @@ class Structure
 
     public function setDate($date)
     {
-        $this->currentDate = \DateTimeImmutable::createFromFormat('Y-m-d', $date ?? date('Y-m-d'));
+        $this->currentDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', ($date ?? date('Y-m-d')).' 00:00:00');
         $this->today = new \DateTimeImmutable('now');
 
         $this->weekdays = $this->loadWeekdays();
@@ -147,6 +230,11 @@ class Structure
     public function getColumn($date)
     {
         return $this->columns[$date] ?? [];
+    }
+
+    public function getColors($color = null)
+    {
+        return $this->colors[$this->color ?? $color] ?? $this->colors['gray'];
     }
 
     public function daysInWeek()
@@ -250,7 +338,7 @@ class Structure
 
     protected function calculateDateRange()
     {
-        $this->timestampStart = $this->currentDate->format('U');
+        $this->timestampStart = $this->currentDate->getTimestamp();
 
         for ($i = 0; $i < $this->daysInWeek(); $i++) {
             $this->timestampStart = $this->timestampStart - 86400;
@@ -258,16 +346,16 @@ class Structure
                 break;
             }
         }
-        $this->timestampEnd = $this->timestampStart + (86400 * ($this->daysInWeek() - 1));
+        $this->timestampEnd = $this->timestampStart + (86400 * ($this->daysInWeek() - 1)) + 86399;
 
         for ($i = 0; $i < $this->daysInWeek(); $i++) {
             $this->weekdays[$i]['date'] = date('Y-m-d', $this->timestampStart + (86400 * $i));
         }
 
         return new \DatePeriod(
-            (new \DateTime(date('Y-m-d H:i:s', $this->timestampStart)))->modify('-1 day'),
+            (new \DateTime(date('Y-m-d H:i:s', $this->timestampStart))),
             new \DateInterval('P1D'),
-            (new \DateTime(date('Y-m-d H:i:s', $this->timestampEnd)))->modify('+1 day')
+            (new \DateTime(date('Y-m-d H:i:s', $this->timestampEnd)))
         );
     }
 }

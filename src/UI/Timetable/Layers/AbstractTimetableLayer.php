@@ -46,9 +46,9 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
         return $this->name;
     }
 
-    public function getActive() : bool
+    public function getID() : string
     {
-        return $this->active;
+        return str_replace(' ', '', $this->name);
     }
 
     public function getOrder() : int
@@ -59,6 +59,16 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
     public function getColor() : string
     {
         return $this->color;
+    }
+
+    public function getType() : string
+    {
+        return $this->type;
+    }
+
+    public function isActive() : bool
+    {
+        return $this->active;
     }
 
     public function createItem(string $date, bool $allDay = false)
@@ -87,6 +97,11 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
         $key = $date.'-'.($allDay ? 'Y' : 'N');
 
         return $this->items[$key] ?? [];
+    }
+
+    public function countItems() : int
+    {
+        return count($this->items, COUNT_RECURSIVE) - count($this->items);
     }
 
     public abstract function loadItems(\DatePeriod $dateRange, TimetableContext $context);

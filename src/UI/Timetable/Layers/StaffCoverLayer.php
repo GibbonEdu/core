@@ -42,7 +42,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
 
         $this->name = 'Staff Cover';
         $this->color = 'pink';
-        $this->order = 10;
+        $this->order = 8;
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 

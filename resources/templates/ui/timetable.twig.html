@@ -13,7 +13,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% set now = structure.getToday.format('H:i:s') %}
 
-<div id="timetable" name='tt' x-data='{ ttDate: "", ttRefresh: false, ttActiveDay: "{{ structure.getToday.format('D') }}" }'>
+<div id="timetable" name='tt' x-data='{ ttDate: "", ttID: "{{ gibbonTTID }}", ttRefresh: false, ttActiveDay: "{{ structure.getToday.format('D') }}" }'>
+
+    <div x-data="{{ layersToggle }}">
 
     {{ include('ui/timetableNav.twig.html') }}
 
@@ -81,7 +83,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endfor %}
     </div>
 
-
+    </div>
 </div>
    
 <script>

@@ -21,41 +21,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Timetable\Layers;
 
+use Gibbon\Contracts\Services\Session;
 use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 /**
- * Timetable UI: BookingsLayer
+ * Timetable UI: PersonalCalendarLayer
  *
  * @version  v29
  * @since    v29
  */
-class BookingsLayer extends AbstractTimetableLayer
+class PersonalCalendarLayer extends AbstractCalendarLayer
 {
-    protected $facilityBookingGateway;
+    protected $session;
 
-    public function __construct(FacilityBookingGateway $facilityBookingGateway)
+    public function __construct(Session $session)
     {
-        $this->facilityBookingGateway = $facilityBookingGateway;
+        $this->session = $session;
 
-        $this->name = 'Bookings';
-        $this->color = 'orange';
+        $this->name = 'Personal Calendar';
+        $this->color = 'cyan';
         $this->type = 'optional';
-        $this->order = 3;
+        $this->order = 12;
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'))->fetchAll();
+        if ($context->get('gibbonPersonID') != $this->session->get('gibbonPersonID')) return;
 
-        foreach ($bookings as $booking) {
-            $this->createItem($booking['date'])->loadData([
-                'type'    => __('Booking'),
-                'title'     => $booking['reason'],
-                'subtitle'  => $booking['name'],
-                'timeStart' => $booking['timeStart'],
-                'timeEnd'   => $booking['timeEnd'],
-            ]);
+        if ($personalCalendarFeed = $this->session->get('calendarFeedPersonal', null)) {
+            $this->loadEventsByCalendarFeed($personalCalendarFeed, $dateRange, 'cyan');
         }
+
+        $this->sortOverlappingEvents($dateRange);
     }
 }

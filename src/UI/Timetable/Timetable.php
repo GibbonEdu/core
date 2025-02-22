@@ -31,9 +31,10 @@ use Gibbon\UI\Timetable\TimetableLayerInterface;
 use Gibbon\UI\Timetable\Layers\ClassesLayer;
 use Gibbon\UI\Timetable\Layers\ActivitiesLayer;
 use Gibbon\UI\Timetable\Layers\BookingsLayer;
-use Gibbon\UI\Timetable\Layers\CalendarAPILayer;
 use Gibbon\UI\Timetable\Layers\StaffCoverLayer;
 use Gibbon\UI\Timetable\Layers\StaffAbsenceLayer;
+use Gibbon\UI\Timetable\Layers\SchoolCalendarLayer;
+use Gibbon\UI\Timetable\Layers\PersonalCalendarLayer;
 
 /**
  * Timetable UI
@@ -80,7 +81,7 @@ class Timetable implements OutputableInterface
         $this->context->set('gibbonSchoolYearID', $this->session->get('gibbonSchoolYearID'));
         $this->context->set('gibbonPersonID', $gibbonPersonID);
         $this->context->set('gibbonTTID', $gibbonTTID);
-
+        
         $this->structure->setTimetable($gibbonTTID);
 
         return $this;
@@ -101,7 +102,8 @@ class Timetable implements OutputableInterface
         $this->addLayer($container->get(StaffAbsenceLayer::class));
         $this->addLayer($container->get(ActivitiesLayer::class));
         $this->addLayer($container->get(BookingsLayer::class));
-        $this->addLayer($container->get(CalendarAPILayer::class));
+        $this->addLayer($container->get(SchoolCalendarLayer::class));
+        $this->addLayer($container->get(PersonalCalendarLayer::class));
 
         return $this;
     }
@@ -113,8 +115,11 @@ class Timetable implements OutputableInterface
         return $this->view->fetchFromTemplate('ui/timetable.twig.html', [
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
+            'gibbonTTID'     => $this->context->get('gibbonTTID'),
             'structure'      => $this->structure,
             'layers'         => $this->layers,
+            'layersToggle'   => json_encode($this->getLayersList()),
+            'timetables'     => ['00000015' => 'Secondary Timetable', '00000016' => 'Primary Timetable'],
         ]);
     }
 
@@ -126,7 +131,7 @@ class Timetable implements OutputableInterface
     protected function loadLayers()
     {
         foreach ($this->layers as $layer) {
-            if (!$layer->getActive()) continue;
+            if (!$layer->isActive()) continue;
 
             $layer->loadItems($this->structure->getDateRange(), $this->context);
 
@@ -154,6 +159,14 @@ class Timetable implements OutputableInterface
         });
 
         return $this;
+    }
+
+    protected function getLayersList()
+    {
+        return array_reduce($this->layers, function ($group, $item) {
+            $group[$item->getID()] = 1;
+            return $group;
+        }, []);
     }
 
     /**

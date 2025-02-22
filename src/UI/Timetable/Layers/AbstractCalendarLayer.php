@@ -30,44 +30,18 @@ use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Event;
 
 /**
- * Timetable UI: CalendarAPILayer
+ * Timetable UI: AbstractCalendarLayer
  *
  * @version  v29
  * @since    v29
  */
-class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareInterface
+abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
     
-    protected $settingGateway;
-    protected $session;
+    abstract public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 
-    public function __construct(SettingGateway $settingGateway, Session $session)
-    {
-        $this->settingGateway = $settingGateway;
-        $this->session = $session;
-
-        $this->name = 'Calendar';
-        $this->color = 'green';
-        $this->order = 10;
-    }
-    
-    public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
-    {
-        if ($context->get('gibbonPersonID') != $this->session->get('gibbonPersonID')) return;
-
-        if ($schoolCalendarFeed = $this->session->get('calendarFeed', null)) {
-            $this->loadEventsByFeed($schoolCalendarFeed, $dateRange, 'green');
-        }
-
-        if ($personalCalendarFeed = $this->session->get('calendarFeedPersonal', null)) {
-            $this->loadEventsByFeed($personalCalendarFeed, $dateRange, 'cyan');
-        }
-
-        $this->sortOverlappingEvents($dateRange);
-    }
-
-    protected function loadEventsByFeed($calendarFeed, \DatePeriod $dateRange, $color = null)
+    protected function loadEventsByCalendarFeed($calendarFeed, \DatePeriod $dateRange, $color = null)
     {
         $events = $this->getCalendarEvents($calendarFeed, $dateRange->getStartDate()->getTimestamp(), $dateRange->getEndDate()->getTimestamp());
 
@@ -126,21 +100,24 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
 
     protected function getCalendarEvents(string $calendarFeed, $startDayStamp, $endDayStamp)
     {
+        $settingGateway = $this->getContainer()->get(SettingGateway::class);
+        $session = $this->getContainer()->get(Session::class);
+
         $calendarEventsCache = 'calendarAPICache-'.date('W', $startDayStamp).'-'.substr($calendarFeed, 0, 24);
         $calendarRefresh = $_REQUEST['ttCalendarRefresh'] ?? false;
     
         if (!(empty($calendarRefresh) || $calendarRefresh == 'false')) {
-            $this->session->forget($calendarEventsCache);
+            $session->forget($calendarEventsCache);
         }
 
-        if ($this->session->exists($calendarEventsCache) ) {
-            return $this->session->get($calendarEventsCache);
+        if ($session->exists($calendarEventsCache) ) {
+            return $session->get($calendarEventsCache);
         }
     
-        $ssoMicrosoft = $this->settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
+        $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
         $ssoMicrosoft = json_decode($ssoMicrosoft, true);
     
-        if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $this->session->has('microsoftAPIAccessToken')) {
+        if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
             $eventsSchool = [];
     
             // Create a Graph client
@@ -148,7 +125,7 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
             if (empty($oauthProvider)) return;
     
             $graph = new Graph();
-            $graph->setAccessToken($this->session->get('microsoftAPIAccessToken'));
+            $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
     
             $startOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $startDayStamp));
             $endOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $endDayStamp+ 86399));
@@ -194,10 +171,10 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
             return $eventsSchool;
         }
     
-        $ssoGoogle = $this->settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
+        $ssoGoogle = $settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
         $ssoGoogle = json_decode($ssoGoogle, true);
     
-        if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $this->session->has('googleAPIAccessToken') && $this->session->has('googleAPICalendarEnabled')) {
+        if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) {
     
             $eventsSchool = [];
             $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
@@ -223,7 +200,7 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
                     $hideEvent = false;
     
                     // Prevent displaying events that this user has declined
-                    $email = $this->session->get('email');
+                    $email = $session->get('email');
                     $attendees = $entry['attendees'] ?? [];
                     foreach ($attendees as $attendee) {
                         if (!empty($attendee['email']) && $attendee['email'] != $email) continue;
@@ -294,7 +271,7 @@ class CalendarAPILayer extends AbstractTimetableLayer implements ContainerAwareI
             $eventsSchool = [];
         }
     
-        $this->session->set($calendarEventsCache, $eventsSchool);
+        $session->set($calendarEventsCache, $eventsSchool);
     
         return $eventsSchool;
     }

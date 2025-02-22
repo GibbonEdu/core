@@ -9,48 +9,101 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 <form
-        hx-post='{{ apiEndpoint }}' 
-        hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
-        hx-target='closest #timetable' 
-        hx-select='#timetable'
-        hx-swap='outerHTML' 
-        hx-indicator='#indicator'
-        hx-include='[name="ttDateChooser"],[name="ttCalendarRefresh"]'
-        hx-vals='js:{"edit": "{{ edit }}"}'
-    >
-        <nav id='#ttNav' cellspacing='0' class='flex justify-between items-end w-full mt-2 mb-4'>
-        <input type='hidden' name='ttDateNav' x-model='ttDate'>
-        <input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>
+    hx-post='{{ apiEndpoint }}' 
+    hx-trigger='click from:(button.ttNav), change from:(#ttDateChooser)'
+    hx-target='closest #timetable' 
+    hx-select='#timetable'
+    hx-swap='outerHTML' 
+    hx-indicator='#indicator'
+    hx-include='[name="ttDateChooser"],[name="ttCalendarRefresh"],[name="gibbonTTID"]''
+    hx-vals='js:{"edit": "{{ edit }}"}'
+>
+    <nav id='#ttNav' cellspacing='0' class='flex justify-between items-end w-full mt-2 mb-2'>
+    <input type='hidden' name='ttDateNav' x-model='ttDate'>
+    <input type='hidden' name='ttCalendarRefresh' x-model='ttRefresh'>
+    <input type='hidden' name='gibbonTTID' x-model='ttID'>
 
-        <div class='flex-1 text-left flex'>
+    <div x-data="{layersOpen: false, timetablesOpen: false}" class=' flex-1 flex items-start'>
+    
+        {% if timetables|length > 1 %}
+        <div class="relative">
+            <button type='button' class='inline-flex items-center align-middle rounded-l h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700' @click="timetablesOpen = !timetablesOpen" :class="{'bg-gray-300 text-gray-700': timetablesOpen}">
+            {{ icon('solid', 'calendar', 'inline-block size-4') }}
+                <span class='hidden sm:inline ml-2'>{{ __('Timetables') }}</span>
+            </button>
+
+            <div x-show="timetablesOpen" @click.outside="timetablesOpen = false" class="absolute min-w-48 -mt-px z-10 flex flex-col gap-2 items-start justify-end rounded border bg-white shadow-lg px-3 py-4">
+                {% for timetableID, timetableName in timetables %}
+                
+                <button type='button' class="ttNav inline-flex items-center gap-2 px-1 text-gray-600 hover:text-gray-800 text-sm" @click="ttID = '{{ timetableID }}'">
+                    <input type="radio" x-model="ttID" value="{{ timetableID }}" class="border {{ color.background }} {{ color.textLight }}" >
+                    <label class="select-none whitespace-nowrap">
+                    {{ timetableName }}
+                    </label>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="relative">
+            <button type='button' class='inline-flex items-center align-middle  h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 {{ timetables|length > 1 ? 'rounded-r -ml-px' : 'rounded' }}' @click="layersOpen = !layersOpen" :class="{'bg-gray-300 text-gray-700': layersOpen}">
+            {{ icon('outline', 'layers', 'inline-block size-4') }}
+                <span class='hidden sm:inline ml-2'>{{ __('Layers') }}</span>
+            </button>
+
+            <div x-show="layersOpen" @click.outside="layersOpen = false" class="absolute min-w-48 -ml-px -mt-px z-10 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
+                {% for layer in layers %}
+                    {% if layer.isActive %}
+                    {% set color = structure.getColors(layer.getColor) %}
+
+                    <div class="p-1 flex gap-2 items-center text-gray-700 cursor-pointer mr-4" @click="{{ layer.getID }} = !{{ layer.getID }}" >
+                        <input type="checkbox" x-model="{{ layer.getID }}" name="{{ layer.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ layer.getID }}">
+                        <label class="select-none whitespace-nowrap text-sm" :class="{'line-through opacity-50': !{{ layer.getID }} }" for="{{ layer.getID }}">
+                            {{ layer.getName }}<span class="inline-block ml-2 text-gray-400 text-xs">({{ layer.countItems }}) </span>
+                        </label>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class='flex-shrink  flex'>
+    
         <button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
-            x-on:click='ttDate="{{ structure.getCurrentDate.modify("-1 week")|date('Y-m-d') }}"'>
+        x-on:click='ttDate="{{ structure.getCurrentDate.modify("-1 week")|date('Y-m-d') }}"'>
         {{ icon('basic', 'chevron-left', 'inline-block size-5') }}
-        <span class='hidden sm:inline ml-1 sr-only'>{{ __('Last Week') }}</span></button>
+        <span class='hidden sm:inline sr-only'>{{ __('Last Week') }}</span></button>
 
         <button type='button' class='ttNav inline-flex items-center align-middle h-8 px-4 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
-            x-on:click='ttDate="{{ structure.today.format('Y-m-d') }}"'>{{ __('This Week') }}</button>
+            x-on:click='ttDate="{{ structure.today.format('Y-m-d') }}"' title="{{ __('This Week') }}">
+            {{ icon('basic', 'home', 'inline-block size-4') }}
+            <span class='hidden sm:inline sr-only'>{{ __('This Week') }}</span>
+        </button>
 
+        <div class='hidden lg:inline-flex h-8 px-4 text-xs/6  -ml-px items-center border border-gray-400 text-gray-600 bg-gray-100 font-medium'>
+            {{ formatUsing('dateRangeReadable', structure.getStartDate, structure.getEndDate) }}
+        </div>
+            
         <button type='button' class='ttNav inline-flex items-center align-middle rounded-r h-8 px-3 text-xs/6 border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700 -ml-px'
             x-on:click='ttDate="{{ structure.getCurrentDate.modify("+1 week")|date('Y-m-d') }}"'><span class='hidden sm:inline mr-1 sr-only'>{{ __('Next Week') }}</span>
         {{ icon('basic', 'chevron-right', 'inline-block size-5') }}
         </button>
-        </div>
 
-        <div class='flex-shrink  hidden md:block'>
-        <span id="indicator" class="htmx-indicator submitted leading-relaxed mr-4 inline-block align-middle w-5 h-5 opacity-0"></span>
-        <div class='h-8 px-4 mr-6 text-xs/6 inline-flex items-center rounded border border-gray-400 text-gray-600 bg-gray-100 font-medium'>
-        {{ formatUsing('dateRangeReadable', structure.getStartDate, structure.getEndDate) }}
-        </div>
-        </div>
+    </div>
 
-        <div class='flex-1 text-right inline-flex justify-end'>
-        <button type='button' class='ttNav inline-flex items-center rounded-l px-2 py-1 -mr-px text-base border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'
-                x-on:click='ttRefresh=true'>
-        {{ icon('basic', 'refresh', 'size-4') }}
+    <div class='flex-1 text-right inline-flex justify-end items-center'>
+
+        <span id="indicator" class=" htmx-indicator submitted leading-relaxed mr-4 inline-block w-5 h-5 opacity-0"></span>
+
+        <button type='button' class='ttNav inline-flex items-center rounded-l px-2 py-2 -mr-px text-base border border-gray-400  bg-gray-100 font-medium hover:bg-gray-300 text-gray-600 hover:text-gray-700' x-on:click='ttRefresh=true'>
+            {{ icon('basic', 'refresh', 'size-4') }}
         </button>
         <input name='ttDateChooser' id='ttDateChooser' aria-label='{{ __('Choose Date') }}' maxlength=10 value='{{ structure.getCurrentDate|date('Y-m-d') }}' type='date' required class='inline-flex border rounded-r bg-gray-100 text-sm/6 py-1 font-sans w-36 px-3'> 
-        </div>
+    </div>
 
-        </nav>
-    </form>
+    </nav>
+</form>
+

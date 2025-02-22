@@ -40,7 +40,7 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-$gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
+$gibbonTTID = !empty($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : '00000015';
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 $narrow = $_REQUEST['narrow'] ?? 'trim';
 
@@ -61,8 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
     echo $container->get(Timetable::class)
         ->setDate($ttDate)
-        ->setTimetable('00000015', $gibbonPersonID)
-        ->addLayer($container->get(TestLayer::class))
+        ->setTimetable($gibbonTTID, $gibbonPersonID)
+        // ->addLayer($container->get(TestLayer::class))
         ->addCoreLayers($container)
         ->getOutput(); 
 

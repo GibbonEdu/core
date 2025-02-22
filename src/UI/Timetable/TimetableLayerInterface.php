@@ -33,11 +33,13 @@ interface TimetableLayerInterface
 {
     public function getName() : string;
 
-    public function getActive() : bool;
-
     public function getOrder() : int;
-
+    
     public function getColor() : string;
+    
+    public function getType() : string;
+    
+    public function isActive() : bool;
 
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 

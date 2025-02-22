@@ -41,7 +41,8 @@ class StaffAbsenceLayer extends AbstractTimetableLayer
         $this->staffAbsenceGateway = $staffAbsenceGateway;
 
         $this->name = 'Staff Absence';
-        $this->color = 'pink';
+        $this->color = 'gray';
+        $this->type = 'optional';
         $this->order = 15;
     }
     
