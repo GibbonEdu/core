@@ -25,9 +25,12 @@ include './gibbon.php';
 
 $URL = Url::fromRoute('notifications')->withQueryParam('sidebar', 'false');
 
-if (!isset($_GET['gibbonNotificationID'])) {
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+} elseif (!isset($_GET['gibbonNotificationID'])) {
     header("Location: {$URL->withReturn('error1')}");
-    exit();
+    exit;
 } else {
     $gibbonNotificationID = $_GET['gibbonNotificationID'] ?? '';
 
@@ -39,12 +42,12 @@ if (!isset($_GET['gibbonNotificationID'])) {
         $result->execute($data);
     } catch (PDOException $e) {
         header("Location: {$URL->withReturn('error2')}");
-        exit();
+        exit;
     }
 
     if ($result->rowCount() != 1) {
         header("Location: {$URL->withReturn('error2')}");
-        exit();
+        exit;
     } else {
         //Delete notification
         try {
@@ -54,11 +57,11 @@ if (!isset($_GET['gibbonNotificationID'])) {
             $result->execute($data);
         } catch (PDOException $e) {
             header("Location: {$URL->withReturn('error2')}");
-            exit();
+            exit;
         }
 
         //Success 0
         header("Location: {$URL->withReturn('success0')}");
-        exit();
+        exit;
     }
 }
