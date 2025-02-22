@@ -71,6 +71,11 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
         return $this->active;
     }
 
+    public function setActive(bool $active)
+    {
+        $this->active = $active;
+    }
+
     public function createItem(string $date, bool $allDay = false)
     {
         $item = new TimetableItem($date, $allDay);

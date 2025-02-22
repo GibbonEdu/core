@@ -24,10 +24,11 @@ namespace Gibbon\UI\Timetable;
 use Gibbon\Http\Url;
 use Gibbon\View\View;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\UI\Timetable\Layers\StaffDutyLayer;
 use Gibbon\UI\Timetable\Structure;
 use Gibbon\UI\Timetable\TimetableLayerInterface;
+use Gibbon\UI\Timetable\Layers\StaffDutyLayer;
 use Gibbon\UI\Timetable\Layers\ClassesLayer;
 use Gibbon\UI\Timetable\Layers\ActivitiesLayer;
 use Gibbon\UI\Timetable\Layers\BookingsLayer;
@@ -49,17 +50,20 @@ class Timetable implements OutputableInterface
     protected $structure;
     protected $context;
 
+    protected $userGateway;
+
     protected $gibbonPersonID;
     protected $gibbonTTID;
 
     protected $layers = [];
     
-    public function __construct(View $view, Session $session, Structure $structure, TimetableContext $context)
+    public function __construct(View $view, Session $session, Structure $structure, TimetableContext $context, UserGateway $userGateway)
     {
         $this->view = $view;
         $this->session = $session;
         $this->structure = $structure;
         $this->context = $context;
+        $this->userGateway = $userGateway;
     }
 
     public function setDate(string $date = null)
@@ -110,15 +114,16 @@ class Timetable implements OutputableInterface
 
     public function getOutput() : string
     {
-        $this->loadLayers()->sortLayers();
+        $this->loadLayers()->sortLayers()->toggleLayers();
 
         return $this->view->fetchFromTemplate('ui/timetable.twig.html', [
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
+            'preferencesUrl' => Url::fromHandlerRoute('preferences_ajax.php'),
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
             'gibbonTTID'     => $this->context->get('gibbonTTID'),
             'structure'      => $this->structure,
             'layers'         => $this->layers,
-            'layersToggle'   => json_encode($this->getLayersList()),
+            'layersToggle'   => json_encode($this->getLayerPreferences()),
             'timetables'     => ['00000015' => 'Secondary Timetable', '00000016' => 'Primary Timetable'],
         ]);
     }
@@ -161,10 +166,24 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
-    protected function getLayersList()
+    protected function toggleLayers()
     {
-        return array_reduce($this->layers, function ($group, $item) {
-            $group[$item->getID()] = 1;
+        if (!$this->context->has('gibbonPersonID')) return;
+
+        $user = $this->userGateway->getByID($this->context->get('gibbonPersonID'), ['preferences']);
+        $preferences = !empty($user['preferences']) ? json_decode($user['preferences'] ?? '', true) : []; 
+
+        foreach ($this->layers as $layer) {
+            $layer->setActive($preferences['ttLayers'][$layer->getID()] ?? 1);
+        }
+
+        return $this;
+    }
+
+    protected function getLayerPreferences()
+    {
+        return array_reduce($this->layers, function ($group, $layer) {
+            $group[$layer->getID()] = $layer->isActive();
             return $group;
         }, []);
     }

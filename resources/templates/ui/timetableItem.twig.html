@@ -11,7 +11,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set color = structure.getColors(item.color ?? layer.getColor) %}
 {% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
 
-<div class="{{ not item.allDay ? 'ttItem' }} flex flex-col w-full rounded outline outline-1 hover:ring overflow-hidden {{ color.background }} {{ color.outline }} {{ color.outlineHover }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} " style="height: {{ structure.minutesToPixels(duration) -1 }}px; " :class="{'invisible': !{{ layer.getID }} }">
+<div class="{{ not item.allDay ? 'ttItem' }} flex flex-col w-full rounded outline outline-1 hover:ring overflow-hidden {{ color.background }} {{ color.outline }} {{ color.outlineHover }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} " style="height: {{ structure.minutesToPixels(duration) -1 }}px; " :class="{'hidden': !{{ layer.getID }} }">
 
     {% if duration >= 40 %}
     <div class="flex items-start justify-between  border-gray-500 py-1 px-1.5">

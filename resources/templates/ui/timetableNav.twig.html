@@ -54,16 +54,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             <div x-show="layersOpen" @click.outside="layersOpen = false" class="absolute min-w-48 -ml-px -mt-px z-10 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
                 {% for layer in layers %}
-                    {% if layer.isActive %}
+                    
                     {% set color = structure.getColors(layer.getColor) %}
 
-                    <div class="p-1 flex gap-2 items-center text-gray-700 cursor-pointer mr-4" @click="{{ layer.getID }} = !{{ layer.getID }}" >
-                        <input type="checkbox" x-model="{{ layer.getID }}" name="{{ layer.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ layer.getID }}">
+                    <div class="p-1 flex gap-2 items-center text-gray-700 cursor-pointer mr-4" @click="{{ layer.getID }} = !{{ layer.getID }}" hx-get="{{ preferencesUrl }}" hx-target="this" hx-trigger="click consume" hx-swap="none" hx-include="[name='{{ layer.getID }}']" hx-vals='{"type": "ttLayers", "key": "{{ layer.getID }}", "default": 0}' >
+                        <input type="checkbox" x-model="{{ layer.getID }}" name="{{ layer.getID }}" class="border p-1 {{ color.background }} {{ color.textLight }}" checked="{{ layer.getID }}"  >
                         <label class="select-none whitespace-nowrap text-sm" :class="{'line-through opacity-50': !{{ layer.getID }} }" for="{{ layer.getID }}">
                             {{ layer.getName }}<span class="inline-block ml-2 text-gray-400 text-xs">({{ layer.countItems }}) </span>
                         </label>
                     </div>
-                    {% endif %}
+                    
                 {% endfor %}
             </div>
         </div>
