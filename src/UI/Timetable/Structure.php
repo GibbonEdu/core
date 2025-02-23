@@ -27,6 +27,7 @@ use Gibbon\Domain\School\DaysOfWeekGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 
 /**
  * Timetable UI
@@ -40,6 +41,7 @@ class Structure
     protected $settingGateway;
     protected $daysOfWeekGateway;
     protected $specialDayGateway;
+    protected $schoolYearTermGateway;
     protected $timetableGateway;
     protected $timetableColumnGateway;
 
@@ -146,12 +148,13 @@ class Structure
         ],
     ];
 
-    public function __construct(Session $session, SettingGateway $settingGateway, DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, TimetableGateway $timetableGateway, TimetableColumnGateway $timetableColumnGateway)
+    public function __construct(Session $session, SettingGateway $settingGateway, DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, SchoolYearTermGateway $schoolYearTermGateway, TimetableGateway $timetableGateway, TimetableColumnGateway $timetableColumnGateway)
     {
         $this->session = $session;
         $this->settingGateway = $settingGateway;
         $this->daysOfWeekGateway = $daysOfWeekGateway;
         $this->specialDayGateway = $specialDayGateway;
+        $this->schoolYearTermGateway = $schoolYearTermGateway;
         $this->timetableGateway = $timetableGateway;
         $this->timetableColumnGateway = $timetableColumnGateway;
     }
@@ -182,8 +185,8 @@ class Structure
 
     public function setTimetable($gibbonTTID)
     {
-        $this->columns = $this->loadColumns($gibbonTTID);
         $this->specialDays = $this->loadSpecialDays();
+        $this->columns = $this->loadColumns($gibbonTTID);
     }
 
     public function expandTimeRange($timeStart, $timeEnd)
@@ -227,7 +230,12 @@ class Structure
         return $this->weekdays;
     }
 
-    public function getColumn($date)
+    public function getSpecialDay(string $date)
+    {
+        return $this->specialDays[$date] ?? [];
+    }
+
+    public function getColumn(string $date)
     {
         return $this->columns[$date] ?? [];
     }
@@ -240,6 +248,27 @@ class Structure
     public function daysInWeek()
     {
         return count($this->weekdays);
+    }
+
+    public function isCurrentWeek()
+    {
+        return $this->today->format('W') == $this->currentDate->format('W');
+    }
+
+    public function isSchoolClosed(string $date)
+    {
+        return !empty($this->specialDays[$date]) && $this->specialDays[$date]['type'] == 'School Closure';
+    }
+
+    public function isLayerVisible(string $layerType, string $date)
+    {
+        $column = $this->getColumn($date);
+
+        if ($layerType == 'timetabled' && ($this->isSchoolClosed($date) || empty($column))) {
+            return false;
+        }
+
+        return true;
     }
 
     public function minutesToPixels($minutes)
@@ -269,9 +298,25 @@ class Structure
         return ($diff->h * 60) + $diff->i;
     }
 
-    public function isCurrentWeek()
+    public function constrainTiming($item, $timeStart, $timeEnd)
     {
-        return $this->today->format('W') == $this->currentDate->format('W');
+        if (!empty($timeStart)) {
+            if ($item['timeEnd'] < $timeStart) return [];
+
+            if ($item['timeStart'] < $timeStart) {
+                $item['timeStart'] = $timeStart;
+            }
+        }
+
+        if (!empty($timeEnd)) {
+            if ($item['timeStart'] > $timeEnd) return [];
+
+            if ($item['timeEnd'] > $timeEnd) {
+                $item['timeEnd'] = $timeEnd;
+            }
+        }
+
+        return $item;
     }
 
     protected function loadWeekdays()
@@ -285,38 +330,55 @@ class Structure
         return $weekdays;
     }
 
+    /**
+     * Get special days and add school closures for dates outside of terms.
+     *
+     * @return array
+     */
     protected function loadSpecialDays()
     {
         $specialDays = $this->specialDayGateway->selectSpecialDaysByDateRange($this->getStartDate(), $this->getEndDate())->fetchGroupedUnique();
 
-        foreach ($specialDays as $specialDay) {
+        // foreach ($specialDays as $specialDay) {
+        //     if ($specialDay['type'] == 'School Closure') {
+        //         unset($this->columns[$specialDay['date']]);
+        //         continue;
+        //     }
 
-            if ($specialDay['type'] == 'School Closure') {
-                unset($this->columns[$specialDay['date']]);
-                continue;
-            }
+        //     // Constrain the columns to the special day timings
+        //     // Move this somewhere else so it applies to timetabled items as well?
+        //     foreach ($this->getColumn($specialDay['date']) as $index => $period) {
+        //         if (!($period['timeStart'] >= $specialDay['schoolStart'] && $period['timeStart'] < $specialDay['schoolEnd']) 
+        //         && !($specialDay['schoolStart'] >= $period['timeStart'] && $specialDay['schoolStart'] < $period['timeEnd'])) {
+        //             unset($this->columns[$specialDay['date']][$index]);
+        //             continue;
+        //         }
 
-            foreach ($this->getColumn($specialDay['date']) as $index => $period) {
-                if (!($period['timeStart'] >= $specialDay['schoolStart'] && $period['timeStart'] < $specialDay['schoolEnd']) 
-                && !($specialDay['schoolStart'] >= $period['timeStart'] && $specialDay['schoolStart'] < $period['timeEnd'])) {
-                    unset($this->columns[$specialDay['date']][$index]);
-                    continue;
-                }
+        //         if (!empty($specialDay['schoolStart']) && $specialDay['schoolStart'] > $period['timeStart']) {
+        //             $period['timeStart'] = $specialDay['schoolStart'];
+        //         }
 
-                if (!empty($specialDay['schoolStart']) && $specialDay['schoolStart'] > $period['timeStart']) {
-                    $period['timeStart'] = $specialDay['schoolStart'];
-                }
+        //         if (!empty($specialDay['schoolEnd']) && $specialDay['schoolEnd'] < $period['timeEnd']) {
+        //             $period['timeEnd'] = $specialDay['schoolEnd'];
+        //         }
+        //         $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
 
-                if (!empty($specialDay['schoolEnd']) && $specialDay['schoolEnd'] < $period['timeEnd']) {
-                    $period['timeEnd'] = $specialDay['schoolEnd'];
-                }
-                $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
+        //         $this->columns[$specialDay['date']][$index] = $period;
+        //     }
+        // }
 
-                $this->columns[$specialDay['date']][$index] = $period;
+        // Add school closures for any date outside of a school term
+        $termDates = $this->schoolYearTermGateway->getTermsDatesByDateRange($this->getStartDate(), $this->getEndDate());
+        foreach ($this->getDateRange() as $dateObject) {
+            $date = $dateObject->format('Y-m-d');
+            
+            if (empty($termDates) || $date < $termDates['firstDay'] || $date > $termDates['lastDay']) {
+                $specialDays[$date] = [
+                    'type' => 'School Closure',
+                    'date' => $date
+                ];
             }
         }
-
-        
 
         return $specialDays;
     }
@@ -327,6 +389,14 @@ class Structure
         $columns = [];
 
         foreach ($columnList as $period) {
+            // Constrain column rows based on school closures and timing changes
+            $specialDay = $this->getSpecialDay($period['date']);
+            if (!empty($specialDay)) {
+                if ($specialDay['type'] == 'School Closure') continue;
+
+                $period = $this->constrainTiming($period, $specialDay['schoolStart'], $specialDay['schoolEnd']);
+            }
+
             $this->expandTimeRange($period['timeStart'], $period['timeEnd']);
 
             $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
@@ -338,18 +408,32 @@ class Structure
 
     protected function calculateDateRange()
     {
-        $this->timestampStart = $this->currentDate->getTimestamp();
+        $this->timestampStart = strtotime($this->currentDate->format('Y-m-d'));
+        $firstSchoolDay = $this->weekdays[0]['nameShort'] ?? '';
 
-        for ($i = 0; $i < $this->daysInWeek(); $i++) {
-            $this->timestampStart = $this->timestampStart - 86400;
-            if (date('D', $this->timestampStart) == $this->weekdays[0]['nameShort']) {
-                break;
+        if ($this->currentDate->format('D') == 'Sun' && $firstSchoolDay != 'Sun' ) {
+            $this->timestampStart += 86400;
+        } else {
+            for ($i = 0; $i < 7; $i++) {
+                if (date('D', $this->timestampStart) == $firstSchoolDay) {
+                    break;
+                }
+                $this->timestampStart -= 86400;
             }
         }
-        $this->timestampEnd = $this->timestampStart + (86400 * ($this->daysInWeek() - 1)) + 86399;
 
-        for ($i = 0; $i < $this->daysInWeek(); $i++) {
-            $this->weekdays[$i]['date'] = date('Y-m-d', $this->timestampStart + (86400 * $i));
+        $index = 0;
+        for ($i = 0; $i < 7; $i++) {
+            $timestamp = $this->timestampStart + (86400 * $i);
+            $weekday = $this->weekdays[$index] ?? [];
+
+            if (empty($weekday)) continue;
+
+            if (date('D', $timestamp) == $weekday['nameShort']) {
+                $this->weekdays[$index]['date'] = date('Y-m-d', $timestamp);
+                $this->timestampEnd = $timestamp + 86399;
+                $index++;
+            }
         }
 
         return new \DatePeriod(

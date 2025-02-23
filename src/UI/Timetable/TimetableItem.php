@@ -79,13 +79,27 @@ class TimetableItem
         return isset($this->$property);
     }
 
-    public function set($key, $value, $default = null)
+    /**
+     * Set a property of a given name
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param mixed $default
+     * @return self
+     */
+    public function set(string $property, $value, $default = null)
     {
-        $this->$key = $value ?? $default;
+        $this->$property = $value ?? $default;
 
         return $this;
     }
 
+    /**
+     * Load values from an array into the properties for this object
+     *
+     * @param array $data
+     * @return self
+     */
     public function loadData(array $data)
     {
         $this->title = $data['title'] ?? $this->title;

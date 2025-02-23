@@ -47,5 +47,3 @@ $preferences[$preferenceType][$preferenceKey] = $preferenceValue;
 $userGateway->update($session->get('gibbonPersonID'), [
     'preferences' => json_encode($preferences),
 ]);
-
-// error_log(json_encode($_GET));

@@ -36,6 +36,7 @@ use Gibbon\UI\Timetable\Layers\StaffCoverLayer;
 use Gibbon\UI\Timetable\Layers\StaffAbsenceLayer;
 use Gibbon\UI\Timetable\Layers\SchoolCalendarLayer;
 use Gibbon\UI\Timetable\Layers\PersonalCalendarLayer;
+use Psr\Container\ContainerInterface;
 
 /**
  * Timetable UI
@@ -57,6 +58,15 @@ class Timetable implements OutputableInterface
 
     protected $layers = [];
     
+    /**
+     * Construct via the Container
+     *
+     * @param View $view
+     * @param Session $session
+     * @param Structure $structure
+     * @param TimetableContext $context
+     * @param UserGateway $userGateway
+     */
     public function __construct(View $view, Session $session, Structure $structure, TimetableContext $context, UserGateway $userGateway)
     {
         $this->view = $view;
@@ -66,6 +76,13 @@ class Timetable implements OutputableInterface
         $this->userGateway = $userGateway;
     }
 
+    /**
+     * Set the date for this timetable, which enables the structure to calculate
+     * the current week and all other relative date and time settings.
+     *
+     * @param string|null $date
+     * @return self
+     */
     public function setDate(string $date = null)
     {
         $this->structure->setDate($date);
@@ -73,6 +90,12 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Manually set the timetable context with custom values.
+     *
+     * @param TimetableContext $context
+     * @return self
+     */
     public function setContext(TimetableContext $context)
     {
         $this->context = $context;
@@ -80,6 +103,13 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Set the active timetable by ID, and optionally the user for this timetable.
+     *
+     * @param string $gibbonTTID
+     * @param string|null $gibbonPersonID
+     * @return self
+     */
     public function setTimetable(string $gibbonTTID, string $gibbonPersonID = null)
     {
         $this->context->set('gibbonSchoolYearID', $this->session->get('gibbonSchoolYearID'));
@@ -91,6 +121,9 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Add a custom layer object to the timetable.
+     */
     public function addLayer(TimetableLayerInterface $layer)
     {
         $this->layers[$layer->getName()] = $layer;
@@ -98,7 +131,14 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
-    public function addCoreLayers($container)
+    /**
+     * Add built-in core layers to the timetable. Omit this method for custom 
+     * rendered timetables.
+     *
+     * @param ContainerInterface $container
+     * @return void
+     */
+    public function addCoreLayers(ContainerInterface $container)
     {
         $this->addLayer($container->get(ClassesLayer::class));
         $this->addLayer($container->get(StaffDutyLayer::class));
@@ -112,6 +152,11 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Render the timetable templates and return the result as a string.
+     *
+     * @return string
+     */
     public function getOutput() : string
     {
         $this->loadLayers()->sortLayers()->toggleLayers();
@@ -142,6 +187,9 @@ class Timetable implements OutputableInterface
 
             foreach ($layer->getItems() as $item) {
                 if (!$item->allDay) $this->structure->expandTimeRange($item->timeStart, $item->timeEnd);
+
+                // Constrain timetabled layer items to timing changes here... ?
+                // $item = $this->structure->constrainTiming($item, $specialDay['schoolStart'], $specialDay['schoolEnd']);
             }
         }
 
@@ -166,6 +214,11 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Load user preferences for the active state of each layer.
+     *
+     * @return self
+     */
     protected function toggleLayers()
     {
         if (!$this->context->has('gibbonPersonID')) return;
@@ -180,6 +233,9 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Return an array with layer names as keys and the active state bool as a value.
+     */
     protected function getLayerPreferences()
     {
         return array_reduce($this->layers, function ($group, $layer) {

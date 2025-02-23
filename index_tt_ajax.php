@@ -68,12 +68,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
     $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
 
-    // $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, Format::timestamp($ttDate), '', '', $narrow, $edit);
-    // if ($tt != false) {
-    //     $output .= $tt;
-    // } else {
-    //     echo Format::alert(__('There is no information for the date specified.'), 'empty');
-    // }
+    $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, Format::timestamp($ttDate), '', '', $narrow, $edit);
+    if ($tt != false) {
+        $output .= $tt;
+    } else {
+        echo Format::alert(__('There is no information for the date specified.'), 'empty');
+    }
 }
 
 echo $output;

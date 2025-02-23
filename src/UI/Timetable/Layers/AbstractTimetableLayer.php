@@ -35,7 +35,7 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
 {
     protected $name = '';
     protected $active = true;
-    protected $type = '';
+    protected $type = 'timetabled';
     protected $color = '';
     protected $order = 0;
 

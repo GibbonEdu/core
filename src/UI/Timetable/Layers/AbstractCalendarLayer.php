@@ -28,6 +28,7 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Event;
+use GuzzleHttp\Exception\ConnectException;
 
 /**
  * Timetable UI: AbstractCalendarLayer
@@ -43,7 +44,11 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
 
     protected function loadEventsByCalendarFeed($calendarFeed, \DatePeriod $dateRange, $color = null)
     {
-        $events = $this->getCalendarEvents($calendarFeed, $dateRange->getStartDate()->getTimestamp(), $dateRange->getEndDate()->getTimestamp());
+        try {
+            $events = $this->getCalendarEvents($calendarFeed, $dateRange->getStartDate()->getTimestamp(), $dateRange->getEndDate()->getTimestamp());
+        } catch (\Exception | ConnectException $e) {
+            $events = [];
+        }
 
         foreach ($events as $event) {
             if (empty($event['date'])) continue;
@@ -231,7 +236,7 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
                         for ($i = 0; $i < $days; ++$i) {
                             //WHAT
                             $eventsSchool[$count]['title'] = $entry['summary'];
-                            $eventsSchool[$count]['date'] = date('Y-m-d', strtotime($entry['start']['date']) + ($i * 60 * 60 * 24));
+                            $eventsSchool[$count]['date'] = date('Y-m-d', strtotime($entry['start']['dateTime'] ?? $entry['start']['date']) + ($i * 60 * 60 * 24));
     
                             //WHEN - treat events that span multiple days, but have times set, the same as those without time set
                             $eventsSchool[$count]['allDay'] = true;

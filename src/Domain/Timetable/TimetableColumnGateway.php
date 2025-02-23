@@ -87,10 +87,10 @@ class TimetableColumnGateway extends QueryableGateway
                 JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) 
                 JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 
-                WHERE date BETWEEN :dateStart AND :dateEnd
-                AND gibbonTTID=:gibbonTTID
-                ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timeStart
-        ";
+                WHERE gibbonTTDayDate.date >= :dateStart 
+                AND gibbonTTDayDate.date <= :dateEnd
+                AND gibbonTTDay.gibbonTTID=:gibbonTTID
+                ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timeStart";
 
         return $this->db()->select($sql, $data);
     }

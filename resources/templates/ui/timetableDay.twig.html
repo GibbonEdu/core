@@ -8,21 +8,31 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% set isToday = structure.getToday.format('Y-m-d') == day.date|date('Y-m-d') %}
+{% set isToday = structure.getToday.format('Y-m-d') == day.date %}
+{% set specialDay = structure.getSpecialDay(day.date) %}
 {% set indexDepth = {0: '', 1: 'pl-2', 2: 'pl-4', 3: 'pl-6', 4: 'pl-8'} %}
 
-<div class="flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
+<div class="relative flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
 
     {% set column = structure.getColumn(day.date) %}
 
-
-    <div class="relative flex flex-col rounded-b border-b border-r border-l {{ not column ? 'flex-1' }} {{ isToday ? 'bg-yellow-50'}} ">
+    {% if specialDay.type == 'School Closure' %}
+    <div class="flex-1 flex flex-col items-center justify-center gap-1 rounded-b border border-red-800 bg-red-200 ">
+        <span class="text-sm text-red-800">
+            {{ __('School Closed') }}
+        </span>
+        <span class="text-xs text-red-800">
+            {{ specialDay.name }}
+        </span>
+    </div>
+    {% else %}
+    
+    <div class=" flex flex-col rounded-b border-b border-r border-l {{ not column ? 'flex-1' }} {{ isToday ? 'bg-yellow-50'}} ">
         
         {% set lastTimeEnd = timeRange.getStartDate.format('H:i:s') %}
-
         {% for item in column %}
             {% if lastTimeEnd is not empty and item.timeStart != lastTimeEnd %}
-            <div class="flex border-t border-gray-300 {{ not loop.first ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(structure.timeDifference(lastTimeEnd, item.timeStart)) }}px">
+            <div class="flex border-t border-gray-300 bg-stripe opacity-50 {{ not loop.first ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(structure.timeDifference(lastTimeEnd, item.timeStart)) }}px">
             </div>
             {% endif %}
 
@@ -35,16 +45,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </div>
             {% set lastTimeEnd = item.timeEnd %}
         {% endfor %}
+    </div>
 
-        {% for layer in layers %}
-            {% for item in layer.getItemsByDate(day.date|date('Y-m-d')) %}
-                <div class="absolute left-0 w-full {{ attribute(indexDepth, item.index) }}" style="top: {{ structure.timeToPixels(item.timeStart) + 1 }}px">
+    {% endif %}
+
+    {% for layer in layers %}
+        {% if structure.isLayerVisible(layer.getType, day.date) %}
+            {% for item in layer.getItemsByDate(day.date) %}
+                <div class="absolute left-0 w-full px-px {{ attribute(indexDepth, item.index) }}" style="top: {{ structure.timeToPixels(item.timeStart) + 1 }}px">
                 {{ include('ui/timetableItem.twig.html') }}
                 </div>
             {% endfor %}
-        {% endfor %}
-
-    </div>
-
+        {% endif %}
+    {% endfor %}
 
 </div>
