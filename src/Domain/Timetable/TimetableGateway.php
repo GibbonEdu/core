@@ -65,7 +65,7 @@ class TimetableGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectTimetablesByClass($gibbonCourseClassID,)
+    public function selectTimetablesByClass($gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
         $sql = "SELECT DISTINCT gibbonTTDay.gibbonTTID
