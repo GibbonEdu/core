@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\Finance\FinanceBudgetCycleGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -37,17 +39,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-            $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            $result = $container->get(FinanceBudgetCycleGateway::class)->getByID($gibbonFinanceBudgetCycleID);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($result)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {

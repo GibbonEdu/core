@@ -60,12 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         if (empty($_POST) && !isset($_GET['status'])) $request['status'] = 'Pending';
 
-        echo '<h3>';
-        echo __('Filters');
-        echo '</h3>';
-
         $form = Form::create('manageInvoices', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(FinanceFormFactory::create($pdo));
+        $form->setTitle(__('Filters'));
         $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/Finance/invoices_manage.php');

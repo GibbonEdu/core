@@ -23,7 +23,9 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Finance\ExpenseGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -56,35 +58,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             $page->addError(__('An error has occurred with your expense and budget settings.'));
         } else {
-            //Check if there are approvers
-            try {
-                $data = array();
-                $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-            }
-
+                 // Check if there are approvers
+                 $result = $container->get(FinanceExpenseApproverGateway::class)->selectExpenseApprovers();
+            
             if ($result->rowCount() < 1) {
                 $page->addError(__('An error has occurred with your expense and budget settings.'));
             } else {
                 //Ready to go! Just check record exists and we have access, and load it ready to use...
 
-                    //Set Up filter wheres
-                    $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                    $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
-							FROM gibbonFinanceExpense
-							JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-							JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
-							WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceExpense.status='Approved'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-
-                if ($result->rowCount() != 1) {
+                $result = $container->get(ExpenseGateway::class)->getExpenseByBudgetID($gibbonFinanceBudgetCycleID, $gibbonFinanceExpenseID);
+                
+                if (empty($result)) {
                     $page->addError(__('The specified record cannot be found.'));
                 } else {
-                    //Let's go!
-                    $values = $result->fetch();
+                    // Let's go!
+                    $values = $result;
 
                     if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                         $params = [
@@ -94,8 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         ];
                         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenseRequest_manage.php')->withQueryParams($params));
                     }
-
-
+                    
                     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenseRequest_manage_reimburseProcess.php');
 
                     $form->addHiddenValue('address', $session->get('address'));

@@ -87,11 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     $event->sendNotifications($pdo, $session);
-    
+
     // Set log
     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
     $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', ['gibbonPersonIDStudent' => $gibbonPersonID]);
-
+    
     $URLDelete = $URLDelete.'&return=success0';
     header("Location: {$URLDelete}");
 }
