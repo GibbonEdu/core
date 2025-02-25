@@ -68,7 +68,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $col = $row->addColumn();
                     $col->addLabel('members', __('Members'));
                     $col->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
-                        ->required()
                         ->mergeGroupings();
             	
 			$row = $form->addRow();

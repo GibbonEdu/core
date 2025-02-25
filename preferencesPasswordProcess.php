@@ -35,29 +35,28 @@ $mfaEnable = $_POST['mfaEnable'] ?? 'N';
 $mfaSecret = $_POST['mfaSecret'] ?? null;
 $mfaCode = $_POST['mfaCode'] ?? null;
 
-if ($forceReset != 'Y') {
-    $forceReset = 'N';
-    $URLSuccess = Url::fromRoute('preferences')->withQueryParam('forceReset', 'N');
-} else {
-    $URLSuccess = Url::fromRoute()->withQueryParam('forceReset', 'Y');
-}
-$URL = Url::fromRoute('preferences')->withQueryParam('forceReset', $forceReset);
+$URL = Url::fromRoute('preferences')->withQueryParam('forceReset', $forceReset == 'Y' ? 'Y' : 'N');
 
 //Check passwords are not blank
-if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+} elseif ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
     header("Location: {$URL->withReturn('error1')}");
+    exit;
 } else {
     //Check the mfaCode is correct
     if ($mfaEnable == 'Y') {
         $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
         if ($tfa->verifyCode($mfaSecret, $mfaCode) !== true){
             header("Location: {$URL->withReturn('error8')}");
-            exit();
+            exit;
         }
     }
     //Check that new password is not same as old password
     if ($password == $passwordNew) {
         header("Location: {$URL->withReturn('error7')}");
+        exit;
     } else {
         /** @var PasswordPolicy */
         $passwordPolicies = $container->get(PasswordPolicy::class);
@@ -65,15 +64,18 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
         //Check strength of password
         if (!$passwordPolicies->validate($passwordNew)) {
             header("Location: {$URL->withReturn('error6')}");
+            exit;
         } else {
             //Check new passwords match
             if ($passwordNew != $passwordConfirm) {
                 header("Location: {$URL->withReturn('error4')}");
+                exit;
             } else {
                 $user = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'), ['passwordStrong', 'passwordStrongSalt']);
                 //Check current password
                 if (hash('sha256', $user['passwordStrongSalt'].$password) != $user['passwordStrong']) {
                     header("Location: {$URL->withReturn('error3')}");
+                    exit;
                 } else {
                     //If answer insert fails...
                     $salt = getSalt();
@@ -85,7 +87,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                         $result->execute($data);
                     } catch (PDOException $e) {
                         header("Location: {$URL->withReturn('error2')}");
-                        exit();
+                        exit;
                     }
 
                     //Check for forceReset and take action
@@ -98,14 +100,14 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                             $result->execute($data);
                         } catch (PDOException $e) {
                             header("Location: {$URL->withReturn('errora')}");
-                            exit();
+                            exit;
                         }
                         $session->set('passwordForceReset', 'N');
                         $session->set('passwordStrongSalt', $salt);
                         $session->set('passwordStrong', $passwordStrong);
                         $session->set('pageLoads', null);
                         header("Location: {$URL->withReturn('successa')}");
-                        exit() ;
+                        exit;
                     }
 
                     $session->set('passwordStrongSalt', $salt);

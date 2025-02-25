@@ -51,7 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             if ($result->isEmpty()) {
                 $page->addError(__('The specified record cannot be found.'));
             } else {
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/groups_manage_edit_deleteProcess.php?gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/groups_manage_edit_deleteProcess.php");
+                $form->addHiddenValue('gibbonGroupID', $gibbonGroupID);
+                $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                 echo $form->getOutput();
             }
         }

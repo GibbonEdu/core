@@ -24,15 +24,16 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_manage_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 
     $urlParams = compact('gibbonFinanceBudgetCycleID');
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         ->add(__('View Expense Request'));
 
 
-    //Check if params are specified
+    // Check if params are specified
     $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'] ?? '';
     $status = '';
     $status2 = $_GET['status2'] ?? '';
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        //Check if have Full or Write in any budgets
+        // Check if have Full or Write in any budgets
         $budgets = getBudgetsByPerson($connection2, $session->get('gibbonPersonID'));
         $budgetsAccess = false;
         if (is_array($budgets) && count($budgets)>0) {
@@ -63,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         if ($budgetsAccess == false) {
             $page->addError(__('You do not have Full or Write access to any budgets.'));
         } else {
-            //Get and check settings
+            // Get and check settings
             $settingGateway = $container->get(SettingGateway::class);
             $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
             $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
@@ -71,19 +72,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                 $page->addError(__('An error has occurred with your expense and budget settings.'));
             } else {
-                //Check if there are approvers
+                // Check if there are approvers
                 try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $result = $container->get(FinanceExpenseApproverGateway::class)->selectExpenseApprovers();
                 } catch (PDOException $e) {
                 }
 
                 if ($result->rowCount() < 1) {
                     $page->addError(__('An error has occurred with your expense and budget settings.'));
                 } else {
-                    //Ready to go! Just check record exists and we have access, and load it ready to use...
+                    // Ready to go! Just check record exists and we have access, and load it ready to use...
 
                         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                         $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceExpense.gibbonPersonIDCreator=:gibbonPersonIDCreator';
@@ -93,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     if ($result->rowCount() != 1) {
                         $page->addError(__('The specified record cannot be found.'));
                     } else {
-                        //Let's go!
+                        // Let's go!
                         $values = $result->fetch();
                         if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                             $params = [
@@ -112,9 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $form->addHiddenValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
                         $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
                         $form->addHiddenValue('status', $status);
-
-                        $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
-
+                        
                         $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                         $cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
@@ -125,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
                         $row = $form->addRow();
                             $row->addLabel('budget', __('Budget'));
-                            $row->addTextField('budget')->setValue($cycleName)->maxLength(20)->required()->readonly()->setValue($values['budget']);
+                            $row->addTextField('budget')->maxLength(20)->required()->readonly()->setValue($values['budget']);
 
                         $row = $form->addRow();
                             $row->addLabel('title', __('Title'));

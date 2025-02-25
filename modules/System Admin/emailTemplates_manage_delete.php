@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/emailTemplates_manage_deleteProcess.php?gibbonEmailTemplateID=$gibbonEmailTemplateID");
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/emailTemplates_manage_deleteProcess.php");
+    $form->addHiddenValue('gibbonEmailTemplateID', $gibbonEmailTemplateID);
     echo $form->getOutput();
 }

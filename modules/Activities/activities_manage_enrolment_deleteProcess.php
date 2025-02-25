@@ -33,8 +33,8 @@ include '../../gibbon.php';
 require_once __DIR__ . '/moduleFunctions.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".($_GET['gibbonSchoolYearTermID'] ?? '');
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".($_GET['gibbonSchoolYearTermID'] ?? '');
@@ -87,11 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     $event->sendNotifications($pdo, $session);
-    
+
     // Set log
     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
     $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', ['gibbonPersonIDStudent' => $gibbonPersonID]);
-
+    
     $URLDelete = $URLDelete.'&return=success0';
     header("Location: {$URLDelete}");
 }

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
-$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
+$gibbonMarkbookColumnID = $_POST['gibbonMarkbookColumnID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_delete.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID";

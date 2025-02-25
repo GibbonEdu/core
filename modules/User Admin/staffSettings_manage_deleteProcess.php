@@ -23,7 +23,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
+$gibbonStaffAbsenceTypeID = $_POST['gibbonStaffAbsenceTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/staffSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_manage_delete.php') == false) {

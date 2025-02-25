@@ -22,8 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 //Check if gibbonPersonMedicalID and gibbonPersonMedicalConditionID specified
-$gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
-$gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
+$gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? '';
+$gibbonPersonMedicalConditionID = $_POST['gibbonPersonMedicalConditionID'] ?? '';
 $search = $_GET['search'] ?? '';
 if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { echo 'Fatal error loading this page!';
 } else {

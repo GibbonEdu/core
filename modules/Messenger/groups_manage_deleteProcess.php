@@ -26,7 +26,7 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
+$gibbonGroupID = $_POST['gibbonGroupID'] ?? '';
 
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";

@@ -65,6 +65,18 @@ class TimetableGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectTimetablesByClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT DISTINCT gibbonTTDay.gibbonTTID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                GROUP BY gibbonTTDay.gibbonTTID";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function getNonTimetabledYearGroups($gibbonSchoolYearID, $gibbonTTID = null)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTID' => $gibbonTTID);

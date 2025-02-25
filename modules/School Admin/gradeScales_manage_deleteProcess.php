@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
+$gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/gradeScales_manage_delete.php&gibbonScaleID='.$gibbonScaleID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/gradeScales_manage.php';
 

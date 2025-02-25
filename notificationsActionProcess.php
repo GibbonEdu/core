@@ -23,12 +23,15 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
-$URLBack = Url::fromRoute('notifications');
+$URL = Url::fromRoute('notifications');
 $gibbonNotificationID = $_GET['gibbonNotificationID'] ?? '';
 
-if (empty($gibbonNotificationID) || !$session->has('gibbonPersonID')) {
-    header("Location: {$URLBack->withReturn('error1')}");
-    exit();
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+} elseif (empty($gibbonNotificationID) || !$session->has('gibbonPersonID')) {
+    header("Location: {$URL->withReturn('error1')}");
+    exit;
 } else {
     // Check for existence of notification, belonging to this user
     $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
@@ -37,10 +40,10 @@ if (empty($gibbonNotificationID) || !$session->has('gibbonPersonID')) {
     $notification = $pdo->selectOne($sql, $data);
 
     if (empty($notification)) {
-        header("Location: {$URLBack->withReturn('error2')}");
-        exit();
+        header("Location: {$URL->withReturn('error2')}");
+        exit;
     } else {
-        $URL = $session->get('absoluteURL').$notification['actionLink'];
+        $URLSuccess = $session->get('absoluteURL').$notification['actionLink'];
 
         //Archive notification
         $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
@@ -49,11 +52,11 @@ if (empty($gibbonNotificationID) || !$session->has('gibbonPersonID')) {
         $pdo->update($sql, $data);
 
         if (!$pdo->getQuerySuccess()) {
-            header("Location: {$URLBack->withReturn('error2')}");
-            exit();
+            header("Location: {$URL->withReturn('error2')}");
+            exit;
         }
 
         //Success 0
-        header("Location: {$URL}");
+        header("Location: {$URLSuccess}");
     }
 }

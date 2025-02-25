@@ -53,6 +53,7 @@ class EmailTemplate
             'systemName'                     => $session->get('systemName'),
             'organisationName'               => $session->get('organisationName'),
             'organisationNameShort'          => $session->get('organisationNameShort'),
+            'organisationEmail'              => $session->get('organisationEmail'),
             'organisationAdministratorName'  => $session->get('organisationAdministratorName'),
             'organisationAdministratorEmail' => $session->get('organisationAdministratorEmail'),
         ];

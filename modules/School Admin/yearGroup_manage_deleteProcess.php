@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+$gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_delete.php&gibbonYearGroupID='.$gibbonYearGroupID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage.php';
 

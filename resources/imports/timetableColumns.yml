@@ -1,0 +1,22 @@
+details:
+    type: timetableColumns
+    category: Timetable
+    name: Columns
+    table: gibbonTTColumn
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Columns
+primaryKey:
+    gibbonTTColumnID
+uniqueKeys:
+    - [ name ]
+    - [ nameShort ]
+table:
+    name:
+        name: "Name"
+        desc: "Must be unique."
+        args: { filter: string, required: true }
+    nameShort:
+        name: "Short Name"
+        args: { filter: string, required: true }

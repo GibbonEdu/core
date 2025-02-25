@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/space_manage_deleteProcess.php?gibbonSpaceID=$gibbonSpaceID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/space_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonSpaceID', $gibbonSpaceID);
             echo $form->getOutput();
         }
     }
