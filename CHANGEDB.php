@@ -906,7 +906,80 @@ INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `type`, `templateTyp
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Petty Cash Notification', 'Finance', 'Petty Cash', 'Core', 'All', 'Y');end
 ALTER TABLE `gibbonMarkbookColumn` ADD `columnColor` VARCHAR(7) NULL DEFAULT NULL AFTER `description`;end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '242' WHERE `printable_name` = 'Congo';end
-UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
+-- Individual Needs Module Updates
+ALTER TABLE `gibbonINInvestigation` 
+MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete') DEFAULT NULL;end
+
+-- Create Intervention tables
+CREATE TABLE `gibbonINIntervention` (
+  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonINInvestigationID` int(11) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `strategies` text NOT NULL,
+  `targetDate` date NOT NULL,
+  `status` enum('Pending','In Progress','Completed','Discontinued') NOT NULL DEFAULT 'Pending',
+  `parentConsent` enum('Not Requested','Consent Given','Consent Denied','Awaiting Response') NOT NULL DEFAULT 'Not Requested',
+  `parentConsentDate` date DEFAULT NULL,
+  `gibbonPersonIDConsent` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `consentNotes` text,
+  `consentDocumentPath` varchar(255) DEFAULT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gibbonINInterventionID`),
+  KEY `gibbonINInvestigationID` (`gibbonINInvestigationID`),
+  KEY `gibbonPersonIDCreator` (`gibbonPersonIDCreator`),
+  CONSTRAINT `gibbonINIntervention_ibfk_1` FOREIGN KEY (`gibbonINInvestigationID`) REFERENCES `gibbonINInvestigation` (`gibbonINInvestigationID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+
+CREATE TABLE `gibbonINInterventionUpdate` (
+  `gibbonINInterventionUpdateID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `comment` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `progress` enum('Not Started','Just Started','Progressing','Breakthrough','Setback','No Progress') NOT NULL,
+  PRIMARY KEY (`gibbonINInterventionUpdateID`),
+  KEY `gibbonINInterventionID` (`gibbonINInterventionID`),
+  KEY `gibbonPersonID` (`gibbonPersonID`),
+  CONSTRAINT `gibbonINInterventionUpdate_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+
+CREATE TABLE `gibbonINInterventionContributor` (
+  `gibbonINInterventionContributorID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gibbonINInterventionContributorID`),
+  KEY `gibbonINInterventionID` (`gibbonINInterventionID`),
+  KEY `gibbonPersonID` (`gibbonPersonID`),
+  CONSTRAINT `gibbonINInterventionContributor_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+
+-- Add Intervention Management actions to the gibbonAction table
+INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
+SELECT gibbonModuleID, 'Manage Interventions_all', 0, 'Individual Needs', 'Allows users to manage all interventions', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N' 
+FROM gibbonModule WHERE name='Individual Needs';end
+
+INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
+SELECT gibbonModuleID, 'Manage Interventions_my', 0, 'Individual Needs', 'Allows users to manage interventions they have created or are contributing to', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N' 
+FROM gibbonModule WHERE name='Individual Needs';end
+
+-- Add permissions for the new actions
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Administrator';end
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Teacher';end
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Support Staff';end
+ UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '246' WHERE `printable_name` = 'British Indian Ocean Territory';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '673' WHERE `printable_name` = 'Brunei Darussalam';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '225' WHERE `printable_name` = 'Cote D\'Ivoire';end

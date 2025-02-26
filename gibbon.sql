@@ -2746,16 +2746,15 @@ SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage
 FROM gibbonRole WHERE name='Administrator';
 
 INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
-SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
-FROM gibbonRole WHERE name='Individual Needs Coordinator';
-
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
 SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
 FROM gibbonRole WHERE name='Teacher';
 
 INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
 SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
 FROM gibbonRole WHERE name='Support Staff';
+
+
+
 -- --------------------------------------------------------
 
 --
