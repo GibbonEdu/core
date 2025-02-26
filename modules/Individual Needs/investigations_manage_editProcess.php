@@ -97,7 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     //Deal with resolution
     if ($isTutor && $investigation['status'] == 'Referral') {
         $notificationGateway = $container->get(NotificationGateway::class);
-        $notificationSender = $container->get(NotificationSender::class);
 
         $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
         $action = $_POST['action'] ?? '';
@@ -110,9 +109,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
             $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
 
-            $notificationString = __('An Individual Needs investigation for {student} has been resolved.', ['student' => $studentName]);
-            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
-            $notificationSender->sendNotifications();
+            // Send notification to the creator if not the current user
+            if ($investigation['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+                $notificationString = __('The investigation for {student} has been updated to {status}.', [
+                    'student' => $studentName,
+                    'status' => $data['status']
+                ]);
+                
+                $notificationGateway->addNotification([$investigation['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                    'gibbonINInvestigationID' => $gibbonINInvestigationID
+                ], 'Alert');
+            }
         } 
         else if ($action == 'Intervention') {
             // Handle intervention option
@@ -148,8 +155,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             
             // Notify the requesting teacher
             $notificationString = __('An intervention has been created for {student}.', ['student' => $studentName]);
-            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
-            $notificationSender->sendNotifications();
+            $notificationGateway->addNotification([$investigation['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+                'gibbonINInterventionID' => $gibbonINInterventionID
+            ], 'Alert');
         }
         else if ($action == 'Investigation') {
             $contributionGateway = $container->get(INInvestigationContributionGateway::class);
@@ -190,14 +198,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     //Notify contributor
                     $notificationString = __('Your input into an Individual Needs investigation for {student} has been requested.', ['student' => $studentName]);
-                    $notificationSender->addNotification($contributor['gibbonPersonID'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$insert");
+                    $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Individual Needs', $notificationString, 'investigations_submit_detail.php', [
+                        'gibbonINInvestigationID' => $gibbonINInvestigationID,
+                        'gibbonINInvestigationContributionID' => $insert
+                    ], 'Alert');
                 }
             }
 
             //Notify requesting teacher
             $notificationString = __('Further inquiry into the Individual Needs investigation for {student} has been initiated.', ['student' => $studentName]);
-            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
-            $notificationSender->sendNotifications();
+            $notificationGateway->addNotification([$investigation['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                'gibbonINInvestigationID' => $gibbonINInvestigationID
+            ], 'Alert');
         }
     }
 

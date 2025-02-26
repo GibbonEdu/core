@@ -19,8 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Comms\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -78,28 +77,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $investigationGateway->update($gibbonINInvestigationID, $data);
 
             $notificationGateway = $container->get(NotificationGateway::class);
-            $notificationSender = $container->get(NotificationSender::class);;
 
             $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
             $notificationString = __('An Individual Needs investigation for {student} has been completed.', ['student' => $studentName]);
 
             //Originating teacher
-            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+            $notificationGateway->addNotification([$investigation['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                'gibbonINInvestigationID' => $gibbonINInvestigationID
+            ], 'Alert');
 
             //Form tutors
             if ($investigation['gibbonPersonIDTutor'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationGateway->addNotification([$investigation['gibbonPersonIDTutor']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                    'gibbonINInvestigationID' => $gibbonINInvestigationID
+                ], 'Alert');
             }
             if ($investigation['gibbonPersonIDTutor2'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDTutor2'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationGateway->addNotification([$investigation['gibbonPersonIDTutor2']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                    'gibbonINInvestigationID' => $gibbonINInvestigationID
+                ], 'Alert');
             }
             if ($investigation['gibbonPersonIDTutor3'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDTutor3'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationGateway->addNotification([$investigation['gibbonPersonIDTutor3']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                    'gibbonINInvestigationID' => $gibbonINInvestigationID
+                ], 'Alert');
             }
 
             //HOY
             if ($investigation['gibbonPersonIDHOY'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDHOY'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationGateway->addNotification([$investigation['gibbonPersonIDHOY']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                    'gibbonINInvestigationID' => $gibbonINInvestigationID
+                ], 'Alert');
             }
 
             //LS role
@@ -109,11 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $criteria = $roleGateway->newQueryCriteria();
                 $users = $roleGateway->queryUsersByRole($criteria, $notificationRole);
                 foreach ($users AS $user) {
-                    $notificationSender->addNotification($user['gibbonPersonID'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                    $notificationGateway->addNotification([$user['gibbonPersonID']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                        'gibbonINInvestigationID' => $gibbonINInvestigationID
+                    ], 'Alert');
                 }
             }
 
-            $notificationSender->sendNotifications();
         }
 
         if ($updated) {

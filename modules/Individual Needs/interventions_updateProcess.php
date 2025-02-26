@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
 use Gibbon\Domain\IndividualNeeds\INInterventionUpdateGateway;
+use Gibbon\Domain\IndividualNeeds\INInterventionContributorGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -110,33 +111,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $interventionGateway->update($gibbonINInterventionID, ['status' => 'In Progress']);
     }
 
-    // Send notification to the intervention creator and contributors
+    // Send notifications to intervention creator and contributors
     $notificationGateway = $container->get(NotificationGateway::class);
-    $notificationSender = $container->get(NotificationSender::class);
-
+    
     $studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', false, true);
-    $staffName = Format::name($session->get('title'), $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-    $notificationString = __('A new update has been added to the intervention "{name}" for {student} by {staff}.', [
+    $notificationString = __('An update has been added to the intervention "{name}" for {student}.', [
         'name' => $intervention['name'],
-        'student' => $studentName,
-        'staff' => $staffName
+        'student' => $studentName
     ]);
     
-    // Notify the creator if not the current user
-    if ($intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-        $notificationSender->addNotification($intervention['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
+    // Get all contributors including the creator
+    $contributorGateway = $container->get(INInterventionContributorGateway::class);
+    $contributors = $contributorGateway->selectContributorsByIntervention($gibbonINInterventionID)->fetchAll();
+    $contributorIDs = array_column($contributors, 'gibbonPersonID');
+    
+    // Add the creator if not already a contributor
+    if (!in_array($intervention['gibbonPersonIDCreator'], $contributorIDs)) {
+        $contributorIDs[] = $intervention['gibbonPersonIDCreator'];
     }
     
-    // Notify contributors
-    $sql = "SELECT gibbonPersonID FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonPersonID<>:gibbonPersonID";
-    $result = $pdo->executeQuery(['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')], $sql);
+    // Remove the current user from notifications
+    $contributorIDs = array_diff($contributorIDs, [$gibbonPersonID]);
     
-    while ($contributor = $result->fetch()) {
-        $notificationSender->addNotification($contributor['gibbonPersonID'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
+    if (!empty($contributorIDs)) {
+        $notificationGateway->addNotification($contributorIDs, 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+            'gibbonINInterventionID' => $gibbonINInterventionID
+        ], 'Alert');
     }
     
-    $notificationSender->sendNotifications();
-
     $URL .= '&return=success0';
     header("Location: {$URL}");
     exit;

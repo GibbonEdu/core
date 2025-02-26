@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,12 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Comms\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
-use Gibbon\Comms\NotificationEvent;
 
 require_once '../../gibbon.php';
 
@@ -66,37 +64,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     // Create the record
     $gibbonINInvestigationID = $investigationGateway->insert($data);
 
-    //Notify form tutors
+    // Send notification to form tutors
     $notificationGateway = $container->get(NotificationGateway::class);
-    $notificationSender = $container->get(NotificationSender::class);
-
-    // Raise a new notification event
-    $event = new NotificationEvent('Individual Needs', 'New Investigation');
-    if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-        $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
-        $student = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
-
-        $event->setNotificationText(__('A new Individual Needs investigation has been created for {student}.', ['student' => $student]));
-        $event->setActionLink("/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
-        $event->addScope('gibbonYearGroupID', $investigation['gibbonYearGroupID']);
-        $event->addScope('gibbonPersonIDStudent', $investigation['gibbonPersonID']);
-
-        if ($investigation['gibbonPersonIDTutor'] != '') {
-            $event->addRecipient($investigation['gibbonPersonIDTutor']);
-        }
-        if ($investigation['gibbonPersonIDTutor2'] != '') {
-            $event->addRecipient($investigation['gibbonPersonIDTutor2']);
-        }
-        if ($investigation['gibbonPersonIDTutor3'] != '') {
-            $event->addRecipient($investigation['gibbonPersonIDTutor3']);
-        }
-
-        $event->pushNotifications($notificationGateway, $notificationSender);
-    }
     
-
-    // Send all notifications
-    $sendReport = $notificationSender->sendNotifications();
+    $studentName = Format::name('', $_POST['preferredName'], $_POST['surname'], 'Student', false, true);
+    $notificationString = __('An Individual Needs investigation for {student} has been initiated.', ['student' => $studentName]);
+    
+    // Get form tutors
+    $data = array('gibbonFormGroupID' => $_POST['gibbonFormGroupID']);
+    $sql = "SELECT gibbonPerson.gibbonPersonID 
+            FROM gibbonPerson 
+            JOIN gibbonFormGroupPerson ON (gibbonFormGroupPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            WHERE gibbonFormGroupPerson.gibbonFormGroupID=:gibbonFormGroupID 
+            AND gibbonPerson.status='Full'";
+    $result = $pdo->select($sql, $data);
+    
+    if ($result->rowCount() > 0) {
+        $tutors = $result->fetchAll(PDO::FETCH_COLUMN);
+        $notificationGateway->addNotification($tutors, 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+            'gibbonINInvestigationID' => $gibbonINInvestigationID
+        ], 'Alert');
+    }
 
     $URL .= !$gibbonINInvestigationID
         ? "&return=error2"

@@ -123,7 +123,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
     // Send notification if status has changed
     if ($newStatus != $intervention['status']) {
         $notificationGateway = $container->get(NotificationGateway::class);
-        $notificationSender = $container->get(NotificationSender::class);
 
         $studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', false, true);
         $notificationString = __('The intervention "{name}" for {student} has been updated to {status}.', [
@@ -134,7 +133,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         
         // Notify the creator if not the current user
         if ($intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-            $notificationSender->addNotification($intervention['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
+            $notificationGateway->addNotification([$intervention['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+                'gibbonINInterventionID' => $gibbonINInterventionID
+            ], 'Alert');
         }
         
         // Notify contributors
@@ -142,10 +143,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $result = $pdo->executeQuery(['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')], $sql);
         
         while ($contributor = $result->fetch()) {
-            $notificationSender->addNotification($contributor['gibbonPersonID'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
+            $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+                'gibbonINInterventionID' => $gibbonINInterventionID
+            ], 'Alert');
         }
-        
-        $notificationSender->sendNotifications();
     }
 
     $URL .= '&return=success0';

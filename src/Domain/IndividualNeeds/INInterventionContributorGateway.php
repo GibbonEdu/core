@@ -102,6 +102,23 @@ class INInterventionContributorGateway extends QueryableGateway implements Scrub
         return $this->runQuery($query, $criteria);
     }
 
+    /**
+     * Selects all contributors for a given intervention
+     *
+     * @param int $gibbonINInterventionID
+     * @return Result
+     */
+    public function selectContributorsByIntervention($gibbonINInterventionID)
+    {
+        $sql = "SELECT gibbonINInterventionContributor.*, person.title, person.surname, person.preferredName, person.gibbonPersonID
+                FROM gibbonINInterventionContributor
+                JOIN gibbonPerson AS person ON (gibbonINInterventionContributor.gibbonPersonID=person.gibbonPersonID)
+                WHERE gibbonINInterventionContributor.gibbonINInterventionID=:gibbonINInterventionID
+                ORDER BY gibbonINInterventionContributor.dateCreated DESC";
+
+        return $this->db()->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID]);
+    }
+
     public function getContributorByID($gibbonINInterventionContributorID)
     {
         $query = $this

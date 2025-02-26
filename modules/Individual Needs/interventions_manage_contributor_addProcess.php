@@ -114,7 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
 
     // Send notification to the contributor
     $notificationGateway = $container->get(NotificationGateway::class);
-    $notificationSender = $container->get(NotificationSender::class);
 
     $studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', false, true);
     $notificationString = __('You have been added as a contributor to the intervention "{name}" for {student}.', [
@@ -122,8 +121,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         'student' => $studentName
     ]);
     
-    $notificationSender->addNotification($gibbonPersonIDContributor, $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
-    $notificationSender->sendNotifications();
+    // Add notification event
+    $notificationGateway->addNotification([$gibbonPersonIDContributor], 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+        'gibbonINInterventionID' => $gibbonINInterventionID
+    ], 'Alert');
 
     $URL .= '&return=success0';
     header("Location: {$URL}");
