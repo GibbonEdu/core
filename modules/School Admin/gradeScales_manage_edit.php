@@ -114,6 +114,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                 ->addParam('gibbonScaleID', $gibbonScaleID)
                 ->displayLabel();
 
+            $table->addHeaderAction('addMultiple', __('Add Multiple'))
+                ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_addMulti.php')
+                ->addParam('gibbonScaleID', $gibbonScaleID)
+                ->displayLabel();
+
             $table->addColumn('value', __('Value'));
             $table->addColumn('descriptor', __('Descriptor'));
             $table->addColumn('sequenceNumber', __('Sequence Number'));
