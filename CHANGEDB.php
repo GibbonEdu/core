@@ -906,5 +906,29 @@ INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `type`, `templateTyp
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Petty Cash Notification', 'Finance', 'Petty Cash', 'Core', 'All', 'Y');end
 ALTER TABLE `gibbonMarkbookColumn` ADD `columnColor` VARCHAR(7) NULL DEFAULT NULL AFTER `description`;end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '242' WHERE `printable_name` = 'Congo';end
-
+UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '246' WHERE `printable_name` = 'British Indian Ocean Territory';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '673' WHERE `printable_name` = 'Brunei Darussalam';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '225' WHERE `printable_name` = 'Cote D\'Ivoire';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '500' WHERE `printable_name` = 'Falkland Islands (Malvinas)';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '594' WHERE `printable_name` = 'French Guiana';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '590' WHERE `printable_name` = 'Guadeloupe';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '39' WHERE `printable_name` = 'Holy See (Vatican City State)';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '98' WHERE `printable_name` = 'Iran, Islamic Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '389' WHERE `printable_name` = 'Macedonia, the Former Yugoslav Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '596' WHERE `printable_name` = 'Martinique';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '691' WHERE `printable_name` = 'Micronesia, Federated States of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '373' WHERE `printable_name` = 'Moldova, Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '970' WHERE `printable_name` = 'Palestinian Territory, Occupied';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '64' WHERE `printable_name` = 'Pitcairn';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '262' WHERE `printable_name` = 'Reunion';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '47' WHERE `printable_name` = 'Svalbard and Jan Mayen';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '963' WHERE `printable_name` = 'Syrian Arab Republic';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '255' WHERE `printable_name` = 'Tanzania, United Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '1 284' WHERE `printable_name` = 'Virgin Islands, British';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '1 340' WHERE `printable_name` = 'Virgin Islands, U.s.';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
+UPDATE `gibbonCountry` SET `printable_name` = 'Serbia, Republic of', `iddCountryCode` = '381' WHERE `printable_name` = 'Serbia and Montenegro';end
+INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Montenegro', '382');end
 ";
