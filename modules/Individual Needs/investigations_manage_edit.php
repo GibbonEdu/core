@@ -137,25 +137,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     	$column->addTextArea('parentsResponseNo')->setName('parentsResponse')->setRows(5)->setClass('w-full')->readonly(!$canEdit || $investigation['status'] != 'Referral')->required();
 
                     //Form Tutor Resolution
-                    if ($investigation['status'] == 'Resolved' || ($investigation['status'] == 'Referral' && $isTutor)) {
+                    if ($investigation['status'] == 'Resolved' || $investigation['status'] == 'Intervention' || ($investigation['status'] == 'Referral' && $isTutor)) {
                         $form->addRow()->addHeading('Form Tutor Resolution', __('Form Tutor Resolution'));
                         if ($isTutor && $investigation['status'] == 'Referral') {
                             $row = $form->addRow();
-                                $row->addLabel('resolvable', __('Resolvable?'))->description(__('Is form tutor able to resolve without further input? If no, further investigation will be launched.'));
-                                $row->addYesNo('resolvable')->required()->placeholder()->selected('N');
-
-                                $form->toggleVisibilityByClass('resolutionDetails')->onSelect('resolvable')->when('Y');
+                                $row->addLabel('action', __('Action'))->description(__('Choose the appropriate action for this referral.'));
+                                $options = [
+                                    'Resolved' => __('Resolved') . ' - ' . __('Issue is minor or already addressed'),
+                                    'Intervention' => __('Try Interventions') . ' - ' . __('Issue needs support but not a full IEP'),
+                                    'Investigation' => __('Investigate Further') . ' - ' . __('Complex issues that may need an IEP')
+                                ];
+                                $row->addSelect('action')->fromArray($options)->required()->placeholder();
+                                
+                                $form->toggleVisibilityByClass('resolutionDetails')->onSelect('action')->when('Resolved');
+                                $form->toggleVisibilityByClass('interventionDetails')->onSelect('action')->when('Intervention');
+                                $form->toggleVisibilityByClass('investigationDetails')->onSelect('action')->when('Investigation');
                         }
-
-                        $form->toggleVisibilityByClass('invitationDetails')->onSelect('resolvable')->when('N');
 
                         //Resolvable by tutor
                         $row = $form->addRow()->addClass('resolutionDetails');
                             $column = $row->addColumn();
                             $column->addLabel('resolutionDetails', __('Resolution Details'));
                             $column->addTextArea('resolutionDetails')->setRows(5)->setClass('w-full')->readonly(!$isTutor || $investigation['status'] != 'Referral');
+                        
+                        //Intervention section
+                        $form->addRow()->addClass('interventionDetails')->addHeading(__('Initial Intervention Details'));
+                        
+                        $row = $form->addRow()->addClass('interventionDetails');
+                        $row->addLabel('interventionName', __('Intervention Name'))->description(__('A short name for this intervention'));
+                        $row->addTextField('interventionName')->required()->maxLength(100);
+                        
+                        $row = $form->addRow()->addClass('interventionDetails');
+                        $column = $row->addColumn();
+                        $column->addLabel('interventionDescription', __('Description'))->description(__('Describe the intervention and its goals'));
+                        $column->addTextArea('interventionDescription')->setRows(5)->setClass('w-full')->required();
+                        
+                        $row = $form->addRow()->addClass('interventionDetails');
+                        $column = $row->addColumn();
+                        $column->addLabel('interventionStrategies', __('Strategies'))->description(__('Specific strategies to be used in this intervention'));
+                        $column->addTextArea('interventionStrategies')->setRows(5)->setClass('w-full')->required();
+                        
+                        $row = $form->addRow()->addClass('interventionDetails');
+                        $row->addLabel('interventionTargetDate', __('Target Date'))->description(__('When should this intervention be reviewed?'));
+                        $row->addDate('interventionTargetDate')->required();
+                        
+                        $row = $form->addRow()->addClass('interventionDetails');
+                        $row->addLabel('interventionParentConsent', __('Parent Consent'))->description(__('Has parent consent been obtained for this intervention?'));
+                        $options = [
+                            'Not Requested' => __('Not Requested'),
+                            'Consent Given' => __('Consent Given'),
+                            'Consent Denied' => __('Consent Denied'),
+                            'Awaiting Response' => __('Awaiting Response')
+                        ];
+                        $row->addSelect('interventionParentConsent')->fromArray($options)->required()->selected('Not Requested');
 
-                        //Not resolvable by tutor
+                        //Not resolvable by tutor - keep existing investigation section
                         $resultClass = $investigationGateway->queryTeachersByInvestigation($investigation['gibbonSchoolYearID'], $investigation['gibbonPersonIDStudent']);
 
                         $resultHOY = $investigationGateway->queryHOYByInvestigation($investigation['gibbonSchoolYearID'], $investigation['gibbonPersonIDStudent']);
@@ -165,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                         }
                         else {
-                            $row = $form->addRow()->addClass('invitationDetails');
+                            $row = $form->addRow()->addClass('investigationDetails');
                             $row->addLabel('invitation', __('Invite Input'))->description(__('Which teachers would you like to gather input from?'));
                             $column = $row->addColumn()->setClass('flex-col items-end');
                             if ($resultHOY->rowCount() == 1) {

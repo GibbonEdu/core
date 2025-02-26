@@ -2665,6 +2665,71 @@ CREATE TABLE `gibbonINInvestigation` (
   `resolutionDetails` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `gibbonINInvestigation` 
+MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete') DEFAULT NULL;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonINIntervention`
+--
+CREATE TABLE `gibbonINIntervention` (
+  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonINInvestigationID` int(11) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `strategies` text NOT NULL,
+  `targetDate` date NOT NULL,
+  `status` enum('Pending','In Progress','Completed','Discontinued') NOT NULL DEFAULT 'Pending',
+  `parentConsent` enum('Not Requested','Consent Given','Consent Denied','Awaiting Response') NOT NULL DEFAULT 'Not Requested',
+  `parentConsentDate` date DEFAULT NULL,
+  `gibbonPersonIDConsent` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `consentNotes` text,
+  `consentDocumentPath` varchar(255) DEFAULT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gibbonINInterventionID`),
+  KEY `gibbonINInvestigationID` (`gibbonINInvestigationID`),
+  KEY `gibbonPersonIDCreator` (`gibbonPersonIDCreator`),
+  CONSTRAINT `gibbonINIntervention_ibfk_1` FOREIGN KEY (`gibbonINInvestigationID`) REFERENCES `gibbonINInvestigation` (`gibbonINInvestigationID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonINIntervention`
+--
+CREATE TABLE `gibbonINInterventionUpdate` (
+  `gibbonINInterventionUpdateID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `comment` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `progress` enum('Not Started','Just Started','Progressing','Breakthrough','Setback','No Progress') NOT NULL,
+  PRIMARY KEY (`gibbonINInterventionUpdateID`),
+  KEY `gibbonINInterventionID` (`gibbonINInterventionID`),
+  KEY `gibbonPersonID` (`gibbonPersonID`),
+  CONSTRAINT `gibbonINInterventionUpdate_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonINInterventionContributor`
+--
+CREATE TABLE `gibbonINInterventionContributor` (
+  `gibbonINInterventionContributorID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gibbonINInterventionContributorID`),
+  KEY `gibbonINInterventionID` (`gibbonINInterventionID`),
+  KEY `gibbonPersonID` (`gibbonPersonID`),
+  CONSTRAINT `gibbonINInterventionContributor_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --

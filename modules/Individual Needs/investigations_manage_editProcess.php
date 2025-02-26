@@ -23,6 +23,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
+use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -99,12 +100,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $notificationSender = $container->get(NotificationSender::class);
 
         $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
-        $status = ($_POST['resolvable'] == 'Y') ? 'Resolved' : 'Investigation';
-
-        if ($status == 'Resolved') { //Notify the requesting teacher
+        $action = $_POST['action'] ?? '';
+        
+        if ($action == 'Resolved') {
             $data = [
                 'resolutionDetails'      => $_POST['resolutionDetails'] ?? '',
-                'status'                => $status,
+                'status'                => 'Resolved',
             ];
 
             $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
@@ -112,7 +113,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $notificationString = __('An Individual Needs investigation for {student} has been resolved.', ['student' => $studentName]);
             $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             $notificationSender->sendNotifications();
-        } else if ($status == 'Investigation') { //Notify requesting teacher, and start further investigation
+        } 
+        else if ($action == 'Intervention') {
+            // Handle intervention option
+            $interventionGateway = $container->get(INInterventionGateway::class);
+            
+            // Update investigation status
+            $data = [
+                'status' => 'Intervention',
+            ];
+            $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
+            
+            // Create new intervention
+            $interventionData = [
+                'gibbonINInvestigationID' => $gibbonINInvestigationID,
+                'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
+                'name' => $_POST['interventionName'] ?? '',
+                'description' => $_POST['interventionDescription'] ?? '',
+                'strategies' => $_POST['interventionStrategies'] ?? '',
+                'targetDate' => $_POST['interventionTargetDate'] ?? '',
+                'status' => 'Pending',
+                'parentConsent' => $_POST['interventionParentConsent'] ?? 'Not Requested',
+                'parentConsentDate' => ($_POST['interventionParentConsent'] == 'Consent Given' || $_POST['interventionParentConsent'] == 'Consent Denied') ? date('Y-m-d') : null,
+                'gibbonPersonIDConsent' => ($_POST['interventionParentConsent'] == 'Consent Given' || $_POST['interventionParentConsent'] == 'Consent Denied') ? $session->get('gibbonPersonID') : null,
+            ];
+            
+            $gibbonINInterventionID = $interventionGateway->insert($interventionData);
+            
+            if (!$gibbonINInterventionID) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit;
+            }
+            
+            // Notify the requesting teacher
+            $notificationString = __('An intervention has been created for {student}.', ['student' => $studentName]);
+            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID=$gibbonINInterventionID");
+            $notificationSender->sendNotifications();
+        }
+        else if ($action == 'Investigation') {
             $contributionGateway = $container->get(INInvestigationContributionGateway::class);
 
             //Get list of checked contributors
@@ -139,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             } else {
                 //Update investigation status
                 $data = [
-                    'status'                => $status,
+                    'status'                => 'Investigation',
                 ];
                 $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
 
