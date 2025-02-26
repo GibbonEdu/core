@@ -23,6 +23,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Chart\Chart;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\SettingGateway;

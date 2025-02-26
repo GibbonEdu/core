@@ -24,6 +24,7 @@ namespace Gibbon\Domain\IndividualNeeds;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
@@ -178,5 +179,21 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
             ->orderBy(['gibbonINIntervention.dateCreated DESC']);
 
         return $this->runSelect($query)->fetch();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function runUpdate(\Aura\SqlQuery\Common\UpdateInterface $query) : bool
+    {
+        return parent::runUpdate($query);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function runDelete(\Aura\SqlQuery\Common\DeleteInterface $query) : bool
+    {
+        return parent::runDelete($query);
     }
 }

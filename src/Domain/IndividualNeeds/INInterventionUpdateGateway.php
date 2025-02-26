@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,12 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\IndividualNeeds;
 
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\QueryableGateway;
-use Gibbon\Domain\ScrubbableGateway;
-use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\DataSet;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
 
 /**
  * Intervention Updates Gateway
