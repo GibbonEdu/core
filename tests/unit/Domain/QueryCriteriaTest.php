@@ -200,10 +200,10 @@ class QueryCriteriaTest extends TestCase
 
     public function testCanGetAllFiltersAsString()
     {
-        $this->criteria->filterBy('foo:bar');
-        $this->criteria->filterBy('baz:"some thing"');
+        $this->criteria->filterBy('foo::bar');
+        $this->criteria->filterBy('baz::"some thing"');
 
-        $this->assertEquals('foo:bar baz:"some thing"', $this->criteria->getFilterString());
+        $this->assertEquals('foo::bar baz::"some thing"', $this->criteria->getFilterString());
     }
 
     public function testCanSortAscending()
