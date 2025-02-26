@@ -2730,6 +2730,32 @@ CREATE TABLE `gibbonINInterventionContributor` (
   CONSTRAINT `gibbonINInterventionContributor_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- Add Intervention Management actions to the gibbonAction table
+INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
+SELECT gibbonModuleID, 'Manage Interventions_all', 0, 'Individual Needs', 'Allows users to manage all interventions', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N' 
+FROM gibbonModule WHERE name='Individual Needs';
+
+INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
+SELECT gibbonModuleID, 'Manage Interventions_my', 0, 'Individual Needs', 'Allows users to manage interventions they have created or are contributing to', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N' 
+FROM gibbonModule WHERE name='Individual Needs';
+
+-- Add permissions for the new actions
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Administrator';
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Individual Needs Coordinator';
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Teacher';
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
+FROM gibbonRole WHERE name='Support Staff';
 -- --------------------------------------------------------
 
 --
