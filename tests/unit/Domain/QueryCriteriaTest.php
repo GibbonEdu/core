@@ -64,7 +64,7 @@ class QueryCriteriaTest extends TestCase
 
     public function testCanLoadFromJson()
     {
-        $values = '{"page":3,"pageSize":24,"searchBy":{"columns":["columnName"],"text":"foo bar"},"filterBy":{"foo"::"bar"},"sortBy":{"foo":"DESC"}}';
+        $values = '{"page":3,"pageSize":24,"searchBy":{"columns":["columnName"],"text":"foo bar"},"filterBy":{"foo":"bar"},"sortBy":{"foo":"DESC"}}';
 
         $this->assertEquals($values, $this->criteria->fromJson($values)->toJson());
     }
