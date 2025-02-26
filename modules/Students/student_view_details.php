@@ -2187,6 +2187,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo $statusTable;
                             }
 
+
+                            // Display student interventions
+                           
+
+                            // Use the INInterventionGateway to get interventions for this student
+                            $interventionGateway = $container->get(\Gibbon\Domain\IndividualNeeds\INInterventionGateway::class);
+                            $criteria = $container->get(\Gibbon\Domain\QueryCriteria::class);
+
+                            // Correct way to filter by student - use the filterBy method
+                            $criteria->filterBy('student', $gibbonPersonID);
+
+                            $interventions = $interventionGateway->queryInterventions($criteria, $session->get('gibbonSchoolYearID'));
+
+                            if ($interventions->getResultCount() == 0) { 
+                                echo '<h3>';
+                                echo __('Interventions');
+                                echo '</h3>';
+                                echo '<p>'.__('There are no interventions for this student.').'</p>';
+                                
+                                // Add link to create intervention if user has access
+                                if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_manage_add.php')) {
+                                    echo '<p>';
+                                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/interventions_manage_add.php&gibbonPersonID=$gibbonPersonID'>".__('Create New Intervention').'</a>';
+                                    echo '</p>';
+                                }
+                            } else {
+                                // Create a table to display interventions
+                                $table = DataTable::create('interventions');
+                                $table->setTitle(__('Interventions'));
+                                
+                                $table->addColumn('name', __('Name'));
+                                $table->addColumn('status', __('Status'));
+                                $table->addColumn('strategies', __('Strategies'))
+                                    ->format(function($values) {
+                                        return substr(strip_tags($values['strategies']), 0, 60).'...';
+                                    });
+                                
+                                // Add action column with link to view intervention details
+                                $table->addActionColumn()
+                                    ->addParam('gibbonINInterventionID')
+                                    ->format(function ($intervention, $actions) use ($session) {
+                                        $actions->addAction('view', __('View'))
+                                            ->setURL('/modules/Individual Needs/interventions_manage_edit.php');
+                                    });
+                                
+                                echo $table->render($interventions);
+                            }
+
                             //Get and display a list of student's educational assistants
 
                                 $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID2' => $gibbonPersonID);
