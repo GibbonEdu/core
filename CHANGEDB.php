@@ -909,7 +909,7 @@ UPDATE `gibbonCountry` SET `iddCountryCode` = '242' WHERE `printable_name` = 'Co
 UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '246' WHERE `printable_name` = 'British Indian Ocean Territory';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '673' WHERE `printable_name` = 'Brunei Darussalam';end
-UPDATE `gibbonCountry` SET `iddCountryCode` = '225' WHERE `printable_name` = 'Cote D'Ivoire';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '225' WHERE `printable_name` = 'Cote D\'Ivoire';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '500' WHERE `printable_name` = 'Falkland Islands (Malvinas)';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '594' WHERE `printable_name` = 'French Guiana';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '590' WHERE `printable_name` = 'Guadeloupe';end
