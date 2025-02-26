@@ -64,7 +64,7 @@ class QueryCriteriaTest extends TestCase
 
     public function testCanLoadFromJson()
     {
-        $values = '{"page":3,"pageSize":24,"searchBy":{"columns":["columnName"],"text":"foo bar"},"filterBy":{"foo":"bar"},"sortBy":{"foo":"DESC"}}';
+        $values = '{"page":3,"pageSize":24,"searchBy":{"columns":["columnName"],"text":"foo bar"},"filterBy":{"foo"::"bar"},"sortBy":{"foo":"DESC"}}';
 
         $this->assertEquals($values, $this->criteria->fromJson($values)->toJson());
     }
@@ -141,28 +141,28 @@ class QueryCriteriaTest extends TestCase
 
     public function testCanAddFilterToSearchString()
     {
-        $this->criteria->searchBy('columnName', 'foo bar active:Y');
+        $this->criteria->searchBy('columnName', 'foo bar active::Y');
 
         $this->assertTrue($this->criteria->hasFilter('active', 'Y'));
         if (method_exists($this, 'assertStringNotContainsString')) {
             // for newer phpunit versions
-            $this->assertStringNotContainsString('active:Y', $this->criteria->getSearchText());
+            $this->assertStringNotContainsString('active::Y', $this->criteria->getSearchText());
         } else {
             // for older phpunit versions
-            $this->assertNotContains('active:Y', $this->criteria->getSearchText());
+            $this->assertNotContains('active::Y', $this->criteria->getSearchText());
         }
     }
 
     public function testCanFilterByString()
     {
-        $this->criteria->filterBy('foo:bar');
+        $this->criteria->filterBy('foo::bar');
 
         $this->assertTrue($this->criteria->hasFilter('foo', 'bar'));
     }
 
     public function testCanFilterByQuotedString()
     {
-        $this->criteria->filterBy('foo:"bar baz"');
+        $this->criteria->filterBy('foo::"bar baz"');
 
         $this->assertTrue($this->criteria->hasFilter('foo', 'bar baz'));
     }
@@ -186,14 +186,14 @@ class QueryCriteriaTest extends TestCase
     {
         $this->assertFalse($this->criteria->hasFilter());
 
-        $this->criteria->filterBy('foo:bar');
+        $this->criteria->filterBy('foo::bar');
 
         $this->assertTrue($this->criteria->hasFilter());
     }
     
     public function testCanGetAllFilters()
     {
-        $this->criteria->filterBy('foo:bar');
+        $this->criteria->filterBy('foo::bar');
 
         $this->assertTrue(is_array($this->criteria->getFilterBy()));
     }
