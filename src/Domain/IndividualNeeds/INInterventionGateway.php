@@ -164,4 +164,19 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
 
         return $this->runSelect($query)->fetchAll();
     }
+
+    public function getInterventionByInvestigationID($gibbonINInvestigationID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonINIntervention.*'
+            ])
+            ->where('gibbonINIntervention.gibbonINInvestigationID=:gibbonINInvestigationID')
+            ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID)
+            ->orderBy(['gibbonINIntervention.dateCreated DESC']);
+
+        return $this->runSelect($query)->fetch();
+    }
 }

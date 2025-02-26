@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $table->addColumn('parentConsent', __('Parent Consent'))->sortable();
         
         $table->addColumn('targetDate', __('Target Date'))
-            ->format(Format::using('date', 'targetDate'));
+            ->format(Format::using('date', ['targetDate']));
             
         $table->addColumn('creator', __('Created By'))
             ->sortable(['surnameCreator', 'preferredNameCreator'])

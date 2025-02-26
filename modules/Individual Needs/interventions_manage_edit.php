@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $table->addColumn('type', __('Type'));
         $table->addColumn('status', __('Status'));
         $table->addColumn('dateCreated', __('Date'))
-            ->format(Format::using('date', 'dateCreated'));
+            ->format(Format::using('date', ['dateCreated']));
 
         $table->addActionColumn()
             ->addParam('gibbonINInterventionContributorID')
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             });
             
         $table->addColumn('timestamp', __('Date'))
-            ->format(Format::using('dateTime', 'timestamp'));
+            ->format(Format::using('dateTime', ['timestamp']));
 
         $table->addActionColumn()
             ->addParam('gibbonINInterventionUpdateID')

@@ -21,12 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\UI\Chart\Chart;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
+use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -152,34 +155,67 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 $form->toggleVisibilityByClass('resolutionDetails')->onSelect('action')->when('Resolved');
                                 $form->toggleVisibilityByClass('interventionDetails')->onSelect('action')->when('Intervention');
                                 $form->toggleVisibilityByClass('investigationDetails')->onSelect('action')->when('Investigation');
+                        } else {
+                            // Show the appropriate section based on the investigation status
+                            if ($investigation['status'] == 'Resolved') {
+                                echo "<script>$(document).ready(function() { $('.resolutionDetails').show(); });</script>";
+                            } else if ($investigation['status'] == 'Intervention') {
+                                echo "<script>$(document).ready(function() { $('.interventionDetails').show(); });</script>";
+                            } else if ($investigation['status'] == 'Investigation' || $investigation['status'] == 'Investigation Complete') {
+                                echo "<script>$(document).ready(function() { $('.investigationDetails').show(); });</script>";
+                            }
                         }
-
+                        
                         //Resolvable by tutor
                         $row = $form->addRow()->addClass('resolutionDetails');
                             $column = $row->addColumn();
                             $column->addLabel('resolutionDetails', __('Resolution Details'));
-                            $column->addTextArea('resolutionDetails')->setRows(5)->setClass('w-full')->readonly(!$isTutor || $investigation['status'] != 'Referral');
+                            $column->addTextArea('resolutionDetails')
+                                ->setRows(5)
+                                ->setClass('w-full')
+                                ->readonly(!$isTutor || $investigation['status'] != 'Referral')
+                                ->setValue($investigation['resolutionDetails'] ?? '');
                         
                         //Intervention section
                         $form->addRow()->addClass('interventionDetails')->addHeading(__('Initial Intervention Details'));
                         
+                        // Preload intervention data if status is Intervention
+                        $interventionData = [];
+                        if ($investigation['status'] == 'Intervention') {
+                            $interventionGateway = $container->get(INInterventionGateway::class);
+                            $intervention = $interventionGateway->getInterventionByInvestigationID($investigation['gibbonINInvestigationID']);
+                            if (!empty($intervention)) {
+                                $interventionData = [
+                                    'name' => $intervention['name'],
+                                    'interventionDescription' => $intervention['description'],
+                                    'interventionStrategies' => $intervention['strategies'],
+                                    'interventionTargetDate' => $intervention['targetDate'],
+                                    'interventionParentConsent' => $intervention['parentConsent']
+                                ];
+                            }
+                        }
+                        
                         $row = $form->addRow()->addClass('interventionDetails');
                         $row->addLabel('interventionName', __('Intervention Name'))->description(__('A short name for this intervention'));
-                        $row->addTextField('interventionName')->required()->maxLength(100);
+                        $row->addTextField('interventionName')->required()->maxLength(100)
+                            ->setValue($interventionData['name'] ?? '');
                         
                         $row = $form->addRow()->addClass('interventionDetails');
                         $column = $row->addColumn();
                         $column->addLabel('interventionDescription', __('Description'))->description(__('Describe the intervention and its goals'));
-                        $column->addTextArea('interventionDescription')->setRows(5)->setClass('w-full')->required();
+                        $column->addTextArea('interventionDescription')->setRows(5)->setClass('w-full')->required()
+                            ->setValue($interventionData['interventionDescription'] ?? '');
                         
                         $row = $form->addRow()->addClass('interventionDetails');
                         $column = $row->addColumn();
                         $column->addLabel('interventionStrategies', __('Strategies'))->description(__('Specific strategies to be used in this intervention'));
-                        $column->addTextArea('interventionStrategies')->setRows(5)->setClass('w-full')->required();
+                        $column->addTextArea('interventionStrategies')->setRows(5)->setClass('w-full')->required()
+                            ->setValue($interventionData['interventionStrategies'] ?? '');
                         
                         $row = $form->addRow()->addClass('interventionDetails');
                         $row->addLabel('interventionTargetDate', __('Target Date'))->description(__('When should this intervention be reviewed?'));
-                        $row->addDate('interventionTargetDate')->required();
+                        $row->addDate('interventionTargetDate')->required()
+                            ->setValue($interventionData['interventionTargetDate'] ?? '');
                         
                         $row = $form->addRow()->addClass('interventionDetails');
                         $row->addLabel('interventionParentConsent', __('Parent Consent'))->description(__('Has parent consent been obtained for this intervention?'));
@@ -189,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                             'Consent Denied' => __('Consent Denied'),
                             'Awaiting Response' => __('Awaiting Response')
                         ];
-                        $row->addSelect('interventionParentConsent')->fromArray($options)->required()->selected('Not Requested');
+                        $row->addSelect('interventionParentConsent')->fromArray($options)->required()->selected($interventionData['interventionParentConsent'] ?? 'Not Requested');
 
                         //Not resolvable by tutor - keep existing investigation section
                         $resultClass = $investigationGateway->queryTeachersByInvestigation($investigation['gibbonSchoolYearID'], $investigation['gibbonPersonIDStudent']);

@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -49,7 +49,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         }
 
         $interventionGateway = $container->get(INInterventionGateway::class);
-        $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
+        $sql = "SELECT gibbonINIntervention.*, gibbonPerson.preferredName, gibbonPerson.surname
+                FROM gibbonINIntervention
+                JOIN gibbonINInvestigation ON (gibbonINIntervention.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID)
+                JOIN gibbonPerson ON (gibbonINInvestigation.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID)
+                WHERE gibbonINIntervention.gibbonINInterventionID=:gibbonINInterventionID";
+        $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID]);
+        $intervention = $result->fetch();
 
         if (empty($intervention)) {
             $page->addError(__('The specified record cannot be found.'));
@@ -60,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         if ($highestAction == 'Manage Interventions_my' && $intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
             // Check if the current user is a contributor
             $sql = "SELECT * FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonPersonID=:gibbonPersonID";
-            $result = $pdo->executeQuery(['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')], $sql);
+            $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')]);
             
             if ($result->rowCount() == 0) {
                 $page->addError(__('You do not have access to this action.'));

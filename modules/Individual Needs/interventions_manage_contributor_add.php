@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
                 JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPerson.status='Full'
                 ORDER BY surname, preferredName";
-        $result = $pdo->executeQuery([], $sql);
+        $result = $pdo->select($sql);
         $staff = ($result->rowCount() > 0) ? $result->fetchAll() : [];
         $staffOptions = [];
         foreach ($staff as $person) {
