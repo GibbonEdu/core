@@ -34,6 +34,7 @@ v29.0.00
     Tweaks & Additions
         System: removed Date of Birth field from Public Registration when no minimum registration age is set
         System: improved the colour picker to add a pre-set colour palette
+        System: added IDD country codes to all countries in the database
         Attendance: updated Student History view to display Off Timetable days
         Library: improved the Library Borrowing page on student profiles
         Library: improved the Lending & Activity Log workflow when scanning in IDs from barcodes
@@ -50,6 +51,7 @@ v29.0.00
 
     
     Bug Fixes
+        System: fixed issue with search terms containing a : full colon (special character) 
         Sidebar: fixed localization of Roles menu items.
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
