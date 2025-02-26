@@ -230,7 +230,7 @@ class QueryCriteria
      */
     private function applyAdvancedSearchFilters($text)
     {
-        $text = preg_replace_callback('/(\w*\:[\w\-]*|(?:"[^"]*"))+/', function ($matches) {
+        $text = preg_replace_callback('/(\w*\:\:[\w\-]*|(?:"[^"]*"))+/', function ($matches) {
             $this->filterBy($matches[0]);
             return '';
         }, $text);
@@ -309,8 +309,8 @@ class QueryCriteria
     {
         if (empty($name)) return $this;
 
-        if (stripos($name, ':') !== false) {
-            list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+        if (stripos($name, '::') !== false) {
+            list($name, $value) = array_pad(explode('::', $name, 2), 2, '');
             $value = str_replace('"', '', $value);
         }
 
@@ -364,7 +364,7 @@ class QueryCriteria
     public function getFilterString()
     {
         return implode(' ', array_map(function($value, $name) {
-            return stripos($value, ' ') !== false ? $name.':"'.$value .'"' : $name.':'.$value;
+            return stripos($value, ' ') !== false ? $name.'::"'.$value .'"' : $name.'::'.$value;
         }, $this->criteria['filterBy'], array_keys($this->criteria['filterBy'])));
     }
 
