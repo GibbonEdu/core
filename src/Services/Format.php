@@ -628,7 +628,7 @@ class Format
             $url = 'mailto:'.$url;
         } else {
             $url = str_replace(' ', '%20', $url);
-            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $url);
         }
 
         $url = str_replace(['"', "'"], ['%22', '%27'], $url);
