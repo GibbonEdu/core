@@ -148,18 +148,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 $row->addLabel('action', __('Action'))->description(__('Choose the appropriate action for this referral.'));
                                 $options = [
                                     'Resolved' => __('Resolved') . ' - ' . __('Issue is minor or already addressed'),
-                                    'Intervention' => __('Try Interventions') . ' - ' . __('Issue needs support but not a full IEP'),
+                                    'Eligibility Assessment' => __('Eligibility Assessment') . ' - ' . __('Determine if student is eligible for interventions'),
                                     'Investigation' => __('Investigate Further') . ' - ' . __('Complex issues that may need an IEP')
                                 ];
                                 $row->addSelect('action')->fromArray($options)->required()->placeholder();
                                 
                                 $form->toggleVisibilityByClass('resolutionDetails')->onSelect('action')->when('Resolved');
-                                $form->toggleVisibilityByClass('interventionDetails')->onSelect('action')->when('Intervention');
+                                $form->toggleVisibilityByClass('eligibilityDetails')->onSelect('action')->when('Eligibility Assessment');
                                 $form->toggleVisibilityByClass('investigationDetails')->onSelect('action')->when('Investigation');
                         } else {
                             // Show the appropriate section based on the investigation status
                             if ($investigation['status'] == 'Resolved') {
                                 echo "<script>$(document).ready(function() { $('.resolutionDetails').show(); });</script>";
+                            } else if ($investigation['status'] == 'Eligibility Assessment' || $investigation['status'] == 'Eligibility Complete') {
+                                echo "<script>$(document).ready(function() { $('.eligibilityDetails').show(); });</script>";
                             } else if ($investigation['status'] == 'Intervention') {
                                 echo "<script>$(document).ready(function() { $('.interventionDetails').show(); });</script>";
                             } else if ($investigation['status'] == 'Investigation' || $investigation['status'] == 'Investigation Complete') {
@@ -177,6 +179,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 ->readonly(!$isTutor || $investigation['status'] != 'Referral')
                                 ->setValue($investigation['resolutionDetails'] ?? '');
                         
+                        //Eligibility Assessment section
+                        $form->addRow()->addClass('eligibilityDetails')->addHeading(__('Eligibility Assessment Details'));
+                        
+                        // Query available assessment types
+                        $sql = "SELECT gibbonINEligibilityAssessmentTypeID as value, name FROM gibbonINEligibilityAssessmentType WHERE active='Y' ORDER BY sequenceNumber";
+                        $result = $pdo->select($sql);
+                        $assessmentTypes = ($result->rowCount() > 0) ? $result->fetchAll() : [];
+                        
+                        $row = $form->addRow()->addClass('eligibilityDetails');
+                        $row->addLabel('assessmentTypes', __('Required Assessments'))->description(__('Select which assessments are required for this student'));
+                        $column = $row->addColumn()->setClass('flex-col items-end');
+                        
+                        foreach ($assessmentTypes as $type) {
+                            $column->addCheckbox('assessmentType'.$type['value'])
+                                ->setName('assessmentTypes[]')
+                                ->setValue($type['value'])
+                                ->description($type['name'])
+                                ->checked(true);
+                        }
+                        
+                        $row = $form->addRow()->addClass('eligibilityDetails');
+                        $column = $row->addColumn();
+                        $column->addLabel('eligibilityNotes', __('Notes'))->description(__('Additional notes about the eligibility assessment process'));
+                        $column->addTextArea('eligibilityNotes')->setRows(5)->setClass('w-full');
+
                         //Intervention section
                         $form->addRow()->addClass('interventionDetails')->addHeading(__('Initial Intervention Details'));
                         

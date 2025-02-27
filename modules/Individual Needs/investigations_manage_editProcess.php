@@ -24,6 +24,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
+use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -121,6 +122,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 ], 'Alert');
             }
         } 
+        else if ($action == 'Eligibility Assessment') {
+            // Handle eligibility assessment option
+            
+            // Update investigation status
+            $data = [
+                'status' => 'Eligibility Assessment',
+                'eligibilityNotes' => $_POST['eligibilityNotes'] ?? '',
+            ];
+            $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
+            
+            // Process selected assessment types
+            $assessmentTypes = $_POST['assessmentTypes'] ?? [];
+            
+            if (!empty($assessmentTypes)) {
+                // Create a new gateway for eligibility assessments if needed
+                $eligibilityAssessmentGateway = $container->get(INEligibilityAssessmentGateway::class);
+                
+                foreach ($assessmentTypes as $typeID) {
+                    // Create placeholder assessment records
+                    $assessmentData = [
+                        'gibbonINInvestigationID' => $gibbonINInvestigationID,
+                        'gibbonINEligibilityAssessmentTypeID' => $typeID,
+                        'gibbonPersonIDAssessor' => null, // Will be assigned later
+                        'date' => null, // Will be filled when completed
+                        'result' => 'Inconclusive', // Default state
+                        'notes' => __('Assessment requested on ') . date('Y-m-d'),
+                    ];
+                    
+                    $eligibilityAssessmentGateway->insert($assessmentData);
+                }
+            }
+            
+            // Notify the requesting teacher
+            $notificationString = __('An eligibility assessment has been initiated for {student}.', ['student' => $studentName]);
+            $notificationGateway->addNotification([$investigation['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
+                'gibbonINInvestigationID' => $gibbonINInvestigationID
+            ], 'Alert');
+        }
         else if ($action == 'Intervention') {
             // Handle intervention option
             $interventionGateway = $container->get(INInterventionGateway::class);

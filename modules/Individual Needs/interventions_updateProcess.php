@@ -132,11 +132,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
     
     // Remove the current user from notifications
     $contributorIDs = array_diff($contributorIDs, [$gibbonPersonID]);
-    
+
     if (!empty($contributorIDs)) {
-        $notificationGateway->addNotification($contributorIDs, 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
-            'gibbonINInterventionID' => $gibbonINInterventionID
-        ], 'Alert');
+        // Get the NotificationSender from the container
+        $notificationSender = $container->get(\Gibbon\Comms\NotificationSender::class);
+        
+        // Send notifications to all contributors
+        foreach ($contributorIDs as $contributorID) {
+            $notificationSender->addNotification(
+                $contributorID,
+                $notificationString,
+                'Individual Needs',
+                'interventions_manage_edit.php',
+                ['gibbonINInterventionID' => $gibbonINInterventionID]
+            );
+        }
+        
+        // Send all notifications
+        $notificationSender->sendNotifications();
     }
     
     $URL .= '&return=success0';

@@ -2189,8 +2189,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 
                             // Display student interventions
-                           
-
                             // Use the INInterventionGateway to get interventions for this student
                             $interventionGateway = $container->get(\Gibbon\Domain\IndividualNeeds\INInterventionGateway::class);
                             $criteria = $container->get(\Gibbon\Domain\QueryCriteria::class);
