@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -73,6 +73,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 if (isset($_POST['status'])) {
                     $statuses = $_POST['status'] ?? '';
                 }
+                
+                // Check if this is a new IEP creation
+                $isNewIEP = false;
+                $data = ['gibbonPersonID' => $gibbonPersonID];
+                $sql = "SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID";
+                $existingIEP = $pdo->select($sql, $data);
+                
+                if ($existingIEP->rowCount() == 0) {
+                    $isNewIEP = true;
+                    
+                    // Check for eligibility assessment
+                    $data = ['gibbonPersonID' => $gibbonPersonID];
+                    $sql = "SELECT i.gibbonINInvestigationID, i.status, i.eligibilityDecision 
+                            FROM gibbonINInvestigation i 
+                            WHERE i.gibbonPersonIDStudent=:gibbonPersonID 
+                            AND (i.status='Eligibility Complete' OR i.status='Intervention')
+                            AND i.eligibilityDecision='Eligible'
+                            ORDER BY i.timestampCreated DESC";
+                    
+                    $eligibilityResult = $pdo->select($sql, $data);
+                    
+                    // For backward compatibility, we allow IEP creation but log a warning message
+                    if ($eligibilityResult->rowCount() == 0) {
+                        // Log warning about missing eligibility assessment
+                        $session->set('pageLoads', null);
+                        $session->set('sidebarExtra', null);
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                }
+                
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'DELETE FROM gibbonINPersonDescriptor WHERE gibbonPersonID=:gibbonPersonID';

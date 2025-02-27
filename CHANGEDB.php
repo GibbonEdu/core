@@ -973,7 +973,7 @@ CREATE TABLE `gibbonINIntervention` (
   KEY `gibbonPersonIDCreator` (`gibbonPersonIDCreator`),
   CONSTRAINT `gibbonINIntervention_ibfk_1` FOREIGN KEY (`gibbonINInvestigationID`) REFERENCES `gibbonINInvestigation` (`gibbonINInvestigationID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
-
+ 
 CREATE TABLE `gibbonINInterventionUpdate` (
   `gibbonINInterventionUpdateID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
   `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
@@ -1002,11 +1002,11 @@ CREATE TABLE `gibbonINInterventionContributor` (
 
 -- Add Intervention Management actions to the gibbonAction table
 INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
-SELECT gibbonModuleID, 'Manage Interventions_all', 0, 'Individual Needs', 'Allows users to manage all interventions', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N' 
+SELECT gibbonModuleID, 'Manage Interventions_all', 0, 'Interventions', 'Allows users to manage all interventions', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N' 
 FROM gibbonModule WHERE name='Individual Needs';end
 
 INSERT IGNORE INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
-SELECT gibbonModuleID, 'Manage Interventions_my', 0, 'Individual Needs', 'Allows users to manage interventions they have created or are contributing to', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N' 
+SELECT gibbonModuleID, 'Manage Interventions_my', 0, 'Interventions', 'Allows users to manage interventions they have created or are contributing to', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N' 
 FROM gibbonModule WHERE name='Individual Needs';end
 
 -- Add permissions for the new actions
@@ -1030,7 +1030,6 @@ INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (001, (SELECT
 INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments_my', 1, 'Eligibility', 'Allows users to manage eligibility assessments that they have created.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 
 INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (002, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments_my'));end
-
 
 UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '246' WHERE `printable_name` = 'British Indian Ocean Territory';end

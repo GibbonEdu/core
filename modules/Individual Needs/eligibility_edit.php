@@ -28,7 +28,7 @@ use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
-require_once __DIR__ . '/moduleFunctions.php';
+require_once __DIR__ . '/../moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_edit.php') == false) {
     // Access denied

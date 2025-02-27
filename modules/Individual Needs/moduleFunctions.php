@@ -200,3 +200,25 @@ function getInvestigationCriteriaStrands($includeCognition = false)
 
     return $options;
 }
+
+/**
+ * Checks if a student has completed an eligibility assessment and was deemed eligible
+ *
+ * @param \PDO $pdo
+ * @param int $gibbonPersonID
+ * @return bool
+ */
+function hasCompletedEligibilityAssessment($pdo, $gibbonPersonID)
+{
+    $data = ['gibbonPersonIDStudent' => $gibbonPersonID];
+    
+    $sql = "SELECT gibbonINInvestigation.gibbonINInvestigationID, gibbonINInvestigation.eligibilityDecision 
+            FROM gibbonINInvestigation 
+            WHERE gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonIDStudent 
+            AND gibbonINInvestigation.status='Eligibility Complete' 
+            AND gibbonINInvestigation.eligibilityDecision='Eligible'";
+    
+    $result = $pdo->select($sql, $data);
+    
+    return ($result->rowCount() > 0);
+}

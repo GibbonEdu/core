@@ -23,6 +23,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Comms\NotificationSender;
 
 require_once '../../gibbon.php';
 
@@ -65,25 +66,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $gibbonINInvestigationID = $investigationGateway->insert($data);
 
     // Send notification to form tutors
-    $notificationGateway = $container->get(NotificationGateway::class);
+    $notificationSender = $container->get(NotificationSender::class);
     
-    $studentName = Format::name('', $_POST['preferredName'], $_POST['surname'], 'Student', false, true);
-    $notificationString = __('An Individual Needs investigation for {student} has been initiated.', ['student' => $studentName]);
+    // Get student information to use in notification
+    $studentData = array('gibbonPersonID' => $data['gibbonPersonIDStudent']);
+    $studentSQL = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonFormGroup.gibbonFormGroupID, 
+                         gibbonFormGroup.gibbonPersonIDTutor, gibbonFormGroup.gibbonPersonIDTutor2, gibbonFormGroup.gibbonPersonIDTutor3
+                  FROM gibbonPerson 
+                  LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                  LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                  WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID 
+                  AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+    $studentData['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+    $studentResult = $pdo->select($studentSQL, $studentData);
     
-    // Get form tutors
-    $data = array('gibbonFormGroupID' => $_POST['gibbonFormGroupID']);
-    $sql = "SELECT gibbonPerson.gibbonPersonID 
-            FROM gibbonPerson 
-            JOIN gibbonFormGroupPerson ON (gibbonFormGroupPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-            WHERE gibbonFormGroupPerson.gibbonFormGroupID=:gibbonFormGroupID 
-            AND gibbonPerson.status='Full'";
-    $result = $pdo->select($sql, $data);
-    
-    if ($result->rowCount() > 0) {
-        $tutors = $result->fetchAll(PDO::FETCH_COLUMN);
-        $notificationGateway->addNotification($tutors, 'Individual Needs', $notificationString, 'investigations_manage_edit.php', [
-            'gibbonINInvestigationID' => $gibbonINInvestigationID
-        ], 'Alert');
+    if ($studentResult && $studentResult->rowCount() > 0) {
+        $student = $studentResult->fetch();
+        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
+        $notificationString = __('An Individual Needs investigation for {student} has been initiated.', ['student' => $studentName]);
+        $actionLink = "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=" . $gibbonINInvestigationID;
+        
+        // Get form tutors directly from the student record
+        if (!empty($student['gibbonPersonIDTutor'])) {
+            $notificationSender->addNotification($student['gibbonPersonIDTutor'], $notificationString, 'Individual Needs', $actionLink);
+        }
+        if (!empty($student['gibbonPersonIDTutor2'])) {
+            $notificationSender->addNotification($student['gibbonPersonIDTutor2'], $notificationString, 'Individual Needs', $actionLink);
+        }
+        if (!empty($student['gibbonPersonIDTutor3'])) {
+            $notificationSender->addNotification($student['gibbonPersonIDTutor3'], $notificationString, 'Individual Needs', $actionLink);
+        }
+        
+        // Send all queued notifications
+        $notificationSender->sendNotifications();
     }
 
     $URL .= !$gibbonINInvestigationID
