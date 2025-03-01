@@ -185,4 +185,76 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
 
         return $result;
     }
+
+    /**
+     * @param QueryCriteria $criteria
+     * @param int $gibbonSchoolYearID
+     * @param int $gibbonPersonIDCreator
+     * @return DataSet
+     */
+    public function queryEligibilityAssessments(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCreator = null)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonINInvestigation.*',
+                'student.gibbonPersonID',
+                'student.surname',
+                'student.preferredName',
+                'gibbonFormGroup.nameShort AS formGroup',
+                'creator.title AS titleCreator',
+                'creator.surname AS surnameCreator',
+                'creator.preferredName AS preferredNameCreator'
+            ])
+            ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
+            ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
+            ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
+            ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID')
+            ->where('gibbonINInvestigation.status IN (:statusEligibilityAssessment, :statusEligibilityComplete, :statusInvestigationComplete, :statusIntervention)')
+            ->bindValue('statusEligibilityAssessment', 'Eligibility Assessment')
+            ->bindValue('statusEligibilityComplete', 'Eligibility Complete')
+            ->bindValue('statusInvestigationComplete', 'Investigation Complete')
+            ->bindValue('statusIntervention', 'Intervention');
+
+        if (!empty($gibbonPersonIDCreator)) {
+            $query->where('gibbonINInvestigation.gibbonPersonIDCreator=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonIDCreator')
+                ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
+        }
+
+        $criteria->addFilterRules([
+            'student' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+            'formGroup' => function ($query, $gibbonFormGroupID) {
+                return $query
+                    ->where('gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID')
+                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
+            },
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
+            'status' => function ($query, $status) {
+                if ($status == 'Eligibility Assessment') {
+                    return $query
+                        ->where('gibbonINInvestigation.status=:status')
+                        ->bindValue('status', 'Eligibility Assessment');
+                } else if ($status == 'Eligibility Complete') {
+                    return $query
+                        ->where('gibbonINInvestigation.status=:status')
+                        ->bindValue('status', 'Eligibility Complete');
+                }
+                return $query;
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }

@@ -907,9 +907,21 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 ALTER TABLE `gibbonMarkbookColumn` ADD `columnColor` VARCHAR(7) NULL DEFAULT NULL AFTER `description`;end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '242' WHERE `printable_name` = 'Congo';end
 
+SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))FROM gibbonRole WHERE name='Teacher';end
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs')) FROM gibbonRole WHERE name='Support Staff';end
+
+-- Add eligibility management actions to Individual Needs module
+INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments', 0, 'Eligibility', 'Allows users to manage eligibility assessments for students.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments'));end
+
+INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments_my', 1, 'Eligibility', 'Allows users to manage their own eligibility assessments for students.', 'eligibility_manage_my.php,eligibility_edit_my.php,eligibility_contributor_add_my.php,eligibility_assessment_edit_my.php', 'eligibility_manage_my.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments_my'));end
+
 -- Individual Needs Module Updates
-ALTER TABLE `gibbonINInvestigation` 
-MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete','Eligibility Assessment','Eligibility Complete') DEFAULT NULL;end
+ALTER TABLE `gibbonINInvestigation` MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete','Eligibility Assessment','Eligibility Complete') DEFAULT NULL;end
 
 -- Add new fields to track eligibility assessment status
 ALTER TABLE `gibbonINInvestigation` 
@@ -1014,21 +1026,7 @@ INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
 SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
 FROM gibbonRole WHERE name='Administrator';end
 
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
-SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
-FROM gibbonRole WHERE name='Teacher';end
-
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
-SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
-FROM gibbonRole WHERE name='Support Staff';end
-
--- Add eligibility management actions to Individual Needs module
-INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments', 0, 'Eligibility', 'Allows users to manage eligibility assessments for students.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
-
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments'));end
-
-INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments_my', 1, 'Eligibility', 'Allows users to manage eligibility assessments that they have created.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
-
+INSERT INTO gibbonPermission (gibbonRoleID eligibility assessments that they have created.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (002, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments_my'));end
 
 UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
@@ -1055,5 +1053,7 @@ UPDATE `gibbonCountry` SET `iddCountryCode` = '1 340' WHERE `printable_name` = '
 UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
 UPDATE `gibbonCountry` SET `printable_name` = 'Serbia, Republic of', `iddCountryCode` = '381' WHERE `printable_name` = 'Serbia and Montenegro';end
-INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Montenegro', '382');end
+INSERT IGNORE INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Montenegro', '382');end
+
+
 ";
