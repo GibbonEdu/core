@@ -1,129 +1,247 @@
 <?php
 
+// Basic Variables
+$name = 'Interventions';
+$description = 'Manage and track student interventions before formal IEP processes';
+$entryURL = 'interventions_manage.php';
+$type = 'Additional';
+$category = 'Learn';
+$version = '1.0.00';
+$author = 'Gibbon Foundation';
+$url = 'https://gibbonedu.org';
 
-ALTER TABLE `gibbonINInvestigation` 
-MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete') DEFAULT NULL;
+// Module Tables
+$moduleTables[] = "CREATE TABLE `gibbonINIntervention` (
+    `gibbonINInterventionID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDFormTutor` INT(10) UNSIGNED ZEROFILL NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+    `status` ENUM('Referral','Form Tutor Review','Intervention','IEP','Resolved','Completed') NOT NULL DEFAULT 'Referral',
+    `formTutorDecision` ENUM('Pending','Resolvable','Try Interventions','Try IEP') NOT NULL DEFAULT 'Pending',
+    `formTutorNotes` TEXT NULL,
+    `outcomeNotes` TEXT NULL,
+    `outcomeDecision` ENUM('Pending','Success','Needs IEP') NULL DEFAULT 'Pending',
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `timestampModified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionID`),
+    INDEX(`gibbonPersonIDStudent`),
+    INDEX(`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
- 
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionContributor` (
+    `gibbonINInterventionContributorID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDContributor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `type` ENUM('Teacher','Support Staff','External Agency','Other') NOT NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionContributorID`),
+    UNIQUE KEY `contributor` (`gibbonINInterventionID`, `gibbonPersonIDContributor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))FROM gibbonRole WHERE name='Teacher';
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionStrategy` (
+    `gibbonINInterventionStrategyID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+    `targetDate` DATE NOT NULL,
+    `status` ENUM('Planned','In Progress','Completed','Cancelled') NOT NULL DEFAULT 'Planned',
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionStrategyID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs')) FROM gibbonRole WHERE name='Support Staff';
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionOutcome` (
+    `gibbonINInterventionOutcomeID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionStrategyID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `outcome` TEXT NOT NULL,
+    `evidence` TEXT NULL,
+    `successful` ENUM('Yes','No','Partial') NOT NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionOutcomeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
--- Add eligibility management actions to Individual Needs module
-INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments', 0, 'Eligibility', 'Allows users to manage eligibility assessments for students.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+$moduleTables[] = "CREATE TABLE `gibbonINReferral` (
+    `gibbonINReferralID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+    `status` ENUM('Eligibility Assessment','Eligibility Complete') NOT NULL DEFAULT 'Eligibility Assessment',
+    `eligibilityDecision` ENUM('Pending','Eligible','Not Eligible') NOT NULL DEFAULT 'Pending',
+    `eligibilityNotes` TEXT NULL,
+    `dateCreated` DATE NOT NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINReferralID`),
+    INDEX(`gibbonPersonIDStudent`),
+    INDEX(`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments'));
+$moduleTables[] = "CREATE TABLE `gibbonINEligibilityAssessment` (
+    `gibbonINEligibilityAssessmentID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINReferralID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDContributor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `type` VARCHAR(50) NOT NULL,
+    `assessment` TEXT NULL,
+    `recommendation` ENUM('Pending','Eligible','Not Eligible') NOT NULL DEFAULT 'Pending',
+    `dateCompleted` DATE NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINEligibilityAssessmentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Manage Eligibility Assessments_my', 1, 'Eligibility', 'Allows users to manage their own eligibility assessments for students.', 'eligibility_manage_my.php,eligibility_edit_my.php,eligibility_contributor_add_my.php,eligibility_assessment_edit_my.php', 'eligibility_manage_my.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+$moduleTables[] = "CREATE TABLE `gibbonINEligibilityAssessmentType` (
+    `gibbonINEligibilityAssessmentTypeID` INT(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `description` TEXT NULL,
+    `active` ENUM('Y','N') NOT NULL DEFAULT 'Y',
+    PRIMARY KEY (`gibbonINEligibilityAssessmentTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments_my'));
+// Module Action Rows
+$actionRows[] = [
+    'name' => 'Manage Interventions_all', 
+    'precedence' => '1',
+    'category' => 'Interventions',
+    'description' => 'View and manage all student interventions',
+    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php',
+    'entryURL' => 'interventions_manage.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'N',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
 
--- Individual Needs Module Updates
-ALTER TABLE `gibbonINInvestigation` MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete','Eligibility Assessment','Eligibility Complete') DEFAULT NULL;
+$actionRows[] = [
+    'name' => 'Manage Interventions_my',
+    'precedence' => '0',
+    'category' => 'Interventions',
+    'description' => 'View and manage interventions you have created',
+    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php',
+    'entryURL' => 'interventions_manage.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'N',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
 
--- Add new fields to track eligibility assessment status
-ALTER TABLE `gibbonINInvestigation` 
-ADD COLUMN `eligibilityDecision` enum('Pending','Eligible','Not Eligible') DEFAULT 'Pending' AFTER `resolutionDetails`,
-ADD COLUMN `eligibilityNotes` text AFTER `eligibilityDecision`;
+$actionRows[] = [
+    'name' => 'Submit Referral',
+    'precedence' => '0',
+    'category' => 'Interventions',
+    'description' => 'Submit a referral for a student who may need additional support',
+    'URLList' => 'interventions_submit.php',
+    'entryURL' => 'interventions_submit.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'N',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
 
--- Create a new table for eligibility assessment types
-CREATE TABLE `gibbonINEligibilityAssessmentType` (
-  `gibbonINEligibilityAssessmentTypeID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `description` text,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `sequenceNumber` int(3) NOT NULL,
-  PRIMARY KEY (`gibbonINEligibilityAssessmentTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+$actionRows[] = [
+    'name' => 'Manage Eligibility Assessments_all',
+    'precedence' => '1',
+    'category' => 'Eligibility',
+    'description' => 'View and manage all eligibility assessments',
+    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_delete.php,eligibility_contributor_add.php,eligibility_contributor_delete.php,eligibility_assessment_edit.php',
+    'entryURL' => 'eligibility_manage.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'N',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
 
--- Create a new table for eligibility assessment results
-CREATE TABLE `gibbonINEligibilityAssessment` (
-  `gibbonINEligibilityAssessmentID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-  `gibbonINInvestigationID` int(11) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonINEligibilityAssessmentTypeID` int(5) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonPersonIDAssessor` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `date` date NOT NULL,
-  `result` enum('Pass','Fail','Inconclusive') NOT NULL,
-  `notes` text,
-  `documentPath` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`gibbonINEligibilityAssessmentID`),
-  KEY `gibbonINInvestigationID` (`gibbonINInvestigationID`),
-  KEY `gibbonINEligibilityAssessmentTypeID` (`gibbonINEligibilityAssessmentTypeID`),
-  KEY `gibbonPersonIDAssessor` (`gibbonPersonIDAssessor`),
-  CONSTRAINT `gibbonINEligibilityAssessment_ibfk_1` FOREIGN KEY (`gibbonINInvestigationID`) REFERENCES `gibbonINInvestigation` (`gibbonINInvestigationID`) ON DELETE CASCADE,
-  CONSTRAINT `gibbonINEligibilityAssessment_ibfk_2` FOREIGN KEY (`gibbonINEligibilityAssessmentTypeID`) REFERENCES `gibbonINEligibilityAssessmentType` (`gibbonINEligibilityAssessmentTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+$actionRows[] = [
+    'name' => 'Manage Eligibility Assessments_my',
+    'precedence' => '0',
+    'category' => 'Eligibility',
+    'description' => 'View and manage eligibility assessments you have created',
+    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php',
+    'entryURL' => 'eligibility_manage.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'N',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
 
--- Insert default assessment types
-INSERT INTO `gibbonINEligibilityAssessmentType` (`name`, `description`, `active`, `sequenceNumber`) VALUES
-('Academic Assessment', 'Assessment of academic performance and capabilities', 'Y', 1),
-('Behavioral Assessment', 'Assessment of behavioral patterns and challenges', 'Y', 2),
-('Psychological Assessment', 'Assessment by school psychologist or counselor', 'Y', 3),
-('Medical Assessment', 'Assessment of medical conditions affecting learning', 'Y', 4),
-('Speech/Language Assessment', 'Assessment of speech and language capabilities', 'Y', 5);
+$actionRows[] = [
+    'name' => 'Complete Eligibility Assessment',
+    'precedence' => '0',
+    'category' => 'Eligibility',
+    'description' => 'Complete assigned eligibility assessments',
+    'URLList' => 'eligibility_assessment_edit.php',
+    'entryURL' => 'eligibility_assessment_edit.php',
+    'entrySidebar' => 'N',
+    'menuShow' => 'N',
+    'defaultPermissionAdmin' => 'N',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'Y',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'Y'
+];
 
--- Create Intervention tables
-CREATE TABLE `gibbonINIntervention` (
-  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-  `gibbonINInvestigationID` int(11) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `description` text NOT NULL,
-  `strategies` text NOT NULL,
-  `targetDate` date NOT NULL,
-  `status` enum('Pending','In Progress','Completed','Discontinued') NOT NULL DEFAULT 'Pending',
-  `parentConsent` enum('Not Requested','Consent Given','Consent Denied','Awaiting Response') NOT NULL DEFAULT 'Not Requested',
-  `parentConsentDate` date DEFAULT NULL,
-  `gibbonPersonIDConsent` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
-  `consentNotes` text,
-  `consentDocumentPath` varchar(255) DEFAULT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonINInterventionID`),
-  KEY `gibbonINInvestigationID` (`gibbonINInvestigationID`),
-  KEY `gibbonPersonIDCreator` (`gibbonPersonIDCreator`),
-  CONSTRAINT `gibbonINIntervention_ibfk_1` FOREIGN KEY (`gibbonINInvestigationID`) REFERENCES `gibbonINInvestigation` (`gibbonINInvestigationID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- 
-CREATE TABLE `gibbonINInterventionUpdate` (
-  `gibbonINInterventionUpdateID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `comment` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `progress` enum('Not Started','Just Started','Progressing','Breakthrough','Setback','No Progress') NOT NULL,
-  PRIMARY KEY (`gibbonINInterventionUpdateID`),
-  KEY `gibbonINInterventionID` (`gibbonINInterventionID`),
-  KEY `gibbonPersonID` (`gibbonPersonID`),
-  CONSTRAINT `gibbonINInterventionUpdate_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+// Module Settings
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` 
+    (`scope`, `name`, `nameDisplay`, `description`, `value`) 
+    VALUES 
+    ('Interventions', 'requireFormTutorReview', 'Require Form Tutor Review', 'Require form tutor review before intervention implementation.', 'Y');";
 
-CREATE TABLE `gibbonINInterventionContributor` (
-  `gibbonINInterventionContributorID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-  `gibbonINInterventionID` int(12) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonINInterventionContributorID`),
-  KEY `gibbonINInterventionID` (`gibbonINInterventionID`),
-  KEY `gibbonPersonID` (`gibbonPersonID`),
-  CONSTRAINT `gibbonINInterventionContributor_ibfk_1` FOREIGN KEY (`gibbonINInterventionID`) REFERENCES `gibbonINIntervention` (`gibbonINInterventionID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` 
+    (`scope`, `name`, `nameDisplay`, `description`, `value`) 
+    VALUES 
+    ('Interventions', 'notifyFormTutor', 'Notify Form Tutor', 'Automatically notify form tutors of new intervention referrals.', 'Y');";
 
--- Add Intervention Management actions to the gibbonAction table
-INSERT INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
-SELECT gibbonModuleID, 'Manage Interventions_all', 0, 'Interventions', 'Allows users to manage all interventions', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N' 
-FROM gibbonModule WHERE name='Individual Needs';
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` 
+    (`scope`, `name`, `nameDisplay`, `description`, `value`) 
+    VALUES 
+    ('Interventions', 'requireEligibilityForIEP', 'Require Eligibility for IEP', 'Require eligibility assessment before creating an IEP.', 'Y');";
 
-INSERT IGNORE INTO gibbonAction (gibbonModuleID, name, precedence, category, description, URLList, entryURL, defaultPermissionAdmin, defaultPermissionTeacher, defaultPermissionStudent, defaultPermissionParent, defaultPermissionSupport, categoryPermissionStaff, categoryPermissionStudent, categoryPermissionParent, categoryPermissionOther) 
-SELECT gibbonModuleID, 'Manage Interventions_my', 0, 'Interventions', 'Allows users to manage interventions they have created or are contributing to', 'interventions_manage.php,interventions_manage_edit.php,interventions_update.php,interventions_manage_contributor_add.php,interventions_manage_contributor_edit.php,interventions_manage_contributor_delete.php,interventions_update_edit.php,interventions_update_delete.php', 'interventions_manage.php', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N' 
-FROM gibbonModule WHERE name='Individual Needs';
-
--- Add permissions for the new actions
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
-SELECT gibbonRoleID, (SELECT gibbonActionID FROM gibbonAction WHERE name='Manage Interventions_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'))
-FROM gibbonRole WHERE name='Administrator';
-
-INSERT INTO gibbonPermission (gibbonRoleID eligibility assessments that they have created.', 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php', 'eligibility_manage.php', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
-INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID) VALUES (002, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Manage Eligibility Assessments_my'));
+// Add default eligibility assessment types
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType` 
+    (`name`, `description`, `active`) 
+    VALUES 
+    ('Academic', 'Assessment of academic performance and needs', 'Y'),
+    ('Behavioral', 'Assessment of behavioral patterns and needs', 'Y'),
+    ('Social-Emotional', 'Assessment of social and emotional development', 'Y'),
+    ('Physical', 'Assessment of physical abilities and needs', 'Y'),
+    ('Communication', 'Assessment of communication skills and needs', 'Y');";

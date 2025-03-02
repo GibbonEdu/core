@@ -22,8 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
-use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\FileUploader;
 
@@ -62,11 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
             return;
         }
 
-        // Get investigation
-        $investigationGateway = $container->get(INInvestigationGateway::class);
-        $investigation = $investigationGateway->getByID($assessment['gibbonINInvestigationID']);
+        // Get referral
+        $referralGateway = $container->get(INReferralGateway::class);
+        $referral = $referralGateway->getByID($assessment['gibbonINReferralID']);
 
-        if (empty($investigation)) {
+        if (empty($referral)) {
             $page->addError(__('The specified record cannot be found.'));
             return;
         }
@@ -78,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
 
         // Get student details
         $studentGateway = $container->get(StudentGateway::class);
-        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $investigation['gibbonPersonIDStudent'])->fetch();
+        $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $referral['gibbonPersonIDStudent'])->fetch();
 
         if (empty($student)) {
             $page->addError(__('The specified record cannot be found.'));

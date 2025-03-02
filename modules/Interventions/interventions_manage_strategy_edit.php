@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright 2010, Gibbon Foundation
-Gibbon, Gibbon Education Ltd. (Hong Kong)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,12 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
-use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INInterventionStrategyGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_update.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage_strategy_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,36 +42,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
         $gibbonINInterventionID = $_GET['gibbonINInterventionID'] ?? '';
+        $gibbonINInterventionStrategyID = $_GET['gibbonINInterventionStrategyID'] ?? '';
 
-        if (empty($gibbonINInterventionID)) {
+        if (empty($gibbonINInterventionID) || empty($gibbonINInterventionStrategyID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
             return;
         }
 
         $interventionGateway = $container->get(INInterventionGateway::class);
-        $sql = "SELECT gibbonINIntervention.*, gibbonPerson.preferredName, gibbonPerson.surname
-                FROM gibbonINIntervention
-                JOIN gibbonINReferral ON (gibbonINIntervention.gibbonINReferralID=gibbonINReferral.gibbonINReferralID)
-                JOIN gibbonPerson ON (gibbonINReferral.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID)
-                WHERE gibbonINIntervention.gibbonINInterventionID=:gibbonINInterventionID";
-        $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID]);
-        $intervention = $result->fetch();
+        $strategyGateway = $container->get(INInterventionStrategyGateway::class);
+        
+        $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
+        $strategy = $strategyGateway->getByID($gibbonINInterventionStrategyID);
 
-        if (empty($intervention)) {
+        if (empty($intervention) || empty($strategy)) {
             $page->addError(__('The specified record cannot be found.'));
             return;
         }
 
         // Check access based on the highest action level
         if ($highestAction == 'Manage Interventions_my' && $intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-            // Check if the current user is a contributor
-            $sql = "SELECT * FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonPersonID=:gibbonPersonID";
-            $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')]);
-            
-            if ($result->rowCount() == 0) {
-                $page->addError(__('You do not have access to this action.'));
-                return;
-            }
+            $page->addError(__('You do not have access to this action.'));
+            return;
         }
 
         $page->breadcrumbs
@@ -88,37 +80,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
             ])
-            ->add(__('Add Update'));
+            ->add(__('Edit Strategy'));
 
-        $form = Form::create('update', $session->get('absoluteURL').'/modules/Individual Needs/interventions_updateProcess.php');
+        $form = Form::create('strategy', $session->get('absoluteURL').'/modules/Interventions/interventions_manage_strategy_editProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
+        $form->addHiddenValue('gibbonINInterventionStrategyID', $gibbonINInterventionStrategyID);
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
 
-        $form->addRow()->addHeading(__('Intervention Details'));
-        
+        // Get student details
+        $studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', true);
+        $form->addRow()->addHeading(__('Student Details'));
         $row = $form->addRow();
-            $row->addLabel('interventionName', __('Intervention'));
-            $row->addTextField('interventionName')->setValue($intervention['name'])->readonly();
+            $row->addLabel('studentName', __('Student'));
+            $row->addTextField('studentName')->setValue($studentName)->readonly();
 
         $row = $form->addRow();
-            $row->addLabel('student', __('Student'));
-            $row->addTextField('student')->setValue(Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', true))->readonly();
+            $row->addLabel('formGroup', __('Form Group'));
+            $row->addTextField('formGroup')->setValue($intervention['formGroup'])->readonly();
 
-        $form->addRow()->addHeading(__('Update Details'));
+        // Strategy Details
+        $form->addRow()->addHeading(__('Strategy Details'));
+        $row = $form->addRow();
+            $row->addLabel('name', __('Name'))->description(__('Brief name for this strategy'));
+            $row->addTextField('name')->maxLength(100)->required();
 
         $row = $form->addRow();
-            $row->addLabel('comment', __('Comment'))->description(__('Add an update on progress, challenges, or next steps'));
-            $row->addTextArea('comment')->setRows(8)->required();
+            $row->addLabel('description', __('Description'))->description(__('Details about the strategy'));
+            $row->addTextArea('description')->setRows(5)->required();
+
+        $row = $form->addRow();
+            $row->addLabel('targetDate', __('Target Date'))->description(__('When should this strategy be completed by?'));
+            $row->addDate('targetDate')->required();
+
+        $statuses = [
+            'Planned' => __('Planned'),
+            'In Progress' => __('In Progress'),
+            'Completed' => __('Completed'),
+            'Cancelled' => __('Cancelled')
+        ];
+        $row = $form->addRow();
+            $row->addLabel('status', __('Status'));
+            $row->addSelect('status')->fromArray($statuses)->required();
 
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
+
+        $form->loadAllValuesFrom($strategy);
 
         echo $form->getOutput();
     }

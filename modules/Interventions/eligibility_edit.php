@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INReferralGateway;
 use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
@@ -54,22 +54,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
             ])
             ->add(__('Edit Eligibility Assessment'));
 
-        $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
-        if (empty($gibbonINInvestigationID)) {
+        $gibbonINReferralID = $_GET['gibbonINReferralID'] ?? '';
+        if (empty($gibbonINReferralID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
             return;
         }
 
-        $investigationGateway = $container->get(INInvestigationGateway::class);
-        $investigation = $investigationGateway->getByID($gibbonINInvestigationID);
+        $referralGateway = $container->get(INReferralGateway::class);
+        $referral = $referralGateway->getByID($gibbonINReferralID);
 
-        if (empty($investigation)) {
+        if (empty($referral)) {
             $page->addError(__('The specified record cannot be found.'));
             return;
         }
 
         // Check access based on the highest action level
-        if ($highestAction == 'Manage Eligibility Assessments_my' && $investigation['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+        if ($highestAction == 'Manage Eligibility Assessments_my' && $referral['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
             $page->addError(__('You do not have access to this action.'));
             return;
         }
@@ -78,14 +78,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));
-        $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+        $form->addHiddenValue('gibbonINReferralID', $gibbonINReferralID);
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
 
         // Get student details
-        $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', true);
+        $studentName = Format::name('', $referral['preferredName'], $referral['surname'], 'Student', true);
         $form->addRow()->addHeading(__('Student Details'));
         $row = $form->addRow();
             $row->addLabel('studentName', __('Student'));
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
 
         $row = $form->addRow();
             $row->addLabel('formGroup', __('Form Group'));
-            $row->addTextField('formGroup')->setValue($investigation['formGroup'])->readonly();
+            $row->addTextField('formGroup')->setValue($referral['formGroup'])->readonly();
 
         // Eligibility Assessment Details
         $form->addRow()->addHeading(__('Eligibility Assessment Details'));
@@ -101,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         // Status
         $row = $form->addRow();
             $row->addLabel('statusText', __('Status'));
-            $row->addTextField('statusText')->setValue(__($investigation['status']))->required()->readonly();
+            $row->addTextField('statusText')->setValue(__($referral['status']))->required()->readonly();
             
         // Eligibility Decision
-        if ($investigation['status'] == 'Eligibility Complete' || $session->get('gibbonPersonID') == $investigation['gibbonPersonIDCreator']) {
+        if ($referral['status'] == 'Eligibility Complete' || $session->get('gibbonPersonID') == $referral['gibbonPersonIDCreator']) {
             $row = $form->addRow();
                 $row->addLabel('eligibilityDecision', __('Eligibility Decision'));
                 $options = [
@@ -112,12 +112,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
                     'Eligible' => __('Eligible'),
                     'Not Eligible' => __('Not Eligible')
                 ];
-                $row->addSelect('eligibilityDecision')->fromArray($options)->selected($investigation['eligibilityDecision'] ?? 'Pending');
+                $row->addSelect('eligibilityDecision')->fromArray($options)->selected($referral['eligibilityDecision'] ?? 'Pending');
                 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('eligibilityNotes', __('Notes'));
-                $column->addTextArea('eligibilityNotes')->setRows(5)->setClass('w-full')->setValue($investigation['eligibilityNotes'] ?? '');
+                $column->addTextArea('eligibilityNotes')->setRows(5)->setClass('w-full')->setValue($referral['eligibilityNotes'] ?? '');
         }
         
         // Assessments
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         
         $eligibilityAssessmentGateway = $container->get(INEligibilityAssessmentGateway::class);
         $criteria = $eligibilityAssessmentGateway->newQueryCriteria();
-        $assessments = $eligibilityAssessmentGateway->queryAssessmentsByInvestigation($criteria, $gibbonINInvestigationID);
+        $assessments = $eligibilityAssessmentGateway->queryAssessmentsByReferral($criteria, $gibbonINReferralID);
         
         if ($assessments->getResultCount() == 0) {
             $form->addRow()->addAlert(__('There are no assessments to display.'), 'warning');
@@ -167,8 +167,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
                 
             $table->addActionColumn()
                 ->addParam('gibbonINEligibilityAssessmentID')
-                ->addParam('gibbonINInvestigationID', $gibbonINInvestigationID)
-                ->format(function ($assessment, $actions) use ($session, $investigation) {
+                ->addParam('gibbonINReferralID', $gibbonINReferralID)
+                ->format(function ($assessment, $actions) use ($session, $referral) {
                     if (empty($assessment['gibbonPersonIDAssessor'])) {
                         $actions->addAction('assign', __('Assign Contributor'))
                             ->setURL('/modules/Individual Needs/eligibility_contributor_add.php');
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         
         // Add buttons for completing the eligibility assessment
         $row = $form->addRow();
-        if ($investigation['status'] == 'Eligibility Assessment' && $session->get('gibbonPersonID') == $investigation['gibbonPersonIDCreator']) {
+        if ($referral['status'] == 'Eligibility Assessment' && $session->get('gibbonPersonID') == $referral['gibbonPersonIDCreator']) {
             $row->addSubmit(__('Complete Eligibility Assessment'));
         } else {
             $row->addSubmit(__('Update'));
@@ -192,12 +192,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         echo $form->getOutput();
         
         // Add a section for creating interventions if eligible
-        if ($investigation['eligibilityDecision'] == 'Eligible') {
+        if ($referral['eligibilityDecision'] == 'Eligible') {
             $form = Form::create('createIntervention', $session->get('absoluteURL').'/modules/Individual Needs/eligibility_create_interventionProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
             
             $form->addHiddenValue('address', $session->get('address'));
-            $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+            $form->addHiddenValue('gibbonINReferralID', $gibbonINReferralID);
             
             $form->addRow()->addHeading(__('Create Intervention'));
             

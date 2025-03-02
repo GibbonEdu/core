@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INReferralGateway;
 use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         // Proceed!
-        $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
+        $gibbonINReferralID = $_GET['gibbonINReferralID'] ?? '';
         $gibbonINEligibilityAssessmentID = $_GET['gibbonINEligibilityAssessmentID'] ?? '';
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
@@ -52,28 +52,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
                 'gibbonYearGroupID' => $gibbonYearGroupID,
             ])
             ->add(__('Edit Eligibility Assessment'), 'eligibility_edit.php', [
-                'gibbonINInvestigationID' => $gibbonINInvestigationID,
+                'gibbonINReferralID' => $gibbonINReferralID,
                 'gibbonPersonID' => $gibbonPersonID,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
             ])
             ->add(__('Add Contributor'));
 
-        if (empty($gibbonINInvestigationID) || empty($gibbonINEligibilityAssessmentID)) {
+        if (empty($gibbonINReferralID) || empty($gibbonINEligibilityAssessmentID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
             return;
         }
 
-        $investigationGateway = $container->get(INInvestigationGateway::class);
-        $investigation = $investigationGateway->getByID($gibbonINInvestigationID);
+        $referralGateway = $container->get(INReferralGateway::class);
+        $referral = $referralGateway->getByID($gibbonINReferralID);
 
-        if (empty($investigation)) {
+        if (empty($referral)) {
             $page->addError(__('The specified record cannot be found.'));
             return;
         }
 
         // Check access based on the highest action level
-        if ($highestAction == 'Manage Eligibility Assessments_my' && $investigation['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+        if ($highestAction == 'Manage Eligibility Assessments_my' && $referral['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
             $page->addError(__('You do not have access to this action.'));
             return;
         }
@@ -93,13 +93,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $assessmentTypeName = ($result->rowCount() > 0) ? $result->fetchColumn(0) : __('Unknown');
 
         // Get student details
-        $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', true);
+        $studentName = Format::name('', $referral['preferredName'], $referral['surname'], 'Student', true);
 
         $form = Form::create('addContributor', $session->get('absoluteURL').'/modules/Individual Needs/eligibility_contributor_addProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));
-        $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+        $form->addHiddenValue('gibbonINReferralID', $gibbonINReferralID);
         $form->addHiddenValue('gibbonINEligibilityAssessmentID', $gibbonINEligibilityAssessmentID);
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);

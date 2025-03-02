@@ -1,0 +1,114 @@
+<?php
+/*
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Students\StudentGateway;
+
+// Module includes
+require_once __DIR__ . '/moduleFunctions.php';
+
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_submit.php') == false) {
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
+} else {
+    // Proceed!
+    $page->breadcrumbs->add(__('Submit Referral'));
+
+    // Show intro text
+    $page->write('<p>' . __('This page allows you to submit a referral for a student who may need additional support. Referrals will be reviewed by the student\'s form tutor to determine next steps.') . '</p>');
+
+    // Get URL parameters
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+    $search = $_GET['search'] ?? '';
+
+    // Create the form
+    $form = Form::create('intervention', $session->get('absoluteURL').'/modules/Interventions/interventions_submitProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+    
+    // Basic Information
+    $form->addRow()->addHeading(__('Basic Information'));
+    
+    // Student
+    $row = $form->addRow();
+    $row->addLabel('gibbonPersonIDStudent', __('Student'));
+    $row->addSelectStudent('gibbonPersonIDStudent', $gibbonSchoolYearID)
+        ->placeholder()
+        ->required();
+    
+    // Referral Name/Title
+    $row = $form->addRow();
+    $row->addLabel('name', __('Referral Title'));
+    $row->addTextField('name')
+        ->maxLength(100)
+        ->required();
+    
+    // Reason/Description
+    $row = $form->addRow();
+    $column = $row->addColumn();
+    $column->addLabel('description', __('Reason for Referral'))
+        ->description(__('Please describe the concerns and reason for this referral.'));
+    $column->addTextArea('description')
+        ->setRows(5)
+        ->setClass('w-full')
+        ->required();
+    
+    // Strategies Already Tried
+    $row = $form->addRow();
+    $column = $row->addColumn();
+    $column->addLabel('strategies', __('Strategies Already Tried'))
+        ->description(__('Please describe any strategies or approaches you have already tried.'));
+    $column->addTextArea('strategies')
+        ->setRows(5)
+        ->setClass('w-full');
+    
+    // Parents Informed?
+    $row = $form->addRow();
+    $row->addLabel('parentsInformed', __('Parents Informed?'))
+        ->description(__('Have the parents/guardians been informed about these concerns?'));
+    $row->addYesNo('parentsInformed')
+        ->required()
+        ->placeholder()
+        ->selected('N');
+    
+    // Parent Contact Details - only appears if Yes selected above
+    $form->toggleVisibilityByClass('parentsInformedYes')->onSelect('parentsInformed')->when('Y');
+    
+    $row = $form->addRow()->addClass('parentsInformedYes');
+    $column = $row->addColumn();
+    $column->addLabel('parentContactDetails', __('Parent Contact Details'))
+        ->description(__('How and when were the parents/guardians contacted?'));
+    $column->addTextArea('parentContactDetails')
+        ->setRows(3)
+        ->setClass('w-full');
+    
+    // Submit
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSubmit();
+    
+    echo $form->getOutput();
+}

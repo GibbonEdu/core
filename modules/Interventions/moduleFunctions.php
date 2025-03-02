@@ -128,7 +128,7 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
     return $output;
 }
 
-function getInvestigationCriteriaArray($strand)
+function getReferralCriteriaArray($strand)
 {
     $options = array();
 
@@ -184,7 +184,7 @@ function getInvestigationCriteriaArray($strand)
     return $options;
 }
 
-function getInvestigationCriteriaStrands($includeCognition = false)
+function getReferralCriteriaStrands($includeCognition = false)
 {
     $options = array(
         0 => array('name' => 'memory', 'nameHuman' => 'Memory'),
@@ -212,11 +212,11 @@ function hasCompletedEligibilityAssessment($pdo, $gibbonPersonID)
 {
     $data = ['gibbonPersonIDStudent' => $gibbonPersonID];
     
-    $sql = "SELECT gibbonINInvestigation.gibbonINInvestigationID, gibbonINInvestigation.eligibilityDecision 
-            FROM gibbonINInvestigation 
-            WHERE gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonIDStudent 
-            AND gibbonINInvestigation.status='Eligibility Complete' 
-            AND gibbonINInvestigation.eligibilityDecision='Eligible'";
+    $sql = "SELECT gibbonINReferral.gibbonINReferralID, gibbonINReferral.eligibilityDecision 
+            FROM gibbonINReferral 
+            WHERE gibbonINReferral.gibbonPersonIDStudent=:gibbonPersonIDStudent 
+            AND gibbonINReferral.status='Eligibility Complete' 
+            AND gibbonINReferral.eligibilityDecision='Eligible'";
     
     $result = $pdo->select($sql, $data);
     

@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INReferralGateway;
 use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -99,11 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         exit;
     }
 
-    // Get investigation
-    $investigationGateway = $container->get(INInvestigationGateway::class);
-    $investigation = $investigationGateway->getByID($assessment['gibbonINInvestigationID']);
+    // Get referral
+    $referralGateway = $container->get(INReferralGateway::class);
+    $referral = $referralGateway->getByID($assessment['gibbonINReferralID']);
 
-    // Send notification to the investigation creator
+    // Send notification to the referral creator
     $notificationGateway = $container->get(NotificationGateway::class);
     $notificationSender = new NotificationSender($notificationGateway, $session);
 
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
     $assessmentTypeName = ($resultType->rowCount() > 0) ? $resultType->fetchColumn(0) : __('Unknown');
 
     // Get student name for notifications
-    $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', true);
+    $studentName = Format::name('', $referral['preferredName'], $referral['surname'], 'Student', true);
 
     $notificationString = __('The {assessmentType} for {student} has been completed with a result of {result}.', [
         'assessmentType' => $assessmentTypeName,
@@ -121,19 +121,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         'result' => __($result)
     ]);
 
-    // Notify the investigation creator
-    if ($investigation['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+    // Notify the referral creator
+    if ($referral['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
         $notificationSender->addNotification(
-            $investigation['gibbonPersonIDCreator'],
+            $referral['gibbonPersonIDCreator'],
             $notificationString,
             'Individual Needs',
-            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINInvestigationID='.$assessment['gibbonINInvestigationID']
+            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID='.$assessment['gibbonINReferralID']
         );
     }
 
     // Check if all assessments are complete and notify creator
     $criteria = $eligibilityAssessmentGateway->newQueryCriteria();
-    $assessments = $eligibilityAssessmentGateway->queryAssessmentsByInvestigation($criteria, $assessment['gibbonINInvestigationID']);
+    $assessments = $eligibilityAssessmentGateway->queryAssessmentsByReferral($criteria, $assessment['gibbonINReferralID']);
     
     $allComplete = true;
     foreach ($assessments as $assessmentItem) {
@@ -149,10 +149,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         ]);
 
         $notificationSender->addNotification(
-            $investigation['gibbonPersonIDCreator'],
+            $referral['gibbonPersonIDCreator'],
             $notificationString,
             'Individual Needs',
-            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINInvestigationID='.$assessment['gibbonINInvestigationID']
+            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID='.$assessment['gibbonINReferralID']
         );
     }
 

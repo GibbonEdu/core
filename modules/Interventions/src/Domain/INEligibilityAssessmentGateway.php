@@ -50,10 +50,10 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
 
     /**
      * @param QueryCriteria $criteria
-     * @param int $gibbonINInvestigationID
+     * @param int $gibbonINReferralID
      * @return DataSet
      */
-    public function queryAssessmentsByInvestigation(QueryCriteria $criteria, $gibbonINInvestigationID)
+    public function queryAssessmentsByReferral(QueryCriteria $criteria, $gibbonINReferralID)
     {
         $query = $this
             ->newQuery()
@@ -68,8 +68,8 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
             ])
             ->innerJoin('gibbonINEligibilityAssessmentType', 'gibbonINEligibilityAssessment.gibbonINEligibilityAssessmentTypeID=gibbonINEligibilityAssessmentType.gibbonINEligibilityAssessmentTypeID')
             ->leftJoin('gibbonPerson AS assessor', 'gibbonINEligibilityAssessment.gibbonPersonIDAssessor=assessor.gibbonPersonID')
-            ->where('gibbonINEligibilityAssessment.gibbonINInvestigationID=:gibbonINInvestigationID')
-            ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+            ->where('gibbonINEligibilityAssessment.gibbonINReferralID=:gibbonINReferralID')
+            ->bindValue('gibbonINReferralID', $gibbonINReferralID);
 
         return $this->runQuery($query, $criteria);
     }
@@ -87,14 +87,14 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
             ->cols([
                 'gibbonINEligibilityAssessment.*',
                 'gibbonINEligibilityAssessmentType.name as assessmentName',
-                'gibbonINInvestigation.gibbonPersonIDStudent',
+                'gibbonINReferral.gibbonPersonIDStudent',
                 'student.surname',
                 'student.preferredName',
                 'gibbonFormGroup.nameShort as formGroup'
             ])
             ->innerJoin('gibbonINEligibilityAssessmentType', 'gibbonINEligibilityAssessment.gibbonINEligibilityAssessmentTypeID=gibbonINEligibilityAssessmentType.gibbonINEligibilityAssessmentTypeID')
-            ->innerJoin('gibbonINInvestigation', 'gibbonINEligibilityAssessment.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID')
-            ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
+            ->innerJoin('gibbonINReferral', 'gibbonINEligibilityAssessment.gibbonINReferralID=gibbonINReferral.gibbonINReferralID')
+            ->innerJoin('gibbonPerson AS student', 'gibbonINReferral.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->where('gibbonINEligibilityAssessment.gibbonPersonIDAssessor=:gibbonPersonID')
@@ -115,14 +115,14 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
             ->cols([
                 'gibbonINEligibilityAssessment.*',
                 'gibbonINEligibilityAssessmentType.name as assessmentName',
-                'gibbonINInvestigation.gibbonPersonIDStudent',
+                'gibbonINReferral.gibbonPersonIDStudent',
                 'student.surname',
                 'student.preferredName',
                 'gibbonFormGroup.nameShort as formGroup'
             ])
             ->innerJoin('gibbonINEligibilityAssessmentType', 'gibbonINEligibilityAssessment.gibbonINEligibilityAssessmentTypeID=gibbonINEligibilityAssessmentType.gibbonINEligibilityAssessmentTypeID')
-            ->innerJoin('gibbonINInvestigation', 'gibbonINEligibilityAssessment.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID')
-            ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
+            ->innerJoin('gibbonINReferral', 'gibbonINEligibilityAssessment.gibbonINReferralID=gibbonINReferral.gibbonINReferralID')
+            ->innerJoin('gibbonPerson AS student', 'gibbonINReferral.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->where('gibbonINEligibilityAssessment.result = :result')

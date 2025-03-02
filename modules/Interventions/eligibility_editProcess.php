@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INReferralGateway;
 use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -33,9 +33,9 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-$gibbonINInvestigationID = $_POST['gibbonINInvestigationID'] ?? '';
+$gibbonINReferralID = $_POST['gibbonINReferralID'] ?? '';
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID=$gibbonINReferralID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_edit.php') == false) {
     $URL .= '&return=error0';
@@ -49,33 +49,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         exit;
     }
 
-    // Get investigation
-    $investigationGateway = $container->get(INInvestigationGateway::class);
-    $investigation = $investigationGateway->getByID($gibbonINInvestigationID);
+    // Get referral
+    $referralGateway = $container->get(INReferralGateway::class);
+    $referral = $referralGateway->getByID($gibbonINReferralID);
 
-    if (empty($investigation)) {
+    if (empty($referral)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     // Check access based on the highest action level
-    if ($highestAction == 'Manage Eligibility Assessments_my' && $investigation['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+    if ($highestAction == 'Manage Eligibility Assessments_my' && $referral['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;
     }
 
     // Get student name for notifications
-    $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', true);
+    $studentName = Format::name('', $referral['preferredName'], $referral['surname'], 'Student', true);
 
     // Determine if this is a completion or update
-    $isCompletion = ($investigation['status'] == 'Eligibility Assessment' && isset($_POST['eligibilityDecision']) && $_POST['eligibilityDecision'] != 'Pending');
+    $isCompletion = ($referral['status'] == 'Eligibility Assessment' && isset($_POST['eligibilityDecision']) && $_POST['eligibilityDecision'] != 'Pending');
 
-    // Update the investigation
+    // Update the referral
     $data = [
-        'eligibilityDecision' => $_POST['eligibilityDecision'] ?? $investigation['eligibilityDecision'],
-        'eligibilityNotes' => $_POST['eligibilityNotes'] ?? $investigation['eligibilityNotes'],
+        'eligibilityDecision' => $_POST['eligibilityDecision'] ?? $referral['eligibilityDecision'],
+        'eligibilityNotes' => $_POST['eligibilityNotes'] ?? $referral['eligibilityNotes'],
     ];
 
     // If completing the eligibility assessment, update the status
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $data['status'] = 'Eligibility Complete';
     }
 
-    $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
+    $updated = $referralGateway->update($gibbonINReferralID, $data);
 
     if (!$updated) {
         $URL .= '&return=error2';
@@ -109,19 +109,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
     }
 
     // Notify the creator if not the current user
-    if ($investigation['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+    if ($referral['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
         $notificationSender->addNotification(
-            $investigation['gibbonPersonIDCreator'],
+            $referral['gibbonPersonIDCreator'],
             $notificationString,
             'Individual Needs',
-            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINInvestigationID='.$gibbonINInvestigationID
+            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID='.$gibbonINReferralID
         );
     }
 
     // Get all assessors to notify them
     $eligibilityAssessmentGateway = $container->get(INEligibilityAssessmentGateway::class);
     $criteria = $eligibilityAssessmentGateway->newQueryCriteria();
-    $assessments = $eligibilityAssessmentGateway->queryAssessmentsByInvestigation($criteria, $gibbonINInvestigationID);
+    $assessments = $eligibilityAssessmentGateway->queryAssessmentsByReferral($criteria, $gibbonINReferralID);
 
     foreach ($assessments as $assessment) {
         if (!empty($assessment['gibbonPersonIDAssessor']) && $assessment['gibbonPersonIDAssessor'] != $session->get('gibbonPersonID')) {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
                 $assessment['gibbonPersonIDAssessor'],
                 $notificationString,
                 'Individual Needs',
-                '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINInvestigationID='.$gibbonINInvestigationID
+                '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID='.$gibbonINReferralID
             );
         }
     }

@@ -23,13 +23,13 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INReferralGateway;
 use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -50,109 +50,99 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $form->setClass('noIntBorder w-full');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('q', '/modules/Individual Needs/eligibility_manage.php');
+        $form->addHiddenValue('q', '/modules/Interventions/eligibility_manage.php');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
-            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonID);
+            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonFormGroupID);
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
-            $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
-            
+            $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
+
         $statuses = [
-            'Eligibility Assessment' => __('In Progress'),
-            'Eligibility Complete' => __('Complete'),
-            'Investigation Complete' => __('Investigation Complete'),
-            'Intervention' => __('Intervention')
+            'Eligibility Assessment' => __('Eligibility Assessment'),
+            'Eligibility Complete' => __('Eligibility Complete'),
         ];
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray(['' => __('All')] + $statuses)->selected($status);
+            $row->addSelect('status')->fromArray(['' => __('All')])->fromArray($statuses)->selected($status);
 
         $row = $form->addRow();
             $row->addSearchSubmit($session, __('Clear Filters'));
 
         echo $form->getOutput();
 
-        // CRITERIA
-        $investigationGateway = $container->get(INInvestigationGateway::class);
-        
-        $criteria = $investigationGateway->newQueryCriteria()
+        $referralGateway = $container->get(INReferralGateway::class);
+        $criteria = $referralGateway->newQueryCriteria(true)
             ->sortBy(['student.surname', 'student.preferredName'])
-            ->filterBy('student', $gibbonPersonID)
-            ->filterBy('formGroup', $gibbonFormGroupID)
-            ->filterBy('yearGroup', $gibbonYearGroupID)
+            ->filterBy('gibbonPersonID', $gibbonPersonID)
+            ->filterBy('gibbonFormGroupID', $gibbonFormGroupID)
+            ->filterBy('gibbonYearGroupID', $gibbonYearGroupID)
             ->filterBy('status', $status)
             ->fromPOST();
 
-        // Get the current school year
-        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-        
-        // QUERY
-        $investigations = null; // Initialize as null to prevent undefined variable error
-        
-        if ($highestAction == 'Manage Eligibility Assessments_all') {
-            $investigations = $investigationGateway->queryEligibilityAssessments($criteria, $gibbonSchoolYearID);
-        } else if ($highestAction == 'Manage Eligibility Assessments_my') {
-            $investigations = $investigationGateway->queryEligibilityAssessments($criteria, $gibbonSchoolYearID, $session->get('gibbonPersonID'));
-        }
+        $referrals = $referralGateway->queryReferrals($criteria, $session->get('gibbonSchoolYearID'));
 
-        // Only proceed if we have investigations data
-        if (!is_null($investigations)) {
+        if (!is_null($referrals)) {
             // DATA TABLE
             $table = DataTable::createPaginated('eligibilityManage', $criteria);
             $table->setTitle(__('Eligibility Assessments'));
 
-            $table->modifyRows(function ($investigation, $row) {
-                if ($investigation['status'] == 'Eligibility Complete') $row->addClass('success');
-                if ($investigation['status'] == 'Eligibility Assessment') $row->addClass('warning');
-                return $row;
-            });
+            if ($highestAction == 'Manage Eligibility Assessments_all') {
+                $table->addHeaderAction('add', __('Add'))
+                    ->setURL('/modules/Interventions/eligibility_edit.php')
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+                    ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+                    ->addParam('status', $status)
+                    ->displayLabel();
+            }
 
             $table->addColumn('student', __('Student'))
                 ->sortable(['student.surname', 'student.preferredName'])
-                ->format(function ($investigation) {
-                    return Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', true);
+                ->format(function ($person) {
+                    return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true);
                 });
 
-            $table->addColumn('formGroup', __('Form Group'))->sortable();
-
-            $table->addColumn('status', __('Status'))->sortable();
+            $table->addColumn('formGroup', __('Form Group'));
+            $table->addColumn('yearGroup', __('Year Group'));
+            $table->addColumn('status', __('Status'));
             
             $table->addColumn('eligibilityDecision', __('Decision'))
-                ->format(function ($investigation) {
-                    if ($investigation['eligibilityDecision'] == 'Eligible') {
-                        return '<span class="tag success">'.__('Eligible').'</span>';
-                    } else if ($investigation['eligibilityDecision'] == 'Not Eligible') {
-                        return '<span class="tag error">'.__('Not Eligible').'</span>';
+                ->format(function ($row) {
+                    if ($row['status'] == 'Eligibility Complete') {
+                        return $row['eligibilityDecision'];
                     } else {
-                        return '<span class="tag dull">'.__('Pending').'</span>';
+                        return __('Pending');
                     }
                 });
-                
-            $table->addColumn('creator', __('Created By'))
-                ->sortable(['surnameCreator', 'preferredNameCreator'])
-                ->format(function ($investigation) {
-                    return Format::name($investigation['titleCreator'], $investigation['preferredNameCreator'], $investigation['surnameCreator'], 'Staff', false, true);
-                });
 
-            // ACTIONS
+            $table->addColumn('dateCreated', __('Date'))
+                ->format(Format::using('date', ['dateCreated']));
+
             $table->addActionColumn()
-                ->addParam('gibbonINInvestigationID')
+                ->addParam('gibbonINReferralID')
                 ->addParam('gibbonPersonID', $gibbonPersonID)
                 ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
                 ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-                ->format(function ($investigation, $actions) use ($highestAction) {
+                ->addParam('status', $status)
+                ->format(function ($referral, $actions) use ($highestAction) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Individual Needs/eligibility_edit.php');
+                        ->setURL('/modules/Interventions/eligibility_edit.php');
+                    
+                    if ($highestAction == 'Manage Eligibility Assessments_all') {
+                        $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/Interventions/eligibility_delete.php')
+                            ->modalWindow(650, 400);
+                    }
                 });
 
-            echo $table->render($investigations);
+            echo $table->render($referrals);
         }
     }
 }

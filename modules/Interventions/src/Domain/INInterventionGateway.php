@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,13 +24,12 @@ namespace Gibbon\Domain\IndividualNeeds;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
-use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
- * Interventions Gateway
+ * Intervention Gateway
  *
  * @version v29
  * @since   v29
@@ -43,75 +42,75 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
 
     private static $tableName = 'gibbonINIntervention';
     private static $primaryKey = 'gibbonINInterventionID';
-
-    private static $searchableColumns = [];
-
+    private static $searchableColumns = ['name', 'description'];
+    
     private static $scrubbableKey = 'gibbonPersonIDCreator';
-    private static $scrubbableColumns = ['name' => '', 'description' => '', 'strategies' => '', 'consentNotes' => null];
+    private static $scrubbableColumns = ['name' => '', 'description' => '', 'formTutorNotes' => '', 'outcomeNotes' => ''];
 
     /**
      * @param QueryCriteria $criteria
-     * @param int $gibbonSchoolYearID
-     * @param int $gibbonPersonIDCreator
      * @return DataSet
      */
-    public function queryInterventions(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCreator = null)
+    public function queryInterventions(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonINIntervention.*',
-                'gibbonINInvestigation.gibbonPersonIDStudent',
+                'gibbonINIntervention.gibbonINInterventionID',
+                'gibbonINIntervention.name',
+                'gibbonINIntervention.description',
+                'gibbonINIntervention.status',
+                'gibbonINIntervention.formTutorDecision',
+                'gibbonINIntervention.timestampCreated',
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonFormGroup.nameShort AS formGroup',
-                'creator.title AS titleCreator',
-                'creator.surname AS surnameCreator',
-                'creator.preferredName AS preferredNameCreator'
+                'formGroup.name as formGroup',
+                'yearGroup.name as yearGroup',
+                'creator.title',
+                'creator.surname as creatorSurname',
+                'creator.preferredName as creatorPreferredName'
             ])
-            ->innerJoin('gibbonINInvestigation', 'gibbonINIntervention.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID')
-            ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
-            ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonPerson AS creator', 'gibbonINIntervention.gibbonPersonIDCreator=creator.gibbonPersonID')
-            ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID');
-
-        if (!empty($gibbonPersonIDCreator)) {
-            $query->where('gibbonINIntervention.gibbonPersonIDCreator=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonIDCreator')
-                ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
-        }
+            ->innerJoin('gibbonPerson AS student', 'student.gibbonPersonID=gibbonINIntervention.gibbonPersonIDStudent')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID')
+            ->innerJoin('gibbonFormGroup AS formGroup', 'formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
+            ->innerJoin('gibbonYearGroup AS yearGroup', 'yearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->innerJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINIntervention.gibbonPersonIDCreator')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $this->session->get('gibbonSchoolYearID'));
 
         $criteria->addFilterRules([
-            'student' => function ($query, $gibbonPersonID) {
-                return $query
-                    ->where('gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonID')
-                    ->bindValue('gibbonPersonID', $gibbonPersonID);
-            },
-            'formGroup' => function ($query, $gibbonFormGroupID) {
-                return $query
-                    ->where('gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID')
-                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
-            },
-            'yearGroup' => function ($query, $gibbonYearGroupID) {
-                return $query
-                    ->where('gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID')
-                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
-            },
             'status' => function ($query, $status) {
                 return $query
-                    ->where('gibbonINIntervention.status=:status')
+                    ->where('gibbonINIntervention.status = :status')
                     ->bindValue('status', $status);
             },
-            'parentConsent' => function ($query, $parentConsent) {
+            'gibbonPersonID' => function ($query, $gibbonPersonID) {
                 return $query
-                    ->where('gibbonINIntervention.parentConsent=:parentConsent')
-                    ->bindValue('parentConsent', $parentConsent);
+                    ->where('student.gibbonPersonID = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
+            'gibbonFormGroupID' => function ($query, $gibbonFormGroupID) {
+                return $query
+                    ->where('formGroup.gibbonFormGroupID = :gibbonFormGroupID')
+                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
+            },
+            'gibbonYearGroupID' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('yearGroup.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            }
         ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryInterventionsByCreator(QueryCriteria $criteria, $gibbonPersonID)
+    {
+        $query = $this->queryInterventions($criteria);
+        $query->where('gibbonINIntervention.gibbonPersonIDCreator = :gibbonPersonIDCreator')
+              ->bindValue('gibbonPersonIDCreator', $gibbonPersonID);
 
         return $this->runQuery($query, $criteria);
     }
@@ -123,60 +122,21 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
             ->from($this->getTableName())
             ->cols([
                 'gibbonINIntervention.*',
-                'gibbonINInvestigation.gibbonPersonIDStudent',
-                'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonFormGroup.nameShort AS formGroup',
-                'gibbonFormGroup.gibbonPersonIDTutor',
-                'gibbonFormGroup.gibbonPersonIDTutor2',
-                'gibbonFormGroup.gibbonPersonIDTutor3',
-                'creator.title AS titleCreator',
-                'creator.surname AS surnameCreator',
-                'creator.preferredName AS preferredNameCreator'
+                'formGroup.name as formGroup',
+                'yearGroup.name as yearGroup',
+                'creator.title',
+                'creator.surname as creatorSurname',
+                'creator.preferredName as creatorPreferredName'
             ])
-            ->innerJoin('gibbonINInvestigation', 'gibbonINIntervention.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID')
-            ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
-            ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
-            ->leftJoin('gibbonPerson AS creator', 'gibbonINIntervention.gibbonPersonIDCreator=creator.gibbonPersonID')
-            ->where('gibbonINIntervention.gibbonINInterventionID=:gibbonINInterventionID')
-            ->bindValue('gibbonINInterventionID', $gibbonINInterventionID)
-            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID');
-
-        return $this->runSelect($query)->fetch();
-    }
-
-    public function getInterventionsByInvestigationID($gibbonINInvestigationID)
-    {
-        $query = $this
-            ->newSelect()
-            ->from($this->getTableName())
-            ->cols([
-                'gibbonINIntervention.*',
-                'creator.title AS titleCreator',
-                'creator.surname AS surnameCreator',
-                'creator.preferredName AS preferredNameCreator'
-            ])
-            ->leftJoin('gibbonPerson AS creator', 'gibbonINIntervention.gibbonPersonIDCreator=creator.gibbonPersonID')
-            ->where('gibbonINIntervention.gibbonINInvestigationID=:gibbonINInvestigationID')
-            ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID)
-            ->orderBy(['gibbonINIntervention.dateCreated DESC']);
-
-        return $this->runSelect($query)->fetchAll();
-    }
-
-    public function getInterventionByInvestigationID($gibbonINInvestigationID)
-    {
-        $query = $this
-            ->newSelect()
-            ->from($this->getTableName())
-            ->cols([
-                'gibbonINIntervention.*'
-            ])
-            ->where('gibbonINIntervention.gibbonINInvestigationID=:gibbonINInvestigationID')
-            ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID)
-            ->orderBy(['gibbonINIntervention.dateCreated DESC']);
+            ->innerJoin('gibbonPerson AS student', 'student.gibbonPersonID=gibbonINIntervention.gibbonPersonIDStudent')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID')
+            ->innerJoin('gibbonFormGroup AS formGroup', 'formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
+            ->innerJoin('gibbonYearGroup AS yearGroup', 'yearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->innerJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINIntervention.gibbonPersonIDCreator')
+            ->where('gibbonINIntervention.gibbonINInterventionID = :gibbonINInterventionID')
+            ->bindValue('gibbonINInterventionID', $gibbonINInterventionID);
 
         return $this->runSelect($query)->fetch();
     }

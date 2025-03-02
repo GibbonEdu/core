@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INReferralGateway;
 use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -30,13 +30,13 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$gibbonINInvestigationID = $_POST['gibbonINInvestigationID'] ?? '';
+$gibbonINReferralID = $_POST['gibbonINReferralID'] ?? '';
 $gibbonINEligibilityAssessmentID = $_POST['gibbonINEligibilityAssessmentID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID=$gibbonINReferralID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_contributor_add.php') == false) {
     $URL .= '&return=error0';
@@ -48,17 +48,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
     $contributorNotes = $_POST['contributorNotes'] ?? '';
 
     // Validate the required values
-    if (empty($gibbonINInvestigationID) || empty($gibbonINEligibilityAssessmentID) || empty($gibbonPersonIDContributor)) {
+    if (empty($gibbonINReferralID) || empty($gibbonINEligibilityAssessmentID) || empty($gibbonPersonIDContributor)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
-    // Get investigation
-    $investigationGateway = $container->get(INInvestigationGateway::class);
-    $investigation = $investigationGateway->getByID($gibbonINInvestigationID);
+    // Get referral
+    $referralGateway = $container->get(INReferralGateway::class);
+    $referral = $referralGateway->getByID($gibbonINReferralID);
 
-    if (empty($investigation)) {
+    if (empty($referral)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
     $assessmentTypeName = ($result->rowCount() > 0) ? $result->fetchColumn(0) : __('Unknown');
 
     // Get student name for notifications
-    $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', true);
+    $studentName = Format::name('', $referral['preferredName'], $referral['surname'], 'Student', true);
 
     $notificationString = __('You have been assigned to complete a {assessmentType} for {student}.', [
         'assessmentType' => $assessmentTypeName,

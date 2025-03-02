@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,14 +24,15 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionUpdateGateway;
 use Gibbon\Domain\IndividualNeeds\INInterventionContributorGateway;
+use Gibbon\Domain\IndividualNeeds\INInterventionStrategyGateway;
+use Gibbon\Domain\IndividualNeeds\INInterventionOutcomeGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -75,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             return;
         }
 
-        $form = Form::create('intervention', $session->get('absoluteURL').'/modules/Individual Needs/interventions_manage_editProcess.php');
+        $form = Form::create('intervention', $session->get('absoluteURL').'/modules/Interventions/interventions_manage_editProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));
@@ -106,33 +107,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             $row->addLabel('description', __('Description'))->description(__('Details about the intervention'));
             $row->addTextArea('description')->setRows(5)->required();
 
-        $row = $form->addRow();
-            $row->addLabel('strategies', __('Strategies'))->description(__('Specific strategies to be implemented'));
-            $row->addTextArea('strategies')->setRows(8)->required();
-
-        $row = $form->addRow();
-            $row->addLabel('targetDate', __('Target Date'))->description(__('When should this intervention be completed by?'));
-            $row->addDate('targetDate')->required();
-
-        $statuses = [
-            'Pending' => __('Pending'),
-            'In Progress' => __('In Progress'),
-            'Completed' => __('Completed'),
-            'Discontinued' => __('Discontinued')
+        // Form Tutor Review Section (Only visible to form tutors or admins)
+        $isFormTutor = ($intervention['gibbonPersonIDFormTutor'] == $session->get('gibbonPersonID'));
+        $isAdmin = ($highestAction == 'Manage Interventions');
+        
+        if ($isFormTutor || $isAdmin) {
+            $form->addRow()->addHeading(__('Form Tutor Review'));
+            
+            $formTutorDecisions = [
+                'Pending' => __('Pending'),
+                'Resolvable' => __('Resolvable'),
+                'Try Interventions' => __('Try Interventions'),
+                'Referral' => __('Referral')
+            ];
+            
+            $row = $form->addRow();
+                $row->addLabel('formTutorDecision', __('Decision'));
+                $row->addSelect('formTutorDecision')->fromArray($formTutorDecisions)->required();
+            
+            $row = $form->addRow();
+                $row->addLabel('formTutorNotes', __('Notes'))->description(__('Explanation of decision'));
+                $row->addTextArea('formTutorNotes')->setRows(5);
+        }
+        
+        // Status Section
+        $statusOptions = [
+            'Referral' => __('Referral'),
+            'Form Tutor Review' => __('Form Tutor Review'),
+            'Intervention' => __('Intervention'),
+            'Referral' => __('Referral'),
+            'Resolved' => __('Resolved'),
+            'Completed' => __('Completed')
         ];
+        
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray($statuses)->required();
-
-        $parentConsent = [
-            'Not Requested' => __('Not Requested'),
-            'Awaiting Response' => __('Awaiting Response'),
-            'Consent Given' => __('Consent Given'),
-            'Consent Denied' => __('Consent Denied')
-        ];
-        $row = $form->addRow();
-            $row->addLabel('parentConsent', __('Parent Consent'));
-            $row->addSelect('parentConsent')->fromArray($parentConsent)->required();
+            $row->addSelect('status')->fromArray($statusOptions)->required();
+        
+        // Outcome Section (Only visible if status is Intervention or later)
+        if (in_array($intervention['status'], ['Intervention', 'Resolved', 'Completed']) || $isAdmin) {
+            $form->addRow()->addHeading(__('Outcome'));
+            
+            $outcomeDecisions = [
+                'Pending' => __('Pending'),
+                'Success' => __('Success'),
+                'Needs IEP' => __('Needs IEP')
+            ];
+            
+            $row = $form->addRow();
+                $row->addLabel('outcomeDecision', __('Decision'));
+                $row->addSelect('outcomeDecision')->fromArray($outcomeDecisions)->required();
+            
+            $row = $form->addRow();
+                $row->addLabel('outcomeNotes', __('Notes'))->description(__('Summary of intervention outcome'));
+                $row->addTextArea('outcomeNotes')->setRows(5);
+        }
 
         $row = $form->addRow();
             $row->addFooter();
@@ -146,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $contributorGateway = $container->get(INInterventionContributorGateway::class);
         
         $criteria = $contributorGateway->newQueryCriteria()
-            ->sortBy(['dateCreated'])
+            ->sortBy(['timestampCreated'])
             ->fromPOST();
 
         $contributors = $contributorGateway->queryContributorsByIntervention($criteria, $gibbonINInterventionID);
@@ -155,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $table->setTitle(__('Contributors'));
 
         $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Individual Needs/interventions_manage_contributor_add.php')
+            ->setURL('/modules/Interventions/interventions_manage_contributor_add.php')
             ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
             ->addParam('gibbonPersonID', $gibbonPersonID)
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
@@ -169,9 +198,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             });
 
         $table->addColumn('type', __('Type'));
-        $table->addColumn('status', __('Status'));
-        $table->addColumn('dateCreated', __('Date'))
-            ->format(Format::using('date', ['dateCreated']));
+        $table->addColumn('timestampCreated', __('Date'))
+            ->format(Format::using('dateTime', ['timestampCreated']));
 
         $table->addActionColumn()
             ->addParam('gibbonINInterventionContributorID')
@@ -180,67 +208,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('status', $status)
-            ->format(function ($contributor, $actions) {
-                $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Individual Needs/interventions_manage_contributor_edit.php');
+            ->format(function ($row, $actions) {
                 $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Individual Needs/interventions_manage_contributor_delete.php')
-                    ->modalWindow(650, 400);
+                    ->setURL('/modules/Interventions/interventions_manage_contributor_delete.php');
             });
 
         echo $table->render($contributors);
-
-        // UPDATES
-        $updateGateway = $container->get(INInterventionUpdateGateway::class);
         
-        $criteria = $updateGateway->newQueryCriteria()
-            ->sortBy(['timestamp'], 'DESC')
-            ->fromPOST();
-
-        $updates = $updateGateway->queryUpdatesByIntervention($criteria, $gibbonINInterventionID);
-
-        $table = DataTable::createPaginated('updates', $criteria);
-        $table->setTitle(__('Updates'));
-
-        $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Individual Needs/interventions_update.php')
-            ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
-            ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-            ->addParam('status', $status)
-            ->displayLabel();
-
-        $table->addColumn('name', __('Name'))
-            ->format(function ($person) {
-                return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true);
-            });
-
-        $table->addColumn('comment', __('Comment'))
-            ->format(function ($update) {
-                return Format::truncate($update['comment'], 60);
-            });
+        // STRATEGIES
+        if ($intervention['formTutorDecision'] == 'Try Interventions' || $intervention['status'] == 'Intervention') {
+            $strategyGateway = $container->get(INInterventionStrategyGateway::class);
             
-        $table->addColumn('timestamp', __('Date'))
-            ->format(Format::using('dateTime', ['timestamp']));
-
-        $table->addActionColumn()
-            ->addParam('gibbonINInterventionUpdateID')
-            ->addParam('gibbonINInterventionID')
-            ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-            ->addParam('status', $status)
-            ->format(function ($update, $actions) use ($session) {
-                if ($update['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+            $criteria = $strategyGateway->newQueryCriteria()
+                ->sortBy(['targetDate'])
+                ->fromPOST();
+    
+            $strategies = $strategyGateway->queryStrategies($criteria);
+            $strategies->addFilterRules([
+                'gibbonINInterventionID' => $gibbonINInterventionID
+            ]);
+    
+            $table = DataTable::createPaginated('strategies', $criteria);
+            $table->setTitle(__('Strategies'));
+    
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Interventions/interventions_manage_strategy_add.php')
+                ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
+                ->addParam('gibbonPersonID', $gibbonPersonID)
+                ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+                ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+                ->addParam('status', $status)
+                ->displayLabel();
+    
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('status', __('Status'));
+            $table->addColumn('targetDate', __('Target Date'))
+                ->format(Format::using('date', ['targetDate']));
+            $table->addColumn('creator', __('Created By'))
+                ->format(function($row) {
+                    return Format::name($row['title'], $row['creatorPreferredName'], $row['creatorSurname'], 'Staff', false, true);
+                });
+    
+            $table->addActionColumn()
+                ->addParam('gibbonINInterventionStrategyID')
+                ->addParam('gibbonINInterventionID')
+                ->addParam('gibbonPersonID', $gibbonPersonID)
+                ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+                ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+                ->addParam('status', $status)
+                ->format(function ($row, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Individual Needs/interventions_update_edit.php');
-                    $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Individual Needs/interventions_update_delete.php')
-                        ->modalWindow(650, 400);
-                }
-            });
-
-        echo $table->render($updates);
+                        ->setURL('/modules/Interventions/interventions_manage_strategy_edit.php');
+                    $actions->addAction('outcome', __('Add Outcome'))
+                        ->setURL('/modules/Interventions/interventions_manage_outcome_add.php')
+                        ->setIcon('attendance');
+                });
+    
+            echo $table->render($strategies);
+        }
     }
 }
