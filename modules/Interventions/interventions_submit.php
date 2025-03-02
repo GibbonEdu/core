@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -102,6 +102,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $column->addLabel('parentContactDetails', __('Parent Contact Details'))
         ->description(__('How and when were the parents/guardians contacted?'));
     $column->addTextArea('parentContactDetails')
+        ->setRows(3)
+        ->setClass('w-full');
+        
+    // Reason Parents Not Informed - only appears if No selected above
+    $form->toggleVisibilityByClass('parentsInformedNo')->onSelect('parentsInformed')->when('N');
+    
+    $row = $form->addRow()->addClass('parentsInformedNo');
+    $column = $row->addColumn();
+    $column->addLabel('parentNotInformedReason', __('Reason Parents Not Informed'))
+        ->description(__('Please explain why parents/guardians have not been informed about these concerns.'));
+    $column->addTextArea('parentNotInformedReason')
         ->setRows(3)
         ->setClass('w-full');
     

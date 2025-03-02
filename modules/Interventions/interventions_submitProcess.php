@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
 
 require_once '../../gibbon.php';
 
@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $strategies = $_POST['strategies'] ?? '';
     $parentsInformed = $_POST['parentsInformed'] ?? '';
     $parentContactDetails = $_POST['parentContactDetails'] ?? '';
+    $parentNotInformedReason = $_POST['parentNotInformedReason'] ?? '';
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     
     // Validate required fields
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
     
     // Get form tutor information
-    $studentGateway = $container->get(StudentGateway::class);
+    $studentGateway = new StudentGateway($pdo);
     $student = $studentGateway->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonIDStudent)->fetch();
     
     if (empty($student)) {
@@ -73,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
     
     // Create the intervention record
-    $interventionGateway = $container->get(INInterventionGateway::class);
+    $interventionGateway = new INInterventionGateway($pdo);
     
     $data = [
         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
@@ -88,6 +89,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         'outcomeDecision' => 'Pending'
     ];
     
+    // Add additional data to the description field
+    $additionalInfo = "\n\n";
+    
+    // Add strategies if provided
+    if (!empty($strategies)) {
+        $additionalInfo .= "STRATEGIES ALREADY TRIED:\n" . $strategies . "\n\n";
+    }
+    
+    // Add parent information
+    $additionalInfo .= "PARENTS INFORMED: " . ($parentsInformed == 'Y' ? 'Yes' : 'No') . "\n";
+    if ($parentsInformed == 'Y' && !empty($parentContactDetails)) {
+        $additionalInfo .= "PARENT CONTACT DETAILS:\n" . $parentContactDetails . "\n";
+    } else if ($parentsInformed == 'N' && !empty($parentNotInformedReason)) {
+        $additionalInfo .= "REASON PARENTS NOT INFORMED:\n" . $parentNotInformedReason . "\n";
+    }
+    
+    // Append the additional information to the description
+    $data['description'] .= $additionalInfo;
+    
     // Insert the record
     $gibbonINInterventionID = $interventionGateway->insert($data);
     
@@ -97,25 +117,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
     
-    // Check if notifications are enabled
-    $settingGateway = $container->get(SettingGateway::class);
-    $notifyFormTutor = $settingGateway->getSettingByScope('Interventions', 'notifyFormTutor');
-    
-    if ($notifyFormTutor == 'Y' && !empty($formTutorID)) {
-        // Send notification to form tutor
-        $notificationEvent = new NotificationEvent('Interventions', 'New Referral');
-        $notificationEvent->setNotificationText(sprintf(__('A new intervention referral has been submitted for %1$s by %2$s.'), Format::name('', $student['preferredName'], $student['surname'], 'Student'), Format::name($session->get('title'), $session->get('preferredName'), $session->get('surname'), 'Staff')));
-        $notificationEvent->setActionLink('/index.php?q=/modules/Interventions/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID);
-        
-        // Add form tutor as target for notification
-        $notificationEvent->addRecipient($formTutorID);
-        
-        // Send the notification
-        $event = $container->get('event');
-        $event->dispatch($notificationEvent, 'Notify');
-    }
-    
     // Success!
-    $URL .= "&return=success0";
-    header("Location: {$URL}");
+    header("Location: {$session->get('absoluteURL')}/index.php?q=/modules/Interventions/interventions_submit.php&return=success0");
 }

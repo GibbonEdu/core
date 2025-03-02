@@ -28,7 +28,7 @@ use Gibbon\Domain\Interventions\INInterventionGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions
         $form->setClass('noIntBorder w-full');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('q', '/modules/Intervention/interventions_manage.php');
+        $form->addHiddenValue('q', '/modules/Interventions/interventions_manage.php');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
@@ -129,18 +129,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions
         
         $table->addColumn('status', __('Status'))->sortable();
         
-        $table->addColumn('parentConsent', __('Parent Consent'))->sortable();
+        // Remove the parent consent column as it's not in the database
+        // $table->addColumn('parentConsent', __('Parent Consent'))->sortable();
         
+        // Add the creation date column
+        $table->addColumn('timestampCreated', __('Date'))
+            ->format(Format::using('dateTime', ['timestampCreated']));
+            
+        $table->addColumn('creator', __('Created By'))
+            ->sortable(['creatorSurname', 'creatorPreferredName'])
+            ->format(function ($intervention) {
+                return Format::name($intervention['title'], $intervention['creatorPreferredName'], $intervention['creatorSurname'], 'Staff', false, true);
+            });
+
         $table->addColumn('targetDate', __('Target Date'))
             ->format(Format::using('date', ['targetDate']));
             
-        $table->addColumn('creator', __('Created By'))
-            ->sortable(['surnameCreator', 'preferredNameCreator'])
-            ->format(function ($intervention) {
-                return Format::name($intervention['titleCreator'], $intervention['preferredNameCreator'], $intervention['surnameCreator'], 'Staff', false, true);
-            });
-
-        // ACTIONS
         $table->addActionColumn()
             ->addParam('gibbonINInterventionID')
             ->addParam('gibbonPersonID', $gibbonPersonID)
