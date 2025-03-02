@@ -55,6 +55,8 @@
 !/Tracking/**
 !/User Admin
 !/User Admin/**
+!/Interventions
+!/Interventions/**
 
 # black list some files and folders
 # in the module folders
