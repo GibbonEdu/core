@@ -2665,11 +2665,6 @@ CREATE TABLE `gibbonINInvestigation` (
   `resolutionDetails` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `gibbonINInvestigation` 
-MODIFY COLUMN `status` enum('Referral','Resolved','Intervention','Investigation','Investigation Complete') DEFAULT NULL;
-
- 
-
 -- --------------------------------------------------------
 
 --
@@ -2704,7 +2699,6 @@ CREATE TABLE `gibbonINPersonDescriptor` (
   `gibbonINDescriptorID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --

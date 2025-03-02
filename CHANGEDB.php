@@ -906,8 +906,6 @@ INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `type`, `templateTyp
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Petty Cash Notification', 'Finance', 'Petty Cash', 'Core', 'All', 'Y');end
 ALTER TABLE `gibbonMarkbookColumn` ADD `columnColor` VARCHAR(7) NULL DEFAULT NULL AFTER `description`;end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '242' WHERE `printable_name` = 'Congo';end
-
-
 UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '246' WHERE `printable_name` = 'British Indian Ocean Territory';end
 UPDATE `gibbonCountry` SET `iddCountryCode` = '673' WHERE `printable_name` = 'Brunei Darussalam';end
@@ -933,5 +931,4 @@ UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'We
 UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
 UPDATE `gibbonCountry` SET `printable_name` = 'Serbia, Republic of', `iddCountryCode` = '381' WHERE `printable_name` = 'Serbia and Montenegro';end
 INSERT IGNORE INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Montenegro', '382');end
-
 ";
