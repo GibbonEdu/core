@@ -27,6 +27,9 @@ use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\DataSet;
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
 
 /**
  * Intervention Outcome Gateway
@@ -132,5 +135,15 @@ class INInterventionOutcomeGateway extends QueryableGateway implements Scrubbabl
             ->orderBy(['gibbonINInterventionOutcome.timestampCreated DESC']);
 
         return $this->runSelect($query)->fetchAll();
+    }
+
+    protected function runUpdate(UpdateInterface $query) : bool
+    {
+        return $this->db()->update($query->getStatement(), $query->getBindValues());
+    }
+
+    protected function runDelete(DeleteInterface $query) : bool
+    {
+        return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
 }

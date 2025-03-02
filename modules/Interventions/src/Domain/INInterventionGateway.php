@@ -27,6 +27,10 @@ use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\DataSet;
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\Common\SelectInterface;
 
 /**
  * Intervention Gateway
@@ -46,6 +50,14 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
     
     private static $scrubbableKey = 'gibbonPersonIDCreator';
     private static $scrubbableColumns = ['name' => '', 'description' => '', 'formTutorNotes' => '', 'outcomeNotes' => ''];
+
+    private $session;
+
+    public function __construct(\Gibbon\Contracts\Database\Connection $db, $session = null)
+    {
+        parent::__construct($db);
+        $this->session = $session;
+    }
 
     /**
      * @param QueryCriteria $criteria
@@ -86,7 +98,7 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
             ->leftJoin('gibbonFormGroup AS formGroup', 'formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->leftJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINIntervention.gibbonPersonIDCreator')
             ->leftJoin('gibbonPerson AS formTutor', 'formTutor.gibbonPersonID=gibbonINIntervention.gibbonPersonIDFormTutor')
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID ?? $this->session->get('gibbonSchoolYearID'));
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID ?? ($this->session ? $this->session->get('gibbonSchoolYearID') : ''));
 
         if (!empty($gibbonPersonIDCreator)) {
             $query->where('gibbonINIntervention.gibbonPersonIDCreator = :gibbonPersonIDCreator')
@@ -153,20 +165,14 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
 
         return $this->runSelect($query)->fetch();
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function runUpdate(\Aura\SqlQuery\Common\UpdateInterface $query) : bool
+    
+    protected function runUpdate(UpdateInterface $query) : bool
     {
-        return parent::runUpdate($query);
+        return $this->db()->update($query->getStatement(), $query->getBindValues());
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function runDelete(\Aura\SqlQuery\Common\DeleteInterface $query) : bool
+    protected function runDelete(DeleteInterface $query) : bool
     {
-        return parent::runDelete($query);
+        return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
 }

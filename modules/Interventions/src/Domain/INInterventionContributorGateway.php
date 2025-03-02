@@ -27,6 +27,9 @@ use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\DataSet;
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
 
 /**
  * Intervention Contributor Gateway
@@ -42,6 +45,7 @@ class INInterventionContributorGateway extends QueryableGateway implements Scrub
 
     private static $tableName = 'gibbonINInterventionContributor';
     private static $primaryKey = 'gibbonINInterventionContributorID';
+    private static $searchableColumns = [];
     
     private static $scrubbableKey = 'gibbonPersonIDContributor';
     private static $scrubbableColumns = [];
@@ -140,5 +144,15 @@ class INInterventionContributorGateway extends QueryableGateway implements Scrub
 
         $result = $this->runSelect($query);
         return $result->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    protected function runUpdate(UpdateInterface $query) : bool
+    {
+        return $this->db()->update($query->getStatement(), $query->getBindValues());
+    }
+
+    protected function runDelete(DeleteInterface $query) : bool
+    {
+        return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
 }

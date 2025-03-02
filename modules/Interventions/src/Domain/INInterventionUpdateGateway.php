@@ -21,16 +21,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Interventions;
 
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\Traits\ScrubByPerson;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
-use Gibbon\Domain\DataSet;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\DataSet;
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
 
 /**
- * Intervention Updates Gateway
+ * Intervention Update Gateway
  *
  * @version v29
  * @since   v29
@@ -43,11 +45,10 @@ class INInterventionUpdateGateway extends QueryableGateway implements Scrubbable
 
     private static $tableName = 'gibbonINInterventionUpdate';
     private static $primaryKey = 'gibbonINInterventionUpdateID';
-
     private static $searchableColumns = [];
-
-    private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['comment' => ''];
+    
+    private static $scrubbableKey = 'gibbonPersonIDCreator';
+    private static $scrubbableColumns = ['notes' => ''];
 
     /**
      * @param QueryCriteria $criteria
@@ -61,33 +62,24 @@ class INInterventionUpdateGateway extends QueryableGateway implements Scrubbable
             ->from($this->getTableName())
             ->cols([
                 'gibbonINInterventionUpdate.*',
-                'person.title',
-                'person.surname',
-                'person.preferredName'
+                'creator.title',
+                'creator.surname',
+                'creator.preferredName'
             ])
-            ->innerJoin('gibbonPerson AS person', 'gibbonINInterventionUpdate.gibbonPersonID=person.gibbonPersonID')
+            ->innerJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINInterventionUpdate.gibbonPersonIDCreator')
             ->where('gibbonINInterventionUpdate.gibbonINInterventionID=:gibbonINInterventionID')
-            ->bindValue('gibbonINInterventionID', $gibbonINInterventionID)
-            ->orderBy(['gibbonINInterventionUpdate.timestamp DESC']);
+            ->bindValue('gibbonINInterventionID', $gibbonINInterventionID);
 
         return $this->runQuery($query, $criteria);
     }
-
-    public function getUpdateByID($gibbonINInterventionUpdateID)
+    
+    protected function runUpdate(UpdateInterface $query) : bool
     {
-        $query = $this
-            ->newSelect()
-            ->from($this->getTableName())
-            ->cols([
-                'gibbonINInterventionUpdate.*',
-                'person.title',
-                'person.surname',
-                'person.preferredName'
-            ])
-            ->innerJoin('gibbonPerson AS person', 'gibbonINInterventionUpdate.gibbonPersonID=person.gibbonPersonID')
-            ->where('gibbonINInterventionUpdate.gibbonINInterventionUpdateID=:gibbonINInterventionUpdateID')
-            ->bindValue('gibbonINInterventionUpdateID', $gibbonINInterventionUpdateID);
+        return $this->db()->update($query->getStatement(), $query->getBindValues());
+    }
 
-        return $this->runSelect($query)->fetch();
+    protected function runDelete(DeleteInterface $query) : bool
+    {
+        return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
 }

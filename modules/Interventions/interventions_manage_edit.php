@@ -27,6 +27,7 @@ use Gibbon\Domain\Interventions\INInterventionGateway;
 use Gibbon\Domain\Interventions\INInterventionContributorGateway;
 use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
 use Gibbon\Domain\Interventions\INInterventionOutcomeGateway;
+use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
@@ -127,17 +128,92 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $formTutorDecisions = [
                 'Pending' => __('Pending'),
                 'Resolved' => __('Resolve'),
-                'Eligibility Assessment' => __('Move to Eligibility Assessment')
+                'Eligibility Assessment' => __('Conduct Eligibility Assessment')
             ];
             
             $row = $form->addRow();
-                $row->addLabel('formTutorDecision', __('Decision'));
-                $row->addSelect('formTutorDecision')->fromArray($formTutorDecisions)->required();
+                $row->addLabel('formTutorDecision', __('Decision'))->description(__('Select an action to take on this referral'));
+                $row->addSelect('formTutorDecision')->fromArray($formTutorDecisions)->required()->placeholder(__('Please select...'));
             
             $row = $form->addRow();
                 $row->addLabel('formTutorNotes', __('Notes'))->description(__('Explanation of decision'));
                 $row->addTextArea('formTutorNotes')->setRows(5);
+                
+            // Add explanatory text about the workflow
+            $row = $form->addRow();
+            $row->addContent('<div class="message emphasis">');
+            $row->addContent('<p><strong>'.__('Workflow Information').':</strong></p>');
+            $row->addContent('<ul>');
+            $row->addContent('<li>'.__('Pending: Keep the referral under review').'</li>');
+            $row->addContent('<li>'.__('Resolve: Mark the referral as resolved/dismissed').'</li>');
+            $row->addContent('<li>'.__('Conduct Eligibility Assessment: Refer for further assessment').'</li>');
+            $row->addContent('</ul>');
+            $row->addContent('</div>');
+            
+            // Add JavaScript to show/hide sections based on form tutor decision
+            echo "<script type='text/javascript'>
+                $(document).ready(function(){
+                    // Initial state
+                    updateVisibility();
+                    
+                    // On change
+                    $('#formTutorDecision').change(function(){
+                        updateVisibility();
+                    });
+                    
+                    function updateVisibility() {
+                        var decision = $('#formTutorDecision').val();
+                        
+                        // Hide all conditional sections first
+                        $('.eligibilitySection').hide();
+                        $('.contributorsSection').hide();
+                        $('.outcomeSection').hide();
+                        $('.strategiesSection').hide();
+                        
+                        // Show sections based on decision
+                        if (decision == 'Eligibility Assessment') {
+                            $('.eligibilitySection').show();
+                            $('.contributorsSection').show();
+                        } else if (decision == 'Resolved') {
+                            $('.outcomeSection').show();
+                        }
+                    }
+                });
+            </script>";
         }
+        
+        // Eligibility Assessment Section (Always present but controlled by JavaScript)
+        $eligibilitySection = $form->addRow()->addHeading(__('Eligibility Assessment'))->addClass('eligibilitySection');
+        $eligibilitySection->append('<div class="message emphasis eligibilitySection">');
+        $eligibilitySection->append('<p>'.__('The student has been referred for an eligibility assessment. After completing the assessment, you will need to make a decision about whether the student is eligible for an IEP or should receive interventions.').'</p>');
+        
+        // Check if an eligibility assessment already exists for this intervention
+        $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
+        $existingAssessment = $eligibilityAssessmentGateway->getByInterventionID($gibbonINInterventionID);
+        
+        if (empty($existingAssessment)) {
+            // No assessment exists yet, show create button
+            $params = [
+                'gibbonINInterventionID' => $gibbonINInterventionID,
+                'gibbonPersonIDStudent' => $intervention['gibbonPersonID'] ?? '',
+                'action' => 'create'
+            ];
+            
+            $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&'.http_build_query($params);
+            $eligibilitySection->append('<a href="'.$url.'" class="button">'.__('Create Eligibility Assessment').'</a>');
+        } else {
+            // Assessment exists, show manage button
+            $params = [
+                'gibbonINInterventionID' => $gibbonINInterventionID,
+                'gibbonINInterventionEligibilityAssessmentID' => $existingAssessment['gibbonINInterventionEligibilityAssessmentID'] ?? '',
+                'gibbonPersonIDStudent' => $intervention['gibbonPersonID'] ?? ''
+            ];
+            
+            $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&'.http_build_query($params);
+            $eligibilitySection->append('<a href="'.$url.'" class="button">'.__('Manage Eligibility Assessment').'</a>');
+        }
+        
+        $eligibilitySection->append('</div>');
         
         // Status Section - Only editable by admin or based on form tutor decision
         $statusOptions = [
@@ -147,37 +223,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             'Eligibility Assessment' => __('Eligibility Assessment')
         ];
         
-        $row = $form->addRow();
-            $row->addLabel('status', __('Status'));
-            if ($isFormTutor || $isAdmin) {
-                $row->addSelect('status')->fromArray($statusOptions)->required();
-            } else {
-                $row->addTextField('status')->setValue($statusOptions[$intervention['status']] ?? $intervention['status'])->readonly();
-                $form->addHiddenValue('status', $intervention['status']);
-            }
-        
-        // Eligibility Assessment Section (Only visible if status is Eligibility Assessment)
-        if ($intervention['status'] == 'Eligibility Assessment' || $newStatus == 'Eligibility Assessment') {
-            $form->addRow()->addHeading(__('Eligibility Assessment'));
-            
-            // Add a link to create or view the eligibility assessment
+        // Only show status field to admins, hide it for form tutors
+        if ($isAdmin) {
             $row = $form->addRow();
-            $row->addContent('<div class="message emphasis">');
-            $row->addContent('<p>'.__('The student has been referred for an eligibility assessment. Click the button below to create or view the assessment.').'</p>');
-            
-            $params = [
-                'gibbonINInterventionID' => $gibbonINInterventionID,
-                'gibbonPersonID' => $intervention['gibbonPersonID']
-            ];
-            
-            $url = './index.php?q=/modules/Interventions/eligibility_edit.php&'.http_build_query($params);
-            $row->addContent('<a href="'.$url.'" class="button">'.__('Manage Eligibility Assessment').'</a>');
-            $row->addContent('</div>');
+                $row->addLabel('status', __('Status'));
+                $row->addSelect('status')->fromArray($statusOptions)->required();
+        } else {
+            // For non-admins, status is hidden and set based on form tutor decision
+            $form->addHiddenValue('status', $intervention['status']);
         }
         
         // Outcome Section (Only visible if status is Intervention or later)
         if (in_array($intervention['status'], ['Intervention', 'Resolved']) || $isAdmin) {
-            $form->addRow()->addHeading(__('Outcome'));
+            $form->addRow()->addHeading(__('Outcome'))->addClass('outcomeSection');
             
             $outcomeDecisions = [
                 'Pending' => __('Pending'),
@@ -185,15 +243,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 'Needs IEP' => __('Needs IEP')
             ];
             
-            $row = $form->addRow();
-                $row->addLabel('outcomeDecision', __('Decision'));
-                $row->addSelect('outcomeDecision')->fromArray($outcomeDecisions)->required();
-            
-            $row = $form->addRow();
-                $row->addLabel('outcomeNotes', __('Notes'))->description(__('Summary of intervention outcome'));
-                $row->addTextArea('outcomeNotes')->setRows(5);
+            // For resolved status, only show if admin or if form tutor decision was Resolved
+            if ($intervention['status'] != 'Resolved' || $isAdmin || $intervention['formTutorDecision'] == 'Resolved') {
+                $row = $form->addRow()->addClass('outcomeSection');
+                    $row->addLabel('outcomeDecision', __('Decision'));
+                    $row->addSelect('outcomeDecision')->fromArray($outcomeDecisions)->required();
+                
+                $row = $form->addRow()->addClass('outcomeSection');
+                    $row->addLabel('outcomeNotes', __('Notes'))->description(__('Summary of intervention outcome'));
+                    $row->addTextArea('outcomeNotes')->setRows(5);
+            } else {
+                // If status is Resolved but form tutor decision doesn't match, show warning
+                $row = $form->addRow()->addClass('outcomeSection');
+                $row->addContent('<div class="error">');
+                $row->addContent('<p>'.__('The status and form tutor decision are not synchronized. Please contact an administrator.').'</p>');
+                $row->addContent('</div>');
+            }
         }
 
+        // Add a hidden field to store the form tutor decision
+        $form->addHiddenValue('formTutorDecisionSubmitted', 'Y');
+        
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
@@ -203,6 +273,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         echo $form->getOutput();
 
         // CONTRIBUTORS
+        echo '<div class="contributorsSection" style="display: none;">';
+        
         $contributorGateway = $container->get(INInterventionContributorGateway::class);
         
         $criteria = $contributorGateway->newQueryCriteria()
@@ -222,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('status', $status)
             ->displayLabel();
-
+        
         $table->addColumn('name', __('Name'))
             ->format(function ($person) {
                 return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true);
@@ -245,23 +317,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             });
 
         echo $table->render($contributors);
+        echo '</div>';
         
         // STRATEGIES
         if ($intervention['formTutorDecision'] == 'Try Interventions' || $intervention['status'] == 'Intervention') {
+            echo '<div class="strategiesSection" style="display: none;">';
+            
             $strategyGateway = $container->get(INInterventionStrategyGateway::class);
             
             $criteria = $strategyGateway->newQueryCriteria()
-                ->sortBy(['targetDate'])
+                ->sortBy(['timestampCreated'])
                 ->fromPOST();
-    
-            $strategies = $strategyGateway->queryStrategies($criteria);
-            $strategies->addFilterRules([
-                'gibbonINInterventionID' => $gibbonINInterventionID
-            ]);
-    
+
+            $strategies = $strategyGateway->queryStrategiesByIntervention($criteria, $gibbonINInterventionID);
+
             $table = DataTable::createPaginated('strategies', $criteria);
             $table->setTitle(__('Strategies'));
-    
+
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Interventions/interventions_manage_strategy_add.php')
                 ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
@@ -296,6 +368,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 });
     
             echo $table->render($strategies);
+            echo '</div>';
         }
     }
 }

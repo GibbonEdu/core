@@ -27,6 +27,7 @@ use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\DataSet;
 
 /**
  * Eligibility Assessment Gateway
@@ -53,7 +54,7 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
      * @param int $gibbonINReferralID
      * @return DataSet
      */
-    public function queryAssessmentsByReferral(QueryCriteria $criteria, $gibbonINReferralID)
+    public function queryAssessmentsByReferral(QueryCriteria $criteria, int $gibbonINReferralID): DataSet
     {
         $query = $this
             ->newQuery()
@@ -79,7 +80,7 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
      * @param int $gibbonPersonID
      * @return DataSet
      */
-    public function queryAssessmentsByAssessor(QueryCriteria $criteria, $gibbonPersonID)
+    public function queryAssessmentsByAssessor(QueryCriteria $criteria, int $gibbonPersonID): DataSet
     {
         $query = $this
             ->newQuery()
@@ -107,7 +108,7 @@ class INEligibilityAssessmentGateway extends QueryableGateway implements Scrubba
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryPendingAssessments(QueryCriteria $criteria)
+    public function queryPendingAssessments(QueryCriteria $criteria): DataSet
     {
         $query = $this
             ->newQuery()

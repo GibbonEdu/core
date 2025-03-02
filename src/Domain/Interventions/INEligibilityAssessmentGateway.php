@@ -35,7 +35,8 @@ class INEligibilityAssessmentGateway extends QueryableGateway
 
     private static $tableName = 'gibbonINEligibilityAssessment';
     private static $primaryKey = 'gibbonINEligibilityAssessmentID';
-
+    private static $searchableColumns = [''];
+    
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -125,5 +126,66 @@ class INEligibilityAssessmentGateway extends QueryableGateway
             ->bindValue('gibbonINReferralID', $gibbonINReferralID);
 
         return $this->runSelect($query);
+    }
+
+    /**
+     * Get assessment by intervention ID
+     *
+     * @param int $gibbonINInterventionID
+     * @return array|null
+     */
+    public function getByInterventionID($gibbonINInterventionID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonINEligibilityAssessment.gibbonINEligibilityAssessmentID', 
+                'gibbonINEligibilityAssessment.gibbonINInterventionID', 
+                'gibbonINEligibilityAssessment.gibbonPersonIDStudent', 
+                'gibbonINEligibilityAssessment.gibbonPersonIDCreator', 
+                'gibbonINEligibilityAssessment.status', 
+                'gibbonINEligibilityAssessment.timestampCreated'
+            ])
+            ->where('gibbonINEligibilityAssessment.gibbonINInterventionID = :gibbonINInterventionID')
+            ->bindValue('gibbonINInterventionID', $gibbonINInterventionID);
+
+        return $this->runSelect($query)->fetch();
+    }
+
+    /**
+     * Get all eligibility assessments for a given referral
+     *
+     * @param int $gibbonINReferralID
+     * @return array
+     */
+    public function getByReferralID($gibbonINReferralID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonINEligibilityAssessment.gibbonINEligibilityAssessmentID',
+                'gibbonINEligibilityAssessment.gibbonINReferralID',
+                'gibbonINEligibilityAssessment.gibbonPersonIDContributor',
+                'gibbonINEligibilityAssessment.type',
+                'gibbonINEligibilityAssessment.assessment',
+                'gibbonINEligibilityAssessment.recommendation',
+                'gibbonINEligibilityAssessment.dateCompleted',
+                'gibbonINEligibilityAssessment.timestampCreated',
+                'gibbonPerson.title',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.email',
+                'gibbonPerson.phone1',
+                'gibbonPerson.phone2',
+                'gibbonPerson.phone3',
+                'gibbonPerson.phone4',
+            ])
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonINEligibilityAssessment.gibbonPersonIDContributor')
+            ->where('gibbonINEligibilityAssessment.gibbonINReferralID=:gibbonINReferralID')
+            ->bindValue('gibbonINReferralID', $gibbonINReferralID);
+
+        return $this->runSelect($query)->toArray();
     }
 }

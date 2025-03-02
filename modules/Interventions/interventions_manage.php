@@ -148,22 +148,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 // If form group is missing, try to get it directly
                 if (!isset($intervention['formGroup']) || empty($intervention['formGroup'])) {
                     if (isset($intervention['gibbonPersonID'])) {
-                        $data = ['gibbonPersonID' => $intervention['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION['gibbonSchoolYearID']];
-                        $sql = "SELECT formGroup.name AS formGroup 
-                                FROM gibbonStudentEnrolment 
-                                JOIN gibbonFormGroup AS formGroup ON (formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID) 
-                                WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID 
-                                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
-                        $result = $pdo->select($sql, $data);
-                        
-                        if ($result && $result->rowCount() > 0) {
-                            $student = $result->fetch();
-                            if (!empty($student['formGroup'])) {
-                                $output .= '<br/><small><i>'.$student['formGroup'].'</i></small>';
+                        $data = ['gibbonPersonID' => $intervention['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION['gibbonSchoolYearID'] ?? null];
+                        if (!empty($data['gibbonSchoolYearID'])) {
+                            $sql = "SELECT formGroup.name AS formGroup 
+                                    FROM gibbonStudentEnrolment 
+                                    JOIN gibbonFormGroup AS formGroup ON (formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID) 
+                                    WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID 
+                                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+                            $formGroupResult = $pdo->select($sql, $data);
+                            if ($formGroupResult->rowCount() > 0) {
+                                $intervention['formGroup'] = $formGroupResult->fetch()['formGroup'];
                             }
                         }
                     }
-                } else {
+                }
+                
+                if (isset($intervention['formGroup']) && !empty($intervention['formGroup'])) {
                     $output .= '<br/><small><i>'.$intervention['formGroup'].'</i></small>';
                 }
                 

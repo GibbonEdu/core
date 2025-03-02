@@ -99,13 +99,42 @@ $moduleTables[] = "CREATE TABLE `gibbonINEligibilityAssessmentType` (
     PRIMARY KEY (`gibbonINEligibilityAssessmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
+// New table for intervention-based eligibility assessments
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionEligibilityAssessment` (
+    `gibbonINInterventionEligibilityAssessmentID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `status` ENUM('In Progress','Complete') NOT NULL DEFAULT 'In Progress',
+    `eligibilityDecision` ENUM('Pending','Eligible for IEP','Needs Intervention') NOT NULL DEFAULT 'Pending',
+    `notes` TEXT NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionEligibilityAssessmentID`),
+    UNIQUE KEY `intervention` (`gibbonINInterventionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+// New table for intervention-based eligibility assessment contributors
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionEligibilityContributor` (
+    `gibbonINInterventionEligibilityContributorID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionEligibilityAssessmentID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDContributor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `notes` TEXT NULL,
+    `status` ENUM('Pending','Complete') NOT NULL DEFAULT 'Pending',
+    `contribution` TEXT NULL,
+    `recommendation` ENUM('Pending','Eligible for IEP','Needs Intervention') NOT NULL DEFAULT 'Pending',
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `timestampModified` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionEligibilityContributorID`),
+    UNIQUE KEY `contributor` (`gibbonINInterventionEligibilityAssessmentID`, `gibbonPersonIDContributor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
 // Module Action Rows
 $actionRows[] = [
     'name' => 'Manage Interventions_all', 
     'precedence' => '1',
     'category' => 'Interventions',
     'description' => 'View and manage all student interventions',
-    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php',
+    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_contributor_edit.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php',
     'entryURL' => 'interventions_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -125,7 +154,7 @@ $actionRows[] = [
     'precedence' => '0',
     'category' => 'Interventions',
     'description' => 'View and manage interventions you have created',
-    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php',
+    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_contributor_edit.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php',
     'entryURL' => 'interventions_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -165,7 +194,7 @@ $actionRows[] = [
     'precedence' => '1',
     'category' => 'Eligibility',
     'description' => 'View and manage all eligibility assessments',
-    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_delete.php,eligibility_contributor_add.php,eligibility_contributor_delete.php,eligibility_assessment_edit.php',
+    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_delete.php,eligibility_contributor_add.php,eligibility_contributor_delete.php,eligibility_assessment_edit.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php',
     'entryURL' => 'eligibility_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -185,7 +214,7 @@ $actionRows[] = [
     'precedence' => '0',
     'category' => 'Eligibility',
     'description' => 'View and manage eligibility assessments you have created',
-    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php',
+    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_contributor_add.php,eligibility_assessment_edit.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php',
     'entryURL' => 'eligibility_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -205,7 +234,7 @@ $actionRows[] = [
     'precedence' => '0',
     'category' => 'Eligibility',
     'description' => 'Complete assigned eligibility assessments',
-    'URLList' => 'eligibility_assessment_edit.php',
+    'URLList' => 'eligibility_assessment_edit.php,intervention_eligibility_edit.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php',
     'entryURL' => 'eligibility_assessment_edit.php',
     'entrySidebar' => 'N',
     'menuShow' => 'N',

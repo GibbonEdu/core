@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,13 +24,13 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Interventions\INReferralGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -44,6 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_e
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
+        $gibbonINInterventionID = $_GET['gibbonINInterventionID'] ?? '';
+        $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
+        $action = $_GET['action'] ?? '';
 
         $page->breadcrumbs
             ->add(__('Manage Eligibility Assessments'), 'eligibility_manage.php', [
@@ -53,6 +56,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_e
                 'status' => $status,
             ])
             ->add(__('Edit Eligibility Assessment'));
+
+        // Check if we're creating a new assessment or editing an existing one
+        if ($action == 'create' && !empty($gibbonINInterventionID)) {
+            // Create a new eligibility assessment
+            $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
+            
+            // Check if an assessment already exists
+            $existingAssessment = $eligibilityAssessmentGateway->getByInterventionID($gibbonINInterventionID);
+            
+            if (empty($existingAssessment)) {
+                // Create a new assessment
+                $data = [
+                    'gibbonINInterventionID' => $gibbonINInterventionID,
+                    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+                    'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
+                    'status' => 'In Progress',
+                    'timestampCreated' => date('Y-m-d H:i:s')
+                ];
+                
+                $gibbonINInterventionEligibilityAssessmentID = $eligibilityAssessmentGateway->insert($data);
+                
+                if (!$gibbonINInterventionEligibilityAssessmentID) {
+                    $page->addError(__('Could not create eligibility assessment.'));
+                    return;
+                }
+                
+                // Redirect to the edit page for the new assessment
+                $url = './index.php?q=/modules/Interventions/eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent;
+                header("Location: {$url}");
+                exit;
+            } else {
+                // Assessment already exists, redirect to edit it
+                $url = './index.php?q=/modules/Interventions/eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent;
+                header("Location: {$url}");
+                exit;
+            }
+        }
+
+        // Get the eligibility assessment
+        $gibbonINInterventionEligibilityAssessmentID = $_GET['gibbonINInterventionEligibilityAssessmentID'] ?? '';
+        
+        if (empty($gibbonINInterventionEligibilityAssessmentID) && empty($gibbonINInterventionID)) {
+            $page->addError(__('You have not specified one or more required parameters.'));
+            return;
+        }
 
         $gibbonINReferralID = $_GET['gibbonINReferralID'] ?? '';
         if (empty($gibbonINReferralID)) {
@@ -109,8 +157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_e
                 $row->addLabel('eligibilityDecision', __('Eligibility Decision'));
                 $options = [
                     'Pending' => __('Pending'),
-                    'Eligible' => __('Eligible'),
-                    'Not Eligible' => __('Not Eligible')
+                    'Eligible' => __('Eligible for IEP'),
+                    'Not Eligible' => __('Needs Intervention')
                 ];
                 $row->addSelect('eligibilityDecision')->fromArray($options)->selected($referral['eligibilityDecision'] ?? 'Pending');
                 
@@ -118,12 +166,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_e
                 $column = $row->addColumn();
                 $column->addLabel('eligibilityNotes', __('Notes'));
                 $column->addTextArea('eligibilityNotes')->setRows(5)->setClass('w-full')->setValue($referral['eligibilityNotes'] ?? '');
+                
+            // Add explanation text for the decision options
+            $row = $form->addRow();
+            $row->addContent('<div class="message emphasis">');
+            $row->addContent('<p><strong>'.__('Decision Options').':</strong></p>');
+            $row->addContent('<ul>');
+            $row->addContent('<li>'.__('Eligible for IEP: Student will follow the IEP path').'</li>');
+            $row->addContent('<li>'.__('Needs Intervention: Student will receive interventions before considering an IEP').'</li>');
+            $row->addContent('</ul>');
+            $row->addContent('</div>');
         }
         
         // Assessments
         $form->addRow()->addHeading(__('Required Assessments'));
         
-        $eligibilityAssessmentGateway = $container->get(INEligibilityAssessmentGateway::class);
+        $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
         $criteria = $eligibilityAssessmentGateway->newQueryCriteria();
         $assessments = $eligibilityAssessmentGateway->queryAssessmentsByReferral($criteria, $gibbonINReferralID);
         
@@ -166,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_e
                 });
                 
             $table->addActionColumn()
-                ->addParam('gibbonINEligibilityAssessmentID')
+                ->addParam('gibbonINInterventionEligibilityAssessmentID')
                 ->addParam('gibbonINReferralID', $gibbonINReferralID)
                 ->format(function ($assessment, $actions) use ($session, $referral) {
                     if (empty($assessment['gibbonPersonIDAssessor'])) {

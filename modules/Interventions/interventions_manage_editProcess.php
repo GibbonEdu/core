@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -90,17 +91,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
     
-    // If form tutor made a decision, update the status accordingly
-    if ($isFormTutor || $isAdmin) {
-        if (!empty($formTutorDecision) && $formTutorDecision != 'Pending') {
-            // If resolved, update status
-            if ($formTutorDecision == 'Resolved') {
-                $newStatus = 'Resolved';
-            }
-            
-            // If eligibility assessment, update status
-            if ($formTutorDecision == 'Eligibility Assessment') {
-                $newStatus = 'Eligibility Assessment';
+    // Check if form tutor decision was submitted
+    $formTutorDecisionSubmitted = $_POST['formTutorDecisionSubmitted'] ?? '';
+
+    // Only process form tutor decision if it was actually submitted
+    if ($formTutorDecisionSubmitted == 'Y') {
+        // If form tutor made a decision, update the status accordingly
+        if ($isFormTutor || $isAdmin) {
+            if (!empty($formTutorDecision) && $formTutorDecision != 'Pending') {
+                // If resolved, update status
+                if ($formTutorDecision == 'Resolved') {
+                    $newStatus = 'Resolved';
+                }
+                
+                // If eligibility assessment, update status
+                if ($formTutorDecision == 'Eligibility Assessment') {
+                    $newStatus = 'Eligibility Assessment';
+                    
+                    // Create an eligibility assessment record if one doesn't exist
+                    $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
+                    $existingAssessment = $eligibilityAssessmentGateway->getByInterventionID($gibbonINInterventionID);
+                    
+                    if (empty($existingAssessment)) {
+                        // Create a new assessment
+                        $data = [
+                            'gibbonINInterventionID' => $gibbonINInterventionID,
+                            'gibbonPersonIDStudent' => $intervention['gibbonPersonID'] ?? null,
+                            'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
+                            'status' => 'In Progress',
+                            'timestampCreated' => date('Y-m-d H:i:s')
+                        ];
+                        
+                        $gibbonINInterventionEligibilityAssessmentID = $eligibilityAssessmentGateway->insert($data);
+                        
+                        // Redirect to the new intervention eligibility edit page
+                        if (!empty($gibbonINInterventionEligibilityAssessmentID)) {
+                            $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+                            header("Location: {$redirectURL}");
+                            exit;
+                        }
+                    } else {
+                        // Redirect to edit the existing assessment
+                        $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+                        header("Location: {$redirectURL}");
+                        exit;
+                    }
+                }
+            } else if ($formTutorDecision == 'Pending' && $intervention['status'] == 'Referral') {
+                // If decision is pending but referral is being reviewed, set status to Form Tutor Review
+                $newStatus = 'Form Tutor Review';
             }
         }
     }
@@ -149,13 +188,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         }
         
         // Notify contributors
-        $sql = "SELECT gibbonPersonID FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonPersonID<>:gibbonPersonID";
-        $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')]);
+        $contributorSQL = "SELECT gibbonPersonID FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID";
+        if ($session->exists('gibbonPersonID')) {
+            $contributorSQL .= " AND gibbonPersonID<>:gibbonPersonID";
+            $contributorParams = ['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')];
+        } else {
+            $contributorParams = ['gibbonINInterventionID' => $gibbonINInterventionID];
+        }
         
-        while ($contributor = $result->fetch()) {
-            $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Intervention', $notificationString, 'interventions_manage_edit.php', [
-                'gibbonINInterventionID' => $gibbonINInterventionID
-            ], 'Alert');
+        $contributorResult = $pdo->select($contributorSQL, $contributorParams);
+        
+        if ($contributorResult && $contributorResult->rowCount() > 0) {
+            while ($contributor = $contributorResult->fetch()) {
+                $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Intervention', $notificationString, 'interventions_manage_edit.php', [
+                    'gibbonINInterventionID' => $gibbonINInterventionID
+                ], 'Alert');
+            }
         }
     }
 

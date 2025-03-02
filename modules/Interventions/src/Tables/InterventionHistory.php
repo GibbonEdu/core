@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Gibbon\Domain\Interventions\INInterventionGateway;
 use Gibbon\Domain\Interventions\INInterventionContributorGateway;
 use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
 use Gibbon\Domain\Interventions\INInterventionUpdateGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
 
 /**
  * InterventionHistory
@@ -49,7 +49,7 @@ class InterventionHistory
         INInterventionContributorGateway $contributorGateway,
         INInterventionStrategyGateway $strategyGateway,
         INInterventionUpdateGateway $updateGateway,
-        INEligibilityAssessmentGateway $assessmentGateway,
+        INInterventionEligibilityAssessmentGateway $assessmentGateway,
         $session
     ) {
         $this->interventionGateway = $interventionGateway;
@@ -66,8 +66,8 @@ class InterventionHistory
 
         // Get all interventions for this student
         $criteria = $this->interventionGateway->newQueryCriteria()
-            ->sortBy(['timestampCreated'], 'DESC')
-            ->filterBy('gibbonPersonIDStudent', $gibbonPersonID);
+            ->sortBy('timestampCreated', 'DESC')
+            ->filterBy('student', $gibbonPersonID);
         
         $interventions = $this->interventionGateway->queryInterventions($criteria, $this->session->get('gibbonSchoolYearID'));
         
@@ -107,7 +107,7 @@ class InterventionHistory
         $table->addColumn('strategies', __('Strategies'))
             ->format(function ($intervention) {
                 $strategyCriteria = $this->strategyGateway->newQueryCriteria();
-                $strategies = $this->strategyGateway->queryStrategiesByIntervention($strategyCriteria, $intervention['gibbonINInterventionID']);
+                $strategies = $this->strategyGateway->queryStrategies($strategyCriteria, $intervention['gibbonINInterventionID']);
                 
                 $count = $strategies->getResultCount();
                 return $count > 0 ? $count : '-';
@@ -134,7 +134,7 @@ class InterventionHistory
         });
         
         if (count($activeInterventions) > 0) {
-            $output .= $table->render(new \ArrayObject($activeInterventions));
+            $output .= $table->render($activeInterventions);
         } else {
             $output .= Format::alert(__('There are no active interventions for this student.'), 'message');
         }
@@ -182,7 +182,7 @@ class InterventionHistory
         });
         
         if (count($completedInterventions) > 0) {
-            $output .= $historyTable->render(new \ArrayObject($completedInterventions));
+            $output .= $historyTable->render($completedInterventions);
         } else {
             $output .= Format::alert(__('There are no completed interventions for this student.'), 'message');
         }
@@ -203,7 +203,7 @@ class InterventionHistory
 
         // Get counts of interventions by status
         $criteria = $this->interventionGateway->newQueryCriteria()
-            ->filterBy('gibbonPersonIDStudent', $gibbonPersonID);
+            ->filterBy('student', $gibbonPersonID);
         
         $interventions = $this->interventionGateway->queryInterventions($criteria, $this->session->get('gibbonSchoolYearID'))->toArray();
         
@@ -266,34 +266,37 @@ class InterventionHistory
 
         // Get eligibility assessments for this student
         $criteria = $this->assessmentGateway->newQueryCriteria()
-            ->sortBy(['dateCompleted'], 'DESC');
+            ->sortBy('timestampCreated', 'DESC');
         
         $assessments = $this->assessmentGateway->queryAssessmentsByStudent($criteria, $gibbonPersonID);
         
         if ($assessments->getResultCount() > 0) {
             $table = DataTable::create('eligibilityAssessments');
             
-            $table->addColumn('type', __('Assessment Type'));
-            
-            $table->addColumn('recommendation', __('Recommendation'))
+            $table->addColumn('status', __('Status'))
                 ->format(function ($assessment) {
-                    if ($assessment['recommendation'] == 'Pending') {
+                    return Format::tag(__($assessment['status']), $assessment['status'] == 'Complete' ? 'success' : 'dull');
+                });
+            
+            $table->addColumn('eligibilityDecision', __('Decision'))
+                ->format(function ($assessment) {
+                    if ($assessment['eligibilityDecision'] == 'Pending') {
                         return Format::tag(__('Pending'), 'dull');
-                    } elseif ($assessment['recommendation'] == 'Eligible') {
-                        return Format::tag(__('Eligible'), 'success');
+                    } elseif ($assessment['eligibilityDecision'] == 'Eligible for IEP') {
+                        return Format::tag(__('Eligible for IEP'), 'success');
                     } else {
-                        return Format::tag(__('Not Eligible'), 'warning');
+                        return Format::tag(__('Needs Intervention'), 'warning');
                     }
                 });
                 
-            $table->addColumn('contributor', __('Contributor'))
+            $table->addColumn('creator', __('Creator'))
                 ->format(function ($assessment) {
                     return Format::name($assessment['title'], $assessment['preferredName'], $assessment['surname'], 'Staff');
                 });
                 
-            $table->addColumn('dateCompleted', __('Date Completed'))
+            $table->addColumn('timestampCreated', __('Date Created'))
                 ->format(function ($assessment) {
-                    return !empty($assessment['dateCompleted']) ? Format::date($assessment['dateCompleted']) : Format::tag(__('Incomplete'), 'dull');
+                    return Format::date($assessment['timestampCreated']);
                 });
                 
             $output .= $table->render($assessments);
