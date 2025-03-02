@@ -131,6 +131,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $row->addLabel('contributorName', __('Contributor'));
             $row->addTextField('contributorName')->setValue($contributorName)->readonly();
 
+        $form->addRow()->addHeading(__('Assessment Details'));
+
         // Get assessment types
         $sql = "SELECT gibbonINEligibilityAssessmentTypeID as value, name 
                 FROM gibbonINEligibilityAssessmentType 
@@ -140,9 +142,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         
         $assessmentTypes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
         
+        // Display warning if assessment type not selected
+        if (empty($contributor['gibbonINEligibilityAssessmentTypeID'])) {
+            echo "<div class='warning'>";
+            echo __('Please select an assessment type to specify the type of assessment you are performing.');
+            echo "</div>";
+        }
+        
         $row = $form->addRow();
             $row->addLabel('gibbonINEligibilityAssessmentTypeID', __('Assessment Type'))
-                ->description(__('Type of assessment being performed'));
+                ->description(__('Please select the type of assessment you wish to perform'));
             $row->addSelect('gibbonINEligibilityAssessmentTypeID')
                 ->fromArray($assessmentTypes)
                 ->placeholder(__('Please select...'))

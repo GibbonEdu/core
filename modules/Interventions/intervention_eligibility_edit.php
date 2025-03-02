@@ -230,6 +230,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             echo "<div class='linkTop'>";
             echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_contributor_add.php&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonINInterventionID=$gibbonINInterventionID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status'>".__('Add Contributor')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
             echo "</div>";
+            
+            // Add note about assessment types
+            echo "<div class='message'>";
+            echo __('Note: Contributors will select their assessment type when they edit their contribution.');
+            echo "</div>";
         }
 
         // Main assessment form

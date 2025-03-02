@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -48,10 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     // Proceed!
     $gibbonPersonIDContributor = $_POST['gibbonPersonIDContributor'] ?? '';
     $contributorNotes = $_POST['contributorNotes'] ?? '';
-    $gibbonINEligibilityAssessmentTypeID = $_POST['gibbonINEligibilityAssessmentTypeID'] ?? '';
+    
+    // Assessment type is now optional at this stage and will be selected by the contributor
 
     // Validate the required values
-    if (empty($gibbonINInterventionID) || empty($gibbonINInterventionEligibilityAssessmentID) || empty($gibbonPersonIDContributor) || empty($gibbonINEligibilityAssessmentTypeID)) {
+    if (empty($gibbonINInterventionID) || empty($gibbonINInterventionEligibilityAssessmentID) || empty($gibbonPersonIDContributor)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -77,15 +78,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
 
-    // Check if the contributor already exists with the same assessment type
+    // Check if the contributor already exists
     $sql = "SELECT COUNT(*) FROM gibbonINInterventionEligibilityContributor 
             WHERE gibbonINInterventionEligibilityAssessmentID=:gibbonINInterventionEligibilityAssessmentID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor
-            AND gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID";
+            AND gibbonPersonIDContributor=:gibbonPersonIDContributor";
     $result = $pdo->select($sql, [
         'gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID,
-        'gibbonPersonIDContributor' => $gibbonPersonIDContributor,
-        'gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID
+        'gibbonPersonIDContributor' => $gibbonPersonIDContributor
     ]);
     
     if ($result->rowCount() > 0 && $result->fetchColumn(0) > 0) {
@@ -98,7 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $data = [
         'gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID,
         'gibbonPersonIDContributor' => $gibbonPersonIDContributor,
-        'gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID,
         'notes' => $contributorNotes,
         'status' => 'Pending',
         'timestampCreated' => date('Y-m-d H:i:s')
@@ -106,9 +104,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
     // Insert the contributor
     $sql = "INSERT INTO gibbonINInterventionEligibilityContributor 
-            (gibbonINInterventionEligibilityAssessmentID, gibbonPersonIDContributor, gibbonINEligibilityAssessmentTypeID, notes, status, timestampCreated) 
+            (gibbonINInterventionEligibilityAssessmentID, gibbonPersonIDContributor, notes, status, timestampCreated) 
             VALUES 
-            (:gibbonINInterventionEligibilityAssessmentID, :gibbonPersonIDContributor, :gibbonINEligibilityAssessmentTypeID, :notes, :status, :timestampCreated)";
+            (:gibbonINInterventionEligibilityAssessmentID, :gibbonPersonIDContributor, :notes, :status, :timestampCreated)";
     
     $inserted = $pdo->insert($sql, $data);
 
@@ -130,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $student = ($result->rowCount() > 0) ? $result->fetch() : [];
     $studentName = Format::name('', $student['preferredName'] ?? '', $student['surname'] ?? '', 'Student', true);
 
-    $notificationString = __('You have been asked to contribute to an eligibility assessment for {student}.', [
+    $notificationString = __('You have been asked to contribute to an eligibility assessment for {student}. Please select the type of assessment you wish to perform when you complete your contribution.', [
         'student' => $studentName
     ]);
 

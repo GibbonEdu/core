@@ -139,22 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $row->addLabel('gibbonPersonIDContributor', __('Contributor'))->description(__('The staff member who will contribute to this assessment'));
             $row->addSelect('gibbonPersonIDContributor')->fromArray($staffOptions)->required()->placeholder();
 
-        // Get assessment types
-        $sql = "SELECT gibbonINEligibilityAssessmentTypeID as value, name 
-                FROM gibbonINEligibilityAssessmentType 
-                WHERE active='Y' 
-                ORDER BY name";
-        $result = $pdo->select($sql);
-        
-        $assessmentTypes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
-        
-        $row = $form->addRow();
-            $row->addLabel('gibbonINEligibilityAssessmentTypeID', __('Assessment Type'))
-                ->description(__('Type of assessment being performed'));
-            $row->addSelect('gibbonINEligibilityAssessmentTypeID')
-                ->fromArray($assessmentTypes)
-                ->placeholder(__('Please select...'))
-                ->required();
+        // Assessment Type selection removed to allow contributors to choose their own assessment type when they edit their contribution
 
         $row = $form->addRow();
             $row->addLabel('contributorNotes', __('Notes'))->description(__('Additional notes for the contributor'));
