@@ -100,4 +100,64 @@ class INInterventionEligibilityAssessmentGateway extends QueryableGateway
 
         return $this->runSelect($query)->toArray();
     }
+    
+    /**
+     * Query eligibility assessments with criteria
+     *
+     * @param QueryCriteria $criteria
+     * @param string $gibbonSchoolYearID
+     * @return DataSet
+     */
+    public function queryEligibilityAssessments(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonINInterventionEligibilityAssessment.gibbonINInterventionEligibilityAssessmentID',
+                'gibbonINInterventionEligibilityAssessment.gibbonINInterventionID',
+                'gibbonINInterventionEligibilityAssessment.status',
+                'gibbonINInterventionEligibilityAssessment.eligibilityDecision',
+                'gibbonINInterventionEligibilityAssessment.timestampCreated',
+                'gibbonINIntervention.name as interventionName',
+                'p.gibbonPersonID',
+                'p.title',
+                'p.surname',
+                'p.preferredName',
+                'fg.name as formGroup',
+                'yg.name as yearGroup'
+            ])
+            ->innerJoin('gibbonINIntervention', 'gibbonINIntervention.gibbonINInterventionID=gibbonINInterventionEligibilityAssessment.gibbonINInterventionID')
+            ->innerJoin('gibbonPerson as p', 'p.gibbonPersonID=gibbonINInterventionEligibilityAssessment.gibbonPersonIDStudent')
+            ->leftJoin('gibbonStudentEnrolment as se', 'p.gibbonPersonID=se.gibbonPersonID AND se.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->leftJoin('gibbonFormGroup as fg', 'se.gibbonFormGroupID=fg.gibbonFormGroupID')
+            ->leftJoin('gibbonYearGroup as yg', 'se.gibbonYearGroupID=yg.gibbonYearGroupID')
+            ->where('p.status="Full"')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        $criteria->addFilterRules([
+            'gibbonPersonID' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('p.gibbonPersonID = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+            'gibbonFormGroupID' => function ($query, $gibbonFormGroupID) {
+                return $query
+                    ->where('fg.gibbonFormGroupID = :gibbonFormGroupID')
+                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
+            },
+            'gibbonYearGroupID' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('yg.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonINInterventionEligibilityAssessment.status = :status')
+                    ->bindValue('status', $status);
+            }
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }

@@ -93,8 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $contributorStatus = $_POST['status'] ?? '';
     $recommendation = $_POST['recommendation'] ?? '';
     $notes = $_POST['notes'] ?? '';
+    $gibbonINEligibilityAssessmentTypeID = $_POST['gibbonINEligibilityAssessmentTypeID'] ?? '';
 
-    if (empty($contributorStatus) || empty($recommendation)) {
+    if (empty($contributorStatus) || empty($recommendation) || empty($gibbonINEligibilityAssessmentTypeID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -106,11 +107,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             'status' => $contributorStatus,
             'recommendation' => $recommendation,
             'notes' => $notes,
+            'gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID,
             'timestampModified' => date('Y-m-d H:i:s')
         ];
         
         $sql = "UPDATE gibbonINInterventionEligibilityContributor 
-                SET status=:status, recommendation=:recommendation, notes=:notes, timestampModified=:timestampModified 
+                SET status=:status, recommendation=:recommendation, notes=:notes, gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID, timestampModified=:timestampModified 
                 WHERE gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
                 
         $result = $pdo->update($sql, array_merge($data, ['gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID]));

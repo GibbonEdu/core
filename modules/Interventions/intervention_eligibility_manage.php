@@ -24,13 +24,13 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Interventions\INReferralGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_
         $form->setClass('noIntBorder w-full');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('q', '/modules/Interventions/eligibility_manage.php');
+        $form->addHiddenValue('q', '/modules/Interventions/intervention_eligibility_manage.php');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
@@ -66,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
 
         $statuses = [
-            'Eligibility Assessment' => __('Eligibility Assessment'),
-            'Eligibility Complete' => __('Eligibility Complete'),
+            'In Progress' => __('In Progress'),
+            'Complete' => __('Complete'),
         ];
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
@@ -78,72 +78,78 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_
 
         echo $form->getOutput();
 
-        $referralGateway = $container->get(INReferralGateway::class);
-        $criteria = $referralGateway->newQueryCriteria(true)
-            ->sortBy(['student.surname', 'student.preferredName'])
+        // Query the intervention-based eligibility assessments
+        $assessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
+        $criteria = $assessmentGateway->newQueryCriteria(true)
+            ->sortBy(['p.surname', 'p.preferredName'])
             ->filterBy('gibbonPersonID', $gibbonPersonID)
             ->filterBy('gibbonFormGroupID', $gibbonFormGroupID)
             ->filterBy('gibbonYearGroupID', $gibbonYearGroupID)
             ->filterBy('status', $status)
             ->fromPOST();
-
-        $referrals = $referralGateway->queryReferrals($criteria, $session->get('gibbonSchoolYearID'));
-
-        if (!is_null($referrals)) {
-            // DATA TABLE
-            $table = DataTable::createPaginated('eligibilityManage', $criteria);
-            $table->setTitle(__('Eligibility Assessments'));
-
-            if ($highestAction == 'Manage Eligibility Assessments_all') {
-                $table->addHeaderAction('add', __('Add'))
-                    ->setURL('/modules/Interventions/eligibility_edit.php')
-                    ->addParam('gibbonPersonID', $gibbonPersonID)
-                    ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-                    ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-                    ->addParam('status', $status)
-                    ->displayLabel();
-            }
-
-            $table->addColumn('student', __('Student'))
-                ->sortable(['student.surname', 'student.preferredName'])
-                ->format(function ($person) {
-                    return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true);
-                });
-
-            $table->addColumn('formGroup', __('Form Group'));
-            $table->addColumn('yearGroup', __('Year Group'));
-            $table->addColumn('status', __('Status'));
             
-            $table->addColumn('eligibilityDecision', __('Decision'))
-                ->format(function ($row) {
-                    if ($row['status'] == 'Eligibility Complete') {
-                        return $row['eligibilityDecision'];
-                    } else {
-                        return __('Pending');
-                    }
-                });
+        $assessments = $assessmentGateway->queryEligibilityAssessments($criteria, $session->get('gibbonSchoolYearID'));
+        
+        // DATA TABLE
+        $table = DataTable::createPaginated('interventionEligibilityManage', $criteria);
+        $table->setTitle(__('Eligibility Assessments'));
 
-            $table->addColumn('dateCreated', __('Date'))
-                ->format(Format::using('date', ['dateCreated']));
-
-            $table->addActionColumn()
-                ->addParam('gibbonINReferralID')
+        if ($highestAction == 'Manage Eligibility Assessments') {
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Interventions/intervention_eligibility_edit.php')
                 ->addParam('gibbonPersonID', $gibbonPersonID)
                 ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
                 ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
                 ->addParam('status', $status)
-                ->format(function ($referral, $actions) use ($highestAction) {
-                    $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Interventions/eligibility_edit.php');
-                    
-                    if ($highestAction == 'Manage Eligibility Assessments_all') {
-                        $actions->addAction('delete', __('Delete'))
-                            ->setURL('/modules/Interventions/eligibility_delete.php')
-                            ->modalWindow(650, 400);
-                    }
-                });
+                ->displayLabel();
+        }
 
-            echo $table->render($referrals);
+        $table->addColumn('student', __('Student'))
+            ->format(function ($row) {
+                return Format::name('', $row['preferredName'], $row['surname'], 'Student', true, true);
+            });
+
+        $table->addColumn('formGroup', __('Form Group'));
+        $table->addColumn('yearGroup', __('Year Group'));
+        $table->addColumn('interventionName', __('Intervention'));
+        $table->addColumn('status', __('Status'));
+        
+        $table->addColumn('eligibilityDecision', __('Decision'))
+            ->format(function ($row) {
+                if ($row['status'] == 'Complete') {
+                    return $row['eligibilityDecision'];
+                } else {
+                    return __('Pending');
+                }
+            });
+
+        $table->addColumn('timestampCreated', __('Date'))
+            ->format(Format::using('dateTime', ['timestampCreated']));
+
+        $table->addActionColumn()
+            ->addParam('gibbonINInterventionEligibilityAssessmentID')
+            ->addParam('gibbonINInterventionID')
+            ->addParam('gibbonPersonID', $gibbonPersonID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
+            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+            ->addParam('status', $status)
+            ->format(function ($row, $actions) use ($highestAction) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Interventions/intervention_eligibility_edit.php');
+                
+                if ($highestAction == 'Manage Eligibility Assessments') {
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Interventions/intervention_eligibility_delete.php')
+                        ->modalWindow(650, 400);
+                }
+            });
+
+        if (count($assessments) > 0) {
+            echo $table->render($assessments);
+        } else {
+            echo "<div class='error'>";
+            echo __('There are no records to display.');
+            echo "</div>";
         }
     }
 }

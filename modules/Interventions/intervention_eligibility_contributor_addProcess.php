@@ -48,9 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     // Proceed!
     $gibbonPersonIDContributor = $_POST['gibbonPersonIDContributor'] ?? '';
     $contributorNotes = $_POST['contributorNotes'] ?? '';
+    $gibbonINEligibilityAssessmentTypeID = $_POST['gibbonINEligibilityAssessmentTypeID'] ?? '';
 
     // Validate the required values
-    if (empty($gibbonINInterventionID) || empty($gibbonINInterventionEligibilityAssessmentID) || empty($gibbonPersonIDContributor)) {
+    if (empty($gibbonINInterventionID) || empty($gibbonINInterventionEligibilityAssessmentID) || empty($gibbonPersonIDContributor) || empty($gibbonINEligibilityAssessmentTypeID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -76,13 +77,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
 
-    // Check if the contributor already exists
+    // Check if the contributor already exists with the same assessment type
     $sql = "SELECT COUNT(*) FROM gibbonINInterventionEligibilityContributor 
             WHERE gibbonINInterventionEligibilityAssessmentID=:gibbonINInterventionEligibilityAssessmentID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor";
+            AND gibbonPersonIDContributor=:gibbonPersonIDContributor
+            AND gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID";
     $result = $pdo->select($sql, [
         'gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID,
-        'gibbonPersonIDContributor' => $gibbonPersonIDContributor
+        'gibbonPersonIDContributor' => $gibbonPersonIDContributor,
+        'gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID
     ]);
     
     if ($result->rowCount() > 0 && $result->fetchColumn(0) > 0) {
@@ -95,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $data = [
         'gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID,
         'gibbonPersonIDContributor' => $gibbonPersonIDContributor,
+        'gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID,
         'notes' => $contributorNotes,
         'status' => 'Pending',
         'timestampCreated' => date('Y-m-d H:i:s')
@@ -102,9 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
     // Insert the contributor
     $sql = "INSERT INTO gibbonINInterventionEligibilityContributor 
-            (gibbonINInterventionEligibilityAssessmentID, gibbonPersonIDContributor, notes, status, timestampCreated) 
+            (gibbonINInterventionEligibilityAssessmentID, gibbonPersonIDContributor, gibbonINEligibilityAssessmentTypeID, notes, status, timestampCreated) 
             VALUES 
-            (:gibbonINInterventionEligibilityAssessmentID, :gibbonPersonIDContributor, :notes, :status, :timestampCreated)";
+            (:gibbonINInterventionEligibilityAssessmentID, :gibbonPersonIDContributor, :gibbonINEligibilityAssessmentTypeID, :notes, :status, :timestampCreated)";
     
     $inserted = $pdo->insert($sql, $data);
 

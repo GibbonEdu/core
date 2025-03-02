@@ -131,6 +131,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $row->addLabel('contributorName', __('Contributor'));
             $row->addTextField('contributorName')->setValue($contributorName)->readonly();
 
+        // Get assessment types
+        $sql = "SELECT gibbonINEligibilityAssessmentTypeID as value, name 
+                FROM gibbonINEligibilityAssessmentType 
+                WHERE active='Y' 
+                ORDER BY name";
+        $result = $pdo->select($sql);
+        
+        $assessmentTypes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+        
+        $row = $form->addRow();
+            $row->addLabel('gibbonINEligibilityAssessmentTypeID', __('Assessment Type'))
+                ->description(__('Type of assessment being performed'));
+            $row->addSelect('gibbonINEligibilityAssessmentTypeID')
+                ->fromArray($assessmentTypes)
+                ->placeholder(__('Please select...'))
+                ->selected($contributor['gibbonINEligibilityAssessmentTypeID'] ?? '')
+                ->required();
+
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
             $options = [

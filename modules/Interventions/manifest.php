@@ -118,14 +118,14 @@ $moduleTables[] = "CREATE TABLE `gibbonINInterventionEligibilityContributor` (
     `gibbonINInterventionEligibilityContributorID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
     `gibbonINInterventionEligibilityAssessmentID` INT(14) UNSIGNED ZEROFILL NOT NULL,
     `gibbonPersonIDContributor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonINEligibilityAssessmentTypeID` INT(4) UNSIGNED ZEROFILL NULL,
     `notes` TEXT NULL,
     `status` ENUM('Pending','Complete') NOT NULL DEFAULT 'Pending',
     `contribution` TEXT NULL,
     `recommendation` ENUM('Pending','Eligible for IEP','Needs Intervention') NOT NULL DEFAULT 'Pending',
     `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `timestampModified` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`gibbonINInterventionEligibilityContributorID`),
-    UNIQUE KEY `contributor` (`gibbonINInterventionEligibilityAssessmentID`, `gibbonPersonIDContributor`)
+    PRIMARY KEY (`gibbonINInterventionEligibilityContributorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 // Module Action Rows
@@ -189,25 +189,26 @@ $actionRows[] = [
     'categoryPermissionOther' => 'N'
 ];
 
-$actionRows[] = [
-    'name' => 'Manage Eligibility Assessments_all',
-    'precedence' => '1',
-    'category' => 'Eligibility',
-    'description' => 'View and manage all eligibility assessments',
-    'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_delete.php,eligibility_contributor_add.php,eligibility_contributor_delete.php,eligibility_assessment_edit.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php',
-    'entryURL' => 'eligibility_manage.php',
-    'entrySidebar' => 'Y',
-    'menuShow' => 'Y',
-    'defaultPermissionAdmin' => 'Y',
-    'defaultPermissionTeacher' => 'N',
-    'defaultPermissionStudent' => 'N',
-    'defaultPermissionParent' => 'N',
-    'defaultPermissionSupport' => 'N',
-    'categoryPermissionStaff' => 'Y',
-    'categoryPermissionStudent' => 'N',
-    'categoryPermissionParent' => 'N',
-    'categoryPermissionOther' => 'N'
-];
+// $actionRows[] = [
+//     'name' => 'Manage Eligibility Assessments_all',
+//     'precedence' => '1',
+//     'category' => 'Eligibility',
+//     'description' => 'View and manage all eligibility assessments',
+//     'URLList' => 'eligibility_manage.php,eligibility_edit.php,eligibility_delete.php,eligibility_contributor_add.php,eligibility_contributor_delete.php,eligibility_assessment_edit.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php',
+//     'entryURL' => 'eligibility_manage.php',
+//     'entrySidebar' => 'Y',
+//     'menuShow' => 'Y',
+//     'defaultPermissionAdmin' => 'Y',
+//     'defaultPermissionTeacher' => 'N',
+//     'defaultPermissionStudent' => 'N',
+//     'defaultPermissionParent' => 'N',
+//     'defaultPermissionSupport' => 'N',
+//     'categoryPermissionStaff' => 'Y',
+//     'categoryPermissionStudent' => 'N',
+//     'categoryPermissionParent' => 'N',
+//     'categoryPermissionOther' => 'N'
+// ];
+
 
 $actionRows[] = [
     'name' => 'Manage Eligibility Assessments_my',
@@ -303,6 +304,26 @@ $actionRows[] = [
     'defaultPermissionStudent' => 'N',
     'defaultPermissionParent' => 'N',
     'defaultPermissionSupport' => 'Y',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
+
+$actionRows[] = [
+    'name' => 'Manage Eligibility Assessments', 
+    'precedence' => '0',
+    'category' => 'Eligibility',
+    'description' => 'Manage intervention-based eligibility assessments',
+    'URLList' => 'intervention_eligibility_manage.php,intervention_eligibility_edit.php,intervention_eligibility_delete.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_delete.php',
+    'entryURL' => 'intervention_eligibility_manage.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'N',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
     'categoryPermissionStaff' => 'Y',
     'categoryPermissionStudent' => 'N',
     'categoryPermissionParent' => 'N',

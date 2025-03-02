@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,14 +47,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Get eligibility assessments where the user is a contributor
         $sql = "SELECT c.*, a.*, i.name as interventionName, i.gibbonINInterventionID,
                     p.preferredName as studentPreferredName, p.surname as studentSurname,
-                    creator.preferredName as creatorPreferredName, creator.surname as creatorSurname
+                    creator.preferredName as creatorPreferredName, creator.surname as creatorSurname,
+                    t.name as assessmentTypeName,
+                    CONCAT(p.surname, ', ', p.preferredName) as studentSort
                 FROM gibbonINInterventionEligibilityContributor AS c
                 JOIN gibbonINInterventionEligibilityAssessment AS a ON (c.gibbonINInterventionEligibilityAssessmentID=a.gibbonINInterventionEligibilityAssessmentID)
                 JOIN gibbonINIntervention AS i ON (a.gibbonINInterventionID=i.gibbonINInterventionID)
                 JOIN gibbonPerson AS p ON (a.gibbonPersonIDStudent=p.gibbonPersonID)
                 JOIN gibbonPerson AS creator ON (a.gibbonPersonIDCreator=creator.gibbonPersonID)
+                LEFT JOIN gibbonINEligibilityAssessmentType AS t ON (c.gibbonINEligibilityAssessmentTypeID=t.gibbonINEligibilityAssessmentTypeID)
                 WHERE c.gibbonPersonIDContributor=:gibbonPersonID
-                ORDER BY c.status ASC, c.timestampCreated DESC";
+                ORDER BY studentSort, i.name, t.name";
         
         $result = $pdo->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
         
@@ -71,6 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 });
                 
             $table->addColumn('interventionName', __('Intervention'));
+            
+            $table->addColumn('assessmentTypeName', __('Assessment Type'));
             
             $table->addColumn('creator', __('Created By'))
                 ->format(function($row) {

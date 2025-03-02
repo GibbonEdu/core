@@ -158,11 +158,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             echo '<h2>'.__('Contributors').'</h2>';
             
             // Get contributors
-            $sql = "SELECT c.*, p.title, p.preferredName, p.surname 
+            $sql = "SELECT c.*, p.title, p.preferredName, p.surname, t.name as assessmentTypeName,
+                    CONCAT(p.surname, ', ', p.preferredName) as contributorSort
                     FROM gibbonINInterventionEligibilityContributor AS c 
                     JOIN gibbonPerson AS p ON (c.gibbonPersonIDContributor=p.gibbonPersonID) 
+                    LEFT JOIN gibbonINEligibilityAssessmentType AS t ON (c.gibbonINEligibilityAssessmentTypeID=t.gibbonINEligibilityAssessmentTypeID)
                     WHERE c.gibbonINInterventionEligibilityAssessmentID=:gibbonINInterventionEligibilityAssessmentID 
-                    ORDER BY c.timestampCreated";
+                    ORDER BY contributorSort, t.name";
             
             $result = $pdo->select($sql, ['gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID]);
             
@@ -177,6 +179,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                     ->format(function($contributor) {
                         return Format::name($contributor['title'], $contributor['preferredName'], $contributor['surname'], 'Staff', false, true);
                     });
+                    
+                $table->addColumn('assessmentTypeName', __('Assessment Type'));
                     
                 $table->addColumn('status', __('Status'))
                     ->format(function($contributor) {
