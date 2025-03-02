@@ -220,6 +220,26 @@ $actionRows[] = [
     'categoryPermissionOther' => 'Y'
 ];
 
+$actionRows[] = [
+    'name' => 'Manage Assessment Types',
+    'precedence' => '0',
+    'category' => 'Eligibility',
+    'description' => 'Manage the types of eligibility assessments',
+    'URLList' => 'eligibility_assessment_types_manage.php,eligibility_assessment_types_add.php,eligibility_assessment_types_edit.php,eligibility_assessment_types_delete.php',
+    'entryURL' => 'eligibility_assessment_types_manage.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'N',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
+
 // Module Settings
 $gibbonSetting[] = "INSERT INTO `gibbonSetting` 
     (`scope`, `name`, `nameDisplay`, `description`, `value`) 
@@ -236,12 +256,35 @@ $gibbonSetting[] = "INSERT INTO `gibbonSetting`
     VALUES 
     ('Interventions', 'requireEligibilityForIEP', 'Require Eligibility for IEP', 'Require eligibility assessment before creating an IEP.', 'Y');";
 
-// Add default eligibility assessment types
+// Add default eligibility assessment types - split into individual statements
 $gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType` 
     (`name`, `description`, `active`) 
     VALUES 
-    ('Academic', 'Assessment of academic performance and needs', 'Y'),
-    ('Behavioral', 'Assessment of behavioral patterns and needs', 'Y'),
-    ('Social-Emotional', 'Assessment of social and emotional development', 'Y'),
-    ('Physical', 'Assessment of physical abilities and needs', 'Y'),
+    ('Academic', 'Assessment of academic performance and needs', 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType` 
+    (`name`, `description`, `active`) 
+    VALUES 
+    ('Behavioral', 'Assessment of behavioral patterns and needs', 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType` 
+    (`name`, `description`, `active`) 
+    VALUES 
+    ('Social-Emotional', 'Assessment of social and emotional development', 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType` 
+    (`name`, `description`, `active`) 
+    VALUES 
+    ('Physical', 'Assessment of physical abilities and needs', 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType` 
+    (`name`, `description`, `active`) 
+    VALUES 
     ('Communication', 'Assessment of communication skills and needs', 'Y');";
+
+// Module Hooks - Convert to SQL statements
+$hooks[] = "INSERT INTO `gibbonHook` 
+    (`name`, `type`, `options`, `gibbonModuleID`) 
+    VALUES 
+    ('Interventions', 'Student Profile', 'a:3:{s:16:\"sourceModuleName\";s:13:\"Interventions\";s:18:\"sourceModuleAction\";s:36:\"hook_studentProfile_interventionsButton.php\";s:19:\"sourceModuleInclude\";s:36:\"hook_studentProfile_interventionsButton.php\";}', 
+    (SELECT gibbonModuleID FROM gibbonModule WHERE name='Interventions'));";

@@ -21,8 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INReferralGateway;
-use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -36,9 +36,9 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID=$gibbonINReferralID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Intervention/eligibility_edit.php&gibbonINReferralID=$gibbonINReferralID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_contributor_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_contributor_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -115,8 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
     $notificationSender->addNotification(
         $gibbonPersonIDContributor,
         $notificationString,
-        'Individual Needs',
-        '/index.php?q=/modules/Individual Needs/eligibility_assessment_edit.php&gibbonINEligibilityAssessmentID='.$gibbonINEligibilityAssessmentID
+        'Intervention',
+        '/index.php?q=/modules/Intervention/eligibility_assessment_edit.php&gibbonINEligibilityAssessmentID='.$gibbonINEligibilityAssessmentID
     );
 
     $notificationSender->sendNotifications();

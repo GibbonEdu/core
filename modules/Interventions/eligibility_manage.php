@@ -19,12 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INReferralGateway;
-use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

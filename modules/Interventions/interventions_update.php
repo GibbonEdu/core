@@ -21,13 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
 use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_update.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions_update.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             ])
             ->add(__('Add Update'));
 
-        $form = Form::create('update', $session->get('absoluteURL').'/modules/Individual Needs/interventions_updateProcess.php');
+        $form = Form::create('update', $session->get('absoluteURL').'/modules/Intervention/interventions_updateProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));

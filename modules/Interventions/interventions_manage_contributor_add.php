@@ -19,15 +19,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
+use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
+ 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_manage_contributor_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage_contributor_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -49,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         }
 
         $interventionGateway = $container->get(INInterventionGateway::class);
-        $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
+         $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
 
         if (empty($intervention)) {
             $page->addError(__('The specified record cannot be found.'));
@@ -78,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             ])
             ->add(__('Add Contributor'));
 
-        $form = Form::create('contributor', $session->get('absoluteURL').'/modules/Individual Needs/interventions_manage_contributor_addProcess.php');
+        $form = Form::create('contributor', $session->get('absoluteURL').'/modules/Intervention/interventions_manage_contributor_addProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));

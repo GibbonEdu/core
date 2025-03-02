@@ -23,10 +23,10 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionContributorGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionStrategyGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionOutcomeGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionContributorGateway;
+use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
+use Gibbon\Domain\Interventions\INInterventionOutcomeGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes

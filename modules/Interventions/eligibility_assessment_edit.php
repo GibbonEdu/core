@@ -23,12 +23,14 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
 use Gibbon\FileUploader;
 
 //Module includes
-require_once __DIR__ . '/../moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_assessment_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_assessment_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -89,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
             ->add(__('Manage Eligibility Assessments'), 'eligibility_manage.php')
             ->add(__('Edit Assessment'));
 
-        $form = Form::create('assessmentEdit', $session->get('absoluteURL').'/modules/Individual Needs/eligibility_assessment_editProcess.php');
+        $form = Form::create('assessmentEdit', $session->get('absoluteURL').'/modules/Intervention/eligibility_assessment_editProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));

@@ -23,12 +23,12 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $form->setClass('noIntBorder w-full');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('q', '/modules/Individual Needs/interventions_manage.php');
+        $form->addHiddenValue('q', '/modules/Intervention/interventions_manage.php');
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         });
 
         $table->addHeaderAction('add', __('New Intervention'))
-            ->setURL('/modules/Individual Needs/interventions_manage_add.php')
+            ->setURL('/modules/Intervention/interventions_manage_add.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->format(function ($intervention, $actions) use ($highestAction) {
                 $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Individual Needs/interventions_manage_edit.php');
+                    ->setURL('/modules/Intervention/interventions_manage_edit.php');
             });
 
         echo $table->render($interventions);

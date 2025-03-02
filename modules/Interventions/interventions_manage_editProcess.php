@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -34,9 +34,9 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Intervention/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         
         // Notify the creator if not the current user
         if ($intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-            $notificationGateway->addNotification([$intervention['gibbonPersonIDCreator']], 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+            $notificationGateway->addNotification([$intervention['gibbonPersonIDCreator']], 'Intervention', $notificationString, 'interventions_manage_edit.php', [
                 'gibbonINInterventionID' => $gibbonINInterventionID
             ], 'Alert');
         }
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
         $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')]);
         
         while ($contributor = $result->fetch()) {
-            $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Individual Needs', $notificationString, 'interventions_manage_edit.php', [
+            $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Intervention', $notificationString, 'interventions_manage_edit.php', [
                 'gibbonINInterventionID' => $gibbonINInterventionID
             ], 'Alert');
         }

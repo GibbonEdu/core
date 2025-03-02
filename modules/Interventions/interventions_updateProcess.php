@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionUpdateGateway;
-use Gibbon\Domain\IndividualNeeds\INInterventionContributorGateway;
+use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Domain\Interventions\INInterventionUpdateGateway;
+use Gibbon\Domain\Interventions\INInterventionContributorGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -36,9 +36,9 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Intervention/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/interventions_update.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions_update.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/intervent
             $notificationSender->addNotification(
                 $contributorID,
                 $notificationString,
-                'Individual Needs',
+                'Intervention',
                 'interventions_manage_edit.php',
                 ['gibbonINInterventionID' => $gibbonINInterventionID]
             );

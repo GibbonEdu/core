@@ -23,14 +23,14 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INReferralGateway;
-use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
             return;
         }
 
-        $form = Form::create('eligibility', $session->get('absoluteURL').'/modules/Individual Needs/eligibility_editProcess.php');
+        $form = Form::create('eligibility', $session->get('absoluteURL').'/modules/Intervention/eligibility_editProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));
@@ -171,10 +171,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
                 ->format(function ($assessment, $actions) use ($session, $referral) {
                     if (empty($assessment['gibbonPersonIDAssessor'])) {
                         $actions->addAction('assign', __('Assign Contributor'))
-                            ->setURL('/modules/Individual Needs/eligibility_contributor_add.php');
+                            ->setURL('/modules/Intervention/eligibility_contributor_add.php');
                     } else {
                         $actions->addAction('edit', __('Edit'))
-                            ->setURL('/modules/Individual Needs/eligibility_assessment_edit.php');
+                            ->setURL('/modules/Intervention/eligibility_assessment_edit.php');
                     }
                 });
                 
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         
         // Add a section for creating interventions if eligible
         if ($referral['eligibilityDecision'] == 'Eligible') {
-            $form = Form::create('createIntervention', $session->get('absoluteURL').'/modules/Individual Needs/eligibility_create_interventionProcess.php');
+            $form = Form::create('createIntervention', $session->get('absoluteURL').'/modules/Intervention/eligibility_create_interventionProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
             
             $form->addHiddenValue('address', $session->get('address'));

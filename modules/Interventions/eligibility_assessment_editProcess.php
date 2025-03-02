@@ -21,8 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INReferralGateway;
-use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\FileUploader;
@@ -33,9 +33,9 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonINEligibilityAssessmentID = $_POST['gibbonINEligibilityAssessmentID'] ?? '';
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/eligibility_assessment_edit.php&gibbonINEligibilityAssessmentID=$gibbonINEligibilityAssessmentID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Intervention/eligibility_assessment_edit.php&gibbonINEligibilityAssessmentID=$gibbonINEligibilityAssessmentID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_assessment_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_assessment_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
     }
 
     // Check access - must be the assigned assessor or have admin rights
-    $highestAction = getHighestGroupedAction($guid, '/modules/Individual Needs/eligibility_manage.php', $connection2);
+    $highestAction = getHighestGroupedAction($guid, '/modules/Intervention/eligibility_manage.php', $connection2);
     if ($highestAction == 'Manage Eligibility Assessments_my' && $assessment['gibbonPersonIDAssessor'] != $session->get('gibbonPersonID')) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
@@ -126,8 +126,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $notificationSender->addNotification(
             $referral['gibbonPersonIDCreator'],
             $notificationString,
-            'Individual Needs',
-            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID='.$assessment['gibbonINReferralID']
+            'Intervention',
+            '/index.php?q=/modules/Intervention/eligibility_edit.php&gibbonINReferralID='.$assessment['gibbonINReferralID']
         );
     }
 
@@ -151,8 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         $notificationSender->addNotification(
             $referral['gibbonPersonIDCreator'],
             $notificationString,
-            'Individual Needs',
-            '/index.php?q=/modules/Individual Needs/eligibility_edit.php&gibbonINReferralID='.$assessment['gibbonINReferralID']
+            'Intervention',
+            '/index.php?q=/modules/Intervention/eligibility_edit.php&gibbonINReferralID='.$assessment['gibbonINReferralID']
         );
     }
 

@@ -22,14 +22,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INReferralGateway;
-use Gibbon\Domain\IndividualNeeds\INEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INReferralGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
-require_once __DIR__ . '/../moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibility_contributor_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Intervention/eligibility_contributor_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/eligibili
         // Get student details
         $studentName = Format::name('', $referral['preferredName'], $referral['surname'], 'Student', true);
 
-        $form = Form::create('addContributor', $session->get('absoluteURL').'/modules/Individual Needs/eligibility_contributor_addProcess.php');
+        $form = Form::create('addContributor', $session->get('absoluteURL').'/modules/Intervention/eligibility_contributor_addProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $session->get('address'));
