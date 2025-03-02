@@ -26,8 +26,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $output = '';
 
-// Check access to the Interventions module
-$interventionsAccess = isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage.php');
+// Check access to the Interventions module - using the action referenced in the hook options
+$interventionsAccess = isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage.php', 'Student Profile Hook');
 $submitAccess = isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_submit.php');
 
 // Only show the button if the user has access to the Interventions module

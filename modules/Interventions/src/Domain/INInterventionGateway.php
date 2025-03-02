@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\IndividualNeeds;
+namespace Gibbon\Domain\Interventions;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -51,7 +51,7 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryInterventions(QueryCriteria $criteria)
+    public function queryInterventions(QueryCriteria $criteria, $gibbonSchoolYearID = null)
     {
         $query = $this
             ->newQuery()
@@ -78,7 +78,7 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
             ->innerJoin('gibbonYearGroup AS yearGroup', 'yearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
             ->innerJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINIntervention.gibbonPersonIDCreator')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
-            ->bindValue('gibbonSchoolYearID', $this->session->get('gibbonSchoolYearID'));
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID ?? $this->session->get('gibbonSchoolYearID'));
 
         $criteria->addFilterRules([
             'status' => function ($query, $status) {
@@ -86,7 +86,7 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
                     ->where('gibbonINIntervention.status = :status')
                     ->bindValue('status', $status);
             },
-            'gibbonPersonID' => function ($query, $gibbonPersonID) {
+            'gibbonPersonIDStudent' => function ($query, $gibbonPersonID) {
                 return $query
                     ->where('student.gibbonPersonID = :gibbonPersonID')
                     ->bindValue('gibbonPersonID', $gibbonPersonID);

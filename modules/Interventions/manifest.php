@@ -240,6 +240,26 @@ $actionRows[] = [
     'categoryPermissionOther' => 'N'
 ];
 
+$actionRows[] = [
+    'name' => 'Student Profile Hook',
+    'precedence' => '0',
+    'category' => 'Interventions',
+    'description' => 'Access to the Interventions button in student profiles',
+    'URLList' => 'hook_studentProfile_interventionsButton.php',
+    'entryURL' => 'hook_studentProfile_interventionsButton.php',
+    'entrySidebar' => 'N',
+    'menuShow' => 'N',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'Y',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'Y'
+];
+
 // Module Settings
 $gibbonSetting[] = "INSERT INTO `gibbonSetting` 
     (`scope`, `name`, `nameDisplay`, `description`, `value`) 
@@ -282,9 +302,9 @@ $gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType`
     VALUES 
     ('Communication', 'Assessment of communication skills and needs', 'Y');";
 
-// Module Hooks - Convert to SQL statements
-$hooks[] = "INSERT INTO `gibbonHook` 
-    (`name`, `type`, `options`, `gibbonModuleID`) 
-    VALUES 
-    ('Interventions', 'Student Profile', 'a:3:{s:16:\"sourceModuleName\";s:13:\"Interventions\";s:18:\"sourceModuleAction\";s:36:\"hook_studentProfile_interventionsButton.php\";s:19:\"sourceModuleInclude\";s:36:\"hook_studentProfile_interventionsButton.php\";}', 
-    (SELECT gibbonModuleID FROM gibbonModule WHERE name='Interventions'));";
+// Module Hooks
+$array = array();
+$array['sourceModuleName'] = 'Interventions';
+$array['sourceModuleAction'] = 'Student Profile Hook';
+$array['sourceModuleInclude'] = 'hook_studentProfile_interventionsButton.php';
+$hooks[] = "INSERT INTO `gibbonHook` (`name`, `type`, `options`, `gibbonModuleID`) VALUES ('Interventions', 'Student Profile', '".serialize($array)."', (SELECT gibbonModuleID FROM gibbonModule WHERE name='Interventions'));";

@@ -1,0 +1,1739 @@
+CHANGELOG
+=========
+v5.25.06
+-------
+Improved performance of scripts with the Big Data setting turned on
+
+v5.25.05
+-------
+Switched teacher Comment field in approval view from plain to rich text
+Removed non-reportable teachers and assistants from submission notifications
+
+v5.25.04
+-------
+Fixed bug causing left students to show in unit approval view
+
+v5.25.03
+-------
+Fixed massively pink bug introducted in v2.25.01
+
+v5.25.02
+-------
+Set collapsed smart blocks to fade closed for more reliable H5P loading
+
+v5.25.01
+-------
+Added new pink label colour for student units with status Exempt
+
+v5.25.00
+-------
+Added (v28 dependent) ability for teachers to edit their own comments within 48 hours
+
+v5.24.00
+-------
+Added new report showing notifications for unread comments
+
+v5.23.01
+-------
+Switched to simplied Outcomes tab in unit details view for Big Data Schools
+Added setting for Introductory text in Outcomes tab in unit details view
+Fixed CSS issue introduced in last release
+
+v5.23.00
+-------
+Transferred ownership from Ross Parker to Gibbon Foundation
+
+v5.22.13
+--------
+Wrapped interface string "Outline" for translation
+
+v5.22.12
+--------
+Fixed the no-prerequisite fix from last version
+
+v5.22.11
+--------
+Fixed no-prerequisite edit issue
+Fixed no-map issue on fresh installs
+
+v5.22.10
+--------
+Fixed author and prerequisite export/import issues
+
+v5.22.09
+--------
+Added external authors to new author editing function
+Fixed the bug preventing users from editing untis in their own learning area
+
+v5.22.08
+--------
+Fixed the bug to manage units according to the Learning Area
+
+v5.22.07
+--------
+Added the ability to modify authors of a unit
+
+v5.22.06
+--------
+Removed Copy Block feature from Add/Edit unit for Big Data Schools
+
+v5.22.05
+--------
+Improved Learning Activity graphing
+
+v5.22.04
+--------
+Learning Area filter fix
+
+v5.22.03
+--------
+Adjusted Stacked Bar Chart to exclude inactive units
+
+v5.22.02
+--------
+Removed bulk Lock/Unlock from Manage Units_learningAreas
+
+v5.22.01
+--------
+Restricted parent and student dashboard hooks to current year's data
+
+v5.22.00
+--------
+Added Unit History chart option
+Updated Afrikaans translations
+
+v5.21.19
+--------
+Changed most recent submission date in Browse Unit's Manage Enrolment tab to relative time
+
+v5.21.18
+--------
+Added most recent submission date to Submissions column in Browse Unit's Manage Enrolment tab
+
+v5.21.17
+--------
+Added Term filter to Unit History by Student
+
+v5.21.16
+--------
+Updated Afrikaans translations
+Fixed translation case issue
+
+v5.21.15
+--------
+Added Term filter to My Unit History
+
+v5.21.14
+--------
+Added notifications for collaborators of enrolling learner
+
+v5.21.13
+--------
+Fixed copy to markbook creating duplicate records in classes with more than one teacher
+
+v5.21.12
+--------
+Adjusted links in unit Resources tab to open in new tab
+
+v5.21.11
+--------
+Added Expend/Collapse All link for collapsed smart blocks
+Fixed unit export bug
+
+v5.21.10
+--------
+Added setting for collapsed smart blocks (off by default)
+
+v5.21.09
+--------
+Added settings to choose a default view and/or default course for Browse Units.
+
+v5.21.08
+--------
+Fixed Markbook comment HTML entity decoding bug
+
+v5.21.07
+--------
+Added pagination to Work Pending Approval report
+
+v5.21.06
+--------
+Extended execution time and memory limit for unit download
+
+v5.21.05
+--------
+Added bulk Lock/Unlock option in Manage Units
+
+v5.21.04
+--------
+Gives student with Exemption the ability to see unit contents
+
+v5.21.03
+--------
+Fixed missing Learning Areas bug, caused by v5.21.01
+
+v5.21.02
+--------
+Fixed Smart Block copy thief issue
+
+v5.21.01
+--------
+Fixed bug impacting student Course listing in Browse Units
+
+v5.21.00
+--------
+Added a quicksave option when editing unit blocks in Manage Units
+
+v5.20.10
+--------
+Limited Course list in Browse Units to remove courses with no units available
+
+v5.20.09
+--------
+Fixed error exporting units that contain empty blocks
+
+v5.20.08
+--------
+Fix collaborator list for units with multiple prerequisites
+
+v5.20.07
+--------
+Improved Assessable default for existing units
+
+v5.20.06
+--------
+Fixed badge and notification eating bug in Copy to Markbook feature
+
+v5.20.05
+--------
+Added Copy to Markbook feature, for Big Data Schools only
+
+v5.20.04
+--------
+Added an Assessable flag to units, for Big Data Schools only
+
+v5.20.03
+--------
+Added Joined tag against student name in class evidence approval interface, for Big Data Schools only
+
+v5.20.02
+--------
+Fixed translation issues
+
+v5.20.01
+--------
+Added new index on freeLearningUnitID in freeLearningUnitStudent
+
+v5.20.00
+--------
+Added Big Data School setting, which:
+    Adds date filters to Mentorship Overview, setting default to one month
+    Adds date filters to Unit History By Student, setting default to one month
+    Sets School Year filter default to current year in Unit History By Student
+
+v5.19.30
+--------
+Fixed bug preventing View link from working after editing an inactive unit
+Updated Afrikaans translations
+
+v5.19.29
+--------
+Switched current unit colour from pink to blue
+
+v5.19.28
+--------
+Added date range filter to Unit History by Student
+
+v5.19.27
+--------
+Set default Active value to No for new units
+Fixed PHP warning in unit details view
+
+v5.19.26
+--------
+Added date filter to Mentorship Overview_my
+
+v5.19.25
+--------
+i18n tweak
+
+v5.19.24
+--------
+Fixed Exemplar Work bug when Outcomes are off, caused by v5.19.23
+
+v5.19.23
+--------
+Applied Showcase style to Exemplar work
+Fixed GROUP BY issue in showcase
+
+v5.19.22
+--------
+Added teachers name to Work Pending Approval_all
+Added link from feedback screen to Browse Unit with course/student pre-selected
+
+v5.19.21
+--------
+Added new setting to control submission type (file or link)
+
+v5.19.20
+--------
+Added Submissions column to Manage Enrolment tab in Browse Units details
+
+v5.19.19
+--------
+Fixed new Mentorship Overview filter
+
+v5.19.18
+--------
+New Mentorship Overview filters
+
+v5.19.17
+--------
+Removed Left students from UnitStudentGateway method selectMentorshipByMentor
+
+v5.19.16
+--------
+Fixed error in DOMDocument when a unit has no content
+
+v5.19.15
+--------
+Fixed OK/Not Met label bug
+
+v5.19.14
+--------
+Added submission count column to Mentorship Overview
+
+v5.19.13
+--------
+Added copy unit block feature
+
+v5.19.12
+--------
+Added new UnitStudentGateway methods
+
+v5.19.11
+--------
+Added date range filter to Mentorship Overview
+
+v5.19.10
+--------
+Improved block display to allow vertical white space under title with no type
+
+v5.19.09
+--------
+Adjusted unit name search in Browse and Manage Units to include course name
+
+v5.19.08
+--------
+Addition of Smart Blocks template setting
+
+v5.19.07
+--------
+Refactoring of tables
+
+v5.19.06
+--------
+Add submission count to Work Pending Approval
+
+v5.19.05
+--------
+Refactoring of printPagination
+
+v5.19.04
+--------
+Refactoring of linkTop divs
+
+v5.19.03
+--------
+Further tweak to When column in Mentorship Overview
+
+v5.19.02
+--------
+Adjusted When column in Mentorship Overview
+
+v5.19.01
+--------
+Installer fix
+
+v5.19.00
+--------
+Normalised prerequisites in database
+
+v5.18.20
+--------
+Added collapsible Smart Blocks to display unit content in class and mentor feedback views
+
+v5.18.19
+--------
+Removed spurious negative wait times in Mentorship Overview
+
+v5.18.18
+--------
+Added School Year filter to both Unit History by Student and My Unit History
+
+v5.18.17
+--------
+Fixed the chart.js library in the Learning Activity page
+
+v5.18.16
+--------
+Added Class filter to  Work Pending Approval report
+
+v5.18.15
+--------
+Adjusted Exemplar Work field to facilitate links as well as embeds
+
+v5.18.14
+--------
+Fixed left students showing up in Mentorship Overview
+Fixed multiple unit history charts on the parent view causing a javascript error
+
+v5.18.13
+--------
+Made certain Browse Units filters hidden by default
+Stopped View link in Edit Unit view returning full screen
+
+v5.18.12
+--------
+Added School Year filter to Mentorship Overview
+
+v5.18.11
+--------
+Fix missing row count in Current Unit by Class report
+
+v5.18.10
+--------
+Fixed time colouration and group numbers in Current Unit by Class report
+Sort Current Unit by Class by status first, by default
+
+v5.18.09
+--------
+Fixed Back to Search Results link in View Unit page
+
+v5.18.08
+--------
+Added option (off by default) to show student gender when writing unit completion feedback
+Adjusted Individual Needs flag to use tag style
+
+v5.18.07
+--------
+Refactored Current Unit by Class
+
+v5.18.06
+--------
+Added ability for users with Manage Units_learningAreas to add exemptions for students in their classes
+
+v5.18.05
+--------
+Fixed intermittent unit duplicate failure in Manage Units
+Fixed PHP notice in Unit History
+Removed script tag allowance
+
+v5.18.04
+--------
+Prevent displaying of more than 999 units in Browse Units
+
+v5.18.03
+--------
+Added "ok" class to units with prerequisites met in Grid view
+
+v5.18.02
+--------
+Added pagination to Manage Enrolment tab in Browse Units
+
+v5.18.01
+--------
+Added Delete Existing Smart Blocks? option to importer
+
+v5.18.00
+--------
+Implemented v23 navigator class
+Fixed no-category outcome issue
+Updated Afrikaans translations
+
+v5.17.13
+--------
+Adjusted export/import to use minimum year group Short Name, not ID
+
+v5.17.12
+--------
+Added new report Current Unit by Custom Field
+Fixed setting error in parent view of Unit History by Student
+
+v5.17.11
+--------
+Fixed notification sending when approving student evidence
+
+v5.17.10
+--------
+Removed deprecated function calls
+
+v5.17.09
+--------
+Fixed Legend translation issue
+
+v5.17.08
+--------
+Added awareness of Core remoteCLIKey setting
+
+v5.17.07
+--------
+Added flexibility to CLI scripts
+New CLI script to notify mentors on outstanding evidence over a certain age
+
+v5.17.06
+--------
+Final session refactoring
+
+v5.17.05
+--------
+Added new setting allowing unit content to be hidden until enrolment is completed
+Set Grouping to Individual as default in Unit Add interface
+Switched from __(x, 'Free Learning') to __m(x)
+Removed $guid from all __() calls
+
+v5.17.04
+--------
+Added maxlength to Title, Type and Length fields in Smart Blocks
+
+v5.17.03
+--------
+Fix use of TCPDF fonts in the Download action on units
+
+v5.17.02
+--------
+Added length field index on freeLearningUnitBlock table
+
+v5.17.01
+--------
+Prevent link autocompletion in evidence submission form
+
+v5.17.00
+--------
+Added options to disable Outcomes & Exemplar work
+
+v5.16.46
+--------
+Added option to remove Learning Area-based school mentors from Enrolment tab's School Mentor menu
+
+v5.16.45
+--------
+Fixed map button disabled when not selectable
+
+v5.16.44
+--------
+Added option to remove My Classes from Enrolment tab's class menu (will function better with core v23, but works with v22)
+
+v5.16.43
+--------
+Returned map/grid default behaviour to v5.16.39 and earlier
+
+v5.16.42
+--------
+Fixed grid view pagination when using the Maximum Map Size setting
+
+v5.16.41
+--------
+Add pagination to the grid view of Browse Units
+
+v5.16.40
+--------
+Improved performance of Mentorship Overview for All Mentors
+
+v5.16.39
+--------
+Added option (off by default) to hide Learning Areas from filters in Browse Units
+Added optional Learning Area filter to Student Progress by Class
+Fixed 0+0=1 bug in Student Progress by Class
+Expanded Mentorship Overview to include class enrolments
+My Unit History Breadcrumb fix
+Updated Afrikaans translations
+
+v5.16.38
+--------
+Added chart to Parent and Student Dashboard
+Fixed Unit History by Student PHP error (student view)
+
+v5.16.37
+--------
+Fixed broken edit link in Manage Units > Add Unit
+
+v5.16.36
+--------
+Fixed Parent Dashboard PHP error
+Fixed Unit History by Student PHP error
+
+v5.16.35
+--------
+Added table colouring to dashboard tables
+
+v5.16.34
+--------
+Translation improvement
+
+v5.16.33
+--------
+Added Minimum Year Group filter to Manage Units
+Fixed post-refactor session issue
+Updated Afrikaans translations
+Edit process PHP notice fix
+
+v5.16.32
+--------
+Refactored session variables and null coalesce
+
+v5.16.31
+--------
+Fixed bug preventing addition of authors on Major Edit
+
+v5.16.30
+--------
+Changed "Name" to "Unit Name" in Brows and Manage Units
+
+v5.16.29
+--------
+Manage Enrolment Bug Fix
+
+v5.16.28
+--------
+Improved Mentor Overview report
+
+v5.16.27
+--------
+Added an option (off by default) to allow badges to be manually granted during approval
+Fixed bug preventing authors without website from being added
+
+v5.16.26
+--------
+Change Roll Groups to Form Groups, requires v22.0.00
+
+v5.16.25
+--------
+Added bulk mentor request approval via Mentorship Overview
+
+v5.16.24
+--------
+Add additional filter options to the UnitGateway
+
+v5.16.23
+--------
+Add additional variables to the certificate template
+
+v5.16.22
+--------
+Made My Unit History available to roles with category Other
+
+v5.16.21
+--------
+Enable viewing basic unit details even if prerequisites are not met
+
+v5.16.20
+--------
+Added summary graph to Student UnitHistory table
+
+v5.16.19
+--------
+New Student Progress By Class report
+
+v5.16.18
+-------
+Extended name field in Mentor Groups
+
+v5.16.17
+-------
+Minimum core version
+
+v5.16.16
+-------
+Added bulk unit duplicate
+
+v5.16.15
+-------
+Updated custom field context in Mentor Groups
+
+v5.16.14
+-------
+Added Individual Needs flag against student names in Approval and Work Pending Approval
+
+v5.16.13
+-------
+Enabled line breaks for comments
+
+v5.16.12
+-------
+Translation improvements
+
+v5.16.11
+-------
+Fixed Learning Activity report bug
+
+v5.16.10
+-------
+Improved translation of parent and student dashboard
+Updated Afrikaans translations
+
+v5.16.09
+-------
+Updated queries for the Learning Areas & Courses drop down
+
+v5.16.08
+-------
+Added time to on-hover title in map view
+Added Enrolled Courses option to foreground current year's courses in Learning Areas & Courses drop down
+
+v5.16.07
+--------
+Fix custom field select in Add/Edit Mentor Group
+Fix duplicate student names in Free Learning Showcase
+
+v5.16.06
+--------
+Auto-linking of URLs in plain-text comments
+Fix missing notifications for school mentors
+
+v5.16.05
+--------
+Translation improvements
+Updated Afrikaans translations
+
+v5.16.04
+--------
+Core v22 Custom Field compatibility
+
+v5.16.03
+--------
+Made Status field in Unit History report translatable
+
+v5.16.02
+--------
+Added setting to hide evidence from parents
+
+v5.16.01
+--------
+Added commenting on Complete - Approved units
+Updated Afrikaans translations
+Added Last 60/90/120 days to Learning Activity
+
+v5.16.00
+--------
+Added a Manage Mentor Groups page to manually assign mentorship
+Added a Mentorship Overview report to view mentor's students
+Added a setting to customize the PDF certificate template
+Added CLI scripts for notifying mentors of pending requests & students of pending work
+Removed the Enrolment Pending Approval report
+
+v5.15.06
+--------
+Fixed bug in Learning Activity
+
+v5.15.05
+--------
+Added additional text field to mentor decline when Other selected
+Added unit status row colouring to Unit History By Student and My Unit History
+
+v5.15.04
+--------
+Fixed bug allowing a student to be selected multiple times as a collaborator
+Fixed translation of When
+
+v5.15.03
+--------
+"Unit does not match student year group" added as mentorship decline reason
+
+v5.15.02
+--------
+Made 30 Days the default in Learning Activity report
+
+v5.15.01
+--------
+Simplify the Active and Inactive filters in Manage Units
+Update notification links to include student name and link to approval page
+Increase badge counts to three digits
+
+v5.15.00
+--------
+Added gibbonPersonIDTarget to discussion items
+
+v5.14.04
+--------
+Added option, on by default, to determine whether or not unit Certificates are available
+
+v5.14.03
+--------
+Improved import/export of Specific Role field in unit mentorship
+Added unit count to Map view
+Updated Afrikaans translations
+
+v5.14.02
+--------
+Fixed incorrect user listed on discussion items for users with Manage Units access
+
+v5.14.01
+--------
+Fixed file includes for hooks to use include_once rather than include
+
+v5.14.00
+--------
+Added new Enrolment Pending Approval report
+
+v5.13.18
+-------
+Refactored the Unit History by Student table, including profile and dashboard hooks
+
+v5.13.17
+-------
+Adjusted legend ordering
+Updated Afrikaans translations
+Removed links from parent dashboard and Unit History By Student, if Browse Units is disabled
+Added Learning Area/Course under unit name in dashboard, Unit History By Student and Work Pending Approval
+
+v5.13.16
+-------
+Fixed enrolment issue with missing groupings
+
+v5.13.15
+-------
+Added access for class Assistants to access and manage submissions
+Handle commas in unit names when importing unit prerequisites
+
+v5.13.14
+-------
+Added extra details to unit view interface header
+"Incorrect teacher selected" added as mentorship decline reason
+
+v5.13.13
+-------
+Fixed enrolment issue with non-adjacent groupings (e.g. pairs and fours)
+
+v5.13.12
+-------
+Fixed missing comma in manifest file
+
+v5.13.11
+-------
+Enable script tags and p5js widgets in smart blocks
+
+v5.13.10
+-------
+Removed orphan print option from Current Unit by Class
+
+v5.13.09
+-------
+Fixed Minimum Year Group null issue
+
+v5.13.08
+-------
+Improved Afrikaans translation
+
+v5.13.07
+-------
+Amended Specific Role in unit mentorship to match against all roles, not just primary
+
+v5.13.06
+-------
+Fix list of classes in Enrol Multiple for users with Manage Units_learningAreas permission
+
+v5.13.05
+-------
+Fix Work Pending Approval so class assistants don't see pending work
+
+v5.13.04
+-------
+Added Lock setting to units to prevent editing by users lacking Manage Units_all
+
+v5.13.03
+-------
+Switched to map as default view for less than 100 units
+
+v5.13.02
+-------
+Update to handle user JSON field data
+
+v5.13.01
+-------
+Fixed Student select issue in Unit History By Student_myChildren
+Fixed issue preventing school mentor from being notified of a comment
+
+v5.13.00
+-------
+Added reasons to mentor decline
+PHP Notice fixes
+
+v5.12.08
+-------
+Linked student names to student profiles in the Approval view
+Tweaked the fix to approval discussion entries
+
+v5.12.07
+-------
+Fixed issue where approval discussion entries weren't showing up...some more!
+
+v5.12.06
+-------
+Fixed issue where approval discussion entries weren't showing up
+
+v5.12.05
+-------
+Improved separation of Browse and Manage in unit approval
+
+v5.12.04
+-------
+Update the unit details layout and logo
+
+v5.12.03
+-------
+Fixed error message on public units
+Improved Afrikaans translation
+
+v5.12.02
+-------
+Ongoing table OOficiation work
+
+v5.12.01
+-------
+Ongoing table OOficiation work
+
+v5.12.00
+-------
+OOification of Unit Add and Edit interfaces
+
+v5.11.02
+-------
+Improved unit block time handling
+
+v5.11.01
+-------
+Improved Afrikaans translation
+
+v5.11.00
+-------
+Added tools to export and import units
+
+v5.10.13
+-------
+Moved Manage Enrolment_all into its own action
+
+v5.10.12
+-------
+Added missing file extension to unit export
+
+v5.10.11
+-------
+Fixed completors as mentors bug
+
+v5.10.10
+-------
+Improved i18n support
+
+v5.10.09
+-------
+Fixed release issue
+
+v5.10.08
+-------
+Added School Mentor and External Mentor enrolments to Current Unit by Class
+
+v5.10.07
+-------
+Fixed School Mentor selection, which was not honouring unit settings
+
+v5.10.06
+-------
+Adjusted Enrol tab to show message when no enrolment methods are available
+Fixed session bug
+
+v5.10.05
+-------
+Fixed Afrikaans language code
+
+v5.10.04
+-------
+Add language support for Afrikaans and Spanish
+
+v5.10.03
+-------
+Refactored session variables and added null coalesce operators
+
+v5.10.02
+-------
+Fixed submission error when the file is too large, added better error message
+
+v5.10.01
+-------
+Added Free Learning classes to the top of the class enrolment list
+Fixed PHP notices
+
+v5.10.00
+-------
+Added the ability for students and mentors to comment on units
+Enabled parents viewing their children's units on the map view
+Fixed collaborative submissions for external mentorship
+Updated external mentorship emails to use an email template
+Ooified the Enrol tab and Mentorship forms
+
+v5.9.30
+-------
+Added an edit icon to the Work Pending Approval page
+Added the discussion view to dashboard and student profile
+Stopped pre-filling previous comments
+OOified the Approval page
+
+v5.9.29
+-------
+Display grouping information in Work Pending Approval
+Display all collaborator names on Unit Complete Approval page
+
+v5.9.28
+-------
+Implemented the discussion table for feedback
+
+v5.9.27
+-------
+Relaxed student unit browsing to allow non-enrolled students
+Fixed MySQL 8 compatibility issues
+
+v5.9.26
+-------
+Switched certificates to use Official Name
+
+v5.9.25
+-------
+Fixed error when attaching an image in Add Unit
+
+v5.9.24
+-------
+Manage Enrolment legend
+Added placeholder to approval status
+
+v5.9.23
+-------
+Better collaborative assessment interface
+
+v5.9.22
+-------
+Fixed collaborative assessment bug
+
+v5.9.21
+-------
+Added colouring for Current - Pending
+
+v5.9.20
+-------
+Added school setting to allow single submission/assessment of collaborative units
+Fixed missing PDF extension in Print Certificate
+
+v5.9.19
+-------
+Users with Manage Units_learning area only see their own students in Manage Enrolment
+
+v5.9.18
+-------
+Adjusted the status colours for units and added a legend to Browse Units
+
+v5.9.17
+-------
+Allowed students not currently enroled to see Free Learning in Student Dashboard
+
+v5.9.16
+-------
+Improved gateway SQL
+Fixed ordering in Work Pending Approval report
+
+v5.9.15
+-------
+Improved Work Pending Approval report
+
+v5.9.14
+-------
+Remove core Smart Block template from Free Learning blocks
+Fixed bug causing School Mentor approval from within unit to fail
+
+v5.9.13
+-------
+Changed spelling of Publically to Publicly
+
+v5.9.12
+-------
+Fixed show inactive not persisting from map links
+
+v5.9.11
+-------
+Improved school mentors request link style
+
+v5.9.10
+-------
+Extended Work Pending Approval to include class Assistant role
+
+v5.9.09
+-------
+Improved mentorship request link style
+
+v5.9.08
+-------
+Fixed empty collaborator list for units with no prerequisites
+
+v5.9.07
+-------
+Fixed empty result set when using the View As option in Browse Units
+
+v5.9.06
+-------
+Fixed missing table field for studentReflectionText
+
+v5.9.05
+-------
+Ooified the Manage Enrolment table in Unit details
+Added an option to customize student reflection text
+
+v5.9.04
+-------
+Fixed classes missing from dropdown in unit enrolment
+
+v5.9.03
+-------
+Improved filter persistence during submission
+Added link/file field disable on toggle
+
+v5.9.02
+-------
+Updated filters in Current Unit by Class to have a My Classes section
+Limited Outcomes by Student/Unit History by Student to relevant students
+Updated student enrolment by class to list classes in the same Learning Area at the top
+Filtered dropdowns for Learning Area to only those used by Free Learning units
+Added a prerequisite check for students selecting collaborators to enrol with
+Fixed missing placeholder for Custom Field setting
+
+v5.9.01
+-------
+Improve the font size and display of content blocks in units
+
+v5.9.00
+-------
+Lots of visual updates to Browse Units
+Manage Units and Browse Units ooification
+
+v5.8.05
+-------
+Safari block display fix
+
+v5.8.04
+-------
+Breadcrumb tweaks
+
+v5.8.03
+-------
+v18 Compatibility
+
+v5.8.02
+-------
+Post refactor tweak
+
+v5.8.01
+-------
+Refactored breadcrumbs
+
+v5.8.00
+-------
+Added custom mentors based on role
+
+v5.7.00
+-------
+Improved colour coding of map view to reflect student status more clearly
+
+v5.6.01
+-------
+Extended custom field display across module
+
+v5.6.00
+-------
+Removed star/like feature
+
+v5.5.02
+-------
+Replaced getGibbonMailer function calls with Mailer class
+
+v5.5.01
+-------
+Updated TCPDF file include and font handling
+
+v5.5.00
+-------
+Added ability to group units by Course
+
+v5.4.06
+-------
+Simplified Chinese translation
+
+v5.4.05
+-------
+Cleaner tab load in unit detail screen
+
+v5.4.04
+-------
+Changed Work Pending Approval no records colour to be happier (no assessments left!)
+
+v5.4.03
+-------
+Fixed a file include error in the Parent dashboard
+
+v5.4.02
+-------
+Cleanup duplicate database connections, session_start and timezone_set
+
+v5.4.01
+-------
+Manifest fix
+
+v5.4.00
+-------
+Custom field integration
+
+v5.3.02
+-------
+Fixed unit access bug
+
+v5.3.01
+-------
+Fixed map-click bug (at last!)
+
+v5.3.00
+-------
+Removed defunct options (e.g. School Type, Apply Access Controls)
+Improved breadcrumb trail in Browse Units
+
+v5.2.01
+-------
+Fixed "Everyone's A Winner" bug in badge granting mechanism
+
+v5.2.00
+-------
+Updated default database storage engine to InnoDB
+
+v5.1.00
+-------
+Growth mindset language
+
+v5.0.00
+-------
+Certificate printing
+School mentor controls
+
+v4.9.25
+-------
+Fixed interface typo
+
+v4.9.24
+-------
+Removed student surname from showcase and exemplar work for privacy reasons
+
+v4.9.23
+-------
+Fixed header display issue in Current Unit By Class report
+
+v4.9.22
+-------
+Added count column to work pending approval
+
+v4.9.21
+-------
+Fixed missing Enrolment management tools for teachers
+
+v4.9.20
+-------
+Improved persistence of view filter setting across pages
+
+v4.9.19
+-------
+Adjusted unit accessibility so that students can view units immediately following Complete - Pending
+Fixed SQL blank default field issue
+
+v4.9.18
+-------
+Fixed typo
+
+v4.9.17
+-------
+Large maps (over 125 nodes) no longer show images, in order to optimise them
+
+v4.9.16
+-------
+Added Complete - Pending units to student Dashboard view
+
+v4.9.15
+-------
+URL encoding issue fix
+
+v4.9.14
+-------
+Bigger unit name in unit details page
+
+v4.9.13
+-------
+Added Browse Units link to dashboard
+Switched dashboard error to warning when no units have been undertaken
+
+v4.9.12
+-------
+Added school mentor details to Work Pending Approval report
+Removed email notifications for school mentors, moved entirely to system notifications.
+
+v4.9.11
+-------
+Made error message in unit details more useful for users who have not met prerequisites
+
+v4.9.10
+-------
+Fixed enrolment issue caused by v4.9.09
+
+v4.9.09
+-------
+Added all department members to list of potential School Mentors
+
+v4.9.08
+-------
+Fixed long link issue in edit page
+
+v4.9.07
+-------
+Fixed PHP execution vulnerability
+
+v4.9.06
+-------
+Limited enrolment management action to own classes for those without access to Manage Units_all
+
+v4.9.05
+-------
+Added ability to hand out badge on completing a specific unit
+
+v4.9.04
+-------
+Fixed description bug that broke map view for certain units
+Fixed missing module name in Browse Units landing page
+
+v4.9.03
+-------
+Adjusted actions to allow roles of category Other to access Browse Units_prerequisites
+
+v4.9.02
+-------
+Improved tools for School Mentor approval and management
+
+v4.9.01
+-------
+Added email address to enrolment view when Student Profile not enabled
+
+v4.9.00
+-------
+Unit export to PDF
+
+v4.8.01
+-------
+Fixed Showcase blank image issue
+
+v4.8.00
+-------
+Better estimates of class time invested by students in a unit
+Active links to prerequisites from Browse Units' List view
+
+v4.7.01
+-------
+Use of Gibbon v13's inbuilt mailer class
+
+v4.7.00
+-------
+Graphing of learner activity
+
+v4.6.00
+-------
+Individual achievement colouring in Map view
+Ability for those with manage privileges to view unit list as given user
+
+v4.5.02
+-------
+Updated .PO file
+
+v4.5.01
+-------
+Marked outstanding strings for translation
+
+v4.5.00
+-------
+Translatable, using Core v13's new module translation setup
+
+v4.4.06
+-------
+Add mentor contract details to unit overview when enroled with a mentor
+
+v4.4.05
+-------
+Gibbon Core v13 PHPMailer compatibility
+
+v4.4.04
+-------
+Gibbon Core v13 setting compatibility
+
+v4.4.03
+-------
+More reliable email sending (less likely to be marked as spam/phishing)
+
+v4.4.02
+-------
+Changed block placeholders from JS to HTML
+
+v4.4.01
+-------
+Fixed Core v12 compatibility issue
+
+v4.4.00
+-------
+Added ability to constrain available enrolment types
+Restricted available School Mentors to authors and those who have completed units
+
+v4.3.00
+-------
+Added option for allowing users with role category other to access units
+
+v4.2.08
+-------
+Fixed link to Free Learning page on http://rossparker.org
+
+v4.2.07
+-------
+Improved unit sort in Browse Units
+
+v4.2.06
+-------
+Unit History report now works for staff and parents
+
+v4.2.05
+-------
+Updated Work Pending Approval Report to work with school and external mentors
+Added name of unit to emails sent to potential and assessing mentors
+Added mentor name to Manage Enrolment tab
+
+v4.2.04
+-------
+Fixed mentor approval PHP Notice when not logged in
+
+v4.2.03
+-------
+Fixed evidence bug (really fixed it now!)
+
+v4.2.02
+-------
+Fixed evidence bug
+
+v4.2.01
+-------
+Switched outgoing PHPMailer emails from PHP's mail function to SMTP
+
+v4.2.00
+-------
+Improved showcase display
+Fixed enrolment edit bug where unit logo replaces examplar logo
+
+v4.1.05
+-------
+Added ability to view badges available in the system
+
+v4.1.04
+-------
+Made My Unit History available for staff and parent role categories
+
+v4.1.03
+-------
+Refined default access permissions
+
+v4.1.02
+-------
+Makes use of Badges v2.1.03 null creator when issuing Badges
+Includes a CLI script for issue badges for units completed before badges were set up, in bulk
+
+v4.1.01
+-------
+Added line breaks to description display
+Fixed manifest issue from v4.1.00's addition of Manage Badges
+
+v4.1.00
+-------
+Badges for gamification of learning
+
+v4.0.02
+-------
+Fixed cases where prerequisites don't show up in mpa view
+
+v4.0.01
+-------
+Fixed class sign up status issue
+
+v4.0.00
+-------
+Integration of staff PD via Free Learning (forked module Free Learning PD to be discontinued)
+
+v3.1.05
+-------
+Fixed link white space issue
+
+v3.1.04
+-------
+Fixed indentation in beautified PHP code
+
+v3.1.03
+-------
+Beautified PHP code
+Improved error handling
+Edit link added to add return
+
+v3.1.02
+-------
+Block add fix
+
+v3.1.01
+-------
+Show inactive units in prerequisites
+
+v3.1.00
+-------
+Added setting to relax Learning Area restrictions
+Added filter for teachers to see active='N' in Browse Units
+
+v3.0.12
+-------
+Student work submission bug fix
+
+v3.0.11
+-------
+Student dashboard PHP error fix
+
+v3.0.10
+-------
+Gibbon Core v12 & PHP 7 Compatibility
+
+v3.0.09
+-------
+Fixed landing tab page for non-logged in users
+
+v3.0.08
+-------
+Fixed v12 compatibility bug
+
+v3.0.07
+-------
+Added content to Student Dashboard (v12+ only)
+Added date to student unit history listings
+
+v3.0.06
+-------
+v12 ynExpander compatibility
+
+v3.0.05
+-------
+Improved Showcase and Examplar work to show names of all group members for group submissions
+
+v3.0.04
+-------
+Fixed bug causing action button to not appear in Grid view
+
+v3.0.03
+-------
+Improved unit map layout to make it fixed
+
+v3.0.02
+-------
+Fixed double unit bug
+
+v3.0.01
+-------
+Make content tab the default landing tab
+
+v3.0.00
+-------
+Final tweaks...
+
+v2.7.00
+-------
+Added ability for students to like units
+
+v2.6.03
+-------
+Unit approval now gives student a like
+
+v2.6.02
+-------
+Minor map bug fix
+
+v2.6.01
+-------
+Clickable units in map
+Landing page now browse, not edit
+
+v2.6.00
+-------
+Added rendering of unit graph (no need to use external mind map!)
+
+v2.5.00
+-------
+Added ability to see all Pending work in one place (saves hunting for it if interrupted)
+
+v2.4.04
+-------
+PHP Notice Fix
+
+v2.4.03
+-------
+Sub folder tweak
+
+v2.4.02
+-------
+Fixed leaking of Teacher's Notes
+
+v2.4.01
+-------
+Added parent dashboard hook link to showcase
+Added student name to approve view
+Fixed student listing for parents in Unit History report
+
+v2.4.00
+-------
+Added Showcase to allow exemplar work to be viewed from one place
+
+v2.3.02
+-------
+Notification tweak
+
+v2.3.01
+-------
+Exemplar work tweak
+
+v2.3.00
+-------
+Optional prerequisite in online school
+Student view of own history
+Fix student reports in Online mode.
+Exemplar work highlight function (this will be used in future to create a gallery of great work)
+
+v2.2.02
+-------
+Fixed minor bug in groupings in class/unit report
+
+v2.2.01
+-------
+Fixed minor table colspan issue
+
+v2.2.00
+-------
+Show student comment and evidence when approving.
+When a student has to re-submit, show their original comment in the comment box, so they don't need to rewrite it.
+In enrolment list, show class group
+Sort option in class/unit report, in order to see students enroled double.
+Allow edit to change Approved/Not Approved around in case of mistake.
+
+v2.1.01
+-------
+Added "Evidence Not Approved" status to Current Unit by Class report
+
+v2.1.01
+-------
+Added groupings to unit view
+
+v2.1.00
+-------
+Added ability to deal with online schools (e.g. fewer structures)
+
+v2.0.00
+-------
+Shortened Student Profile hook text
+Allow teacher comments to include rich text, file uploads, etc/
+Added report to allow tracking of unit outcomes, and suggest of next units
+
+v1.5.00
+-------
+Added in parent view of children's unit history
+Added in hook to Parental Dashboard
+
+v1.4.03
+-------
+Fixed broken show/hide control on enrolment feedback information for teachers
+
+v1.4.02
+-------
+Added teacher comment to drop down comment view, when teacher viewing enrolment for a unit
+
+v1.4.01
+-------
+Fixed bug in manifest.php
+Made notifications more useful
+Improved order of student enrolment rows in teacher view of enrolment
+
+
+v1.4.00
+-------
+Added ability to delete student enrolment for staff who can edit a given unit
+Added unit history by student report, with a hook into student profile
+
+v1.3.00
+-------
+Added Map view, currently just a link to an external mind map, hopefully to be soon replaced by a dynamic mind map generated in the module
+Moved enrolment to be the second tab in unit details.
+Added time, difficulty, prerequisites and logo to Overview tab in browse units details.
+Added filters to Manage Units
+
+v1.2.01
+-------
+Made units exported by SQL more useful by making author and images absolute rather than relative
+
+v1.2.00
+-------
+Added report showing unit choices by class.
+
+v1.1.00
+-------
+Improved ordering of Manage Units listing.
+Added grid view in browse
+Fixed exemption display bug in unit browse details, for students
+Fixed breadcrumb trail issue when added multiple exemptions
+
+v1.0.00
+-------
+Fixed edit bug preventing grouping from being saved
+Added ability to exempt students from units
+
+v0.9.00
+-------
+Added unit completion, evidence submission, teacher view of enrolment
+
+v0.8.00
+-------
+Added student enrolment (individual and group)
+
+v0.7.00
+-------
+Minimum year group for viewing and working arrangement field
+
+v0.6.00
+-------
+More stylish browsing, with unit thumbnails
+
+v0.5.00
+-------
+Install error fix
+
+v0.4.00
+-------
+Full screen browsing
+
+v0.3.00
+-------
+Finished unit browsing
+Unit enrolment
+Unit completion
+
+v0.2.00
+-------
+Minor bug fixes and enhancements
+Unit browsing
+
+v0.1.00
+-------
+Added settings page
+Added unit management

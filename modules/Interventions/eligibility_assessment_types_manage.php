@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_
     $table->addColumn('name', __('Name'));
     $table->addColumn('description', __('Description'));
     $table->addColumn('active', __('Active'))
-        ->format(Format::using('yesNo', 'active'));
+        ->format(Format::using('yesNo', ['active']));
 
     // Actions
     $table->addActionColumn()

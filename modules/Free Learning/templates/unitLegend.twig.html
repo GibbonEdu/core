@@ -1,0 +1,17 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex justify-start items-center mt-4">
+    <span class="text-xs mr-2">{{ __m('Legend') }} : </span>
+    <span class="tag currentPending mr-2">{{ __m('Current - Pending') }}</span>
+    <span class="tag currentUnit mr-2">{{ __m('Current') }}</span>
+    <span class="tag pending mr-2">{{ __m('Complete - Pending') }}</span>
+    <span class="tag warning mr-2">{{ __m('Evidence Not Yet Approved') }}</span>
+    <span class="tag success mr-2">{{ __m('Complete - Approved') }}</span>
+    <span class="tag exempt mr-2">{{ __m('Exempt') }}</span>
+</div>
