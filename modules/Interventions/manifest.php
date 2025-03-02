@@ -289,6 +289,26 @@ $actionRows[] = [
     'categoryPermissionOther' => 'Y'
 ];
 
+$actionRows[] = [
+    'name' => 'Contributor Dashboard', 
+    'precedence' => '0',
+    'category' => 'Interventions',
+    'description' => 'View all interventions and eligibility assessments you are contributing to',
+    'URLList' => 'interventions_contributor_dashboard.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php',
+    'entryURL' => 'interventions_contributor_dashboard.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'Y',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'Y',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
+
 // Module Settings
 $gibbonSetting[] = "INSERT INTO `gibbonSetting` 
     (`scope`, `name`, `nameDisplay`, `description`, `value`) 

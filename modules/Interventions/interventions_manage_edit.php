@@ -166,14 +166,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         
                         // Hide all conditional sections first
                         $('.eligibilitySection').hide();
-                        $('.contributorsSection').hide();
                         $('.outcomeSection').hide();
-                        $('.strategiesSection').hide();
                         
                         // Show sections based on decision
                         if (decision == 'Eligibility Assessment') {
                             $('.eligibilitySection').show();
-                            $('.contributorsSection').show();
                         } else if (decision == 'Resolved') {
                             $('.outcomeSection').show();
                         }
@@ -272,103 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         echo $form->getOutput();
 
-        // CONTRIBUTORS
-        echo '<div class="contributorsSection" style="display: none;">';
         
-        $contributorGateway = $container->get(INInterventionContributorGateway::class);
-        
-        $criteria = $contributorGateway->newQueryCriteria()
-            ->sortBy(['timestampCreated'])
-            ->fromPOST();
-
-        $contributors = $contributorGateway->queryContributorsByIntervention($criteria, $gibbonINInterventionID);
-
-        $table = DataTable::createPaginated('contributors', $criteria);
-        $table->setTitle(__('Contributors'));
-
-        $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Interventions/interventions_manage_contributor_add.php')
-            ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
-            ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-            ->addParam('status', $status)
-            ->displayLabel();
-        
-        $table->addColumn('name', __('Name'))
-            ->format(function ($person) {
-                return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true);
-            });
-
-        $table->addColumn('type', __('Type'));
-        $table->addColumn('timestampCreated', __('Date'))
-            ->format(Format::using('dateTime', ['timestampCreated']));
-
-        $table->addActionColumn()
-            ->addParam('gibbonINInterventionContributorID')
-            ->addParam('gibbonINInterventionID')
-            ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-            ->addParam('status', $status)
-            ->format(function ($row, $actions) {
-                $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Interventions/interventions_manage_contributor_delete.php');
-            });
-
-        echo $table->render($contributors);
-        echo '</div>';
-        
-        // STRATEGIES
-        if ($intervention['formTutorDecision'] == 'Try Interventions' || $intervention['status'] == 'Intervention') {
-            echo '<div class="strategiesSection" style="display: none;">';
-            
-            $strategyGateway = $container->get(INInterventionStrategyGateway::class);
-            
-            $criteria = $strategyGateway->newQueryCriteria()
-                ->sortBy(['timestampCreated'])
-                ->fromPOST();
-
-            $strategies = $strategyGateway->queryStrategiesByIntervention($criteria, $gibbonINInterventionID);
-
-            $table = DataTable::createPaginated('strategies', $criteria);
-            $table->setTitle(__('Strategies'));
-
-            $table->addHeaderAction('add', __('Add'))
-                ->setURL('/modules/Interventions/interventions_manage_strategy_add.php')
-                ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
-                ->addParam('gibbonPersonID', $gibbonPersonID)
-                ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-                ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-                ->addParam('status', $status)
-                ->displayLabel();
-    
-            $table->addColumn('name', __('Name'));
-            $table->addColumn('status', __('Status'));
-            $table->addColumn('targetDate', __('Target Date'))
-                ->format(Format::using('date', ['targetDate']));
-            $table->addColumn('creator', __('Created By'))
-                ->format(function($row) {
-                    return Format::name($row['title'], $row['creatorPreferredName'], $row['creatorSurname'], 'Staff', false, true);
-                });
-    
-            $table->addActionColumn()
-                ->addParam('gibbonINInterventionStrategyID')
-                ->addParam('gibbonINInterventionID')
-                ->addParam('gibbonPersonID', $gibbonPersonID)
-                ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
-                ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-                ->addParam('status', $status)
-                ->format(function ($row, $actions) {
-                    $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Interventions/interventions_manage_strategy_edit.php');
-                    $actions->addAction('outcome', __('Add Outcome'))
-                        ->setURL('/modules/Interventions/interventions_manage_outcome_add.php')
-                        ->setIcon('attendance');
-                });
-    
-            echo $table->render($strategies);
-            echo '</div>';
-        }
+      
     }
 }
