@@ -34,9 +34,9 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Intervention/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
-if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -75,41 +75,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Intervention/interventions
     // Validate Inputs
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? '';
-    $strategies = $_POST['strategies'] ?? '';
-    $targetDate = $_POST['targetDate'] ?? '';
+    $formTutorDecision = $_POST['formTutorDecision'] ?? '';
+    $formTutorNotes = $_POST['formTutorNotes'] ?? '';
     $newStatus = $_POST['status'] ?? '';
-    $parentConsent = $_POST['parentConsent'] ?? '';
+    
+    // Determine user roles
+    $isFormTutor = ($intervention['gibbonPersonIDFormTutor'] == $session->get('gibbonPersonID'));
+    $isCreator = ($intervention['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'));
+    $isAdmin = ($highestAction == 'Manage Interventions');
 
-    if (empty($name) || empty($description) || empty($strategies) || empty($targetDate) || empty($newStatus) || empty($parentConsent)) {
+    if (empty($name) || empty($description) || empty($newStatus)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
-
-    // Check for parent consent status change
-    $parentConsentDate = $intervention['parentConsentDate'];
-    $gibbonPersonIDConsent = $intervention['gibbonPersonIDConsent'];
     
-    if ($parentConsent != $intervention['parentConsent']) {
-        if ($parentConsent == 'Consent Given' || $parentConsent == 'Consent Denied') {
-            $parentConsentDate = date('Y-m-d');
-            $gibbonPersonIDConsent = $session->get('gibbonPersonID');
-        } else {
-            $parentConsentDate = null;
-            $gibbonPersonIDConsent = null;
+    // If form tutor made a decision, update the status accordingly
+    if ($isFormTutor || $isAdmin) {
+        if (!empty($formTutorDecision) && $formTutorDecision != 'Pending') {
+            // If resolved, update status
+            if ($formTutorDecision == 'Resolved') {
+                $newStatus = 'Resolved';
+            }
+            
+            // If eligibility assessment, update status
+            if ($formTutorDecision == 'Eligibility Assessment') {
+                $newStatus = 'Eligibility Assessment';
+            }
         }
+    }
+    
+    // If user is not form tutor or admin, they can only edit basic details
+    if (!$isFormTutor && !$isAdmin) {
+        // Preserve existing values for fields they shouldn't change
+        $formTutorDecision = $intervention['formTutorDecision'];
+        $formTutorNotes = $intervention['formTutorNotes'];
+        $newStatus = $intervention['status'];
     }
 
     // Update the intervention
     $data = [
         'name' => $name,
         'description' => $description,
-        'strategies' => $strategies,
-        'targetDate' => $targetDate,
-        'status' => $newStatus,
-        'parentConsent' => $parentConsent,
-        'parentConsentDate' => $parentConsentDate,
-        'gibbonPersonIDConsent' => $gibbonPersonIDConsent,
+        'formTutorDecision' => $formTutorDecision,
+        'formTutorNotes' => $formTutorNotes,
+        'status' => $newStatus
     ];
 
     $updated = $interventionGateway->update($gibbonINInterventionID, $data);

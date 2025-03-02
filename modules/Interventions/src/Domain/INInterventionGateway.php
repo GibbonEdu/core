@@ -51,7 +51,7 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryInterventions(QueryCriteria $criteria, $gibbonSchoolYearID = null)
+    public function queryInterventions(QueryCriteria $criteria, $gibbonSchoolYearID = null, $gibbonPersonIDCreator = null)
     {
         $query = $this
             ->newQuery()
@@ -62,23 +62,36 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
                 'gibbonINIntervention.description',
                 'gibbonINIntervention.status',
                 'gibbonINIntervention.formTutorDecision',
+                'gibbonINIntervention.formTutorNotes',
+                'gibbonINIntervention.outcomeNotes',
+                'gibbonINIntervention.outcomeDecision',
                 'gibbonINIntervention.timestampCreated',
+                'gibbonINIntervention.gibbonPersonIDCreator',
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'formGroup.name as formGroup',
-                'yearGroup.name as yearGroup',
-                'creator.title',
-                'creator.surname as creatorSurname',
-                'creator.preferredName as creatorPreferredName'
+                'formGroup.name AS formGroup',
+                'formGroup.gibbonFormGroupID',
+                'creator.title AS titleCreator',
+                'creator.surname AS surnameCreator',
+                'creator.preferredName AS preferredNameCreator',
+                'formTutor.title AS titleFormTutor',
+                'formTutor.surname AS surnameFormTutor',
+                'formTutor.preferredName AS preferredNameFormTutor',
+                "(SELECT MAX(gibbonINInterventionStrategy.targetDate) FROM gibbonINInterventionStrategy WHERE gibbonINInterventionStrategy.gibbonINInterventionID=gibbonINIntervention.gibbonINInterventionID) as targetDate",
+                "(CASE WHEN gibbonINIntervention.description LIKE '%PARENTS INFORMED: Yes%' THEN 'Y' ELSE 'N' END) as parentConsent"
             ])
             ->innerJoin('gibbonPerson AS student', 'student.gibbonPersonID=gibbonINIntervention.gibbonPersonIDStudent')
-            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID')
-            ->innerJoin('gibbonFormGroup AS formGroup', 'formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
-            ->innerJoin('gibbonYearGroup AS yearGroup', 'yearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
-            ->innerJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINIntervention.gibbonPersonIDCreator')
-            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->leftJoin('gibbonFormGroup AS formGroup', 'formGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
+            ->leftJoin('gibbonPerson AS creator', 'creator.gibbonPersonID=gibbonINIntervention.gibbonPersonIDCreator')
+            ->leftJoin('gibbonPerson AS formTutor', 'formTutor.gibbonPersonID=gibbonINIntervention.gibbonPersonIDFormTutor')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID ?? $this->session->get('gibbonSchoolYearID'));
+
+        if (!empty($gibbonPersonIDCreator)) {
+            $query->where('gibbonINIntervention.gibbonPersonIDCreator = :gibbonPersonIDCreator')
+                  ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
+        }
 
         $criteria->addFilterRules([
             'status' => function ($query, $status) {
@@ -86,19 +99,19 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
                     ->where('gibbonINIntervention.status = :status')
                     ->bindValue('status', $status);
             },
-            'gibbonPersonIDStudent' => function ($query, $gibbonPersonID) {
+            'student' => function ($query, $gibbonPersonID) {
                 return $query
                     ->where('student.gibbonPersonID = :gibbonPersonID')
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
-            'gibbonFormGroupID' => function ($query, $gibbonFormGroupID) {
+            'formGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
                     ->where('formGroup.gibbonFormGroupID = :gibbonFormGroupID')
                     ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
             },
-            'gibbonYearGroupID' => function ($query, $gibbonYearGroupID) {
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
                 return $query
-                    ->where('yearGroup.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
                     ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
             }
         ]);

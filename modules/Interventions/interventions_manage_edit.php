@@ -71,10 +71,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         }
 
         // Check access based on the highest action level
-        if ($highestAction == 'Manage Interventions_my' && $intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
+        if ($highestAction == 'Manage Interventions_my' && $intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID') && $intervention['gibbonPersonIDFormTutor'] != $session->get('gibbonPersonID')) {
             $page->addError(__('You do not have access to this action.'));
             return;
         }
+
+        // Determine user roles
+        $isCreator = ($intervention['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'));
+        $isFormTutor = ($intervention['gibbonPersonIDFormTutor'] == $session->get('gibbonPersonID'));
+        $isAdmin = ($highestAction == 'Manage Interventions');
 
         $form = Form::create('intervention', $session->get('absoluteURL').'/modules/Interventions/interventions_manage_editProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -95,30 +100,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         $row = $form->addRow();
             $row->addLabel('formGroup', __('Form Group'));
-            $row->addTextField('formGroup')->setValue($intervention['formGroup'])->readonly();
+            $row->addTextField('formGroup')->setValue($intervention['formGroup'] ?? '')->readonly();
 
         // Intervention Details
         $form->addRow()->addHeading(__('Intervention Details'));
         $row = $form->addRow();
             $row->addLabel('name', __('Name'))->description(__('Brief name for this intervention'));
-            $row->addTextField('name')->maxLength(100)->required();
+            if ($isCreator || $isAdmin) {
+                $row->addTextField('name')->maxLength(100)->required();
+            } else {
+                $row->addTextField('name')->maxLength(100)->required()->readonly();
+            }
 
         $row = $form->addRow();
             $row->addLabel('description', __('Description'))->description(__('Details about the intervention'));
-            $row->addTextArea('description')->setRows(5)->required();
+            if ($isCreator || $isAdmin) {
+                $row->addTextArea('description')->setRows(5)->required();
+            } else {
+                $row->addTextArea('description')->setRows(5)->required()->readonly();
+            }
 
         // Form Tutor Review Section (Only visible to form tutors or admins)
-        $isFormTutor = ($intervention['gibbonPersonIDFormTutor'] == $session->get('gibbonPersonID'));
-        $isAdmin = ($highestAction == 'Manage Interventions');
-        
         if ($isFormTutor || $isAdmin) {
             $form->addRow()->addHeading(__('Form Tutor Review'));
             
             $formTutorDecisions = [
                 'Pending' => __('Pending'),
-                'Resolvable' => __('Resolvable'),
-                'Try Interventions' => __('Try Interventions'),
-                'Referral' => __('Referral')
+                'Resolved' => __('Resolve'),
+                'Eligibility Assessment' => __('Move to Eligibility Assessment')
             ];
             
             $row = $form->addRow();
@@ -130,22 +139,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 $row->addTextArea('formTutorNotes')->setRows(5);
         }
         
-        // Status Section
+        // Status Section - Only editable by admin or based on form tutor decision
         $statusOptions = [
             'Referral' => __('Referral'),
             'Form Tutor Review' => __('Form Tutor Review'),
-            'Intervention' => __('Intervention'),
-            'Referral' => __('Referral'),
             'Resolved' => __('Resolved'),
-            'Completed' => __('Completed')
+            'Eligibility Assessment' => __('Eligibility Assessment')
         ];
         
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray($statusOptions)->required();
+            if ($isFormTutor || $isAdmin) {
+                $row->addSelect('status')->fromArray($statusOptions)->required();
+            } else {
+                $row->addTextField('status')->setValue($statusOptions[$intervention['status']] ?? $intervention['status'])->readonly();
+                $form->addHiddenValue('status', $intervention['status']);
+            }
+        
+        // Eligibility Assessment Section (Only visible if status is Eligibility Assessment)
+        if ($intervention['status'] == 'Eligibility Assessment' || $newStatus == 'Eligibility Assessment') {
+            $form->addRow()->addHeading(__('Eligibility Assessment'));
+            
+            // Add a link to create or view the eligibility assessment
+            $row = $form->addRow();
+            $row->addContent('<div class="message emphasis">');
+            $row->addContent('<p>'.__('The student has been referred for an eligibility assessment. Click the button below to create or view the assessment.').'</p>');
+            
+            $params = [
+                'gibbonINInterventionID' => $gibbonINInterventionID,
+                'gibbonPersonID' => $intervention['gibbonPersonID']
+            ];
+            
+            $url = './index.php?q=/modules/Interventions/eligibility_edit.php&'.http_build_query($params);
+            $row->addContent('<a href="'.$url.'" class="button">'.__('Manage Eligibility Assessment').'</a>');
+            $row->addContent('</div>');
+        }
         
         // Outcome Section (Only visible if status is Intervention or later)
-        if (in_array($intervention['status'], ['Intervention', 'Resolved', 'Completed']) || $isAdmin) {
+        if (in_array($intervention['status'], ['Intervention', 'Resolved']) || $isAdmin) {
             $form->addRow()->addHeading(__('Outcome'));
             
             $outcomeDecisions = [
