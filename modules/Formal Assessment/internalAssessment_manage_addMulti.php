@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $row = $form->addRow();
                 $row->addLabel('prefix', __('Prefix'));
-                $row->addTextField('prefix')->required()->maxLength(8);
+                $row->addTextField('prefix')->maxLength(8);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $row = $form->addRow();
                 $row->addLabel('suffix', __('Suffix'));
-                $row->addTextField('suffix')->required()->maxLength(8);
+                $row->addTextField('suffix')->maxLength(8);
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
