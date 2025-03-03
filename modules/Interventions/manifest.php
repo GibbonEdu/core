@@ -128,6 +128,52 @@ $moduleTables[] = "CREATE TABLE `gibbonINInterventionEligibilityContributor` (
     PRIMARY KEY (`gibbonINInterventionEligibilityContributorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
+// New table for assessment fields
+$moduleTables[] = "CREATE TABLE `gibbonINEligibilityAssessmentField` (
+    `gibbonINEligibilityAssessmentFieldID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINEligibilityAssessmentTypeID` INT(4) UNSIGNED ZEROFILL NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NULL,
+    `sequenceNumber` INT(3) NOT NULL,
+    `active` ENUM('Y','N') NOT NULL DEFAULT 'Y',
+    PRIMARY KEY (`gibbonINEligibilityAssessmentFieldID`),
+    INDEX (`gibbonINEligibilityAssessmentTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+// New table for field ratings
+$moduleTables[] = "CREATE TABLE `gibbonINEligibilityAssessmentFieldRating` (
+    `gibbonINEligibilityAssessmentFieldRatingID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionEligibilityContributorID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonINEligibilityAssessmentFieldID` INT(6) UNSIGNED ZEROFILL NOT NULL,
+    `rating` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    `comment` TEXT NULL,
+    PRIMARY KEY (`gibbonINEligibilityAssessmentFieldRatingID`),
+    UNIQUE KEY `field_rating` (`gibbonINInterventionEligibilityContributorID`, `gibbonINEligibilityAssessmentFieldID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+// New table for assessment type subfields
+$moduleTables[] = "CREATE TABLE `gibbonINEligibilityAssessmentSubfield` (
+    `gibbonINEligibilityAssessmentSubfieldID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINEligibilityAssessmentTypeID` INT(4) UNSIGNED ZEROFILL NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NULL,
+    `sequenceNumber` INT(3) NOT NULL,
+    `active` ENUM('Y','N') NOT NULL DEFAULT 'Y',
+    PRIMARY KEY (`gibbonINEligibilityAssessmentSubfieldID`),
+    INDEX(`gibbonINEligibilityAssessmentTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+// New table for contributor assessment ratings
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionEligibilityContributorRating` (
+    `gibbonINInterventionEligibilityContributorRatingID` INT(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionEligibilityContributorID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonINEligibilityAssessmentSubfieldID` INT(6) UNSIGNED ZEROFILL NOT NULL,
+    `rating` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    `comment` TEXT NULL,
+    PRIMARY KEY (`gibbonINInterventionEligibilityContributorRatingID`),
+    UNIQUE KEY `contributor_subfield` (`gibbonINInterventionEligibilityContributorID`, `gibbonINEligibilityAssessmentSubfieldID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
 // Module Action Rows
 $actionRows[] = [
     'name' => 'Manage Interventions_all', 
@@ -255,7 +301,7 @@ $actionRows[] = [
     'precedence' => '0',
     'category' => 'Eligibility',
     'description' => 'Manage the types of eligibility assessments',
-    'URLList' => 'eligibility_assessment_types_manage.php,eligibility_assessment_types_add.php,eligibility_assessment_types_edit.php,eligibility_assessment_types_delete.php',
+    'URLList' => 'eligibility_assessment_types_manage.php,eligibility_assessment_types_add.php,eligibility_assessment_types_edit.php,eligibility_assessment_types_delete.php,eligibility_assessment_subfield_add.php,eligibility_assessment_subfield_edit.php,eligibility_assessment_subfield_delete.php,eligibility_assessment_subfield_addProcess.php,eligibility_assessment_subfield_editProcess.php,eligibility_assessment_subfield_deleteProcess.php',
     'entryURL' => 'eligibility_assessment_types_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -371,6 +417,161 @@ $gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentType`
     (`name`, `description`, `active`) 
     VALUES 
     ('Communication', 'Assessment of communication skills and needs', 'Y');";
+
+// Add default subfields for Academic assessment type
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Academic' LIMIT 1),
+    'Reading Comprehension', 'Ability to understand and interpret written text', 1, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Academic' LIMIT 1),
+    'Written Expression', 'Ability to communicate ideas in writing', 2, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Academic' LIMIT 1),
+    'Mathematics', 'Ability to understand and apply mathematical concepts', 3, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Academic' LIMIT 1),
+    'Attention to Task', 'Ability to focus on academic tasks', 4, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Academic' LIMIT 1),
+    'Organization', 'Ability to organize materials and assignments', 5, 'Y');";
+
+// Add default subfields for Behavioral assessment type
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Behavioral' LIMIT 1),
+    'Classroom Behavior', 'Ability to follow classroom rules and expectations', 1, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Behavioral' LIMIT 1),
+    'Peer Interactions', 'Ability to interact appropriately with peers', 2, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Behavioral' LIMIT 1),
+    'Adult Interactions', 'Ability to interact appropriately with adults', 3, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Behavioral' LIMIT 1),
+    'Impulse Control', 'Ability to control impulsive behaviors', 4, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Behavioral' LIMIT 1),
+    'Transition Management', 'Ability to manage transitions between activities', 5, 'Y');";
+
+// Add default subfields for Social-Emotional assessment type
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Social-Emotional' LIMIT 1),
+    'Emotional Regulation', 'Ability to regulate emotions appropriately', 1, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Social-Emotional' LIMIT 1),
+    'Social Skills', 'Ability to interact socially with peers', 2, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Social-Emotional' LIMIT 1),
+    'Self-Awareness', 'Awareness of own emotions and behaviors', 3, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Social-Emotional' LIMIT 1),
+    'Relationship Building', 'Ability to build and maintain relationships', 4, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Social-Emotional' LIMIT 1),
+    'Coping Skills', 'Ability to cope with stress and challenges', 5, 'Y');";
+
+// Add default subfields for Physical assessment type
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Physical' LIMIT 1),
+    'Fine Motor Skills', 'Control and coordination of small muscle movements', 1, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Physical' LIMIT 1),
+    'Gross Motor Skills', 'Control and coordination of large muscle movements', 2, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Physical' LIMIT 1),
+    'Balance and Coordination', 'Ability to maintain balance and coordinate movements', 3, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Physical' LIMIT 1),
+    'Sensory Processing', 'Ability to process sensory information appropriately', 4, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Physical' LIMIT 1),
+    'Physical Endurance', 'Ability to sustain physical activity', 5, 'Y');";
+
+// Add default subfields for Communication assessment type
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Communication' LIMIT 1),
+    'Expressive Language', 'Ability to express thoughts and ideas verbally', 1, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Communication' LIMIT 1),
+    'Receptive Language', 'Ability to understand verbal communication', 2, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Communication' LIMIT 1),
+    'Articulation', 'Clarity of speech and pronunciation', 3, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Communication' LIMIT 1),
+    'Pragmatic Language', 'Ability to use language in social contexts', 4, 'Y');";
+
+$gibbonSetting[] = "INSERT INTO `gibbonINEligibilityAssessmentSubfield` 
+    (`gibbonINEligibilityAssessmentTypeID`, `name`, `description`, `sequenceNumber`, `active`) 
+    VALUES 
+    ((SELECT gibbonINEligibilityAssessmentTypeID FROM gibbonINEligibilityAssessmentType WHERE name='Communication' LIMIT 1),
+    'Non-Verbal Communication', 'Use of gestures, facial expressions, and body language', 5, 'Y');";
 
 // Module Hooks
 $array = array();

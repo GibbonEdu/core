@@ -123,6 +123,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             exit;
         }
         
+        // Process subfield ratings if assessment type is selected
+        if (!empty($gibbonINEligibilityAssessmentTypeID)) {
+            // Get all active subfields for this assessment type
+            $sql = "SELECT * FROM gibbonINEligibilityAssessmentSubfield 
+                    WHERE gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID 
+                    AND active='Y'";
+            $subfields = $pdo->select($sql, ['gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID])->fetchAll();
+            
+            if (!empty($subfields)) {
+                // Delete existing ratings for this contributor
+                $sql = "DELETE FROM gibbonINInterventionEligibilityContributorRating 
+                        WHERE gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
+                $pdo->delete($sql, ['gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID]);
+                
+                // Insert new ratings
+                foreach ($subfields as $subfield) {
+                    $ratingKey = 'rating'.$subfield['gibbonINEligibilityAssessmentSubfieldID'];
+                    $ratingValue = $_POST[$ratingKey] ?? '0';
+                    
+                    // Validate rating value (0-5)
+                    if ($ratingValue < 0 || $ratingValue > 5) {
+                        $ratingValue = 0;
+                    }
+                    
+                    $data = [
+                        'gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID,
+                        'gibbonINEligibilityAssessmentSubfieldID' => $subfield['gibbonINEligibilityAssessmentSubfieldID'],
+                        'rating' => $ratingValue,
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ];
+                    
+                    $sql = "INSERT INTO gibbonINInterventionEligibilityContributorRating 
+                            (gibbonINInterventionEligibilityContributorID, gibbonINEligibilityAssessmentSubfieldID, rating, timestamp) 
+                            VALUES 
+                            (:gibbonINInterventionEligibilityContributorID, :gibbonINEligibilityAssessmentSubfieldID, :rating, :timestamp)";
+                            
+                    $pdo->insert($sql, $data);
+                }
+            }
+        }
+        
         // If status is now Complete, send a notification to the assessment creator
         if ($contributorStatus == 'Complete' && $contributor['status'] != 'Complete') {
             // Get contributor name

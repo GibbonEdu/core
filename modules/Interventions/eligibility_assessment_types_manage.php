@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/eligibility_
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Interventions/eligibility_assessment_types_add.php')
         ->displayLabel();
-
+        
     $table->addColumn('name', __('Name'));
     $table->addColumn('description', __('Description'));
     $table->addColumn('active', __('Active'))

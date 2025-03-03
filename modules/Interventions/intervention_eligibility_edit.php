@@ -180,15 +180,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         return Format::name($contributor['title'], $contributor['preferredName'], $contributor['surname'], 'Staff', false, true);
                     });
                     
-                $table->addColumn('assessmentTypeName', __('Assessment Type'));
+                $table->addColumn('assessmentTypeName', __('Assessment Type'))
+                    ->format(function ($contributor) {
+                        if (empty($contributor['assessmentTypeName'])) {
+                            return '<span class="tag dull">'.__('Not Selected').'</span>';
+                        } else {
+                            return $contributor['assessmentTypeName'];
+                        }
+                    });
                     
                 $table->addColumn('status', __('Status'))
-                    ->format(function($contributor) {
+                    ->format(function ($contributor) {
                         if ($contributor['status'] == 'Complete') {
                             return '<span class="tag success">'.__('Complete').'</span>';
                         } else {
                             return '<span class="tag dull">'.__('Pending').'</span>';
                         }
+                    });
+                    
+                $table->addColumn('ratings', __('Ratings'))
+                    ->format(function ($contributor) use ($pdo) {
+                        // If the contributor has no assessment type or is not complete, return empty
+                        if (empty($contributor['gibbonINEligibilityAssessmentTypeID']) || $contributor['status'] != 'Complete') {
+                            return '';
+                        }
+                        
+                        // Get ratings for this contributor
+                        $sql = "SELECT r.*, s.name as subfieldName 
+                                FROM gibbonINInterventionEligibilityContributorRating AS r 
+                                JOIN gibbonINEligibilityAssessmentSubfield AS s ON (r.gibbonINEligibilityAssessmentSubfieldID=s.gibbonINEligibilityAssessmentSubfieldID) 
+                                WHERE r.gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID 
+                                ORDER BY s.sequenceNumber";
+                        $result = $pdo->select($sql, ['gibbonINInterventionEligibilityContributorID' => $contributor['gibbonINInterventionEligibilityContributorID']]);
+                        
+                        if ($result->rowCount() == 0) {
+                            return '';
+                        }
+                        
+                        // Create a tooltip with all ratings
+                        $output = '<div class="text-xs font-bold">';
+                        $output .= __('Average Rating').': ';
+                        
+                        // Calculate average rating (excluding 0 ratings)
+                        $totalRating = 0;
+                        $ratingCount = 0;
+                        $ratingDetails = [];
+                        
+                        while ($rating = $result->fetch()) {
+                            if ($rating['rating'] > 0) {
+                                $totalRating += $rating['rating'];
+                                $ratingCount++;
+                            }
+                            $ratingDetails[] = $rating['subfieldName'] . ': ' . $rating['rating'];
+                        }
+                        
+                        $averageRating = $ratingCount > 0 ? round($totalRating / $ratingCount, 1) : 0;
+                        $output .= $averageRating;
+                        
+                        // Add tooltip with details
+                        $output .= ' <i class="fas fa-info-circle fa-lg ml-2" data-toggle="tooltip" title="';
+                        $output .= implode('<br/>', $ratingDetails);
+                        $output .= '"></i>';
+                        
+                        $output .= '</div>';
+                        
+                        return $output;
                     });
                     
                 $table->addColumn('recommendation', __('Recommendation'))
@@ -231,10 +287,145 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_contributor_add.php&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonINInterventionID=$gibbonINInterventionID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status'>".__('Add Contributor')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
             echo "</div>";
             
-            // Add note about assessment types
-            echo "<div class='message'>";
-            echo __('Note: Contributors will select their assessment type when they edit their contribution.');
-            echo "</div>";
+            // Display Rating Scale Legend
+            echo '<h3>'.__('Rating Scale').'</h3>';
+            echo '<table class="smallIntBorder" cellspacing="0" style="width:100%">';
+            echo '<tr><th style="width:10%">'.__('Rating').'</th><th>'.__('Description').'</th></tr>';
+            echo '<tr><td>0</td><td>'.__('Not Evaluated').'</td></tr>';
+            echo '<tr><td>1</td><td>'.__('No Concern').'</td></tr>';
+            echo '<tr><td>2</td><td>'.__('Mild Concern').'</td></tr>';
+            echo '<tr><td>3</td><td>'.__('Moderate Concern').'</td></tr>';
+            echo '<tr><td>4</td><td>'.__('Significant Concern').'</td></tr>';
+            echo '<tr><td>5</td><td>'.__('High Concern').'</td></tr>';
+            echo '</table>';
+            
+            // Display Assessment Summary
+            echo '<h3>'.__('Assessment Summary').'</h3>';
+            
+            // Get all contributors with complete status
+            $sql = "SELECT c.*, t.name as assessmentTypeName
+                    FROM gibbonINInterventionEligibilityContributor AS c 
+                    LEFT JOIN gibbonINEligibilityAssessmentType AS t ON (c.gibbonINEligibilityAssessmentTypeID=t.gibbonINEligibilityAssessmentTypeID)
+                    WHERE c.gibbonINInterventionEligibilityAssessmentID=:gibbonINInterventionEligibilityAssessmentID 
+                    AND c.status='Complete'";
+            $contributors = $pdo->select($sql, ['gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID])->fetchAll();
+            
+            if (count($contributors) == 0) {
+                echo "<div class='message warning'>".__('There are no completed assessments to display.')."</div>";
+            } else {
+                // Get all assessment types used by contributors
+                $assessmentTypes = [];
+                foreach ($contributors as $contributor) {
+                    if (!empty($contributor['gibbonINEligibilityAssessmentTypeID']) && !isset($assessmentTypes[$contributor['gibbonINEligibilityAssessmentTypeID']])) {
+                        $assessmentTypes[$contributor['gibbonINEligibilityAssessmentTypeID']] = [
+                            'id' => $contributor['gibbonINEligibilityAssessmentTypeID'],
+                            'name' => $contributor['assessmentTypeName'],
+                            'subfields' => []
+                        ];
+                    }
+                }
+                
+                // Get all subfields for these assessment types
+                foreach ($assessmentTypes as $typeID => $type) {
+                    $sql = "SELECT * FROM gibbonINEligibilityAssessmentSubfield 
+                            WHERE gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID 
+                            AND active='Y' 
+                            ORDER BY sequenceNumber";
+                    $subfields = $pdo->select($sql, ['gibbonINEligibilityAssessmentTypeID' => $typeID])->fetchAll();
+                    
+                    foreach ($subfields as $subfield) {
+                        $assessmentTypes[$typeID]['subfields'][$subfield['gibbonINEligibilityAssessmentSubfieldID']] = [
+                            'id' => $subfield['gibbonINEligibilityAssessmentSubfieldID'],
+                            'name' => $subfield['name'],
+                            'description' => $subfield['description'],
+                            'ratings' => [],
+                            'averageRating' => 0
+                        ];
+                    }
+                }
+                
+                // Get all ratings for all contributors
+                foreach ($contributors as $contributor) {
+                    if (empty($contributor['gibbonINEligibilityAssessmentTypeID'])) {
+                        continue;
+                    }
+                    
+                    $sql = "SELECT r.*, s.name as subfieldName 
+                            FROM gibbonINInterventionEligibilityContributorRating AS r 
+                            JOIN gibbonINEligibilityAssessmentSubfield AS s ON (r.gibbonINEligibilityAssessmentSubfieldID=s.gibbonINEligibilityAssessmentSubfieldID) 
+                            WHERE r.gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
+                    $ratings = $pdo->select($sql, ['gibbonINInterventionEligibilityContributorID' => $contributor['gibbonINInterventionEligibilityContributorID']])->fetchAll();
+                    
+                    foreach ($ratings as $rating) {
+                        if (isset($assessmentTypes[$contributor['gibbonINEligibilityAssessmentTypeID']]['subfields'][$rating['gibbonINEligibilityAssessmentSubfieldID']])) {
+                            $assessmentTypes[$contributor['gibbonINEligibilityAssessmentTypeID']]['subfields'][$rating['gibbonINEligibilityAssessmentSubfieldID']]['ratings'][] = $rating['rating'];
+                        }
+                    }
+                }
+                
+                // Calculate average ratings
+                foreach ($assessmentTypes as $typeID => $type) {
+                    foreach ($type['subfields'] as $subfieldID => $subfield) {
+                        $totalRating = 0;
+                        $ratingCount = 0;
+                        
+                        foreach ($subfield['ratings'] as $rating) {
+                            if ($rating > 0) {
+                                $totalRating += $rating;
+                                $ratingCount++;
+                            }
+                        }
+                        
+                        $assessmentTypes[$typeID]['subfields'][$subfieldID]['averageRating'] = $ratingCount > 0 ? round($totalRating / $ratingCount, 1) : 0;
+                    }
+                }
+                
+                // Display summary tables for each assessment type
+                foreach ($assessmentTypes as $type) {
+                    echo '<h4>'.$type['name'].'</h4>';
+                    
+                    echo '<table class="smallIntBorder" cellspacing="0" style="width:100%">';
+                    echo '<tr>';
+                    echo '<th style="width:40%">'.__('Subfield').'</th>';
+                    echo '<th style="width:20%">'.__('Average Rating').'</th>';
+                    echo '<th>'.__('Interpretation').'</th>';
+                    echo '</tr>';
+                    
+                    foreach ($type['subfields'] as $subfield) {
+                        echo '<tr>';
+                        echo '<td>'.$subfield['name'].'<br/><span class="small emphasis">'.$subfield['description'].'</span></td>';
+                        
+                        // Display average rating with color coding
+                        $ratingClass = '';
+                        if ($subfield['averageRating'] >= 4) {
+                            $ratingClass = 'error';
+                        } elseif ($subfield['averageRating'] >= 2.5) {
+                            $ratingClass = 'warning';
+                        } elseif ($subfield['averageRating'] > 0) {
+                            $ratingClass = 'success';
+                        }
+                        
+                        echo '<td class="'.$ratingClass.'">'.$subfield['averageRating'].'</td>';
+                        
+                        // Display interpretation
+                        $interpretation = '';
+                        if ($subfield['averageRating'] == 0) {
+                            $interpretation = __('Not Evaluated');
+                        } elseif ($subfield['averageRating'] < 2) {
+                            $interpretation = __('No/Minimal Concern');
+                        } elseif ($subfield['averageRating'] < 3.5) {
+                            $interpretation = __('Moderate Concern');
+                        } else {
+                            $interpretation = __('Significant/High Concern');
+                        }
+                        
+                        echo '<td>'.$interpretation.'</td>';
+                        echo '</tr>';
+                    }
+                    
+                    echo '</table>';
+                }
+            }
         }
 
         // Main assessment form

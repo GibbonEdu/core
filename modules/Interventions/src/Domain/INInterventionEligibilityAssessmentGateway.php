@@ -136,4 +136,30 @@ class INInterventionEligibilityAssessmentGateway extends QueryableGateway implem
     {
         return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
+    
+    /**
+     * Get all eligibility assessments for a student
+     *
+     * @param int $gibbonPersonID
+     * @return array The assessment records
+     */
+    public function getByStudentID($gibbonPersonID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonINInterventionEligibilityAssessment.*',
+                'creator.title',
+                'creator.surname',
+                'creator.preferredName',
+                'intervention.name as interventionName'
+            ])
+            ->leftJoin('gibbonPerson AS creator', 'gibbonINInterventionEligibilityAssessment.gibbonPersonIDCreator=creator.gibbonPersonID')
+            ->leftJoin('gibbonINIntervention AS intervention', 'gibbonINInterventionEligibilityAssessment.gibbonINInterventionID=intervention.gibbonINInterventionID')
+            ->where('gibbonINInterventionEligibilityAssessment.gibbonPersonIDStudent=:gibbonPersonIDStudent')
+            ->bindValue('gibbonPersonIDStudent', $gibbonPersonID);
+
+        return $this->runSelect($query)->fetchAll();
+    }
 }

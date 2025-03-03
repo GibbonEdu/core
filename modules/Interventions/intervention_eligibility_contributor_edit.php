@@ -156,7 +156,87 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 ->fromArray($assessmentTypes)
                 ->placeholder(__('Please select...'))
                 ->selected($contributor['gibbonINEligibilityAssessmentTypeID'] ?? '')
-                ->required();
+                ->required()
+                ->append("<script>
+                    $(document).ready(function() {
+                        $('#gibbonINEligibilityAssessmentTypeID').change(function() {
+                            $('#contributorEditForm').submit();
+                        });
+                    });
+                </script>");
+
+        // If assessment type is selected, display the subfields with rating options
+        if (!empty($contributor['gibbonINEligibilityAssessmentTypeID'])) {
+            // Get subfields for this assessment type
+            $sql = "SELECT * FROM gibbonINEligibilityAssessmentSubfield 
+                    WHERE gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID 
+                    AND active='Y' 
+                    ORDER BY sequenceNumber";
+            $result = $pdo->select($sql, ['gibbonINEligibilityAssessmentTypeID' => $contributor['gibbonINEligibilityAssessmentTypeID']]);
+            
+            if ($result->rowCount() > 0) {
+                $form->addRow()->addHeading(__('Assessment Ratings'));
+                
+                // Add rating scale legend
+                $ratingLegend = $form->addRow()->addContent('<div class="mt-2 mb-4">
+                    <p><strong>'.__('Rating Scale Legend').':</strong></p>
+                    <div class="flex flex-col sm:flex-row">
+                        <div class="flex-1 bg-gray-100 border rounded p-2 mr-2 mb-2">
+                            <strong>0:</strong> '.__('Not Evaluated').'
+                        </div>
+                        <div class="flex-1 bg-gray-100 border rounded p-2 mr-2 mb-2">
+                            <strong>1:</strong> '.__('No Concern').'
+                        </div>
+                        <div class="flex-1 bg-gray-100 border rounded p-2 mr-2 mb-2">
+                            <strong>2:</strong> '.__('Mild Concern').'
+                        </div>
+                        <div class="flex-1 bg-gray-100 border rounded p-2 mr-2 mb-2">
+                            <strong>3:</strong> '.__('Moderate Concern').'
+                        </div>
+                        <div class="flex-1 bg-gray-100 border rounded p-2 mr-2 mb-2">
+                            <strong>4:</strong> '.__('Significant Concern').'
+                        </div>
+                        <div class="flex-1 bg-gray-100 border rounded p-2 mb-2">
+                            <strong>5:</strong> '.__('High Concern').'
+                        </div>
+                    </div>
+                </div>');
+                
+                // Get existing ratings
+                $ratings = [];
+                $sql = "SELECT * FROM gibbonINInterventionEligibilityContributorRating 
+                        WHERE gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
+                $ratingResults = $pdo->select($sql, ['gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID]);
+                
+                if ($ratingResults->rowCount() > 0) {
+                    while ($rating = $ratingResults->fetch()) {
+                        $ratings[$rating['gibbonINEligibilityAssessmentSubfieldID']] = $rating['rating'];
+                    }
+                }
+                
+                // Add rating fields for each subfield
+                while ($subfield = $result->fetch()) {
+                    $row = $form->addRow();
+                    $row->addLabel('rating'.$subfield['gibbonINEligibilityAssessmentSubfieldID'], $subfield['name'])
+                        ->description($subfield['description']);
+                    
+                    $ratingOptions = [
+                        '0' => '0 - '.__('Not Evaluated'),
+                        '1' => '1 - '.__('No Concern'),
+                        '2' => '2 - '.__('Mild Concern'),
+                        '3' => '3 - '.__('Moderate Concern'),
+                        '4' => '4 - '.__('Significant Concern'),
+                        '5' => '5 - '.__('High Concern')
+                    ];
+                    
+                    $row->addSelect('rating'.$subfield['gibbonINEligibilityAssessmentSubfieldID'])
+                        ->fromArray($ratingOptions)
+                        ->selected($ratings[$subfield['gibbonINEligibilityAssessmentSubfieldID']] ?? '0');
+                }
+            } else {
+                $form->addRow()->addAlert(__('There are no subfields defined for this assessment type. Please contact an administrator.'), 'warning');
+            }
+        }
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
