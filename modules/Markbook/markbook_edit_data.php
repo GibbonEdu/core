@@ -58,7 +58,6 @@ echo "<script type='text/javascript'>";
 ?>
     $(document).ready(function(){
         autosize($('textarea'));
-    });
 
     // Map [Enter] key to work like the [Tab] key
     // Daniel P. Clark 2014
@@ -110,8 +109,9 @@ echo "<script type='text/javascript'>";
         // We need to capture the [Shift] key and check the [Enter] key either way.
         if (e.shiftKey) { enterKey() } else { enterKey() }
     });
+});
 
-    <?php
+<?php
 echo '</script>';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
