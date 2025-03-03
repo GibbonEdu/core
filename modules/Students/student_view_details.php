@@ -1129,6 +1129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
 
+                     
+
                         echo '<h4>';
                         echo __('Emergency Contacts');
                         echo '</h4>';
@@ -1147,7 +1149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo "<td style=width: 34%; 'vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-                        if ($row['website'] != '') {
+                        if ($row['emergency1Number2'] != '') {
                             echo $row['emergency1Number2'];
                         }
                         echo '</td>';
@@ -1166,7 +1168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-                        if ($row['website'] != '') {
+                        if ($row['emergency2Number2'] != '') {
                             echo $row['emergency2Number2'];
                         }
                         echo '</td>';
