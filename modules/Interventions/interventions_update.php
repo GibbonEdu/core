@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 use Gibbon\Services\Format;
 
 //Module includes

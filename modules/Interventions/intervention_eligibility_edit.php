@@ -25,9 +25,9 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentTypeGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INEligibilityAssessmentTypeGateway;
 use Gibbon\FileUploader;
 
 //Module includes

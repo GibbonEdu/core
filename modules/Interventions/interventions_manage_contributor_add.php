@@ -24,10 +24,10 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Interventions\INReferralGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
+use Gibbon\Module\Interventions\Domain\INReferralGateway;
+use Gibbon\Module\Interventions\Domain\INEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionStrategyGateway;
  
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityContributorGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityContributorGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 

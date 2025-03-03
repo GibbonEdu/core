@@ -23,8 +23,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 

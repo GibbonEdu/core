@@ -24,7 +24,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 
 require_once '../../gibbon.php';
 

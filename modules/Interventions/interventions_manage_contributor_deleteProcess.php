@@ -19,8 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionContributorGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionContributorGateway;
 
 require_once '../../gibbon.php';
 

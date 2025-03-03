@@ -19,12 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionContributorGateway;
-use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
-use Gibbon\Domain\Interventions\INInterventionUpdateGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentTypeGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionContributorGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionStrategyGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionUpdateGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INEligibilityAssessmentTypeGateway;
 use Gibbon\Module\Interventions\Tables\InterventionHistory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;

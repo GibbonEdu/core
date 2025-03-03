@@ -19,9 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentTypeGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INEligibilityAssessmentTypeGateway;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Comms\NotificationSender;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 
@@ -159,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Insert notification for the creator of the intervention
         if ($intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
             $notificationGateway = $container->get(\Gibbon\Domain\System\NotificationGateway::class);
-            $notificationSender = $container->get(\Gibbon\Domain\System\NotificationSender::class);
+            $notificationSender = $container->get(\Gibbon\Comms\NotificationSender::class);
             
             $notificationGateway->insertNotification([
                 'gibbonPersonID' => $intervention['gibbonPersonIDCreator'],

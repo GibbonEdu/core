@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Interventions\INEligibilityAssessmentTypeGateway;
-use Gibbon\Domain\Interventions\INEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INEligibilityAssessmentTypeGateway;
+use Gibbon\Module\Interventions\Domain\INEligibilityAssessmentGateway;
 
 require_once '../../gibbon.php';
 

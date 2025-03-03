@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionUpdateGateway;
-use Gibbon\Domain\Interventions\INInterventionContributorGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionUpdateGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionContributorGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 

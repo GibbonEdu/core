@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;

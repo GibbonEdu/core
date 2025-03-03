@@ -25,9 +25,9 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
  * Eligibility Assessment Gateway

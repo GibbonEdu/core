@@ -23,11 +23,11 @@ namespace Gibbon\Module\Interventions\Tables;
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionContributorGateway;
-use Gibbon\Domain\Interventions\INInterventionStrategyGateway;
-use Gibbon\Domain\Interventions\INInterventionUpdateGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionContributorGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionStrategyGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionUpdateGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
 
 /**
  * InterventionHistory

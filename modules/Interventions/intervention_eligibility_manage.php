@@ -24,8 +24,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Interventions\INInterventionGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Query the intervention-based eligibility assessments
         $assessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
         $criteria = $assessmentGateway->newQueryCriteria(true)
-            ->sortBy(['p.surname', 'p.preferredName'])
+            ->sortBy(['student.surname', 'student.preferredName'])
             ->filterBy('gibbonPersonID', $gibbonPersonID)
             ->filterBy('gibbonFormGroupID', $gibbonFormGroupID)
             ->filterBy('gibbonYearGroupID', $gibbonYearGroupID)

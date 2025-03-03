@@ -19,8 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
-use Gibbon\Domain\Interventions\INInterventionEligibilityContributorGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Module\Interventions\Domain\INInterventionEligibilityContributorGateway;
 
 require_once '../../gibbon.php';
 require_once __DIR__ . '/moduleFunctions.php';
