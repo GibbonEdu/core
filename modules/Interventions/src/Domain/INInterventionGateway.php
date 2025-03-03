@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Interventions;
+namespace Gibbon\Module\Interventions\Domain;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -133,8 +133,10 @@ class INInterventionGateway extends QueryableGateway implements ScrubbableGatewa
 
     public function queryInterventionsByCreator(QueryCriteria $criteria, $gibbonPersonID)
     {
-        $query = $this->queryInterventions($criteria);
-        $query->where('gibbonINIntervention.gibbonPersonIDCreator = :gibbonPersonIDCreator')
+        $query = $this->newSelect();
+        $query->from('gibbonINIntervention')
+              ->cols(['gibbonINIntervention.*'])
+              ->where('gibbonINIntervention.gibbonPersonIDCreator = :gibbonPersonIDCreator')
               ->bindValue('gibbonPersonIDCreator', $gibbonPersonID);
 
         return $this->runQuery($query, $criteria);
