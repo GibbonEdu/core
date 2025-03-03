@@ -1128,9 +1128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
                         }
-
-                     
-
+                        
                         echo '<h4>';
                         echo __('Emergency Contacts');
                         echo '</h4>';
