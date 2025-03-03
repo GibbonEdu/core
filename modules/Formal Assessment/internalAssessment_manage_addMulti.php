@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     ->selected($gibbonCourseClassID);
 
             $row = $form->addRow();
-                $row->addLabel('prefix', __('前缀'));
+                $row->addLabel('prefix', __('Prefix'));
                 $row->addTextField('prefix')->required()->maxLength(8);
 
             $row = $form->addRow();
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $row->addTextField('name')->required()->maxLength(16);
 
             $row = $form->addRow();
-                $row->addLabel('suffix', __('后缀'));
+                $row->addLabel('suffix', __('Suffix'));
                 $row->addTextField('suffix')->required()->maxLength(8);
 
             $row = $form->addRow();
@@ -90,11 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $row->addTextField('description')->required()->maxLength(1000);
 
             $row = $form->addRow();
-                $row->addLabel('duplicate', __('重复次数'));
+                $row->addLabel('duplicate', __('Number of repetitions'));
                 $row->addSelect('duplicate')->fromString('1,2,3,4,5,6,7,8,9,10')->selected(1)->required();
 
             $row = $form->addRow();
-                $row->addLabel('interval', __('日期间隔'));
+                $row->addLabel('interval', __('Date interval'));
                 $row->addSelect('interval')->fromString('0,1,2,3,4,5,6,7')->selected(1)->required();
 
             $types = $settingGateway->getSettingByScope('Formal Assessment', 'internalAssessmentTypes');

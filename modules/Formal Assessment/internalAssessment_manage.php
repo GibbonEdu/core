@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 ->addParams($params)
                 ->setIcon('page_new')
                 ->displayLabel();
-            $page->navigator->addHeaderAction('addMultipleTimes', __('添加多个考试与多个时间列'))
+            $page->navigator->addHeaderAction('addMultipleTimes', __('Add Multiple Columns & Date'))
                 ->setURL('/modules/Formal Assessment/internalAssessment_manage_addMulti.php')
                 ->addParams($params)
                 ->setIcon('page_new_multi')
