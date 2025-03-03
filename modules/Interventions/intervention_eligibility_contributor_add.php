@@ -41,21 +41,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Proceed!
         $gibbonINInterventionID = $_GET['gibbonINInterventionID'] ?? '';
         $gibbonINInterventionEligibilityAssessmentID = $_GET['gibbonINInterventionEligibilityAssessmentID'] ?? '';
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
 
         $page->breadcrumbs
             ->add(__('Manage Interventions'), 'interventions_manage.php', [
-                'gibbonPersonID' => $gibbonPersonID,
+                'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
             ])
             ->add(__('Edit Intervention'), 'interventions_manage_edit.php', [
                 'gibbonINInterventionID' => $gibbonINInterventionID,
-                'gibbonPersonID' => $gibbonPersonID,
+                'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             ->add(__('Edit Eligibility Assessment'), 'intervention_eligibility_edit.php', [
                 'gibbonINInterventionID' => $gibbonINInterventionID,
                 'gibbonINInterventionEligibilityAssessmentID' => $gibbonINInterventionEligibilityAssessmentID,
-                'gibbonPersonID' => $gibbonPersonID,
+                'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
         $form->addHiddenValue('gibbonINInterventionEligibilityAssessmentID', $gibbonINInterventionEligibilityAssessmentID);
-        $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+        $form->addHiddenValue('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);

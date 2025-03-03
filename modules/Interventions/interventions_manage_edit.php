@@ -43,14 +43,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         // Proceed!
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
 
         $page->breadcrumbs
             ->add(__('Manage Interventions'), 'interventions_manage.php', [
-                'gibbonPersonID' => $gibbonPersonID,
+                'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
-        $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+        $form->addHiddenValue('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);

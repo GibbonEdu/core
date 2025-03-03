@@ -28,17 +28,18 @@ use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonINInterventionID = $_POST['gibbonINInterventionID'] ?? '';
 $gibbonINInterventionEligibilityAssessmentID = $_POST['gibbonINInterventionEligibilityAssessmentID'] ?? '';
-$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID=$gibbonINInterventionID&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID=$gibbonINInterventionID&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonPersonIDStudent=$gibbonPersonIDStudent&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status";
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_contributor_add.php') == false) {
     $URL .= '&return=error0';

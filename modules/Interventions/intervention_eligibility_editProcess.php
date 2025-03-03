@@ -21,19 +21,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Domain\Interventions\INInterventionGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentTypeGateway;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonINInterventionID = $_POST['gibbonINInterventionID'] ?? '';
 $gibbonINInterventionEligibilityAssessmentID = $_POST['gibbonINInterventionEligibilityAssessmentID'] ?? '';
-$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_edit.php') == false) {
     $URL .= '&return=error0';

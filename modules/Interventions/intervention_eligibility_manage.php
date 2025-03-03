@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         if ($highestAction == 'Manage Eligibility Assessments') {
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Interventions/intervention_eligibility_edit.php')
-                ->addParam('gibbonPersonID', $gibbonPersonID)
+                ->addParam('gibbonPersonIDStudent', $gibbonPersonID)
                 ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
                 ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
                 ->addParam('status', $status)
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $table->addActionColumn()
             ->addParam('gibbonINInterventionEligibilityAssessmentID')
             ->addParam('gibbonINInterventionID')
-            ->addParam('gibbonPersonID', $gibbonPersonID)
+            ->addParam('gibbonPersonIDStudent', $gibbonPersonID)
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('status', $status)

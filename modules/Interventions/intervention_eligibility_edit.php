@@ -27,6 +27,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Interventions\INInterventionGateway;
 use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INEligibilityAssessmentTypeGateway;
 use Gibbon\FileUploader;
 
 //Module includes
@@ -42,7 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         // Proceed!
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
@@ -52,14 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         $page->breadcrumbs
             ->add(__('Manage Interventions'), 'interventions_manage.php', [
-                'gibbonPersonID' => $gibbonPersonID,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
             ])
             ->add(__('Edit Intervention'), 'interventions_manage_edit.php', [
                 'gibbonINInterventionID' => $gibbonINInterventionID,
-                'gibbonPersonID' => $gibbonPersonID,
                 'gibbonFormGroupID' => $gibbonFormGroupID,
                 'gibbonYearGroupID' => $gibbonYearGroupID,
                 'status' => $status,
@@ -284,7 +282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             
             // Add button for adding contributors
             echo "<div class='linkTop'>";
-            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_contributor_add.php&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonINInterventionID=$gibbonINInterventionID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status'>".__('Add Contributor')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
+            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_contributor_add.php&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonINInterventionID=$gibbonINInterventionID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status'>".__('Add Contributor')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
             echo "</div>";
             
             // Display Rating Scale Legend
@@ -435,7 +433,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
         $form->addHiddenValue('gibbonINInterventionEligibilityAssessmentID', $gibbonINInterventionEligibilityAssessmentID);
-        $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+        $form->addHiddenValue('gibbonPersonIDStudent', $intervention['gibbonPersonIDStudent']);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);

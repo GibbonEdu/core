@@ -22,8 +22,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Interventions\INInterventionEligibilityAssessmentGateway;
+use Gibbon\Domain\Interventions\INInterventionEligibilityContributorGateway;
 
 require_once '../../gibbon.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonINInterventionID = $_POST['gibbonINInterventionID'] ?? '';
 $gibbonINInterventionEligibilityAssessmentID = $_POST['gibbonINInterventionEligibilityAssessmentID'] ?? '';

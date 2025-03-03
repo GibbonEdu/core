@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     } else {
         $page->breadcrumbs->add(__('Manage Interventions'));
 
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
@@ -52,8 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('q', '/modules/Interventions/interventions_manage.php');
 
         $row = $form->addRow();
-            $row->addLabel('gibbonPersonID', __('Student'));
-            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonID);
+            $row->addLabel('gibbonPersonIDStudent', __('Student'));
+            $row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonIDStudent);
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         
         $criteria = $interventionGateway->newQueryCriteria()
             ->sortBy(['student.surname', 'student.preferredName'])
-            ->filterBy('student', $gibbonPersonID)
+            ->filterBy('student', $gibbonPersonIDStudent)
             ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->filterBy('status', $status)
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         $table->addHeaderAction('add', __('New Intervention'))
             ->setURL('/modules/Interventions/interventions_manage_add.php')
-            ->addParam('gibbonPersonID', $gibbonPersonID)
+            ->addParam('gibbonPersonIDStudent', $gibbonPersonIDStudent)
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->displayLabel();
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // ACTIONS
         $table->addActionColumn()
             ->addParam('gibbonINInterventionID')
-            ->addParam('gibbonPersonID', $gibbonPersonID)
+            ->addParam('gibbonPersonIDStudent', $gibbonPersonIDStudent)
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->format(function ($intervention, $actions) use ($highestAction) {

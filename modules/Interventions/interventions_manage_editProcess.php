@@ -26,16 +26,17 @@ use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonINInterventionID = $_POST['gibbonINInterventionID'] ?? '';
-$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -116,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         // Create a new assessment
                         $data = [
                             'gibbonINInterventionID' => $gibbonINInterventionID,
-                            'gibbonPersonIDStudent' => $intervention['gibbonPersonID'] ?? null,
+                            'gibbonPersonIDStudent' => $intervention['gibbonPersonIDStudent'] ?? null,
                             'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
                             'status' => 'In Progress',
                             'timestampCreated' => date('Y-m-d H:i:s')
@@ -126,13 +127,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         
                         // Redirect to the new intervention eligibility edit page
                         if (!empty($gibbonINInterventionEligibilityAssessmentID)) {
-                            $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+                            $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonPersonIDStudent='.$intervention['gibbonPersonIDStudent'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
                             header("Location: {$redirectURL}");
                             exit;
                         }
                     } else {
                         // Redirect to edit the existing assessment
-                        $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+                        $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonPersonIDStudent='.$intervention['gibbonPersonIDStudent'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
                         header("Location: {$redirectURL}");
                         exit;
                     }
