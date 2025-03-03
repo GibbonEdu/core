@@ -112,8 +112,8 @@ foreach ($families as $gibbonFamilyID => $students) {
         // HOMEWORK
         $criteria = $plannerEntryGateway->newQueryCriteria(true)
             ->sortBy('homeworkDueDateTime', 'ASC')
-            ->filterBy('weekly:Y')
-            ->filterBy('viewableParents:Y')
+            ->filterBy('weekly', 'Y')
+            ->filterBy('viewableParents', 'Y')
             ->fromPOST();
 
         $allHomework = $plannerEntryGateway->queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $student['gibbonPersonID']);

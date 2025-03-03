@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
     $criteria = $staffCoverageGateway->newQueryCriteria()
         ->sortBy('date', 'ASC')
         ->filterBy('requested', 'Y')
-        ->filterBy('date:upcoming')
+        ->filterBy('date', 'upcoming')
         ->fromPOST('myCoverage');
 
     $myCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonSchoolYearID, $gibbonPersonID, true);
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
     $criteria = $staffCoverageGateway->newQueryCriteria()
         ->sortBy('date', 'ASC')
         ->filterBy('requested', 'Y')
-        ->filterBy('date:upcoming')
+        ->filterBy('date', 'upcoming')
         ->fromPOST('allCoverage');
 
     $allCoverage = $staffCoverageGateway->queryCoverageWithNoPersonAssigned($criteria, $substitute['type'] ?? '');

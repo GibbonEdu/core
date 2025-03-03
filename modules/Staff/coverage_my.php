@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     // TODAY'S COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
         ->sortBy('timeStart')
-        ->filterBy('status:Accepted')
-        ->filterBy('dateStart:'.date('Y-m-d'))
-        ->filterBy('dateEnd:'.date('Y-m-d'))
+        ->filterBy('status', 'Accepted')
+        ->filterBy('dateStart', date('Y-m-d'))
+        ->filterBy('dateEnd', date('Y-m-d'))
         ->fromPOST('staffCoverageToday');
 
     $todaysCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     // TEACHER COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
         ->sortBy('dateStart', 'DESC')
-        ->filterBy('date:upcoming')
+        ->filterBy('date', 'upcoming')
         ->fromPOST('staffCoverageSelf');
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID, false);
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         // QUERY
         $criteria = $staffCoverageGateway->newQueryCriteria(true)
             ->sortBy('date', 'DESC')
-            ->filterBy('date:upcoming')
+            ->filterBy('date', 'upcoming')
             ->fromPOST('staffCoverageOther');
 
         $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
