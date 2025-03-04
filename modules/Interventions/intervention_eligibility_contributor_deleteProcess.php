@@ -32,7 +32,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
-$returnProcess = $_POST['returnProcess'] ?? false;
+$returnProcess = $_POST['returnProcess'] ?? '';
 
 $URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonID, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess);
 

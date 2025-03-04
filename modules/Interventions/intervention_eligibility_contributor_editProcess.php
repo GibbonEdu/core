@@ -34,7 +34,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
-$returnProcess = $_POST['returnProcess'] ?? false;
+$returnProcess = $_POST['returnProcess'] ?? '';
 
 // Get the redirect URL for error cases
 $errorURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_contributor_edit.php&gibbonINInterventionEligibilityContributorID='.$gibbonINInterventionEligibilityContributorID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;

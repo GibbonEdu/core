@@ -38,7 +38,7 @@ $gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
-$returnProcess = $_POST['returnProcess'] ?? false;
+$returnProcess = $_POST['returnProcess'] ?? '';
 
 // Get the redirect URL
 $URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonIDStudent, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess);
