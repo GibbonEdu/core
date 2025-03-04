@@ -90,6 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $contributor = $result->fetch();
         $contributorName = Format::name($contributor['title'], $contributor['preferredName'], $contributor['surname'], 'Staff', false, true);
 
+        // Determine if the current user is a contributor
+        $isContributor = false;
+        if ($session->get('gibbonPersonID') == $contributor['gibbonPersonIDContributor']) {
+            $isContributor = true;
+        }
+
         // Check access based on the highest action level
         $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
         $assessment = $eligibilityAssessmentGateway->getByID($gibbonINInterventionEligibilityAssessmentID);
@@ -124,6 +130,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
         $form->addHiddenValue('returnProcess', $returnProcess);
+        $form->addHiddenValue('isContributor', $isContributor ? 'true' : '');
+
+        $form->addRow()->addContent(sprintf(__('Are you sure you want to delete the contributor record for %1$s?'), $contributorName));
 
         echo $form->getOutput();
     }

@@ -49,7 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                     p.preferredName as studentPreferredName, p.surname as studentSurname,
                     creator.preferredName as creatorPreferredName, creator.surname as creatorSurname,
                     t.name as assessmentTypeName,
-                    CONCAT(p.surname, ', ', p.preferredName) as studentSort
+                    CONCAT(p.surname, ', ', p.preferredName) as studentSort,
+                    c.status as contributorStatus
                 FROM gibbonINInterventionEligibilityContributor AS c
                 JOIN gibbonINInterventionEligibilityAssessment AS a ON (c.gibbonINInterventionEligibilityAssessmentID=a.gibbonINInterventionEligibilityAssessmentID)
                 JOIN gibbonINIntervention AS i ON (a.gibbonINInterventionID=i.gibbonINInterventionID)
@@ -59,6 +60,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 WHERE c.gibbonPersonIDContributor=:gibbonPersonID
                 ORDER BY studentSort, i.name, t.name";
         
+        $result = $pdo->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
+        
+        // Debug: Output all contributor records
+        error_log('All contributor records:');
+        foreach ($result->fetchAll() as $record) {
+            error_log('ID: ' . $record['gibbonINInterventionEligibilityContributorID'] . ', Status: ' . $record['status'] . ', ContributorStatus: ' . $record['contributorStatus']);
+        }
+        
+        // Re-execute the query since we consumed the results
         $result = $pdo->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
         
         if ($result->rowCount() == 0) {
@@ -84,7 +94,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 
             $table->addColumn('status', __('Your Status'))
                 ->format(function($row) {
-                    if ($row['status'] == 'Complete') {
+                    // Debug: Output the actual status values
+                    error_log('Dashboard status values - status: ' . $row['status'] . ', contributorStatus: ' . $row['contributorStatus']);
+                    
+                    // Use the contributor status, not the assessment status
+                    if ($row['contributorStatus'] == 'Complete') {
                         return '<span class="tag success">'.__('Complete').'</span>';
                     } else {
                         return '<span class="tag dull">'.__('Pending').'</span>';

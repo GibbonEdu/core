@@ -39,9 +39,10 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 $returnProcess = $_POST['returnProcess'] ?? '';
+$isContributor = $_POST['isContributor'] ?? '';
 
 // Get the redirect URL
-$URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonIDStudent, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess);
+$URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonIDStudent, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess, $isContributor);
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_contributor_add.php') == false) {
     $URL .= '&return=error0';

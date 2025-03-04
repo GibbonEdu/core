@@ -35,6 +35,11 @@ $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 $returnProcess = $_POST['returnProcess'] ?? '';
+$isContributor = $_POST['isContributor'] ?? '';
+
+// Debug logging
+error_log('Contributor edit process - POST data: ' . print_r($_POST, true));
+error_log('Assessment Type ID: ' . $gibbonINEligibilityAssessmentTypeID);
 
 // Get the redirect URL for error cases
 $errorURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_contributor_edit.php&gibbonINInterventionEligibilityContributorID='.$gibbonINInterventionEligibilityContributorID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
@@ -203,7 +208,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         }
         
         // Success - Get the redirect URL
-        $URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonID, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess);
+        $URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonID, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess, $isContributor);
+        
+        // Debug logging
+        error_log('Redirect URL: ' . $URL);
+        
         $URL .= '&return=success0';
         header("Location: {$URL}");
         exit;

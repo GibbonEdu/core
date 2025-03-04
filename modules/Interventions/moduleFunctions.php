@@ -255,13 +255,30 @@ function getInterventionStep($status)
  * @param string $status
  * @param bool|string $returnProcess
  * @param int $step
+ * @param bool|string $isContributor Whether the user is a contributor completing their assessment
  * @return string
  */
-function getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID = '', $gibbonPersonIDStudent = '', $gibbonFormGroupID = '', $gibbonYearGroupID = '', $status = '', $returnProcess = false, $step = 2)
+function getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID = '', $gibbonPersonIDStudent = '', $gibbonFormGroupID = '', $gibbonYearGroupID = '', $status = '', $returnProcess = '', $isContributor = '', $step = 2)
 {
-    // Convert returnProcess to a proper boolean
-    $returnProcess = filter_var($returnProcess, FILTER_VALIDATE_BOOLEAN);
+    // Debug logging
+    error_log('getInterventionRedirectURL - Parameters:');
+    error_log('returnProcess (before): ' . $returnProcess);
+    error_log('isContributor (before): ' . $isContributor);
     
+    // Convert returnProcess and isContributor to proper booleans
+    $returnProcess = filter_var($returnProcess, FILTER_VALIDATE_BOOLEAN);
+    $isContributor = filter_var($isContributor, FILTER_VALIDATE_BOOLEAN);
+    
+    // Debug logging
+    error_log('returnProcess (after): ' . ($returnProcess ? 'true' : 'false'));
+    error_log('isContributor (after): ' . ($isContributor ? 'true' : 'false'));
+    
+    // If the user is a contributor completing their assessment, redirect to the contributor dashboard
+    if ($isContributor) {
+        return $session->get('absoluteURL')."/index.php?q=/modules/Interventions/interventions_contributor_dashboard.php";
+    }
+    
+    // Otherwise, determine if we should return to the process page or the eligibility edit page
     if ($returnProcess) {
         return $session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_process.php&gibbonINInterventionID=$gibbonINInterventionID&step=$step";
     } else {

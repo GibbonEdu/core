@@ -47,6 +47,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $status = $_GET['status'] ?? '';
         $returnProcess = $_GET['returnProcess'] ?? '';
 
+        // Determine if the current user is a contributor
+        $isContributor = false;
+        
+        // Check if the current user is a staff member
+        $sql = "SELECT gibbonRoleID FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+        $result = $pdo->selectOne($sql, ['gibbonPersonID' => $session->get('gibbonPersonID')]);
+        
+        if (!empty($result)) {
+            $sql = "SELECT gibbonRoleID FROM gibbonRole WHERE name='Staff'";
+            $staffRole = $pdo->selectOne($sql);
+            
+            if (!empty($staffRole) && $result['gibbonRoleID'] == $staffRole['gibbonRoleID']) {
+                $isContributor = true;
+            }
+        }
+
         $page->breadcrumbs
             ->add(__('Manage Interventions'), 'interventions_manage.php', [
                 'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
@@ -116,6 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
         $form->addHiddenValue('returnProcess', $returnProcess);
+        $form->addHiddenValue('isContributor', $isContributor ? 'true' : '');
 
         $form->addRow()->addHeading(__('Assessment Details'));
 
