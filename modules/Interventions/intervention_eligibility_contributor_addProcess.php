@@ -117,6 +117,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
 
+    // Update intervention status if it's still in Referral status
+    if ($intervention['status'] == 'Referral') {
+        $interventionGateway->update($gibbonINInterventionID, [
+            'status' => 'Eligibility Assessment'
+        ]);
+    }
+
     // Send notification to the contributor
     $notificationGateway = $container->get(NotificationGateway::class);
     $notificationSender = new NotificationSender($notificationGateway, $session);

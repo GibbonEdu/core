@@ -47,8 +47,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
         $gibbonINInterventionID = $_GET['gibbonINInterventionID'] ?? '';
-        $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
+        $gibbonINInterventionEligibilityAssessmentID = $_GET['gibbonINInterventionEligibilityAssessmentID'] ?? '';
         $action = $_GET['action'] ?? '';
+
+        if (empty($gibbonINInterventionID) || (empty($gibbonINInterventionEligibilityAssessmentID) && $action != 'create')) {
+            $page->addError(__('You have not specified one or more required parameters.'));
+            return;
+        }
+        
+        // Get the intervention details to get student information
+        $interventionGateway = $container->get(INInterventionGateway::class);
+        $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
+        
+        if (empty($intervention)) {
+            $page->addError(__('The specified intervention cannot be found.'));
+            return;
+        }
 
         $page->breadcrumbs
             ->add(__('Manage Interventions'), 'interventions_manage.php', [
@@ -76,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 // Create a new assessment
                 $data = [
                     'gibbonINInterventionID' => $gibbonINInterventionID,
-                    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+                    'gibbonPersonIDStudent' => $intervention['gibbonPersonIDStudent'] ?? null,
                     'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
                     'status' => 'In Progress',
                     'timestampCreated' => date('Y-m-d H:i:s')
@@ -90,12 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 }
                 
                 // Redirect to the edit page for the new assessment
-                $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent;
+                $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID;
                 header("Location: {$url}");
                 exit;
             } else {
                 // Assessment already exists, redirect to edit it
-                $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent;
+                $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonINInterventionID='.$gibbonINInterventionID;
                 header("Location: {$url}");
                 exit;
             }
@@ -104,21 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Get the eligibility assessment
         $gibbonINInterventionEligibilityAssessmentID = $_GET['gibbonINInterventionEligibilityAssessmentID'] ?? '';
         
-        if (empty($gibbonINInterventionEligibilityAssessmentID) && empty($gibbonINInterventionID)) {
-            $page->addError(__('You have not specified one or more required parameters.'));
-            return;
-        }
-
         if (empty($gibbonINInterventionID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
-            return;
-        }
-
-        $interventionGateway = $container->get(INInterventionGateway::class);
-        $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
-
-        if (empty($intervention)) {
-            $page->addError(__('The specified record cannot be found.'));
             return;
         }
 
@@ -243,17 +244,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         $output .= '</div>';
                         
                         return $output;
-                    });
-                    
-                $table->addColumn('recommendation', __('Recommendation'))
-                    ->format(function($contributor) {
-                        if ($contributor['recommendation'] == 'Eligible for IEP') {
-                            return '<span class="tag success">'.__('Eligible for IEP').'</span>';
-                        } else if ($contributor['recommendation'] == 'Needs Intervention') {
-                            return '<span class="tag warning">'.__('Needs Intervention').'</span>';
-                        } else {
-                            return '<span class="tag dull">'.__('Pending').'</span>';
-                        }
                     });
                     
                 $table->addColumn('timestampCreated', __('Date'))
@@ -433,7 +423,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
         $form->addHiddenValue('gibbonINInterventionEligibilityAssessmentID', $gibbonINInterventionEligibilityAssessmentID);
-        $form->addHiddenValue('gibbonPersonIDStudent', $intervention['gibbonPersonIDStudent']);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);

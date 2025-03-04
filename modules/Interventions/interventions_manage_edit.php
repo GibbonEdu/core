@@ -87,7 +87,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
-        $form->addHiddenValue('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
@@ -124,6 +123,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Form Tutor Review Section (Only visible to form tutors or admins)
         if ($isFormTutor || $isAdmin) {
             $form->addRow()->addHeading(__('Form Tutor Review'));
+            
+            // Add a message if a decision has already been made
+            if (!empty($intervention['formTutorDecision']) && $intervention['formTutorDecision'] != 'Pending') {
+                $decisionText = '';
+                if ($intervention['formTutorDecision'] == 'Resolved') {
+                    $decisionText = __('This intervention has been marked as Resolved.');
+                } else if ($intervention['formTutorDecision'] == 'Eligibility Assessment') {
+                    $decisionText = __('This intervention has been referred for Eligibility Assessment.');
+                }
+                
+                if (!empty($decisionText)) {
+                    $row = $form->addRow();
+                    $row->addContent('<div class="message emphasis">');
+                    $row->addContent('<p><strong>'.__('Decision Status').':</strong> ' . $decisionText . '</p>');
+                    $row->addContent('</div>');
+                }
+            }
             
             $formTutorDecisions = [
                 'Pending' => __('Pending'),
@@ -163,6 +179,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                     
                     function updateVisibility() {
                         var decision = $('#formTutorDecision').val();
+                        var currentStatus = '" . $intervention['status'] . "';
+                        var hasExistingAssessment = " . (!empty($existingAssessment) ? 'true' : 'false') . ";
                         
                         // Hide all conditional sections first
                         $('.eligibilitySection').hide();
@@ -174,6 +192,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         } else if (decision == 'Resolved') {
                             $('.outcomeSection').show();
                         }
+                        
+                        // Also show eligibility section if status is already Eligibility Assessment
+                        // or if an assessment already exists
+                        if (currentStatus == 'Eligibility Assessment' || hasExistingAssessment) {
+                            $('.eligibilitySection').show();
+                        }
+                        
+                        // Also show outcome section if status is already Resolved
+                        if (currentStatus == 'Resolved') {
+                            $('.outcomeSection').show();
+                        }
                     }
                 });
             </script>";
@@ -182,17 +211,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Eligibility Assessment Section (Always present but controlled by JavaScript)
         $eligibilitySection = $form->addRow()->addHeading(__('Eligibility Assessment'))->addClass('eligibilitySection');
         $eligibilitySection->append('<div class="message emphasis eligibilitySection">');
-        $eligibilitySection->append('<p>'.__('The student has been referred for an eligibility assessment. After completing the assessment, you will need to make a decision about whether the student is eligible for an IEP or should receive interventions.').'</p>');
         
-        // Check if an eligibility assessment already exists for this intervention
+        // Add an indicator if an eligibility assessment already exists
         $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
         $existingAssessment = $eligibilityAssessmentGateway->getByInterventionID($gibbonINInterventionID);
         
+        if (!empty($existingAssessment)) {
+            $assessmentStatus = $existingAssessment['status'] ?? 'In Progress';
+            $eligibilitySection->append('<p><strong>'.__('Assessment Status').':</strong> ' . $assessmentStatus . '</p>');
+        }
+        
+        $eligibilitySection->append('<p>'.__('The student has been referred for an eligibility assessment. After completing the assessment, you will need to make a decision about whether the student is eligible for an IEP or should receive interventions.').'</p>');
+        $eligibilitySection->append('</div>');
+        
+        // Check if an eligibility assessment already exists for this intervention
         if (empty($existingAssessment)) {
             // No assessment exists yet, show create button
             $params = [
                 'gibbonINInterventionID' => $gibbonINInterventionID,
-                'gibbonPersonIDStudent' => $intervention['gibbonPersonID'] ?? '',
                 'action' => 'create'
             ];
             
@@ -202,15 +238,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             // Assessment exists, show manage button
             $params = [
                 'gibbonINInterventionID' => $gibbonINInterventionID,
-                'gibbonINInterventionEligibilityAssessmentID' => $existingAssessment['gibbonINInterventionEligibilityAssessmentID'] ?? '',
-                'gibbonPersonIDStudent' => $intervention['gibbonPersonID'] ?? ''
+                'gibbonINInterventionEligibilityAssessmentID' => $existingAssessment['gibbonINInterventionEligibilityAssessmentID'] ?? ''
             ];
             
             $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&'.http_build_query($params);
             $eligibilitySection->append('<a href="'.$url.'" class="button">'.__('Manage Eligibility Assessment').'</a>');
         }
-        
-        $eligibilitySection->append('</div>');
         
         // Status Section - Only editable by admin or based on form tutor decision
         $statusOptions = [
@@ -220,6 +253,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             'Eligibility Assessment' => __('Eligibility Assessment')
         ];
         
+        // Display current status for all users
+        $row = $form->addRow();
+        $row->addLabel('currentStatus', __('Current Status'));
+        $row->addTextField('currentStatus')->setValue($statusOptions[$intervention['status']] ?? $intervention['status'])->readonly();
+        
         // Only show status field to admins, hide it for form tutors
         if ($isAdmin) {
             $row = $form->addRow();
@@ -227,7 +265,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 $row->addSelect('status')->fromArray($statusOptions)->required();
         } else {
             // For non-admins, status is hidden and set based on form tutor decision
-            $form->addHiddenValue('status', $intervention['status']);
+            // Set a default status if it's empty
+            $currentStatus = !empty($intervention['status']) ? $intervention['status'] : 'Referral';
+            $form->addHiddenValue('status', $currentStatus);
         }
         
         // Outcome Section (Only visible if status is Intervention or later)
@@ -258,7 +298,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             }
         }
 
-        // Add a hidden field to store the form tutor decision
+        // Add a hidden field to store the form tutor decision submission flag
+        // Always set to Y when the form is submitted to ensure the decision is processed
         $form->addHiddenValue('formTutorDecisionSubmitted', 'Y');
         
         $row = $form->addRow();

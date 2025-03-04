@@ -97,7 +97,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $notes = $_POST['notes'] ?? '';
     $gibbonINEligibilityAssessmentTypeID = $_POST['gibbonINEligibilityAssessmentTypeID'] ?? '';
 
-    if (empty($contributorStatus) || empty($recommendation) || empty($gibbonINEligibilityAssessmentTypeID)) {
+    error_log('Contributor edit process - POST data: ' . print_r($_POST, true));
+    error_log('Assessment Type ID: ' . $gibbonINEligibilityAssessmentTypeID);
+
+    if (empty($contributorStatus) || empty($gibbonINEligibilityAssessmentTypeID)) {
+        error_log('Missing required fields: Status=' . $contributorStatus . ', AssessmentTypeID=' . $gibbonINEligibilityAssessmentTypeID);
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -107,61 +111,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     try {
         $data = [
             'status' => $contributorStatus,
-            'recommendation' => $recommendation,
             'notes' => $notes,
             'gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID,
             'timestampModified' => date('Y-m-d H:i:s')
         ];
         
-        $sql = "UPDATE gibbonINInterventionEligibilityContributor 
-                SET status=:status, recommendation=:recommendation, notes=:notes, gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID, timestampModified=:timestampModified 
-                WHERE gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
-                
-        $result = $pdo->update($sql, array_merge($data, ['gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID]));
-        
-        if (!$result) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit;
+        // Only include recommendation if it's provided
+        if (!empty($recommendation)) {
+            $data['recommendation'] = $recommendation;
         }
         
-        // Process subfield ratings if assessment type is selected
+        error_log('Updating contributor with data: ' . print_r($data, true));
+        
+        $contributorGateway = $container->get(INInterventionEligibilityContributorGateway::class);
+        $updated = $contributorGateway->update($gibbonINInterventionEligibilityContributorID, $data);
+        
+        if (!$updated) {
+            error_log('Failed to update contributor record');
+            throw new Exception('Failed to update contributor');
+        }
+        
+        // Process ratings for each subfield
         if (!empty($gibbonINEligibilityAssessmentTypeID)) {
-            // Get all active subfields for this assessment type
+            // Get all subfields for this assessment type
             $sql = "SELECT * FROM gibbonINEligibilityAssessmentSubfield 
                     WHERE gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID 
                     AND active='Y'";
-            $subfields = $pdo->select($sql, ['gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID])->fetchAll();
+            $subfields = $pdo->select($sql, ['gibbonINEligibilityAssessmentTypeID' => $gibbonINEligibilityAssessmentTypeID]);
             
-            if (!empty($subfields)) {
-                // Delete existing ratings for this contributor
+            error_log('Found ' . ($subfields ? $subfields->rowCount() : 0) . ' subfields for assessment type ' . $gibbonINEligibilityAssessmentTypeID);
+            
+            if ($subfields && $subfields->rowCount() > 0) {
+                // First, delete any existing ratings
                 $sql = "DELETE FROM gibbonINInterventionEligibilityContributorRating 
                         WHERE gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
                 $pdo->delete($sql, ['gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID]);
                 
-                // Insert new ratings
-                foreach ($subfields as $subfield) {
+                error_log('Deleted existing ratings for contributor ' . $gibbonINInterventionEligibilityContributorID);
+                
+                // Then insert new ratings
+                while ($subfield = $subfields->fetch()) {
                     $ratingKey = 'rating'.$subfield['gibbonINEligibilityAssessmentSubfieldID'];
-                    $ratingValue = $_POST[$ratingKey] ?? '0';
+                    $rating = $_POST[$ratingKey] ?? '0';
                     
-                    // Validate rating value (0-5)
-                    if ($ratingValue < 0 || $ratingValue > 5) {
-                        $ratingValue = 0;
+                    error_log('Processing rating for subfield ' . $subfield['gibbonINEligibilityAssessmentSubfieldID'] . ': ' . $rating);
+                    
+                    try {
+                        $sql = "INSERT INTO gibbonINInterventionEligibilityContributorRating 
+                                (gibbonINInterventionEligibilityContributorID, gibbonINEligibilityAssessmentSubfieldID, rating) 
+                                VALUES (:gibbonINInterventionEligibilityContributorID, :gibbonINEligibilityAssessmentSubfieldID, :rating)";
+                        $pdo->insert($sql, [
+                            'gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID,
+                            'gibbonINEligibilityAssessmentSubfieldID' => $subfield['gibbonINEligibilityAssessmentSubfieldID'],
+                            'rating' => $rating
+                        ]);
+                    } catch (Exception $e) {
+                        error_log('Error inserting rating: ' . $e->getMessage());
+                        throw $e;
                     }
-                    
-                    $data = [
-                        'gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID,
-                        'gibbonINEligibilityAssessmentSubfieldID' => $subfield['gibbonINEligibilityAssessmentSubfieldID'],
-                        'rating' => $ratingValue,
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ];
-                    
-                    $sql = "INSERT INTO gibbonINInterventionEligibilityContributorRating 
-                            (gibbonINInterventionEligibilityContributorID, gibbonINEligibilityAssessmentSubfieldID, rating, timestamp) 
-                            VALUES 
-                            (:gibbonINInterventionEligibilityContributorID, :gibbonINEligibilityAssessmentSubfieldID, :rating, :timestamp)";
-                            
-                    $pdo->insert($sql, $data);
                 }
             }
         }
@@ -186,8 +193,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                     $notificationGateway = $container->get(NotificationGateway::class);
                     $notificationText = sprintf(__('%1$s has completed their contribution to the eligibility assessment for %2$s.'), $contributorName, $studentName);
                     
-                    $notificationSender = $container->get(NotificationGateway::class);
+                    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                     $notificationSender->addNotification($contributor['gibbonPersonIDCreator'], $notificationText, 'Interventions', '/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID);
+                    $notificationSender->sendNotifications();
                 }
             }
         }
@@ -198,6 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         header("Location: {$URL}");
         exit;
     } catch (Exception $e) {
+        error_log('Error updating contributor: ' . $e->getMessage());
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;

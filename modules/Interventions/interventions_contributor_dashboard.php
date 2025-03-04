@@ -101,6 +101,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 ->format(function ($row, $actions) {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Interventions/intervention_eligibility_contributor_edit.php');
+                    
+                    // Add a button to add another assessment type
+                    $actions->addAction('add', __('Add Assessment Type'))
+                        ->setIcon('page_new')
+                        ->setURL('/modules/Interventions/intervention_eligibility_contributor_add_type.php');
                 });
                 
             // Convert the database result to an array for the DataTable

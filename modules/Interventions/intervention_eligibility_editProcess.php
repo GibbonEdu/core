@@ -32,12 +32,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonINInterventionID = $_POST['gibbonINInterventionID'] ?? '';
 $gibbonINInterventionEligibilityAssessmentID = $_POST['gibbonINInterventionEligibilityAssessmentID'] ?? '';
-$gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonPersonIDStudent='.$gibbonPersonIDStudent.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+error_log('Eligibility Edit Process - Intervention ID: ' . $gibbonINInterventionID);
+error_log('Eligibility Edit Process - Assessment ID: ' . $gibbonINInterventionEligibilityAssessmentID);
+
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_edit.php') == false) {
     $URL .= '&return=error0';
@@ -57,11 +59,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     
     // Get intervention details
     $intervention = $interventionGateway->getInterventionByID($gibbonINInterventionID);
+
     if (empty($intervention)) {
+        error_log('Intervention not found for ID: ' . $gibbonINInterventionID);
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
+    
+    error_log('Retrieved intervention: ' . json_encode($intervention));
+    error_log('Student ID from intervention: ' . ($intervention['gibbonPersonIDStudent'] ?? 'not set'));
     
     // Check access based on the highest action level
     $highestAction = getHighestGroupedAction($guid, '/modules/Interventions/intervention_eligibility_edit.php', $connection2);
@@ -121,22 +128,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $data = [
         'status' => $assessmentStatus,
         'eligibilityDecision' => $eligibilityDecision,
-        'notes' => $notes,
-        'documentPath' => $documentPath
+        'notes' => $notes
     ];
     
+    error_log('Assessment data for update/insert: ' . json_encode($data));
+
     // Update or insert based on whether we have an ID
     $success = false;
     if (!empty($gibbonINInterventionEligibilityAssessmentID)) {
+        error_log('Updating existing assessment with ID: ' . $gibbonINInterventionEligibilityAssessmentID);
         $success = $eligibilityAssessmentGateway->update($gibbonINInterventionEligibilityAssessmentID, $data);
     } else {
+        error_log('Creating new assessment for intervention ID: ' . $gibbonINInterventionID);
         $data['gibbonINInterventionID'] = $gibbonINInterventionID;
-        $data['gibbonPersonIDStudent'] = $intervention['gibbonPersonIDStudent'];
+        $data['gibbonPersonIDStudent'] = $intervention['gibbonPersonIDStudent'] ?? null;
         $data['gibbonPersonIDCreator'] = $session->get('gibbonPersonID');
         $data['timestampCreated'] = date('Y-m-d H:i:s');
         
+        error_log('Complete assessment data for insert: ' . json_encode($data));
         $gibbonINInterventionEligibilityAssessmentID = $eligibilityAssessmentGateway->insert($data);
+        error_log('New assessment ID: ' . $gibbonINInterventionEligibilityAssessmentID);
         $success = !empty($gibbonINInterventionEligibilityAssessmentID);
+    }
+
+    if (!$success) {
+        error_log('Failed to update/insert assessment');
+    }
+    
+    // Update intervention status if it's still in Referral status
+    if ($success && $intervention['status'] == 'Referral') {
+        error_log('Updating intervention status from Referral to Eligibility Assessment');
+        $interventionGateway->update($gibbonINInterventionID, [
+            'status' => 'Eligibility Assessment'
+        ]);
     }
     
     // Update intervention status if eligibility assessment is complete
