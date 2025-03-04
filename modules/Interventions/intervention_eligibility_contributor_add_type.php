@@ -53,9 +53,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Get the current contributor
         $contributorGateway = $container->get(INInterventionEligibilityContributorGateway::class);
         $criteria = $contributorGateway->newQueryCriteria();
-        $contributors = $contributorGateway->queryContributors($criteria, [
-            'gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID
-        ]);
+        
+        // Add filter for the specific contributor ID
+        $criteria->addFilterRule('gibbonINInterventionEligibilityContributorID', function ($query, $gibbonINInterventionEligibilityContributorID) use ($gibbonINInterventionEligibilityContributorID) {
+            return $query
+                ->where('gibbonINInterventionEligibilityContributor.gibbonINInterventionEligibilityContributorID = :gibbonINInterventionEligibilityContributorID')
+                ->bindValue('gibbonINInterventionEligibilityContributorID', $gibbonINInterventionEligibilityContributorID);
+        });
+        
+        $contributors = $contributorGateway->queryContributors($criteria);
 
         if ($contributors->getResultCount() == 0) {
             $page->addError(__('The specified record cannot be found.'));

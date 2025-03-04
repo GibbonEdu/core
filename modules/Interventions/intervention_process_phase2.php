@@ -200,24 +200,43 @@ echo '</div>';
 }
 
 // Get contributors
-$contributorGateway = $container->get(INInterventionEligibilityContributorGateway::class);
+$assessmentID = $assessment['gibbonINInterventionEligibilityAssessmentID'];
 
-// Create a QueryCriteria object
-$criteria = new QueryCriteria();
-$criteria->addFilterRule('gibbonINInterventionEligibilityAssessmentID', function ($query, $gibbonINInterventionEligibilityAssessmentID) use ($assessment) {
-    return $query
-        ->where('gibbonINInterventionEligibilityContributor.gibbonINInterventionEligibilityAssessmentID = :gibbonINInterventionEligibilityAssessmentID')
-        ->bindValue('gibbonINInterventionEligibilityAssessmentID', $assessment['gibbonINInterventionEligibilityAssessmentID']);
-});
+ 
 
-// Query contributors
-$contributors = $contributorGateway->queryContributors($criteria);
+// Direct SQL query to get contributors for this specific assessment
+$sql = "SELECT 
+            gibbonINInterventionEligibilityContributor.gibbonINInterventionEligibilityContributorID,
+            gibbonINInterventionEligibilityContributor.gibbonINInterventionEligibilityAssessmentID,
+            gibbonINInterventionEligibilityContributor.gibbonPersonIDContributor,
+            gibbonINInterventionEligibilityContributor.gibbonINEligibilityAssessmentTypeID,
+            gibbonINInterventionEligibilityContributor.notes,
+            gibbonINInterventionEligibilityContributor.status,
+            gibbonINInterventionEligibilityContributor.contribution,
+            gibbonINInterventionEligibilityContributor.recommendation,
+            gibbonINInterventionEligibilityContributor.timestampCreated,
+            gibbonINInterventionEligibilityContributor.timestampModified,
+            gibbonPerson.title,
+            gibbonPerson.preferredName,
+            gibbonPerson.surname,
+            gibbonINEligibilityAssessmentType.name as assessmentType
+        FROM gibbonINInterventionEligibilityContributor
+        LEFT JOIN gibbonPerson ON gibbonPerson.gibbonPersonID=gibbonINInterventionEligibilityContributor.gibbonPersonIDContributor
+        LEFT JOIN gibbonINEligibilityAssessmentType ON gibbonINEligibilityAssessmentType.gibbonINEligibilityAssessmentTypeID=gibbonINInterventionEligibilityContributor.gibbonINEligibilityAssessmentTypeID
+        WHERE gibbonINInterventionEligibilityContributor.gibbonINInterventionEligibilityAssessmentID = :assessmentID
+        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
+$result = $pdo->select($sql, ['assessmentID' => $assessmentID]);
+$contributors = ($result->rowCount() > 0) ? $result->fetchAll() : [];
+
+ 
 
 // Display contributors
-$table = DataTable::createPaginated('contributors', $criteria);
+$table = DataTable::create('contributors');
 $table->withData($contributors);
 $table->setTitle(__('Contributors'));
 
+// Add header action
 $table->addHeaderAction('add', __('Add'))
     ->setURL('/modules/Interventions/intervention_eligibility_contributor_add.php')
     ->addParam('gibbonINInterventionEligibilityAssessmentID', $assessment['gibbonINInterventionEligibilityAssessmentID'])
@@ -225,30 +244,35 @@ $table->addHeaderAction('add', __('Add'))
     ->addParam('returnProcess', 'true')
     ->displayLabel();
 
+// Add columns
 $table->addColumn('name', __('Name'))
-    ->sortable(['surname', 'preferredName'])
     ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
 
 $table->addColumn('assessmentType', __('Assessment Type'))
     ->format(function ($values) {
-        return !empty($values['assessmentType']) ? $values['assessmentType'] : '<span class="emphasis small">' . __('Not Selected') . '</span>';
+        return !empty($values['assessmentType']) ? $values['assessmentType'] : '<span class="emphasis small">'.__('Not Selected').'</span>';
     });
 
 $table->addColumn('status', __('Status'))
     ->format(function ($values) {
-        global $guid;
-        return $values['status'] == 'Complete' 
-            ? '<span class="tag success">'.__('Complete').'</span>' 
-            : '<span class="tag dull">'.__('Pending').'</span>';
+        if ($values['status'] == 'Pending') {
+            return '<span class="tag dull">'.__('Pending').'</span>';
+        } else {
+            return '<span class="tag success">'.__('Complete').'</span>';
+        }
     });
 
 $table->addColumn('recommendation', __('Recommendation'));
 
 // Add actions column
 $table->addActionColumn()
-    ->addParam('gibbonINInterventionEligibilityAssessmentID', $assessment['gibbonINInterventionEligibilityAssessmentID'])
     ->addParam('gibbonINInterventionEligibilityContributorID')
     ->addParam('gibbonINInterventionID', $gibbonINInterventionID)
+    ->addParam('gibbonINInterventionEligibilityAssessmentID', $assessment['gibbonINInterventionEligibilityAssessmentID'])
+    ->addParam('gibbonPersonIDStudent', '')
+    ->addParam('gibbonFormGroupID', '')
+    ->addParam('gibbonYearGroupID', '')
+    ->addParam('status', '')
     ->addParam('returnProcess', 'true')
     ->format(function ($contributor, $actions) use ($guid, $isAdmin, $assessment, $gibbonPersonID) {
         // View action
@@ -257,7 +281,7 @@ $table->addActionColumn()
             ->setIcon('page_white_text');
 
         // Edit action - only for the contributor or admin
-        if ($isAdmin || $contributor['gibbonPersonID'] == $gibbonPersonID) {
+        if ($isAdmin || $contributor['gibbonPersonIDContributor'] == $gibbonPersonID) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Interventions/intervention_eligibility_contributor_edit.php')
                 ->setIcon('config');

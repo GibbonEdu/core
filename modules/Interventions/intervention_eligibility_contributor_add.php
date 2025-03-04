@@ -51,14 +51,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $isContributor = false;
         
         // Check if the current user is a staff member
-        $sql = "SELECT gibbonRoleID FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+        $sql = "SELECT gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
         $result = $pdo->selectOne($sql, ['gibbonPersonID' => $session->get('gibbonPersonID')]);
         
         if (!empty($result)) {
             $sql = "SELECT gibbonRoleID FROM gibbonRole WHERE name='Staff'";
             $staffRole = $pdo->selectOne($sql);
             
-            if (!empty($staffRole) && $result['gibbonRoleID'] == $staffRole['gibbonRoleID']) {
+            if (!empty($staffRole) && $result['gibbonRoleIDPrimary'] == $staffRole['gibbonRoleID']) {
                 $isContributor = true;
             }
         }
