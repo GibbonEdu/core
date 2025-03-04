@@ -220,6 +220,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->format(function ($intervention, $actions) use ($highestAction) {
+                // Add process button
+                $actions->addAction('process', __('Process'))
+                    ->setURL('/modules/Interventions/intervention_process.php')
+                    ->addParam('step', getInterventionStep($intervention['status']))
+                    ->setIcon('delivery2');
+                
                 $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Interventions/interventions_manage_edit.php');
                 

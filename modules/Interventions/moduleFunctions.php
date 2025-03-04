@@ -24,6 +24,21 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 
+/**
+ * Format a person's name based on their role
+ *
+ * @param string $title
+ * @param string $preferredName
+ * @param string $surname
+ * @param string $role
+ * @param bool $reverse
+ * @return string
+ */
+function formatName($title, $preferredName, $surname, $role = 'Student', $reverse = false)
+{
+    return Format::name($title, $preferredName, $surname, $role, $reverse);
+}
+
 //$mode can be blank or "disabled". $archive is a serialized array of values previously archived
 function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $archive = '')
 {
@@ -166,4 +181,90 @@ function getReferralCriteriaStrands($includeCognition = false)
     }
 
     return $options;
+}
+
+/**
+ * Get all users who have permission to manage interventions
+ *
+ * @param \PDO $connection2
+ * @return array Array of gibbonPersonID values
+ */
+function getInterventionCoordinators($connection2)
+{
+    $coordinators = [];
+    
+    try {
+        $data = [];
+        $sql = "SELECT gibbonPerson.gibbonPersonID 
+                FROM gibbonPerson 
+                JOIN gibbonPermission ON (gibbonPermission.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                JOIN gibbonAction ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+                WHERE gibbonPerson.status='Full' 
+                AND gibbonAction.name='Manage Interventions' 
+                AND gibbonAction.moduleName='Interventions'";
+                
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+        
+        while ($row = $result->fetch()) {
+            $coordinators[] = $row['gibbonPersonID'];
+        }
+    } catch (\PDOException $e) {
+        // Log error
+        error_log($e->getMessage());
+    }
+    
+    return $coordinators;
+}
+
+/**
+ * Get the appropriate step number based on intervention status
+ *
+ * @param string $status
+ * @return int
+ */
+function getInterventionStep($status)
+{
+    switch($status) {
+        case 'Referral':
+        case 'Form Tutor Review':
+            return 1;
+        case 'Eligibility Assessment':
+            return 2;
+        case 'Intervention Required':
+            return 3;
+        case 'Support Plan Active':
+            return 4;
+        case 'Ready for Evaluation':
+        case 'Resolved':
+            return 5;
+        default:
+            return 1;
+    }
+}
+
+/**
+ * Get the appropriate redirect URL based on whether we're coming from the process page
+ *
+ * @param string $gibbonINInterventionID
+ * @param string $gibbonINInterventionEligibilityAssessmentID
+ * @param string $gibbonPersonIDStudent
+ * @param string $gibbonFormGroupID
+ * @param string $gibbonYearGroupID
+ * @param string $status
+ * @param bool|string $returnProcess
+ * @param int $step
+ * @return string
+ */
+function getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID = '', $gibbonPersonIDStudent = '', $gibbonFormGroupID = '', $gibbonYearGroupID = '', $status = '', $returnProcess = false, $step = 2)
+{
+    // Convert returnProcess to a proper boolean
+    $returnProcess = filter_var($returnProcess, FILTER_VALIDATE_BOOLEAN);
+    
+    if ($returnProcess) {
+        return $session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_process.php&gibbonINInterventionID=$gibbonINInterventionID&step=$step";
+    } else {
+        return $session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID=$gibbonINInterventionID&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonPersonIDStudent=$gibbonPersonIDStudent&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status";
+    }
 }

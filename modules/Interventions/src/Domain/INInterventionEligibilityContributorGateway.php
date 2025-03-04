@@ -95,7 +95,7 @@ class INInterventionEligibilityContributorGateway extends QueryableGateway imple
             },
         ]);
 
-        return $this->runQuery($query, $criteria);
+        return $this->runQuery($query, $criteria, ['gibbonPerson', 'gibbonINEligibilityAssessmentType']);
     }
     
     /**

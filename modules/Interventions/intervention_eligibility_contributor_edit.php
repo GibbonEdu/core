@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $gibbonINInterventionID = $_GET['gibbonINInterventionID'] ?? '';
         $gibbonINInterventionEligibilityAssessmentID = $_GET['gibbonINInterventionEligibilityAssessmentID'] ?? '';
         $gibbonINInterventionEligibilityContributorID = $_GET['gibbonINInterventionEligibilityContributorID'] ?? '';
+        $returnProcess = $_GET['returnProcess'] ?? '';
 
         if (empty($gibbonINInterventionEligibilityAssessmentID) || empty($gibbonINInterventionID) || empty($gibbonINInterventionEligibilityContributorID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
@@ -124,6 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
+        $form->addHiddenValue('returnProcess', $returnProcess);
 
         $form->addRow()->addHeading(__('Contributor Details'));
 

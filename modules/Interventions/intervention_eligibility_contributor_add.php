@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
         $status = $_GET['status'] ?? '';
+        $returnProcess = $_GET['returnProcess'] ?? '';
 
         $page->breadcrumbs
             ->add(__('Manage Interventions'), 'interventions_manage.php', [
@@ -114,6 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('status', $status);
+        $form->addHiddenValue('returnProcess', $returnProcess);
 
         $form->addRow()->addHeading(__('Assessment Details'));
 

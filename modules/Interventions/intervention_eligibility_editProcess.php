@@ -171,6 +171,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $interventionStatus = 'Eligible for IEP';
         } elseif ($eligibilityDecision == 'Needs Intervention') {
             $interventionStatus = 'Intervention Required';
+            
+            // Add notification for intervention coordinator that a new intervention is ready for planning
+            $notificationGateway = $container->get(NotificationGateway::class);
+            $notificationSender = $container->get(NotificationSender::class);
+            
+            // Get intervention coordinators (users with manage interventions permission)
+            $coordinators = getInterventionCoordinators($connection2);
+            
+            if (!empty($coordinators)) {
+                foreach ($coordinators as $coordinator) {
+                    $notificationGateway->addNotification(
+                        $coordinator, 
+                        'Interventions: New Support Plan Required', 
+                        sprintf(__('A student has been assessed and requires a support plan: %s'), $intervention['name']),
+                        'Interventions', 
+                        '/index.php?q=/modules/Interventions/interventions_manage_edit.php&gibbonINInterventionID='.$gibbonINInterventionID
+                    );
+                }
+                $notificationSender->sendNotifications($pdo, $session);
+            }
         }
         
         if (!empty($interventionStatus)) {
@@ -179,22 +199,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             ]);
         }
         
-        // Notify relevant staff
-        $notificationText = sprintf(__('An eligibility assessment for %s has been completed with the decision: %s'), Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student'), __($eligibilityDecision));
-        
-        // Insert notification for the creator of the intervention
-        if ($intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-            $notificationGateway = $container->get(\Gibbon\Domain\System\NotificationGateway::class);
-            $notificationSender = $container->get(\Gibbon\Comms\NotificationSender::class);
-            
-            $notificationGateway->insertNotification([
-                'gibbonPersonID' => $intervention['gibbonPersonIDCreator'],
-                'text' => $notificationText,
-                'moduleName' => 'Interventions',
-                'actionLink' => '/modules/Interventions/intervention_eligibility_edit.php?gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID
+        // Update intervention status to Support Plan Active if eligibility decision is Eligible for IEP
+        if ($eligibilityDecision == 'Eligible for IEP') {
+            $interventionGateway->update($gibbonINInterventionID, [
+                'status' => 'Support Plan Active'
             ]);
-            
-            $notificationSender->sendNotifications($session->get('absoluteURL'));
         }
     }
     

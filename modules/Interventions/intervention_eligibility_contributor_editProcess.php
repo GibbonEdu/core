@@ -34,27 +34,29 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
+$returnProcess = $_POST['returnProcess'] ?? false;
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_contributor_edit.php&gibbonINInterventionEligibilityContributorID='.$gibbonINInterventionEligibilityContributorID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+// Get the redirect URL for error cases
+$errorURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_contributor_edit.php&gibbonINInterventionEligibilityContributorID='.$gibbonINInterventionEligibilityContributorID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_contributor_edit.php') == false) {
     // Access denied
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    $errorURL .= '&return=error0';
+    header("Location: {$errorURL}");
     exit;
 } else {
     // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, '/modules/Interventions/intervention_eligibility_contributor_edit.php', $connection2);
     if (empty($highestAction)) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error0';
+        header("Location: {$errorURL}");
         exit;
     }
 
     // Proceed!
     if (empty($gibbonINInterventionEligibilityAssessmentID) || empty($gibbonINInterventionID) || empty($gibbonINInterventionEligibilityContributorID)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error1';
+        header("Location: {$errorURL}");
         exit;
     }
 
@@ -67,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $result = $pdo->select($sql, ['gibbonINInterventionEligibilityContributorID' => $gibbonINInterventionEligibilityContributorID]);
     
     if ($result->rowCount() != 1) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error2';
+        header("Location: {$errorURL}");
         exit;
     }
     
@@ -79,15 +81,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $intervention = $pdo->selectOne($sql, ['gibbonINInterventionID' => $gibbonINInterventionID]);
     
     if (empty($intervention)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error2';
+        header("Location: {$errorURL}");
         exit;
     }
     
     // Check access based on the highest action level
     if ($highestAction == 'Manage Interventions_my' && $intervention['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error0';
+        header("Location: {$errorURL}");
         exit;
     }
 
@@ -102,8 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
     if (empty($contributorStatus) || empty($gibbonINEligibilityAssessmentTypeID)) {
         error_log('Missing required fields: Status=' . $contributorStatus . ', AssessmentTypeID=' . $gibbonINEligibilityAssessmentTypeID);
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error1';
+        header("Location: {$errorURL}");
         exit;
     }
 
@@ -200,15 +202,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             }
         }
         
-        // Success
-        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
+        // Success - Get the redirect URL
+        $URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonID, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess);
         $URL .= '&return=success0';
         header("Location: {$URL}");
         exit;
     } catch (Exception $e) {
         error_log('Error updating contributor: ' . $e->getMessage());
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        $errorURL .= '&return=error2';
+        header("Location: {$errorURL}");
         exit;
     }
 }

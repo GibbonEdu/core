@@ -84,108 +84,214 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
 
-    // Validate Inputs
+    // Process form data
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? '';
+    $status = $_POST['status'] ?? '';
     $formTutorDecision = $_POST['formTutorDecision'] ?? '';
     $formTutorNotes = $_POST['formTutorNotes'] ?? '';
-    $newStatus = $_POST['status'] ?? '';
+    $outcomeDecision = $_POST['outcomeDecision'] ?? '';
+    $outcomeNotes = $_POST['outcomeNotes'] ?? '';
+    $targetDate = $_POST['targetDate'] ?? '';
+    $parentConsent = $_POST['parentConsent'] ?? 'N';
+    $parentConsultNotes = $_POST['parentConsultNotes'] ?? '';
+    $strategies = $_POST['strategies'] ?? '';
+    $goals = $_POST['goals'] ?? '';
+    $activateSupportPlan = $_POST['activateSupportPlan'] ?? '0';
+    $phase = $_POST['phase'] ?? '';
     
-    // Set a default status if it's empty
-    if (empty($newStatus)) {
-        $newStatus = 'Referral'; // Default status
-        error_log('Setting default status to: ' . $newStatus);
-    }
-    
-    error_log('Name: ' . $name);
-    error_log('Description: ' . $description);
-    error_log('Form Tutor Decision: ' . $formTutorDecision);
-    error_log('Form Tutor Notes: ' . $formTutorNotes);
-    error_log('New Status: ' . $newStatus);
-    
-    // Determine user roles
-    $isFormTutor = ($intervention['gibbonPersonIDFormTutor'] == $session->get('gibbonPersonID'));
-    $isCreator = ($intervention['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'));
-    $isAdmin = ($highestAction == 'Manage Interventions');
-
+    // Check for required fields
     if (empty($name) || empty($description)) {
-        error_log('Validation failed: Name empty: ' . empty($name) . ', Description empty: ' . empty($description));
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
     
-    // Check if form tutor decision was submitted
-    $formTutorDecisionSubmitted = $_POST['formTutorDecisionSubmitted'] ?? '';
-    error_log('Form tutor decision submitted: ' . $formTutorDecisionSubmitted);
-    error_log('Form tutor decision: ' . $formTutorDecision);
-    error_log('POST data: ' . json_encode($_POST));
-
-    // Only process form tutor decision if it was actually submitted and a decision was made
-    if ($formTutorDecisionSubmitted == 'Y' && !empty($formTutorDecision)) {
-        error_log('Processing form tutor decision');
-        // If form tutor made a decision, update the status accordingly
-        if ($isFormTutor || $isAdmin) {
-            error_log('User is form tutor or admin');
-            if ($formTutorDecision != 'Pending') {
-                error_log('Decision is not pending: ' . $formTutorDecision);
+    // Determine user roles
+    $isFormTutor = ($intervention['gibbonPersonIDFormTutor'] == $session->get('gibbonPersonID'));
+    $isCreator = ($intervention['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'));
+    $isAdmin = ($highestAction == 'Manage Interventions');
+    
+    // Prepare data for update
+    $data = [
+        'name' => $name,
+        'description' => $description,
+        'parentConsent' => $parentConsent,
+        'parentConsultNotes' => $parentConsultNotes,
+        'timestampModified' => date('Y-m-d H:i:s')
+    ];
+    
+    // Process based on which phase was submitted
+    if ($phase == 'phase1') {
+        // Phase 1 submission - only update basic info and form tutor decision
+        
+        // If form tutor decision is provided
+        if (!empty($formTutorDecision)) {
+            // Check if user is form tutor or admin
+            if ($isFormTutor || $isAdmin) {
+                $data['formTutorDecision'] = $formTutorDecision;
+                $data['formTutorNotes'] = $formTutorNotes;
+                
                 // If resolved, update status
                 if ($formTutorDecision == 'Resolved') {
-                    error_log('Decision is Resolved');
-                    $newStatus = 'Resolved';
+                    $data['status'] = 'Resolved';
                 }
                 
                 // If eligibility assessment, update status
                 if ($formTutorDecision == 'Eligibility Assessment') {
-                    error_log('Decision is Eligibility Assessment');
-                    $newStatus = 'Eligibility Assessment';
+                    $data['status'] = 'Eligibility Assessment';
                     
                     // Create an eligibility assessment record if one doesn't exist
                     $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
-                    $existingAssessment = $eligibilityAssessmentGateway->getByInterventionID($gibbonINInterventionID);
+                    $existingAssessment = $eligibilityAssessmentGateway->selectBy(['gibbonINInterventionID' => $gibbonINInterventionID])->fetch();
                     
                     if (empty($existingAssessment)) {
-                        error_log('No existing assessment found, creating new one');
                         // Create a new assessment
-                        $data = [
+                        $dataAssessment = [
                             'gibbonINInterventionID' => $gibbonINInterventionID,
                             'gibbonPersonIDStudent' => $intervention['gibbonPersonIDStudent'] ?? null,
                             'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
-                            'status' => 'In Progress',
                             'timestampCreated' => date('Y-m-d H:i:s')
                         ];
                         
-                        error_log('Assessment data: ' . json_encode($data));
-                        $gibbonINInterventionEligibilityAssessmentID = $eligibilityAssessmentGateway->insert($data);
-                        error_log('New assessment ID: ' . $gibbonINInterventionEligibilityAssessmentID);
+                        $gibbonINInterventionEligibilityAssessmentID = $eligibilityAssessmentGateway->insert($dataAssessment);
                         
                         // Redirect to the new intervention eligibility edit page
                         if (!empty($gibbonINInterventionEligibilityAssessmentID)) {
-                            $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
-                            error_log('Redirecting to: ' . $redirectURL);
-                            header("Location: {$redirectURL}");
+                            $URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID;
+                            header("Location: {$URL}");
                             exit;
-                        } else {
-                            error_log('Failed to create assessment');
                         }
                     } else {
-                        error_log('Existing assessment found: ' . json_encode($existingAssessment));
-                        // Redirect to edit the existing assessment
-                        $redirectURL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID='.$gibbonINInterventionID.'&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&status='.$status;
-                        error_log('Redirecting to existing assessment: ' . $redirectURL);
-                        header("Location: {$redirectURL}");
+                        // Redirect to the existing intervention eligibility edit page
+                        $gibbonINInterventionEligibilityAssessmentID = $existingAssessment['gibbonINInterventionEligibilityAssessmentID'];
+                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID;
+                        header("Location: {$URL}");
                         exit;
                     }
                 }
                 
-                // If pending, update status
+                // If decision is pending but referral is being reviewed, set status to Form Tutor Review
                 if ($formTutorDecision == 'Pending' && $intervention['status'] == 'Referral') {
-                    error_log('Decision is Pending and status is Referral');
-                    // If decision is pending but referral is being reviewed, set status to Form Tutor Review
-                    $newStatus = 'Form Tutor Review';
+                    $data['status'] = 'Form Tutor Review';
                 }
-            } else {
-                error_log('User is not form tutor or admin');
+            }
+        }
+    } else if ($phase == 'phase3') {
+        // Phase 3 submission - update support plan details
+        
+        // Add target date only if it's not empty
+        if (!empty($targetDate)) {
+            $data['targetDate'] = $targetDate;
+        }
+        
+        // Add strategies and goals
+        $data['strategies'] = $strategies;
+        $data['goals'] = $goals;
+        
+        // If activating the support plan, update status
+        if ($activateSupportPlan == '1' && $intervention['status'] == 'Intervention Required') {
+            $data['status'] = 'Support Plan Active';
+        }
+    } else if ($phase == 'phase5') {
+        // Phase 5 submission - update outcome details
+        
+        // If outcome decision is being changed, update it
+        if (!empty($outcomeDecision)) {
+            $data['outcomeDecision'] = $outcomeDecision;
+        }
+        
+        // If outcome notes are being changed, update them
+        if (!empty($outcomeNotes)) {
+            $data['outcomeNotes'] = $outcomeNotes;
+        }
+        
+        // If resolving the intervention, update status
+        if ($outcomeDecision == 'Resolved') {
+            $data['status'] = 'Resolved';
+        }
+    } else {
+        // Default submission - update all fields
+        
+        // Add target date only if it's not empty
+        if (!empty($targetDate)) {
+            $data['targetDate'] = $targetDate;
+        }
+        
+        // Add strategies and goals
+        $data['strategies'] = $strategies;
+        $data['goals'] = $goals;
+        
+        // If status is being changed, update it
+        if (!empty($status)) {
+            $data['status'] = $status;
+        }
+        
+        // If activating the support plan, update status
+        if ($activateSupportPlan == '1' && $intervention['status'] == 'Intervention Required') {
+            $data['status'] = 'Support Plan Active';
+        }
+        
+        // If outcome decision is being changed, update it
+        if (!empty($outcomeDecision)) {
+            $data['outcomeDecision'] = $outcomeDecision;
+        }
+        
+        // If outcome notes are being changed, update them
+        if (!empty($outcomeNotes)) {
+            $data['outcomeNotes'] = $outcomeNotes;
+        }
+        
+        // If form tutor decision is provided
+        if (!empty($formTutorDecision)) {
+            // Check if user is form tutor or admin
+            if ($isFormTutor || $isAdmin) {
+                $data['formTutorDecision'] = $formTutorDecision;
+                $data['formTutorNotes'] = $formTutorNotes;
+                
+                // If resolved, update status
+                if ($formTutorDecision == 'Resolved') {
+                    $data['status'] = 'Resolved';
+                }
+                
+                // If eligibility assessment, update status
+                if ($formTutorDecision == 'Eligibility Assessment') {
+                    $data['status'] = 'Eligibility Assessment';
+                    
+                    // Create an eligibility assessment record if one doesn't exist
+                    $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
+                    $existingAssessment = $eligibilityAssessmentGateway->selectBy(['gibbonINInterventionID' => $gibbonINInterventionID])->fetch();
+                    
+                    if (empty($existingAssessment)) {
+                        // Create a new assessment
+                        $dataAssessment = [
+                            'gibbonINInterventionID' => $gibbonINInterventionID,
+                            'gibbonPersonIDStudent' => $intervention['gibbonPersonIDStudent'] ?? null,
+                            'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
+                            'timestampCreated' => date('Y-m-d H:i:s')
+                        ];
+                        
+                        $gibbonINInterventionEligibilityAssessmentID = $eligibilityAssessmentGateway->insert($dataAssessment);
+                        
+                        // Redirect to the new intervention eligibility edit page
+                        if (!empty($gibbonINInterventionEligibilityAssessmentID)) {
+                            $URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID;
+                            header("Location: {$URL}");
+                            exit;
+                        }
+                    } else {
+                        // Redirect to the existing intervention eligibility edit page
+                        $gibbonINInterventionEligibilityAssessmentID = $existingAssessment['gibbonINInterventionEligibilityAssessmentID'];
+                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$gibbonINInterventionEligibilityAssessmentID.'&gibbonINInterventionID='.$gibbonINInterventionID;
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                }
+                
+                // If decision is pending but referral is being reviewed, set status to Form Tutor Review
+                if ($formTutorDecision == 'Pending' && $intervention['status'] == 'Referral') {
+                    $data['status'] = 'Form Tutor Review';
+                }
             }
         }
     }
@@ -195,19 +301,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Preserve existing values for fields they shouldn't change
         $formTutorDecision = $intervention['formTutorDecision'];
         $formTutorNotes = $intervention['formTutorNotes'];
-        $newStatus = $intervention['status'];
+        $data['status'] = $intervention['status'];
     }
 
     // Update the intervention
-    $data = [
-        'name' => $name,
-        'description' => $description,
-        'formTutorDecision' => $formTutorDecision,
-        'formTutorNotes' => $formTutorNotes,
-        'status' => $newStatus
-    ];
-
-    error_log('Updating intervention with data: ' . json_encode($data));
     $updated = $interventionGateway->update($gibbonINInterventionID, $data);
 
     if (!$updated) {
@@ -220,15 +317,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     error_log('Intervention updated successfully');
 
     // Send notification if status has changed
-    if ($newStatus != $intervention['status']) {
-        error_log('Status changed from ' . $intervention['status'] . ' to ' . $newStatus);
+    if ($data['status'] != $intervention['status']) {
+        error_log('Status changed from ' . $intervention['status'] . ' to ' . $data['status']);
         $notificationGateway = $container->get(NotificationGateway::class);
 
         $studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', false, true);
         $notificationString = __('The intervention "{name}" for {student} has been updated to {status}.', [
             'name' => $name,
             'student' => $studentName,
-            'status' => $newStatus
+            'status' => $data['status']
         ]);
         
         error_log('Notification message: ' . $notificationString);

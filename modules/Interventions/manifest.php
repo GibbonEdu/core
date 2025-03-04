@@ -18,9 +18,29 @@ $moduleTables[] = "CREATE TABLE `gibbonINIntervention` (
     `gibbonPersonIDFormTutor` INT(10) UNSIGNED ZEROFILL NULL,
     `name` VARCHAR(100) NOT NULL,
     `description` TEXT NOT NULL,
-    `status` ENUM('Referral','Form Tutor Review','Intervention','IEP','Resolved','Completed') NOT NULL DEFAULT 'Referral',
+    `parentConsent` ENUM('Y','N') NOT NULL DEFAULT 'N',
+    `parentConsultNotes` TEXT NULL,
+    `status` ENUM(
+        'Referral',
+        'Form Tutor Review',
+        'Eligibility Assessment',
+        'Intervention Required',
+        'Support Plan Active',
+        'Ready for Evaluation',
+        'Resolved',
+        'Referred for IEP'
+    ) NOT NULL DEFAULT 'Referral',
     `formTutorDecision` ENUM('Pending','Resolvable','Try Interventions','Try IEP') NOT NULL DEFAULT 'Pending',
     `formTutorNotes` TEXT NULL,
+    `goals` TEXT NULL,
+    `strategies` TEXT NULL,
+    `resources` TEXT NULL,
+    `targetDate` DATE NULL,
+    `gibbonPersonIDStaff` INT(10) UNSIGNED ZEROFILL NULL,
+    `dateStart` DATE NULL,
+    `dateEnd` DATE NULL,
+    `outcome` ENUM('Goals Achieved','Partial Progress','No Progress','Refer for IEP') NULL,
+    `dateResolved` DATE NULL,
     `outcomeNotes` TEXT NULL,
     `outcomeDecision` ENUM('Pending','Success','Needs IEP') NULL DEFAULT 'Pending',
     `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,6 +58,18 @@ $moduleTables[] = "CREATE TABLE `gibbonINInterventionContributor` (
     `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`gibbonINInterventionContributorID`),
     UNIQUE KEY `contributor` (`gibbonINInterventionID`, `gibbonPersonIDContributor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+$moduleTables[] = "CREATE TABLE `gibbonINInterventionNote` (
+    `gibbonINInterventionNoteID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
+    `note` TEXT NOT NULL,
+    `date` DATE NOT NULL,
+    `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINInterventionNoteID`),
+    INDEX(`gibbonINInterventionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 $moduleTables[] = "CREATE TABLE `gibbonINInterventionStrategy` (
@@ -367,6 +399,26 @@ $actionRows[] = [
     'menuShow' => 'Y',
     'defaultPermissionAdmin' => 'Y',
     'defaultPermissionTeacher' => 'N',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'N',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'N'
+];
+
+$actionRows[] = [
+    'name' => 'Intervention Process',
+    'precedence' => '0',
+    'category' => 'Interventions',
+    'description' => 'Manage interventions through a structured multi-step process',
+    'URLList' => 'intervention_process.php,intervention_process_phase1Process.php,intervention_process_phase2Process.php,intervention_process_phase3Process.php,intervention_process_phase4Process.php,intervention_process_phase5Process.php',
+    'entryURL' => 'intervention_process.php',
+    'entrySidebar' => 'Y',
+    'menuShow' => 'N',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'Y',
     'defaultPermissionStudent' => 'N',
     'defaultPermissionParent' => 'N',
     'defaultPermissionSupport' => 'N',

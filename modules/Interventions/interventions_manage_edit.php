@@ -87,42 +87,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonINInterventionID', $gibbonINInterventionID);
-        $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
-        $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
-        $form->addHiddenValue('status', $status);
-
-        // Get student details
-        $studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student', true);
-        $form->addRow()->addHeading(__('Student Details'));
+        
+        // PHASE 1: REFERRAL INFORMATION
+        $form->addRow()->addHeading(__('Phase 1: Referral Information'))->append('<p class="emphasis small">'.__('Initial information about the student and reason for referral').'</p>');
+        
         $row = $form->addRow();
-            $row->addLabel('studentName', __('Student'));
-            $row->addTextField('studentName')->setValue($studentName)->readonly();
-
+            $row->addLabel('student', __('Student'));
+            $row->addTextField('student')->setValue(Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student'))->readonly();
+            
         $row = $form->addRow();
-            $row->addLabel('formGroup', __('Form Group'));
-            $row->addTextField('formGroup')->setValue($intervention['formGroup'] ?? '')->readonly();
-
-        // Intervention Details
-        $form->addRow()->addHeading(__('Intervention Details'));
+            $row->addLabel('name', __('Intervention Name'));
+            $row->addTextField('name')->maxLength(100)->required();
+            
         $row = $form->addRow();
-            $row->addLabel('name', __('Name'))->description(__('Brief name for this intervention'));
-            if ($isCreator || $isAdmin) {
-                $row->addTextField('name')->maxLength(100)->required();
-            } else {
-                $row->addTextField('name')->maxLength(100)->required()->readonly();
-            }
-
+            $row->addLabel('description', __('Description'))->description(__('Reason for referral, including strategies already tried'));
+            $row->addTextArea('description')->setRows(5)->required();
+            
         $row = $form->addRow();
-            $row->addLabel('description', __('Description'))->description(__('Details about the intervention'));
-            if ($isCreator || $isAdmin) {
-                $row->addTextArea('description')->setRows(5)->required();
-            } else {
-                $row->addTextArea('description')->setRows(5)->required()->readonly();
-            }
-
-        // Form Tutor Review Section (Only visible to form tutors or admins)
+            $row->addLabel('parentConsent', __('Parent Consent'));
+            $row->addYesNo('parentConsent')->required()->selected($intervention['parentConsent'] ?? 'N');
+            
+        $row = $form->addRow();
+            $row->addLabel('parentConsultNotes', __('Parent Consent Notes'))->description(__('If no parent consent, explain why'));
+            $row->addTextArea('parentConsultNotes')->setRows(3);
+            
+        // Form Tutor Decision Section (Only visible to form tutors or admins)
         if ($isFormTutor || $isAdmin) {
-            $form->addRow()->addHeading(__('Form Tutor Review'));
+            $form->addRow()->addHeading(__('Form Tutor Decision'))->append('<p class="emphasis small">'.__('As the form tutor, you need to decide how to proceed with this referral').'</p>');
             
             // Add a message if a decision has already been made
             if (!empty($intervention['formTutorDecision']) && $intervention['formTutorDecision'] != 'Pending') {
@@ -166,6 +157,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $row->addContent('</ul>');
             $row->addContent('</div>');
             
+            // Add a phase-specific submit button for Phase 1
+            $row = $form->addRow();
+            $row->addContent('<input type="hidden" name="phase" value="phase1">');
+            $row->addSubmit(__('Submit Phase 1: Referral Decision'));
+            
             // Add JavaScript to show/hide sections based on form tutor decision
             echo "<script type='text/javascript'>
                 $(document).ready(function(){
@@ -206,57 +202,87 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                     }
                 });
             </script>";
+            
+            // End the form here for Phase 1 if the user is only a form tutor (not an admin)
+            if ($isFormTutor && !$isAdmin) {
+                $form->addRow()->addContent('<hr>');
+                return;
+            }
         }
+            
+        // PHASE 2: ASSESSMENT INFORMATION
+        $form->addRow()->addHeading(__('Phase 2: Assessment Information'))->append('<p class="emphasis small">'.__('Information about the eligibility assessment process').'</p>');
         
-        // Eligibility Assessment Section (Always present but controlled by JavaScript)
-        $eligibilitySection = $form->addRow()->addHeading(__('Eligibility Assessment'))->addClass('eligibilitySection');
-        $eligibilitySection->append('<div class="message emphasis eligibilitySection">');
+        // Only show assessment information if status is Eligibility Assessment or later
+        $assessmentClass = (in_array($intervention['status'], ['Eligibility Assessment', 'Intervention Required', 'Support Plan Active', 'Resolved']) || $isAdmin) ? '' : 'hidden';
         
-        // Add an indicator if an eligibility assessment already exists
-        $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
-        $existingAssessment = $eligibilityAssessmentGateway->getByInterventionID($gibbonINInterventionID);
-        
+        $row = $form->addRow()->addClass($assessmentClass)->addClass('eligibilitySection');
+        $row->addContent('<div class="message emphasis">');
+        $row->addContent('<p>'.__('Eligibility assessments are managed on a separate page.').'</p>');
         if (!empty($existingAssessment)) {
-            $assessmentStatus = $existingAssessment['status'] ?? 'In Progress';
-            $eligibilitySection->append('<p><strong>'.__('Assessment Status').':</strong> ' . $assessmentStatus . '</p>');
+            $row->addContent('<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionEligibilityAssessmentID='.$existingAssessment['gibbonINInterventionEligibilityAssessmentID'].'" class="button">'.__('Go to Eligibility Assessment').'</a>');
         }
+        $row->addContent('</div>');
         
-        $eligibilitySection->append('<p>'.__('The student has been referred for an eligibility assessment. After completing the assessment, you will need to make a decision about whether the student is eligible for an IEP or should receive interventions.').'</p>');
-        $eligibilitySection->append('</div>');
+        // PHASE 3: SUPPORT PLAN
+        $form->addRow()->addHeading(__('Phase 3: Support Plan'))->append('<p class="emphasis small">'.__('Information about the support plan and goals').'</p>');
         
-        // Check if an eligibility assessment already exists for this intervention
-        if (empty($existingAssessment)) {
-            // No assessment exists yet, show create button
-            $params = [
-                'gibbonINInterventionID' => $gibbonINInterventionID,
-                'action' => 'create'
-            ];
+        $row = $form->addRow();
+            $row->addLabel('targetDate', __('Target Date'))->description(__('When the intervention should be completed by'));
+            $row->addDate('targetDate');
             
-            $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&'.http_build_query($params);
-            $eligibilitySection->append('<a href="'.$url.'" class="button">'.__('Create Eligibility Assessment').'</a>');
-        } else {
-            // Assessment exists, show manage button
-            $params = [
-                'gibbonINInterventionID' => $gibbonINInterventionID,
-                'gibbonINInterventionEligibilityAssessmentID' => $existingAssessment['gibbonINInterventionEligibilityAssessmentID'] ?? ''
-            ];
+        $row = $form->addRow();
+            $row->addLabel('strategies', __('Support Strategies'))->description(__('Specific strategies to be implemented'));
+            $row->addTextArea('strategies')->setRows(5);
             
-            $url = './index.php?q=/modules/Interventions/intervention_eligibility_edit.php&'.http_build_query($params);
-            $eligibilitySection->append('<a href="'.$url.'" class="button">'.__('Manage Eligibility Assessment').'</a>');
-        }
+        $row = $form->addRow();
+            $row->addLabel('goals', __('Goals'))->description(__('Specific, measurable goals for this intervention'));
+            $row->addTextArea('goals')->setRows(5);
+            
+        // Only show activate support plan option if status is Intervention Required
+        $activateSupportPlanClass = ($intervention['status'] == 'Intervention Required' || $isAdmin) ? '' : 'hidden';
+        $row = $form->addRow()->addClass($activateSupportPlanClass);
+            $row->addLabel('activateSupportPlan', __('Activate Support Plan'))->description(__('Change status to Support Plan Active'));
+            $row->addCheckbox('activateSupportPlan')->setValue('1')->description(__('Yes'));
+            
+        // Add a phase-specific submit button for Phase 3
+        $row = $form->addRow();
+        $row->addContent('<input type="hidden" name="phase" value="phase3">');
+        $row->addSubmit(__('Submit Phase 3: Support Plan'));
         
-        // Status Section - Only editable by admin or based on form tutor decision
-        $statusOptions = [
-            'Referral' => __('Referral'),
-            'Form Tutor Review' => __('Form Tutor Review'),
-            'Resolved' => __('Resolved'),
-            'Eligibility Assessment' => __('Eligibility Assessment')
+        // PHASE 4 & 5: IMPLEMENTATION & EVALUATION
+        $form->addRow()->addHeading(__('Phase 4 & 5: Implementation & Evaluation'))->append('<p class="emphasis small">'.__('Track progress and evaluate outcomes').'</p>');
+        
+        // Only show outcome section if status is Support Plan Active or Resolved
+        $outcomeClass = (in_array($intervention['status'], ['Support Plan Active', 'Resolved']) || $isAdmin) ? '' : 'hidden';
+        
+        $outcomeOptions = [
+            'Pending' => __('Pending'),
+            'Partially Achieved' => __('Partially Achieved'),
+            'Fully Achieved' => __('Fully Achieved'),
+            'Not Achieved' => __('Not Achieved'),
+            'Resolved' => __('Resolved')
         ];
         
-        // Display current status for all users
-        $row = $form->addRow();
-        $row->addLabel('currentStatus', __('Current Status'));
-        $row->addTextField('currentStatus')->setValue($statusOptions[$intervention['status']] ?? $intervention['status'])->readonly();
+        $row = $form->addRow()->addClass($outcomeClass)->addClass('outcomeSection');
+            $row->addLabel('outcomeDecision', __('Outcome'));
+            $row->addSelect('outcomeDecision')->fromArray($outcomeOptions)->placeholder(__('Please select...'));
+            
+        $row = $form->addRow()->addClass($outcomeClass)->addClass('outcomeSection');
+            $row->addLabel('outcomeNotes', __('Outcome Notes'))->description(__('Details about the outcome and next steps'));
+            $row->addTextArea('outcomeNotes')->setRows(5);
+            
+        // Add a phase-specific submit button for Phase 5
+        $row = $form->addRow()->addClass($outcomeClass);
+        $row->addContent('<input type="hidden" name="phase" value="phase5">');
+        $row->addSubmit(__('Submit Phase 5: Outcome Evaluation'));
+        
+        // Add a general submit button for all phases (only for admins)
+        if ($isAdmin) {
+            $row = $form->addRow();
+            $row->addContent('<hr>');
+            $row->addSubmit(__('Save All Changes'));
+        }
         
         // Only show status field to admins, hide it for form tutors
         if ($isAdmin) {
@@ -270,34 +296,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $form->addHiddenValue('status', $currentStatus);
         }
         
-        // Outcome Section (Only visible if status is Intervention or later)
-        if (in_array($intervention['status'], ['Intervention', 'Resolved']) || $isAdmin) {
-            $form->addRow()->addHeading(__('Outcome'))->addClass('outcomeSection');
-            
-            $outcomeDecisions = [
-                'Pending' => __('Pending'),
-                'Success' => __('Success'),
-                'Needs IEP' => __('Needs IEP')
-            ];
-            
-            // For resolved status, only show if admin or if form tutor decision was Resolved
-            if ($intervention['status'] != 'Resolved' || $isAdmin || $intervention['formTutorDecision'] == 'Resolved') {
-                $row = $form->addRow()->addClass('outcomeSection');
-                    $row->addLabel('outcomeDecision', __('Decision'));
-                    $row->addSelect('outcomeDecision')->fromArray($outcomeDecisions)->required();
-                
-                $row = $form->addRow()->addClass('outcomeSection');
-                    $row->addLabel('outcomeNotes', __('Notes'))->description(__('Summary of intervention outcome'));
-                    $row->addTextArea('outcomeNotes')->setRows(5);
-            } else {
-                // If status is Resolved but form tutor decision doesn't match, show warning
-                $row = $form->addRow()->addClass('outcomeSection');
-                $row->addContent('<div class="error">');
-                $row->addContent('<p>'.__('The status and form tutor decision are not synchronized. Please contact an administrator.').'</p>');
-                $row->addContent('</div>');
-            }
-        }
-
         // Add a hidden field to store the form tutor decision submission flag
         // Always set to Y when the form is submitted to ensure the decision is processed
         $form->addHiddenValue('formTutorDecisionSubmitted', 'Y');

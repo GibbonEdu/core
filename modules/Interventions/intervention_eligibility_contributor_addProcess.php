@@ -38,8 +38,10 @@ $gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $status = $_POST['status'] ?? '';
+$returnProcess = $_POST['returnProcess'] ?? false;
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Interventions/intervention_eligibility_edit.php&gibbonINInterventionID=$gibbonINInterventionID&gibbonINInterventionEligibilityAssessmentID=$gibbonINInterventionEligibilityAssessmentID&gibbonPersonIDStudent=$gibbonPersonIDStudent&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&status=$status";
+// Get the redirect URL
+$URL = getInterventionRedirectURL($session, $gibbonINInterventionID, $gibbonINInterventionEligibilityAssessmentID, $gibbonPersonIDStudent, $gibbonFormGroupID, $gibbonYearGroupID, $status, $returnProcess);
 
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_eligibility_contributor_add.php') == false) {
     $URL .= '&return=error0';
