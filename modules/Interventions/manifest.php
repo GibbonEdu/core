@@ -206,13 +206,75 @@ $moduleTables[] = "CREATE TABLE `gibbonINInterventionEligibilityContributorRatin
     UNIQUE KEY `contributor_subfield` (`gibbonINInterventionEligibilityContributorID`, `gibbonINEligibilityAssessmentSubfieldID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
+// New tables for multiple support plans
+$moduleTables[] = "CREATE TABLE `gibbonINSupportPlan` (
+    `gibbonINSupportPlanID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINInterventionID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT NULL,
+    `goals` TEXT NOT NULL,
+    `strategies` TEXT NOT NULL,
+    `resources` TEXT NULL,
+    `targetDate` DATE NOT NULL,
+    `gibbonPersonIDStaff` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `dateStart` DATE NULL,
+    `dateEnd` DATE NULL,
+    `status` ENUM('Draft','Active','Completed','Cancelled') NOT NULL DEFAULT 'Draft',
+    `outcome` ENUM('Goals Achieved','Partial Progress','No Progress','Refer for IEP') NULL,
+    `outcomeNotes` TEXT NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `timestampModified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINSupportPlanID`),
+    INDEX(`gibbonINInterventionID`),
+    INDEX(`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+$moduleTables[] = "CREATE TABLE `gibbonINSupportPlanNote` (
+    `gibbonINSupportPlanNoteID` INT(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINSupportPlanID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
+    `note` TEXT NOT NULL,
+    `date` DATE NOT NULL,
+    `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINSupportPlanNoteID`),
+    INDEX(`gibbonINSupportPlanID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+// New tables for support plan contributors and progress tracking
+$moduleTables[] = "CREATE TABLE `gibbonINSupportPlanContributor` (
+    `gibbonINSupportPlanContributorID` INT(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINSupportPlanID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `role` VARCHAR(100) NULL,
+    `canEdit` ENUM('Y','N') NOT NULL DEFAULT 'N',
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINSupportPlanContributorID`),
+    UNIQUE KEY `contributor` (`gibbonINSupportPlanID`, `gibbonPersonID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+$moduleTables[] = "CREATE TABLE `gibbonINSupportPlanProgress` (
+    `gibbonINSupportPlanProgressID` INT(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonINSupportPlanID` INT(14) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `progressDate` DATE NOT NULL,
+    `progress` TEXT NOT NULL,
+    `status` ENUM('On Track','Concerns','Achieved') NOT NULL DEFAULT 'On Track',
+    `nextSteps` TEXT NULL,
+    `timestampCreated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `timestampModified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`gibbonINSupportPlanProgressID`),
+    INDEX(`gibbonINSupportPlanID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
 // Module Action Rows
 $actionRows[] = [
     'name' => 'Manage Interventions_all', 
     'precedence' => '1',
     'category' => 'Interventions',
     'description' => 'View and manage all student interventions',
-    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_contributor_edit.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php,intervention_eligibility_contributor_add_type.php,intervention_eligibility_contributor_add_typeProcess.php',
+    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_contributor_edit.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php,intervention_eligibility_contributor_add_type.php,intervention_eligibility_contributor_add_typeProcess.php,intervention_support_plan_view.php,intervention_support_plan_contributor_add.php,intervention_support_plan_contributor_addProcess.php,intervention_support_plan_contributor_delete.php,intervention_support_plan_contributor_deleteProcess.php,intervention_support_plan_progress_add.php,intervention_support_plan_progress_addProcess.php,intervention_support_plan_progress_edit.php,intervention_support_plan_progress_editProcess.php,intervention_support_plan_progress_delete.php,intervention_support_plan_progress_deleteProcess.php,intervention_support_plan_add.php,intervention_support_plan_addProcess.php,intervention_support_plan_edit.php,intervention_support_plan_editProcess.php',
     'entryURL' => 'interventions_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -232,7 +294,7 @@ $actionRows[] = [
     'precedence' => '0',
     'category' => 'Interventions',
     'description' => 'View and manage interventions you have created',
-    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_contributor_edit.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php,intervention_eligibility_contributor_add_type.php,intervention_eligibility_contributor_add_typeProcess.php',
+    'URLList' => 'interventions_manage.php,interventions_manage_add.php,interventions_manage_edit.php,interventions_manage_delete.php,interventions_manage_contributor_add.php,interventions_manage_contributor_delete.php,interventions_manage_contributor_edit.php,interventions_manage_strategy_add.php,interventions_manage_strategy_edit.php,interventions_manage_outcome_add.php,intervention_eligibility_edit.php,intervention_eligibility_editProcess.php,intervention_eligibility_contributor_add.php,intervention_eligibility_contributor_addProcess.php,intervention_eligibility_contributor_edit.php,intervention_eligibility_contributor_editProcess.php,intervention_eligibility_contributor_delete.php,intervention_eligibility_contributor_deleteProcess.php,intervention_eligibility_contributor_add_type.php,intervention_eligibility_contributor_add_typeProcess.php,intervention_support_plan_view.php,intervention_support_plan_contributor_add.php,intervention_support_plan_contributor_addProcess.php,intervention_support_plan_contributor_delete.php,intervention_support_plan_contributor_deleteProcess.php,intervention_support_plan_progress_add.php,intervention_support_plan_progress_addProcess.php,intervention_support_plan_progress_edit.php,intervention_support_plan_progress_editProcess.php,intervention_support_plan_progress_delete.php,intervention_support_plan_progress_deleteProcess.php,intervention_support_plan_add.php,intervention_support_plan_addProcess.php,intervention_support_plan_edit.php,intervention_support_plan_editProcess.php',
     'entryURL' => 'interventions_manage.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'Y',
@@ -413,7 +475,7 @@ $actionRows[] = [
     'precedence' => '0',
     'category' => 'Interventions',
     'description' => 'Manage interventions through a structured multi-step process',
-    'URLList' => 'intervention_process.php,intervention_process_phase1Process.php,intervention_process_phase2Process.php,intervention_process_phase3Process.php,intervention_process_phase4Process.php,intervention_process_phase5Process.php',
+    'URLList' => 'intervention_process.php,intervention_process_phase1Process.php,intervention_process_phase2Process.php,intervention_process_phase3Process.php,intervention_process_phase4Process.php,intervention_process_phase5Process.php,intervention_support_plan_add.php,intervention_support_plan_addProcess.php',
     'entryURL' => 'intervention_process.php',
     'entrySidebar' => 'Y',
     'menuShow' => 'N',
@@ -426,6 +488,26 @@ $actionRows[] = [
     'categoryPermissionStudent' => 'N',
     'categoryPermissionParent' => 'N',
     'categoryPermissionOther' => 'N'
+];
+
+$actionRows[] = [
+    'name' => 'Support Plan Contributor',
+    'precedence' => '0',
+    'category' => 'Interventions',
+    'description' => 'View and contribute to support plans you are assigned to',
+    'URLList' => 'intervention_support_plan_view.php,intervention_support_plan_progress_add.php,intervention_support_plan_progress_addProcess.php,intervention_support_plan_progress_edit.php,intervention_support_plan_progress_editProcess.php,intervention_support_plan_add.php,intervention_support_plan_addProcess.php',
+    'entryURL' => 'intervention_support_plan_view.php',
+    'entrySidebar' => 'N',
+    'menuShow' => 'N',
+    'defaultPermissionAdmin' => 'Y',
+    'defaultPermissionTeacher' => 'Y',
+    'defaultPermissionStudent' => 'N',
+    'defaultPermissionParent' => 'N',
+    'defaultPermissionSupport' => 'Y',
+    'categoryPermissionStaff' => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent' => 'N',
+    'categoryPermissionOther' => 'Y'
 ];
 
 // Module Settings

@@ -96,11 +96,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
     
     // Notify contributors
-    $sql = "SELECT gibbonPersonID FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonPersonID<>:gibbonPersonID";
+    $sql = "SELECT gibbonPersonIDContributor FROM gibbonINInterventionContributor WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonPersonIDContributor<>:gibbonPersonID";
     $result = $pdo->select($sql, ['gibbonINInterventionID' => $gibbonINInterventionID, 'gibbonPersonID' => $session->get('gibbonPersonID')]);
     
     while ($contributor = $result->fetch()) {
-        $notificationGateway->addNotification([$contributor['gibbonPersonID']], 'Intervention', $notificationString, 'interventions_manage.php', [], 'Alert');
+        $notificationGateway->addNotification([$contributor['gibbonPersonIDContributor']], 'Intervention', $notificationString, 'interventions_manage.php', [], 'Alert');
     }
 
     $URL .= '&return=success0';

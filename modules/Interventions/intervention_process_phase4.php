@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ $table->addHeaderAction('add', __('Add'))
     ->displayLabel();
 
 $table->addColumn('date', __('Date'))
-    ->format(Format::using('date', 'date'));
+    ->format(Format::using('date', ['date']));
 
 $table->addColumn('title', __('Title'));
 

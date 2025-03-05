@@ -23,6 +23,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -131,7 +132,22 @@ if (!empty($interventionStatus)) {
 
 // Send notifications
 // Get the student name for the notification
-$studentName = formatName('', $intervention['preferredName'], $intervention['surname'], 'Student');
+$studentName = Format::name('', $intervention['preferredName'] ?? '', $intervention['surname'] ?? '', 'Student');
+
+// If we couldn't get the name from the intervention record, try to get it directly
+if (empty($studentName) || $studentName == 'Student') {
+    // Get student data directly
+    $dataStudent = array('gibbonPersonID' => $intervention['gibbonPersonIDStudent']);
+    $sqlStudent = "SELECT preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+    $resultStudent = $connection2->prepare($sqlStudent);
+    $resultStudent->execute($dataStudent);
+    
+    if ($resultStudent && $student = $resultStudent->fetch()) {
+        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student');
+    } else {
+        $studentName = __('Unknown Student');
+    }
+}
 
 // Notify the form tutor
 if ($intervention['gibbonPersonIDFormTutor'] != $gibbonPersonID) {

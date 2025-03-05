@@ -26,6 +26,9 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionEligibilityContributorGateway;
 
+// Get the database connection
+$pdo = $container->get('db')->getConnection();
+
 // Get eligibility assessment
 $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
 $assessment = $eligibilityAssessmentGateway->selectBy(['gibbonINInterventionID' => $gibbonINInterventionID])->fetch();

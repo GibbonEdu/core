@@ -239,7 +239,7 @@ try {
                     LEFT JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                     LEFT JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                     WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
-                    AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1)";
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE gibbonSchoolYear.status='Current' LIMIT 1)";
     $resultStudent = $connection2->prepare($sqlStudent);
     $resultStudent->execute($dataStudent);
     

@@ -23,6 +23,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionEligibilityAssessmentGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -163,7 +164,7 @@ if (isset($updateData['status']) && $updateData['status'] != $intervention['stat
         
         if ($resultStudent->rowCount() == 1) {
             $rowStudent = $resultStudent->fetch();
-            $studentName = formatName('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student', false);
+            $studentName = Format::name('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student', false);
         }
     } catch (PDOException $e) {
         // Silent fail - just won't include student name in notification

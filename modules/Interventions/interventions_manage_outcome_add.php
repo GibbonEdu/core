@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionStrategyGateway;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

@@ -49,8 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                     p.preferredName as studentPreferredName, p.surname as studentSurname,
                     creator.preferredName as creatorPreferredName, creator.surname as creatorSurname,
                     t.name as assessmentTypeName,
-                    CONCAT(p.surname, ', ', p.preferredName) as studentSort,
-                    c.status as contributorStatus
+                    CONCAT(p.surname, ', ', p.preferredName) as studentSort
                 FROM gibbonINInterventionEligibilityContributor AS c
                 JOIN gibbonINInterventionEligibilityAssessment AS a ON (c.gibbonINInterventionEligibilityAssessmentID=a.gibbonINInterventionEligibilityAssessmentID)
                 JOIN gibbonINIntervention AS i ON (a.gibbonINInterventionID=i.gibbonINInterventionID)
@@ -65,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Debug: Output all contributor records
         error_log('All contributor records:');
         foreach ($result->fetchAll() as $record) {
-            error_log('ID: ' . $record['gibbonINInterventionEligibilityContributorID'] . ', Status: ' . $record['status'] . ', ContributorStatus: ' . $record['contributorStatus']);
+            error_log('ID: ' . $record['gibbonINInterventionEligibilityContributorID'] . ', Status: ' . $record['status']);
         }
         
         // Re-execute the query since we consumed the results
@@ -95,10 +94,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             $table->addColumn('status', __('Your Status'))
                 ->format(function($row) {
                     // Debug: Output the actual status values
-                    error_log('Dashboard status values - status: ' . $row['status'] . ', contributorStatus: ' . $row['contributorStatus']);
+                    error_log('Dashboard status values - status: ' . $row['status']);
                     
                     // Use the contributor status, not the assessment status
-                    if ($row['contributorStatus'] == 'Complete') {
+                    if ($row['status'] == 'Complete') {
                         return '<span class="tag success">'.__('Complete').'</span>';
                     } else {
                         return '<span class="tag dull">'.__('Pending').'</span>';

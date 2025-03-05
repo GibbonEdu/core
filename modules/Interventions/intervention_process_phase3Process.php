@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Module\Interventions\Domain\INInterventionGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -97,7 +98,7 @@ if (!$updated) {
 
 // Send notifications
 // Get the student name for the notification
-$studentName = formatName('', $intervention['preferredName'], $intervention['surname'], 'Student');
+$studentName = Format::name('', $intervention['preferredName'], $intervention['surname'], 'Student');
 
 // Notify the form tutor
 if ($intervention['gibbonPersonIDFormTutor'] != $gibbonPersonID) {
