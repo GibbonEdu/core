@@ -110,6 +110,6 @@ class Number extends TextField
      */
     protected function getElement()
     {
-        return Component::render(Number::class, $this->getAttributeArray() + []);
+        return Component::render(Number::class, $this->getAttributeArray() + ["min" => $this->min, "max" => $this->max]);
     }
 }
