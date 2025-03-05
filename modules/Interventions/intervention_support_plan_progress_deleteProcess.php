@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Interventions\Domain\INSupportPlanGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\NotificationSender;
 
 require_once '../../gibbon.php';
 
@@ -55,11 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     // Check if user is a contributor with edit rights
     $data = [
         'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-        'gibbonPersonIDContributor' => $gibbonPersonID
+        'gibbonPersonID' => $gibbonPersonID
     ];
     $sql = "SELECT * FROM gibbonINSupportPlanContributor 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor 
+            AND gibbonPersonID=:gibbonPersonID 
             AND canEdit='Y'";
     $resultContributor = $pdo->executeQuery($data, $sql);
     $isContributor = ($resultContributor->rowCount() > 0);
@@ -105,23 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $sql = "DELETE FROM gibbonINSupportPlanProgress 
                 WHERE gibbonINSupportPlanProgressID=:gibbonINSupportPlanProgressID 
                 AND gibbonINSupportPlanID=:gibbonINSupportPlanID";
-        
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        
-        // Log the deletion in history
-        $data = [
-            'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-            'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
-            'action' => 'Delete',
-            'fieldName' => 'progress',
-            'oldValue' => $progress['reportingCycle']
-        ];
-        
-        $sql = "INSERT INTO gibbonINSupportPlanHistory 
-                (gibbonINSupportPlanID, gibbonPersonID, action, fieldName, oldValue) 
-                VALUES 
-                (:gibbonINSupportPlanID, :gibbonPersonID, :action, :fieldName, :oldValue)";
         
         $result = $connection2->prepare($sql);
         $result->execute($data);

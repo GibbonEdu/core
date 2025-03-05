@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -50,6 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         return;
     }
 
+    // Get the database connection
+    $pdo = $container->get('db')->getConnection();
+
     // Get support plan details
     $supportPlanGateway = $container->get(INSupportPlanGateway::class);
     $supportPlan = $supportPlanGateway->getByID($gibbonINSupportPlanID);
@@ -71,8 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
     // Get existing contributors to avoid duplicates
     $data = ['gibbonINSupportPlanID' => $gibbonINSupportPlanID];
-    $sql = "SELECT gibbonPersonIDContributor FROM gibbonINSupportPlanContributor WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID";
-    $existingContributors = $pdo->selectColumn($sql, $data);
+    $sql = "SELECT gibbonPersonID FROM gibbonINSupportPlanContributor WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+    $existingContributors = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
     // Create the form
     $form = Form::create('supportPlanContributorAdd', $_SESSION[$guid]['absoluteURL'].'/modules/Interventions/intervention_support_plan_contributor_addProcess.php');
@@ -97,8 +102,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
             WHERE gibbonPerson.status='Full' 
             ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-    $resultStaff = $pdo->executeQuery(array(), $sql);
-    $staff = ($resultStaff->rowCount() > 0)? $resultStaff->fetchAll() : array();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $staff = $stmt->fetchAll();
     
     $staffOptions = array_reduce($staff, function($group, $item) use ($existingContributors) {
         if (!in_array($item['gibbonPersonID'], $existingContributors)) {

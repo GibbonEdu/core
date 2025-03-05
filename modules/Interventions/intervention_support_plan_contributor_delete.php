@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Module\Interventions\Domain\INSupportPlanGateway;
+use Gibbon\Services\Format;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     ];
     $sql = "SELECT gibbonINSupportPlanContributor.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName 
             FROM gibbonINSupportPlanContributor 
-            JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonINSupportPlanContributor.gibbonPersonIDContributor) 
+            JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonINSupportPlanContributor.gibbonPersonID) 
             WHERE gibbonINSupportPlanContributorID=:gibbonINSupportPlanContributorID 
             AND gibbonINSupportPlanID=:gibbonINSupportPlanID";
     $resultContributor = $pdo->executeQuery($data, $sql);

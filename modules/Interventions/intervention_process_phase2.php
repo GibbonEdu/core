@@ -31,7 +31,9 @@ $pdo = $container->get('db')->getConnection();
 
 // Get eligibility assessment
 $eligibilityAssessmentGateway = $container->get(INInterventionEligibilityAssessmentGateway::class);
-$assessment = $eligibilityAssessmentGateway->selectBy(['gibbonINInterventionID' => $gibbonINInterventionID])->fetch();
+$stmt = $pdo->prepare("SELECT * FROM gibbonINInterventionEligibilityAssessment WHERE gibbonINInterventionID=:gibbonINInterventionID");
+$stmt->execute(['gibbonINInterventionID' => $gibbonINInterventionID]);
+$assessment = $stmt->fetch();
 
 // Check if we have an assessment
 if (empty($assessment)) {
@@ -70,7 +72,9 @@ $sql = "SELECT c.*, t.name as assessmentTypeName
         LEFT JOIN gibbonINEligibilityAssessmentType AS t ON (c.gibbonINEligibilityAssessmentTypeID=t.gibbonINEligibilityAssessmentTypeID)
         WHERE c.gibbonINInterventionEligibilityAssessmentID=:gibbonINInterventionEligibilityAssessmentID 
         AND c.status='Complete'";
-$contributors = $pdo->select($sql, ['gibbonINInterventionEligibilityAssessmentID' => $assessment['gibbonINInterventionEligibilityAssessmentID']])->fetchAll();
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['gibbonINInterventionEligibilityAssessmentID' => $assessment['gibbonINInterventionEligibilityAssessmentID']]);
+$contributors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (count($contributors) == 0) {
     echo "<div class='message warning'>".__('There are no completed assessments to display.')."</div>";
@@ -93,7 +97,9 @@ if (count($contributors) == 0) {
                 WHERE gibbonINEligibilityAssessmentTypeID=:gibbonINEligibilityAssessmentTypeID 
                 AND active='Y' 
                 ORDER BY sequenceNumber";
-        $subfields = $pdo->select($sql, ['gibbonINEligibilityAssessmentTypeID' => $typeID])->fetchAll();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['gibbonINEligibilityAssessmentTypeID' => $typeID]);
+        $subfields = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         foreach ($subfields as $subfield) {
             $assessmentTypes[$typeID]['subfields'][$subfield['gibbonINEligibilityAssessmentSubfieldID']] = [
@@ -116,7 +122,9 @@ if (count($contributors) == 0) {
                 FROM gibbonINInterventionEligibilityContributorRating AS r 
                 JOIN gibbonINEligibilityAssessmentSubfield AS s ON (r.gibbonINEligibilityAssessmentSubfieldID=s.gibbonINEligibilityAssessmentSubfieldID) 
                 WHERE r.gibbonINInterventionEligibilityContributorID=:gibbonINInterventionEligibilityContributorID";
-        $ratings = $pdo->select($sql, ['gibbonINInterventionEligibilityContributorID' => $contributor['gibbonINInterventionEligibilityContributorID']])->fetchAll();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['gibbonINInterventionEligibilityContributorID' => $contributor['gibbonINInterventionEligibilityContributorID']]);
+        $ratings = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         foreach ($ratings as $rating) {
             if (isset($assessmentTypes[$contributor['gibbonINEligibilityAssessmentTypeID']]['subfields'][$rating['gibbonINEligibilityAssessmentSubfieldID']])) {
@@ -229,8 +237,10 @@ $sql = "SELECT
         WHERE gibbonINInterventionEligibilityContributor.gibbonINInterventionEligibilityAssessmentID = :assessmentID
         ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
-$result = $pdo->select($sql, ['assessmentID' => $assessmentID]);
-$contributors = ($result->rowCount() > 0) ? $result->fetchAll() : [];
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['assessmentID' => $assessmentID]);
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$contributors = ($result) ? $result : [];
 
  
 

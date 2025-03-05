@@ -37,6 +37,38 @@ $page->breadcrumbs
     ->add(__('Manage Interventions'), 'interventions.php')
     ->add(__('View Support Plan'));
 
+// Add CSS for a more modern look
+echo '<style>
+    .support-plan-header {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 4px solid #A0CFEC;
+    }
+    .support-plan-section {
+        margin-bottom: 20px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .support-plan-section-header {
+        background-color: #f8f9fa;
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        font-weight: bold;
+    }
+    .support-plan-section-content {
+        padding: 15px;
+    }
+    .support-plan-action-buttons {
+        margin-bottom: 20px;
+    }
+    .support-plan-action-buttons a {
+        margin-right: 10px;
+    }
+</style>';
+
 if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention_support_plan_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -86,9 +118,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
 
     // DISPLAY SUPPORT PLAN DETAILS
+    echo '<div class="support-plan-header">';
     echo '<h2>'.__('Support Plan Details').'</h2>';
+    echo '</div>';
     
     // Support Plan Info
+    echo '<div class="support-plan-section">';
+    echo '<div class="support-plan-section-header">';
+    echo __('Support Plan Information');
+    echo '</div>';
+    echo '<div class="support-plan-section-content">';
     echo '<table class="smallIntBorder fullWidth colorOddEven" cellspacing="0">';
     
     echo '<tr><td class="w-1/4">';
@@ -211,8 +250,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
     
     echo '</table>';
+    echo '</div>';
+    echo '</div>';
     
     // DISPLAY CONTRIBUTORS
+    echo '<div class="support-plan-section">';
+    echo '<div class="support-plan-section-header">';
+    echo __('Contributors');
+    echo '</div>';
+    echo '<div class="support-plan-section-content">';
     echo '<h2>'.__('Contributors').'</h2>';
     
     // Add contributor button
@@ -227,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonINSupportPlanContributor.gibbonPersonID) 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
             ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-    $stmt = $pdo->prepare($sql);
+    $stmt = $connection2->prepare($sql);
     $stmt->execute($data);
     $resultContributors = $stmt;
     
@@ -256,8 +302,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         }
         echo "</table>";
     }
+    echo '</div>';
+    echo '</div>';
     
     // DISPLAY PROGRESS REPORTS
+    echo '<div class="support-plan-section">';
+    echo '<div class="support-plan-section-header">';
+    echo __('Progress Reports');
+    echo '</div>';
+    echo '<div class="support-plan-section-content">';
     echo '<h2>'.__('Progress Reports').'</h2>';
     
     // Add progress report button
@@ -272,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonINSupportPlanProgress.gibbonPersonIDCreator) 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
             ORDER BY gibbonINSupportPlanProgress.progressDate";
-    $stmt = $pdo->prepare($sql);
+    $stmt = $connection2->prepare($sql);
     $stmt->execute($data);
     $resultProgress = $stmt;
     
@@ -307,8 +360,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             echo "</div>";
         }
     }
+    echo '</div>';
+    echo '</div>';
     
     // ACTIONS
+    echo '<div class="support-plan-action-buttons">';
     echo '<h3>'.__('Actions').'</h3>';
     
     echo '<div class="flex">';
@@ -336,8 +392,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
     
     echo '</div>';
+    echo '</div>';
     
     // NOTES
+    echo '<div class="support-plan-section">';
+    echo '<div class="support-plan-section-header">';
+    echo __('Notes');
+    echo '</div>';
+    echo '<div class="support-plan-section-content">';
     echo '<h3>'.__('Notes').'</h3>';
     
     $supportPlanNoteGateway = $container->get(INSupportPlanNoteGateway::class);
@@ -394,4 +456,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         
         echo $table->render($notes);
     }
+    echo '</div>';
+    echo '</div>';
 }

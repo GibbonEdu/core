@@ -108,10 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // If setting this plan to active, deactivate any other active plans
         if ($status == 'Active' && $supportPlan['status'] != 'Active') {
             $sql = "UPDATE gibbonINSupportPlan SET gibbonINSupportPlan.status='Completed' WHERE gibbonINInterventionID=:gibbonINInterventionID AND gibbonINSupportPlan.status='Active' AND gibbonINSupportPlanID!=:gibbonINSupportPlanID";
-            $pdo->executeQuery([
+            $stmt = $connection2->prepare($sql);
+            $stmt->execute([
                 'gibbonINInterventionID' => $gibbonINInterventionID,
                 'gibbonINSupportPlanID' => $gibbonINSupportPlanID
-            ], $sql);
+            ]);
             
             // Update intervention status if not already in implementation
             if ($intervention['status'] != 'Support Plan Active') {

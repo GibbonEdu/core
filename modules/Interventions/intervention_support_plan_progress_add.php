@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -59,6 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         return;
     }
 
+    // Get the database connection
+    $pdo = $container->get('db')->getConnection();
+
     // Check access to this intervention
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
     $isAdmin = isActionAccessible($guid, $connection2, '/modules/Interventions/interventions_manage.php', 'Manage Interventions_all');
@@ -67,14 +70,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     // Check if user is a contributor with edit rights
     $data = [
         'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-        'gibbonPersonIDContributor' => $gibbonPersonID
+        'gibbonPersonID' => $gibbonPersonID
     ];
     $sql = "SELECT * FROM gibbonINSupportPlanContributor 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor 
+            AND gibbonPersonID=:gibbonPersonID 
             AND canEdit='Y'";
-    $resultContributor = $pdo->executeQuery($data, $sql);
-    $isContributor = ($resultContributor->rowCount() > 0);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+    $resultContributor = $stmt->fetch();
+    $isContributor = ($resultContributor !== false);
     
     if (!$isAdmin && !$isCoordinator && !$isContributor) {
         $page->addError(__('You do not have access to this action.'));
@@ -93,40 +98,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $row = $form->addRow();
     $row->addContent('<h4>'.__('Support Plan').': '.$supportPlan['name'].'</h4>');
     
-    // Get school year and term information for reporting cycles
-    $data = ['gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']];
-    $sql = "SELECT gibbonSchoolYear.name as yearName, 
-                  CONCAT(gibbonSchoolYearTerm.name, ' (', 
-                         DATE_FORMAT(gibbonSchoolYearTerm.firstDay, '%b %e'), ' - ', 
-                         DATE_FORMAT(gibbonSchoolYearTerm.lastDay, '%b %e'), ')') as termName,
-                  CONCAT(gibbonSchoolYear.name, ' - ', gibbonSchoolYearTerm.name) as reportingCycle
-           FROM gibbonSchoolYear 
-           JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
-           WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID 
-           ORDER BY gibbonSchoolYearTerm.sequenceNumber";
-    $resultTerms = $pdo->executeQuery($data, $sql);
-    
-    $reportingCycles = ($resultTerms->rowCount() > 0)? $resultTerms->fetchAll(\PDO::FETCH_KEY_PAIR) : [];
-
     // Progress report details
-    $row = $form->addRow();
-        $row->addLabel('reportingCycle', __('Reporting Cycle'));
-        $row->addSelect('reportingCycle')
-            ->fromArray($reportingCycles)
-            ->required()
-            ->placeholder();
-
     $row = $form->addRow();
         $row->addLabel('progressSummary', __('Progress Summary'))->description(__('Overall summary of progress during this reporting period'));
         $row->addTextArea('progressSummary')->setRows(5)->required();
 
     $row = $form->addRow();
-        $row->addLabel('goalProgress', __('Goal Progress'))->description(__('Specific progress towards the goals in the support plan'));
-        $row->addTextArea('goalProgress')->setRows(5)->required();
+        $row->addLabel('status', __('Status'));
+        $row->addSelect('status')
+            ->fromArray([
+                'On Track' => __('On Track'),
+                'Concerns' => __('Concerns'),
+                'Achieved' => __('Achieved')
+            ])
+            ->required()
+            ->selected('On Track');
 
     $row = $form->addRow();
         $row->addLabel('nextSteps', __('Next Steps'))->description(__('Recommended next steps for the upcoming reporting period'));
-        $row->addTextArea('nextSteps')->setRows(5)->required();
+        $row->addTextArea('nextSteps')->setRows(5);
 
     $row = $form->addRow();
         $row->addLabel('date', __('Date'))->description(__('Date of this progress report'));

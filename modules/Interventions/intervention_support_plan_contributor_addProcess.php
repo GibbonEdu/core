@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Interventions\Domain\INSupportPlanGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\NotificationSender;
 
 require_once '../../gibbon.php';
 
@@ -68,18 +71,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
     
+    // Get the database connection
+    $pdo = $container->get('db')->getConnection();
+    
     // Check for existing contributor
     $data = [
         'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-        'gibbonPersonIDContributor' => $gibbonPersonIDContributor
+        'gibbonPersonID' => $gibbonPersonIDContributor
     ];
     $sql = "SELECT COUNT(*) FROM gibbonINSupportPlanContributor 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor";
-    $resultCheck = $connection2->prepare($sql);
-    $resultCheck->execute($data);
+            AND gibbonPersonID=:gibbonPersonID";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
     
-    if ($resultCheck->fetchColumn() > 0) {
+    if ($stmt->fetchColumn() > 0) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
@@ -88,35 +94,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     try {
         $data = [
             'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-            'gibbonPersonIDContributor' => $gibbonPersonIDContributor,
+            'gibbonPersonID' => $gibbonPersonIDContributor,
             'role' => $role,
             'canEdit' => $canEdit
         ];
         
         $sql = "INSERT INTO gibbonINSupportPlanContributor 
-                (gibbonINSupportPlanID, gibbonPersonIDContributor, role, canEdit) 
+                (gibbonINSupportPlanID, gibbonPersonID, role, canEdit) 
                 VALUES 
-                (:gibbonINSupportPlanID, :gibbonPersonIDContributor, :role, :canEdit)";
+                (:gibbonINSupportPlanID, :gibbonPersonID, :role, :canEdit)";
         
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        
-        // Log the addition in history
-        $data = [
-            'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-            'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
-            'action' => 'Create',
-            'fieldName' => 'contributor',
-            'newValue' => $gibbonPersonIDContributor
-        ];
-        
-        $sql = "INSERT INTO gibbonINSupportPlanHistory 
-                (gibbonINSupportPlanID, gibbonPersonID, action, fieldName, newValue) 
-                VALUES 
-                (:gibbonINSupportPlanID, :gibbonPersonID, :action, :fieldName, :newValue)";
-        
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
         
         // Send notification to the contributor
         $notificationGateway = $container->get(\Gibbon\Domain\System\NotificationGateway::class);

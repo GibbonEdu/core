@@ -57,14 +57,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     // Check if user is a contributor with edit rights
     $data = [
         'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-        'gibbonPersonIDContributor' => $gibbonPersonID
+        'gibbonPersonID' => $gibbonPersonID
     ];
     $sql = "SELECT * FROM gibbonINSupportPlanContributor 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor 
+            AND gibbonPersonID=:gibbonPersonID 
             AND canEdit='Y'";
-    $resultContributor = $pdo->executeQuery($data, $sql);
-    $isContributor = ($resultContributor->rowCount() > 0);
+    $stmt = $connection2->prepare($sql);
+    $stmt->execute($data);
+    $resultContributor = $stmt->fetch();
+    $isContributor = ($resultContributor !== false);
     
     if (!$isAdmin && !$isCoordinator && !$isContributor) {
         $URL .= '&return=error0';
@@ -73,53 +75,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     }
     
     // Validate Inputs
-    $reportingCycle = $_POST['reportingCycle'] ?? '';
     $progressSummary = $_POST['progressSummary'] ?? '';
     $goalProgress = $_POST['goalProgress'] ?? '';
     $nextSteps = $_POST['nextSteps'] ?? '';
     $date = $_POST['date'] ?? '';
+    $status = $_POST['status'] ?? 'On Track';
     
-    if (empty($reportingCycle) || empty($progressSummary) || empty($goalProgress) || empty($nextSteps) || empty($date)) {
+    if (empty($progressSummary) || empty($date)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
     
+    // Get the database connection
+    $pdo = $container->get('db')->getConnection();
+    
     try {
         $data = [
             'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-            'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
-            'reportingCycle' => $reportingCycle,
-            'progressSummary' => $progressSummary,
-            'goalProgress' => $goalProgress,
-            'nextSteps' => $nextSteps,
-            'date' => $date
+            'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'],
+            'progressDate' => $date,
+            'progress' => $progressSummary,
+            'status' => $status,
+            'nextSteps' => $nextSteps
         ];
         
         $sql = "INSERT INTO gibbonINSupportPlanProgress 
-                (gibbonINSupportPlanID, gibbonPersonID, reportingCycle, progressSummary, goalProgress, nextSteps, date) 
+                (gibbonINSupportPlanID, gibbonPersonIDCreator, progressDate, progress, status, nextSteps) 
                 VALUES 
-                (:gibbonINSupportPlanID, :gibbonPersonID, :reportingCycle, :progressSummary, :goalProgress, :nextSteps, :date)";
+                (:gibbonINSupportPlanID, :gibbonPersonIDCreator, :progressDate, :progress, :status, :nextSteps)";
         
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        
-        // Log the addition in history
-        $data = [
-            'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-            'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
-            'action' => 'Create',
-            'fieldName' => 'progress',
-            'newValue' => $reportingCycle
-        ];
-        
-        $sql = "INSERT INTO gibbonINSupportPlanHistory 
-                (gibbonINSupportPlanID, gibbonPersonID, action, fieldName, newValue) 
-                VALUES 
-                (:gibbonINSupportPlanID, :gibbonPersonID, :action, :fieldName, :newValue)";
-        
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
         
         // Notify all contributors and the plan owner
         $notificationGateway = $container->get(NotificationGateway::class);
@@ -127,14 +114,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         
         // Get all contributors
         $data = ['gibbonINSupportPlanID' => $gibbonINSupportPlanID];
-        $sql = "SELECT gibbonPersonIDContributor FROM gibbonINSupportPlanContributor 
+        $sql = "SELECT gibbonPersonID FROM gibbonINSupportPlanContributor 
                 WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID";
-        $resultContributors = $pdo->executeQuery($data, $sql);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+        $contributors = $stmt->fetchAll();
         
         $recipients = [];
-        while ($contributor = $resultContributors->fetch()) {
-            if ($contributor['gibbonPersonIDContributor'] != $_SESSION[$guid]['gibbonPersonID']) {
-                $recipients[] = $contributor['gibbonPersonIDContributor'];
+        foreach ($contributors as $contributor) {
+            if ($contributor['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+                $recipients[] = $contributor['gibbonPersonID'];
             }
         }
         

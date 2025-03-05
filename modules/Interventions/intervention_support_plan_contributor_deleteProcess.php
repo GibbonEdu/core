@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Interventions\Domain\INSupportPlanGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\NotificationSender;
 
 require_once '../../gibbon.php';
 
@@ -63,10 +66,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         'gibbonINSupportPlanContributorID' => $gibbonINSupportPlanContributorID,
         'gibbonINSupportPlanID' => $gibbonINSupportPlanID
     ];
-    $sql = "SELECT gibbonPersonIDContributor FROM gibbonINSupportPlanContributor 
+    $sql = "SELECT gibbonPersonID FROM gibbonINSupportPlanContributor 
             WHERE gibbonINSupportPlanContributorID=:gibbonINSupportPlanContributorID 
             AND gibbonINSupportPlanID=:gibbonINSupportPlanID";
-    $resultContributor = $pdo->executeQuery($data, $sql);
+    $stmt = $connection2->prepare($sql);
+    $stmt->execute($data);
+    $resultContributor = $stmt;
     
     if ($resultContributor->rowCount() != 1) {
         $URL .= '&return=error2';
@@ -90,23 +95,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $result = $connection2->prepare($sql);
         $result->execute($data);
         
-        // Log the deletion in history
-        $data = [
-            'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-            'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
-            'action' => 'Delete',
-            'fieldName' => 'contributor',
-            'oldValue' => $contributor['gibbonPersonIDContributor']
-        ];
-        
-        $sql = "INSERT INTO gibbonINSupportPlanHistory 
-                (gibbonINSupportPlanID, gibbonPersonID, action, fieldName, oldValue) 
-                VALUES 
-                (:gibbonINSupportPlanID, :gibbonPersonID, :action, :fieldName, :oldValue)";
-        
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        
         // Send notification to the contributor
         $notificationGateway = $container->get(\Gibbon\Domain\System\NotificationGateway::class);
         $notificationSender = $container->get(\Gibbon\Domain\System\NotificationSender::class);
@@ -116,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         $notificationString = sprintf(__('You have been removed as a contributor from a support plan by %1$s.'), $personName);
         
         $notificationSender->addNotification(
-            [$contributor['gibbonPersonIDContributor']], 
+            [$contributor['gibbonPersonID']], 
             'Support Plan Contributor', 
             $notificationString, 
             $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Interventions/interventions_contributor_dashboard.php'

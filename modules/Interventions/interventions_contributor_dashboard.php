@@ -42,35 +42,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         // Get current user
         $gibbonPersonID = $session->get('gibbonPersonID');
         
+        // Get the database connection
+        $pdo = $container->get('db')->getConnection();
+        
         echo '<h2>'.__('My Eligibility Assessments').'</h2>';
         
         // Get eligibility assessments where the user is a contributor
-        $sql = "SELECT c.*, a.*, i.name as interventionName, i.gibbonINInterventionID,
+        $sql = "SELECT c.*, a.status as assessmentStatus, a.gibbonINInterventionEligibilityAssessmentID,
+                    i.name as interventionName, i.status as interventionStatus, i.gibbonINInterventionID,
                     p.preferredName as studentPreferredName, p.surname as studentSurname,
-                    creator.preferredName as creatorPreferredName, creator.surname as creatorSurname,
-                    t.name as assessmentTypeName,
-                    CONCAT(p.surname, ', ', p.preferredName) as studentSort
+                    t.name as assessmentTypeName
                 FROM gibbonINInterventionEligibilityContributor AS c
                 JOIN gibbonINInterventionEligibilityAssessment AS a ON (c.gibbonINInterventionEligibilityAssessmentID=a.gibbonINInterventionEligibilityAssessmentID)
                 JOIN gibbonINIntervention AS i ON (a.gibbonINInterventionID=i.gibbonINInterventionID)
-                JOIN gibbonPerson AS p ON (a.gibbonPersonIDStudent=p.gibbonPersonID)
-                JOIN gibbonPerson AS creator ON (a.gibbonPersonIDCreator=creator.gibbonPersonID)
+                JOIN gibbonPerson AS p ON (i.gibbonPersonIDStudent=p.gibbonPersonID)
                 LEFT JOIN gibbonINEligibilityAssessmentType AS t ON (c.gibbonINEligibilityAssessmentTypeID=t.gibbonINEligibilityAssessmentTypeID)
                 WHERE c.gibbonPersonIDContributor=:gibbonPersonID
-                ORDER BY studentSort, i.name, t.name";
+                ORDER BY i.status ASC, c.timestampCreated DESC";
         
-        $result = $pdo->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['gibbonPersonID' => $gibbonPersonID]);
+        $result = $stmt;
         
         // Debug: Output all contributor records
         error_log('All contributor records:');
-        foreach ($result->fetchAll() as $record) {
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $record) {
             error_log('ID: ' . $record['gibbonINInterventionEligibilityContributorID'] . ', Status: ' . $record['status']);
         }
         
         // Re-execute the query since we consumed the results
-        $result = $pdo->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['gibbonPersonID' => $gibbonPersonID]);
+        $result = $stmt;
+        $eligibilityAssessments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        if ($result->rowCount() == 0) {
+        if (count($eligibilityAssessments) == 0) {
             echo "<div class='message warning'>".__('There are no eligibility assessments to display.')."</div>";
         } else {
             // Create a table for eligibility assessments
@@ -121,11 +127,74 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         ->setURL('/modules/Interventions/intervention_eligibility_contributor_add_type.php');
                 });
                 
-            // Convert the database result to an array for the DataTable
-            $assessments = $result->fetchAll();
-            
             // Create a DataSet object from the array
-            $dataSet = new DataSet($assessments);
+            $dataSet = new DataSet($eligibilityAssessments);
+            
+            echo $table->render($dataSet);
+        }
+        
+        echo '<h2>'.__('My Support Plan Contributions').'</h2>';
+        
+        // Get support plans where the user is a contributor
+        $sql = "SELECT c.*, sp.name as supportPlanName, i.name as interventionName, i.status as interventionStatus, i.gibbonINInterventionID,
+                    p.preferredName as studentPreferredName, p.surname as studentSurname
+                FROM gibbonINSupportPlanContributor AS c
+                JOIN gibbonINSupportPlan AS sp ON (c.gibbonINSupportPlanID=sp.gibbonINSupportPlanID)
+                JOIN gibbonINIntervention AS i ON (sp.gibbonINInterventionID=i.gibbonINInterventionID)
+                JOIN gibbonPerson AS p ON (i.gibbonPersonIDStudent=p.gibbonPersonID)
+                WHERE c.gibbonPersonID=:gibbonPersonID
+                ORDER BY i.status ASC, sp.dateStart DESC";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['gibbonPersonID' => $gibbonPersonID]);
+        $result = $stmt;
+        $supportPlans = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (count($supportPlans) == 0) {
+            echo "<div class='message warning'>".__('There are no support plans to display.')."</div>";
+        } else {
+            // Create a table for support plans
+            $table = DataTable::create('supportPlans');
+            $table->setTitle(__('Support Plans'));
+            
+            $table->addColumn('student', __('Student'))
+                ->format(function($row) {
+                    return Format::name('', $row['studentPreferredName'], $row['studentSurname'], 'Student', true);
+                });
+                
+            $table->addColumn('interventionName', __('Intervention'));
+            
+            $table->addColumn('supportPlanName', __('Support Plan'));
+            
+            $table->addColumn('role', __('Your Role'));
+            
+            $table->addColumn('interventionStatus', __('Status'))
+                ->format(function($row) {
+                    $statusColors = [
+                        'Referral' => 'dull',
+                        'Form Tutor Review' => 'warning',
+                        'Eligibility Assessment' => 'message',
+                        'Intervention Required' => 'warning',
+                        'Support Plan Active' => 'success',
+                        'Ready for Evaluation' => 'message',
+                        'Resolved' => 'success',
+                        'Referred for IEP' => 'dull'
+                    ];
+                    
+                    $color = $statusColors[$row['interventionStatus']] ?? 'dull';
+                    return '<span class="tag '.$color.'">'.__($row['interventionStatus']).'</span>';
+                });
+                
+            $table->addActionColumn()
+                ->addParam('gibbonINInterventionID')
+                ->addParam('gibbonINSupportPlanID')
+                ->format(function ($row, $actions) {
+                    $actions->addAction('view', __('View'))
+                        ->setURL('/modules/Interventions/intervention_support_plan_view.php');
+                });
+                
+            // Create a DataSet object from the array
+            $dataSet = new DataSet($supportPlans);
             
             echo $table->render($dataSet);
         }
@@ -141,9 +210,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                 WHERE c.gibbonPersonIDContributor=:gibbonPersonID
                 ORDER BY i.status ASC, c.timestampCreated DESC";
         
-        $result = $pdo->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['gibbonPersonID' => $gibbonPersonID]);
+        $result = $stmt;
+        $interventions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        if ($result->rowCount() == 0) {
+        if (count($interventions) == 0) {
             echo "<div class='message warning'>".__('There are no interventions to display.')."</div>";
         } else {
             // Create a table for interventions
@@ -184,9 +256,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
                         ->setURL('/modules/Interventions/interventions_manage_edit.php');
                 });
                 
-            // Convert the database result to an array for the DataTable
-            $interventions = $result->fetchAll();
-            
             // Create a DataSet object from the array
             $dataSet = new DataSet($interventions);
             

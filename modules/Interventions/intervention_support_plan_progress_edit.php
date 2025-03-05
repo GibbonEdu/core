@@ -2,8 +2,8 @@
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
-Copyright © 2010, Gibbon Foundation
-Gibbon™, Gibbon Education Ltd. (Hong Kong)
+Copyright 2010, Gibbon Foundation
+Gibbon, Gibbon Education Ltd. (Hong Kong)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -68,14 +68,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     // Check if user is a contributor with edit rights
     $data = [
         'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
-        'gibbonPersonIDContributor' => $gibbonPersonID
+        'gibbonPersonID' => $gibbonPersonID
     ];
     $sql = "SELECT * FROM gibbonINSupportPlanContributor 
             WHERE gibbonINSupportPlanID=:gibbonINSupportPlanID 
-            AND gibbonPersonIDContributor=:gibbonPersonIDContributor 
+            AND gibbonPersonID=:gibbonPersonID 
             AND canEdit='Y'";
-    $resultContributor = $pdo->executeQuery($data, $sql);
-    $isContributor = ($resultContributor->rowCount() > 0);
+    $stmt = $connection2->prepare($sql);
+    $stmt->execute($data);
+    $resultContributor = $stmt->fetch();
+    $isContributor = ($resultContributor !== false);
     
     if (!$isAdmin && !$isCoordinator && !$isContributor) {
         $page->addError(__('You do not have access to this action.'));
@@ -90,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     $sql = "SELECT * FROM gibbonINSupportPlanProgress 
             WHERE gibbonINSupportPlanProgressID=:gibbonINSupportPlanProgressID 
             AND gibbonINSupportPlanID=:gibbonINSupportPlanID";
-    $resultProgress = $pdo->executeQuery($data, $sql);
+    $resultProgress = $connection2->executeQuery($data, $sql);
     
     if ($resultProgress->rowCount() != 1) {
         $page->addError(__('The specified record cannot be found.'));
@@ -120,16 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     
     // Get school year and term information for reporting cycles
     $data = ['gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']];
-    $sql = "SELECT gibbonSchoolYear.name as yearName, 
-                  CONCAT(gibbonSchoolYearTerm.name, ' (', 
-                         DATE_FORMAT(gibbonSchoolYearTerm.firstDay, '%b %e'), ' - ', 
-                         DATE_FORMAT(gibbonSchoolYearTerm.lastDay, '%b %e'), ')') as termName,
+    $sql = "SELECT gibbonSchoolYearTerm.gibbonSchoolYearTermID, 
                   CONCAT(gibbonSchoolYear.name, ' - ', gibbonSchoolYearTerm.name) as reportingCycle
            FROM gibbonSchoolYear 
            JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
            WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID 
            ORDER BY gibbonSchoolYearTerm.sequenceNumber";
-    $resultTerms = $pdo->executeQuery($data, $sql);
+    $resultTerms = $connection2->executeQuery($data, $sql);
     
     $reportingCycles = ($resultTerms->rowCount() > 0)? $resultTerms->fetchAll(\PDO::FETCH_KEY_PAIR) : [];
 
@@ -156,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
 
     $row = $form->addRow();
         $row->addLabel('date', __('Date'))->description(__('Date of this progress report'));
-        $row->addDate('date')->setValue($progress['date'])->required();
+        $row->addDate('date')->setValue($progress['progressDate'])->required();
 
     // Add the submit button
     $row = $form->addRow();
