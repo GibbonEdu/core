@@ -38,6 +38,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
     exit;
 } else {
     // Proceed!
+    $gibbonINInterventionID = $_POST['gibbonINInterventionID'] ?? '';
+    $gibbonINSupportPlanID = $_POST['gibbonINSupportPlanID'] ?? '';
+    $progressSummary = $_POST['progressSummary'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $nextSteps = $_POST['nextSteps'] ?? '';
+    $date = $_POST['date'] ?? '';
+
+    // Validate Inputs
+    if (empty($gibbonINInterventionID) || empty($gibbonINSupportPlanID) || empty($progressSummary) || empty($status) || empty($date)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
     $supportPlanGateway = $container->get(INSupportPlanGateway::class);
     
     // Get support plan
@@ -74,22 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
         exit;
     }
     
-    // Validate Inputs
-    $progressSummary = $_POST['progressSummary'] ?? '';
-    $goalProgress = $_POST['goalProgress'] ?? '';
-    $nextSteps = $_POST['nextSteps'] ?? '';
-    $date = $_POST['date'] ?? '';
-    $status = $_POST['status'] ?? 'On Track';
-    
-    if (empty($progressSummary) || empty($date)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
-    
     // Get the database connection
     $pdo = $container->get('db')->getConnection();
-    
+
     try {
         $data = [
             'gibbonINSupportPlanID' => $gibbonINSupportPlanID,
@@ -99,12 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Interventions/intervention
             'status' => $status,
             'nextSteps' => $nextSteps
         ];
-        
+
         $sql = "INSERT INTO gibbonINSupportPlanProgress 
                 (gibbonINSupportPlanID, gibbonPersonIDCreator, progressDate, progress, status, nextSteps) 
                 VALUES 
                 (:gibbonINSupportPlanID, :gibbonPersonIDCreator, :progressDate, :progress, :status, :nextSteps)";
-        
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
         
