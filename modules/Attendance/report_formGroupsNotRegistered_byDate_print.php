@@ -55,21 +55,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
     echo '</h2>';
 
     //Produce array of attendance data
-
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+    $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     $log = array();
     while ($row = $result->fetch()) {
         $log[$row['gibbonFormGroupID']][$row['date']] = true;
     }
 
-
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+    $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ( count($lastNSchoolDays) == 0 ) {
         echo "<div class='error'>";
@@ -174,10 +172,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                     echo '<i>Not set</i>';
                 } else {
 
-                        $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
-                        $sqlTutor = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
-                        $resultTutor = $connection2->prepare($sqlTutor);
-                        $resultTutor->execute($dataTutor);
+                    $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
+                    $sqlTutor = "SELECT surname, preferredName FROM gibbonPerson WHERE (gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3) AND gibbonPerson.status='Full'";
+                    $resultTutor = $connection2->prepare($sqlTutor);
+                    $resultTutor->execute($dataTutor);
 
                     while ($rowTutor = $resultTutor->fetch()) {
                         echo Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
