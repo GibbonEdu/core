@@ -56,6 +56,7 @@ v29.0.00
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
         Attendance: fixed unable to add new partial future absence if a future future absence exists
+        Attendance: removed non-Full teachers from Form Groups Not Registered reports
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
         Planner: fixed empty sections displaying below the advanced options in Add Unit Plan
