@@ -67,18 +67,29 @@ Main Menu: Displays the top-level categories and active modules.
 
                 // Handle alarm display / cancel
                 if (data.alarm != false) {
-                    if ($('#TB_window').is(':visible') == true && $('#TB_window').hasClass('alarm') == false) {
-                        $("#TB_window").remove();
-                        $("body").append("<div id='TB_window'></div>");
-                    }
-                    if ($('#TB_window').is(':visible') == false) {
-                        var url = '{{ absoluteURL }}/index_notification_ajax_alarm.php?type='+ data.alarm +'&KeepThis=true&TB_iframe=true&width=1000&height=500';
-                        tb_show('', url);
-                        $('#TB_window').addClass('alarm') ;
+                    if (!document.getElementById('alarm-modal')) {
+                        const modal = document.createElement('div');
+                        modal.id = 'alarm-modal';
+                        modal.classList.add('alarm');
+                        modal.setAttribute('x-data', '{ open: true }');
+                        modal.innerHTML = `
+                               <div x-show="open" class="fixed inset-0 flex items-center justify-center z-50">
+                                <div class="bg-white p-4 rounded shadow-lg">
+                                    <iframe src="{{ absoluteURL }}/index_notification_ajax_alarm.php?type=${data.alarm}&KeepThis=true&TB_iframe=true&width=1000&height=500" width="1000" height="500"></iframe>
+                                </div>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                    } else {
+                        const modal = document.getElementById('alarm-modal');
+                        modal.__x.$data.open = true;
+                        modal.classList.add('alarm');
                     }
                 } else {
-                    if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') ) {
-                        tb_remove();
+                    const modal = document.getElementById('alarm-modal');
+                    if (modal) {
+                        modal.__x.$data.open = false;
+                        modal.classList.remove('alarm');
                     }
                 }
 
