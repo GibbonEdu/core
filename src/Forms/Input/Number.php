@@ -109,7 +109,10 @@ class Number extends TextField
      */
     protected function getElement()
     {
-        $attributes = $this->getAttributeArray() + ["min" => $this->min, "max" => $this->max, "step" => $this->onlyInteger ? "1" : "0." . str_repeat("0", $this->decimalPlaces - 1) . "1"];
+        
+        $stepValue = $this->onlyInteger ? "1" : ($this->decimalPlaces > 0 ? "0." . str_repeat("0", $this->decimalPlaces - 1) . "1" : "1");
+
+        $attributes = $this->getAttributeArray() + ["min" => $this->min, "max" => $this->max, "step" => $stepValue];
         return Component::render(Number::class, $attributes);
     }
 }
