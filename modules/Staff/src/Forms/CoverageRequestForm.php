@@ -114,19 +114,30 @@ class CoverageRequestForm
             }
         }
 
-        // Look for available subs
+        
+
+        // FORM
+        $form = Form::createBlank('staffAbsenceEdit', '');
+
+        $form->setFactory(DatabaseFormFactory::create($this->db));
+
+        if ($canSelectSubstitutes) {
+
+            // Look for available subs
         $criteria = $this->substituteGateway->newQueryCriteria()
-            ->filterBy('allStaff', $this->internalCoverage == 'Y')
-            ->sortBy('gibbonSubstitute.priority', 'DESC')
-            ->sortBy(['surname', 'preferredName']);
+        ->filterBy('allStaff', $this->internalCoverage == 'Y')
+        ->sortBy('gibbonSubstitute.priority', 'DESC')
+        ->sortBy(['surname', 'preferredName']);
 
-        $availabilityCount = 0;
-        $availableSubs = [];
+    $availabilityCount = 0;
+    $availableSubs = [];
 
-        foreach ($coverageByTimetable ? $classes : $absenceDates as $index => $date) {
-            if (!empty($date['gibbonStaffCoverageID'])) continue; // Already covered
+    foreach ($coverageByTimetable ? $classes : $absenceDates as $index => $date) {
+        if (!empty($date['gibbonStaffCoverageID'])) continue; // Already covered
 
             $availableByDate = $this->substituteGateway->queryAvailableSubsByDate($criteria, $date['date'], $date['timeStart'], $date['timeEnd'])->toArray();
+            //$availableByDate = [];
+            
             $availabilityCount += !empty($availableByDate)? 1 : 0;
 
             $availableSubs = array_merge($availableSubs, $availableByDate);
@@ -156,13 +167,6 @@ class CoverageRequestForm
             $group[$item['type']] = $item['type']." ({$countTypes[$item['type']]})";
             return $group;
         }, []);
-
-        // FORM
-        $form = Form::createBlank('staffAbsenceEdit', '');
-
-        $form->setFactory(DatabaseFormFactory::create($this->db));
-
-        if ($canSelectSubstitutes) {
 
             $requestTypes = ['Broadcast'  => __('Any available substitute')];
 
