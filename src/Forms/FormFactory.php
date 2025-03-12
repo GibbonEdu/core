@@ -312,7 +312,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubmit($label = 'Submit', $id = null)
     {
-        return $this->createButton($label, null, $id)->setType('submit')->addClass('text-right');
+        return $this->createButton(__($label), null, $id)->setType('submit')->addClass('text-right');
     }
 
     public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())
@@ -328,7 +328,7 @@ class FormFactory implements FormFactoryInterface
     public function createConfirmSubmit($label = 'Yes', $cancel = false)
     {
         $cancelLink = ($cancel)? sprintf('<a href="%s" class="right px-3 py-2 text-xs font-medium text-gray-600">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
-        return $this->createSubmit($label)->prepend($cancelLink);
+        return $this->createSubmit(__($label))->prepend($cancelLink);
     }
 
     public function createAdvancedOptionsToggle()
