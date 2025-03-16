@@ -367,7 +367,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
                 ->checkName($criteria['preferredName'])
                 ->checkPronouns($criteria['gender'])
-                ->setClass('flex flex-col reportCriteria text-base font-sans whitespace-nowrap')
+                ->setClass('flex flex-col reportCriteria text-base font-sans')
                 ->addClass('comment'.$gibbonReportingValueID)
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
