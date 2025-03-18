@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         ->setSize(4)
         ->selected($config['fonts'] ?? []);
 
-    $flags = ['000' => __('TCPDF Renderer - Faster, Limited HTML'), '001' => __('mPDF Renderer - Slower, Better HTML Support')];
+    $flags = ['001' => __('mPDF Renderer - Slower, Better HTML Support'), '000' => __('TCPDF Renderer - Faster, Limited HTML')];
     $row = $form->addRow();
     $row->addLabel('flags', __('Renderer'));
     $row->addSelect('flags')->fromArray($flags)->required();
