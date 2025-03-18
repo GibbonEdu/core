@@ -62,6 +62,7 @@ v29.0.00
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
         Planner: fixed empty sections displaying below the advanced options in Add Unit Plan
+        Reports: fixed missing iframe support for template preview windows
         Students: fixed missing Emergency Contact Number 2 on student profile
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder
