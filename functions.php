@@ -1281,7 +1281,8 @@ function isModuleAccessible($guid, $connection2, $address = '')
 //Get the module name from the address
 function getModuleName($address)
 {
-    return substr(substr($address, 9), 0, strpos(substr($address, 9), '/'));
+    $dir = substr($address, strpos($address, 'modules/')+8);
+    return substr($dir, 0, strpos($dir, '/'));
 }
 
 //Get the action name from the address
