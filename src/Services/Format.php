@@ -653,7 +653,7 @@ class Format
      */
     public static function hyperlinkAll(string $value)
     {
-        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
+        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+?)(?=[.,;:!]*(?:\s|$))/';
         return preg_replace($pattern, '$1<a target="_blank" rel="noopener noreferrer" href="$2">$2</a>', $value);
     }
 
