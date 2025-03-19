@@ -139,7 +139,7 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
 }
 
 // Autoload the current module namespace
-if (!empty($session->get('module')) && !empty($autoloader)) {
+if (!empty($session->get('module'))) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $session->get('module'));
     $autoloader->addPsr4('Gibbon\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module').'/src');
     $autoloader->register(true);
