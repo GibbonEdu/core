@@ -23,6 +23,8 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Symfony\Component\Yaml\Yaml;
+
+$_POST['address'] = '/modules/Reports/templates_assets.php';
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';

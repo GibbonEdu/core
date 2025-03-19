@@ -91,7 +91,7 @@ class SessionFactory
         // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
         // which is currently used in many Process pages.
         // TODO: replace this logic when switching to routing.
-        $address = $_GET['q'] ?? $_POST['address'] ?? $_SERVER['PHP_SELF'] ?? '';
+        $address = $_GET['q'] ?? $_POST['address'] ?? '';
         $module = $address ? getModuleName($address) : '';
         $action = $address ? getActionName($address) : basename($_SERVER['PHP_SELF']);
 
