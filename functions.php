@@ -1281,15 +1281,18 @@ function isModuleAccessible($guid, $connection2, $address = '')
 //Get the module name from the address
 function getModuleName($address)
 {
-    $pos = strpos($address, 'modules/');
+    $pos = stripos($address, 'modules/');
     $dir = substr($address, $pos+8);
-    return $pos !== false ? substr($dir, 0, strpos($dir, '/')) : '';
+    return $pos !== false ? substr($dir, 0, stripos($dir, '/')) : '';
 }
 
 //Get the action name from the address
 function getActionName($address)
 {
-    return substr($address, (10 + strlen(getModuleName($address))));
+    $module = getModuleName($address);
+    return !empty($module) 
+        ? substr($address, (10 + strlen($module)))
+        : basename($address);
 }
 
 //Using the current address, checks to see that a module exists and is ready to use, returning the ID if it is
