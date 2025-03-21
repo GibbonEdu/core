@@ -110,15 +110,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
     $table->addColumn('student', __('Student'))
         ->description(__('Last Update'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-        ->format(function ($student) use ($cutoffDate) {
-            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/>';
+        ->format(function ($student) {
+            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true);
+            
+            if (!empty($student['nameInCharacters'])) {
+                $output .= ' ('.$student['nameInCharacters'].')';
+            }
+            
+            return $output;
+        })
+        ->formatDetails(function ($student) use ($cutoffDate) {
 
-            $output .= ($student['lastPersonalUpdate'] < $cutoffDate) ? '<span style="color: #ff0000; font-weight: bold"><i>' : '<span><i>';
+            $output = ($student['lastPersonalUpdate'] < $cutoffDate) ? '<span style="color: #ff0000; font-weight: bold"><i>' : '<span><i>';
             $output .= !empty($student['lastPersonalUpdate']) ? Format::date($student['lastPersonalUpdate']) : __('N/A');
             $output .= '</i></span>';
 
             $output .= '<br/><br/>';
-            $output .= '<i>'.__('Email').'</i>: '.$student['email'].'<br/>';
+            if (!empty($student['email'])) {
+                $output .= '<i>'.__('Email').'</i>: '.$student['email'].'<br/>';
+            }
             $output .= Format::phone($student['phone1'], $student['phone1CountryCode'], '<i>'.$student['phone1Type'].'<i>');
 
             return $output;
