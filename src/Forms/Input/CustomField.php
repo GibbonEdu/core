@@ -167,7 +167,7 @@ class CustomField extends Input
         }
 
         $this->customField->setClass($this->type != 'checkboxes' && $this->type != 'radio' ? 'w-full' : '');
-        $this->customField->setID(preg_replace('/[^a-zA-Z0-9]/', '', $this->customField->getName()));
+        $this->customField->setID(preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $this->customField->getName()));
 
         parent::__construct($name);
     }

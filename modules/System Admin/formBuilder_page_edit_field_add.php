@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 if ($fieldGroup == 'CustomFields') {
                     $col->addSubheading($heading);
                 } elseif (!empty($heading)) {
-                    $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
+                    $groupName = 'heading'.preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $heading);
                     $field = $fieldGroupClass->getField($groupName);
 
                     $description = '<div class="flex-1 text-left"><span class="text-sm font-bold uppercase text-gray-800 -ml-2">'.__($heading).'</span></div><div>'.($field['type'] ?? '').'</div>';

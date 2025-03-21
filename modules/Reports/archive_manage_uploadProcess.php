@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         exit;
     }
 
-    $reportFolder = $gibbonSchoolYearID.'-'.preg_replace('/[^a-zA-Z0-9]/', '', $reportIdentifier);
+    $reportFolder = $gibbonSchoolYearID.'-'.preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $reportIdentifier);
     $destinationFolder = $archive['path'].'/'.$reportFolder;
     if (!is_dir($absolutePath.$destinationFolder)) {
         mkdir($absolutePath.$destinationFolder, 0755, true);

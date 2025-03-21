@@ -423,7 +423,7 @@ class DataTable implements OutputableInterface
 
     public function addHeaderContent($content = '')
     {
-        $name = substr(preg_replace('/[^a-zA-Z0-9]/', '', $content), 0, 30);
+        $name = substr(preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $content), 0, 30);
         $this->header[$name] = new Element($content);
 
         return $this->header[$name];
