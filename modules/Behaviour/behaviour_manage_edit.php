@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Type
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addTextField('type')->setValue($values['type'])->required()->readonly();
+                    $row->addSelect('type')->fromArray(['Positive' => __('Positive'), 'Negative' => __('Negative')])->selected($values['type'])->required()->readonly();
 
                 //Descriptor
                 if ($enableDescriptors == 'Y') {
