@@ -146,6 +146,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                     AND (dateEnd IS NULL  OR dateEnd>=:today)
                     AND (gibbonPerson.surname LIKE :search
                         OR gibbonPerson.preferredName LIKE :search
+                        OR gibbonPerson.nameInCharacters LIKE :search
                         OR gibbonPerson.username LIKE :search)
                     ORDER BY name";
             $resultList = $pdo->select($sql, $data);
@@ -228,6 +229,7 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
                 AND (gibbonPerson.surname LIKE :search
                     OR gibbonPerson.firstName LIKE :search
                     OR gibbonPerson.preferredName LIKE :search
+                    OR gibbonPerson.nameInCharacters LIKE :search
                     OR gibbonPerson.username LIKE :search
                     OR gibbonPerson.studentID LIKE :search
                     OR gibbonFormGroup.name LIKE :search)

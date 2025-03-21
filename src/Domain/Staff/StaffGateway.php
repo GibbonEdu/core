@@ -38,7 +38,7 @@ class StaffGateway extends QueryableGateway
     private static $tableName = 'gibbonStaff';
     private static $primaryKey = 'gibbonStaffID';
 
-    private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonStaff.jobTitle'];
+    private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonPerson.nameInCharacters', 'gibbonStaff.jobTitle'];
 
     /**
      * Queries the list of users for the Manage Staff page.

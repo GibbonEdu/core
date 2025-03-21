@@ -49,6 +49,7 @@ v29.0.00
         Timetable: removed the display of declined events from Google Calendar on the timetable
         Timetable Admin: added an Edit Timetable by Class button to Course Enrolment by Class
         User Admin: improved the image uploader in Manage Users, detect invalid images
+        User Admin: added Name in Characters to searchable fields
 
     
     Bug Fixes

@@ -67,6 +67,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonAdmissionsApplication.data',
                 'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.surname")) as studentSurname',
                 'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.preferredName")) as studentPreferredName',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.nameInCharacters")) as studentNameInCharacters',
                 'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.schoolName1")) as schoolName1',
                 'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.dob")) as dob',
              ])
