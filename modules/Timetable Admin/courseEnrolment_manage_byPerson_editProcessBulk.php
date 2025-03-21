@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             foreach ($classes as $gibbonCourseClassID) {
                 try {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = "UPDATE gibbonCourseClassPerson SET reportable='Y' WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $sql = "UPDATE gibbonCourseClassPerson SET reportable='Y' WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             foreach ($classes as $gibbonCourseClassID) {
                 try {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = "UPDATE gibbonCourseClassPerson SET reportable='N' WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $sql = "UPDATE gibbonCourseClassPerson SET reportable='N' WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
