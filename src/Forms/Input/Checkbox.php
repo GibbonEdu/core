@@ -228,7 +228,7 @@ class Checkbox extends Input
             $this->options = [$this->getValue() => $this->description];
         }
 
-        $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
+        $identifier = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $this->getID());
         $hasMultiple = $this->getOptionCount() > 1;
         $options = [];
 
