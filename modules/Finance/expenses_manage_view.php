@@ -148,10 +148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 
                                             $resultYear = $container->get(FinanceBudgetCycleGateway::class)->getByID($gibbonFinanceBudgetCycleID);
 
-                                            if (empty($resultYear)) {
+                                            if (!empty($resultYear)) {
                                                 $rowYear = $resultYear;
                                                 $yearName = $rowYear['name'];
                                             }
+                                            
                                             ?>
                                             <input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
                                             <input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
@@ -162,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Budget') ?></b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
+                                            <input readonly name="name" id="name" maxlength=20 value="<?php echo $values['budget']; ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>
@@ -170,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Title') ?></b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
+                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo $values['title']; ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>
@@ -178,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Status') ?></b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo __($row['status']); ?>" type="text" class="standardWidth">
+                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo __($values['status']); ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>
@@ -186,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Description') ?></b>
                                             <?php
                                                 echo '<p>';
-                                                echo $row['body'];
+                                                echo $values['body'];
                                                 echo '</p>'
                                             ?>
                                         </td>
@@ -207,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             </span>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo $row['cost']; ?>" type="text" class="standardWidth">
+                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo $values['cost']; ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>
@@ -215,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Count Against Budget') ?> *</b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo Format::yesNo($row['countAgainstBudget']); ?>" type="text" class="standardWidth">
+                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo Format::yesNo($values['countAgainstBudget']); ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>
@@ -223,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Purchase By') ?></b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo __($row['purchaseBy']); ?>" type="text" class="standardWidth">
+                                            <input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo __($values['purchaseBy']); ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>
@@ -231,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Purchase Details') ?></b>
                                             <?php
                                                 echo '<p>';
-                                                echo $row['purchaseDetails'];
+                                                echo $values['purchaseDetails'];
                                                 echo '</p>'
                                             ?>
                                         </td>
@@ -264,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                     </tr>
 
                                     <?php
-                                    if ($row['status'] == 'Paid') {
+                                    if ($values['status'] == 'Paid') {
                                         ?>
                                         <tr class='break' id="paidTitle">
                                             <td colspan=2>
@@ -277,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 <span class="italic small"><?php echo __('Date of payment, not entry to system.') ?></span>
                                             </td>
                                             <td class="right">
-                                                <input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo Format::date($row['paymentDate']) ?>" type="text" class="standardWidth">
+                                                <input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo Format::date($values['paymentDate']) ?>" type="text" class="standardWidth">
                                             </td>
                                         </tr>
                                         <tr id="paymentAmountRow">
@@ -292,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 </span>
                                             </td>
                                             <td class="right">
-                                                <input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php echo number_format($row['paymentAmount'], 2, '.', ',') ?>" type="text" class="standardWidth">
+                                                <input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php echo number_format($values['paymentAmount'], 2, '.', ',') ?>" type="text" class="standardWidth">
                                             </td>
                                         </tr>
                                         <tr id="payeeRow">
@@ -303,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <td class="right">
                                                 <?php
 
-                                                    $dataSelect = array('gibbonPersonID' => $row['gibbonPersonIDPayment']);
+                                                    $dataSelect = array('gibbonPersonID' => $values['gibbonPersonIDPayment']);
                                                     $sqlSelect = 'SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                                     $resultSelect = $connection2->prepare($sqlSelect);
                                                     $resultSelect->execute($dataSelect);
@@ -321,7 +322,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 <b><?php echo __('Payment Method') ?></b><br/>
                                             </td>
                                             <td class="right">
-                                                <input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php echo $row['paymentMethod'] ?>" type="text" class="standardWidth">
+                                                <input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php echo $values['paymentMethod'] ?>" type="text" class="standardWidth">
                                             </td>
                                         </tr>
                                         <tr id="paymentIDRow">
@@ -330,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 <span class="italic small"><?php echo __('Transaction ID to identify this payment.') ?></span>
                                             </td>
                                             <td class="right">
-                                                <input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php echo $row['paymentID'] ?>" type="text" class="standardWidth">
+                                                <input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php echo $values['paymentID'] ?>" type="text" class="standardWidth">
                                             </td>
                                         </tr>
                                         <?php
