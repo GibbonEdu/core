@@ -459,6 +459,7 @@ class ActivityGateway extends QueryableGateway
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivityCategory.gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                 WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID
                 AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
+                AND gibbonActivity.registration='Y'
                 GROUP BY gibbonActivity.gibbonActivityID";
 
         return $this->db()->selectOne($sql, $data);
