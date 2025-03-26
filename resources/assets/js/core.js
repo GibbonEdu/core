@@ -990,7 +990,7 @@ MultiSelect.prototype.init = function () {
         _.sortSelects();
     });
 
-    $("#" + _.name + "Search", _.container).keyup(function () {
+    $("#"+_.name+"Search",_.container).on('keyup input compositionend',function(){
         var search = $(this).val().toLowerCase();
         $("option", _.selectSource).each(function () {
             var option = $(this);
