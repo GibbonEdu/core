@@ -59,6 +59,7 @@ v29.0.00
         System: fixed issue with search terms containing a : full colon (special character) 
         System: fixed max and min limits to Number values in forms
         System: improved the input detection in the MultiSelect search box for non-standard input sources
+        System: fixed searching unicode characters within stored JSON data
         Sidebar: fixed localization of Roles menu items.
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
