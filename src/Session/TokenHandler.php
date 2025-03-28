@@ -30,7 +30,7 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
  * @since   v29
  */
 
- class TokenHandler {
+class TokenHandler {
 
     /**
      * @var SessionInterface
@@ -42,8 +42,8 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
         $this->session = $session;
 
         // Create a CSRF token
-        if (!$session->exists('token')) {
-            $session->set('token', bin2hex(random_bytes(16)));
+        if (!$session->exists('csrftoken')) {
+            $session->set('csrftoken', bin2hex(random_bytes(16)));
         }
 
         // Create a nonce list 
@@ -54,12 +54,12 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
 
     public function getCSRF()
     {
-        return $this->session->get('token');
+        return $this->session->get('csrftoken');
     }
 
     public function validateCsrfToken()
     {
-        return !empty($this->session->get('token')) && $this->session->get('token') === $_POST['token'];
+        return !empty($this->session->get('csrftoken')) && $this->session->get('csrftoken') === $_POST['csrftoken'];
     }
 
 
@@ -105,4 +105,4 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
         return false;
     }
 
- }
+}

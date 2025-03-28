@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Forms\Form;
+use Gibbon\Session\TokenHandler;
 
 /**
  * class MultiPartForm extends Form
@@ -53,6 +54,13 @@ class MultiPartForm extends Form
             ->setClass($class)
             ->setAction($action)
             ->setMethod($method);
+
+        // Add the CSRF and Nonce tokens to all POST forms
+        if(strtolower($method) == 'post') {
+            $tokenHandler = $container->get(TokenHandler::class);
+            $form->addHiddenValue('csrftoken', $tokenHandler->getCSRF());
+            $form->addHiddenValue('nonce', $tokenHandler->getNonce());
+        }
 
         return $form;
     }
