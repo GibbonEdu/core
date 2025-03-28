@@ -48,6 +48,7 @@ v29.0.00
         Students: added Name in Characters to the Emergency Data Summary
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable
+        System Admin: added new Units import for Unit Planner
         Timetable: removed the display of declined events from Google Calendar on the timetable
         Timetable Admin: added an Edit Timetable by Class button to Course Enrolment by Class
         User Admin: improved the image uploader in Manage Users, detect invalid images
