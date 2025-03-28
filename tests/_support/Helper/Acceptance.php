@@ -26,7 +26,7 @@ class Acceptance extends \Codeception\Module
             $name = $element->getAttribute('name');
             $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : '';
 
-            if (empty($name) || $name == 'address' || $name == 'token' || $name == 'nonce') continue;
+            if (empty($name) || $name == 'address' || $name == 'csrftoken' || $name == 'nonce') continue;
             if ($element->hasAttribute('readonly')) continue;
 
             switch($type) {
