@@ -1,0 +1,45 @@
+
+details:
+    type: units
+    name: Units
+    category: Units  
+    table: gibbonUnit
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Planner
+    action: Unit Planner
+primaryKey:
+    gibbonUnitID
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, readonly: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonCourseID:
+        name: "Course"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
+    name:
+        name: "Name"
+        desc: "Unit name"
+        args: { filter: string, required: true }
+    description:
+        name: "Description"
+        args: { filter: string, required: true }
+    active:
+        name: "Active"
+        args: { filter: yesno, required: true, custom: true }
+    map:
+        name: "Map"
+        args: { filter: yesno, required: true, custom: true}
+    ordering:
+        name: "Ordering"
+        args: { filter: numeric, required: true, custom: true}
+    tags:
+        name: "Concepts & Keywords"
+        args: { filter: string, custom: true}
+    details:
+        name: "Unit Outline"
+        args: { filter: string, custom: true}
