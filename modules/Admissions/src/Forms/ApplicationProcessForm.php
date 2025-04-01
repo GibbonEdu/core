@@ -72,7 +72,7 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
 
                 $row = $form->addRow();
                     $row->addLabel('applicationProcess['.$process->getProcessName().'][enabled]', $view->getName())
-                        ;
+                        ->description($view->getDescription());
                     $row->addContent(($result ? Format::tag(__('Processed'), 'success mr-2') : Format::tag(__('Not Processed'), 'dull mr-2')) . Format::dateTimeReadable($resultDate))->addClass('items-center');
                     $row->addCheckbox('applicationProcess['.$process->getProcessName().'][enabled]')->setValue('Y');
 
