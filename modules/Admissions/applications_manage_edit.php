@@ -170,12 +170,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formBuilder->addConfig(['mode' => 'office']);
     $officeForm = $formBuilder->includeHidden(true)->edit($action);
     $officeForm->addHiddenValue('officeOnly', 'Y');
-    $officeForm->addHiddenValue('tab', 0);
+    $officeForm->addHiddenValue('tab', 1);
     $officeForm->loadAllValuesFrom($values);
 
     $formBuilder->addConfig(['mode' => 'edit']);
     $editForm = $formBuilder->includeHidden(false)->edit($action);
-    $editForm->addHiddenValue('tab', 2);
+    $editForm->addHiddenValue('tab', 3);
     $editForm->loadAllValuesFrom($values);
 
     // Build forms for other tabs

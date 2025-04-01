@@ -64,6 +64,7 @@ v29.0.00
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
         Activities: fixed new sign-up system to honour the registration Y/N setting per activity
+        Admissions: fixed default tab selection after saving a form in Edit Application
         Attendance: fixed unable to add new partial future absence if a future future absence exists
         Attendance: removed non-Full teachers from Form Groups Not Registered reports
         Markbook: fixed attainment percentage values now updating from raw attainment values
