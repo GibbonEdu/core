@@ -90,11 +90,16 @@ class TokenHandler {
 
     /**
      * Check if a nonce exists when a form is submitted. If yes, then remove it from the list.
+     * Prevent removing a nonce when using HX-Request to submit a form (via HX-QuickSave in POST).
      *
      * @param string $nonce
      * @return bool
      */
     public function removeNonce(string $nonce) {
+        if (!empty($_POST['HX-QuickSave'])) {
+            return true;
+        }
+
         $nonceList = $this->session->get('nonceList', []);
 
         if (($key = array_search($nonce, $nonceList)) !== false) {
