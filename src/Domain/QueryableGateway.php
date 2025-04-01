@@ -184,7 +184,7 @@ abstract class QueryableGateway extends Gateway
 
             $query->where(function ($query) use ($criteria, $searchable) {
                 $searchText = $criteria->getSearchText();
-                $searchTextEncoded = trim(json_encode($searchText), '"');
+                $searchTextEncoded = str_replace('\\', '\\\\', trim(json_encode($searchText), '"'));
 
                 foreach ($criteria->getSearchColumns() as $count => $column) {
                     if (!in_array($column, $searchable)) continue;
