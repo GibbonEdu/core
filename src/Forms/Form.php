@@ -468,9 +468,9 @@ class Form implements OutputableInterface
      * Enables submitting the form and reloading without a page refresh.
      * @return self
      */
-    public function enableQuickSave()
+    public function enableQuickSave(bool $enabled = true)
     {
-        $this->renderer->addData('quickSave', true);
+        $this->renderer->addData('quickSave', $enabled);
         return $this;
     }
 
