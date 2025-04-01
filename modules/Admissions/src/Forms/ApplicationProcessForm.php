@@ -23,11 +23,12 @@ namespace Gibbon\Module\Admissions\Forms;
 
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
+use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * ApplicationProcessForm
@@ -51,7 +52,9 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
         $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
         $form = Form::create('applicationProcess', $action);
+        $form->setDescription(Format::alert(__('This tool enables you to run processes on the application form to perform tasks, such as sending emails. These tasks are generally performed automatically when the form is submitted or accepted, however you can also manually run them here.'), 'message'));
         $form->removeMeta();
+        $form->enableQuickSave(false);
 
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);
@@ -64,8 +67,13 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
 
             if ($viewClass = $process->getViewClass()) {
                 $view = $this->getContainer()->get($viewClass);
+                $result = $formData->hasResult($view->getResultName());
+                $resultDate = $formData->getResult($view->getResultName().'Date');
+
                 $row = $form->addRow();
-                    $row->addLabel('applicationProcess['.$process->getProcessName().'][enabled]', $view->getName())->description($view->getDescription());
+                    $row->addLabel('applicationProcess['.$process->getProcessName().'][enabled]', $view->getName())
+                        ;
+                    $row->addContent(($result ? Format::tag(__('Processed'), 'success mr-2') : Format::tag(__('Not Processed'), 'dull mr-2')) . Format::dateTimeReadable($resultDate))->addClass('items-center');
                     $row->addCheckbox('applicationProcess['.$process->getProcessName().'][enabled]')->setValue('Y');
 
                 $view->configureEdit($form, $formData, 'applicationProcess['.$process->getProcessName().']');

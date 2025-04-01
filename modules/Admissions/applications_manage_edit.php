@@ -99,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Link existing parent 1 or family
     $formBuilder->addConfig([
+        'accountEmail'   => $account['email'] ?? '',
         'gibbonPersonID' => $account['gibbonPersonID'] ?? $formData->getAny('gibbonPersonIDParent1'),
         'gibbonFamilyID' => $account['gibbonFamilyID'] ?? $formData->getAny('gibbonFamilyID'),
     ]);
@@ -171,11 +172,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $officeForm = $formBuilder->includeHidden(true)->edit($action);
     $officeForm->addHiddenValue('officeOnly', 'Y');
     $officeForm->addHiddenValue('tab', 1);
+    $officeForm->enableQuickSave(false);
     $officeForm->loadAllValuesFrom($values);
 
     $formBuilder->addConfig(['mode' => 'edit']);
     $editForm = $formBuilder->includeHidden(false)->edit($action);
     $editForm->addHiddenValue('tab', 3);
+    $editForm->enableQuickSave(false);
     $editForm->loadAllValuesFrom($values);
 
     // Build forms for other tabs
