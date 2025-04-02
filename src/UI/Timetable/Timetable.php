@@ -188,9 +188,14 @@ class Timetable implements OutputableInterface
             foreach ($layer->getItems() as $item) {
                 if (!$item->allDay) $this->structure->expandTimeRange($item->timeStart, $item->timeEnd);
 
-                // Constrain timetabled layer items to timing changes here... ?
-                // $item = $this->structure->constrainTiming($item, $specialDay['schoolStart'], $specialDay['schoolEnd']);
+                if ($layer->getType() == 'timetabled' && $specialDay = $this->structure->getSpecialDay($item->date)) {
+                    $item->constrainTiming($specialDay['schoolStart'] ?? '', $specialDay['schoolEnd'] ?? '');
+                }
             }
+
+            $layer->filterItems(function ($item) {
+                return $item->isActive();
+            });
         }
 
         return $this;

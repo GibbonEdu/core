@@ -109,5 +109,12 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
         return count($this->items, COUNT_RECURSIVE) - count($this->items);
     }
 
+    public function filterItems(callable $callback)
+    {
+        foreach ($this->items as $key => $items) {
+            $this->items[$key] = array_filter($items, $callback);
+        }
+    }
+
     public abstract function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 }

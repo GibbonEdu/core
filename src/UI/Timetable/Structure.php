@@ -298,27 +298,6 @@ class Structure
         return ($diff->h * 60) + $diff->i;
     }
 
-    public function constrainTiming($item, $timeStart, $timeEnd)
-    {
-        if (!empty($timeStart)) {
-            if ($item['timeEnd'] < $timeStart) return [];
-
-            if ($item['timeStart'] < $timeStart) {
-                $item['timeStart'] = $timeStart;
-            }
-        }
-
-        if (!empty($timeEnd)) {
-            if ($item['timeStart'] > $timeEnd) return [];
-
-            if ($item['timeEnd'] > $timeEnd) {
-                $item['timeEnd'] = $timeEnd;
-            }
-        }
-
-        return $item;
-    }
-
     protected function loadWeekdays()
     {
         $weekdays = $this->daysOfWeekGateway->selectSchoolWeekdays()->fetchAll();
@@ -338,34 +317,6 @@ class Structure
     protected function loadSpecialDays()
     {
         $specialDays = $this->specialDayGateway->selectSpecialDaysByDateRange($this->getStartDate(), $this->getEndDate())->fetchGroupedUnique();
-
-        // foreach ($specialDays as $specialDay) {
-        //     if ($specialDay['type'] == 'School Closure') {
-        //         unset($this->columns[$specialDay['date']]);
-        //         continue;
-        //     }
-
-        //     // Constrain the columns to the special day timings
-        //     // Move this somewhere else so it applies to timetabled items as well?
-        //     foreach ($this->getColumn($specialDay['date']) as $index => $period) {
-        //         if (!($period['timeStart'] >= $specialDay['schoolStart'] && $period['timeStart'] < $specialDay['schoolEnd']) 
-        //         && !($specialDay['schoolStart'] >= $period['timeStart'] && $specialDay['schoolStart'] < $period['timeEnd'])) {
-        //             unset($this->columns[$specialDay['date']][$index]);
-        //             continue;
-        //         }
-
-        //         if (!empty($specialDay['schoolStart']) && $specialDay['schoolStart'] > $period['timeStart']) {
-        //             $period['timeStart'] = $specialDay['schoolStart'];
-        //         }
-
-        //         if (!empty($specialDay['schoolEnd']) && $specialDay['schoolEnd'] < $period['timeEnd']) {
-        //             $period['timeEnd'] = $specialDay['schoolEnd'];
-        //         }
-        //         $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
-
-        //         $this->columns[$specialDay['date']][$index] = $period;
-        //     }
-        // }
 
         // Add school closures for any date outside of a school term
         $termDates = $this->schoolYearTermGateway->getTermsDatesByDateRange($this->getStartDate(), $this->getEndDate());
@@ -388,19 +339,21 @@ class Structure
         $columnList = $this->timetableColumnGateway->selectTTColumnsByDateRange($gibbonTTID, $this->getStartDate(), $this->getEndDate())->fetchAll();
         $columns = [];
 
-        foreach ($columnList as $period) {
-            // Constrain column rows based on school closures and timing changes
-            $specialDay = $this->getSpecialDay($period['date']);
-            if (!empty($specialDay)) {
-                if ($specialDay['type'] == 'School Closure') continue;
+        foreach ($columnList as $periodData) {
+            $period = (new TimetableItem($periodData['date']))->loadData($periodData);
 
-                $period = $this->constrainTiming($period, $specialDay['schoolStart'], $specialDay['schoolEnd']);
+            // Constrain column rows based on school closures and timing changes
+            if ($specialDay = $this->getSpecialDay($period->date)) {
+                if ($specialDay['type'] == 'School Closure') continue;
+                $period->constrainTiming($specialDay['schoolOpen'] ?? '', $specialDay['schoolClose'] ?? '');
             }
 
-            $this->expandTimeRange($period['timeStart'], $period['timeEnd']);
+            if ($period->isActive()) {
+                $this->expandTimeRange($period->timeStart, $period->timeEnd);
+                $period->set('duration', $this->timeDifference($period->timeStart, $period->timeEnd));
 
-            $period['duration'] = $this->timeDifference($period['timeStart'], $period['timeEnd']);
-            $columns[$period['date']][$period['nameShort']] = $period;
+                $columns[$period->date][$period->subtitle] = $period;
+            }
         }
 
         return $columns;

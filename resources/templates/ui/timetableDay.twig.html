@@ -39,7 +39,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <div class="relative group flex items-start justify-start cursor-pointer border-t border-gray-300 hover:bg-gray-100 transition duration-300 {{ not loop.first ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(item.duration) }}px">
 
                 <div class="flex w-full items-start justify-between border-gray-500 px-1.5 py-1">
-                    <span class="text-xxs text-gray-500">{{ item.duration >= 20 ? item.period }}</span>
+                    <span class="text-xxs text-gray-500">{{ item.duration >= 20 ? item.title }}</span>
                     <span class="inline md:hidden lg:inline text-xxs text-gray-500 opacity-0 group-hover:opacity-100 transition duration-300">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
                 </div>
             </div>

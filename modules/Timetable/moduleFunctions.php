@@ -300,12 +300,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
                 if ($hideEvent) continue;
                 
                 $multiDay = false;
-                if ($entry['start']['dateTime'] == '') {
+                if (empty($entry['start']['dateTime'])) {
                     if ((strtotime($entry['end']['date']) - strtotime($entry['start']['date'])) / (60 * 60 * 24) > 1) {
                         $multiDay = true;
                     }
-                }
-                if (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
+                } elseif (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
                     $multiDay = true;
                 }
                 

@@ -82,7 +82,7 @@ class TimetableColumnGateway extends QueryableGateway
     public function selectTTColumnsByDateRange($gibbonTTID, $dateStart, $dateEnd)
     {
         $data = ['gibbonTTID' => $gibbonTTID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
-        $sql = "SELECT gibbonTTColumn.gibbonTTColumnID, gibbonTTColumnRow.name as period, gibbonTTColumnRow.nameShort, gibbonTTColumnRow.type, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayDate.date
+        $sql = "SELECT gibbonTTColumnRow.name as title, gibbonTTColumnRow.nameShort as subtitle, gibbonTTColumnRow.type, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayDate.date
                 FROM gibbonTTDay 
                 JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) 
                 JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 

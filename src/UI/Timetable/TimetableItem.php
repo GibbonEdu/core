@@ -31,6 +31,8 @@ namespace Gibbon\UI\Timetable;
  */
 class TimetableItem 
 {
+    protected $active = true;
+
     protected $title;
     protected $subtitle;
     protected $description;
@@ -47,6 +49,7 @@ class TimetableItem
     
     protected $timeStart;
     protected $timeEnd;
+    protected $duration;
 
     protected $primaryAction;
     protected $secondaryAction;
@@ -95,6 +98,16 @@ class TimetableItem
     }
 
     /**
+     * Gets if the current item should display on the timetable.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
      * Load values from an array into the properties for this object
      *
      * @param array $data
@@ -120,5 +133,42 @@ class TimetableItem
         $this->timeEnd = $data['timeEnd'] ?? $this->timeEnd;
 
         return $this;
+    }
+
+    /**
+     * Constrains the start and end time of this item, and deactivates if the 
+     * timing is outside the provided range.
+     *
+     * @param string $timeStart
+     * @param string $timeEnd
+     * @return void
+     */
+    public function constrainTiming($timeStart, $timeEnd)
+    {
+        if ($this->allDay == 'Y') return;
+
+        if (!empty($timeStart)) {
+            if ($this->timeEnd < $timeStart) {
+                $this->active = false;
+            }
+
+            if ($this->timeStart < $timeStart) {
+                $this->timeStart = $timeStart;
+            }
+        }
+
+        if (!empty($timeEnd)) {
+            if ($this->timeStart > $timeEnd) {
+                $this->active = false;
+            }
+
+            if ($this->timeEnd > $timeEnd) {
+                $this->timeEnd = $timeEnd;
+            }
+        }
+
+        if ($this->timeStart == $this->timeEnd) {
+            $this->active = false;
+        }
     }
 }

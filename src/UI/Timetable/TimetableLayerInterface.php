@@ -43,7 +43,13 @@ interface TimetableLayerInterface
 
     public function setActive(bool $active);
 
-    public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
+    public function getItems() : array;
 
     public function getItemsByDate(string $date, bool $allDay = false) : array;
+
+    public function countItems();
+
+    public function filterItems(callable $callback);
+
+    public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 }
