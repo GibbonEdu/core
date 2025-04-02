@@ -145,7 +145,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     if (!empty($level)) $details[__('Level')] = $level;
 
                     // Raise a new notification event
-                    $event = new NotificationEvent('Behaviour', $type == 'Positive' ? 'New Positive Record' : 'New Negative Record');
+                    $eventType = '';
+                    switch ($type) {
+                        case 'Positive':
+                            $eventType = 'New Positive Record';
+                            break;
+                        case 'Negative':
+                            $eventType = 'New Negative Record';
+                            break;
+                        case 'Observation':
+                            $eventType = 'New Observation Record';
+                            break;
+                    }
+                    $event = new NotificationEvent('Behaviour', $eventType);
                     $event->setNotificationDetails($details);
                     $event->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
                         'type' => strtolower($type),

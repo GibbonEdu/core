@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
@@ -30,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
@@ -68,30 +67,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
-
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle(__('Choose A Student'));
 
         } else if ($highestAction == 'View Behaviour Records_myChildren') {
             $students = $studentGateway->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
-
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
+
         } else if ($highestAction == 'View Behaviour Records_myself') {
             $students = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
-
             $table = DataTable::create('behaviour');
             $table->setTitle( __('Behaviour'));
 
         } else if ($highestAction == 'View Behaviour Records_my') {
-            
             $criteria = $studentGateway->newQueryCriteria(true)
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
             ->fromPOST();
-
             $students = $behaviourGateway->queryAllBehaviourStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
-
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle( __('My Students'));
 

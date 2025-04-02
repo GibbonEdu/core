@@ -19,7 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -109,30 +108,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Type
             $row = $form->addRow();
             	$row->addLabel('type', __('Type'));
-            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->selected($type)->required();
+            	$row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->selected($type)->required();
 
             //Descriptor
             if ($enableDescriptors == 'Y') {
                 $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
-                $negativeDescriptors = (!empty($negativeDescriptors))? explode(',', $negativeDescriptors) : array();
+                $negativeDescriptors = (!empty($negativeDescriptors))? explode(',', $negativeDescriptors) : [];
                 $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
-                $positiveDescriptors = (!empty($positiveDescriptors))? explode(',', $positiveDescriptors) : array();
+                $positiveDescriptors = (!empty($positiveDescriptors))? explode(',', $positiveDescriptors) : [];
+                $observationDescriptors = $settingGateway->getSettingByScope('Behaviour', 'observationDescriptors');
+                $observationDescriptors = (!empty($observationDescriptors))? explode(',', $observationDescriptors) : [];
 
                 $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
                 $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
-                $chainedTo = array_merge($chainedToNegative, $chainedToPositive);
+                $chainedToObservation = array_combine($observationDescriptors, array_fill(0, count($observationDescriptors), 'Observation'));
+                $chainedTo = array_merge($chainedToNegative, $chainedToPositive, $chainedToObservation);
 
                 $row = $form->addRow();
             		$row->addLabel('descriptor', __('Descriptor'));
                     $row->addSelect('descriptor')
                         ->fromArray($positiveDescriptors)
                         ->fromArray($negativeDescriptors)
+                        ->fromArray($observationDescriptors)
                         ->chainedTo('type', $chainedTo)
                         ->required()
                         ->placeholder();
             }
 
-            //Level
+            // Level
             if ($enableLevels == 'Y') {
                 $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
                 if ($optionsLevels != '') {

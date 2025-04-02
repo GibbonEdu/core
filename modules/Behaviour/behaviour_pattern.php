@@ -21,14 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 $settingGateway = $container->get(SettingGateway::class);
@@ -61,23 +60,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive') ])->placeholder()->selected($type);
+            $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->placeholder()->selected($type);
 
             if ($enableDescriptors == 'Y') {
                 $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
                 $negativeDescriptors = !empty($negativeDescriptors)? array_map('trim', explode(',', $negativeDescriptors)) : [];
                 $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
                 $positiveDescriptors = !empty($positiveDescriptors)? array_map('trim', explode(',', $positiveDescriptors)) : [];
+                $observationDescriptors = $settingGateway->getSettingByScope('Behaviour', 'observationDescriptors');
+                $observationDescriptors = (!empty($observationDescriptors))? explode(',', $observationDescriptors) : [];
 
                 $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
                 $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
-                $chainedTo = array_merge($chainedToNegative, $chainedToPositive);
+                $chainedToObservation = array_combine($observationDescriptors, array_fill(0, count($observationDescriptors), 'Observation'));
+                $chainedTo = array_merge($chainedToNegative, $chainedToPositive, $chainedToObservation);
 
                 $row = $form->addRow();
                     $row->addLabel('descriptor', __('Descriptor'));
                     $row->addSelect('descriptor')
                         ->fromArray($positiveDescriptors)
                         ->fromArray($negativeDescriptors)
+                        ->fromArray($observationDescriptors)
                         ->chainedTo('type', $chainedTo)
                         ->placeholder()
                         ->selected($descriptor);
@@ -149,7 +152,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true))
                 . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });
-    $table->addColumn('count', $type == 'Positive' ? __('Positive Count') : __('Negative Count'))->description(__('(Current Year Only)'));
+
+    $eventType = '';
+    switch ($type) {
+        case 'Positive':
+            $eventType = __('Positive Count');
+            break;
+        case 'Negative':
+            $eventType = __('Negative Count');
+            break;
+        case 'Observation':
+            $eventType = __('Observation Count');
+            break;
+    }
+    $table->addColumn('count', $eventType)->description(__('(Current Year Only)'));
+    
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
 
