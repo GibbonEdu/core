@@ -159,7 +159,7 @@ class Timetable implements OutputableInterface
      */
     public function getOutput() : string
     {
-        $this->loadLayers()->sortLayers()->toggleLayers();
+        $this->loadLayers()->sortLayers()->checkLayers()->toggleLayers();
 
         return $this->view->fetchFromTemplate('ui/timetable.twig.html', [
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
@@ -192,10 +192,6 @@ class Timetable implements OutputableInterface
                     $item->constrainTiming($specialDay['schoolStart'] ?? '', $specialDay['schoolEnd'] ?? '');
                 }
             }
-
-            $layer->filterItems(function ($item) {
-                return $item->isActive();
-            });
         }
 
         return $this;
@@ -215,6 +211,33 @@ class Timetable implements OutputableInterface
 
             return $a->getName() <=> $b->getName();
         });
+
+        return $this;
+    }
+
+    protected function checkLayers()
+    {
+        foreach ($this->layers as $layer) {
+            $itemsGrouped = array_reduce($layer->getItems(), function ($group, $item) {
+                $group[$item->getKey()][] = $item;
+                return $group;
+            }, []);
+
+            foreach ($itemsGrouped as $itemList) {
+                $item = array_shift($itemList);
+                if ($item->allDay) continue;
+                
+                $item->set('overlap', $itemList ?? []);
+
+                foreach ($itemList as $overlap) {
+                    $overlap->set('active', false);
+                }
+            }
+
+            $layer->filterItems(function ($item) {
+                return $item->isActive();
+            });
+        }
 
         return $this;
     }

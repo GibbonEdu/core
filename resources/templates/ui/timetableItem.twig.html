@@ -11,12 +11,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set color = structure.getColors(item.color ?? layer.getColor) %}
 {% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
 
-<div class="{{ not item.allDay ? 'ttItem' }} flex flex-col w-full rounded outline outline-1 hover:ring overflow-hidden {{ color.background }} {{ color.outline }} {{ color.outlineHover }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} " style="height: {{ structure.minutesToPixels(duration) -1 }}px; " :class="{'hidden': !{{ layer.getID }} }">
+<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline outline-1 hover:ring {{ color.background }} {{ color.outline }} {{ color.outlineHover }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} " style="height: {{ structure.minutesToPixels(duration) -1 }}px; " :class="{'hidden': !{{ layer.getID }} }">
 
     {% if duration >= 40 %}
     <div class="flex items-start justify-between  border-gray-500 py-1 px-1.5">
         <span class="text-xxs text-gray-700 ">{{ item.type }}</span>
+        {% if item.overlap is empty %}
         <span class="inline md:hidden lg:inline text-xxs text-gray-700 ">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+        {% endif %}
     </div>
     {% endif %}
 
@@ -26,10 +28,28 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {{ formatUsing('truncate', item.title, 22) }}
         </a>
         {% if duration >= 40 %}
-        <span class="inline-block text-xxs text-gray-700">
+        <span class="inline-block text-xxs rounded {{ item.specialStatus == 'roomchange' ? 'border border-red-700 text-red-700 px-1' : 'text-gray-700' }}">
             {{ formatUsing('truncate', item.subtitle, 40) }}
         </span>
         {% endif %}
+    </div>
+    {% endif %}
+
+    
+    {% if item.overlap and item.overlap|length > 0 %}
+    <button  class="block tag error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none" :class="{'bg-red-500' : showOverlap, '' : !showOverlap }">
+        <span class="" @click="showOverlap = true">
+        +{{ item.overlap|length }}
+        </span>
+    </button>
+
+    <div x-show="showOverlap" @click.outside="showOverlap = false" class="absolute p-2 -ml-2 mt-8 z-20 flex flex-col gap-2 items-start justify-end rounded outline outline-1 outline-gray-400 bg-white shadow-lg" style="width: calc(100% + 1rem)">
+        {% for overlap in item.overlap %}
+
+            <div class="relative w-full">
+                {{ include('ui/timetableItem.twig.html', {item: overlap, overlap: true}) }}
+            </div>
+        {% endfor %}
     </div>
     {% endif %}
 
@@ -37,17 +57,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% if item.primaryAction and duration >= 20 %}
         {% set action = item.primaryAction %}
+        {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
         
         <a href="{{ action.url }}" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
-            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' text-gray-600 hover:text-gray-800') }}
+            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
         </a>
     {% endif %}
 
     {% if item.secondaryAction and duration >= 20 %}
         {% set action = item.secondaryAction %}
+        {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
 
         <a href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
-            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' text-gray-600 hover:text-gray-800') }}
+            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
         </a>
     {% endif %}
 </div>

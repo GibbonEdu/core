@@ -32,10 +32,12 @@ namespace Gibbon\UI\Timetable;
 class TimetableItem 
 {
     protected $active = true;
+    protected $specialStatus;
 
     protected $title;
     protected $subtitle;
     protected $description;
+    protected $overlap;
 
     protected $link;
     protected $type;
@@ -107,6 +109,11 @@ class TimetableItem
         return $this->active;
     }
 
+    public function getKey()
+    {
+        return $this->date.'-'.$this->timeStart.'-'.$this->timeEnd;
+    }
+
     /**
      * Load values from an array into the properties for this object
      *
@@ -117,7 +124,9 @@ class TimetableItem
     {
         $this->title = $data['title'] ?? $this->title;
         $this->subtitle = $data['subtitle'] ?? $this->subtitle;
+        $this->specialStatus = $data['specialStatus'] ?? $this->specialStatus;
         $this->description = $data['description'] ?? $this->description;
+        $this->overlap = $data['overlap'] ?? $this->overlap;
         
         $this->type = $data['type'] ?? $this->type;
         $this->link = $data['link'] ?? $this->link;

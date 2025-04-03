@@ -339,6 +339,14 @@ class PlannerEntryGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getPlannerEntryByClassTimes($gibbonCourseClassID, $date, $timeStart, $timeEnd)
+    {
+        $data = ['date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd GROUP BY name";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)
     {
         $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $gibbonUnitID];
