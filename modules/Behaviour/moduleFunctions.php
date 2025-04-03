@@ -130,7 +130,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                     if ($behaviour['type'] == 'Negative') {
                         return icon('solid', 'cross', 'size-6 fill-current text-red-700');
                     } elseif ($behaviour['type'] == 'Positive') {
-                        return icon('solid', 'check', 'size-6 fill-current text-green-600');
+                        return icon('solid', 'add', 'size-6 fill-current text-green-600');
                     } elseif ($behaviour['type'] == 'Observation') {
                         return icon('solid', 'view', 'size-6 fill-current text-blue-600');
                     } 
