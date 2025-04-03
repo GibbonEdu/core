@@ -829,12 +829,6 @@ class ImportType
 
                 break;
 
-            case 'schoolyear': // Change school years formated as 2015-16 to 2015-2016
-                if (preg_match('/(^\d{4}[-]\d{2}$)/u', $value) > 0) {
-                    $value = mb_substr($value, 0, 5) . mb_substr($value, 0, 2) . mb_substr($value, 5, 2);
-                }
-                break;
-
             case 'gender':  // Handle various gender formats
                 $strvalue = str_replace('.', '', $strvalue);
                 if ($strvalue == 'M' || $strvalue == 'MALE' || $strvalue == 'MR') {
@@ -1017,7 +1011,7 @@ class ImportType
                 return false;
             } break;
 
-            case 'schoolyear':  if (preg_match('/(^\d{4}[-]\d{4}$)/u', $value) > 1) {
+            case 'schoolyear':  if (preg_match('/(^\d{4}[-]\d{2-4}$)/u', $value) > 1) {
                 return false;
             } break;
 
