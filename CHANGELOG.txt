@@ -35,6 +35,7 @@ v29.0.00
         System: removed Date of Birth field from Public Registration when no minimum registration age is set
         System: improved the colour picker to add a pre-set colour palette
         System: added IDD country codes to all countries in the database
+        System: removed sendNotificationsAsBcc function
         Admissions: added the ability to re-send the submission email from the Process tab in Edit Applicaiton
         Attendance: updated Student History view to display Off Timetable days
         Library: improved the Library Borrowing page on student profiles

@@ -160,18 +160,6 @@ class NotificationEvent
     }
 
     /**
-     * Send notifications for this event as BCC. Helper method to clarify the intent of the sending option.
-     *
-     * @param Connection $pdo
-     * @param session $session
-     * @return array Send report with success/fail counts.
-     */
-    public function sendNotificationsAsBcc(Connection $pdo, session $session)
-    {
-        return $this->sendNotifications($pdo, $session, true);
-    }
-
-    /**
      * Adds event listeners to the recipients list, then pushes a notification for each recipient to the notification sender.
      * Does not perform the sending of notifications (can be used for bulk processing).
      *
