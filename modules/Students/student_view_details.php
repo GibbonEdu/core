@@ -2298,7 +2298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                     } elseif ($subpage == 'Activities') {
-                        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent'))) {
+                        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent')) && !isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_myChildren.php') && !(isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php'))) {
                             $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             echo '<p>';
@@ -2309,8 +2309,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($dateType == 'Term') {
                                 $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
                             }
-
-
                                 $dataYears = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlYears = 'SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
                                 $resultYears = $connection2->prepare($sqlYears);
@@ -2369,11 +2367,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                           });
                                     $table->addColumn('status', __('Status'))->translatable();
                                     $table->addActionColumn()
-                                          ->format(function ($activity, $actions) {
+                                          ->format(function ($activity, $actions) use ($session) {
+                                            $role = $session->get('gibbonRoleIDCurrentCategory');
+                                            
+                                            if ($role == 'Student') { 
+                                                $actions->addAction('view', __('View Details'))
+                                                    ->setURL('/modules/Activities/explore_activity.php')
+                                                    ->addParam('sidebar', 'false')
+                                                    ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                                                    ->modalWindow(1200, 600);
+                                            } else {
                                             $actions->addAction('view', __('View Details'))
                                               ->setURL('/modules/Activities/activities_view_full.php')
                                               ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
                                               ->modalWindow(1000, 500);
+                                            }
                                           });
                                     echo $table->render($resultData);
                                 }
@@ -2570,8 +2578,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Reports'>".__('Reports').'</a></li>';
                         ++$studentMenuCount;
                     }
-
-                    if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php')) {
+                    if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_myChildren.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php')) {
                         $style = '';
                         if ($subpage == 'Activities') {
                             $style = "style='font-weight: bold'";
