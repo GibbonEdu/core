@@ -58,13 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
     } else {
-        //Proceed!
-        //Check if gibbonBehaviourID specified
+        // Proceed!
+        // Check if gibbonBehaviourID specified
         if ($gibbonBehaviourID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            
             if ($highestAction == 'Manage Behaviour Records_all') {
                 $behaviourRecord = $behaviourGateway->getBehaviourDetails($session->get('gibbonSchoolYearID'), $gibbonBehaviourID);
                 $canEdit = true;
@@ -82,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                
                 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
                 $date = $_POST['date'] ?? '';
                 $type = $_POST['type'] ?? '';

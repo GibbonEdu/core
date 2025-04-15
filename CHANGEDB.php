@@ -931,4 +931,7 @@ UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'We
 UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
 UPDATE `gibbonCountry` SET `printable_name` = 'Serbia, Republic of', `iddCountryCode` = '381' WHERE `printable_name` = 'Serbia and Montenegro';end
 INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Montenegro', '382');end
+ALTER TABLE `gibbonBehaviour` CHANGE `type` `type` ENUM('Positive','Negative','Observation') NOT NULL;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'observationDescriptors', 'Observation Descriptors', 'Allowable choices for observation behaviour', '');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Observation Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ";

@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Type
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray(['Positive' => __('Positive'), 'Negative' => __('Negative')])->required();
+        $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->selected($type)->required();
 
     //Descriptor
     if ($enableDescriptors == 'Y') {
@@ -111,16 +111,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $negativeDescriptors = (!empty($negativeDescriptors)) ? explode(',', $negativeDescriptors) : [];
         $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
         $positiveDescriptors = (!empty($positiveDescriptors)) ? explode(',', $positiveDescriptors) : [];
+        $observationDescriptors = $settingGateway->getSettingByScope('Behaviour', 'observationDescriptors');
+        $observationDescriptors = (!empty($observationDescriptors))? explode(',', $observationDescriptors) : [];
 
         $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
         $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
-        $chainedTo = array_merge($chainedToNegative, $chainedToPositive);
+        $chainedToObservation = array_combine($observationDescriptors, array_fill(0, count($observationDescriptors), 'Observation'));
+        $chainedTo = array_merge($chainedToNegative, $chainedToPositive, $chainedToObservation);
 
         $row = $form->addRow();
             $row->addLabel('descriptor', __('Descriptor'));
             $row->addSelect('descriptor')
                 ->fromArray($positiveDescriptors)
                 ->fromArray($negativeDescriptors)
+                ->fromArray($observationDescriptors)
                 ->chainedTo('type', $chainedTo)
                 ->required()
                 ->placeholder();

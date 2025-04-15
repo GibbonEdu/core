@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if (empty($values)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                //Let's go!
+                // Let's go!
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -111,18 +111,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
 
-                //To show other students involved in the incident
+                // To show other students involved in the incident
                 if(!empty($values['gibbonMultiIncidentID'])) {
                     $students = $behaviourGateway->selectMultipleStudentsOfOneIncident($values['gibbonMultiIncidentID'])->fetchAll();
                 }
 
-                //Student
+                // Student
                 $row = $form->addRow();
                     $row->addLabel('students', __('Student'));
                     $row->addTextField('students')->setValue(Format::name('', $values['preferredNameStudent'], $values['surnameStudent'], 'Student'))->readonly();
                     $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
-                //Other Students
+                // Other Students
                 if (!empty($values['gibbonMultiIncidentID'])) {
                     $row = $form->addRow();
                     $row->addLabel('otherStudents0', __('Other Students Involved'));
@@ -140,37 +140,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $col->addContent(implode(',&nbsp;', $studentNames));
                 }
 
-                //Date
+                // Date
                 $row = $form->addRow();
                 	$row->addLabel('date', __('Date'));
                 	$row->addDate('date')->setValue(Format::date($values['date']))->required()->readonly();
 
-                //Type
+                // Type
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray(['Positive' => __('Positive'), 'Negative' => __('Negative')])->selected($values['type'])->required()->readonly();
+                    $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive'), 'Observation' => __('Observation')])->selected($values['type'])->required()->readonly();
 
-                //Descriptor
+                // Descriptor
                 if ($enableDescriptors == 'Y') {
                     if ($values['type'] == 'Negative') {
                         $descriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
-                    }
-                    else {
+                    } elseif ($values['type'] == 'Positive') {
                         $descriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
+                    } elseif ($values['type'] == 'Observation') {
+                        $descriptors = $settingGateway->getSettingByScope('Behaviour', 'observationDescriptors');
                     }
+
                     $descriptors = (!empty($descriptors))? explode(',', $descriptors) : array();
 
-                        $row = $form->addRow();
-                            $row->addLabel('descriptor', __('Descriptor'));
-                            $row->addSelect('descriptor')
-                                ->fromArray($descriptors)
-                                ->selected($values['descriptor'])
-                                ->required()
-                                ->readOnly(!$canEdit)
-                                ->placeholder();
+                    $row = $form->addRow();
+                        $row->addLabel('descriptor', __('Descriptor'));
+                        $row->addSelect('descriptor')
+                            ->fromArray($descriptors)
+                            ->selected($values['descriptor'])
+                            ->required()
+                            ->readOnly(!$canEdit)
+                            ->placeholder();
                 }
 
-                //Level
+                // Level
                 if ($enableLevels == 'Y') {
                     $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
                     if ($optionsLevels != '') {
@@ -183,23 +185,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 $form->addRow()->addHeading('Details', __('Details'));
 
-                //Incident
+                // Incident
                 if ($canEdit) {
                     $row = $form->addRow();
                         $column = $row->addColumn();
                         $column->addLabel('comment', __('Incident'));
                         $column->addTextArea('comment')->setRows(5)->setClass('w-full')->setValue($values['comment']);
-
                 } else {
                     $row = $form->addRow();
-                    $column = $row->addColumn();
-                    $column->addLabel('comment', __('Incident'));
-                    $column->addContent('<p class="text-sm leading-4">'.$values['comment'].'</p>');
+                        $column = $row->addColumn();
+                        $column->addLabel('comment', __('Incident'));
+                        $column->addContent('<p class="text-sm leading-4">'.$values['comment'].'</p>');
                 }
-
                 $logs = [];
 
-                //Print old-style followup as first log entry
+                // Print old-style followup as first log entry
                 if (!empty($values['followup'])) {
                     $logs[] = [
                         'comment'       => $values['followup'],
@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     ];
                 }
 
-                //Print follow-up as log
+                // Print follow-up as log
                 $behaviourGateway = $container->get(BehaviourGateway::class);
                 $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
                 $logs = array_merge($logs, $behaviourFollowUpGateway->selectFollowUpByBehaviourID($gibbonBehaviourID)->fetchAll());
@@ -223,32 +223,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ]));
                 }
 
-                //Allow entry of fresh followup
+                // Allow entry of fresh followup
                 $row = $form->addRow();
                     $column = $row->addColumn();
                     $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')));
                     $column->addTextArea('followUp')->setRows(8)->setClass('w-full');
                 
                 //Lesson link
-                $lessons = array();
+                $lessons = [];
                 $minDate = date('Y-m-d', (strtotime($values['date']) - (24 * 60 * 60 * 30)));
 
-                    $dataSelect = array('date' => date('Y-m-d', strtotime($values['date'])), 'minDate' => $minDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $values['gibbonPersonID']);
-                    $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                    while ($rowSelect = $resultSelect->fetch()) {
+                $dataSelect = array('date' => date('Y-m-d', strtotime($values['date'])), 'minDate' => $minDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $values['gibbonPersonID']);
+                $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
+                $resultSelect = $connection2->prepare($sqlSelect);
+                $resultSelect->execute($dataSelect);
+
+                while ($rowSelect = $resultSelect->fetch()) {
                     $show = true;
                     if ($highestAction == 'Manage Behaviour Records_my') {
-
-                            $dataShow = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                            $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
-                            $resultShow = $connection2->prepare($sqlShow);
-                            $resultShow->execute($dataShow);
+                        $dataShow = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
+                        $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
+                        $resultShow = $connection2->prepare($sqlShow);
+                        $resultShow->execute($dataShow);
                         if ($resultShow->rowCount() != 1) {
                             $show = false;
                         }
                     }
+
                     if ($show == true) {
                         $submission = '';
                         if ($rowSelect['homework'] == 'Y') {
@@ -257,13 +258,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                 $submission .= '+OS';
                             }
                         }
+
                         if ($submission != '') {
                             $submission = ' - '.$submission;
                         }
+
                         $selected = '';
                         if ($rowSelect['gibbonPlannerEntryID'] == $values['gibbonPlannerEntryID']) {
                             $selected = 'selected';
                         }
+
                         $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(Format::date($rowSelect['date']), 0, 5).$submission;
                     }
                 }
@@ -273,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $row->addLabel('gibbonPlannerEntryID', __('Link To Lesson?'))->description(__('From last 30 days'));
                         $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons ?? [])->placeholder()->selected($values['gibbonPlannerEntryID']);
 
-                    //Behaviour link
+                    // Behaviour link
                     if(empty($values['gibbonMultiIncidentID'])) {
 
                     $resultSelect = $behaviourGateway->selectBehavioursByCreator($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'), $gibbonBehaviourID);
@@ -286,7 +290,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 
                     // CUSTOM FIELDS
                     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', [], $values['fields']);
-
                 }
                 
                 $row = $form->addRow();
