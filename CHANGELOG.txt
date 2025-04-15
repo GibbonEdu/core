@@ -36,8 +36,8 @@ v29.0.00
         System: improved the colour picker to add a pre-set colour palette
         System: added IDD country codes to all countries in the database
         System: added a log entry for resetting password through 'Forgot Password"
-        
-        Admissions: added the ability to re-send the submission email from the Process tab in Edit Applicaiton
+        Admissions: added the ability to re-send the submission email from the Process tab in Edit Application
+        Admissions: added the option to display customised success message when student applications are successfully submitted
         Attendance: updated Student History view to display Off Timetable days
         Behaviour: added an 'Observation' type to track neutral records
         Library: improved the Library Borrowing page on student profiles

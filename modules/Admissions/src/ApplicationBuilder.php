@@ -25,6 +25,10 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Forms\FormGateway;
+use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
 
 /**
@@ -35,8 +39,16 @@ use Gibbon\Domain\Finance\PaymentGateway;
  */
 class ApplicationBuilder extends FormBuilder
 {
+    protected $settingGateway;
+    
     protected $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID', 'priority', 'dayType', 'officeNotes', 'PaySubmissionFeeComplete', 'PayProcessingFeeComplete'];
 
+    public function __construct(Session $session, FormGateway $formGateway, FormPageGateway $formPageGateway, SettingGateway $settingGateway)
+    {
+        $this->settingGateway = $settingGateway;
+        
+        parent::__construct($session, $formGateway, $formPageGateway);
+    }
 
     public function isOfficeOnlyField(string $fieldName) : bool
     {
@@ -125,8 +137,9 @@ class ApplicationBuilder extends FormBuilder
     public function getJavascript()
     {
         if (!empty($_GET['return']) && stripos($_GET['return'], 'success') !== false) {
+            $successMessage = $this->settingGateway->getSettingByScope('Application Form', 'successMessage');
             $output = "$(document).ready(function(){
-                alert('".__('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.')."');
+                alert('".$successMessage."');
             });";
         } else {
             $output = "
