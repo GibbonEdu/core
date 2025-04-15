@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 
 include '../../gibbon.php';
 
@@ -46,7 +47,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
             exit;
         }
 
-        $gibbonMessengerReceiptIDs = $_POST['gibbonMessengerReceiptIDs'] ?? array();
+        $gibbonMessengerReceiptIDs = $_POST['gibbonMessengerReceiptIDs'] ?? [];
 
         if (count($gibbonMessengerReceiptIDs) < 1) {
             $URL .= '&return=error1';
@@ -55,12 +56,11 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
         } else {
             $partialFail = false;
 
-            //Check message exists
-
-                $data = array("gibbonMessengerID" => $gibbonMessengerID);
-                $sql = "SELECT * FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            // Check message exists
+            $data = ["gibbonMessengerID" => $gibbonMessengerID];
+            $sql = "SELECT * FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error0';
@@ -75,7 +75,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                     exit;
                 }
                 else {
-                    //Prep message
+                    // Prep message
                     $emailCount = 0;
                     $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>";
 
@@ -84,25 +84,25 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
     				$mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
     				$mail->Subject = $values['emailReceipt'] == 'Y' ? __('REMINDER:').' '.$values['subject'] : $values['subject'];
 
-                    //Scan through receipients
+                    // Scan through recipients
                     foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
-                        //Check recipient status
-
-                            $dataRecipt = array("gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID);
-                            $sqlRecipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
-                            $resultRecipt = $connection2->prepare($sqlRecipt);
-                            $resultRecipt->execute($dataRecipt);
+                        
+                        // Check recipient status
+                        $dataRecipt = ["gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID];
+                        $sqlRecipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
+                        $resultRecipt = $connection2->prepare($sqlRecipt);
+                        $resultRecipt->execute($dataRecipt);
 
                         if ($resultRecipt->rowCount() != 1) {
                             $partialFail = true;
                         } else {
                             $rowRecipt = $resultRecipt->fetch();
-
-                            //Resend message
+                            
+                            // Resend message
                             $emailCount ++;
                             $mail->ClearAddresses();
     						$mail->AddAddress($rowRecipt['contactDetail']);
-    						//Deal with email receipt and body finalisation
+    						// Deal with email receipt and body finalisation
     						if ($values['emailReceipt'] == 'Y') {
     							$bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$values['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
     							if (strpos($bodyReminder, '[confirmLink]') !== false) {
@@ -120,17 +120,21 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                                 'title'  => $values['subject'],
                                 'body'   => $bodyOut
                             ]);
-
-
+                            
                             if(!$mail->Send()) {
     							$partialFail = TRUE ;
-    						}
+    						} else {
+                                // Update the sent status of the recipient
+                                if ($rowRecipt['sent'] == 'N') {
+                                    $updated = $container->get(MessengerReceiptGateway::class)->update($gibbonMessengerReceiptID, ['sent' => 'Y']);
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            if ($partialFail == true) {
+            if ($partialFail == true || !$updated) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {

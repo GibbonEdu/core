@@ -22,12 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Messenger;
 
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Data\PasswordPolicy;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\LogGateway;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 
 /**
  * MessageTargets
@@ -51,7 +52,8 @@ class MessageTargets
         Connection $db,
         SettingGateway $settingGateway,
         LogGateway $logGateway,
-        RoleGateway $roleGateway
+        RoleGateway $roleGateway,
+        MessengerReceiptGateway $messengerReceiptGateway
     )
     {
         $this->session = $session;
@@ -59,6 +61,7 @@ class MessageTargets
         $this->settingGateway = $settingGateway;
         $this->logGateway = $logGateway;
         $this->roleGateway = $roleGateway;
+        $this->messengerReceiptGateway = $messengerReceiptGateway;
     }
 
     public function createMessageTargets($gibbonMessengerID, &$partialFail = false)
@@ -2259,6 +2262,19 @@ class MessageTargets
         //Write report entries
         foreach ($this->report as $reportEntry) {
             try {
+
+                $uniqueData = [
+                    'gibbonMessengerID' => $AI,
+                    'gibbonPersonID' => $reportEntry[0],
+                ];
+
+                 // Check if the record already exists in the table
+                $isUnique = $this->messengerReceiptGateway->unique($uniqueData, ['gibbonMessengerID', 'gibbonPersonID']);
+                if (!$isUnique) {
+                    // If the record already exists, skip adding it again to the gibbonMessengerReceipt table
+                    continue;
+                }
+
                 $confirmed = $reportEntry[5] != '' ? 'N' : null;
 
                 $data = ["gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed, "gibbonPersonIDListStudent" => $reportEntry[6], 'nameListStudent' => json_encode($reportEntry[7]), 'unsubscribeKey' => $reportEntry[8]];

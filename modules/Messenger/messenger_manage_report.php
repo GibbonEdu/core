@@ -90,7 +90,7 @@ else {
             }
 
             if ($sender && $values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
-                $alertText = __('Email read receipts have been enabled for this message. You can use the Resend action along with the checkboxes next to recipients who have not yet confirmed to send a reminder to these users.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.');
+                $alertText = __('Email read receipts have been enabled for this message. You can use the Resend action along with the checkboxes next to recipients who have not yet confirmed to send a reminder to these users.').' '.__('Recipients who may not have received the original email since they were added later or due to a delivery issue are highlighted in orange.');
 
                 if (!empty($values['emailReceiptText'])) {
                     $alertText .= '<br/><br/><b>'.__('Receipt Confirmation Text') . '</b>: '.$values['emailReceiptText'];
@@ -98,7 +98,7 @@ else {
 
                 echo Format::alert($alertText, 'success');
             } elseif ($sender && $values['email'] == 'Y' && $values['emailReceipt'] == 'N') {
-                echo Format::alert(__('Email read receipts have not been enabled for this message, however you can still use the Resend action to manually send messages.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.'), 'message');
+                echo Format::alert(__('Email read receipts have not been enabled for this message, however you can still use the Resend action to manually send messages.').' '.__('Recipients who may not have received the original email since they were added later or due to a delivery issue are highlighted in orange.'), 'message');
             }
 
             echo '<h2>';
@@ -153,13 +153,11 @@ else {
                         $row->addLabel('sharingLink', __('Shareable Send Report'))->description(__('You can copy this link to share it with other users.'));
                         $row->addTextField('sharingLink')->setValue(urldecode($linkURL));
                     }
-
                 echo $form->getOutput();
             }
 
             // TABS
             $tabs = [];
-
 
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
             $sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
@@ -195,6 +193,14 @@ else {
                 $form->addHiddenValue('address', $session->get('address'));
 
                 if ($sender) {
+                    
+                    $row = $form->addHeaderAction('Add recipients', __('Add Recipients'))
+                    ->setURL('/modules/Messenger/messenger_manage_report_addRecipients.php')
+                    ->addParam('gibbonMessengerID', $gibbonMessengerID)
+                    ->addParam('sidebar', 'true')
+                    ->setIcon('add')
+                    ->displayLabel(); 
+
                     $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
                     $row->addSubmit(__('Go'));
                 }
@@ -230,14 +236,12 @@ else {
                         return false;
                     });
 
-                    //print_r($recipients);exit;
-
                     // Skip this form group if there's no involved individuals
                     if (empty($recipients)) continue;
 
                     $form->addRow()->addHeading($formGroupName);
                     $table = $form->addRow()->addTable()->setClass('colorOddEven w-full');
-
+                    
                     $header = $table->addHeaderRow();
                         $header->addContent(__('Total Count'));
                         $header->addContent(__('Form Count'));
@@ -348,6 +352,13 @@ else {
                 $form->addHiddenValue('address', $session->get('address'));
 
                 if ($sender) {
+                    $row = $form->addHeaderAction('Add recipients', __('Add Recipients'))
+                    ->setURL('/modules/Messenger/messenger_manage_report_addRecipients.php')
+                    ->addParam('gibbonMessengerID', $gibbonMessengerID)
+                    ->addParam('sidebar', 'true')
+                    ->setIcon('add')
+                    ->displayLabel(); 
+
                     $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
                     $row->addSubmit(__('Go'));
                 }

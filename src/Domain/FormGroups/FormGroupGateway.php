@@ -182,4 +182,12 @@ class FormGroupGateway extends QueryableGateway
             'gibbonFormGroupID' => $gibbonFormGroupID,
         ]);
     }
+
+    public function selectAllFormGroupsBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = 'SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+        
+        return $this->db()->select($sql, $data);
+    }
 }
