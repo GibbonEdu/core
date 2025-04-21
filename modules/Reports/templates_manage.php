@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\View\GridView;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.php') == false) {
@@ -33,10 +33,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
 
     $templateGateway = $container->get(ReportTemplateGateway::class);
 
+    $request = ['active' => $_GET['active'] ?? 'Y'];
+
+    // FILTER FORM
+    $form = Form::create('filterTemplates', $session->get('absoluteURL') . '/index.php', 'get');
+    $form->setTitle(__('Filters'));
+    $form->setClass('noIntBorder w-full');
+    $form->addHiddenValue('q', '/modules/Reports/templates_manage.php');
+
+    $row = $form->addRow();
+        $row->addLabel('active', __('Active'));
+        $row->addSelect('active')
+            ->fromArray(['Y' => __('Yes'), 'N' => __('No')])
+            ->placeholder()
+            ->selected($request['active']);
+
+    $row = $form->addRow();
+    $row->addSearchSubmit($session, __('Clear Filters'));
+
+    echo $form->getOutput();
+
     // QUERY
     $criteria = $templateGateway->newQueryCriteria(true)
         ->sortBy('name', 'ASC')
-        ->filterBy('active', 'Y')
+        ->filterBy('active', $request['active'])
         ->fromPOST();
 
     $templates = $templateGateway->queryTemplates($criteria);
@@ -57,8 +77,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
     $table->addMetaData('gridClass', 'content-center justify-center');
     $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 text-center mb-4');
 
+    $table->addMetaData('filterOptions', [
+        'active:Y'          => __('Active').': '.__('Yes'),
+        'active:N'           => __('Active').': '.__('No'),
+    ]);
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('context', __('Context'));
+
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     $table->addActionColumn()
         ->addParam('gibbonReportTemplateID')
@@ -75,9 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
             $actions->addAction('copy', __('Duplicate'))
                     ->setIcon('copy')
                     ->setURL('/modules/Reports/templates_manage_duplicate.php');
-
-            $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Reports/templates_manage_delete.php');
         });
 
     echo $table->render($templates);

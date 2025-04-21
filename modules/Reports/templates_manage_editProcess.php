@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         'marginY'     => $_POST['marginY'] ?? '',
         'stylesheet'  => $_POST['stylesheet'] ?? '',
         'flags'       => $_POST['flags'] ?? '',
+        'active'     => $_POST['active'] ?? 'Y',
     ];
 
     $config = [
