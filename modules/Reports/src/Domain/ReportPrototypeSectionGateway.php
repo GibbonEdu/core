@@ -43,8 +43,16 @@ class ReportPrototypeSectionGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportPrototypeSection.gibbonReportPrototypeSectionID', 'name', 'type', 'category', 'templateFile', 'fonts' ]);
+            ->cols(['gibbonReportPrototypeSection.gibbonReportPrototypeSectionID', 'name', 'type', 'category', 'templateFile', 'active', 'fonts' ]);
 
+        $criteria->addFilterRules([
+            'active' => function ($query, $active) {
+                return $query
+                    ->where('gibbonReportPrototypeSection.active = :active')
+                    ->bindValue('active', $active);
+            },
+        ]);
+        
         return $this->runQuery($query, $criteria);
     }
 

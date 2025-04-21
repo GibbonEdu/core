@@ -19,11 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
-use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
+use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.php') == false) {
     // Access denied
@@ -37,9 +38,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
 
+    $request = ['active' => $_GET['active'] ?? 'Y'];
+
+    // FILTER FORM
+    $form = Form::create('filterAssets', $session->get('absoluteURL') . '/index.php', 'get');
+    $form->setTitle(__('Filters'));
+    $form->setClass('noIntBorder w-full');
+    $form->addHiddenValue('q', '/modules/Reports/templates_assets.php');
+
+    $row = $form->addRow();
+        $row->addLabel('active', __('Active'));
+        $row->addSelect('active')
+            ->fromArray(['Y' => __('Yes'), 'N' => __('No')])
+            ->placeholder()
+            ->selected($request['active']);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($session, __('Clear Filters'));
+
+    echo $form->getOutput();
+    
+
     // COMPONENTS
     $criteria = $prototypeGateway->newQueryCriteria(true)
         ->sortBy(['type', 'category', 'name'])
+        ->filterBy('active', $request['active'])
         ->fromPOST('manageComponents');
 
     $templates = $prototypeGateway->queryPrototypes($criteria);
@@ -99,6 +122,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
             return '<span class="tag '.($template['statusClass'] ?? '').'" title="'.($template['statusTitle'] ?? '').'">'.$template['status'].'</span>';
         });
 
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+
     $table->addActionColumn()
         ->addParam('gibbonReportPrototypeSectionID')
         ->format(function ($template, $actions) {
@@ -107,6 +132,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
                         ->setURL('/modules/Reports/templates_assets_components_delete.php');
                     return;
             }
+
+            $actions->addAction('edit', __('Change Active Status'))
+                ->setIcon('cross')
+                ->setURL('/modules/Reports/templates_assets_edit.php')
+                ->addParam('gibbonReportPrototypeSectionID', $template['gibbonReportPrototypeSectionID']);
 
             $actions->addAction('view', __('Preview'))
                     ->setURL('/modules/Reports/templates_assets_components_preview.php')

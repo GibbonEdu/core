@@ -46,6 +46,7 @@ v29.0.00
         Markbook: enabled filtering by term even if Group Columns by Term is off
         Planner: added an attendance indicator to the Today's Lessons list for teachers
         Reports: updated Template Builder to select mPDF renderer by default
+        Reports: added the option to archive an asset when not in use instead of deleting it
         School Admin: updated various template settings to use Rich Text editors
         Students: added Name in Characters to the Emergency Data Summary
         School Admin: added prefilled times when creating timing changes in Add Special Day
