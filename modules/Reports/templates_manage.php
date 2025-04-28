@@ -33,36 +33,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
 
     $templateGateway = $container->get(ReportTemplateGateway::class);
 
-    $request = ['active' => $_GET['active'] ?? 'Y'];
-
-    // FILTER FORM
-    $form = Form::create('filterTemplates', $session->get('absoluteURL') . '/index.php', 'get');
-    $form->setTitle(__('Filters'));
-    $form->setClass('noIntBorder w-full');
-    $form->addHiddenValue('q', '/modules/Reports/templates_manage.php');
-
-    $row = $form->addRow();
-        $row->addLabel('active', __('Active'));
-        $row->addSelect('active')
-            ->fromArray(['Y' => __('Yes'), 'N' => __('No')])
-            ->placeholder()
-            ->selected($request['active']);
-
-    $row = $form->addRow();
-    $row->addSearchSubmit($session, __('Clear Filters'));
-
-    echo $form->getOutput();
-
     // QUERY
     $criteria = $templateGateway->newQueryCriteria(true)
         ->sortBy('name', 'ASC')
-        ->filterBy('active', $request['active'])
+        ->filterBy('active', $_GET['active'] ?? 'Y')
         ->fromPOST();
 
     $templates = $templateGateway->queryTemplates($criteria);
 
     // GRID TABLE
-    $table = $container->get(DataTable::class);
+    $table = DataTable::createPaginated('templates', $criteria);
     $table->setTitle(__('Template Library'));
 
     $table->addHeaderAction('add', __('Add'))
@@ -79,8 +59,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
 
     $table->addMetaData('filterOptions', [
         'active:Y'          => __('Active').': '.__('Yes'),
-        'active:N'           => __('Active').': '.__('No'),
+        'active:N'          => __('Active').': '.__('No'),
     ]);
+
+    $table->modifyRows(function($values, $row) {
+        if (!empty($values['active']) && $values['active'] != 'Y') $row->addClass('error');
+        return $row;
+    });
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('context', __('Context'));
@@ -102,6 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
             $actions->addAction('copy', __('Duplicate'))
                     ->setIcon('copy')
                     ->setURL('/modules/Reports/templates_manage_duplicate.php');
+
+            if ($template['active'] == 'N') {
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Reports/templates_manage_delete.php');
+            }
         });
 
     echo $table->render($templates);
