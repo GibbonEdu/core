@@ -90,6 +90,8 @@ else {
         $gibbonPersonID = $row['gibbonPersonID'];
         $email = $row['email'];
         $username = $row['username'];
+        $preferredName = $row['preferredName'];
+        $surname = $row['surname'];
 
         if ($step == 1) { //This is the request phase
             // Use password policy to generate random string
@@ -150,12 +152,10 @@ else {
                 // Log this password reset request
                 $details = [
                     'gibbonPersonID' => $gibbonPersonID,
-                    'name' => Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true),
-                    'changedByID' => $session->get('gibbonPersonID'),
-                    'changedBy' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
+                    'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
+                    'IPAddress' => $_SERVER['REMOTE_ADDR'],
                 ];
-
-                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, $session->get('gibbonPersonID'), 'User - Forgot Password Request Initiated ', $details, $_SERVER['REMOTE_ADDR']);
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, null, 'User - Forgot Password Request Initiated ', $details, $_SERVER['REMOTE_ADDR']);
 
                 header("Location: {$URL->withReturn('success0')}");
             } else {
@@ -234,11 +234,10 @@ else {
                                 // Log this password change
                                 $details = [
                                     'gibbonPersonID' => $gibbonPersonID,
-                                    'name' => Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true),
-                                    'changedByID' => $session->get('gibbonPersonID'),
-                                    'changedBy' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
+                                    'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
+                                    'IPAddress' => $_SERVER['REMOTE_ADDR'],
                                 ];
-                                $gibbonLogID = $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, $session->get('gibbonPersonID'), 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
+                                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, null, 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
 
                                 //Return
                                 header("Location: {$URL->withReturn('success1')}");
