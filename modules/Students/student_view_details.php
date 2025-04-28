@@ -2327,7 +2327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role 
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.gibbonSchoolYearID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role 
                                         FROM gibbonActivity 
                                         JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
                                         LEFT JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID) 
@@ -2366,21 +2366,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             }
                                           });
                                     $table->addColumn('status', __('Status'))->translatable();
+
+                                    $canViewActivities = isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_full.php');
                                     $table->addActionColumn()
-                                          ->format(function ($activity, $actions) use ($session) {
+                                          ->format(function ($activity, $actions) use ($session, $canViewActivities) {
                                             $role = $session->get('gibbonRoleIDCurrentCategory');
                                             
-                                            if ($role == 'Student') { 
+                                            if ($canViewActivities) {
+                                                $actions->addAction('view', __('View Details'))
+                                                    ->setURL('/modules/Activities/activities_view_full.php')
+                                                    ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                                                    ->modalWindow(1000, 500);
+                                            } else if ($role == 'Student' && $activity['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) { 
                                                 $actions->addAction('view', __('View Details'))
                                                     ->setURL('/modules/Activities/explore_activity.php')
                                                     ->addParam('sidebar', 'false')
                                                     ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
                                                     ->modalWindow(1200, 600);
-                                            } else {
-                                            $actions->addAction('view', __('View Details'))
-                                              ->setURL('/modules/Activities/activities_view_full.php')
-                                              ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
-                                              ->modalWindow(1000, 500);
                                             }
                                           });
                                     echo $table->render($resultData);
