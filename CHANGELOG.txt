@@ -36,6 +36,7 @@ v29.0.00
         System: improved the colour picker to add a pre-set colour palette
         System: added IDD country codes to all countries in the database
         System: added a log entry for resetting password through 'Forgot Password"
+        
         Admissions: added the ability to re-send the submission email from the Process tab in Edit Applicaiton
         Attendance: updated Student History view to display Off Timetable days
         Behaviour: added an 'Observation' type to track neutral records
@@ -47,9 +48,11 @@ v29.0.00
         Markbook: enabled filtering by term even if Group Columns by Term is off
         Planner: added an attendance indicator to the Today's Lessons list for teachers
         Reports: updated Template Builder to select mPDF renderer by default
+        Reports: added the option to archive a template when not in use instead of deleting it
         School Admin: updated various template settings to use Rich Text editors
         Students: added Name in Characters to the Emergency Data Summary
         School Admin: added prefilled times when creating timing changes in Add Special Day
+        System Admin: added autocomplete with available strings to Add String in String Replacement
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable
         System Admin: added new Units import for Unit Planner
@@ -83,6 +86,9 @@ v29.0.00
         Timetable Admin: fixed support staff not editable in Course Enrolment by Person
         Timetable Admin: fixed vertical spacing of date names in Tie Days to Dates
         User Admin: fixed unique username check when values already exist
+
+    Deprecations
+        Removed sendNotificationsAsBcc method from NotificationSender
 
 v28.0.01
 --------

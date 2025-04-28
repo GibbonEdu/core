@@ -108,6 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/file_upload.p
             'gibbonPersonID',
             'username',
             'image_240',
+            'studentID',
             'title',
             'preferredName',
             'surname',

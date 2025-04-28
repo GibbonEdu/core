@@ -43,7 +43,15 @@ class ReportTemplateGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportTemplate.gibbonReportTemplateID', 'gibbonReportTemplate.name', 'gibbonReportTemplate.context']);
+            ->cols(['gibbonReportTemplate.gibbonReportTemplateID', 'gibbonReportTemplate.name', 'gibbonReportTemplate.context', 'gibbonReportTemplate.active']);
+
+        $criteria->addFilterRules([
+            'active' => function ($query, $active) {
+                return $query
+                    ->where('gibbonReportTemplate.active = :active')
+                    ->bindValue('active', $active);
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
