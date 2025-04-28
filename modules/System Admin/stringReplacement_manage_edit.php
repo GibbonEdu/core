@@ -66,6 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
                 ->setParameter('tokenLimit', 1)
                 ->setParameter('allowFreeTagging', true)
                 ->selected($values['original'])
+                ->setValue($values['original'])
                 ->maxLength(255)
                 ->required();
 
