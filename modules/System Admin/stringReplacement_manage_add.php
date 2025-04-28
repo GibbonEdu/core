@@ -36,13 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         ->add(__('Manage String Replacements'), 'stringReplacement_manage.php')
         ->add(__('Add String'));
 
-    $strings = [];
-    $stringsFile = $session->get('absolutePath').'/i18n/allStrings.php';
-    if (file_exists($stringsFile)) {
-        $strings = include $stringsFile;
-        $strings = array_column($strings, 'term');
-    }
-
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/stringReplacement_manage_edit.php&gibbonStringID='.$_GET['editID'];
@@ -59,7 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $row = $form->addRow();
         $row->addLabel('original', __('Original String'));
-        $row->addTextField('original')->required()->maxLength(255)->autocomplete($strings);
+        $row->addFinder('original')
+            ->fromAjax($session->get('absoluteURL').'/modules/System Admin/stringReplacement_searchAjax.php')
+            ->setParameter('tokenLimit', 1)
+            ->setParameter('allowFreeTagging', true)
+            ->maxLength(255)
+            ->required();
 
     $row = $form->addRow();
         $row->addLabel('replacement', __('Replacement String'));

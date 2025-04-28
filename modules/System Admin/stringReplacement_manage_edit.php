@@ -60,8 +60,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
-                $row->addLabel('original', __('Original String'));
-                $row->addTextField('original')->required()->maxLength(255)->setValue($values['original']);
+            $row->addLabel('original', __('Original String'));
+            $row->addFinder('original')
+                ->fromAjax($session->get('absoluteURL').'/modules/System Admin/stringReplacement_searchAjax.php')
+                ->setParameter('tokenLimit', 1)
+                ->setParameter('allowFreeTagging', true)
+                ->selected($values['original'])
+                ->maxLength(255)
+                ->required();
 
             $row = $form->addRow();
                 $row->addLabel('replacement', __('Replacement String'));
