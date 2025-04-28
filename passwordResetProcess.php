@@ -19,10 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Contracts\Comms\Mailer;
-use Gibbon\Data\PasswordPolicy;
-use Gibbon\Data\Validator;
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Data\PasswordPolicy;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\LogGateway;
 
 include './gibbon.php';
 
@@ -53,7 +55,7 @@ if ($input == '' or ($step != 1 and $step != 2)) {
 else {
     try {
         $data = array('email' => $input, 'username' => $input);
-        $sql = "SELECT gibbonPersonID, email, username, canLogin, gibbonRoleIDPrimary FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $sql = "SELECT gibbonPersonID, email, username, canLogin, gibbonRoleIDPrimary, preferredName, surname FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -145,6 +147,16 @@ else {
             ]);
 
             if ($mail->Send()) {
+                // Log this password reset request
+                $details = [
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'name' => Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true),
+                    'changedByID' => $session->get('gibbonPersonID'),
+                    'changedBy' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
+                ];
+
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, $session->get('gibbonPersonID'), 'Forgot User - Password Request Initiated ', $details, $_SERVER['REMOTE_ADDR']);
+
                 header("Location: {$URL->withReturn('success0')}");
             } else {
                 header("Location: {$URL->withReturn('error3')}");
@@ -217,6 +229,16 @@ else {
                                 $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
+
+
+                                // Log this password change
+                                $details = [
+                                    'gibbonPersonID' => $gibbonPersonID,
+                                    'name' => Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true),
+                                    'changedByID' => $session->get('gibbonPersonID'),
+                                    'changedBy' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
+                                ];
+                                $gibbonLogID = $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, $session->get('gibbonPersonID'), 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
 
                                 //Return
                                 header("Location: {$URL->withReturn('success1')}");
