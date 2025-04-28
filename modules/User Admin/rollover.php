@@ -60,38 +60,41 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
         $maxInputVars = ini_get('max_input_vars');
        
-        $requiredInputVars = 5000;
+        $settings = $gibbon->getSystemRequirement('settings');
+        $requiredInputVars = $settings['max_input_vars'][2] ?? 5000;
+
         $canProceed = true;
 
         if ($maxInputVars < $requiredInputVars) {
             echo Format::alert(sprintf(__('Your PHP environment cannot handle all of the fields in this form (the current limit is %1$s). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini to at least %2$s and try again.'), $maxInputVars, $requiredInputVars), 'error');
-            $canProceed = false;
+            return;
         }
 
-        if ($canProceed) {
-            $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
-            if ($nextYearBySession === false) {
-                echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
-            } else {
-                if (empty($nextYearBySession)) {
-                    echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
-                } else {
-                    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rollover.php&step=2');
+        $nextYearBySession = $schoolYearGateway->getNextSchoolYearByID($session->get('gibbonSchoolYearID'));
+        if ($nextYearBySession === false) {
+            echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
+            return;
+        } 
 
-                    $form->setClass('smallIntBorder w-full');
+        if (empty($nextYearBySession)) {
+            echo Format::alert(__('The next school year cannot be determined, so this action cannot be performed.'), 'error');
+            return;
+        } 
 
-                    $form->addHiddenValue('nextYear', $nextYearBySession['gibbonSchoolYearID']);
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rollover.php&step=2');
 
-                    $row = $form->addRow();
-                        $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$session->get('gibbonSchoolYearName').'</b>', '<b>'.$nextYearBySession['name'].'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+        $form->setClass('smallIntBorder w-full');
 
-                    $row = $form->addRow();
-                        $row->addSubmit('Proceed');
+        $form->addHiddenValue('nextYear', $nextYearBySession['gibbonSchoolYearID']);
 
-                    echo $form->getOutput();
-                }
-            }
-        }
+        $row = $form->addRow();
+            $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$session->get('gibbonSchoolYearName').'</b>', '<b>'.$nextYearBySession['name'].'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+
+        $row = $form->addRow();
+            $row->addSubmit('Proceed');
+
+        echo $form->getOutput(); 
+        
     } elseif ($step == 2) {
         echo '<h3>';
         echo __('Step 2');
