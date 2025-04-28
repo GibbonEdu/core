@@ -176,17 +176,7 @@ class NotificationSender
 
         return $sendReport;
     }
-
-    /**
-     * Delivers all notifications. Helper method to clarify the intent of the Bcc sending option.
-     *
-     * @return array Send report with success/fail counts.
-     */
-    public function sendNotificationsAsBcc()
-    {
-        return $this->sendNotifications(true);
-    }
-
+    
     /**
      * Create a mailer and setup the email subject and sender.
      *
