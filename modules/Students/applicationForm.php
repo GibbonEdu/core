@@ -123,11 +123,12 @@ if ($proceed == false) {
 
     // JS success return addition
     $return = (isset($_GET['return']))? $_GET['return'] : '';
-
+    $successMessage = $settingGateway->getSettingByScope('Application Form', 'successMessage');
+    
     if ($return == 'success0' or $return == 'success1' or $return == 'success2' or $return == 'success3' or $return == 'success4') {
         echo "<script type='text/javascript'>";
         echo '$(document).ready(function(){';
-        echo "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;";
+        echo "alert('".$successMessage."') ;";
         echo '});';
         echo '</script>';
     }
