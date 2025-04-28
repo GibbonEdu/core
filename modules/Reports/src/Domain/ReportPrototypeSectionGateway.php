@@ -31,7 +31,7 @@ class ReportPrototypeSectionGateway extends QueryableGateway
 
     private static $tableName = 'gibbonReportPrototypeSection';
     private static $primaryKey = 'gibbonReportPrototypeSectionID';
-    private static $searchableColumns = ['gibbonReportPrototypeSection.name'];
+    private static $searchableColumns = ['gibbonReportPrototypeSection.name', 'type', 'category'];
     
     /**
      * @param QueryCriteria $criteria
@@ -85,5 +85,13 @@ class ReportPrototypeSectionGateway extends QueryableGateway
                 WHERE gibbonReportPrototypeSectionID=:gibbonReportPrototypeSectionID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function updateActiveStatus($gibbonReportPrototypeSectionIDList, $active)
+    {
+        $data = ['gibbonReportPrototypeSectionIDList' => $gibbonReportPrototypeSectionIDList, 'active' => $active];
+        $sql = "UPDATE gibbonReportPrototypeSection SET gibbonReportPrototypeSection.active=:active WHERE FIND_IN_SET(gibbonReportPrototypeSectionID, :gibbonReportPrototypeSectionIDList)";
+
+        return $this->db()->update($sql, $data);
     }
 }
