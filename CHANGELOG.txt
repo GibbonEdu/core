@@ -51,6 +51,7 @@ v29.0.00
         School Admin: updated various template settings to use Rich Text editors
         Students: added Name in Characters to the Emergency Data Summary
         School Admin: added prefilled times when creating timing changes in Add Special Day
+        System Admin: added autocomplete with available strings to Add String in String Replacement
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable
         System Admin: added new Units import for Unit Planner
