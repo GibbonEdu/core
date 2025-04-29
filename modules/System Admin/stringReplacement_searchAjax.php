@@ -19,26 +19,31 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * Sets version information.
- */
-$version = '29.0.00';
+require_once '../../gibbon.php';
 
-/**
- * System Requirements
- */
-$systemRequirements = [
-    'php'        => '7.4.0',
-    'mysql'      => '5.7',
-    'apache'     => ['mod_rewrite'],
-    'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd', 'intl'],
-    'settings'   => [
-        'max_input_vars'         => ['max_input_vars', '>=', 8000],
-        'max_file_uploads'       => ['max_file_uploads', '>=', 20],
-        'allow_url_fopen'        => ['allow_url_fopen', '==', 1],
-        'register_globals'       => ['register_globals', '==', 0],
-        'session.gc_maxlifetime' => ['session.gc_maxlifetime', '>=', 1200],
-        'post_max_size'          => ['post_max_size', '>', 0],
-        'upload_max_filesize'    => ['upload_max_filesize', '>', 0],
-    ],
-];
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplacement_manage.php') == false) {
+    // Access denied
+    return;
+} else {
+    //Proceed!
+    $searchTerm = $_REQUEST['q'] ?? '';
+
+    $strings = [];
+    $stringsFile = $session->get('absolutePath').'/i18n/allStrings.php';
+    if (file_exists($stringsFile)) {
+        $strings = include $stringsFile;
+        $strings = array_column($strings, 'term');
+    }
+
+    $results = array_reduce($strings, function ($group, $item) use ($searchTerm) {
+        if (stripos($item, $searchTerm) !== false) {
+            $group[] = [
+                'id'   => $item,
+                'name' => $item,
+            ];
+        }
+        return $group;
+    }, []);
+
+    echo json_encode($results);
+}

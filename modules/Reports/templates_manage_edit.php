@@ -74,6 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $row->addLabel('context', __('Context'));
     $row->addTextField('context')->readonly();
 
+    $row = $form->addRow();
+    $row->addLabel('active', __('Active'));
+    $row->addYesNo('active')->required();
+
     $stylesheets = $prototypeSectionGateway->selectPrototypeStylesheets();
     $row = $form->addRow();
     $row->addLabel('stylesheet', __('Stylesheet'));
