@@ -190,4 +190,20 @@ class FormGroupGateway extends QueryableGateway
         
         return $this->db()->select($sql, $data);
     }
+
+    public function selectFormGroupsByStaff($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID1" => $gibbonPersonID, "gibbonPersonID2" => $gibbonPersonID, "gibbonPersonID3" => $gibbonPersonID];
+        $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID1 OR gibbonPersonIDTutor2=:gibbonPersonID2 OR gibbonPersonIDTutor3=:gibbonPersonID3) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectFormGroupsByStudent($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID" => $gibbonPersonID];
+        $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

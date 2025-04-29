@@ -98,9 +98,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             exit;
         }
     }
-    
-    header("Location: {$URL}");
-    exit;
 
     if ($partialFail) {
         $URL .= '&return=error4';
