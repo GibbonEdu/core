@@ -33,8 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $page->breadcrumbs
         ->add(__('Template Builder'), 'templates_manage.php')
         ->add(__('Manage Fonts'));
-    // $fonts = $fontGateway->selectFontList()->fetchKeyPair();
-    // $templatePath = $absolutePath.'/modules/Reports/templates';
+
     // FONTS
     $search = (isset($_GET['search']) ? $_GET['search'] : '');
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
@@ -87,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
             }
 
             $tcpdfFile = $absolutePath.'/vendor/tecnickcom/tcpdf/fonts/'.$font['fontTCPDF'].'.php';
-            if (!is_file($tcpdfFile)) {
+            if (!empty($font['fontTCPDF']) && !is_file($tcpdfFile)) {
                 return '<span class="tag error">'.__('Not Installed').'</span>';
             }
 

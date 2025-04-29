@@ -51,6 +51,11 @@ class ReportPrototypeSectionGateway extends QueryableGateway
                     ->where('gibbonReportPrototypeSection.active = :active')
                     ->bindValue('active', $active);
             },
+            'type' => function ($query, $type) {
+                return $query
+                    ->where('gibbonReportPrototypeSection.type = :type')
+                    ->bindValue('type', $type);
+            },
         ]);
         
         return $this->runQuery($query, $criteria);

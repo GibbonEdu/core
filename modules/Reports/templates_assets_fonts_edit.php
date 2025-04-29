@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_f
     // Proceed!
     $page->breadcrumbs
         ->add(__('Template Builder'), 'templates_manage.php')
-        ->add(__('Manage Fonts'), 'templates_fonts.php')
+        ->add(__('Manage Fonts'), 'templates_assets_fonts.php')
         ->add(__('Edit Font'));
 
     $gibbonReportTemplateFontID = $_GET['gibbonReportTemplateFontID'] ?? '';

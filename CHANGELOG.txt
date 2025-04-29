@@ -49,6 +49,7 @@ v29.0.00
         Planner: added an attendance indicator to the Today's Lessons list for teachers
         Reports: updated Template Builder to select mPDF renderer by default
         Reports: added the option to archive unused assets and templates intead of deleting them
+        Reports: added search to the Manage Assets page, moved Manage Fonts to a separate page
         School Admin: updated various template settings to use Rich Text editors
         Students: added Name in Characters to the Emergency Data Summary
         Students: added the option for parents and students to see activities in the view profile page

@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
      $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/templates_assetsProcessBulk.php');
      $form->addHiddenValue('search', $search);
  
-     $bulkActions = ['ActiveStatus' => __('Mark as Active'), 'InactiveStatus' => __('Mark as Inactive')];
+     $bulkActions = ['ActiveStatus' => __('Set to Active'), 'InactiveStatus' => __('Set to Inactive')];
  
      $col = $form->createBulkActionColumn($bulkActions);
          $col->addSubmit(__('Go'));
@@ -120,6 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $table->addMetaData('filterOptions', [
         'active:Y'  => __('Active').': '.__('Yes'),
         'active:N'  => __('Active').': '.__('No'),
+        'type:Core'  => __('Type').': '.__('Core'),
+        'type:Additional'  => __('Type').': '.__('Additional'),
     ]);
 
     $table->addMetaData('bulkActions', $col);
