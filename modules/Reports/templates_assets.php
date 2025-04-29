@@ -19,11 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
-use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
+use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.php') == false) {
     // Access denied
@@ -34,17 +36,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->add(__('Template Builder'), 'templates_manage.php')
         ->add(__('Manage Assets'));
 
+    $search = (isset($_GET['search']) ? $_GET['search'] : '');
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
 
-    // COMPONENTS
+    // CRITERIA
     $criteria = $prototypeGateway->newQueryCriteria(true)
+        ->searchBy($prototypeGateway->getSearchableColumns(), $search)
         ->sortBy(['type', 'category', 'name'])
-        ->fromPOST('manageComponents');
+        ->filterBy('active', $_GET['active'] ?? 'Y')
+        ->fromPOST();
+
+    // SEARCH FORM
+    $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
+    $form->setTitle(__('Search'));
+    $form->setClass('noIntBorder w-full');
+
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('q', '/modules/Reports/templates_assets.php');
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Name, type, category.'));
+        $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
+    
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($session);
+
+    echo $form->getOutput();
 
     $templates = $prototypeGateway->queryPrototypes($criteria);
     $fonts = $fontGateway->selectFontList()->fetchKeyPair();
-
     $absolutePath = $session->get('absolutePath');
     $templatePath = $absolutePath.'/modules/Reports/templates';
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
@@ -75,9 +97,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         }
     });
 
+     // Bulk Action FORM
+     $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/templates_assetsProcessBulk.php');
+     $form->addHiddenValue('search', $search);
+ 
+     $bulkActions = ['ActiveStatus' => __('Mark as Active'), 'InactiveStatus' => __('Mark as Inactive')];
+ 
+     $col = $form->createBulkActionColumn($bulkActions);
+         $col->addSubmit(__('Go'));
+
     // Data TABLE
-    $table = DataTable::createPaginated('manageComponents', $criteria);
-    $table->setTitle(__('Components'));
+    $table = $form->addRow()->addDataTable('manageComponents', $criteria)->withData($templates);
+    $table->setTitle(__('Assets'));
     $table->setDescription(__('Place templates in your Custom Asset Path at {path} and scan the directory to update components.', ['path' => '<b><u>'.$customAssetPath.'/templates</u></b>']));
 
     $table->addHeaderAction('scan', __('Scan Asset Directories'))
@@ -85,7 +116,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->setURL('/modules/Reports/templates_assets_scanProcess.php')
         ->directLink(true)
         ->displayLabel();
-        
+    
+    $table->addMetaData('filterOptions', [
+        'active:Y'  => __('Active').': '.__('Yes'),
+        'active:N'  => __('Active').': '.__('No'),
+    ]);
+
+    $table->addMetaData('bulkActions', $col);
+
+    $table->modifyRows(function($values, $row) {
+        if (!empty($values['active']) && $values['active'] != 'Y') $row->addClass('error');
+        return $row;
+    });
+    
     $table->addColumn('name', __('Name'))
         ->format(function ($template) {
             return Format::tooltip(__($template['name']), $template['templateFile']);
@@ -98,6 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->format(function ($template) {
             return '<span class="tag '.($template['statusClass'] ?? '').'" title="'.($template['statusTitle'] ?? '').'">'.$template['status'].'</span>';
         });
+
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     $table->addActionColumn()
         ->addParam('gibbonReportPrototypeSectionID')
@@ -112,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
                     ->setURL('/modules/Reports/templates_assets_components_preview.php')
                     ->addParam('TB_iframe', 'true')
                     ->modalWindow(900, 500);
-            
+
             if ($template['type'] == 'Additional') {
                 $actions->addAction('edit', __('Edit'))
                         ->addParam('sidebar', 'false')
@@ -122,61 +167,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
             }
 
             $actions->addAction('duplicate', __('Duplicate'))
-                ->setIcon('copy')
-                ->setURL('/modules/Reports/templates_assets_components_duplicate.php');
+                    ->setIcon('copy')
+                    ->setURL('/modules/Reports/templates_assets_components_duplicate.php');
         });
 
-    echo $table->render($templates);
-
-
-    // FONTS
-    $fontGateway = $container->get(ReportTemplateFontGateway::class);
-    $criteria = $fontGateway->newQueryCriteria(true)
-        ->sortBy(['fontName'])
-        ->fromPOST('manageFonts');
-
-    $fonts = $fontGateway->queryFonts($criteria);
-    $absolutePath = $session->get('absolutePath');
-    $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
-
-    // Data TABLE
-    $table = DataTable::createPaginated('manageFonts', $criteria);
-    $table->setTitle(__('Fonts'));
-    $table->setDescription(__('Place TTF font files in your Custom Asset Path at {path} and scan the directory to generate font files.', ['path' => '<b><u>'.$customAssetPath.'/fonts</u></b>']));
-        
-    $table->addColumn('fontName', __('Name'))
-        ->format(function ($font) {
-            return Format::tooltip($font['fontName'], $font['fontPath']);
-        });
-        
-    $table->addColumn('tcpdf', __('Status'))
-        ->width('20%')
-        ->notSortable()
-        ->format(function ($font) use ($absolutePath) {
-            $assetFile = $absolutePath.'/'.$font['fontPath'];
-            if (!is_file($assetFile)) {
-                return '<span class="tag warning">'.__('Missing Font').'</span>';
-            }
-
-            $tcpdfFile = $absolutePath.'/vendor/tecnickcom/tcpdf/fonts/'.$font['fontTCPDF'].'.php';
-            if (!is_file($tcpdfFile)) {
-                return '<span class="tag error">'.__('Not Installed').'</span>';
-            }
-
-            return '<span class="tag success">'.__('Installed').'</span>';
-        });
-
-    $table->addActionColumn()
-        ->addParam('gibbonReportTemplateFontID')
-        ->format(function ($template, $actions) {
-            $actions->addAction('view', __('Preview'))
-                    ->setURL('/modules/Reports/templates_assets_fonts_preview.php')
-                    ->addParam('TB_iframe', 'true')
-                    ->modalWindow(900, 500);
-
-            $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Reports/templates_assets_fonts_edit.php');
-        });
-
-    echo $table->render($fonts);
+    $table->addCheckboxColumn('gibbonReportPrototypeSectionID');
+    echo $form->getOutput();
 }

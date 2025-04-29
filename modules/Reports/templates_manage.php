@@ -49,9 +49,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
         ->setURL('/modules/Reports/templates_manage_add.php')
         ->displayLabel();
 
-    $table->addHeaderAction('fonts', __('Manage Assets'))
+    $table->addHeaderAction('assets', __('Manage Assets'))
         ->setIcon('delivery2')
         ->setURL('/modules/Reports/templates_assets.php')
+        ->displayLabel();
+
+    $table->addHeaderAction('fonts', __('Manage Fonts'))
+        ->setIcon('delivery2')
+        ->setURL('/modules/Reports/templates_fonts.php')
         ->displayLabel();
 
     $table->addMetaData('gridClass', 'content-center justify-center');

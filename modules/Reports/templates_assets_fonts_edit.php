@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 
 
@@ -31,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_f
     // Proceed!
     $page->breadcrumbs
         ->add(__('Template Builder'), 'templates_manage.php')
-        ->add(__('Manage Assets'), 'templates_assets.php')
+        ->add(__('Manage Fonts'), 'templates_fonts.php')
         ->add(__('Edit Font'));
 
     $gibbonReportTemplateFontID = $_GET['gibbonReportTemplateFontID'] ?? '';
