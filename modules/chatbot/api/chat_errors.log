@@ -1,0 +1,8 @@
+[02-Apr-2025 10:30:08 America/Jamaica] Xdebug: [Step Debug] Could not connect to debugging client. Tried: localhost:9003 (through xdebug.client_host/xdebug.client_port).
+[02-Apr-2025 10:31:18 America/Jamaica] Chat request from user 0000000001: Write a detail lesson plan on data validation
+[02-Apr-2025 10:31:48 America/Jamaica] DeepSeek API Response Code: 200
+[02-Apr-2025 10:31:48 America/Jamaica] DeepSeek API Response: 
+[02-Apr-2025 10:31:48 America/Jamaica] DeepSeek API error: API connection failed: Operation timed out after 30001 milliseconds with 0 bytes received
+[02-Apr-2025 10:31:48 America/Jamaica] DeepSeek API error: Failed to get response from DeepSeek API: API connection failed: Operation timed out after 30001 milliseconds with 0 bytes received
+[02-Apr-2025 10:31:48 America/Jamaica] Error in chat.php: AI processing error: Failed to get response from DeepSeek API: API connection failed: Operation timed out after 30001 milliseconds with 0 bytes received
+[02-Apr-2025 10:31:48 America/Jamaica] Xdebug: [Step Debug] Could not connect to debugging client. Tried: localhost:9003 (through xdebug.client_host/xdebug.client_port).
