@@ -35,6 +35,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $logGateway = $container->get(LogGateway::class);
 $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonActivityStudentID = $_POST['gibbonActivityStudentID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".($_GET['gibbonSchoolYearTermID'] ?? '');
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".($_GET['gibbonSchoolYearTermID'] ?? '');
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $activityStaffGateway = $container->get(ActivityStaffGateway::class);
 
     $activity = $container->get(ActivityGateway::class)->getByID($gibbonActivityID);
-    $activityStudent = $activityStudentGateway->selectBy(['gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID])->fetch();
+    $activityStudent = $activityStudentGateway->getByID($gibbonActivityStudentID);
 
     if (empty($activity) || empty($activityStudent)) {
         $URL .= '&return=error2';
@@ -70,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     // Write to database
-    $activityStudentGateway->delete($activityStudent['gibbonActivityStudentID']);
+    $activityStudentGateway->delete($gibbonActivityStudentID);
 
     // Raise a new notification event
     $event = new NotificationEvent('Activities', 'Activity Enrolment Removed');
