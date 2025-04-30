@@ -166,6 +166,8 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID, $gib
                         || ($highestManageAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
                             $actions->addAction('edit', __('Edit'))
                                 ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
+                            $actions->addAction('delete', __('Delete'))
+                                ->setURL('/modules/Behaviour/behaviour_manage_delete.php');
                         } elseif ($highestManageAction == 'Manage Behaviour Records_my') {
                             $actions->addAction('view', __('View'))
                                 ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
