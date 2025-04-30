@@ -23,7 +23,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
@@ -71,7 +70,7 @@ else {
     $form->addHiddenValue('gibbonMessengerID', $gibbonMessengerID ?? '');
 
     $form->addRow()->addHeading('Add New Recipients', __('Add New Recipients'))
-         ->append(__("Select new recipients to add to this message."));
+         ->append(__("Select new recipients to send this message."));
 
     // Individuals
     $row = $form->addRow();
@@ -103,34 +102,6 @@ else {
     $row = $form->addRow()->addClass('individuals bg-blue-50');
         $row->addLabel('individualsParents', __('Include Parents?'));
         $row->addYesNo('individualsParents')->selected('N');
-    
-    
-    // Year Groups
-    $row = $form->addRow();
-        $row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
-        $row->addYesNoRadio('yearGroup')->checked('N')->required();
-
-    $form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
-
-    $yearGroupResults = $container->get(YearGroupGateway::class)->selectYearGroups();
-
-    $row = $form->addRow()->addClass('yearGroup bg-blue-50');
-        $row->addLabel('yearGroups[]', __('Select Year Groups'));
-        $row->addSelect('yearGroups[]')->fromResults($yearGroupResults)->selectMultiple()->setSize(6)->required();
-
-    // Include Staff, Students, and Parents for Year Groups
-    $row = $form->addRow()->addClass('yearGroup bg-blue-50');
-        $row->addLabel('yearGroupsStaff', __('Include Staff?'));
-        $row->addYesNo('yearGroupsStaff')->selected('N');
-
-    $row = $form->addRow()->addClass('yearGroup bg-blue-50');
-        $row->addLabel('yearGroupsStudents', __('Include Students?'));
-        $row->addYesNo('yearGroupsStudents')->selected('N');
-
-    $row = $form->addRow()->addClass('yearGroup bg-blue-50');
-        $row->addLabel('yearGroupsParents', __('Include Parents?'));
-        $row->addYesNo('yearGroupsParents')->selected('N');
-
 
     $row = $form->addRow();
         $row->addFooter();

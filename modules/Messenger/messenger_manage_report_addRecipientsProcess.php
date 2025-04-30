@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Module\Messenger\MessageTargets;
 use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 use Gibbon\Domain\Messenger\MessengerTargetGateway;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 
 require_once '../../gibbon.php';
 
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         header("Location: {$URL}");
         exit;
     }
-
+    
     // Validate Inputs
     $validator = $container->get(Validator::class);
     $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         header("Location: {$URL}");
         exit;
     }
-    
+
     $data = [
         'sms'           => $message['sms'] ?? 'N',
         'email'         => $message['email'] ?? 'N',
@@ -82,32 +83,22 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 
     $partialFail = false;
 
-    $gibbonMessengerReceiptIDList = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
+    $gibbonMessengerReceiptIDs = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
 
-
-    if (empty($gibbonMessengerReceiptIDList)) {
+    if (empty($gibbonMessengerReceiptIDs)) {
         $URL.="&return=error6";
         header("Location: {$URL}");
         exit;
     } else {
-        
-    }
-
-    if ($_POST["individuals"]=="Y") {
-        $partcipantCount = count($_POST["individualList"]);
-
-        if($partcipantCount > 50) {
-            $URL.="&return=warning4";
-            header("Location: {$URL}");
-            exit;
-        }
+        $process = $container->get(MessageProcess::class);
+        $process->startSendEmailToRecipients($gibbonMessengerID, $gibbonMessengerReceiptIDs);
     }
 
     if ($partialFail) {
-        $URL .= '&return=error4';
+        $URL .= '&return=error2';
     } else {
-        $URL .= "&return=success0";
+        $URL .= "&return=success1";
     }
-
+    
     header("Location: {$URL}");
 }

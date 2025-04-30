@@ -369,6 +369,78 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         return $mail->Send();
     }
 
+    public function runSendEmailToRecipients($gibbonMessengerID, $gibbonMessengerReceiptIDs)
+    {
+        $container = $this->getContainer();
+        $pdo = $container->get(Connection::class);
+        $connection2 = $pdo->getConnection();
+        $session = $container->get(Session::class);
+
+        $messengerGateway = $container->get(MessengerGateway::class);
+        $message = $messengerGateway->getByID($gibbonMessengerID);
+
+        $partialFail = false;
+
+        // Prep message
+        $emailCount = 0;
+        $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>";
+
+        $mail= $container->get(Mailer::class);
+        $mail->SMTPKeepAlive = true;
+        $mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
+        $mail->Subject = $message['emailReceipt'] == 'Y' ? __('REMINDER:').' '.$message['subject'] : $message['subject'];
+
+        // Scan through recipients
+        foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
+
+            // Check recipient status
+            $dataRecipt = ["gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID];
+            $sqlRecipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
+            $resultRecipt = $connection2->prepare($sqlRecipt);
+            $resultRecipt->execute($dataRecipt);
+
+            if ($resultRecipt->rowCount() != 1) {
+                $partialFail = true;
+            } else {
+                $rowRecipt = $resultRecipt->fetch();
+                
+                // Resend message
+                $emailCount ++;
+                $mail->ClearAddresses();
+                $mail->AddAddress($rowRecipt['contactDetail']);
+
+                // Deal with email receipt and body finalisation
+                if ($message['emailReceipt'] == 'Y') {
+                    $bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$message['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
+                    if (strpos($bodyReminder, '[confirmLink]') !== false) {
+                        $bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
+                    }
+                    else {
+                        $bodyOut = $bodyReminder.$bodyReadReceipt.$message['body'];
+                    }
+                }
+                else {
+                    $bodyOut = $message['body'];
+                }
+
+                $mail->renderBody('mail/email.twig.html', [
+                    'title'  => $message['subject'],
+                    'body'   => $bodyOut
+                ]);
+                
+                if(!$mail->Send()) {
+                    $partialFail = TRUE ;
+                } else {
+                    // Update the sent status of the recipient
+                    if ($rowRecipt['sent'] == 'N') {
+                        $container->get(MessengerReceiptGateway::class)->update($gibbonMessengerReceiptID, ['sent' => 'Y']);
+                    }
+                }
+            }
+        }
+        return $partialFail;
+    }
+    
     protected function handleFakeReadReceiptLink($body, $emailReceiptText)
     {
         $session = $this->getContainer()->get(Session::class);
@@ -419,77 +491,5 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $notificationSender = $this->getContainer()->get(NotificationSender::class);
         $notificationSender->addNotification($gibbonPersonID, $actionText, 'Messenger', '/index.php?q=/modules/Messenger/messenger_manage_report.php&gibbonMessengerID='.$gibbonMessengerID.'&sidebar=true&search=');
         $notificationSender->sendNotifications();
-    }
-
-    public function runResendEmailToRecipients($gibbonMessengerID, $gibbonMessengerReceiptIDs)
-    {
-        $container = $this->getContainer();
-        $pdo = $container->get(Connection::class);
-        $connection2 = $pdo->getConnection();
-        $session = $container->get(Session::class);
-
-        $messengerGateway = $container->get(MessengerGateway::class);
-        $message = $messengerGateway->getByID($gibbonMessengerID);
-
-        $partialFail = false;
-
-        // Prep message
-        $emailCount = 0;
-        $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>";
-
-        $mail= $container->get(Mailer::class);
-        $mail->SMTPKeepAlive = true;
-        $mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
-        $mail->Subject = $message['emailReceipt'] == 'Y' ? __('REMINDER:').' '.$message['subject'] : $message['subject'];
-
-        // Scan through recipients
-        foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
-
-            // Check recipient status
-            $dataRecipt = ["gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID];
-            $sqlRecipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
-            $resultRecipt = $connection2->prepare($sqlRecipt);
-            $resultRecipt->execute($dataRecipt);
-
-            if ($resultRecipt->rowCount() != 1) {
-                $partialFail = true;
-                } else {
-                $rowRecipt = $resultRecipt->fetch();
-                
-                // Resend message
-                $emailCount ++;
-                $mail->ClearAddresses();
-                $mail->AddAddress($rowRecipt['contactDetail']);
-
-                // Deal with email receipt and body finalisation
-                if ($message['emailReceipt'] == 'Y') {
-                    $bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$message['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
-                    if (strpos($bodyReminder, '[confirmLink]') !== false) {
-                        $bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
-                    }
-                    else {
-                        $bodyOut = $bodyReminder.$bodyReadReceipt.$message['body'];
-                    }
-                }
-                else {
-                    $bodyOut = $message['body'];
-                }
-
-                $mail->renderBody('mail/email.twig.html', [
-                    'title'  => $message['subject'],
-                    'body'   => $bodyOut
-                ]);
-                
-                if(!$mail->Send()) {
-                    $partialFail = TRUE ;
-                } else {
-                    // Update the sent status of the recipient
-                    if ($rowRecipt['sent'] == 'N') {
-                        $container->get(MessengerReceiptGateway::class)->update($gibbonMessengerReceiptID, ['sent' => 'Y']);
-                    }
-                }
-            }
-        }
-        return $partialFail;
     }
 }

@@ -2218,7 +2218,7 @@ class MessageTargets
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             if ($_POST["individuals"]=="Y") {
                 $choices=$_POST["individualList"] ?? [];
-                $parents=$_POST["individualsParents"];
+                $parents=$_POST["individualsParents"] ?? 'N';
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
@@ -2274,7 +2274,6 @@ class MessageTargets
                                 }
                             }
                         }
-
 
                         if ($sms == "Y" AND $countryCode != "") {
                             try {
@@ -2338,16 +2337,15 @@ class MessageTargets
 
         $gibbonMessengerReceiptIDList = [];
 
-        //Write report entries
+        // Write report entries
         foreach ($this->report as $reportEntry) {
             try {
-
                 $uniqueData = [
                     'gibbonMessengerID' => $AI,
                     'gibbonPersonID' => $reportEntry[0],
                 ];
 
-                 // Check if the record already exists in the table
+                // Check if the record already exists in the table
                 $isUnique = $this->messengerReceiptGateway->unique($uniqueData, ['gibbonMessengerID', 'gibbonPersonID']);
                 if (!$isUnique) {
                     // If the record already exists, skip adding it again to the gibbonMessengerReceipt table
@@ -2372,7 +2370,7 @@ class MessageTargets
         if($sendEmail == 'Y') {
             return $gibbonMessengerReceiptIDList;
         }
-
+        
         return count($this->report);
     }
 
