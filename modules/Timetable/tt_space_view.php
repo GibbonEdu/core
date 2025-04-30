@@ -95,6 +95,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             $table->addColumn('phoneInternal', __('Phone Number'))
                 ->width('100%');
 
+            $table->addColumn('bookable', __('Bookable'))
+                ->format(function ($values) {
+                    if ($values['bookable'] == 'Y') {
+                        return Format::tag(__('Yes'), 'success');
+                    } else {
+                        return Format::tag(__('No'), 'dull');
+                    }
+                });
+
             echo $table->render([$row]);
 
             $ttDate = null;

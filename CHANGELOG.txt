@@ -55,6 +55,7 @@ v29.0.00
         Students: added Name in Characters to the Emergency Data Summary
         Students: added the option for parents and students to see activities in the view profile page
         School Admin: added prefilled times when creating timing changes in Add Special Day
+        School Admin: added the option to edit whether a facility is bookable or not
         System Admin: added autocomplete with available strings to Add String in String Replacement
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable

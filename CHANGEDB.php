@@ -936,4 +936,5 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Observation Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'successMessage', 'Success Message', 'Customised text to display when an application is succesfully submitted', 'Your application was successfully submitted. Please read the information in the green box above the application form for additional information.');end
 ALTER TABLE `gibbonReportPrototypeSection` ADD `active` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `category`;end
+ALTER TABLE `gibbonSpace` ADD `bookable` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `active`;end
 ";
