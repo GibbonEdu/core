@@ -77,16 +77,20 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         'sms'           => $message['sms'] ?? 'N',
         'email'         => $message['email'] ?? 'N',
         'emailReceipt'  => $message['emailReceipt'] ?? 'N',
+        'sendEmail'     =>   'Y',
     ];
 
     $partialFail = false;
 
-    $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
+    $gibbonMessengerReceiptIDList = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
 
-    if (empty($recipients)) {
+
+    if (empty($gibbonMessengerReceiptIDList)) {
         $URL.="&return=error6";
         header("Location: {$URL}");
         exit;
+    } else {
+        
     }
 
     if ($_POST["individuals"]=="Y") {

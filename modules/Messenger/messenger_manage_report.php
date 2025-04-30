@@ -59,7 +59,8 @@ else {
         } else {
             $values = $result->fetch();
             
-            $page->return->addReturns(['error2' => 'Some elements of your request failed, but others were successful.']);
+            $page->return->addReturns(['error2' => __('Some elements of your request failed, but others were successful.'),
+            'success1' => __("Your message has been dispatched to a team of highly trained gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.")]);
 
             // Create a reusable confirmation closure
             $confirmationIndicator = function($recipient, $emailReceipt = false, $confirmationRequired = true)  {
