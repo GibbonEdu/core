@@ -1,0 +1,76 @@
+{
+    "name": "openai-php/client",
+    "description": "OpenAI PHP is a supercharged PHP API client that allows you to interact with the Open AI API",
+    "keywords": ["php", "openai", "sdk", "codex", "GPT-3", "DALL-E", "api", "client", "natural", "language", "processing"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nuno Maduro",
+            "email": "enunomaduro@gmail.com"
+        },
+        {
+            "name": "Sandro Gehri"
+        }
+    ],
+    "require": {
+        "php": "^8.1.0",
+        "php-http/discovery": "^1.19.4",
+        "php-http/multipart-stream-builder": "^1.3.0",
+        "psr/http-client": "^1.0.3",
+        "psr/http-client-implementation": "^1.0.1",
+        "psr/http-factory-implementation": "*",
+        "psr/http-message": "^1.1.0|^2.0.0"
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.8.1",
+        "guzzlehttp/psr7": "^2.6.2",
+        "laravel/pint": "^1.15.0",
+        "mockery/mockery": "^1.6.11",
+        "nunomaduro/collision": "^7.10.0",
+        "pestphp/pest": "^2.34.6",
+        "pestphp/pest-plugin-arch": "^2.7",
+        "pestphp/pest-plugin-type-coverage": "^2.8.1",
+        "phpstan/phpstan": "^1.10.66",
+        "rector/rector": "^1.0.4",
+        "symfony/var-dumper": "^6.4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenAI\\": "src/"
+        },
+        "files": [
+            "src/OpenAI.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": false
+        }
+    },
+    "scripts": {
+        "lint": "pint -v",
+        "refactor": "rector --debug",
+        "test:lint": "pint --test -v",
+        "test:refactor": "rector --dry-run",
+        "test:types": "phpstan analyse --ansi",
+        "test:type-coverage": "pest --type-coverage --min=100",
+        "test:unit": "pest --colors=always",
+        "test": [
+            "@test:lint",
+            "@test:refactor",
+            "@test:types",
+            "@test:type-coverage",
+            "@test:unit"
+        ]
+    }
+}
