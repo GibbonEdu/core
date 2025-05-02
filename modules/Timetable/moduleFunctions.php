@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\FacilityGateway;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Event;
 use Microsoft\Graph\Model\Location;
@@ -2545,7 +2546,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
 function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDay = [], $specialDayStart = '', $specialDayEnd = '', $activities = [])
 {
-    global $session;
+    global $session, $container;
 
     $schoolCalendarAlpha = 0.85;
     $ttAlpha = 1.0;
@@ -2689,7 +2690,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                                 return ($event[3] == $date) && ( ($event[4] >= $effectiveStart && $event[4] < $effectiveEnd) || ($effectiveStart >= $event[4] && $effectiveStart < $event[5]) );
                             });
 
-                        if (empty($overlappingBookings)) {
+                        $space = $container->get(FacilityGateway::class)->getByID($gibbonSpaceID);
+                        $bookable = $space['bookable'];
+
+                        if (empty($overlappingBookings) && $bookable == 'Y') {
                             $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Booking')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'>";
                             $output .= icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800');
                             $output .= "</a>";
@@ -2857,7 +2861,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $gibbonTTDayRowClassID = str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, "0", STR_PAD_LEFT);
                     
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
-                        if ($offTimetableClass) {
+                        if ($offTimetableClass && $bookable == 'Y') {
                             $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Booking')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$targetDate.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'>";
                             $output .= icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800');
                             $output .= "</a>";
