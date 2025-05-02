@@ -1,4 +1,0 @@
-<FilesMatch "\.(js|htm|html|css|php|php3|php4|php5|php7|phtml|asp|jsp|py|DS_Store)$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
