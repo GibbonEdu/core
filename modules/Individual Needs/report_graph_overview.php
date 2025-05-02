@@ -24,6 +24,7 @@ use Gibbon\UI\Chart\Chart;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\IndividualNeeds\INGateway;
 
+
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_graph_overview.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));

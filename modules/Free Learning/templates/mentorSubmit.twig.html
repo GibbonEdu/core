@@ -1,0 +1,25 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{{ __('To whom it may concern,') }}
+
+<p>
+    {{ __('The following %1$s at %2$s has requested your feedback on their %3$sFree Learning%4$s work (%5$s), which they have just submitted, and on which you previously agreed to mentor them.', {'%1$s': roleCategoryFull, '%2$s': organisationNameShort, '%3$s': "<a target='_blank' href='http://rossparker.org'>", '%4$s': '</a>', '%5$s': unitName} )|raw }}
+</p>
+
+<ul>
+    <li>{{ studentName }}</li>
+</ul>
+
+<p>
+    {{ __('Please click the button below to view and give feedback on the submitted work.') }}
+</p>
+
+<p>
+    {{ __('Thank you very much for your time. Should you have any questions about this matter, please reply to this email, or contact %1$s on %2$s.', {'%1$s': organisationAdministratorName, '%2$s': organisationAdministratorEmail}) }}
+</p>

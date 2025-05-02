@@ -55,6 +55,10 @@
 !/Tracking/**
 !/User Admin
 !/User Admin/**
+!/Interventions
+!/Interventions/**
+!/Free Learning
+!/Free Learning/**
 
 # black list some files and folders
 # in the module folders

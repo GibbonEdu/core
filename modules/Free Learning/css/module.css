@@ -1,0 +1,82 @@
+/*
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.currentUnit {
+    border-color: #0EA5E9;
+    background-color: #BAE6FD;
+    color: #0284C7;
+}
+
+.pending {
+    border-color: #78529E;
+    background-color: #DCC5f4;
+    color: #633F86;
+}
+
+.currentPending {
+    border-color: #b3801b;
+    background-color: #FAF089;
+    color: #B3801B;
+}
+
+.exempt {
+    border-color: #e520b7;
+    background-color: #f9dbf2;
+    color: #e520b7;
+}
+
+.vis-tooltip {
+    margin-top: 4.5rem;
+    margin-left: 0.5rem;
+}
+
+.vis-item {
+    cursor: pointer;
+}
+
+.unit-block p,
+.unit-block ul,
+.unit-block ol {
+    font-size: inherit;
+}
+
+.unit-block ul {
+    margin-left: 0.8rem;
+}
+
+.unit-block ul ul,
+.unit-block ul ol,
+.unit-block ol ol,
+.unit-block ol ul  {
+    margin-left: 2rem;
+}
+
+.unit-block li {
+    margin-bottom: 0.5rem;
+}
+
+.unit-block iframe {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+canvas#unitStats {
+    max-width: 100%
+}

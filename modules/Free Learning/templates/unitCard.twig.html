@@ -1,0 +1,40 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if prerequisitesMet != 'N' %}
+    <a href="{{ viewUnitURL }}&freeLearningUnitID={{ freeLearningUnitID }}" class="relative h-full flex flex-col w-48 rounded border overflow-hidden mx-4 hover:box-shadow-lg {{ statusClass|default('bg-gray-100 hover:bg-white hover:border-blue-500 hover:text-blue-500') }}" title="{{ __('Difficulty') }}: {{ difficulty }}. {{ blurb }}">
+{% else %}
+    <a href="{{ viewUnitURL }}&freeLearningUnitID={{ freeLearningUnitID }}" class="relative h-full flex flex-col w-48 rounded border overflow-hidden mx-4 {{ statusClass|default('bg-gray-100') }}" title="{{ __('Difficulty') }}: {{ difficulty }}. {{ blurb }}">
+{% endif %}
+
+    {% if active != "Y" %}
+        <span class="z-10 tag error block absolute right-0 mt-1 mr-1">
+            {{ __('Not Active') }}
+        </span>
+    {% elseif status %}
+        <span class="z-10 tag {{ statusClass }} block absolute right-0 mt-1 mr-1">
+            {{ status }}
+        </span>
+    {% elseif prerequisitesMet == "N" %}
+        <span class="z-10 tag dull block absolute right-0 mt-1 mr-1" title="
+            {{ __('Prerequisites') }}: {% for prereq in prerequisites %}{{ prereq.name }} {{ not loop.last ? ', ' }}{% endfor %}">
+            {{ __('Not Met') }}
+        </span>
+    {% elseif prerequisitesMet == "Y" %}
+        <span class="z-10 tag success ok block absolute right-0 mt-1 mr-1">
+            {{ __('Ok!') }}
+        </span>
+    {% endif %}
+
+    <div class="w-48 h-48 overflow-hidden bg-cover bg-no-repeat bg-center {{ prerequisitesMet == 'N' ? 'opacity-25' }}" style="background-image: url({{ logo|default(defaultImage) }});">
+    </div>
+
+    <div class="flex-1 flex justify-center items-center text-sm sm:text-sm text-center {{ prerequisitesMet == 'N' ? 'text-gray-500' : 'text-gray-700' }} font-bold py-4 px-1">
+        {{ name }}
+    </div>
+</a>

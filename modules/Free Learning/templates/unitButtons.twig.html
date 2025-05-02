@@ -1,0 +1,44 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+
+<div class="flex flex-row-reverse justify-between items-center h-16">
+    <div class="flex justify-end items-center my-4">
+        {% set buttonClass = 'border -ml-px px-6 py-1 leading-normal' %}
+        {% set buttonClassBG = 'bg-blue-50 text-gray-700 border-blue-300 hover:bg-blue-300' %}
+        {% set buttonClassBGCurrent = 'bg-blue-200 text-gray-700 border-blue-300 hover:bg-blue-300' %}
+
+        {% if count > maxMapSize %}
+            <div class="{{ buttonClass }} rounded-l opacity-25 bg-gray-300 hover:bg-gray-300">
+                {{ __m('Map') }}
+                <img class="mt-1 -mb-1 w-5 h-5" src="{{ absoluteURL }}/modules/Free Learning/img/iconMap.png"/>
+            </div>
+        {% else %}
+            <a class="{{ buttonClass }} {% if view == 'map' %} {{ buttonClassBGCurrent }} {% else %} {{ buttonClassBG }} {% endif %} rounded-l" href="{{ browseUnitsURL }}&view=map">
+                {{ __m('Map') }}
+                <img class="mt-1 -mb-1 w-5 h-5" src="{{ absoluteURL }}/modules/Free Learning/img/iconMap.png"/>
+            </a>
+        {% endif %}
+        <a class="{{ buttonClass }} {% if view == 'grid' %} {{ buttonClassBGCurrent }} {% else %} {{ buttonClassBG }} {% endif %}" href="{{ browseUnitsURL }}&view=grid">
+            {{ __('Grid') }}
+            <img class="mt-1 -mb-1 w-5 h-5" src="{{ absoluteURL }}/modules/Free Learning/img/iconGrid.png"/>
+        </a>
+        <a class="{{ buttonClass }} {% if view == 'list' %} {{ buttonClassBGCurrent }} {% else %} {{ buttonClassBG }} {% endif %} rounded-r" href="{{ browseUnitsURL }}&view=list">
+            {{ __('List') }}
+            <img class="mt-1 -mb-1 w-5 h-5" src="{{ absoluteURL }}/modules/Free Learning/img/iconList.png"/>
+        </a>
+    </div>
+
+    {% if publicUnits == 'Y' and gibbonPersonID is empty %}
+    <a class="block rounded border border-red-800 bg-red-700 hover:bg-red-600 text-white hover:shadow-md text-base font-bold py-3 px-4 "
+        href="{{ absoluteURL }}/index.php?q=/modules/Free Learning/showcase.php&sidebar=false">
+        {{ __('View Our Free Learning Showcase') }}
+    </a>
+    {% endif %}
+
+</div>
