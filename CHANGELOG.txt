@@ -38,6 +38,7 @@ v29.0.00
         System: added a log entry for resetting password through 'Forgot Password"
         Admissions: added the ability to re-send the submission email from the Process tab in Edit Application
         Admissions: added the option to display customised success message when student applications are successfully submitted
+        Admissions: added Emergency Contacts for students as an option in the Form Builder
         Attendance: updated Student History view to display Off Timetable days
         Behaviour: added an 'Observation' type to track neutral records
         Behaviour: added the delete action to the behaviour list in the Student Profile for users with manage access
