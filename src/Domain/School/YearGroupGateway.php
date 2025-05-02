@@ -152,4 +152,18 @@ class YearGroupGateway extends QueryableGateway
         $sql = 'SELECT COUNT(gibbonYearGroupID) FROM gibbonYearGroup';
         return $this->db()->selectOne($sql);
     }
+
+    public function selectYearGroups()
+    {
+        $sql = 'SELECT gibbonYearGroupID AS value, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+        
+        return $this->db()->select($sql);
+    }
+
+    public function selectYearsGroupsInDesc()
+    {
+        $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber DESC";
+
+        return $this->db()->select($sql);
+    }
 }

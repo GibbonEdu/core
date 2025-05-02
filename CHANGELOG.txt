@@ -47,6 +47,7 @@ v29.0.00
         Markbook: added an option to color-code markbook columns in the teacher view
         Markbook: implemented default grade from Manage Grade Scales in Markbook data entry view
         Markbook: enabled filtering by term even if Group Columns by Term is off
+        Messenger: added the ability to add new recipients to a sent message and enable easier re-sending
         Planner: added an attendance indicator to the Today's Lessons list for teachers
         Reports: updated Template Builder to select mPDF renderer by default
         Reports: added the option to archive unused assets and templates intead of deleting them

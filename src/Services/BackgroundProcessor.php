@@ -75,7 +75,7 @@ class BackgroundProcessor implements ContainerAwareInterface
      */
     public function startProcess($processClassName, $processMethodName, array $arguments = []) : int
     {
-        $phpFile = $this->session->get('absolutePath').'/cli/system_backgroundProcess.php';
+        $phpFile = $this->session->get('absolutePath').'/cli/system_backgroundProcessor.php';
         $phpOutput = '/dev/null';
 
         if (!file_exists($phpFile)) {

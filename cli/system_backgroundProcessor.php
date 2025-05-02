@@ -23,7 +23,6 @@ use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\BackgroundProcessor;
-use Gibbon\Domain\School\SchoolYearGateway;
 
 $_POST['address'] = '/modules/'.($argv[3] ?? 'System Admin').'/index.php';
 

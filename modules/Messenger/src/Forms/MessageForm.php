@@ -29,8 +29,17 @@ use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Messenger\CannedResponseGateway;
+use Gibbon\Domain\Attendance\AttendanceCodeGateway;
+use Gibbon\Domain\Messenger\MailingListGateway;
+use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\School\YearGroupGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\User\UserGateway;
 
 /**
  * MessageForm
@@ -51,8 +60,17 @@ class MessageForm extends Form
     protected $defaultSendStaff;
     protected $defaultSendStudents;
     protected $defaultSendParents;
+    protected $activityGateway;
+    protected $attendanceCodeGateway;
+    protected $formGroupGateway;
+    protected $groupGateway;
+    protected $mailingListGateway;
+    protected $houseGateway;
+    protected $yearGroupGateway;
+    protected $courseGateway;
+    protected $userGateway;
 
-    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway)
+    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, ActivityGateway $activityGateway, AttendanceCodeGateway $attendanceCodeGateway, FormGroupGateway $formGroupGateway, GroupGateway $groupGateway, MailingListGateway $mailingListGateway, HouseGateway $houseGateway, YearGroupGateway $yearGroupGateway, CourseGateway $courseGateway, UserGateway $userGateway)
     {
         $this->session = $session;
         $this->db = $db;
@@ -61,6 +79,15 @@ class MessageForm extends Form
         $this->cannedResponseGateway = $cannedResponseGateway;
         $this->settingGateway = $settingGateway;
         $this->roleGateway = $roleGateway;
+        $this->activityGateway = $activityGateway;
+        $this->attendanceCodeGateway = $attendanceCodeGateway;
+        $this->formGroupGateway = $formGroupGateway;
+        $this->groupGateway = $groupGateway;
+        $this->mailingListGateway = $mailingListGateway;
+        $this->houseGateway = $houseGateway;
+        $this->yearGroupGateway = $yearGroupGateway;
+        $this->courseGateway = $courseGateway;
+        $this->userGateway = $userGateway;
 
         $this->roleCategory = $this->session->get('gibbonRoleIDCurrentCategory');
 
@@ -307,11 +334,11 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('roleCategory')->onRadio('roleCategory')->when('Y');
 
-            $data = array();
-            $sql = 'SELECT DISTINCT category AS value, category AS name FROM gibbonRole ORDER BY category';
+            $roleCategories = $this->roleGateway->selectDistinctRoleCategories();
+
             $row = $form->addRow()->addClass('roleCategory bg-blue-50');
                 $row->addLabel('roleCategories[]', __('Select Role Categories'));
-                $row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->required()->placeholder()->selected($selected);
+                $row->addSelect('roleCategories[]')->fromResults($roleCategories)->selectMultiple()->setSize(4)->required()->placeholder()->selected($selected);
         } else if ($sent && $values['messageWall'] == 'Y' && !empty($selectedRoleCategory) && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
             // Handle the edge case where a user can post a Quick Wall message but doesn't have access to the Role target
             $row = $form->addRow();
@@ -338,11 +365,11 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
 
-            $data = array();
-            $sql = 'SELECT gibbonYearGroupID AS value, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+            $yearGroupResults = $this->yearGroupGateway->selectYearGroups();
+
             $row = $form->addRow()->addClass('yearGroup bg-blue-50');
                 $row->addLabel('yearGroups[]', __('Select Year Groups'));
-                $row->addSelect('yearGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
+                $row->addSelect('yearGroups[]')->fromResults($yearGroupResults)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
             $row = $form->addRow()->addClass('yearGroup bg-blue-50');
                 $row->addLabel('yearGroupsStaff', __('Include Staff?'));
@@ -371,22 +398,19 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('formGroup')->onRadio('formGroup')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-                $data=array("gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'));
-                $sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+                $formGroupResults = $this->formGroupGateway->selectAllFormGroupsBySchoolYear($this->session->get('gibbonSchoolYearID'));
             }
             else {
                 if ($this->roleCategory == "Staff") {
-                    $data=array("gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'), "gibbonPersonID1"=>$this->session->get('gibbonPersonID'), "gibbonPersonID2"=>$this->session->get('gibbonPersonID'), "gibbonPersonID3"=>$this->session->get('gibbonPersonID'), "gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'));
-                    $sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID1 OR gibbonPersonIDTutor2=:gibbonPersonID2 OR gibbonPersonIDTutor3=:gibbonPersonID3) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+                    $formGroupResults = $this->formGroupGateway->selectFormGroupsByStaff($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
                 }
                 else if ($this->roleCategory == "Student") {
-                    $data=array("gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$this->session->get('gibbonPersonID'), );
-                    $sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+                    $formGroupResults = $this->formGroupGateway->selectFormGroupsByStudent($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
                 }
             }
             $row = $form->addRow()->addClass('formGroup bg-blue-50');
                 $row->addLabel('formGroups[]', __('Select Form Groups'));
-                $row->addSelect('formGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
+                $row->addSelect('formGroups[]')->fromResults($formGroupResults)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
             $row = $form->addRow()->addClass('formGroup bg-blue-50');
                 $row->addLabel('formGroupsStaff', __('Include Staff?'));
@@ -415,20 +439,14 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('course')->onRadio('course')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonCourseID as value, nameShort as name FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+                $courseResults = $this->courseGateway->selectAllCoursesBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID'));
-                $sql = "SELECT gibbonCourse.gibbonCourseID as value, gibbonCourse.nameShort as name
-                        FROM gibbonCourse
-                        JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                        JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                        WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' GROUP BY gibbonCourse.gibbonCourseID ORDER BY name";
+                $courseResults = $this->courseGateway->selectAllCoursesBySchoolYearAndPersonID($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
             }
 
             $row = $form->addRow()->addClass('course bg-blue-50');
                 $row->addLabel('courses[]', __('Select Courses'));
-                $row->addSelect('courses[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('courses[]')->fromResults($courseResults)->selectMultiple()->setSize(6)->required()->selected($selected);
 
             $row = $form->addRow()->addClass('course bg-blue-50');
                 $row->addLabel('coursesStaff', __('Include Staff?'));
@@ -457,20 +475,14 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('class')->onRadio('class')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+                $classResults = $this->courseGateway->selectClassIDByCourseAndSchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID'));
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
-                    FROM gibbonCourse
-                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                    WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY gibbonCourseClass.name";
+                $classResults = $this->courseGateway->selectClassIDByCourseAndSchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
             }
 
             $row = $form->addRow()->addClass('class bg-blue-50');
                 $row->addLabel('classes[]', __('Select Classes'));
-                $row->addSelect('classes[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('classes[]')->fromResults($classResults)->selectMultiple()->setSize(6)->required()->selected($selected);
 
             $row = $form->addRow()->addClass('class bg-blue-50');
                 $row->addLabel('classesStaff', __('Include Staff?'));
@@ -499,19 +511,18 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('activity')->onRadio('activity')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonActivityID as value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
+                $activitiesResults = $this->activityGateway->selectAllActivitiesBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID'));
+                $data = ['gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID')];
                 if ($this->roleCategory == "Staff") {
-                    $sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
+                    $activitiesResults = $this->activityGateway->selectAllStaffActivitiesBySchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
                 } else if ($this->roleCategory == "Student") {
-                    $sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND status='Accepted' AND active='Y' ORDER BY name";
+                    $activitiesResults = $this->activityGateway->selectAllStudentActivitiesBySchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
                 }
             }
             $row = $form->addRow()->addClass('activity bg-blue-50');
                 $row->addLabel('activities[]', __('Select Activities'));
-                $row->addSelect('activities[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('activities[]')->fromResults($activitiesResults)->selectMultiple()->setSize(6)->required()->selected($selected);
 
             $row = $form->addRow()->addClass('activity bg-blue-50');
                 $row->addLabel('activitiesStaff', __('Include Staff?'));
@@ -539,10 +550,11 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('applicants')->onRadio('applicants')->when('Y');
 
-            $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber DESC";
+            $applicantResults = $this->yearGroupGateway->selectYearsGroupsInDesc();
+
             $row = $form->addRow()->addClass('applicants bg-blue-50');
                 $row->addLabel('applicantList[]', __('Select Years'));
-                $row->addSelect('applicantList[]')->fromQuery($pdo, $sql)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('applicantList[]')->fromResults($applicantResults)->setSize(6)->required()->selected($selected);
 
             $row = $form->addRow()->addClass('applicants hiddenReveal');
                 $row->addLabel('applicantsStudents', __('Include Students?'));
@@ -564,15 +576,13 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('houses')->onRadio('houses')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all")) {
-                $data = array();
-                $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
+                $houseResults = $this->houseGateway->selectAllHousesByName();
             } else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-                $data = array('gibbonPersonID' => $this->session->get('gibbonPersonID'));
-                $sql = "SELECT gibbonHouse.gibbonHouseID as value, name FROM gibbonHouse JOIN gibbonPerson ON (gibbonHouse.gibbonHouseID=gibbonPerson.gibbonHouseID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY name";
+                $houseResults = $this->houseGateway->selectHousesByPersonID($this->session->get('gibbonPersonID'));
             }
             $row = $form->addRow()->addClass('houses bg-blue-50');
                 $row->addLabel('houseList[]', __('Select Houses'));
-                $row->addSelect('houseList[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('houseList[]')->fromResults($houseResults)->selectMultiple()->setSize(6)->required()->selected($selected);
         }
 
         // Transport
@@ -586,9 +596,8 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('transport')->onRadio('transport')->when('Y');
 
-            $sql = "SELECT DISTINCT transport FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport";
-            $transportList = $pdo->select($sql)->fetchAll();
-            $transportList = array_unique(array_reduce($pdo->select($sql)->fetchAll(), function ($group, $item) {
+            $transportList = $this->userGateway->getDistinctTransportOptions()->fetchAll();
+            $transportList = array_unique(array_reduce($transportList, function ($group, $item) {
                 $list = array_map('trim', explode(',', $item['transport'] ?? ''));
                 $group = array_merge($group, $list);
                 return $group;
@@ -625,12 +634,10 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('attendance')->onRadio('attendance')->when('Y');
 
-            $sql = "SELECT name, gibbonRoleIDAll FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY direction DESC, sequenceNumber ASC, name";
-            $result = $pdo->select($sql);
+            $attendanceCodes = $this->attendanceCodeGateway->getActiveAttendanceCodes()->fetchAll();
 
             // Filter the attendance codes by allowed roles (if any)
             $currentRole = $this->session->get('gibbonRoleIDCurrent');
-            $attendanceCodes = ($result->rowCount() > 0)? $result->fetchAll() : array();
             $attendanceCodes = array_filter($attendanceCodes, function($item) use ($currentRole) {
                 if (!empty($item['gibbonRoleIDAll'])) {
                     $rolesAllowed = array_map('trim', explode(',', $item['gibbonRoleIDAll']));
@@ -666,20 +673,14 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('messageGroup')->onRadio('group')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+                $groupResults = $this->groupGateway->selectAllGroupsBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
-                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
-                $sql = "(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID ORDER BY name)
-                    UNION
-                    (SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2)
-                    ORDER BY name
-                    ";
+                $groupResults = $this->groupGateway->selectGroupsByPersonAndOwner($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
             }
 
             $row = $form->addRow()->addClass('messageGroup bg-blue-50');
                 $row->addLabel('groups[]', __('Select Groups'));
-                $row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('groups[]')->fromResults($groupResults)->selectMultiple()->setSize(6)->required()->selected($selected);
 
             $row = $form->addRow()->addClass('messageGroup bg-blue-50');
                 $row->addLabel('groupsStaff', __('Include Staff?'));
@@ -707,12 +708,11 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('messageMailingList')->onRadio('mailingList')->when('Y');
 
-            $data = [];
-            $sql = "SELECT gibbonMessengerMailingListID as value, name FROM gibbonMessengerMailingList WHERE active='Y' ORDER BY name";
+            $mailingListResults = $this->mailingListGateway->selectActiveMailingList();
 
             $row = $form->addRow()->addClass('messageMailingList bg-blue-100');
                 $row->addLabel('mailingLists[]', __('Select Mailing Lists'));
-                $row->addSelect('mailingLists[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->selected($selected);
+                $row->addSelect('mailingLists[]')->fromResults($mailingListResults)->selectMultiple()->setSize(6)->required()->selected($selected);
         }
 
         // Individuals
@@ -726,22 +726,14 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
 
             // Build a set of individuals by ID => formatted name
-            $data = ['gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID')];
-            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName, gibbonRole.category
-                    FROM gibbonPerson
-                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
-                    LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                    LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                    WHERE gibbonPerson.status='Full'
-                    ORDER BY surname, preferredName";
+              $individuals = $this->userGateway->getIndividualsBySchoolYearWithFullStatus($this->session->get('gibbonSchoolYearID'))->fetchAll();
 
-            $individuals = $pdo->select($sql, $data)->fetchAll();
             $individuals = array_reduce($individuals, function($group, $item){
                 $name = Format::name("", $item['preferredName'], $item['surname'], 'Student', true).' (';
                 if (!empty($item['formGroupName'])) $name .= $item['formGroupName'].', ';
                 $group[$item['gibbonPersonID']] = $name.$item['username'].', '.__($item['category']).')';
                 return $group;
-            }, array());
+            }, []);
             $selectedIndividuals = array_intersect_key($individuals, array_flip($selected));
 
             $row = $form->addRow()->addClass('individuals bg-blue-50');
