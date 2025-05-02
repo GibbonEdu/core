@@ -187,7 +187,7 @@ class RoleGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function selectDistinctRoleCategories() 
+    public function selectAllRoleCategories() 
     {
         $sql = 'SELECT DISTINCT category AS value, category AS name FROM gibbonRole ORDER BY category';
 

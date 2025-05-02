@@ -51,14 +51,14 @@ else {
         ->add(__('Add Recipients'));
 
     $page->return->addReturns([
+        'error4' => __('Your request was completed successfully, but some or all messages could not be delivered.'),
         'error5' => __('Your request failed due to an error.'),
+        'error6' => __('Your message is not ready to send because no targets have been selected or no valid recipients were found. Be sure to select at least one target for your message.'),
     ]);
 
     // Proceed!
     $settingGateway = $container->get(SettingGateway::class);
     $messengerGateway = $container->get(MessengerGateway::class);
-    
-    $page->addWarning(sprintf(__('While adding new recipients, ensure each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s.'), $session->get('organisationNameShort')));
 
     // Get the existing message data, if any
     $message = !empty($gibbonMessengerID) ? $messengerGateway->getByID($gibbonMessengerID) : [];
@@ -68,19 +68,12 @@ else {
     $form = Form::create('addRecipients', $session->get('absoluteURL').'/modules/Messenger/messenger_manage_report_addRecipientsProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonMessengerID', $gibbonMessengerID ?? '');
+    $form->addHiddenValue('individuals', 'Y');
 
-    $form->addRow()->addHeading('Add New Recipients', __('Add New Recipients'))
-         ->append(__("Select new recipients to send this message."));
-
-    // Individuals
-    $row = $form->addRow();
-        $row->addLabel('individuals', __('Individuals'))->description(__('Select specific individuals from the whole school.'));
-        $row->addYesNoRadio('individuals')->checked('N')->required();
-
-    $form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
+    $form->addRow()->addHeading('Add Recipients', __('Add Recipients'));
 
     $userGateway = $container->get(UserGateway::class);
-    $individuals = $userGateway->getIndividualsBySchoolYearWithFullStatus($session->get('gibbonSchoolYearID'))->fetchAll();
+    $individuals = $userGateway->selectActiveUsersBySchoolYear($session->get('gibbonSchoolYearID'))->fetchAll();
 
     $individuals = array_reduce($individuals, function ($group, $item) {
         $name = Format::name("", $item['preferredName'], $item['surname'], 'Student', true).' (';
@@ -92,16 +85,20 @@ else {
     $selected = [];
     $selectedIndividuals = array_intersect_key($individuals, array_flip($selected));
 
-    $row = $form->addRow()->addClass('individuals bg-blue-50');
+    $row = $form->addRow();
         $col = $row->addColumn();
         $col->addLabel('individualList', __('Select Individuals'));
         $select = $col->addMultiSelect('individualList')->required();
         $select->source()->fromArray($individuals);
         $select->destination()->fromArray($selectedIndividuals);
     
-    $row = $form->addRow()->addClass('individuals bg-blue-50');
-        $row->addLabel('individualsParents', __('Include Parents?'));
+    $row = $form->addRow();
+        $row->addLabel('individualsParents', __('Include Parents?'))->description(__('Also add parents of any selected students as new recipients.'));
         $row->addYesNo('individualsParents')->selected('N');
+
+    $row = $form->addRow();
+        $row->addLabel('resendEmail', __('Resend Email?'))->description(__('Automatically resend the original email to new recipients.'));
+        $row->addYesNo('resendEmail')->selected('Y');
 
     $row = $form->addRow();
         $row->addFooter();

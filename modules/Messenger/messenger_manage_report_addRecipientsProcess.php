@@ -23,21 +23,20 @@ use Gibbon\Data\Validator;
 use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Module\Messenger\MessageTargets;
 use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\Messenger\MessengerTargetGateway;
-use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 
 require_once '../../gibbon.php';
 
 // Module includes
 include './moduleFunctions.php';
 
+$validator = $container->get(Validator::class);
+$_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
+
 $gibbonMessengerID = $_POST['gibbonMessengerID'] ?? '';
 $search = $_GET['search'] ?? '';
-$address = $_POST['address'] ?? '';
+$resendEmail = $_POST['resendEmail'] ?? '';
 
 $URL = $session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_manage_report.php&sidebar=true&search=$search&gibbonMessengerID=$gibbonMessengerID";
-
-$time=time();
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
     $URL.="&return=error0";
@@ -52,22 +51,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     }
 
     // Check for empty POST. This can happen if no recipients are selected
-    if (empty($_POST)) {
-        $URL.="&return=error5";
+    if (empty($gibbonMessengerID) || empty($_POST['individualList'])) {
+        $URL.="&return=error1";
         header("Location: {$URL}");
         exit;
     }
-    
-    // Validate Inputs
-    $validator = $container->get(Validator::class);
-    $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
     $messengerGateway = $container->get(MessengerGateway::class);
-    $messengerTargetGateway = $container->get(MessengerTargetGateway::class);
-    $messengerReceiptGateway = $container->get(MessengerReceiptGateway::class);
     $messageTargets = $container->get(MessageTargets::class);
 
-    $message= $messengerGateway->getByID($gibbonMessengerID);
+    $message = $messengerGateway->getByID($gibbonMessengerID);
     if (empty($message)) {
         $URL.="&return=error2";
         header("Location: {$URL}");
@@ -78,26 +71,28 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         'sms'           => $message['sms'] ?? 'N',
         'email'         => $message['email'] ?? 'N',
         'emailReceipt'  => $message['emailReceipt'] ?? 'N',
-        'sendEmail'     =>   'Y',
     ];
 
     $partialFail = false;
-
     $gibbonMessengerReceiptIDs = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
 
     if (empty($gibbonMessengerReceiptIDs)) {
         $URL.="&return=error6";
         header("Location: {$URL}");
         exit;
-    } else {
-        $process = $container->get(MessageProcess::class);
-        $process->startSendEmailToRecipients($gibbonMessengerID, $gibbonMessengerReceiptIDs);
     }
 
-    if ($partialFail) {
-        $URL .= '&return=error2';
+    if ($resendEmail == 'Y') {
+        $process = $container->get(MessageProcess::class);
+        $process->startSendEmailToRecipients($gibbonMessengerID, $gibbonMessengerReceiptIDs);
+
+        $URL .= $partialFail 
+            ? '&return=error4'
+            : "&return=success1";
     } else {
-        $URL .= "&return=success1";
+        $URL .= $partialFail 
+            ? '&return=error4'
+            : "&return=success0";
     }
     
     header("Location: {$URL}");

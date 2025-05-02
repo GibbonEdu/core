@@ -159,11 +159,4 @@ class YearGroupGateway extends QueryableGateway
         
         return $this->db()->select($sql);
     }
-
-    public function selectYearsGroupsInDesc()
-    {
-        $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber DESC";
-
-        return $this->db()->select($sql);
-    }
 }

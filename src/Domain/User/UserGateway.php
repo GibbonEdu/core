@@ -215,7 +215,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         return $this->db()->update($sql, $data);
     }
 
-    public function getIndividualsBySchoolYearWithFullStatus($gibbonSchoolYearID)
+    public function selectActiveUsersBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
         $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName, gibbonRole.category FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID = gibbonPerson.gibbonRoleIDPrimary) LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPerson.status = 'Full' ORDER BY surname, preferredName";
@@ -223,7 +223,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function getDistinctTransportOptions() 
+    public function getTransportList() 
     {
         $sql = "SELECT DISTINCT transport FROM gibbonPerson WHERE status = 'Full' AND NOT transport='' ORDER BY transport";
 

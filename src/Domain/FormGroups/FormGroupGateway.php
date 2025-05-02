@@ -183,7 +183,7 @@ class FormGroupGateway extends QueryableGateway
         ]);
     }
 
-    public function selectAllFormGroupsBySchoolYear($gibbonSchoolYearID)
+    public function selectFormGroupListBySchoolYear($gibbonSchoolYearID)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
         $sql = 'SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
@@ -193,8 +193,8 @@ class FormGroupGateway extends QueryableGateway
 
     public function selectFormGroupsByStaff($gibbonSchoolYearID, $gibbonPersonID)
     {
-        $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID1" => $gibbonPersonID, "gibbonPersonID2" => $gibbonPersonID, "gibbonPersonID3" => $gibbonPersonID];
-        $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID1 OR gibbonPersonIDTutor2=:gibbonPersonID2 OR gibbonPersonIDTutor3=:gibbonPersonID3) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $data = ["gibbonSchoolYearID" => $gibbonSchoolYearID, "gibbonPersonID" => $gibbonPersonID];
+        $sql = "SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 
         return $this->db()->select($sql, $data);
     }

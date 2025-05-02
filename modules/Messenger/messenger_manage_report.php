@@ -292,7 +292,7 @@ else {
                             $row->addContent($count);
 
                             $studentReceipt = isset($receipts[$recipient['gibbonPersonID']])? $receipts[$recipient['gibbonPersonID']] : null;
-                            $col = $row->addColumn()->setClass('')->addClass(!empty($studentReceipt) && $studentReceipt['confirmed'] != 'Y' && $studentReceipt['sent'] != 'Y' ? 'bg-orange-300' : '');
+                            $col = $row->addColumn()->setClass('')->addClass(!empty($studentReceipt) && $studentReceipt['confirmed'] != 'Y' && $studentReceipt['sent'] != 'Y' ? 'bg-orange-200' : '');
                                 $col->addContent($confirmationIndicator($studentReceipt, $values['emailReceipt'], $confirmationRequired[$recipient['gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($studentReceipt) && ($studentReceipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
@@ -302,7 +302,7 @@ else {
                                 $col->addContent(!empty($studentName)? $studentName : __('N/A'))->addClass('w-auto inline-block align-middle');
 
                             $parent1Receipt = isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null;
-                            $col = $row->addColumn()->setClass('')->addClass(!empty($parent1Receipt) && $parent1Receipt['confirmed'] != 'Y' && $parent1Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
+                            $col = $row->addColumn()->setClass('')->addClass(!empty($parent1Receipt) && $parent1Receipt['confirmed'] != 'Y' && $parent1Receipt['sent'] != 'Y' ? 'bg-orange-200' : '');
                                 $col->addContent($confirmationIndicator($parent1Receipt, $values['emailReceipt'], $confirmationRequired[$recipient['parent1gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($parent1Receipt) && ($parent1Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
@@ -312,7 +312,7 @@ else {
                                 $col->addContent(!empty($recipient['parent1surname'])? $parent1Name : __('N/A'))->addClass('w-auto inline-block align-middle');
 
                             $parent2Receipt = isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null;
-                            $col = $row->addColumn()->setClass('')->addClass(!empty($parent2Receipt) && $parent2Receipt['confirmed'] != 'Y' && $parent2Receipt['sent'] != 'Y' ? 'bg-orange-300' : '');
+                            $col = $row->addColumn()->setClass('')->addClass(!empty($parent2Receipt) && $parent2Receipt['confirmed'] != 'Y' && $parent2Receipt['sent'] != 'Y' ? 'bg-orange-200' : '');
                                 $col->addContent($confirmationIndicator($parent2Receipt, $values['emailReceipt'], $confirmationRequired[$recipient['parent2gibbonPersonID']] ?? true));
                                 $col->onlyIf($sender == true && !empty($parent2Receipt) && ($parent2Receipt['confirmed'] == 'N' || $values['emailReceipt'] == 'N'))
                                     ->addCheckbox('gibbonMessengerReceiptIDs[]')
@@ -395,7 +395,7 @@ else {
                         $row->addContent(!empty($recipient['confirmedTimestamp']) ? Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5) : '');
 
                         if ($sender == true && $recipient['contactType'] == 'Email') {
-                            $required = $confirmationRequired[$recipient['gibbonPersonID']] ?? true;
+                            $required = ($recipient['sent'] != 'Y' || ($confirmationRequired[$recipient['gibbonPersonID']] ?? true)) && !empty($recipient['contactDetail']);
                             $row->onlyIf($required)
                                 ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                 ->setValue($recipient['gibbonMessengerReceiptID'])

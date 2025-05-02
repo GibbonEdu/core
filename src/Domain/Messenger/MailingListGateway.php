@@ -57,7 +57,7 @@ class MailingListGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectActiveMailingList()
+    public function selectMailingLists()
     {
         $sql = "SELECT gibbonMessengerMailingListID as value, name FROM gibbonMessengerMailingList WHERE active='Y' ORDER BY name";
         

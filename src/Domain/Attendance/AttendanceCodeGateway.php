@@ -61,7 +61,7 @@ class AttendanceCodeGateway extends QueryableGateway
         return $this->db()->select($sql);
     }
 
-    public function getActiveAttendanceCodes() 
+    public function selectAttendanceCodeRoleMapping() 
     {
         $sql = "SELECT name, gibbonRoleIDAll FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY direction DESC, sequenceNumber ASC, name";
 

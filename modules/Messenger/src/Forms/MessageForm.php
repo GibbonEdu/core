@@ -26,20 +26,21 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Domain\School\YearGroupGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Messenger\MailingListGateway;
 use Gibbon\Domain\Messenger\CannedResponseGateway;
 use Gibbon\Domain\Attendance\AttendanceCodeGateway;
-use Gibbon\Domain\Messenger\MailingListGateway;
-use Gibbon\Domain\School\HouseGateway;
-use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Domain\User\UserGateway;
 
 /**
  * MessageForm
@@ -67,10 +68,11 @@ class MessageForm extends Form
     protected $mailingListGateway;
     protected $houseGateway;
     protected $yearGroupGateway;
+    protected $schoolYearGateway;
     protected $courseGateway;
     protected $userGateway;
 
-    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, ActivityGateway $activityGateway, AttendanceCodeGateway $attendanceCodeGateway, FormGroupGateway $formGroupGateway, GroupGateway $groupGateway, MailingListGateway $mailingListGateway, HouseGateway $houseGateway, YearGroupGateway $yearGroupGateway, CourseGateway $courseGateway, UserGateway $userGateway)
+    public function __construct(Session $session, Connection $db, MessengerGateway $messengerGateway, SMS $smsGateway, CannedResponseGateway $cannedResponseGateway, SettingGateway $settingGateway, RoleGateway $roleGateway, ActivityGateway $activityGateway, AttendanceCodeGateway $attendanceCodeGateway, FormGroupGateway $formGroupGateway, GroupGateway $groupGateway, MailingListGateway $mailingListGateway, HouseGateway $houseGateway, YearGroupGateway $yearGroupGateway, SchoolYearGateway $schoolYearGateway, CourseGateway $courseGateway, UserGateway $userGateway)
     {
         $this->session = $session;
         $this->db = $db;
@@ -86,6 +88,7 @@ class MessageForm extends Form
         $this->mailingListGateway = $mailingListGateway;
         $this->houseGateway = $houseGateway;
         $this->yearGroupGateway = $yearGroupGateway;
+        $this->schoolYearGateway = $schoolYearGateway;
         $this->courseGateway = $courseGateway;
         $this->userGateway = $userGateway;
 
@@ -334,7 +337,7 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('roleCategory')->onRadio('roleCategory')->when('Y');
 
-            $roleCategories = $this->roleGateway->selectDistinctRoleCategories();
+            $roleCategories = $this->roleGateway->selectAllRoleCategories();
 
             $row = $form->addRow()->addClass('roleCategory bg-blue-50');
                 $row->addLabel('roleCategories[]', __('Select Role Categories'));
@@ -398,7 +401,7 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('formGroup')->onRadio('formGroup')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-                $formGroupResults = $this->formGroupGateway->selectAllFormGroupsBySchoolYear($this->session->get('gibbonSchoolYearID'));
+                $formGroupResults = $this->formGroupGateway->selectFormGroupListBySchoolYear($this->session->get('gibbonSchoolYearID'));
             }
             else {
                 if ($this->roleCategory == "Staff") {
@@ -439,9 +442,9 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('course')->onRadio('course')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-                $courseResults = $this->courseGateway->selectAllCoursesBySchoolYear($this->session->get('gibbonSchoolYearID'));
+                $courseResults = $this->courseGateway->selectCourseListBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
-                $courseResults = $this->courseGateway->selectAllCoursesBySchoolYearAndPersonID($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
+                $courseResults = $this->courseGateway->selectCourseListBySchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
             }
 
             $row = $form->addRow()->addClass('course bg-blue-50');
@@ -475,9 +478,9 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('class')->onRadio('class')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-                $classResults = $this->courseGateway->selectClassIDByCourseAndSchoolYear($this->session->get('gibbonSchoolYearID'));
+                $classResults = $this->courseGateway->selectClassListBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
-                $classResults = $this->courseGateway->selectClassIDByCourseAndSchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
+                $classResults = $this->courseGateway->selectClassListBySchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
             }
 
             $row = $form->addRow()->addClass('class bg-blue-50');
@@ -511,13 +514,13 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('activity')->onRadio('activity')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-                $activitiesResults = $this->activityGateway->selectAllActivitiesBySchoolYear($this->session->get('gibbonSchoolYearID'));
+                $activitiesResults = $this->activityGateway->selectActivitiesBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
                 $data = ['gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $this->session->get('gibbonPersonID')];
                 if ($this->roleCategory == "Staff") {
-                    $activitiesResults = $this->activityGateway->selectAllStaffActivitiesBySchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
+                    $activitiesResults = $this->activityGateway->selectActivitiesByStaff($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
                 } else if ($this->roleCategory == "Student") {
-                    $activitiesResults = $this->activityGateway->selectAllStudentActivitiesBySchoolYearAndPerson($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
+                    $activitiesResults = $this->activityGateway->selectActivitiesByStudent($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
                 }
             }
             $row = $form->addRow()->addClass('activity bg-blue-50');
@@ -550,11 +553,11 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('applicants')->onRadio('applicants')->when('Y');
 
-            $applicantResults = $this->yearGroupGateway->selectYearsGroupsInDesc();
+            $applicantYears = $this->schoolYearGateway->getSchoolYearList(false, true);
 
             $row = $form->addRow()->addClass('applicants bg-blue-50');
                 $row->addLabel('applicantList[]', __('Select Years'));
-                $row->addSelect('applicantList[]')->fromResults($applicantResults)->setSize(6)->required()->selected($selected);
+                $row->addSelect('applicantList[]')->fromArray($applicantYears)->setSize(6)->required()->selected($selected);
 
             $row = $form->addRow()->addClass('applicants hiddenReveal');
                 $row->addLabel('applicantsStudents', __('Include Students?'));
@@ -576,9 +579,9 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('houses')->onRadio('houses')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all")) {
-                $houseResults = $this->houseGateway->selectAllHousesByName();
+                $houseResults = $this->houseGateway->selectAllHouses();
             } else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-                $houseResults = $this->houseGateway->selectHousesByPersonID($this->session->get('gibbonPersonID'));
+                $houseResults = $this->houseGateway->selectHousesByPerson($this->session->get('gibbonPersonID'));
             }
             $row = $form->addRow()->addClass('houses bg-blue-50');
                 $row->addLabel('houseList[]', __('Select Houses'));
@@ -596,7 +599,7 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('transport')->onRadio('transport')->when('Y');
 
-            $transportList = $this->userGateway->getDistinctTransportOptions()->fetchAll();
+            $transportList = $this->userGateway->getTransportList()->fetchAll();
             $transportList = array_unique(array_reduce($transportList, function ($group, $item) {
                 $list = array_map('trim', explode(',', $item['transport'] ?? ''));
                 $group = array_merge($group, $list);
@@ -634,7 +637,7 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('attendance')->onRadio('attendance')->when('Y');
 
-            $attendanceCodes = $this->attendanceCodeGateway->getActiveAttendanceCodes()->fetchAll();
+            $attendanceCodes = $this->attendanceCodeGateway->selectAttendanceCodeRoleMapping()->fetchAll();
 
             // Filter the attendance codes by allowed roles (if any)
             $currentRole = $this->session->get('gibbonRoleIDCurrent');
@@ -673,7 +676,7 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('messageGroup')->onRadio('group')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
-                $groupResults = $this->groupGateway->selectAllGroupsBySchoolYear($this->session->get('gibbonSchoolYearID'));
+                $groupResults = $this->groupGateway->selectGroupsBySchoolYear($this->session->get('gibbonSchoolYearID'));
             } else {
                 $groupResults = $this->groupGateway->selectGroupsByPersonAndOwner($this->session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'));
             }
@@ -708,7 +711,7 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('messageMailingList')->onRadio('mailingList')->when('Y');
 
-            $mailingListResults = $this->mailingListGateway->selectActiveMailingList();
+            $mailingListResults = $this->mailingListGateway->selectMailingLists();
 
             $row = $form->addRow()->addClass('messageMailingList bg-blue-100');
                 $row->addLabel('mailingLists[]', __('Select Mailing Lists'));
@@ -726,7 +729,7 @@ class MessageForm extends Form
             $form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
 
             // Build a set of individuals by ID => formatted name
-              $individuals = $this->userGateway->getIndividualsBySchoolYearWithFullStatus($this->session->get('gibbonSchoolYearID'))->fetchAll();
+              $individuals = $this->userGateway->selectActiveUsersBySchoolYear($this->session->get('gibbonSchoolYearID'))->fetchAll();
 
             $individuals = array_reduce($individuals, function($group, $item){
                 $name = Format::name("", $item['preferredName'], $item['surname'], 'Student', true).' (';
