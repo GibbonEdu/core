@@ -56,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $values = $result->fetch();
                 $values2 = $result2->fetch();
 
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/internalAssessment_manage_deleteProcess.php");
-
-                $form->addHiddenValue('gibbonInternalAssessmentColumnID', $gibbonInternalAssessmentColumnID);
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/internalAssessment_manage_deleteProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID");
                 echo $form->getOutput();
             }
         }

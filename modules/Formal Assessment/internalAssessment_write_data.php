@@ -23,8 +23,14 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
+
+  
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Module includes
+require_once __DIR__ . '/../../gibbon.php';
 require_once __DIR__ . '/moduleFunctions.php';
 
 //Get alternative header names
@@ -43,19 +49,27 @@ echo "<script type='text/javascript'>";
     echo '});';
 echo '</script>';
 
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+$URL = $session->get('absoluteURL')
+    . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php"
+    . "&gibbonCourseClassID=$gibbonCourseClassID"
+    . "&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID"
+    . "&gibbonPersonID=$gibbonPersonID";
+
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
-    // Access denied
-    $page->addError(__('You do not have access to this action.'));
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Check if gibbonCourseClassID and gibbonInternalAssessmentColumnID specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-        $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
-        if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
+        if (empty($gibbonCourseClassID) || empty($gibbonInternalAssessmentColumnID) || empty($gibbonPersonID)) {
             $page->addError(__('You have not specified one or more required parameters.'));
+            return;
         } else {
             try {
                 if ($highestAction == 'Write Internal Assessments_all') {
@@ -101,6 +115,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $hasComment = $values['comment'] == 'Y';
                     $hasUpload = $values['uploadedResponse'] == 'Y';
 
+                    if ($hasComment) {
+                        // Define categorized comments for dropdown
+                        $categorizedComments = [
+                            'Excellent Academic Performance' => [
+                                'Demonstrates outstanding academic achievement.',
+                                'Consistently exceeds expectations in all subject areas.',
+                                'Displays exceptional critical thinking and problem-solving skills.',
+                                'Submits high-quality work well ahead of deadlines.',
+                                'Actively participates and leads in class discussions.',
+                            ],
+                            'Good Academic Performance' => [
+                                'Shows a strong understanding of key concepts.',
+                                'Completes tasks diligently and on time.',
+                                'Demonstrates growing confidence and independence in work.',
+                                'A positive and enthusiastic learner.',
+                                'Performs well in both individual and group activities.',
+                            ],
+                            'Average Performance' => [
+                                'Meets basic academic expectations.',
+                                'Can benefit from more consistent study habits.',
+                                'Demonstrates satisfactory understanding of concepts.',
+                                'Participates when encouraged but needs to show more initiative.',
+                                'Work is generally correct but sometimes lacks detail.',
+                            ],
+                            'Satisfactory Performance' => [
+                                'Progressing steadily but improvement is needed in some areas.',
+                                'Effort is inconsistent across topics.',
+                                'Tends to rush work; more focus needed on accuracy.',
+                                'Occasionally submits incomplete assignments.',
+                                'Can achieve more with greater attention to detail.',
+                            ],
+                            'Poor Performance' => [
+                                'Rarely completes assignments on time.',
+                                'Demonstrates minimal understanding of key concepts.',
+                                'Requires frequent redirection to stay on task.',
+                                'Poor performance due to lack of preparation and effort.',
+                                'Attendance and punctuality are affecting academic progress.',
+                            ],
+                            'Performance Concerns' => [
+                                'Fails to meet the minimum academic standards.',
+                                'Needs ongoing support to improve understanding.',
+                                'Shows limited engagement in learning activities.',
+                                'Behavioral issues are interfering with academic success.',
+                                'At risk of not meeting course requirements without intervention.',
+                            ],
+                        ];
+                        echo "<script>const commentsData = " . json_encode($categorizedComments) . ";</script>";
+                    }
+
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'today' => date('Y-m-d'));
                     $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.dateStart, gibbonInternalAssessmentEntry.*
                         FROM gibbonCourseClassPerson
@@ -126,7 +189,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $row = $form->addRow();
                         $row->addLabel('file', __('Attachment'));
                         $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
-
 
                     if (count($students) == 0) {
                         $form->addRow()->addHeading('Students', __('Students'));
@@ -206,7 +268,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $col = $row->addColumn()->addClass('stacked');
 
                             if ($hasComment) {
-                                $col->addTextArea('comment'.$count)->setRows(6)->setValue($student['comment']);
+                                // Category → Comment dropdown with improved styling
+                                $categoryId = 'commentCategory'.$count;
+                                $commentId  = 'commentSelect'.$count;
+                                $fieldName  = 'comment'.$count;
+
+                                $col->addContent('
+                                    <div class="flex flex-col space-y-2 w-full comment-section" id="commentSection'.$count.'">
+                                        <div class="form-group">
+                                            <label for="'.$categoryId.'" class="text-xs text-gray-600">Category:</label>
+                                            <select id="'.$categoryId.'" class="w-full rounded border border-gray-300 px-2 py-1 text-sm" 
+                                                    onchange="populateComments(this.value, '.$count.')">
+                                                <option value="">-- Select Category --</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="'.$commentId.'" class="text-xs text-gray-600">Comment:</label>
+                                            <select id="'.$commentId.'" 
+                                                    class="w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                                                    onchange="updateComment('.$count.')">
+                                                <option value="">-- Select Comment --</option>
+                                            </select>
+                                        </div>
+                                        <div class="mt-2">
+                                            <textarea name="'.$fieldName.'" id="customComment'.$count.'" 
+                                                    class="w-full rounded border border-gray-300 px-2 py-1 text-sm" 
+                                                    rows="2" placeholder="Or type custom comment...">'.$student['comment'].'</textarea>
+                                        </div>
+                                    </div>
+                                ');
                             }
 
                             if ($hasUpload) {
@@ -231,6 +321,109 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $form->loadAllValuesFrom($values);
 
                     echo $form->getOutput();
+                    // Update JavaScript for improved functionality
+                    echo <<<JS
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Populate category dropdowns
+    const total = {$count};
+    for (let i = 1; i <= total; i++) {
+        const cat = document.getElementById('commentCategory' + i);
+        if (!cat) continue;
+        Object.keys(commentsData).forEach(category => {
+            let opt = document.createElement('option');
+            opt.value = category;
+            opt.text  = category;
+            cat.add(opt);
+        });
+
+        // Set up event listeners for comment selection
+        const commentSelect = document.getElementById('commentSelect' + i);
+        const customComment = document.getElementById('customComment' + i);
+        const commentSection = document.getElementById('commentSection' + i);
+        
+        if (commentSelect && customComment) {
+            commentSelect.addEventListener('change', function() {
+                updateComment(i);
+            });
+        }
+
+        // Add focus/blur events for section highlighting
+        if (commentSection) {
+            const inputs = commentSection.querySelectorAll('select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    commentSection.classList.add('active-section');
+                });
+                input.addEventListener('blur', () => {
+                    if (!commentSection.contains(document.activeElement)) {
+                        commentSection.classList.remove('active-section');
+                    }
+                });
+            });
+        }
+    }
+});
+
+function updateComment(idx) {
+    const commentSelect = document.getElementById('commentSelect' + idx);
+    const customComment = document.getElementById('customComment' + idx);
+    if (commentSelect && customComment && commentSelect.value) {
+        customComment.value = commentSelect.value;
+    }
+}
+
+function populateComments(category, idx) {
+    const sel = document.getElementById('commentSelect' + idx);
+    sel.innerHTML = "<option value=''>-- Select Comment --</option>";
+    if (commentsData[category]) {
+        commentsData[category].forEach(text => {
+            let opt = document.createElement('option');
+            opt.value = text;
+            opt.text  = text;
+            sel.add(opt);
+        });
+    }
+}
+</script>
+
+<style>
+.form-group {
+    margin-bottom: 0.5rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+select, textarea {
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.875rem;
+}
+select:focus, textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px #4f46e5;
+}
+.comment-section {
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease-in-out;
+}
+.active-section {
+    background-color: #f3f4f6;
+}
+.text-xs {
+    font-size: 0.75rem;
+}
+.text-sm {
+    font-size: 0.875rem;
+}
+.text-gray-600 {
+    color: #4b5563;
+}
+</style>
+JS;
                 }
             }
         }

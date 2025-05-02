@@ -90,6 +90,11 @@ try {
 
     // Learning Analytics Section
     echo '<div class="module-block">';
+    echo '<div class="assessment-insights-card">';
+    echo '<h4>' . __('Assessment Insights') . '</h4>';
+    echo '<div id="interventionPlans">' . __('Loading intervention plans...') . '</div>';
+    echo '</div>';
+    
     echo '<h4>' . __('LEARNING ANALYTICS') . '</h4>';
     echo '<p>' . __('View detailed learning analytics and insights.') . '</p>';
 
@@ -313,6 +318,20 @@ try {
 
 // Add CSS styles
 echo '<style>
+.assessment-insights-card {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border-left: 4px solid #3B7687;
+}
+
+#interventionPlans {
+    min-height: 100px;
+    padding: 10px;
+    background: white;
+    border-radius: 3px;
+}
 .module-block {
     background: #fff;
     padding: 20px;
@@ -462,7 +481,34 @@ table.colorOddEven th {
 </style>';
 
 // Add JavaScript for filtering
-echo '<script>
+?>
+<script>
+// Load intervention plans via AJAX
+fetch(`${absoluteURL}/modules/ChatBot/api/learning.php?q=planIntervention`)
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('interventionPlans');
+        if (data.success && data.plans) {
+            container.innerHTML = '';
+            data.plans.forEach(plan => {
+                const planElement = document.createElement('div');
+                planElement.className = 'intervention-plan';
+                planElement.innerHTML = `
+                    <h5>${plan.studentName} - ${plan.courseName}</h5>
+                    <p><strong>Status:</strong> ${plan.status}</p>
+                    <p><strong>Recommendations:</strong> ${plan.recommendations}</p>
+                    <p><strong>Next Steps:</strong> ${plan.nextSteps}</p>
+                `;
+                container.appendChild(planElement);
+            });
+        } else {
+            container.textContent = __('No intervention plans found.');
+        }
+    })
+    .catch(error => {
+        console.error('Error loading intervention plans:', error);
+        document.getElementById('interventionPlans').textContent = __('Error loading intervention plans.');
+    });
 document.addEventListener("DOMContentLoaded", function() {
     const studentFilter = document.getElementById("studentFilter");
     const courseFilter = document.getElementById("courseFilter");

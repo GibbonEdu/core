@@ -187,11 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     }
 
     $table->addColumn('name', __('Criteria'));
-    $table->addColumn('criteriaType', __('Type'))
-        ->description(__('Category'))
-        ->formatDetails(function ($row) {
-            return Format::small($row['category'] ?? '');
-        });
+    $table->addColumn('criteriaType', __('Type'));
     $table->addColumn('target', __('Target'));
     $table->addColumn('values', __('Status'))
         ->format(function ($reportingCriteria) {

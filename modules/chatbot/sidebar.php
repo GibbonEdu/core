@@ -23,10 +23,8 @@ $menu = new MenuItems($container->get('page'));
 $menu->addItem('AI Teaching Assistant', ['uri' => '/modules/ChatBot/chatbot.php'])
      ->addItem('Assessment Integration', ['uri' => '/modules/ChatBot/assessment_integration.php'])
      ->addItem('Learning Management', ['uri' => '/modules/ChatBot/learning_management.php'])
+     ->addItem('Feedback Analytics', ['uri' => '/modules/ChatBot/feedback.php'])
      ->addItem('Settings', ['uri' => '/modules/ChatBot/settings.php'])
-   //  ->addItem('Feedback Analytics', ['uri' => '/modules/ChatBot/feedback.php'])
-    // ->addItem('Check Feedback DB', ['uri' => '/modules/ChatBot/db_check_feedback.php'])
-    // ->addItem('Debug Feedback Storage', ['uri' => '/modules/ChatBot/debug_feedback_storage.php'])
      ->addItem('AI Learning System', ['uri' => '/modules/ChatBot/ai_learning.php']);
 
 echo $menu->getOutput(); 

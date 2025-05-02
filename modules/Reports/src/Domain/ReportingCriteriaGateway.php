@@ -43,7 +43,7 @@ class ReportingCriteriaGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.target', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaType', 'gibbonReportingCriteria.gibbonYearGroupID', 'gibbonReportingCriteria.gibbonFormGroupID', 'gibbonReportingCriteria.gibbonCourseID'])
+            ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.target', 'gibbonReportingCriteriaType.name as criteriaType', 'gibbonReportingCriteria.gibbonYearGroupID', 'gibbonReportingCriteria.gibbonFormGroupID', 'gibbonReportingCriteria.gibbonCourseID'])
             ->leftJoin('gibbonReportingCriteriaType', 'gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID')
             ->where('gibbonReportingCriteria.gibbonReportingScopeID=:gibbonReportingScopeID')
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID);
@@ -108,7 +108,7 @@ class ReportingCriteriaGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.target', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaType', 'gibbonReportingCriteria.gibbonYearGroupID', 'gibbonReportingCriteria.gibbonFormGroupID', 'gibbonReportingCriteria.gibbonCourseID', "COUNT(DISTINCT CASE WHEN gibbonReportingValueID IS NOT NULL THEN gibbonReportingValueID END) as values"])
+            ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.target', 'gibbonReportingCriteriaType.name as criteriaType', 'gibbonReportingCriteria.gibbonYearGroupID', 'gibbonReportingCriteria.gibbonFormGroupID', 'gibbonReportingCriteria.gibbonCourseID', "COUNT(DISTINCT CASE WHEN gibbonReportingValueID IS NOT NULL THEN gibbonReportingValueID END) as values"])
             ->leftJoin('gibbonReportingCriteriaType', 'gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID')
             ->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID')
             ->where('gibbonReportingCriteria.gibbonReportingScopeID=:gibbonReportingScopeID')

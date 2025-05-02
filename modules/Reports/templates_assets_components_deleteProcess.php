@@ -24,7 +24,7 @@ use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? '';
+$gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 

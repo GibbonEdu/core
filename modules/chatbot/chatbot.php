@@ -48,15 +48,16 @@ use Gibbon\Module\ChatBot\DeepSeekAPI;
 use Gibbon\Forms\Form;
 
 // Initialize the page
+// Retrieve page and session objects from the DI container
 $page = $container->get('page');
 $session = $container->get('session');
 
-// Set page properties
+// Set the navigation path for this module
 $page->breadcrumbs
     ->add(__('Modules'))
     ->add(__('ChatBot'));
 
-// Check access
+// Ensure the user has permission to access this module
 if (!isActionAccessible($guid, $connection2, '/modules/ChatBot/chatbot.php')) {
     $page->addError(__('You do not have access to this action.'));
     return;
@@ -64,6 +65,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/ChatBot/chatbot.php')) {
 
 // Get database connection
 try {
+    // Initialize database connection
     $connection = $container->get(Connection::class);
     $connection2 = $connection->getConnection();
 } catch (Exception $e) {
@@ -73,6 +75,7 @@ try {
 
 // Initialize SettingGateway
 try {
+    // Load ChatBot-specific settings from the system config
     $settingGateway = $container->get(SettingGateway::class);
     $apiKey = $settingGateway->getSettingByScope('ChatBot', 'deepseek_api_key');
     $modelName = $settingGateway->getSettingByScope('ChatBot', 'model_name');
@@ -83,7 +86,7 @@ try {
         return;
     }
     
-    // Initialize the API with container and properly configured connection
+    // Instantiate the DeepSeek API client with configured settings
     $deepSeekAPI = new DeepSeekAPI($apiKey, $connection, $container);
     
 } catch (Exception $e) {
@@ -91,23 +94,24 @@ try {
     return;
 }
 
-// Check if user is admin
+// Check if the user has admin-level access (for training tools)
 $isAdmin = isActionAccessible($guid, $connection2, '/modules/ChatBot/training.php');
 
 // Add CSS and JS files
 $absoluteURL = $session->get('absoluteURL');
 
-// Add meta tags for CSRF token and absoluteURL
+// Inject CSRF token and essential frontend CSS
 echo "<meta name='gibbonCSRFToken' content='" . $session->get('gibbonCSRFToken') . "'>";
 echo "<meta name='absoluteURL' content='" . $absoluteURL . "'>";
 
 echo "<link rel='stylesheet' type='text/css' href='{$absoluteURL}/modules/ChatBot/css/chatbot.css'>";
 echo "<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'>";
 
+// Pass configuration values to the ChatBot frontend script
 // Add ChatBot configuration first
 echo "<script>
 window.chatBotConfig = {
-    apiEndpoint: '{$absoluteURL}/modules/ChatBot/api',
+    apiEndpoint: '{$absoluteURL}/modules/ChatBot/api/chat.php',
     manageEndpoint: '{$absoluteURL}/modules/ChatBot/api/manage.php',
     trainingEndpoint: '{$absoluteURL}/modules/ChatBot/api/train.php',
     isTrainingMode: " . (isset($_GET['training']) ? 'true' : 'false') . ",
@@ -118,7 +122,7 @@ window.chatBotConfig = {
 // Add ChatBot script after config
 echo "<script src='{$absoluteURL}/modules/ChatBot/js/chatbot.js'></script>";
 
-// Initialize ChatBot after script loads
+// Initialize the ChatBot instance after the page loads
 echo "<script>
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing ChatBot');
@@ -144,20 +148,17 @@ document.addEventListener('DOMContentLoaded', function() {
 // Set page title
 echo "<h2>" . __('ChatBot') . "</h2>";
 
-// Add sidebar menu
+// Define sidebar navigation menu for ChatBot module
 $page->addSidebarExtra('
     <div class="column-no-break">
         <h2>' . __('ChatBot Menu') . '</h2>
-        <ul class="moduleMenu">
-            <li class="selected"><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/chatbot.php">' . __('AI Teaching Assistant') . '</a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/assessment_integration.php">' . __('Assessment Integration') . '</a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/learning_management.php">' . __('Learning Management') . '</a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/settings.php">' . __('Settings') . '</a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/feedback.php">' . __('Feedback Analytics') . '</a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/db_check_feedback.php" style="color:#4CAF50;">' . __('Check Feedback DB') . ' <i class="fas fa-database fa-xs"></i></a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/modules/ChatBot/debug_feedback_storage.php" target="_blank" style="color:#ff5252;">' . __('Debug Feedback Storage') . ' <i class="fas fa-bug fa-xs"></i></a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/modules/ChatBot/simple_api_test.php" target="_blank" style="color:#2a7fff;">' . __('Test API Key') . ' <i class="fas fa-external-link-alt fa-xs"></i></a></li>
-            <li><a href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/ai_learning.php">AI Learning System</a></li>
+        <ul class="nav flex-column">
+            <li class="nav-item selected"><a class="nav-link" href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/chatbot.php">' . __('AI Teaching Assistant') . '</a></li>
+            <li class="nav-item"><a class="nav-link" href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/assessment_integration.php">' . __('Assessment Integration') . '</a></li>
+            <li class="nav-item"><a class="nav-link" href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/learning_management.php">' . __('Learning Management') . '</a></li>
+            <li class="nav-item"><a class="nav-link" href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/feedback.php">' . __('Feedback Analytics') . '</a></li>
+            <li class="nav-item"><a class="nav-link" href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/settings.php">' . __('Settings') . '</a></li>
+            <li class="nav-item"><a class="nav-link" href="' . $session->get('absoluteURL') . '/index.php?q=/modules/ChatBot/ai_learning.php">AI Learning System</a></li>
         </ul>
     </div>
 ');
@@ -165,7 +166,8 @@ $page->addSidebarExtra('
 ?>
 
 <div class="chatbot-layout">
-    <?php if ($isAdmin && isset($_GET['training'])): ?>
+<?php // Render training data management interface (admin-only view) ?>
+<?php if ($isAdmin && isset($_GET['training'])): ?>
     <!-- Training Management Section -->
     <div class="training-management" style="display: flex; gap: 20px; margin-bottom: 20px;">
         <div class="training-sidebar">
@@ -248,6 +250,7 @@ $page->addSidebarExtra('
     <?php endif; ?>
 
     <!-- Main Chat Area -->
+    <?php // Main chat interface wrapper including messages and input area ?>
     <div class="chatbot-wrapper">
         <div class="chatbot-container">
             <!-- Hidden CSRF token for feedback functionality -->
@@ -826,6 +829,7 @@ input:checked + .toggle-slider:before {
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // Keep references to elements if needed by the external script
     const chatHistory = document.querySelector(".chat-messages");
     const messageInput = document.querySelector(".chat-input textarea");
     const sendButton = document.querySelector(".chat-input button");
@@ -834,91 +838,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const newButton = document.querySelector(".control-btn[title='New Chat']");
     const trainingMode = document.querySelector("#trainingMode");
 
-    function addMessageToChat(role, message) {
-        const messageDiv = document.createElement("div");
-        messageDiv.className = `message ${role}-message`;
-        const contentDiv = document.createElement("div");
-        contentDiv.className = "message-content";
-        contentDiv.textContent = message;
-        messageDiv.appendChild(contentDiv);
-        chatHistory.appendChild(messageDiv);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
+    // --- Entire inline function definitions and listeners removed --- 
+    // The external js/chatbot.js should handle this now.
 
-    function sendMessage() {
-        const message = messageInput.value.trim();
-        if (message) {
-            addMessageToChat("user", message);
-            messageInput.value = "";
-            
-            // Show loading indicator
-            const loadingDiv = document.createElement("div");
-            loadingDiv.className = "typing-indicator";
-            for (let i = 0; i < 3; i++) {
-                const span = document.createElement("span");
-                loadingDiv.appendChild(span);
-            }
-            chatHistory.appendChild(loadingDiv);
-            
-            // Send to server
-            fetch("' . $_SESSION[$guid]['absoluteURL'] . '/modules/ChatBot/ajax/chat.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    message: message,
-                    training_mode: trainingMode.checked,
-                    gibbonPersonID: "' . $_SESSION[$guid]['gibbonPersonID'] . '"
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove loading indicator
-                const loadingIndicator = document.querySelector(".typing-indicator");
-                if (loadingIndicator) {
-                    loadingIndicator.remove();
-                }
-                
-                // Add AI response
-                addMessageToChat("bot", data.response);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                // Remove loading indicator
-                const loadingIndicator = document.querySelector(".typing-indicator");
-                if (loadingIndicator) {
-                    loadingIndicator.remove();
-                }
-                const errorDiv = document.createElement("div");
-                errorDiv.className = "error-message";
-                errorDiv.textContent = "Error: Could not get response from the AI assistant.";
-                chatHistory.appendChild(errorDiv);
-            });
-        }
-    }
-
-    // Event listeners
-    sendButton.addEventListener("click", sendMessage);
-    
-    messageInput.addEventListener("keypress", function(e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    clearButton.addEventListener("click", function() {
-        chatHistory.innerHTML = '<div class="message system-message"><div class="message-content">Chat cleared. How can I help you?</div></div>';
-    });
-
-    saveButton.addEventListener("click", function() {
-        // Implement chat saving functionality
-        alert("Save chat functionality will be implemented soon.");
-    });
-
-    newButton.addEventListener("click", function() {
-        chatHistory.innerHTML = '<div class="message system-message"><div class="message-content">Starting a new chat. How can I help you?</div></div>';
-    });
 });
 </script>

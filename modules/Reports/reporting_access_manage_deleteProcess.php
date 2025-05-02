@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportingAccessID = $_POST['gibbonReportingAccessID'] ?? '';
+$gibbonReportingAccessID = $_GET['gibbonReportingAccessID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage.php';
 

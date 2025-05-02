@@ -1,74 +1,108 @@
 <?php
-namespace Gibbon\Module\ChatBot\Services;
 
-use Gibbon\Domain\System\SettingGateway;
+declare(strict_types=1);
 
-class AssessmentService
+namespace CHHS\Modules\ChatBot\Services;
+
+use CHHS\Modules\ChatBot\Domain\Traits\TableAwareTrait;
+use CHHS\Modules\ChatBot\Domain\Traits\TableAwareInterface;
+
+class AssessmentService implements TableAwareInterface
 {
-    private $container;
-    private $deepSeekService;
+    use TableAwareTrait;
 
-    public function __construct($container)
+    /**
+     * Fetch student assessment data from internal and external tables.
+     *
+     * @param int $studentID
+     * @param int $courseClassID
+     * @return array
+     */
+    public function fetchStudentData(int $studentID, int $courseClassID): array
     {
-        $this->container = $container;
-        $this->deepSeekService = new DeepSeekService($container);
-    }
+        $internalData = $this->getTable('gibbonInternalAssessmentEntry')
+            ->select(['*'])
+            ->where('gibbonPersonIDStudent = ?', $studentID)
+            ->where('gibbonCourseClassID = ?', $courseClassID)
+            ->fetchAll();
 
-    public function analyzeStudentPerformance($studentID)
-    {
-        $db = $this->container->get('db');
-        
-        // Get student assessment data
-        $sql = "SELECT 
-                ia.name as assessment_name,
-                iac.attainmentValue,
-                iac.effortValue,
-                iac.comment as teacher_feedback,
-                c.name as course_name
-                FROM gibbonInternalAssessmentEntry iac
-                JOIN gibbonInternalAssessmentColumn ia ON (ia.gibbonInternalAssessmentColumnID=iac.gibbonInternalAssessmentColumnID)
-                JOIN gibbonCourse c ON (c.gibbonCourseID=ia.gibbonCourseID)
-                WHERE iac.gibbonPersonID=:studentID
-                ORDER BY ia.timestampCreated DESC";
-        
-        $result = $db->prepare($sql);
-        $result->execute(['studentID' => $studentID]);
-        $assessmentData = $result->fetchAll(\PDO::FETCH_ASSOC);
+        $externalData = $this->getTable('gibbonExternalAssessmentEntry')
+            ->select(['*'])
+            ->where('gibbonPersonIDStudent = ?', $studentID)
+            ->where('gibbonCourseClassID = ?', $courseClassID)
+            ->fetchAll();
 
-        // Get student details
-        $sql = "SELECT 
-                gibbonPerson.firstName,
-                gibbonPerson.surname,
-                gibbonYearGroup.name as yearGroup
-                FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
-                WHERE gibbonPerson.gibbonPersonID=:studentID
-                AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
-                LIMIT 1";
-        
-        $result = $db->prepare($sql);
-        $result->execute(['studentID' => $studentID]);
-        $studentData = $result->fetch(\PDO::FETCH_ASSOC);
-
-        // Combine data for analysis
-        $analysisData = [
-            'student' => $studentData,
-            'assessments' => $assessmentData
+        return [
+            'internal' => $internalData,
+            'external' => $externalData,
         ];
-
-        // Get AI analysis
-        return $this->deepSeekService->analyzeGrades($analysisData);
     }
 
-    public function getImprovementSuggestions($studentID)
+    /**
+     * Generate intervention plans for at-risk students.
+     *
+     * @param array $studentData
+     * @return array
+     */
+    public function generateIntervention(array $studentData): array
     {
-        $analysis = $this->analyzeStudentPerformance($studentID);
-        
-        if (!isset($analysis['choices'][0]['message']['content'])) {
-            return null;
+        $interventions = [];
+        $internalAvg = $this->calculateAverage($studentData['internal'] ?? []);
+        $externalAvg = $this->calculateAverage($studentData['external'] ?? []);
+
+        if ($internalAvg < 50 || $externalAvg < 50) {
+            $interventions[] = 'Low performance detected. Recommend tutoring sessions.';
         }
 
-        return $analysis['choices'][0]['message']['content'];
+        if ($this->hasSignificantDrop($studentData['internal'] ?? [])) {
+            $interventions[] = 'Significant drop in performance detected. Schedule parent meeting.';
+        }
+
+        return [
+            'averages' => [
+                'internal' => $internalAvg,
+                'external' => $externalAvg,
+            ],
+            'interventions' => $interventions,
+        ];
     }
-} 
+
+    /**
+     * Calculate average score from assessment data.
+     *
+     * @param array $assessments
+     * @return float
+     */
+    private function calculateAverage(array $assessments): float
+    {
+        if (empty($assessments)) {
+            return 0.0;
+        }
+
+        $total = 0;
+        foreach ($assessments as $assessment) {
+            $total += $assessment['score'] ?? 0;
+        }
+
+        return $total / count($assessments);
+    }
+
+    /**
+     * Check for significant drop in performance.
+     *
+     * @param array $assessments
+     * @return bool
+     */
+    private function hasSignificantDrop(array $assessments): bool
+    {
+        if (count($assessments) < 2) {
+            return false;
+        }
+
+        $scores = array_column($assessments, 'score');
+        $latest = end($scores);
+        $previous = prev($scores);
+
+        return ($previous - $latest) >= ($previous * 0.10);
+    }
+}

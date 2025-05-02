@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/assessments/views/assessment_view.php?type=external') == false) {
     //Acess denied
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get");
                     $form->setClass('noIntBorder w-full standardForm');
 
-                    $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment_view.php');
+                    $form->addHiddenValue('q', '/modules/Formal Assessment/assessments/views/assessment_view.php?type=external');
                     $form->addHiddenValue('address', $session->get('address'));
 
                     $row = $form->addRow();

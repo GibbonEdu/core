@@ -29,7 +29,7 @@ use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
+$gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage.php';
 

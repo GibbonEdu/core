@@ -285,9 +285,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
         $section = $form->addRow()
             ->addDetails()
-            ->addClass('border rounded mb-2 p-2')
+            ->addClass('border bg-gray-100 rounded mb-2 p-2')
             ->addClass($proof['status'] == 'Done' || $proof['status'] == 'Accepted' ? 'success bg-green-100' : '')
-            ->addClass($proof['status'] == 'Edited' ? 'message bg-blue-100' : 'bg-gray-100')
+            ->addClass($proof['status'] == 'Edited' ? 'message bg-blue-50' : '')
             ->setID('student'.str_pad($criteria['gibbonPersonIDStudent'], 10, '0', STR_PAD_LEFT))
             ->summary($summaryText)
             ->opened(empty($proof['status']) || ($proofReview && $proof['status'] == 'Edited'));
@@ -338,10 +338,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
 
-            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 justify-between items-center');
-                $col = $colRow->addColumn()->setClass('flex h-12 px-2 border rounded items-center bg-gray-200');
+            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-2 justify-between items-center');
+                $col = $colRow->addColumn()->setClass('flex h-10 border rounded items-center bg-gray-200');
                 $col->addRadio("status[{$gibbonReportingValueID}]")
-                    ->setClass('statusInput text-base leading-loose whitespace-nowrap')
+                    ->setClass('statusInput text-base leading-loose')
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->fromArray($actions);
@@ -374,10 +374,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 ->readonly($proof['status'] != 'Edited')
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
 
-            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 justify-between items-center');
-                $col = $colRow->addColumn()->setClass('flex h-12 px-2 border rounded items-center bg-gray-200');
+            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-2 justify-between items-center');
+                $col = $colRow->addColumn()->setClass('flex h-10 border rounded items-center bg-gray-200');
                 $col->addRadio("status[{$gibbonReportingValueID}]")
-                    ->setClass('statusInput text-base leading-loose whitespace-nowrap')
+                    ->setClass('statusInput text-base leading-loose')
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->checked($proof['status'])
@@ -405,26 +405,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 ?>
 
 <script>
-$('.statusInput input[type="radio"]').change(function() {
+$('input.statusInput').change(function() {
     var details = $(this).parents('details').first();
-    var textarea = details.find('textarea.commentEditor');
-    console.log(textarea);
 
     if ($(this).val() == 'Done' || $(this).val() == 'Accepted') {
-        details.removeClass('message bg-blue-100').removeClass('error bg-red-100').removeClass('bg-gray-100');
+        details.removeClass('message bg-blue-50').removeClass('error bg-red-100');
         details.addClass('success bg-green-100');
-        textarea.attr('readonly', true);
-        textarea.addClass('border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400');
+        details.find('textarea').attr('readonly', true);
     } else if ($(this).val() == 'Edited' || $(this).val() == 'Revised') {
-        details.removeClass('success bg-green-100').removeClass('error bg-red-100').removeClass('bg-gray-100');;
-        details.addClass('message bg-blue-100');
-        textarea.attr('readonly', false);
-        textarea.removeClass('border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400');
+        details.removeClass('success bg-green-100').removeClass('error bg-red-100');
+        details.addClass('message bg-blue-50');
+        details.find('textarea').attr('readonly', false);
     } else if ($(this).val() == 'Declined') {
-        details.removeClass('success bg-green-100').removeClass('message bg-blue-100');
+        details.removeClass('success bg-green-100').removeClass('message bg-blue-50');
         details.addClass('error bg-red-100');
-        textarea.attr('readonly', false);
-        textarea.removeClass('border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400');
+        details.find('textarea').attr('readonly', false);
     }
 
     window.onbeforeunload = function(event) {

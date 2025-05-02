@@ -71,7 +71,6 @@ class YearGroupCriteria extends DataSource
                     gibbonReportingScope.name as scopeName,
                     gibbonReportingCriteria.name as criteriaName,
                     gibbonReportingCriteria.description as criteriaDescription, 
-                    gibbonReportingCriteria.category as category,
                     gibbonReportingValue.value, 
                     gibbonReportingValue.comment, 
                     gibbonScaleGrade.descriptor,

@@ -74,10 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $row->addLabel('context', __('Context'));
     $row->addTextField('context')->readonly();
 
-    $row = $form->addRow();
-    $row->addLabel('active', __('Active'));
-    $row->addYesNo('active')->required();
-
     $stylesheets = $prototypeSectionGateway->selectPrototypeStylesheets();
     $row = $form->addRow();
     $row->addLabel('stylesheet', __('Stylesheet'));
@@ -92,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         ->setSize(4)
         ->selected($config['fonts'] ?? []);
 
-    $flags = ['001' => __('mPDF Renderer - Slower, Better HTML Support'), '000' => __('TCPDF Renderer - Faster, Limited HTML')];
+    $flags = ['000' => __('TCPDF Renderer - Faster, Limited HTML'), '001' => __('mPDF Renderer - Slower, Better HTML Support')];
     $row = $form->addRow();
     $row->addLabel('flags', __('Renderer'));
     $row->addSelect('flags')->fromArray($flags)->required();
@@ -104,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $row->addLabel('orientation', __('Orientation'));
     $row->addSelect('orientation')->fromArray($orientations)->required();
 
-    $pageSizes = ['A4' => __('A4'), 'LETTER' => __('US Letter'), 'A3' => __('A3') ];
+    $pageSizes = ['A4' => __('A4'), 'LETTER' => __('US Letter')];
     $row = $form->addRow();
     $row->addLabel('pageSize', __('Page Size'));
     $row->addSelect('pageSize')->fromArray($pageSizes)->required();

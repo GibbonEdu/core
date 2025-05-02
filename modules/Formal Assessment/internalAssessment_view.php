@@ -27,7 +27,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/assessments/views/assessment_view.php?type=internal') == false) {
     //Acess denied
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get", "noIntBorder w-full standardForm");
 			$form->setFactory(DatabaseFormFactory::create($pdo));
             $form->setClass('noIntBorder w-full');
-			$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
+			$form->addHiddenValue('q', '/modules/Formal Assessment/assessments/views/assessment_view.php?type=internal');
 			$form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 					$form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get");
 					$form->setClass('noIntBorder w-full standardForm');
 
-					$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
+					$form->addHiddenValue('q', '/modules/Formal Assessment/assessments/views/assessment_view.php?type=internal');
 					$form->addHiddenValue('address', $session->get('address'));
 
 					$row = $form->addRow();
