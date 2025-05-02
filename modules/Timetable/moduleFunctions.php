@@ -927,64 +927,62 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $output .= '750px';
             }
             $output .= ";'>";
-                //Spit out controls for displaying calendars
-                if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
-                    $output .= "<tr class='head' style='height: 37px;'>";
-                    $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
+            //Spit out controls for displaying calendars
+            if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
+                $output .= "<tr class='head' style='height: 37px;'>";
+                $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
 
-                    $output .= "<form class='py-2'
-                        hx-post='".$apiEndpoint->withQueryParam('ttDate', date($session->get('i18n')['dateFormatPHP'], $startDayStamp))."' 
-                        hx-trigger='change'
-                        hx-target='closest #tt' 
-                        hx-select='#tt'
-                        hx-swap='outerHTML' 
-                        hx-vals='{\"ttCheckbox\": \"true\", \"edit\": \"".$edit."\"}'
-                    >";
+                $output .= "<form class='py-2'
+                    hx-post='".$apiEndpoint->withQueryParam('ttDate', date($session->get('i18n')['dateFormatPHP'], $startDayStamp))."' 
+                    hx-trigger='change'
+                    hx-target='closest #tt' 
+                    hx-select='#tt'
+                    hx-swap='outerHTML' 
+                    hx-vals='{\"ttCheckbox\": \"true\", \"edit\": \"".$edit."\"}'
+                >";
 
-                    $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
-                    if ($displayCalendars && $session->has('calendarFeed')) {
-                        $checked = $session->get('viewCalendarSchool') == 'Y' ? 'checked' : '';
-                        $output .= "<span class='ttSchoolCalendar rounded-sm'>".__('School Calendar');
-                        $output .= "<input $checked class='ml-2' type='checkbox' name='schoolCalendar' value='Y' class='ttCheckbox' />";
+                $displayCalendars = ($session->has('googleAPIAccessToken') && $session->has('googleAPICalendarEnabled')) || $session->has('microsoftAPIAccessToken');
+                if ($displayCalendars && $session->has('calendarFeed')) {
+                    $checked = $session->get('viewCalendarSchool') == 'Y' ? 'checked' : '';
+                    $output .= "<span class='ttSchoolCalendar rounded-sm'>".__('School Calendar');
+                    $output .= "<input $checked class='ml-2' type='checkbox' name='schoolCalendar' value='Y' class='ttCheckbox' />";
+                    $output .= '</span>';
+                }
+                if ($displayCalendars && $session->has('calendarFeedPersonal')) {
+                    $checked = $session->get('viewCalendarPersonal') == 'Y' ? 'checked' : '';
+                    $output .= "<span class='ttPersonalCalendar rounded-sm'>".__('Personal Calendar');
+                    $output .= "<input $checked class='ml-2' type='checkbox' name='personalCalendar' value='Y' class='ttCheckbox' />";
+                    $output .= '</span>';
+                }
+                if ($spaceBookingAvailable) {
+                    if ($session->get('viewCalendarSpaceBooking') != '') {
+                        $checked = $session->get('viewCalendarSpaceBooking') == 'Y' ? 'checked' : '';
+                        $output .= "<span class='ttSpaceBookingCalendar rounded-sm'><a style='color: #fff' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
+                        $output .= "<input $checked class='ml-2' type='checkbox' name='spaceBookingCalendar' value='Y' class='ttCheckbox' aria-label='".__('Space Booking Calendar')."' />";
                         $output .= '</span>';
                     }
-                    if ($displayCalendars && $session->has('calendarFeedPersonal')) {
-                        $checked = $session->get('viewCalendarPersonal') == 'Y' ? 'checked' : '';
-                        $output .= "<span class='ttPersonalCalendar rounded-sm'>".__('Personal Calendar');
-                        $output .= "<input $checked class='ml-2' type='checkbox' name='personalCalendar' value='Y' class='ttCheckbox' />";
-                        $output .= '</span>';
-                    }
-                    if ($spaceBookingAvailable) {
-                        if ($session->get('viewCalendarSpaceBooking') != '') {
-                            $checked = $session->get('viewCalendarSpaceBooking') == 'Y' ? 'checked' : '';
-                            $output .= "<span class='ttSpaceBookingCalendar rounded-sm'><a style='color: #fff' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
-                            $output .= "<input $checked class='ml-2' type='checkbox' name='spaceBookingCalendar' value='Y' class='ttCheckbox' aria-label='".__('Space Booking Calendar')."' />";
-                            $output .= '</span>';
-                        }
-                    }
-
-                    $output .= '</form>';
-
-                    $output .= '</th>';
-                    $output .= '</tr>';
                 }
 
-            $output .= "<tr class='head'>";
-            $output .= "<th style='vertical-align: top; width: 70px; text-align: center'>";
-            //Calculate week number
-            $week = getWeekNumber($startDayStamp, $connection2, $guid);
-            if ($week != false) {
-                $output .= sprintf(__('Week %1$s'), $week).'<br/>';
+                $output .= '</form>';
+
+                $output .= '</th>';
+                $output .= '</tr>';
             }
-            $output .= "<span style='font-weight: normal; font-style: italic;'>".__('Time').'<span>';
-            $output .= '</th>';
-            $count = 0;
-            foreach ($days as $day) {
+
+            $output .= '</tr>';
+            $output .= '</table>';
+
+            $output .= '<div id="tt2">';
+            $output .= "<div class='w-schedule js-tabs js-w-schedule' data-hide-panel-class='display@md' data-w-schedule-timeline='" . substr($timeStart, 0, 3) . "00" . "-" . substr($timeEnd, 0, 5) . "'>";
+
+            $output .= '<ul class="w-schedule__controls js-tabs__controls" aria-label="Select day">';
+
+            foreach ($days as $index => $day) {
                 if ($day['schoolDay'] == 'Y') {
                     if ($count == 0) {
                         $firstSequence = $day['sequenceNumber'];
                     }
-                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
+                    $dateCorrection = ($day['sequenceNumber'] - 1) - ($firstSequence - 1);
 
                     unset($rowDay);
                     $color = '';
@@ -996,87 +994,100 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     if ($resultDay->rowCount() == 1) {
                         $rowDay = $resultDay->fetch();
                         if ($rowDay['color'] != '') {
-                            $color .= "; background-color: ".$rowDay['color']."; background-image: none";
+                            $color .= "; background-color: " . $rowDay['color'] . "; background-image: none";
                         }
                         if ($rowDay['fontColor'] != '') {
-                            $color .= "; color: ".$rowDay['fontColor'];
+                            $color .= "; color: " . $rowDay['fontColor'];
                         }
                     }
 
-                    $today = ((date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($session->get('i18n')['dateFormatPHP'])) ? "class='ttToday'" : '');
-                    $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
+                    $today = ((date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($session->get('i18n')['dateFormatPHP'])) ? "ttToday" : '');
+                    $tabSelected = '';
+                    if ($today == 'ttToday') {
+                        $tabSelected = "aria-selected='true'";
+                    } else {
+                        $tabSelected = '';
+                    }
 
-                    if ($narrow == 'trim') {
-                        $output .= (550 / $daysInWeek);
-                    }
-                    elseif ($narrow == 'narrow') {
-                        $output .= (375 / $daysInWeek);
-                    }
-                    else {
-                        $output .= (550 / $daysInWeek);
-                    }
-                    $output .= "px".$color."'>";
+                    $output .= "<li class='w-schedule__control-wrapper $today'>";
+                    $output .= "<a class='w-schedule__control' href='#w-schedule-" . strtolower(date('D', ($startDayStamp + (86400 * $dateCorrection)))) . "' " . $tabSelected . ">";
+
                     if ($nameShortDisplay != 'Timetable Day Short Name') {
-                        $output .= __($day['nameShort']).'<br/>';
-                    }
-                    else {
+                        $tabTitle = __($day['nameShort']) . '<br/>';
+                    } else {
                         if (!empty($rowDay['nameShort']) && $rowDay['nameShort'] != '') {
-                            $output .= $rowDay['nameShort'].'<br/>';
-                        }
-                        else {
-                            $output .= __($day['nameShort']).'<br/>';
+                            $tabTitle = $rowDay['nameShort'] . '<br/>';
+                        } else {
+                            $tabTitle = __($day['nameShort']) . '<br/>';
                         }
                     }
-                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
+
+                    $output .= "<div class='text-xs opacity-50% text-uppercase letter-spacing-md margin-bottom-2xs'>$tabTitle</div>";
+                    $output .= "<div class='text-lg font-medium line-height-1'>" . date('j', ($startDayStamp + (86400 * $dateCorrection))) . "</div>";
 
                     $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
 
                     if (!empty($specialDays[$dateCheck]) && $specialDays[$dateCheck]['type'] == 'Timing Change') {
-                        $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$specialDays[$dateCheck]['name'].'</u></span>';
+                        $output .= "<div class='text-lg font-medium line-height-1'>" . $specialDays[$dateCheck]['name'] . "</div>";
                     }
-                    $output .= '</th>';
+                    $output .= '</a>';
+                    $output .= '</li>';
                 }
-                $count ++;
+                $count++;
             }
-            $output .= '</tr>';
+            $output .= '</ul>';
 
-            //Space for all day events
-            if (($eventsSchool == true or $eventsPersonal == true) and $allDay == true and $eventsCombined != null) {
-                $output .= "<tr style='height: ".((31 * $maxAllDays) + 5)."px'>";
-                $output .= "<td style='vertical-align: top; width: 70px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
-                $output .= "<span style='font-size: 80%'><b>".sprintf(__('All Day%1$s Events'), '<br/>').'</b></span>';
-                $output .= '</td>';
-                $output .= "<td colspan=$daysInWeek style='vertical-align: top; width: 50px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
-                $output .= '</td>';
-                $output .= '</tr>';
-            }
-
-            $output .= "<tr style='height:".(ceil($diffTime / 60) + 14)."px'>";
-            $output .= "<td class='ttTime' style='height: 300px; width: 55px; max-width: 55px; text-align: center; vertical-align: top'>";
-            $output .= "<div style='position: relative;'>";
-            $countTime = 0;
-            $time = $timeStart;
-            $output .= "<div $title style=' position: absolute; top: -3px; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
-            $output .= substr($time, 0, 5).'<br/>';
-            $output .= '</div>';
-            $time = date('H:i:s', strtotime($time) + 3600);
-            $spinControl = 0;
-            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
-                ++$countTime;
-                $output .= "<div $title style=' position: absolute; top:".(($countTime * 60) - 5)."px ; width: 100%; min-width: 51px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
-                $output .= substr($time, 0, 5).'<br/>';
-                $output .= '</div>';
-                $time = date('H:i:s', strtotime($time) + 3600);
-                ++$spinControl;
-            }
-
-            $output .= '</div>';
-            $output .= '</td>';
-
-            //Run through days of the week
-            foreach ($days as $day) {
+            $count = 0;
+            $output .= '<div class="w-schedule__days js-tabs__panels">';
+            foreach ($days as $index=>$day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
+                    if ($count == 0) {
+                        $firstSequence = $day['sequenceNumber'];
+                    }
+                    $dateCorrection = ($day['sequenceNumber'] - 1) - ($firstSequence - 1);
+
+                    unset($rowDay);
+                    $color = '';
+
+                    $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
+                    $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                    $resultDay = $connection2->prepare($sqlDay);
+                    $resultDay->execute($dataDay);
+                    if ($resultDay->rowCount() == 1) {
+                        $rowDay = $resultDay->fetch();
+                        if ($rowDay['color'] != '') {
+                            $color .= "; background-color: " . $rowDay['color'] . "; background-image: none";
+                        }
+                        if ($rowDay['fontColor'] != '') {
+                            $color .= "; color: " . $rowDay['fontColor'];
+                        }
+                    }
+
+                    $today = ((date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($session->get('i18n')['dateFormatPHP'])) ? "ttToday" : '');
+
+                    $output .= "<section id='w-schedule-" . strtolower(date('D', ($startDayStamp + (86400 * $dateCorrection)))) . "' class='w-schedule__day js-tabs__panel $today' style=''>";
+
+                    if ($nameShortDisplay != 'Timetable Day Short Name') {
+                        $tabTitle = __($day['nameShort']) . '<br/>';
+                    } else {
+                        if (!empty($rowDay['nameShort']) && $rowDay['nameShort'] != '') {
+                            $tabTitle = $rowDay['nameShort'] . '<br/>';
+                        } else {
+                            $tabTitle = __($day['nameShort']) . '<br/>';
+                        }
+                    }
+                    $output .= "<div class='w-schedule__col-label text-sm $today' style='$color'><div><div>$tabTitle</div>";
+                    $output .= "<div class='italic' style='font-size: 80%;'>" . date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) . "</div>";
+                    $output .= "</div></div>";
+
+                    $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
+
+                    if (!empty($specialDays[$dateCheck]) && $specialDays[$dateCheck]['type'] == 'Timing Change') {
+                        $output .= "<div class='w-schedule__col-label text-sm font-medium line-height-1'>" . $specialDays[$dateCheck]['name'] . "</div>";
+                    }
+
+                    $output .= '<ul class="w-schedule__events">';
+                    $dateCorrection = ($day['sequenceNumber'] - 1) - ($firstSequence - 1);
 
                     //Check to see if day is term time
                     $isDayInTerm = false;
@@ -1103,7 +1114,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
 
                         $specialDay = $specialDays[$dateCheck] ?? [];
-                        
+
 
                         if (!empty($specialDay)) {
                             $specialDay['gibbonYearGroupIDList'] = explode(',', $specialDay['gibbonYearGroupIDList'] ?? '');
@@ -1125,22 +1136,41 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
                     $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], $isSchoolOpen, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities ?? [], $staffDuty ?? [], $staffCoverage ?? [], $diffTime, $maxAllDays, $narrow, $specialDayStart, $specialDayEnd, $specialDay, $roleCategory, $edit);
 
-                    if ($dayOutput == '') {
-                        $dayOutput .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
-                    }
-
                     $output .= $dayOutput;
+
+                    $output .= '</ul>';
+                    $output .= '</section>';
                 }
+                $count++;
             }
-            $output .= '</tr>';
-            $output .= '</table>';
             $output .= '</div>';
 
+            $output .= '<div class="w-schedule__grid js-w-schedule__grid" aria-hidden="true"></div>';
+            $output .= '</div>';
+            $output .= '</div>';
+            $output .= '</div>';
             $output .= '</div>';
         }
     }
 
-    return $output;
+    $timetableJS = "<script>" .
+    "(function () {" .
+    "setInterval(() => {" .
+    "var wSchedule = document.getElementsByClassName('js-w-schedule')[0];" .
+    "if(wSchedule != undefined) {" .
+    "new WSchedule({" .
+    "element: wSchedule," .
+    "searchData: function (trigger, cb) {" .
+    "}" .
+    "});" .
+    "}" .
+    "}, 200);" .
+    "})();" .
+    "</script>";
+    
+    $timetableJS .= '<script type="text/javascript" src="resources/assets/timetable/weekly-schedule.min.js"></script>';
+    return $output . $timetableJS;
+
 }
 
 function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $staffDuty, $staffCoverage, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $roleCategory = '', $edit = false)
@@ -1148,11 +1178,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     global $session;
 
     $schoolCalendarAlpha = 1.0;
-    $ttAlpha = 1.0;
-
-    // if ($session->get('viewCalendarSchool') != 'N' or $session->get('viewCalendarPersonal') != 'N' or $session->get('viewCalendarSpaceBooking') != 'N') {
-    //     $ttAlpha = 0.75;
-    // }
 
     $date = date('Y-m-d', ($startDayStamp + (86400 * $count)));
 
@@ -1204,7 +1229,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
     if ($schoolOpen == false || $offTimetable == true) {
         $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-        $output .= "<div style='position: relative'>";
         $output .= "<div class='".($offTimetable ? 'bg-blue-200 border border-blue-700 text-blue-700' : 'ttClosure text-red-700')."' style=' position: absolute; width: 100%; min-width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; '>";
         $output .= "<div style='position: relative; top: 50%' title='".($specialDay['description'] ?? '' )."'>";
         $output .= $offTimetable ? __('School Day').'<br/><br/>'.__('Off Timetable') : __('School Closed');
@@ -1306,7 +1330,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         if ($eventsSpaceBooking != false) {
             $dayTimeStart = $gridTimeStart;
             $startPad = 0;
-            $output .= "<div style='position: relative'>";
 
             $height = 0;
             $width = (ceil(690 / $daysInWeek) - 20).'px';
@@ -1334,9 +1357,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     ++$zCount;
                 }
             }
-            $output .= '</div>';
         }
-        $output .= '</div>';
         $output .= '</td>';
     } else {
 
@@ -1393,7 +1414,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         if ($resultDay->rowCount() == 1) {
             $rowDay = $resultDay->fetch();
             $zCount = 0;
-            $output .= "<div style='position: relative'>";
 
             //Draw outline of the day
             try {
@@ -1444,14 +1464,22 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $class = 'ttPeriodCurrent bg-green-100';
                     }
 
-                    $output .= "<div class='$class' $title style=' position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px; '>";
+                    $output .= "<li class='w-schedule__event-wrapper display@md' style='z-index: 1;'>";
+                    $output .= "<div class='w-schedule__event js-w-schedule__event w-schedule__schedule' $title>";
+                    $dt = getTimeStr($effectiveStart, $effectiveEnd);
+
+                    $output .= "<time class='text-sm opacity-60% text-xs@md' style='display:none;' datetime='" . $dt . "'></time><br/>";
+
                     if ($height > 15 and $height < 30) {
                         $output .= $rowPeriods['name'].'<br/>';
                     } elseif ($height >= 30) {
                         $output .= $rowPeriods['name'].'<br/>';
                         $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                     }
+                    
                     $output .= '</div>';
+                    $output .= '</li>';
+
                     ++$zCount;
                 }
             }
@@ -1669,7 +1697,14 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         if ($height < 60) {
                             $fontSize = '85%';
                         }
-                        $output .= "<div class='$class2' $title style=' position: absolute; top: $top; width: 100%; min-width: $width; height: {$height}px; margin: 0px; padding: 0px;  font-size: $fontSize; $bg'>";
+
+                        $output .= "<li class='w-schedule__event-wrapper $class2' style='z-index: $zCount;'>";
+                        $output .= "<div class='w-schedule__event js-w-schedule__event' $title style=' font-size: $fontSize; $bg'>";
+                        $output .= "<div style='position: relative; height: 100%;'>";
+
+                        $dt = getTimeStr($effectiveStart, $effectiveEnd);
+                        $output .= "<time class='text-sm opacity-60% text-xs@md' style='display:none;' datetime='" . $dt . "'></time><br/>";
+
                         if ($height >= 45) {
                             if ($isCovering) {
                                 $output .= '<b>'.__('Covering').' '.$rowPeriods['nameShort'].'</b><br/>';
@@ -1719,7 +1754,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $output .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
                             }
                         }
-                        $output .= '</div>';
                         ++$zCount;
 
                         if ($narrow == 'full' or $narrow == 'trim') {
@@ -1727,7 +1761,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 //Add planner link icons for staff looking at own TT.
                                     if ($self == true and $roleCategory == 'Staff') {
                                         if ($height >= 30) {
-                                            $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                                 //Check for lesson plan
                                                 $bgImg = 'none';
 
@@ -1755,14 +1788,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                                     $output .= '</a>';
                                                 }
                                             }
-                                            $output .= '</div>';
                                             ++$zCount;
                                             
                                         }
                                     }
                                     //Add planner link icons for any one else's TT
                                     else {
-                                        $output .= "<div style=' position: absolute; top: $top; width:100%; min-width: $width ; height: {$height}px; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                         //Check for lesson plan
                                         $bgImg = 'none';
 
@@ -1783,7 +1814,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                                 $output .= "<div style='float: right; margin: ".($height - 17)."px 5px 0 0'>".__('Multiple').'</div>';
                                             }
                                         }
-                                        $output .= '</div>';
                                         ++$zCount;
                                     }
                             }
@@ -1802,6 +1832,10 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 ++$zCount;
                             }
                         }
+
+                        $output .= '</div>';
+                        $output .= '</div>';
+                        $output .= '</li>';
                     }
                 }
             }
@@ -1834,7 +1868,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $bg = 'background: #dfcbf6 !important;';
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='{$class}' $title style=' position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
+
+                        $output .= "<li class='w-schedule__event-wrapper $class2' style='z-index: $zCount;'>";
+
+
+                        $output .= "<div class='w-schedule__event js-w-schedule__event' $title style=' font-size: $fontSize; $bg'>";
+                        $output .= "<div style='position: relative; height: 100%;'>";
+
+                        $dt = getTimeStr(date('H:i:s', $event[2]), date('H:i:s', $event[3]));
+                        $output .= "<time class='text-sm opacity-60% text-xs@md' style='display:none;' datetime='" . $dt . "'></time><br/>";
+
                         if ($height >= 26) {
                             $output .= __('Activity').'<br/>';
                         }
@@ -1849,7 +1892,10 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         } elseif (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
                             $output .= $event[4].'<br/>';
                         }
+
                         $output .= '</div>';
+                        $output .= '</div>';
+                        $output .= '</li>';
                     }
                     ++$zCount;
 
@@ -1988,15 +2034,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     }
                 }
             }
-
-            $output .= '</div>';
         }
 
         //Draw space bookings and staff coverage
         if ($eventsSpaceBooking != false) {
             $dayTimeStart = $gridTimeStart;
             $startPad = 0;
-            $output .= "<div style='position: relative'>";
 
             $height = 0;
             $top = 0;
@@ -2022,13 +2065,37 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     ++$zCount;
                 }
             }
-            $output .= '</div>';
         }
     }
 
     $output .= '</td>';
 
     return $output;
+}
+
+function getTimeStr($start, $end)
+{
+    $s = $start;
+    $e = $end;
+    if ($start > $end) {
+        $s = $end;
+        $e = $start;
+    }
+
+    // diff second
+    $diff = strtotime($e) - strtotime($s);
+    // hour
+    $hour = floor($diff / 3600);
+    $min = ($diff % 3600) / 60;
+    $ret = '';
+    if ($hour > 0) {
+        $ret .= $hour . "H";
+    }
+    $ret .= $min . "M";
+
+    $stime = substr($s, 0, 5);
+    $ret = $stime . "PT" . $ret;
+    return $ret;
 }
 
 //TIMETABLE FOR ROOM
@@ -2148,7 +2215,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         >";
 
             $output .= "<nav id='#ttNav' cellspacing='0' class='flex justify-between items-end' style='width: 100%; margin: 10px 0 10px 0'>";
-            // $output .= "<input type='hidden' name='ttDate' x-model='ttDate'>";
 
             $output .= "<div>";
                 $output .= "<button type='button' class='ttNav inline-flex items-center align-middle rounded-l h-8 px-3 text-xs border border-gray-400 text-gray-600 bg-gray-100 font-medium hover:bg-gray-300 hover:text-gray-700'

@@ -372,6 +372,7 @@ if (!empty($backgroundImage)) {
 
 $page->stylesheets->add('theme-dev', 'resources/assets/css/theme.min.css');
 $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
+$page->stylesheets->add('timetable', 'resources/assets/timetable/timetable.css');
 
 /**
  * USER CONFIGURATION
