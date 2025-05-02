@@ -435,7 +435,7 @@ class MessageTargets
 
         //Roles
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
-            if ($_POST["role"]=="Y") {
+            if (!empty($_POST['role']) && $_POST["role"]=="Y") {
                 $choices=$_POST["roles"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -524,7 +524,7 @@ class MessageTargets
 
         //Role Categories
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
-            if ($_POST["roleCategory"]=="Y") {
+            if (!empty($_POST['roleCategory']) && $_POST["roleCategory"]=="Y") {
                 $choices=$_POST["roleCategories"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -609,7 +609,7 @@ class MessageTargets
 
         //Year Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
-            if ($_POST["yearGroup"]=="Y") {
+            if (!empty($_POST['yearGroup']) && $_POST["yearGroup"]=="Y") {
                 $staff=$_POST["yearGroupsStaff"] ;
                 $students=$_POST["yearGroupsStudents"] ;
                 $parents="N" ;
@@ -786,7 +786,7 @@ class MessageTargets
 
         //Form Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-            if ($_POST["formGroup"]=="Y") {
+            if (!empty($_POST['formGroup']) && $_POST["formGroup"]=="Y") {
                 $staff=$_POST["formGroupsStaff"] ;
                 $students=$_POST["formGroupsStudents"] ;
                 $parents="N" ;
@@ -944,7 +944,7 @@ class MessageTargets
 
         //Course Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-            if ($_POST["course"]=="Y") {
+            if (!empty($_POST['course']) && $_POST["course"]=="Y") {
                 $staff=$_POST["coursesStaff"] ;
                 $students=$_POST["coursesStudents"] ;
                 $parents="N" ;
@@ -1128,7 +1128,7 @@ class MessageTargets
 
         //Class Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-            if ($_POST["class"]=="Y") {
+            if (!empty($_POST['class']) && $_POST["class"]=="Y") {
                 $staff=$_POST["classesStaff"] ;
                 $students=$_POST["classesStudents"] ;
                 $parents="N" ;
@@ -1313,7 +1313,7 @@ class MessageTargets
 
         //Activity Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-            if ($_POST["activity"]=="Y") {
+            if (!empty($_POST['activity']) && $_POST["activity"]=="Y") {
                 $staff=$_POST["activitiesStaff"] ;
                 $students=$_POST["activitiesStudents"] ;
                 $parents="N" ;
@@ -1471,7 +1471,7 @@ class MessageTargets
 
         //Applicants
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
-            if ($_POST["applicants"] == "Y") {
+            if (!empty($_POST['applicants']) && $_POST["applicants"] == "Y") {
                 $staff="N" ;
                 $students = $_POST["applicantsStudents"] ;
                 $parents = $_POST["applicantsParents"] ;
@@ -1669,7 +1669,7 @@ class MessageTargets
 
         //Houses
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-            if ($_POST["houses"]=="Y") {
+            if (!empty($_POST['houses']) && $_POST["houses"]=="Y") {
                 $choices=$_POST["houseList"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -1720,7 +1720,7 @@ class MessageTargets
 
         //Transport
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
-            if ($_POST["transport"]=="Y") {
+            if (!empty($_POST['transport']) && $_POST["transport"]=="Y") {
                 $staff=$_POST["transportStaff"] ;
                 $students=$_POST["transportStudents"] ;
                 $parents="N" ;
@@ -1878,7 +1878,7 @@ class MessageTargets
 
         //Target Absent students / Attendance Status
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-            if ($_POST["attendance"]=="Y") {
+            if (!empty($_POST['attendance']) && $_POST["attendance"]=="Y") {
                 $choices = $_POST["attendanceStatus"] ?? [];
                 $students = $_POST["attendanceStudents"] ?? [];
                 $parents = $_POST["attendanceParents"] ?? [];
@@ -2029,7 +2029,7 @@ class MessageTargets
 
         //Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
-            if ($_POST["group"]=="Y") {
+            if (!empty($_POST['group']) && $_POST["group"]=="Y") {
                 $staff=$_POST["groupsStaff"] ;
                 $students=$_POST["groupsStudents"] ;
                 $parents="N" ;
@@ -2183,7 +2183,7 @@ class MessageTargets
 
         // Mailing List
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
-            if ($_POST["mailingList"]=="Y") {
+            if (!empty($_POST['mailingList']) && $_POST["mailingList"]=="Y") {
                 $choices=$_POST["mailingLists"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {

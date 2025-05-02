@@ -713,7 +713,7 @@ class MessageForm extends Form
 
             $mailingListResults = $this->mailingListGateway->selectMailingLists();
 
-            $row = $form->addRow()->addClass('messageMailingList bg-blue-100');
+            $row = $form->addRow()->addClass('messageMailingList bg-blue-50');
                 $row->addLabel('mailingLists[]', __('Select Mailing Lists'));
                 $row->addSelect('mailingLists[]')->fromResults($mailingListResults)->selectMultiple()->setSize(6)->required()->selected($selected);
         }
