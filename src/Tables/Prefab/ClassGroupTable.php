@@ -161,10 +161,9 @@ class ClassGroupTable extends DataTable
         
         if ($canViewConfidential) {
             $this->addColumn('reportable')
-                ->setClass('')
                 ->format(function ($person) {
                     if ($person['role'] == 'Student' && $person['reportable'] == "N") {
-                        return "<div class='text-xs text-gray-600 italic leading-snug bg-gray-200 tag'>".__("Not Reportable")."</div>";      
+                        return Format::tag(__("Not Reportable"), 'dull text-xxs');      
                     }
             });
         }
