@@ -13,9 +13,35 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% set now = structure.getToday.format('H:i:s') %}
 
-<div id="timetable" name='tt' x-data='{ ttDate: "", ttID: "{{ gibbonTTID }}", ttRefresh: false, ttActiveDay: "{{ structure.getToday.format('D')|default('Mon') }}" }'>
+<div id="timetable" name='tt' x-data='{ ttDate: "", ttID: "{{ gibbonTTID }}", ttRefresh: false, ttPopup: false, ttActiveDay: "{{ structure.getToday.format('D')|default('Mon') }}" }' @ttpopup.window="ttPopup = false">
 
-    <div x-data="{{ layersToggle }}">
+    
+
+    <div x-data="{{ layersToggle }}" class="relative" >
+
+        <!-- <div  class="z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2/5">
+            <div x-show="ttPopup" x-transition @click.outside="ttPopup = false" class="flex flex-col justify-between bg-white border rounded-lg shadow-xl min-h-64">
+                
+                <div class="flex justify-between p-4 gap-2">
+                    <div>
+                        Title
+                    </div>
+                    <button @click="ttPopup = false">
+                        {{ icon('basic', 'cross', 'size-5 text-gray-600') }}
+                    </button>
+                </div>
+
+                <div class="flex-1 text-left px-4">
+                    Foo
+                </div>
+
+                <div class="text-left p-4 border-t">
+                    Foo
+                </div>
+                
+            </div>
+            
+        </div> -->
 
     {{ include('ui/timetableNav.twig.html') }}
 
@@ -25,10 +51,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </div>
 
         {% for day in structure.getWeekdays %}
+
+        {% set timetableDay = structure.getTimetableDay(day.date) %}
+
         <div class="flex-1">
-            <button @click="ttActiveDay = '{{ day.nameShort }}';" class="flex w-full items-center justify-center md:justify-between leading-none py-2 px-3 rounded-t border " :class="{'font-bold md:font-normal bg-white border-gray-400 md:bg-gray-100 ': ttActiveDay == '{{ day.nameShort }}', 'font-normal bg-gray-100 border-gray-200 md:border-gray-400': ttActiveDay != '{{ day.nameShort }}'}">
-                <span class="text-xs text-gray-700">{{ day.nameShort }}</span>
-                <span class="hidden md:inline-block text-base text-gray-700 font-bold">{{ day.date|date('d') }}</span>
+            <button @click="ttActiveDay = '{{ day.nameShort }}';" class="flex w-full items-center justify-center md:justify-between leading-none py-2 px-3 rounded-t border text-gray-700" :class="{'font-bold md:font-normal bg-white border-gray-400 md:bg-gray-100 ': ttActiveDay == '{{ day.nameShort }}', 'font-normal bg-gray-100 border-gray-200 md:border-gray-400': ttActiveDay != '{{ day.nameShort }}'}" 
+                {%if timetableDay.color %} style="background-color: {{ timetableDay.color }}; color: {{ timetableDay.fontColor }};" {% endif %}
+            >
+                <span class="text-xs">
+                    {{ timetableDay.nameShort and timetableDay.nameShortDisplay == "Timetable Day Short Name" ? timetableDay.nameShort : day.nameShort }}
+                </span>
+                <span class="hidden md:inline-block text-base font-bold">{{ day.date|date('d') }}</span>
             </button>
     
         </div>
@@ -61,12 +94,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     
         {% if structure.isCurrentWeek and timeRange.getStartDate.format('H:i:s') <= now and timeRange.getEndDate.format('H:i:s') >= now %}
         <div class="z-10 absolute ml-1 w-full left-0" style="top: {{ structure.timeToPixels(now) }}px">
-            <div class="border-b border-blue-500 w-full"></div>
+            <!-- <div class="border-b border-blue-500 w-full"></div> -->
             <div class="absolute origin-center left-0 -mt-3 rounded-full border border-blue-500 bg-blue-500 w-10 shadow">
                 <span class="inline-block text-xxs text-white uppercase leading-loose">{{ structure.getToday.format('G:i') }}</span>
             </div>
-            <div class="absolute origin-center w-1.5 h-1.5 right-0 -mr-1 -mt-1 rounded-full bg-blue-500 shadow">
-            </div>
+            <!-- <div class="absolute origin-center w-1.5 h-1.5 right-0 -mr-1 -mt-1 rounded-full bg-blue-500 shadow">
+            </div> -->
         </div>
         {% endif %}
 
@@ -86,7 +119,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 </div>
    
-<script>
+<!-- <script>
 htmx.onLoad(function (content) {
     $('.ttItem').draggable({
         containment: '#timetable',
@@ -95,4 +128,4 @@ htmx.onLoad(function (content) {
         cursor: 'move',
     });
 });
-</script>
+</script> -->

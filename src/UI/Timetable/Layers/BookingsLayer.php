@@ -23,6 +23,7 @@ namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
+use Gibbon\Http\Url;
 
 /**
  * Timetable UI: BookingsLayer
@@ -55,6 +56,7 @@ class BookingsLayer extends AbstractTimetableLayer
                 'subtitle'  => $booking['name'],
                 'timeStart' => $booking['timeStart'],
                 'timeEnd'   => $booking['timeEnd'],
+                'link'          => Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParams(['gibbonSpaceID' => $booking['foreignKeyID'] ?? '', 'ttDate' => $booking['date']]),
             ]);
         }
     }

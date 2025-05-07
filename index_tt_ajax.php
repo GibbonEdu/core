@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\UI\Timetable\Timetable;
-use Gibbon\UI\Timetable\TimetableLayer;
-use Gibbon\UI\Timetable\Layers\TestLayer;
+use Gibbon\UI\Timetable\TimetableContext;
 
 //Gibbon system-wide includes
 include './gibbon.php';
@@ -40,7 +41,7 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-$gibbonTTID = !empty($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : '00000015';
+$gibbonTTID = !empty($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 $narrow = $_REQUEST['narrow'] ?? 'trim';
 
@@ -59,10 +60,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $ttDate = Format::dateConvert($_REQUEST['ttDate']);
     }
 
+    // Get and update preferences
+    $userGateway = $container->get(UserGateway::class);
+    $timetableGateway = $container->get(TimetableGateway::class);
+
+    if (!empty($_REQUEST['gibbonTTID']) && $gibbonPersonID == $session->get('gibbonPersonID')) {
+        $userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), 'tt', 'gibbonTTID', preg_replace('/[^0-9]/', '', $gibbonTTID));
+    }
+
+    $preferences = $userGateway->getUserPreferences($session->get('gibbonPersonID'));
+    $timetables = $timetableGateway->selectActiveTimetables($session->get('gibbonSchoolYearID'))->fetchKeyPair();
+
+    if (empty($gibbonTTID)) {
+        $gibbonTTID = current($timetables);
+    }
+
+    // Create timetable context
+    $context = $container->get(TimetableContext::class)
+        ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+        ->set('gibbonPersonID', $gibbonPersonID)
+        ->set('gibbonTTID', $preferences['tt']['gibbonTTID'] ?? $gibbonTTID)
+        ->set('timetables', $timetables)
+        ->set('layerStates', $preferences['ttLayers'] ?? []);
+
+    // Build and render timetable
     echo $container->get(Timetable::class)
         ->setDate($ttDate)
-        ->setTimetable($gibbonTTID, $gibbonPersonID)
-        // ->addLayer($container->get(TestLayer::class))
+        ->setContext($context)
         ->addCoreLayers($container)
         ->getOutput(); 
 
@@ -74,6 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     } else {
         echo Format::alert(__('There is no information for the date specified.'), 'empty');
     }
+
+    
 }
 
 echo $output;

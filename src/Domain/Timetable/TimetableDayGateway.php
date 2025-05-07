@@ -79,6 +79,21 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectTTDaysByDateRange($gibbonTTID, $dateStart, $dateEnd)
+    {
+        $data = ['gibbonTTID' => $gibbonTTID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonTTDayDate.date as groupBy, gibbonTTDayDate.date, gibbonTTDay.gibbonTTColumnID, gibbonTTDay.gibbonTTDayID, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTTDay.color, gibbonTTDay.fontColor, gibbonTT.nameShortDisplay
+                FROM gibbonTT
+                JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+                ORDER BY gibbonTTDay.name
+        ";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectTTDayRowsByID($gibbonTTDayID)
     {
         $data = array('gibbonTTDayID' => $gibbonTTDayID);

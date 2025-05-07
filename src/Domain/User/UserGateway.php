@@ -229,4 +229,41 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function getUserPreferences($gibbonPersonID) 
+    {
+        $user = $this->getByID($gibbonPersonID, ['preferences']);
+        $preferences = !empty($user['preferences']) ? json_decode($user['preferences'] ?? '', true) : []; 
+
+        return $preferences;
+    }
+
+    public function getUserPreferenceByScope($gibbonPersonID, $scope, $key, $default = null) 
+    {
+        $preferences = $this->getUserPreferences($gibbonPersonID);
+
+        return $preferences[$scope][$key] ?? $default;
+    }
+
+    public function setUserPreferences($gibbonPersonID, $newPreferences, $replace = false) 
+    {
+        $preferences = $replace
+            ? $newPreferences
+            : array_replace($this->getUserPreferences($gibbonPersonID), $newPreferences);
+
+        return $this->update($gibbonPersonID, [
+            'preferences' => json_encode($preferences),
+        ]);
+    }
+
+    public function setUserPreferenceByScope($gibbonPersonID, $scope, $key, $value) 
+    {
+        $preferences = $this->getUserPreferences($gibbonPersonID);
+
+        $preferences[$scope][$key] = $value;
+
+        return $this->update($gibbonPersonID, [
+            'preferences' => json_encode($preferences),
+        ]);
+    }
 }

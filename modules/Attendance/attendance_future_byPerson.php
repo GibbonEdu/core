@@ -310,7 +310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             foreach ($logs as $log) {
                                 if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
                                     $name = $log['type'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
-                                } else if ($log['context'] == 'Future') {
+                                } else if ($log['context'] == 'Future' && $log['date'] == $targetDate) {
                                     $name = $class['columnName'] . ' - ' . $log['type'] . ' '. $log['reason'];
                                 }
                             }

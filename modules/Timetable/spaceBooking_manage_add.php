@@ -295,14 +295,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         $row->addAlert(__('Your request failed because your inputs were invalid.'), 'error');
                     }
 
-                    if ($available == true) {
+                    if ($available == true || $canOverride) {
+                        $row = $form->addRow();
+                            $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
+                            $row->addCheckbox('override')->setValue('Y');
 
-                        if ($canOverride) {
-                            $row = $form->addRow();
-                                $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
-                                $row->addCheckbox('override')->setValue('Y');
-                        }
-                            
                         $row = $form->addRow();
                             $row->addSubmit();
                     } else {

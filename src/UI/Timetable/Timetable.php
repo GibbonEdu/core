@@ -24,8 +24,6 @@ namespace Gibbon\UI\Timetable;
 use Gibbon\Http\Url;
 use Gibbon\View\View;
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\UI\Timetable\Structure;
 use Gibbon\UI\Timetable\TimetableLayerInterface;
 use Gibbon\UI\Timetable\Layers\StaffDutyLayer;
@@ -47,33 +45,22 @@ use Psr\Container\ContainerInterface;
 class Timetable implements OutputableInterface
 {
     protected $view;
-    protected $session;
     protected $structure;
     protected $context;
-
-    protected $userGateway;
-
-    protected $gibbonPersonID;
-    protected $gibbonTTID;
-
     protected $layers = [];
     
     /**
      * Construct via the Container
      *
      * @param View $view
-     * @param Session $session
      * @param Structure $structure
      * @param TimetableContext $context
-     * @param UserGateway $userGateway
      */
-    public function __construct(View $view, Session $session, Structure $structure, TimetableContext $context, UserGateway $userGateway)
+    public function __construct(View $view, Structure $structure, TimetableContext $context)
     {
         $this->view = $view;
-        $this->session = $session;
         $this->structure = $structure;
         $this->context = $context;
-        $this->userGateway = $userGateway;
     }
 
     /**
@@ -83,7 +70,7 @@ class Timetable implements OutputableInterface
      * @param string|null $date
      * @return self
      */
-    public function setDate(string $date = null)
+    public function setDate($date = null)
     {
         $this->structure->setDate($date);
         
@@ -91,7 +78,7 @@ class Timetable implements OutputableInterface
     }
 
     /**
-     * Manually set the timetable context with custom values.
+     * Set the context for this timetable, then load the structure.
      *
      * @param TimetableContext $context
      * @return self
@@ -100,23 +87,7 @@ class Timetable implements OutputableInterface
     {
         $this->context = $context;
 
-        return $this;
-    }
-
-    /**
-     * Set the active timetable by ID, and optionally the user for this timetable.
-     *
-     * @param string $gibbonTTID
-     * @param string|null $gibbonPersonID
-     * @return self
-     */
-    public function setTimetable(string $gibbonTTID, string $gibbonPersonID = null)
-    {
-        $this->context->set('gibbonSchoolYearID', $this->session->get('gibbonSchoolYearID'));
-        $this->context->set('gibbonPersonID', $gibbonPersonID);
-        $this->context->set('gibbonTTID', $gibbonTTID);
-        
-        $this->structure->setTimetable($gibbonTTID);
+        $this->structure->setTimetable($this->context->get('gibbonTTID'));
 
         return $this;
     }
@@ -166,10 +137,10 @@ class Timetable implements OutputableInterface
             'preferencesUrl' => Url::fromHandlerRoute('preferences_ajax.php'),
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
             'gibbonTTID'     => $this->context->get('gibbonTTID'),
+            'timetables'     => $this->context->get('timetables', []),
             'structure'      => $this->structure,
             'layers'         => $this->layers,
-            'layersToggle'   => json_encode($this->getLayerPreferences()),
-            'timetables'     => ['00000015' => 'Secondary Timetable', '00000016' => 'Primary Timetable'],
+            'layersToggle'   => json_encode($this->getLayerStates()),
         ]);
     }
 
@@ -249,13 +220,12 @@ class Timetable implements OutputableInterface
      */
     protected function toggleLayers()
     {
-        if (!$this->context->has('gibbonPersonID')) return;
+        if (!$this->context->has('layerStates')) return;
 
-        $user = $this->userGateway->getByID($this->context->get('gibbonPersonID'), ['preferences']);
-        $preferences = !empty($user['preferences']) ? json_decode($user['preferences'] ?? '', true) : []; 
+        $layerStates = $this->context->get('layerStates'); 
 
         foreach ($this->layers as $layer) {
-            $layer->setActive($preferences['ttLayers'][$layer->getID()] ?? 1);
+            $layer->setActive($layerStates[$layer->getID()] ?? 1);
         }
 
         return $this;
@@ -264,7 +234,7 @@ class Timetable implements OutputableInterface
     /**
      * Return an array with layer names as keys and the active state bool as a value.
      */
-    protected function getLayerPreferences()
+    protected function getLayerStates()
     {
         return array_reduce($this->layers, function ($group, $layer) {
             $group[$layer->getID()] = $layer->isActive();
@@ -283,10 +253,6 @@ class Timetable implements OutputableInterface
             'q'                    => $_GET['q'] ?? '',
             'gibbonPersonID'       => $this->context->get('gibbonPersonID'),
             'gibbonTTID'           => $this->context->get('gibbonTTID'),
-            'schoolCalendar'       => $this->session->get('viewCalendarSchool'),
-            'personalCalendar'     => $this->session->get('viewCalendarPersonal'),
-            'spaceBookingCalendar' => $this->session->get('viewCalendarSpaceBooking'),
-            'fromTT'               => 'Y',
         ];
     }
 }

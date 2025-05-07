@@ -59,7 +59,8 @@ class StaffDutyLayer extends AbstractTimetableLayer
 
                 $this->createItem($date)->loadData([
                     'type'    => __('Staff Duty'),
-                    'title'     => $duty['name'],
+                    'label'     => $duty['name'],
+                    'title'     => $duty['nameShort'],
                     'link'      => Url::fromModuleRoute('Staff', 'staff_duty.php'),
                     'timeStart' => $duty['timeStart'],
                     'timeEnd'   => $duty['timeEnd'],

@@ -31,7 +31,12 @@ namespace Gibbon\UI\Timetable;
  */
 class TimetableContext
 {
-    protected $data;
+    protected $data = [
+        'gibbonSchoolYearID' => '',
+        'gibbonPersonID'     => '',
+        'gibbonTTID'         => '',
+        'ttLayers'           => '',
+    ];
 
     public function has($key)
     {
@@ -46,6 +51,8 @@ class TimetableContext
     public function set($key, $value, $default = null)
     {
         $this->data[$key] = $value ?? $default;
+
+        return $this;
     }
 
     public function loadData(array $data)

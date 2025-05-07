@@ -54,14 +54,15 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
             if (empty($event['date'])) continue;
 
             $this->createItem($event['date'], $event['allDay'])->loadData([
-                'type'      => __('Event'),
-                'title'     => $event['title'] ?? '',
-                'subtitle'  => $event['subtitle'] ?? '',
-                'allDay'    => $event['allDay'] ?? false,
-                'timeStart' => $event['timeStart'] ?? null,
-                'timeEnd'   => $event['timeEnd'] ?? null,
-                'link'      => $event['link'] ?? '',
-                'color'     => $color,
+                'type'        => __('Event'),
+                'title'       => $event['title'] ?? '',
+                'subtitle'    => $event['subtitle'] ?? '',
+                'description' => !empty($event['subtitle']) ? __('Location').': '.$event['subtitle'] : '',
+                'allDay'      => $event['allDay'] ?? false,
+                'timeStart'   => $event['timeStart'] ?? null,
+                'timeEnd'     => $event['timeEnd'] ?? null,
+                'link'        => $event['link'] ?? '',
+                'color'       => $color,
             ]);
         }
     }

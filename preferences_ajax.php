@@ -31,19 +31,12 @@ if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
 $validator = $container->get(Validator::class);
 $userGateway = $container->get(UserGateway::class);
 
-$user = $userGateway->getByID($session->get('gibbonPersonID'), ['preferences']);
-$preferences = !empty($user['preferences']) ? json_decode($user['preferences'] ?? '', true) : []; 
-
-$preferenceType = preg_replace('/[^a-zA-Z0-9]/', '', $_GET['type'] ?? '');
+$preferenceScope = preg_replace('/[^a-zA-Z0-9]/', '', $_GET['scope'] ?? '');
 $preferenceKey = preg_replace('/[^a-zA-Z0-9]/', '', $_GET['key'] ?? '');
 $preferenceValue = $validator->sanitizePlainText($_GET[$preferenceKey] ?? $_GET['default'] ?? '');
 
-if (empty($preferenceType) || empty($preferenceKey)) {
+if (empty($preferenceScope) || empty($preferenceKey)) {
     return;
 }
 
-$preferences[$preferenceType][$preferenceKey] = $preferenceValue;
-
-$userGateway->update($session->get('gibbonPersonID'), [
-    'preferences' => json_encode($preferences),
-]);
+$userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), $preferenceScope, $preferenceKey, $preferenceValue);

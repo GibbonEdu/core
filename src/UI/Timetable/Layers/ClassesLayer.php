@@ -55,31 +55,43 @@ class ClassesLayer extends AbstractTimetableLayer
 
         $classes = $this->timetableDayDateGateway->selectTimetabledPeriodsByPersonAndDateRange($context->get('gibbonPersonID'), $dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'))->fetchAll();
 
-        $ids = array_column($classes, 'gibbonTTDayRowClassID');
+        $lessons = $this->plannerEntryGateway->getPlannerEntriesByPersonAndDateRange($context->get('gibbonPersonID'), $dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'))->fetchGroupedUnique();
 
-        // Todo: Handle off timetable classes
+        $classIDs = array_unique(array_merge(array_column($classes, 'gibbonCourseClassID'), array_column($lessons, 'gibbonCourseClassID')));
+
+        // TODO: Handle off timetable classes
+        // TODO: Teacher name, phone number, etc.
+        // TODO: Handle coverage (covered by not covering)
 
         foreach ($classes as $class) {
         
             $item = $this->createItem($class['date'])->loadData([
-                'type'          => $class['period'],
-                'title'         => Format::courseClassName($class['course'], $class['class']),
+                'type'          => __('Class'),
+                'period'        => $class['period'],
+                'title'         => Format::courseClassName($class['courseNameShort'], $class['classNameShort']),
+                'label'         => $class['courseName'],
+                'description'   => __('Teacher').': '.'Teacher Name',
                 'subtitle'      => $class['roomNameChange'] ?? $class['roomName'] ?? '',
+                'location'      => $class['roomNameChange'] ?? $class['roomName'] ?? '',
+                'phone'         => $class['phoneChange'] ?? $class['phone'] ?? '',
                 'specialStatus' => !empty($class['roomNameChange']) ? 'roomchange' : '',
                 'timeStart'     => $class['timeStart'],
                 'timeEnd'       => $class['timeEnd'],
+                'link'          => Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParams(['gibbonCourseClassID' => $class['gibbonCourseClassID'], 'currentDate' => $class['date']]),
             ]);
             
-            $planner = $this->plannerEntryGateway->getPlannerEntryByClassTimes($class['gibbonCourseClassID'], $class['date'], $class['timeStart'], $class['timeEnd']);
+            $planner = $lessons[$class['lessonID']] ?? [];
 
             if (!empty($planner)) {
                 $item->set('primaryAction', [
-                    'name'      => 'add',
+                    'name'      => 'view',
                     'label'     => __('Lesson planned: {name}',['name' => htmlPrep($planner['name'])]),
                     'url'       => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $planner['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $planner['gibbonPlannerEntryID']]),
                     'icon'      => 'check',
                     'iconClass' => 'text-blue-500 hover:text-blue-800',
                 ]);
+                
+                unset($lessons[$class['lessonID']]);
             } else {
                 $item->set('primaryAction', [
                     'name'      => 'add',
@@ -90,6 +102,29 @@ class ClassesLayer extends AbstractTimetableLayer
                 ]);
             }
             
+        }
+
+        foreach ($lessons as $lesson) {
+
+            $item = $this->createItem($lesson['date'])->loadData([
+                'type'          => __('Lesson'),
+                'title'         => $lesson['name'],
+                'label'         => $lesson['name'],
+                'description'   => __('Course').': ' .$lesson['courseName'].'<br>'.__('Class').': '.Format::courseClassName($lesson['courseNameShort'], $lesson['classNameShort']),
+                'subtitle'      => $lesson['unitName'] ?? '',
+                'timeStart'     => $lesson['timeStart'],
+                'timeEnd'       => $lesson['timeEnd'],
+                'link'          => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $lesson['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $lesson['gibbonPlannerEntryID']]),
+            ]);
+
+            $item->set('primaryAction', [
+                'name'      => 'view',
+                'label'     => __('Lesson planned: {name}',['name' => htmlPrep($lesson['name'])]),
+                'url'       => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $lesson['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $lesson['gibbonPlannerEntryID']]),
+                'icon'      => 'check',
+                'iconClass' => 'text-blue-500 hover:text-blue-800',
+            ]);
+
         }
     }
 }

@@ -34,10 +34,15 @@ class TimetableItem
     protected $active = true;
     protected $specialStatus;
 
+    protected $label;
     protected $title;
     protected $subtitle;
     protected $description;
     protected $overlap;
+
+    protected $period;
+    protected $location;
+    protected $phone;
 
     protected $link;
     protected $type;
@@ -123,10 +128,15 @@ class TimetableItem
     public function loadData(array $data)
     {
         $this->title = $data['title'] ?? $this->title;
+        $this->label = $data['label'] ?? $this->label;
         $this->subtitle = $data['subtitle'] ?? $this->subtitle;
         $this->specialStatus = $data['specialStatus'] ?? $this->specialStatus;
         $this->description = $data['description'] ?? $this->description;
         $this->overlap = $data['overlap'] ?? $this->overlap;
+
+        $this->period = $data['period'] ?? $this->period;
+        $this->location = $data['location'] ?? $this->location;
+        $this->phone = $data['phone'] ?? $this->phone;
         
         $this->type = $data['type'] ?? $this->type;
         $this->link = $data['link'] ?? $this->link;

@@ -59,6 +59,8 @@ class StaffAbsenceLayer extends AbstractTimetableLayer
         // $canViewAbsences = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php');
 
         foreach ($staffAbsences as $absence) {
+            $canViewAbsences = $absence['gibbonPersonID'] == $context->has('gibbonPersonID');
+            
             $coverageName = Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
             $link = Url::fromModuleRoute('Staff', 'absences_view_details.php')->withQueryParam('gibbonStaffAbsenceID', $absence['gibbonStaffAbsenceID']);
 
@@ -66,7 +68,7 @@ class StaffAbsenceLayer extends AbstractTimetableLayer
                 'type'      => __('Absent'),
                 'title'     => $absence['allDay'] == 'Y' ? __('Absent') : '',
                 // 'subtitle'  => $coverageName,
-                'link'      => $link,
+                'link'      => $canViewAbsences ? $link : '',
                 'timeStart' => $absence['allDay'] == 'N' ? $absence['timeStart'] : null,
                 'timeEnd'   => $absence['allDay'] == 'N' ? $absence['timeEnd'] : null,
                 'style'     => 'stripe',
