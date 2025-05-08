@@ -82,6 +82,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
     // Remove recipients who have been manually unchecked
     $messengerReceiptGateway->deleteRecipientsByID($gibbonMessengerID, $unselected);
+    
+    // Remove the [confirmLink] tag if read receipts are not enabled
+    if (!empty($values['body']) && $values['emailReceipt'] == 'N') {
+        if (strpos($values['body'], '[confirmLink]') !== false) {
+            $values['body'] = str_replace('[confirmLink]', '', $values['body']);
+            
+            // Update the body text in the database after the [confirmLink] tag has been removed
+            $messengerGateway->update($gibbonMessengerID, ['body' => $values['body']]);
+        }
+    }
 
     // Set the status of the message
     $messengerGateway->update($gibbonMessengerID, ['status' => 'Sending']);
