@@ -23,6 +23,7 @@ namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
@@ -50,7 +51,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
 
     public function checkAccess(TimetableContext $context) : bool
     {
-        return true;
+        return Access::allows('Staff', 'coverage_my');
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
@@ -64,6 +65,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
                     
         $staffCoverage = $this->staffCoverageGateway->queryCoverageByPersonCovering($criteria, $context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'));
 
+        $canViewPlanner = Access::allows('Planner', 'planner_view_full');
 
         foreach ($staffCoverage as $coverage) {
             $fullName = !empty($coverage['surnameAbsence']) 
@@ -81,7 +83,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
                 'allDay'      => $coverage['allDay'] == 'Y',
                 'link'        => !empty($coverage['gibbonCourseClassID'])
                     ? Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParams(['gibbonCourseClassID' => $coverage['gibbonCourseClassID'], 'currentDate' => $coverage['date']])
-                    : Url::fromModuleRoute('Staff', 'coverage_my.php'),
+                    : Url::fromModuleRoute('Staff', 'coverage_my'),
                 'timeStart'   => $coverage['timeStart'],
                 'timeEnd'     => $coverage['timeEnd'],
             ]);
@@ -94,7 +96,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
                 $item->set('primaryAction', [
                     'name'      => 'view',
                     'label'     => __('Lesson planned: {name}',['name' => htmlPrep($planner['name'])]),
-                    'url'       => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $planner['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $planner['gibbonPlannerEntryID']]),
+                    'url'       => $canViewPlanner ? Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $planner['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $planner['gibbonPlannerEntryID']]) : '',
                     'icon'      => 'check',
                     'iconClass' => 'text-blue-500 hover:text-blue-800',
                 ]);

@@ -197,6 +197,7 @@ class Structure
 
         $this->weekdays = $this->loadWeekdays();
         $this->dateRange = $this->calculateDateRange();
+        $timeRange = $this->getTimeRange();
     }
 
     public function setTimetable($gibbonSchoolYearID, $gibbonTTID)
@@ -243,6 +244,16 @@ class Structure
     public function getEndDate() : string
     {
         return $this->dateRange->getEndDate()->format('Y-m-d');
+    }
+
+    public function getStartTime() : string
+    {
+        return $this->timeRangeStart->format('H:i:s');
+    }
+
+    public function getEndTime() : string
+    {
+        return $this->timeRangeEnd->format('H:i:s');
     }
 
     public function getTimetables()

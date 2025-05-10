@@ -23,13 +23,13 @@ namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Contracts\Services\Session;
 
 /**
@@ -49,7 +49,7 @@ class ClassesLayer extends AbstractTimetableLayer
     protected $userGateway;
     protected $actionGateway;
 
-    public function __construct(Session $session, PlannerEntryGateway $plannerEntryGateway, TimetableDayGateway $timetableDayGateway, TimetableDayDateGateway $timetableDayDateGateway, SchoolYearSpecialDayGateway $specialDayGateway, UserGateway $userGateway, ActionGateway $actionGateway)
+    public function __construct(Session $session, PlannerEntryGateway $plannerEntryGateway, TimetableDayGateway $timetableDayGateway, TimetableDayDateGateway $timetableDayDateGateway, SchoolYearSpecialDayGateway $specialDayGateway, UserGateway $userGateway)
     {
         $this->session = $session;
 
@@ -58,7 +58,6 @@ class ClassesLayer extends AbstractTimetableLayer
         $this->timetableDayDateGateway = $timetableDayDateGateway;
         $this->specialDayGateway = $specialDayGateway;
         $this->userGateway = $userGateway;
-        $this->actionGateway = $actionGateway;
 
         $this->name = 'Classes';
         $this->color = 'blue';
@@ -96,11 +95,11 @@ class ClassesLayer extends AbstractTimetableLayer
         $ttRowClassIDs = array_column($classes, 'gibbonTTDayRowClassID');
         $classTeachers = $this->timetableDayGateway->selectTTDayRowClassTeachersByID($ttRowClassIDs)->fetchGrouped();
 
-        $canViewLessons = $this->actionGateway->isActionAccessible('Planner', 'planner_view_full');
-        $canAddLessons = $this->actionGateway->isActionAccessible('Planner', 'planner_add') && $this->session->get('gibbonPersonID') == $context->get('gibbonPersonID');
-        $canViewClasses = $this->actionGateway->isActionAccessible('Departments', 'department_course_class');
-        $canViewCoverage = $this->actionGateway->isActionAccessible('Staff', 'coverage_my');
-        $canEditCoverage = $this->actionGateway->isActionAccessible('Staff', 'coverage_view_edit');
+        $canViewLessons = Access::allows('Planner', 'planner_view_full');
+        $canAddLessons = Access::allows('Planner', 'planner_add') && $this->session->get('gibbonPersonID') == $context->get('gibbonPersonID');
+        $canViewClasses = Access::allows('Departments', 'department_course_class');
+        $canViewCoverage = Access::allows('Staff', 'coverage_my');
+        $canEditCoverage = Access::allows('Staff', 'coverage_view_edit') && $this->session->get('gibbonPersonID') == $context->get('gibbonPersonID');
 
         foreach ($classes as $class) {
             $teachers = $classTeachers[$class['gibbonTTDayRowClassID']] ?? [];
@@ -153,7 +152,7 @@ class ClassesLayer extends AbstractTimetableLayer
                 $item->set('secondaryAction', [
                     'name'      => 'cover',
                     'label'     => $description,
-                    'url'       => $canEditCoverage ? Url::fromModuleRoute('Staff', 'coverage_view_edit')->withQueryParams(['viewBy' => 'class', 'gibbonStaffCoverageID' => $class['coverageID']]) : '',
+                    'url'       => $canEditCoverage ? Url::fromModuleRoute('Staff', 'coverage_view_edit')->withQueryParams(['viewBy' => 'class', 'gibbonStaffCoverageID' => $class['coverageID']]) : Url::fromModuleRoute('Staff', 'report_absences_weekly'),
                     'icon'      => 'user',
                     'iconClass' => !empty($person) ? 'text-pink-500 hover:text-pink-800' : 'text-gray-600 hover:text-gray-800',
                 ]);
@@ -246,9 +245,9 @@ class ClassesLayer extends AbstractTimetableLayer
         $ttRowClassIDs = array_column($classes, 'gibbonTTDayRowClassID');
         $classTeachers = $this->timetableDayGateway->selectTTDayRowClassTeachersByID($ttRowClassIDs)->fetchGrouped();
 
-        $canViewClasses = $this->actionGateway->isActionAccessible('Departments', 'department_course_class');
-        $canAddChanges = $this->actionGateway->isActionAccessible('Timetable', 'spaceChange_manage_add');
-        $canEditTTDays = $this->actionGateway->isActionAccessible('Timetable Admin', 'tt_edit_day_edit_class_edit');
+        $canViewClasses = Access::allows('Departments', 'department_course_class');
+        $canAddChanges = Access::allows('Timetable', 'spaceChange_manage_add');
+        $canEditTTDays = Access::allows('Timetable Admin', 'tt_edit_day_edit_class_edit');
 
         foreach ($classes as $class) {
             $specialDay = $specialDays[$class['date']] ?? [];

@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\Http\Url;
+use Gibbon\Support\Facades\Access;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
@@ -49,15 +50,22 @@ class ActivitiesLayer extends AbstractTimetableLayer
 
     public function checkAccess(TimetableContext $context) : bool
     {
-        return true;
+        return Access::allows('Activities', 'explore') || Access::allows('Activities', 'activities_view');
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        if (!$context->has('gibbonSchoolYearID') || !$context->has('gibbonPersonID')) return;
-        
+        if (!$context->has('gibbonSchoolYearID')) return;
+    
         $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
-        $activityList = $this->activityGateway->selectActiveEnrolledActivities($context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'), $dateType, $dateRange->getStartDate()->format('Y-m-d'))->fetchAll();
+
+        if ($context->has('gibbonPersonID')) {
+            $activityList = $this->activityGateway->selectActiveEnrolledActivities($context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'), $dateType, $dateRange->getStartDate()->format('Y-m-d'))->fetchAll();
+        } elseif ($context->has('gibbonSpaceID')) {
+            $activityList = $this->activityGateway->selectActivitiesByFacility($context->get('gibbonSchoolYearID'), $context->get('gibbonSpaceID'), $dateType)->fetchAll();
+        }
+
+        $canViewActivities = Access::allows('Activities', 'activities_my');
 
         foreach ($dateRange as $dateObject) {
             $date = $dateObject->format('Y-m-d');
@@ -71,16 +79,12 @@ class ActivitiesLayer extends AbstractTimetableLayer
                     'type'    => __('Activity'),
                     'title'     => $activity['name'],
                     'subtitle'  => !empty($activity['space'])? $activity['space'] : $activity['locationExternal'] ?? '',
-                    'link'      => Url::fromModuleRoute('Activities', 'activities_my.php'),
+                    'link'      => $canViewActivities ? Url::fromModuleRoute('Activities', 'activities_my') : '',
                     'timeStart' => $activity['timeStart'],
                     'timeEnd'   => $activity['timeEnd'],
                 ]);
 
             }
-
         }
-
-        // $activityList = $activityGateway->selectActivitiesByFacility($session->get('gibbonSchoolYearID'), $gibbonSpaceID, $dateType)->fetchAll();
-
     }
 }

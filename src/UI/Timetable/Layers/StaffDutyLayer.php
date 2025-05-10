@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\UI\Timetable\Layers;
 
 use Gibbon\Http\Url;
+use Gibbon\Support\Facades\Access;
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
 use Gibbon\UI\Timetable\TimetableContext;
 
@@ -46,7 +47,7 @@ class StaffDutyLayer extends AbstractTimetableLayer
     
     public function checkAccess(TimetableContext $context) : bool
     {
-        return true;
+        return Access::allows('Staff', 'staff_duty');
     }
 
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
@@ -66,7 +67,7 @@ class StaffDutyLayer extends AbstractTimetableLayer
                     'type'    => __('Staff Duty'),
                     'label'     => $duty['name'],
                     'title'     => $duty['nameShort'],
-                    'link'      => Url::fromModuleRoute('Staff', 'staff_duty.php'),
+                    'link'      => Url::fromModuleRoute('Staff', 'staff_duty'),
                     'timeStart' => $duty['timeStart'],
                     'timeEnd'   => $duty['timeEnd'],
                 ]);

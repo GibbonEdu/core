@@ -21,10 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Timetable\Layers;
 
-use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\Domain\Timetable\FacilityBookingGateway;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Support\Facades\Access;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 /**
  * Timetable UI: BookingsLayer
@@ -48,23 +49,25 @@ class BookingsLayer extends AbstractTimetableLayer
 
     public function checkAccess(TimetableContext $context) : bool
     {
-        return true;
+        return Access::allows('Timetable', 'spaceBooking_manage');
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
         $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'), $context->get('gibbonSpaceID'))->fetchAll();
 
+        $canViewSpaceTimetable = Access::allows('Timetable', 'tt_space_view');
+
         foreach ($bookings as $booking) {
             $bookedBy = Format::name($booking['title'], $booking['preferredName'], $booking['surname'], 'Staff', false, true);
 
             $this->createItem($booking['date'])->loadData([
-                'type'    => __('Booking'),
+                'type'      => __('Booking'),
                 'title'     => $booking['reason'],
                 'subtitle'  => $context->has('gibbonPersonID') ? $booking['name'] : $bookedBy,
                 'timeStart' => $booking['timeStart'],
                 'timeEnd'   => $booking['timeEnd'],
-                'link'          => Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParams(['gibbonSpaceID' => $booking['foreignKeyID'] ?? '', 'ttDate' => $booking['date']]),
+                'link'      => $canViewSpaceTimetable ? Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParams(['gibbonSpaceID' => $booking['foreignKeyID'] ?? '', 'ttDate' => $booking['date']]) : '',
             ]);
         }
     }
