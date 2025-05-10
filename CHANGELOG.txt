@@ -75,6 +75,7 @@ v29.0.00
         System: fixed max and min limits to Number values in forms
         System: improved the input detection in the MultiSelect search box for non-standard input sources
         System: fixed searching unicode characters within stored JSON data
+        System: fixed access of inactive modules through direct URLs
         Activities: fixed activity missing from the timetable if it doesn't have a category
         Activities: fixed missing registration button for parents on View Activities page
         Activities: fixed new sign-up system to honour the registration Y/N setting per activity

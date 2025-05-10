@@ -1223,7 +1223,8 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
                     JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
                     WHERE gibbonAction.URLList LIKE :actionName
                         AND gibbonPermission.gibbonRoleID=:gibbonRoleID
-                        AND gibbonModule.name=:moduleName ";
+                        AND gibbonModule.name=:moduleName 
+                        AND gibbonModule.active='Y' ";
 
                     if ($sub != '') {
                         $data['sub'] = $sub;
