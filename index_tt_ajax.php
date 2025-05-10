@@ -40,7 +40,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 } else {
     include './modules/Timetable/moduleFunctions.php';
 
-
     $ttDate = null;
 
     if (!empty($_REQUEST['ttDateNav'])) {
@@ -76,7 +75,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         ->setContext($context)
         ->addCoreLayers($container)
         ->getOutput(); 
-
-    // echo renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, Format::timestamp($ttDate), '', '', $narrow, $edit);
-
 }

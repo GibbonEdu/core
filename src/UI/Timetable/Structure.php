@@ -24,9 +24,9 @@ namespace Gibbon\UI\Timetable;
 use Gibbon\Domain\School\DaysOfWeekGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
+use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
-use Gibbon\Domain\Timetable\TimetableGateway;
 
 /**
  * Timetable UI
@@ -188,6 +188,11 @@ class Structure
     public function getActiveDay()
     {
         return $this->activeDay;
+    }
+
+    public function getActiveTimetable()
+    {
+        return $this->gibbonTTID;
     }
 
     public function setDate($date)

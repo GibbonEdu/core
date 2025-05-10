@@ -126,15 +126,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 ->setContext($context)
                 ->addCoreLayers($container)
                 ->getOutput(); 
-
-            $session->set('viewCalendarSpaceBooking', 'Y');
-            $tt = renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_space_view.php', "&gibbonSpaceID=$gibbonSpaceID&search=$search");
-
-            if ($tt != false) {
-                echo $tt;
-            } else {
-                echo $page->getBlankSlate();
-            }
         }
     }
 }

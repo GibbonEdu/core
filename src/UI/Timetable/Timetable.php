@@ -23,6 +23,7 @@ namespace Gibbon\UI\Timetable;
 
 use Gibbon\Http\Url;
 use Gibbon\View\View;
+use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\UI\Timetable\Structure;
 use Gibbon\UI\Timetable\TimetableLayerInterface;
@@ -35,7 +36,6 @@ use Gibbon\UI\Timetable\Layers\StaffAbsenceLayer;
 use Gibbon\UI\Timetable\Layers\SchoolCalendarLayer;
 use Gibbon\UI\Timetable\Layers\PersonalCalendarLayer;
 use Psr\Container\ContainerInterface;
-use Gibbon\UI\Timetable\Layers\FacilitiesLayer;
 
 /**
  * Timetable UI
@@ -48,6 +48,7 @@ class Timetable implements OutputableInterface
     protected $view;
     protected $structure;
     protected $context;
+    protected $access;
     protected $layers = [];
     
     /**
@@ -57,11 +58,12 @@ class Timetable implements OutputableInterface
      * @param Structure $structure
      * @param TimetableContext $context
      */
-    public function __construct(View $view, Structure $structure, TimetableContext $context)
+    public function __construct(View $view, Structure $structure, TimetableContext $context, TimetableAccess $access)
     {
         $this->view = $view;
         $this->structure = $structure;
         $this->context = $context;
+        $this->access = $access;
     }
 
     /**
@@ -88,7 +90,8 @@ class Timetable implements OutputableInterface
     {
         $this->context = $context;
 
-        $this->context->set('gibbonTTID', $this->structure->setTimetable($this->context->get('gibbonSchoolYearID'), $this->context->get('gibbonTTID')));
+        $this->structure->setTimetable($this->context->get('gibbonSchoolYearID'), $this->context->get('gibbonTTID'));
+        $this->context->set('gibbonTTID', $this->structure->getActiveTimetable());
 
         return $this;
     }
@@ -147,6 +150,10 @@ class Timetable implements OutputableInterface
      */
     public function getOutput() : string
     {
+        if (!$this->access->checkAccess($this->context)) {
+            return Format::alert(__('You do not have permission to access this timetable at this time.'), 'error');
+        }
+
         $this->loadLayers()->processLayers()->sortLayers()->checkLayers()->toggleLayers();
 
         return $this->view->fetchFromTemplate('ui/timetable.twig.html', [
