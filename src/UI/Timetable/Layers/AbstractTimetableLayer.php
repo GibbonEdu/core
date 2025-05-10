@@ -116,5 +116,7 @@ abstract class AbstractTimetableLayer implements TimetableLayerInterface
         }
     }
 
+    public abstract function checkAccess(TimetableContext $context) : bool;
+
     public abstract function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 }

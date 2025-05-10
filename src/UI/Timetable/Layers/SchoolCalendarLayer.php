@@ -43,6 +43,11 @@ class SchoolCalendarLayer extends AbstractCalendarLayer
         $this->type = 'optional';
         $this->order = 10;
     }
+
+    public function checkAccess(TimetableContext $context) : bool
+    {
+        return $context->get('gibbonPersonID') == $this->session->get('gibbonPersonID') && $this->session->has('calendarFeed') && ($this->session->has('googleAPICalendarEnabled') || $this->session->has('microsoftAPIAccessToken'));
+    }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {

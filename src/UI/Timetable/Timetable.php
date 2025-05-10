@@ -35,6 +35,7 @@ use Gibbon\UI\Timetable\Layers\StaffAbsenceLayer;
 use Gibbon\UI\Timetable\Layers\SchoolCalendarLayer;
 use Gibbon\UI\Timetable\Layers\PersonalCalendarLayer;
 use Psr\Container\ContainerInterface;
+use Gibbon\UI\Timetable\Layers\FacilitiesLayer;
 
 /**
  * Timetable UI
@@ -87,19 +88,35 @@ class Timetable implements OutputableInterface
     {
         $this->context = $context;
 
-        $this->structure->setTimetable($this->context->get('gibbonTTID'));
+        $this->context->set('gibbonTTID', $this->structure->setTimetable($this->context->get('gibbonSchoolYearID'), $this->context->get('gibbonTTID')));
 
         return $this;
     }
 
     /**
      * Add a custom layer object to the timetable.
+     *
+     * @param TimetableLayerInterface $layer
+     * @return self
      */
     public function addLayer(TimetableLayerInterface $layer)
     {
-        $this->layers[$layer->getName()] = $layer;
+        if ($layer->checkAccess($this->context)) {
+            $this->layers[$layer->getName()] = $layer;
+        }
 
         return $this;
+    }
+
+    /**
+     * Get a layer by name.
+     *
+     * @param string $layerName
+     * @return TimetableLayerInterface
+     */
+    public function getLayer(string $layerName)
+    {
+        return $this->layers[$layerName] ?? null;
     }
 
     /**
@@ -130,14 +147,14 @@ class Timetable implements OutputableInterface
      */
     public function getOutput() : string
     {
-        $this->loadLayers()->sortLayers()->checkLayers()->toggleLayers();
+        $this->loadLayers()->processLayers()->sortLayers()->checkLayers()->toggleLayers();
 
         return $this->view->fetchFromTemplate('ui/timetable.twig.html', [
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
             'preferencesUrl' => Url::fromHandlerRoute('preferences_ajax.php'),
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
             'gibbonTTID'     => $this->context->get('gibbonTTID'),
-            'timetables'     => $this->context->get('timetables', []),
+            'timetables'     => $this->structure->getTimetables(),
             'structure'      => $this->structure,
             'layers'         => $this->layers,
             'layersToggle'   => json_encode($this->getLayerStates()),
@@ -155,12 +172,37 @@ class Timetable implements OutputableInterface
             if (!$layer->isActive()) continue;
 
             $layer->loadItems($this->structure->getDateRange(), $this->context);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Update layers based on special days and absences.
+     *
+     * @return self
+     */
+    protected function processLayers()
+    {
+        $absenceLayer = $this->getLayer('Staff Absence');
+        $absences = !empty($absenceLayer) ? $absenceLayer->getItems() : [];
+
+        foreach ($this->layers as $layer) {
+            if (!$layer->isActive()) continue;
 
             foreach ($layer->getItems() as $item) {
                 if (!$item->allDay) $this->structure->expandTimeRange($item->timeStart, $item->timeEnd);
 
                 if ($layer->getType() == 'timetabled' && $specialDay = $this->structure->getSpecialDay($item->date)) {
                     $item->constrainTiming($specialDay['schoolStart'] ?? '', $specialDay['schoolEnd'] ?? '');
+                }
+
+                if ($layer->getType() == 'timetabled' && !empty($absences)) {
+                    foreach ($absences as $absence) {
+                        if ($item->checkOverlap($absence)) {
+                            $item->addStatus('absent')->set('style', 'stripe');
+                        }
+                    }
                 }
             }
         }
@@ -186,6 +228,11 @@ class Timetable implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Check for overlap within layers and group items occurring at the same time.
+     *
+     * @return self
+     */
     protected function checkLayers()
     {
         foreach ($this->layers as $layer) {
@@ -252,6 +299,7 @@ class Timetable implements OutputableInterface
         return [
             'q'                    => $_GET['q'] ?? '',
             'gibbonPersonID'       => $this->context->get('gibbonPersonID'),
+            'gibbonSpaceID'       => $this->context->get('gibbonSpaceID'),
             'gibbonTTID'           => $this->context->get('gibbonTTID'),
         ];
     }

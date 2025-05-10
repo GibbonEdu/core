@@ -35,6 +35,7 @@ use Gibbon\Domain\System\SettingGateway;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Tables\Prefab\TodaysLessonsTable;
+use Gibbon\Data\Validator;
 
 /**
  * Parent Dashboard View Composer
@@ -490,7 +491,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         }
 
         //PREPARE TIMETABLE
-        $timetable = false;
         $timetableOutput = '';
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
             $date = date('Y-m-d');
@@ -501,11 +501,18 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             if ($classes != false or $grades != false or $deadlines != false) {
                 $params = '&tab=1';
             }
-            $timetableOutputTemp = renderTT($guid, $connection2, $gibbonPersonID, null, null, Format::timestamp($date), '', $params, 'narrow');
-            if ($timetableOutputTemp != false) {
-                $timetable = true;
-                $timetableOutput .= $timetableOutputTemp;
-            }
+
+            $_POST = (new Validator(''))->sanitize($_POST);
+            $jsonQuery = [
+                'gibbonPersonID' => $gibbonPersonID,
+                'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
+                'ttDate' => $_POST['ttDate'] ?? '',
+            ];
+            $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($jsonQuery);
+
+            $timetableOutput .= "<div hx-get='".$apiEndpoint."' hx-trigger='load' style='width: 100%; min-height: 40px; text-align: center'>";
+            $timetableOutput .= "<img style='margin: 10px 0 5px 0' src='".$this->session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
+            $timetableOutput .= '</div>';
         }
 
         //PREPARE ACTIVITIES

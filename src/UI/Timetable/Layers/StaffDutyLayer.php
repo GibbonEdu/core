@@ -44,6 +44,11 @@ class StaffDutyLayer extends AbstractTimetableLayer
         $this->order = 2;
     }
     
+    public function checkAccess(TimetableContext $context) : bool
+    {
+        return true;
+    }
+
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
         if (!$context->has('gibbonPersonID')) return;

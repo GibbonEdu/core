@@ -25,24 +25,13 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\UI\Timetable\Timetable;
 use Gibbon\UI\Timetable\TimetableContext;
 
-//Gibbon system-wide includes
+// Gibbon system-wide includes
 include './gibbon.php';
 
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
-    if ($session->get('i18n')['code'] != null) {
-        putenv('LC_ALL='.$session->get('i18n')['code']);
-        setlocale(LC_ALL, $session->get('i18n')['code']);
-        bindtextdomain('gibbon', './i18n');
-        textdomain('gibbon');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
-    }
-}
-
-//Setup variables
-$output = '';
-$gibbonTTID = !empty($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
+// Setup variables
+$gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+$gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? null;
 $narrow = $_REQUEST['narrow'] ?? 'trim';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
@@ -50,6 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
     include './modules/Timetable/moduleFunctions.php';
+
+
     $ttDate = null;
 
     if (!empty($_REQUEST['ttDateNav'])) {
@@ -60,27 +51,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $ttDate = Format::dateConvert($_REQUEST['ttDate']);
     }
 
+    $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
+
     // Get and update preferences
     $userGateway = $container->get(UserGateway::class);
-    $timetableGateway = $container->get(TimetableGateway::class);
 
-    if (!empty($_REQUEST['gibbonTTID']) && $gibbonPersonID == $session->get('gibbonPersonID')) {
+    if (!empty($gibbonTTID) && $gibbonPersonID == $session->get('gibbonPersonID')) {
         $userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), 'tt', 'gibbonTTID', preg_replace('/[^0-9]/', '', $gibbonTTID));
     }
 
     $preferences = $userGateway->getUserPreferences($session->get('gibbonPersonID'));
-    $timetables = $timetableGateway->selectActiveTimetables($session->get('gibbonSchoolYearID'))->fetchKeyPair();
-
-    if (empty($gibbonTTID)) {
-        $gibbonTTID = current($timetables);
-    }
 
     // Create timetable context
     $context = $container->get(TimetableContext::class)
         ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
         ->set('gibbonPersonID', $gibbonPersonID)
-        ->set('gibbonTTID', $preferences['tt']['gibbonTTID'] ?? $gibbonTTID)
-        ->set('timetables', $timetables)
+        ->set('gibbonSpaceID', $gibbonSpaceID)
+        ->set('gibbonTTID', $gibbonTTID ?? $preferences['tt']['gibbonTTID'])
         ->set('layerStates', $preferences['ttLayers'] ?? []);
 
     // Build and render timetable
@@ -90,16 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         ->addCoreLayers($container)
         ->getOutput(); 
 
-    $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
+    // echo renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, Format::timestamp($ttDate), '', '', $narrow, $edit);
 
-    $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, Format::timestamp($ttDate), '', '', $narrow, $edit);
-    if ($tt != false) {
-        $output .= $tt;
-    } else {
-        echo Format::alert(__('There is no information for the date specified.'), 'empty');
-    }
-
-    
 }
-
-echo $output;

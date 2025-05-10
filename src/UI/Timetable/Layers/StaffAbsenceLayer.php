@@ -25,6 +25,7 @@ use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 /**
  * Timetable UI: StaffAbsenceLayer
@@ -35,20 +36,30 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 class StaffAbsenceLayer extends AbstractTimetableLayer
 {
     protected $staffAbsenceGateway;
+    protected $actionGateway;
 
-    public function __construct(StaffAbsenceGateway $staffAbsenceGateway)
+    public function __construct(StaffAbsenceGateway $staffAbsenceGateway, ActionGateway $actionGateway)
     {
         $this->staffAbsenceGateway = $staffAbsenceGateway;
+        $this->actionGateway = $actionGateway;
 
         $this->name = 'Staff Absence';
         $this->color = 'gray';
         $this->type = 'optional';
-        $this->order = 15;
+        $this->order = 0;
+    }
+
+    public function checkAccess(TimetableContext $context) : bool
+    {
+        return true;
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
         if (!$context->has('gibbonPersonID')) return;
+
+        $canViewAbsences = $this->actionGateway->isActionAccessible('Staff', 'absences_view_byPerson');
+        if (!$canViewAbsences) return;
 
         $criteria = $this->staffAbsenceGateway->newQueryCriteria()
             ->filterBy('dateStart', $dateRange->getStartDate()->format('Y-m-d'))
@@ -56,18 +67,18 @@ class StaffAbsenceLayer extends AbstractTimetableLayer
             ->filterBy('status', 'Approved');
                     
         $staffAbsences = $this->staffAbsenceGateway->queryAbsencesByPerson($criteria, $context->get('gibbonPersonID'), false);
-        // $canViewAbsences = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php');
 
         foreach ($staffAbsences as $absence) {
-            $canViewAbsences = $absence['gibbonPersonID'] == $context->has('gibbonPersonID');
+            $self = $absence['gibbonPersonID'] == $context->get('gibbonPersonID');
             
             $coverageName = Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
             $link = Url::fromModuleRoute('Staff', 'absences_view_details.php')->withQueryParam('gibbonStaffAbsenceID', $absence['gibbonStaffAbsenceID']);
 
             $this->createItem($absence['dateStart'], $absence['allDay'] == 'Y')->loadData([
                 'type'      => __('Absent'),
+                'label'     => __('Absent'),
                 'title'     => $absence['allDay'] == 'Y' ? __('Absent') : '',
-                // 'subtitle'  => $coverageName,
+                // 'subtitle'  => $canViewAbsences ? $coverageName : '',
                 'link'      => $canViewAbsences ? $link : '',
                 'timeStart' => $absence['allDay'] == 'N' ? $absence['timeStart'] : null,
                 'timeEnd'   => $absence['allDay'] == 'N' ? $absence['timeEnd'] : null,

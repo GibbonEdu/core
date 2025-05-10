@@ -26,6 +26,8 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\UI\Timetable\Timetable;
 
 //Module includes for Timetable module
 include './modules/Timetable/moduleFunctions.php';
@@ -156,9 +158,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             
             //SHOW CURRENT ENROLMENT
-            echo '<h2>';
-            echo __('Current Enrolment');
-            echo '</h2>';
 
             // QUERY
             $criteria = $courseEnrolmentGateway->newQueryCriteria(true)
@@ -170,6 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // FORM
             $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/courseEnrolment_manage_byPerson_editProcessBulk.php?allUsers='.$allUsers);
+            $form->setTitle(__('Current Enrolment'));
             $form->addHiddenValue('type', $type);
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -230,21 +230,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $gibbonTTID = isset($_GET['gibbonTTID'])? $_GET['gibbonTTID'] : null;
             $ttDate = isset($_POST['ttDate'])? Format::timestamp(Format::dateConvert($_POST['ttDate'])) : null;
 
-            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php', "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type&allUsers=$allUsers#tt", 'full', true);
-            if ($tt != false) {
-                echo $tt;
-            } else {
-                echo $page->getBlankSlate();
-            }
+            // Create timetable context
+            $context = $container->get(TimetableContext::class)
+                ->set('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->set('gibbonPersonID', $gibbonPersonID)
+                ->set('gibbonTTID', $gibbonTTID);
+
+            // Build and render timetable
+            echo $container->get(Timetable::class)
+                ->setDate($ttDate)
+                ->setContext($context)
+                ->addCoreLayers($container)
+                ->getOutput(); 
 
             //SHOW OLD ENROLMENT RECORDS
-            echo '<h2>';
-            echo __('Old Enrolment');
-            echo '</h2>';
-
             $enrolmentLeft = $courseEnrolmentGateway->queryCourseEnrolmentByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID, true);
 
             $table = DataTable::createPaginated('enrolmentLeft', $criteria);
+            $table->setTitle(__('Old Enrolment'));
 
             $table->addColumn('courseClass', __('Class Code'))
                 ->sortable(['course', 'class'])

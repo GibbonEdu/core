@@ -34,8 +34,9 @@ class TimetableContext
     protected $data = [
         'gibbonSchoolYearID' => '',
         'gibbonPersonID'     => '',
+        'gibbonSpaceID'      => '',
         'gibbonTTID'         => '',
-        'ttLayers'           => '',
+        'layerStates'        => '',
     ];
 
     public function has($key)

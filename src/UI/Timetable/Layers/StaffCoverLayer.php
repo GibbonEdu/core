@@ -25,6 +25,7 @@ use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 /**
  * Timetable UI: StaffCoverLayer
@@ -35,14 +36,21 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 class StaffCoverLayer extends AbstractTimetableLayer
 {
     protected $staffCoverageGateway;
+    protected $plannerEntryGateway;
 
-    public function __construct(StaffCoverageGateway $staffCoverageGateway)
+    public function __construct(StaffCoverageGateway $staffCoverageGateway, PlannerEntryGateway $plannerEntryGateway)
     {
         $this->staffCoverageGateway = $staffCoverageGateway;
+        $this->plannerEntryGateway = $plannerEntryGateway;
 
         $this->name = 'Staff Cover';
         $this->color = 'pink';
         $this->order = 8;
+    }
+
+    public function checkAccess(TimetableContext $context) : bool
+    {
+        return true;
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
@@ -62,14 +70,42 @@ class StaffCoverLayer extends AbstractTimetableLayer
                 ? Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true)
                 : Format::name($coverage['titleStatus'], $coverage['preferredNameStatus'], $coverage['surnameStatus'], 'Staff', false, true);
 
-            $this->createItem($coverage['date'])->loadData([
-                'type'      => __('Covering'),
-                'title'     => $coverage['contextName'],
-                'subtitle'  => $fullName,
-                'allDay'    => $coverage['allDay'] == 'Y',
-                'link'      => Url::fromModuleRoute('Staff', 'coverage_my.php'),
-                'timeStart' => $coverage['timeStart'],
-                'timeEnd'   => $coverage['timeEnd'],
+            $item = $this->createItem($coverage['date'])->loadData([
+                'type'        => __('Covering'),
+                'title'       => $coverage['contextName'],
+                'label'       => $coverage['courseName'],
+                'subtitle'    => $coverage['roomName'] ?? '',
+                'description' => __('Covering for {name}', ['name' => $fullName]).'<br/>'.$coverage['notesStatus'],
+                'location'    => $coverage['roomName'] ?? '',
+                'phone'       => $coverage['phoneInternal'] ?? '',
+                'allDay'      => $coverage['allDay'] == 'Y',
+                'link'        => !empty($coverage['gibbonCourseClassID'])
+                    ? Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParams(['gibbonCourseClassID' => $coverage['gibbonCourseClassID'], 'currentDate' => $coverage['date']])
+                    : Url::fromModuleRoute('Staff', 'coverage_my.php'),
+                'timeStart'   => $coverage['timeStart'],
+                'timeEnd'     => $coverage['timeEnd'],
+            ]);
+
+            $planner = !empty($coverage['gibbonCourseClassID']) 
+                ? $this->plannerEntryGateway->getPlannerEntryByClassTimes($coverage['gibbonCourseClassID'], $coverage['date'], $coverage['timeStart'], $coverage['timeEnd'])
+                : [];
+
+            if (!empty($planner)) {
+                $item->set('primaryAction', [
+                    'name'      => 'view',
+                    'label'     => __('Lesson planned: {name}',['name' => htmlPrep($planner['name'])]),
+                    'url'       => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $planner['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $planner['gibbonPlannerEntryID']]),
+                    'icon'      => 'check',
+                    'iconClass' => 'text-blue-500 hover:text-blue-800',
+                ]);
+            }
+
+            $item->set('secondaryAction', [
+                'name'      => 'cover',
+                'label'     => __('Covering for {name}', ['name' => $fullName]),
+                'url'       => Url::fromModuleRoute('Staff', 'coverage_my.php'),
+                'icon'      => 'user',
+                'iconClass' => !empty($fullName) ? 'text-pink-500 hover:text-pink-800' : 'text-gray-600 hover:text-gray-800',
             ]);
         }
     }

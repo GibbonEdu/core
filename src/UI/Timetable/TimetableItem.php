@@ -32,7 +32,7 @@ namespace Gibbon\UI\Timetable;
 class TimetableItem 
 {
     protected $active = true;
-    protected $specialStatus;
+    protected $statuses;
 
     protected $label;
     protected $title;
@@ -105,6 +105,30 @@ class TimetableItem
     }
 
     /**
+     * Add a status tag to the statuses array.
+     *
+     * @param string $status
+     * @return self
+     */
+    public function addStatus(string $status)
+    {
+        $this->statuses[$status] = $status;
+
+        return $this;
+    }
+
+    /**
+     * Check if a status tag has been added to this item.
+     *
+     * @param string $status
+     * @return bool
+     */
+    public function hasStatus(string $status)
+    {
+        return !empty($this->statuses[$status]);
+    }
+
+    /**
      * Gets if the current item should display on the timetable.
      *
      * @return bool
@@ -114,7 +138,12 @@ class TimetableItem
         return $this->active;
     }
 
-    public function getKey()
+    /**
+     * Returns a time-specific key, used when finding overlapping items.
+     *
+     * @return string
+     */
+    public function getKey() : string
     {
         return $this->date.'-'.$this->timeStart.'-'.$this->timeEnd;
     }
@@ -130,7 +159,6 @@ class TimetableItem
         $this->title = $data['title'] ?? $this->title;
         $this->label = $data['label'] ?? $this->label;
         $this->subtitle = $data['subtitle'] ?? $this->subtitle;
-        $this->specialStatus = $data['specialStatus'] ?? $this->specialStatus;
         $this->description = $data['description'] ?? $this->description;
         $this->overlap = $data['overlap'] ?? $this->overlap;
 
@@ -189,5 +217,15 @@ class TimetableItem
         if ($this->timeStart == $this->timeEnd) {
             $this->active = false;
         }
+    }
+
+    public function checkOverlap(TimetableItem $other)
+    {
+        if ($other->date != $this->date) return false;
+
+        if ($other->allDay == 'Y') return true;
+
+        return ($this->timeStart >= $other->timeStart && $this->timeStart < $other->timeEnd)
+            || ($other->timeStart >= $this->timeStart && $other->timeStart < $this->timeEnd);
     }
 }

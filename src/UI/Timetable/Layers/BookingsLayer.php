@@ -24,6 +24,7 @@ namespace Gibbon\UI\Timetable\Layers;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
 use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
 /**
  * Timetable UI: BookingsLayer
@@ -44,16 +45,23 @@ class BookingsLayer extends AbstractTimetableLayer
         $this->type = 'optional';
         $this->order = 3;
     }
+
+    public function checkAccess(TimetableContext $context) : bool
+    {
+        return true;
+    }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'))->fetchAll();
+        $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'), $context->get('gibbonSpaceID'))->fetchAll();
 
         foreach ($bookings as $booking) {
+            $bookedBy = Format::name($booking['title'], $booking['preferredName'], $booking['surname'], 'Staff', false, true);
+
             $this->createItem($booking['date'])->loadData([
                 'type'    => __('Booking'),
                 'title'     => $booking['reason'],
-                'subtitle'  => $booking['name'],
+                'subtitle'  => $context->has('gibbonPersonID') ? $booking['name'] : $bookedBy,
                 'timeStart' => $booking['timeStart'],
                 'timeEnd'   => $booking['timeEnd'],
                 'link'          => Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParams(['gibbonSpaceID' => $booking['foreignKeyID'] ?? '', 'ttDate' => $booking['date']]),

@@ -51,5 +51,7 @@ interface TimetableLayerInterface
 
     public function filterItems(callable $callback);
 
+    public function checkAccess(TimetableContext $context) : bool;
+
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 }

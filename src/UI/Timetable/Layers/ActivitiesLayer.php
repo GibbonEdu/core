@@ -46,6 +46,11 @@ class ActivitiesLayer extends AbstractTimetableLayer
         $this->color = 'purple';
         $this->order = 0;
     }
+
+    public function checkAccess(TimetableContext $context) : bool
+    {
+        return true;
+    }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
@@ -74,5 +79,8 @@ class ActivitiesLayer extends AbstractTimetableLayer
             }
 
         }
+
+        // $activityList = $activityGateway->selectActivitiesByFacility($session->get('gibbonSchoolYearID'), $gibbonSpaceID, $dateType)->fetchAll();
+
     }
 }

@@ -32,7 +32,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <span class='hidden md:inline ml-2'>{{ __('Timetables') }}</span>
             </button>
 
-            <div x-transition.opacity x-show="timetablesOpen" @click.outside="timetablesOpen = false" class="absolute min-w-48 -mt-px z-20 flex flex-col gap-2 items-start justify-end rounded border bg-white shadow-lg px-3 py-4">
+            <div x-cloak x-transition.opacity x-show="timetablesOpen" @click.outside="timetablesOpen = false" class="absolute min-w-48 -mt-px z-20 flex flex-col gap-2 items-start justify-end rounded border bg-white shadow-lg px-3 py-4">
                 {% for timetableID, timetableName in timetables %}
                 
                 <button type='button' class="ttNav inline-flex items-center gap-2 px-1 text-gray-600 hover:text-gray-800 text-sm" @click="ttID = '{{ timetableID }}'">
@@ -52,7 +52,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <span class='hidden md:inline ml-2'>{{ __('Layers') }}</span>
             </button>
 
-            <div x-transition.opacity x-show="layersOpen" @click.outside="layersOpen = false" class="absolute min-w-48 -ml-px -mt-px z-20 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
+            <div x-cloak x-transition.opacity x-show="layersOpen" @click.outside="layersOpen = false" class="absolute min-w-48 -ml-px -mt-px z-20 flex flex-col justify-end rounded border bg-white shadow-lg p-3">
                 {% for layer in layers %}
                     
                     {% set color = structure.getColors(layer.getColor) %}

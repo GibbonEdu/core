@@ -339,10 +339,10 @@ class PlannerEntryGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function getPlannerEntriesByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
+    public function selectPlannerEntriesByPersonAndDateRange($gibbonPersonID, $dateStart, $dateEnd)
     {
         $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonPersonID' => $gibbonPersonID];
-        $sql = "SELECT CONCAT(gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd) as lessonID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonUnit.gibbonUnitID, gibbonUnit.name as unitName
+        $sql = "SELECT CONCAT(gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd) as lessonID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, gibbonPlannerEntry.date, gibbonPlannerEntry.timeStart, gibbonPlannerEntry.timeEnd, gibbonCourse.gibbonSchoolYearID, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS courseNameShort, gibbonCourseClass.nameShort AS classNameShort, gibbonUnit.gibbonUnitID, gibbonUnit.name as unitName, gibbonTTColumnRow.name as period
         FROM gibbonCourse 
         JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
         JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 

@@ -21,14 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Timetable;
 
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\DaysOfWeekGateway;
-use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
-use Gibbon\Domain\Timetable\TimetableGateway;
-use Gibbon\Domain\Timetable\TimetableColumnGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Domain\Timetable\TimetableColumnGateway;
+use Gibbon\Domain\Timetable\TimetableGateway;
 
 /**
  * Timetable UI
@@ -38,20 +36,22 @@ use Gibbon\Domain\Timetable\TimetableDayGateway;
  */
 class Structure
 {
-    protected $session;
-    protected $settingGateway;
     protected $daysOfWeekGateway;
     protected $specialDayGateway;
     protected $schoolYearTermGateway;
+    protected $timetableGateway;
     protected $timetableDayGateway;
     protected $timetableColumnGateway;
 
     protected $weekdays;
     protected $columns;
+    protected $timetables;
     protected $timetableDays;
     protected $specialDays;
+    protected $gibbonTTID;
 
     protected $currentDate;
+    protected $activeDay;
     protected $today;
 
     protected $dateRange;
@@ -65,21 +65,21 @@ class Structure
     protected $timestampStart;
     protected $timestampEnd;
 
-    protected $pixelRatio = 1.0;
+    protected $pixelRatio = 1.2;
 
     protected $colors = [
         'gray' => [
-            'background'   => 'bg-gray-200',
+            'background'   => 'bg-gray-200/90',
             'text'         => 'text-gray-700',
             'textLight'    => 'text-gray-400',
             'textHover'    => 'hover:text-gray-800',
-            'outline'      => 'outline-gray-400',
-            'outlineLight' => 'outline-gray-400/50',
+            'outline'      => 'outline-gray-500',
+            'outlineLight' => 'outline-gray-500/50',
             'outlineHover' => 'hover:outline-gray-600',
         ],
         'blue' => [
             'background'   => 'bg-blue-200',
-            'text'         => 'text-blue-800',
+            'text'         => 'text-blue-900',
             'textLight'    => 'text-blue-400',
             'textHover'    => 'hover:text-blue-950',
             'outline'      => 'outline-blue-700',
@@ -160,13 +160,12 @@ class Structure
         ],
     ];
 
-    public function __construct(Session $session, SettingGateway $settingGateway, DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, SchoolYearTermGateway $schoolYearTermGateway, TimetableDayGateway $timetableDayGateway, TimetableColumnGateway $timetableColumnGateway)
+    public function __construct(DaysOfWeekGateway $daysOfWeekGateway, SchoolYearSpecialDayGateway $specialDayGateway, SchoolYearTermGateway $schoolYearTermGateway, TimetableGateway $timetableGateway, TimetableDayGateway $timetableDayGateway, TimetableColumnGateway $timetableColumnGateway)
     {
-        $this->session = $session;
-        $this->settingGateway = $settingGateway;
         $this->daysOfWeekGateway = $daysOfWeekGateway;
         $this->specialDayGateway = $specialDayGateway;
         $this->schoolYearTermGateway = $schoolYearTermGateway;
+        $this->timetableGateway = $timetableGateway;
         $this->timetableDayGateway = $timetableDayGateway;
         $this->timetableColumnGateway = $timetableColumnGateway;
     }
@@ -186,6 +185,11 @@ class Structure
         return $this->currentDate;
     }
 
+    public function getActiveDay()
+    {
+        return $this->activeDay;
+    }
+
     public function setDate($date)
     {
         $this->currentDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', ($date ?? date('Y-m-d')).' 00:00:00');
@@ -195,11 +199,14 @@ class Structure
         $this->dateRange = $this->calculateDateRange();
     }
 
-    public function setTimetable($gibbonTTID)
+    public function setTimetable($gibbonSchoolYearID, $gibbonTTID)
     {
+        $this->timetables = $this->loadTimetables($gibbonSchoolYearID, $gibbonTTID);
         $this->specialDays = $this->loadSpecialDays();
-        $this->timetableDays = $this->loadTimetableDays($gibbonTTID);
-        $this->columns = $this->loadColumns($gibbonTTID);
+        $this->timetableDays = $this->loadTimetableDays($this->gibbonTTID);
+        $this->columns = $this->loadColumns($this->gibbonTTID);
+
+        return $this->gibbonTTID;
     }
 
     public function expandTimeRange($timeStart, $timeEnd)
@@ -219,7 +226,7 @@ class Structure
         $this->timeRangeEnd = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->getCurrentDate()->format('Y-m-d').' '.$this->timeEnd);
         
         $timeRange = new \DatePeriod($this->timeRangeStart, $interval, $this->timeRangeEnd);
-
+        
         return $timeRange;
     }
 
@@ -236,6 +243,11 @@ class Structure
     public function getEndDate() : string
     {
         return $this->dateRange->getEndDate()->format('Y-m-d');
+    }
+
+    public function getTimetables()
+    {
+        return $this->timetables;
     }
 
     public function getWeekdays()
@@ -319,8 +331,11 @@ class Structure
     protected function loadWeekdays()
     {
         $weekdays = $this->daysOfWeekGateway->selectSchoolWeekdays()->fetchAll();
+        $this->activeDay = $weekdays[0]['nameShort'] ?? $this->today->format('D');
 
         foreach ($weekdays as $weekday) {
+            if ($this->today->format('D') == $weekday['nameShort']) $this->activeDay = $weekday['nameShort'];
+
             $this->expandTimeRange($weekday['schoolStart'], $weekday['schoolEnd']);
         }
 
@@ -334,6 +349,7 @@ class Structure
      */
     protected function loadSpecialDays()
     {
+        // Load special days and expand csv values into arrays
         $specialDays = $this->specialDayGateway->selectSpecialDaysByDateRange($this->getStartDate(), $this->getEndDate())->fetchGroupedUnique();
 
         // Add school closures for any date outside of a school term
@@ -350,6 +366,14 @@ class Structure
         }
 
         return $specialDays;
+    }
+
+    protected function loadTimetables($gibbonSchoolYearID, $gibbonTTID)
+    {   
+        $timetables = $this->timetableGateway->selectActiveTimetables($gibbonSchoolYearID)->fetchKeyPair();
+        $this->gibbonTTID = empty($gibbonTTID) ? key($timetables) : $gibbonTTID;
+
+        return $timetables;
     }
 
     protected function loadTimetableDays($gibbonTTID)
