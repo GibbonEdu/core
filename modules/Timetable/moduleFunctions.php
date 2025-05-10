@@ -31,6 +31,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
+use GuzzleHttp\Exception\ConnectException;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd, &$gibbonCourseClassID = null)
@@ -266,15 +267,16 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
-        $service = $container->get('Google_Service_Calendar');
-        $getFail = empty($service);
+        
 
         $calendarListEntry = array();
 
         try {
+            $service = $container->get('Google_Service_Calendar');
+            $getFail = empty($service);
             $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
             $calendarListEntry = $service->events->listEvents($xml, $optParams);
-        } catch (Exception $e) {
+        } catch (Exception | ConnectException $e) {
             $getFail = true;
         }
 
@@ -298,14 +300,14 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
                 if ($hideEvent) continue;
                 
                 $multiDay = false;
-                if (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
-                    $multiDay = true;
-                }
-                if ($entry['start']['dateTime'] == '') {
+                if (empty($entry['start']['dateTime'])) {
                     if ((strtotime($entry['end']['date']) - strtotime($entry['start']['date'])) / (60 * 60 * 24) > 1) {
                         $multiDay = true;
                     }
+                } elseif (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
+                    $multiDay = true;
                 }
+                
 
                 if ($multiDay) { //This event spans multiple days
                     if ($entry['start']['date'] != $entry['start']['end']) {

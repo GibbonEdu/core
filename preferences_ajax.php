@@ -19,39 +19,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
+use Gibbon\Data\Validator;
+use Gibbon\Domain\User\UserGateway;
 
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\QueryableGateway;
+include './gibbon.php';
 
-/**
- * School Year Special Day Gateway
- *
- * @version v25
- * @since   v25
- */
-class DaysOfWeekGateway extends QueryableGateway
-{
-    use TableAware;
-
-    private static $tableName = 'gibbonDaysOfWeek';
-    private static $primaryKey = 'gibbonDaysOfWeekID';
-
-    public function selectSchoolWeekdays()
-    {
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
-
-        return $this->db()->select($sql);
-    }
-
-    public function getDayOfWeekByDate($date)
-    {
-        $data = ['dayOfWeek' => date('l', strtotime($date))];
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name=:dayOfWeek";
-
-        return $this->db()->selectOne($sql, $data);
-    }
-
-    
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    exit;
 }
+
+$validator = $container->get(Validator::class);
+$userGateway = $container->get(UserGateway::class);
+
+$preferenceScope = preg_replace('/[^a-zA-Z0-9]/', '', $_GET['scope'] ?? '');
+$preferenceKey = preg_replace('/[^a-zA-Z0-9]/', '', $_GET['key'] ?? '');
+$preferenceValue = $validator->sanitizePlainText($_GET[$preferenceKey] ?? $_GET['default'] ?? '');
+
+if (empty($preferenceScope) || empty($preferenceKey)) {
+    return;
+}
+
+$userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), $preferenceScope, $preferenceKey, $preferenceValue);

@@ -49,6 +49,18 @@ class TimetableGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectActiveTimetables($gibbonSchoolYearID) 
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name
+                FROM gibbonTT 
+                WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.active='Y'
+                GROUP BY gibbonTT.gibbonTTID
+                ORDER BY gibbonTT.name";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectClassesByTimetable($gibbonTTID)
     {
         $data = ['gibbonTTID' => $gibbonTTID];

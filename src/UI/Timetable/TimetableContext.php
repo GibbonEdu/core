@@ -19,39 +19,47 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
-
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\QueryableGateway;
+namespace Gibbon\UI\Timetable;
 
 /**
- * School Year Special Day Gateway
+ * Timetable UI: TimetableContext
+ * 
+ * A simple data model to hold contextual information for loading timetable layers.
  *
- * @version v25
- * @since   v25
+ * @version  v29
+ * @since    v29
  */
-class DaysOfWeekGateway extends QueryableGateway
+class TimetableContext
 {
-    use TableAware;
+    protected $data = [
+        'gibbonSchoolYearID' => '',
+        'gibbonPersonID'     => '',
+        'gibbonSpaceID'      => '',
+        'gibbonTTID'         => '',
+        'layerStates'        => '',
+    ];
 
-    private static $tableName = 'gibbonDaysOfWeek';
-    private static $primaryKey = 'gibbonDaysOfWeekID';
-
-    public function selectSchoolWeekdays()
+    public function has($key)
     {
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
-
-        return $this->db()->select($sql);
+        return !empty($this->data[$key]);
     }
 
-    public function getDayOfWeekByDate($date)
+    public function get($key, $default = null)
     {
-        $data = ['dayOfWeek' => date('l', strtotime($date))];
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name=:dayOfWeek";
-
-        return $this->db()->selectOne($sql, $data);
+        return $this->data[$key] ?? $default;
     }
 
-    
+    public function set($key, $value, $default = null)
+    {
+        $this->data[$key] = $value ?? $default;
+
+        return $this;
+    }
+
+    public function loadData(array $data)
+    {
+        $this->data = array_merge($this->data, $data);
+
+        return $this;
+    }
 }

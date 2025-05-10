@@ -19,39 +19,39 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
+namespace Gibbon\UI\Timetable;
 
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\QueryableGateway;
+use Gibbon\UI\Timetable\TimetableContext;
 
 /**
- * School Year Special Day Gateway
+ * Timetable UI: TimetableLayerInterface
  *
- * @version v25
- * @since   v25
+ * @version  v29
+ * @since    v29
  */
-class DaysOfWeekGateway extends QueryableGateway
+interface TimetableLayerInterface
 {
-    use TableAware;
+    public function getName() : string;
 
-    private static $tableName = 'gibbonDaysOfWeek';
-    private static $primaryKey = 'gibbonDaysOfWeekID';
-
-    public function selectSchoolWeekdays()
-    {
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
-
-        return $this->db()->select($sql);
-    }
-
-    public function getDayOfWeekByDate($date)
-    {
-        $data = ['dayOfWeek' => date('l', strtotime($date))];
-        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name=:dayOfWeek";
-
-        return $this->db()->selectOne($sql, $data);
-    }
-
+    public function getOrder() : int;
     
+    public function getColor() : string;
+    
+    public function getType() : string;
+    
+    public function isActive() : bool;
+
+    public function setActive(bool $active);
+
+    public function getItems() : array;
+
+    public function getItemsByDate(string $date, bool $allDay = false) : array;
+
+    public function countItems();
+
+    public function filterItems(callable $callback);
+
+    public function checkAccess(TimetableContext $context) : bool;
+
+    public function loadItems(\DatePeriod $dateRange, TimetableContext $context);
 }

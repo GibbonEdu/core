@@ -33,6 +33,8 @@ use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Forms\Form;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\UI\Timetable\Timetable;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -260,21 +262,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                             echo $table->render(['' => '']);
 
-                            include './modules/Timetable/moduleFunctions.php';
-                            $ttDate = '';
-                            if (isset($_POST['ttDate'])) {
-                                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
-                            }
-                            $gibbonTTID = null;
-                            if (isset($_GET['gibbonTTID'])) {
-                                $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-                            }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search#timetable");
-                            if ($tt != false) {
-                                echo $tt;
-                            } else {
-                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
-                            }
+
+                            $ttDate = !empty($_REQUEST['ttDate']) ? Format::dateConvert($_REQUEST['ttDate']) : null;
+                            $gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
+                            
+                            // Create timetable context
+                            $context = $container->get(TimetableContext::class)
+                                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                ->set('gibbonPersonID', $gibbonPersonID)
+                                ->set('gibbonTTID', $gibbonTTID);
+
+                            // Build and render timetable
+                            echo $container->get(Timetable::class)
+                                ->setDate($ttDate)
+                                ->setContext($context)
+                                ->addCoreLayers($container)
+                                ->getOutput(); 
                         }
                     } elseif ($subpage == 'Personal') {
                         $table = DataTable::createDetails('personal');
@@ -592,21 +595,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 echo $form->getOutput();
                             }
 
-                            include './modules/Timetable/moduleFunctions.php';
-                            $ttDate = '';
-                            if (isset($_POST['ttDate'])) {
-                                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
-                            }
-                            $gibbonTTID = null;
-                            if (isset($_GET['gibbonTTID'])) {
-                                $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-                            }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search");
-                            if ($tt != false) {
-                                echo $tt;
-                            } else {
-                                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
-                            }
+                            $ttDate = !empty($_REQUEST['ttDate']) ? Format::dateConvert($_REQUEST['ttDate']) : null;
+                            $gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
+                            
+                            // Create timetable context
+                            $context = $container->get(TimetableContext::class)
+                                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                ->set('gibbonPersonID', $gibbonPersonID)
+                                ->set('gibbonTTID', $gibbonTTID);
+
+                            // Build and render timetable
+                            echo $container->get(Timetable::class)
+                                ->setDate($ttDate)
+                                ->setContext($context)
+                                ->addCoreLayers($container)
+                                ->getOutput(); 
                         }
                     }
 

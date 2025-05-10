@@ -23,6 +23,8 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\UI\Timetable\Timetable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $search = $_GET['search'] ?? '';
         $allUsers = $_GET['allUsers'] ?? '';
-        $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+        $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
         $format = $_GET['format'] ?? '';
 
 
@@ -156,15 +158,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
             $ttDate = null;
             if (!empty($_REQUEST['ttDate'])) {
-                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
+                $ttDate = Format::dateConvert($_REQUEST['ttDate']);
             }
 
-            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_view.php', "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search", '', $format == 'print' ? 'narrow' : 'full');
-            if ($tt != false) {
-                echo $tt;
-            } else {
-                echo $page->getBlankSlate();
-            }
+            // Create timetable context
+            $context = $container->get(TimetableContext::class)
+                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                ->set('gibbonPersonID', $gibbonPersonID)
+                ->set('gibbonTTID', $gibbonTTID);
+
+            // Build and render timetable
+            echo $container->get(Timetable::class)
+                ->setDate($ttDate)
+                ->setContext($context)
+                ->addCoreLayers($container)
+                ->getOutput(); 
 
             //Set sidebar
             $session->set('sidebarExtra', Format::userPhoto($row['image_240'], 240));
