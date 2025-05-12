@@ -69,6 +69,7 @@ else {
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonMessengerID', $gibbonMessengerID ?? '');
     $form->addHiddenValue('individuals', 'Y');
+    $form->addHiddenValue('manualRecipient', 'Y');
 
     $form->addRow()->addHeading('Add Recipients', __('Add Recipients'));
 

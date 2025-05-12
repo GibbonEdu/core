@@ -938,5 +938,6 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonReportPrototypeSection` ADD `active` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `category`;end
 ALTER TABLE `gibbonSpace` ADD `bookable` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `active`;end
 ALTER TABLE `gibbonPerson` ADD `preferences` TEXT NULL AFTER `cookieConsent`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD INDEX `duplicateCheck` (`gibbonMessengerID`, `gibbonPersonID`) USING BTREE;end
 
 ";

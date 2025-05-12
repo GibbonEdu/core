@@ -2345,7 +2345,7 @@ class MessageTargets
                 ];
 
                 // Prevent adding the record if it already exists in the table
-                if (!$this->messengerReceiptGateway->unique($uniqueData, ['gibbonMessengerID', 'gibbonPersonID'])) {
+                if (!empty($_POST['manualRecipient']) && !$this->messengerReceiptGateway->unique($uniqueData, ['gibbonMessengerID', 'gibbonPersonID'])) {
                     continue;
                 }
 
