@@ -536,6 +536,7 @@ CustomBlocks.prototype.init = function () {
                 });
             });
 
+        $(_.blockTemplate).children(".sortHandle").remove();
         $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
     }
 
@@ -827,8 +828,13 @@ CustomBlocks.prototype.refresh = function () {
 
 // Add the prototype method to jQuery
 $.prototype.gibbonCustomBlocks = function (settings) {
+    if ($(this).hasClass('customBlocksInit')) {
+        $('.blocks', this).empty();
+    }
+
     this.gibbonCustomBlocks = new CustomBlocks(this, settings);
-    this.data("gibbonCustomBlocks", this.gibbonCustomBlocks);
+    $(this).data("gibbonCustomBlocks", this.gibbonCustomBlocks);
+    $(this).addClass('customBlocksInit');
 };
 
 /**
