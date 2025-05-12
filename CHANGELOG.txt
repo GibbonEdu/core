@@ -92,6 +92,7 @@ v29.0.00
         Reports: fixed missing iframe support for template preview windows
         Reports: fixed comment character count not updating when writing reports
         Reports: fixed missing progress bar colour in Proofreading and My Reporting pages
+        Reports: fixed progress bar count for left students in My Reporting page
         Students: fixed missing Emergency Contact Number 2 on student profile
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder
