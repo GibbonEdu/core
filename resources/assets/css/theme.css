@@ -422,6 +422,11 @@ select[multiple] + .error-msg {
     @apply top-auto -bottom-5;
 }
 
+textarea + .error-msg {
+    @apply top-auto bottom-0 mb-2 ml-2;
+}
+
+
 .tinymce + .error-msg,
 .tox-tinymce + .error-msg  {
     @apply top-auto bottom-0 mb-6 ml-2;
