@@ -342,8 +342,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         }, []);
 
                         // Account for whole-day future absences that this student already has
-                        $futureAbsences = array_filter($logs, function ($log) {
-                            return $log['context'] == 'Future';
+                        $futureAbsences = array_filter($logs, function ($log) use ($targetDate) {
+                            return $log['context'] == 'Future' && $log['date'] == $targetDate;
                         });
                         if (count($futureAbsences) > 0) {
                             $disabled = array_keys($classOptions);
