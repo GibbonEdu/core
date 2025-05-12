@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     ]);
 
     // Attempt to write logs
-    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleIDFromName($connection2, 'Students'), $session->get('gibbonPersonID'), 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $studentNote['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
+    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Students', $session->get('gibbonPersonID'), 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $studentNote['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
 
     // Attempt to issue alerts form tutor(s) and teacher(s) according to settings
     if ($student['status'] == 'Full') {

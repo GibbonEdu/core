@@ -1011,10 +1011,6 @@ class ImportType
                 return false;
             } break;
 
-            case 'schoolyear':  if (preg_match('/(^\d{4}[-]\d{2-4}$)/u', $value) > 1) {
-                return false;
-            } break;
-
             case 'nospaces':    if (preg_match('/\s/u', $value) > 0) {
                 return false;
             } break;

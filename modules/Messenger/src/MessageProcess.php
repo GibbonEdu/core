@@ -145,7 +145,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             }
 
             //Set log
-            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $message["address"]), $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
+            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Messenger', $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
         }
 
         if ($email=="Y") {
@@ -284,7 +284,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                     ]);
                     if(!$mail->Send()) {
                         $partialFail = TRUE;
-                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $message["address"]), $session->get('gibbonPersonID'), 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry['contactDetail']));
+                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Messenger', $session->get('gibbonPersonID'), 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry['contactDetail']));
                         $emailErrors[] = $reportEntry['contactDetail'];
                     } else {
                         $messengerReceiptGateway->update($reportEntry['gibbonMessengerReceiptID'], ['sent' => 'Y']);

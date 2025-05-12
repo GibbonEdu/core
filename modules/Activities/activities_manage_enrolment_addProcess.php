@@ -88,8 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     }
 
                     // Set log
-                    $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Added', ['gibbonPersonIDStudent' => $gibbonPersonID]);
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Activities', $session->get('gibbonPersonID'), 'Activities - Student Added', ['gibbonPersonIDStudent' => $gibbonPersonID]);
                 }
             }
 

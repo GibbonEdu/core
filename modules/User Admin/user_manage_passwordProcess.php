@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                             'changedByID' => $session->get('gibbonPersonID'),
                             'changedBy' => Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true),
                         ];
-                        $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), $gibbonModuleID, $session->get('gibbonPersonID'), 'User - Password Manually Changed', $details, $_SERVER['REMOTE_ADDR']);
+                        $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', $session->get('gibbonPersonID'), 'User - Password Manually Changed', $details, $_SERVER['REMOTE_ADDR']);
 
                         $URL .= '&return=success0';
                         header("Location: {$URL}");

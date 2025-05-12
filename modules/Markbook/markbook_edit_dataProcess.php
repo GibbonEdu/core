@@ -294,8 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                     $errorMessage = __('Uploaded file not found in the system.');
                                 }
                                 if (!empty($errorMessage) || filesize($attachmentPath) === 0) {
-                                    $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
-                                    $logGateway->addLog($session->get('gibbonSchoolYearID'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Uploaded Response Failed', [
+                                    $logGateway->addLog($session->get('gibbonSchoolYearID'), 'Markbook', $session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                         'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
                                         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                                         'name' => $name,

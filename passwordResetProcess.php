@@ -155,7 +155,7 @@ else {
                     'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
                     'IPAddress' => $_SERVER['REMOTE_ADDR'],
                 ];
-                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, null, 'User - Forgot Password Request Initiated ', $details, $_SERVER['REMOTE_ADDR']);
+                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Forgot Password Request Initiated ', $details, $_SERVER['REMOTE_ADDR']);
 
                 header("Location: {$URL->withReturn('success0')}");
             } else {
@@ -237,7 +237,7 @@ else {
                                     'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
                                     'IPAddress' => $_SERVER['REMOTE_ADDR'],
                                 ];
-                                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), null, null, 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
+                                $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearID'), 'User Admin', null, 'User - Password Changed Through Forgot Password', $details, $_SERVER['REMOTE_ADDR']);
 
                                 //Return
                                 header("Location: {$URL->withReturn('success1')}");

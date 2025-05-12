@@ -98,6 +98,7 @@ v29.0.00
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder
         System Admin: fixed importer not allowing short-form school year names (eg: 2024-25)
+        System Admin: fixed missing module name for newly created logs in View Log
         Timetable Admin: fixed support staff not editable in Course Enrolment by Person
         Timetable Admin: fixed vertical spacing of date names in Tie Days to Dates
         User Admin: fixed unique username check when values already exist

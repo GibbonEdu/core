@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     }
 
     // Write to log
-    $logGateway->addLog($session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList, COUNT_RECURSIVE)));
+    $logGateway->addLog($session->get('gibbonSchoolYearID'), 'System Admin', $session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList, COUNT_RECURSIVE)));
 
     $URL .= $partialFail
         ?'&return=warning2'
