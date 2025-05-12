@@ -155,14 +155,14 @@ if (!empty($_POST) && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
     
     // Validate CSRF token
     if (!$tokenHandler->validateCsrfToken()) {
-        $URL .= $_SERVER['HTTP_REFERER'].'&return=error9';
+        $URL = $_SERVER['HTTP_REFERER'].'&return=error9';
         header("Location: {$URL}");
         exit;
     }
 
     // Validate nonce
     if (!$tokenHandler->validateNonce()) {
-        $URL .= $_SERVER['HTTP_REFERER'].'&return=error10';
+        $URL = $_SERVER['HTTP_REFERER'].'&return=error10';
         header("Location: {$URL}");
         exit;
     }
