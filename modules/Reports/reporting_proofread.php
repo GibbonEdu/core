@@ -238,8 +238,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         'totalCount' => count($proofsTotal),
         'progressCount' => $proofsDone,
         'partialCount' => max(0, count($proofs) - $proofsDone),
-        'progressColour' => 'green',
-        'partialColour' => 'blue',
+        'progressColour' => 'bg-green-300',
+        'progressBorder' => 'border-green-600',
+        'partialColour' => 'bg-blue-300',
     ]);
 
     $form = Form::createTable('reportingProof', $session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
