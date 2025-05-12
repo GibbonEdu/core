@@ -151,7 +151,7 @@ $_GET = $validator->sanitizeUrlParams($_GET);
 $tokenHandler = $container->get(TokenHandler::class);
 
 // Check for CSRF token and nonce when posting any form
-if (!empty($_POST) && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
+if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
     
     // Validate CSRF token
     if (!$tokenHandler->validateCsrfToken()) {
