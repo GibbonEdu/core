@@ -90,6 +90,7 @@ v29.0.00
         Planner: fixed empty sections displaying below the advanced options in Add Unit Plan
         Planner: fixed untranslated Role field in lesson planner participant list
         Reports: fixed missing iframe support for template preview windows
+        Reports: fixed comment character count not updating when writing reports
         Students: fixed missing Emergency Contact Number 2 on student profile
         System Admin: fixed field validation for Student Default Email in Form Builder
         System Admin: fixed uniqueness check when editing a page in Form Builder

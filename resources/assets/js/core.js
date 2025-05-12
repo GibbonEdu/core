@@ -382,13 +382,13 @@ function updateComments(element) {
 
     // Update character counter for comment length
     var currentLength = commentText.length;
-    $(".characterInfo .currentLength", $(element).parent()).html(currentLength);
+    $(".characterInfo .currentLength", $(element).parent().parent()).html(currentLength);
 
     // Look for the student's first name somewhere in the comment
     var preferredName = $(element).data("name") ? $(element).data("name") : "";
     if (preferredName.length > 0) {
         var nameNotFound = commentText.indexOf(preferredName) === -1;
-        $(".characterInfo .commentStatusName", $(element).parent()).toggleClass(
+        $(".characterInfo .commentStatusName", $(element).parent().parent()).toggleClass(
             "hidden",
             !nameNotFound
         );
