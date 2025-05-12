@@ -87,6 +87,7 @@ v29.0.00
         Finance: fixed missing Ad Hoc fee names in bulk-action Export spreadsheet data
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
+        Planner: fixed Visual and HTML tabs not working in newly created Smart Blocks 
         Planner: fixed empty sections displaying below the advanced options in Add Unit Plan
         Planner: fixed untranslated Role field in lesson planner participant list
         Reports: fixed missing iframe support for template preview windows
