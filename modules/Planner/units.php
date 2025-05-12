@@ -172,8 +172,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         'active:N' => __('Active').': '.__('No'),
     ]);
 
-    $table->addColumn('name', __('Name'))->context('Primary');
-    $table->addColumn('description', __('Description'))->context('Secondary');
+    $table->addColumn('name', __('Name'))
+        ->context('Primary');
+    $table->addColumn('description', __('Description'))
+        ->context('Secondary')
+        ->width('45%');
     $table->addColumn('active', __('Active'))
         ->width('10%')
         ->format(Format::using('yesNo', 'active'));

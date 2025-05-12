@@ -98,11 +98,11 @@ class PlannerFormFactory extends DatabaseFormFactory
             $smartBlockTemplate = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('contentsLabel', __('Block Contents'))->setClass('mt-3 -mb-2');
-                $col->addEditor('contents', $guid)->showMedia()->setRows(20)->setValue($smartBlockTemplate);
+                $col->addTextArea('contents')->addData('tinymce')->addData('media', '1')->setRows(20)->setValue($smartBlockTemplate);
 
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'))->setClass('mt-3 -mb-2');
-                $col->addEditor('teachersNotes', $guid)->showMedia()->setRows(20);
+                $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(20);
 
         return $blockTemplate;
     }
