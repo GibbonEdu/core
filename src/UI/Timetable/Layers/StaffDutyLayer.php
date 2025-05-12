@@ -47,13 +47,11 @@ class StaffDutyLayer extends AbstractTimetableLayer
     
     public function checkAccess(TimetableContext $context) : bool
     {
-        return Access::allows('Staff', 'staff_duty');
+        return Access::allows('Staff', 'staff_duty') && $context->has('gibbonPersonID');
     }
 
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        if (!$context->has('gibbonPersonID')) return;
-
         $staffDutyList = $this->staffDutyPersonGateway->selectDutyByPerson($context->get('gibbonPersonID'))->fetchAll();
 
         foreach ($dateRange as $dateObject) {

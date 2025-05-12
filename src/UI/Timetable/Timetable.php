@@ -160,6 +160,7 @@ class Timetable implements OutputableInterface
             'apiEndpoint'    => Url::fromHandlerRoute('index_tt_ajax.php')->withQueryParams($this->getUrlParams()),
             'preferencesUrl' => Url::fromHandlerRoute('preferences_ajax.php'),
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
+            'gibbonSpaceID'  => $this->context->get('gibbonSpaceID'),
             'gibbonTTID'     => $this->context->get('gibbonTTID'),
             'timetables'     => $this->structure->getTimetables(),
             'structure'      => $this->structure,
@@ -242,7 +243,21 @@ class Timetable implements OutputableInterface
      */
     protected function checkLayers()
     {
+        $columns = $this->structure->getColumns();
+
         foreach ($this->layers as $layer) {
+            if ($layer->getType() == 'timetabled') {
+                foreach ($columns as $date => $column) {
+                    foreach ($layer->getItemsByDate($date) as $item) {
+                        foreach ($column as $period) {
+                            if ($item->checkOverlap($period)) {
+                                $period->set('overlap', true);
+                            }
+                        }
+                    }
+                }
+            }
+
             $itemsGrouped = array_reduce($layer->getItems(), function ($group, $item) {
                 $group[$item->getKey()][] = $item;
                 return $group;

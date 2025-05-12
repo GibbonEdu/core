@@ -53,13 +53,11 @@ class StaffAbsenceLayer extends AbstractTimetableLayer
 
     public function checkAccess(TimetableContext $context) : bool
     {
-        return Access::allows('Staff', 'absences_view_byPerson');
+        return Access::allows('Staff', 'absences_view_byPerson') && $context->has('gibbonPersonID');
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        if (!$context->has('gibbonPersonID')) return;
-
         $criteria = $this->staffAbsenceGateway->newQueryCriteria()
             ->filterBy('dateStart', $dateRange->getStartDate()->format('Y-m-d'))
             ->filterBy('dateEnd', $dateRange->getEndDate()->format('Y-m-d'))

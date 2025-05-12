@@ -197,7 +197,7 @@ class Structure
 
     public function setDate($date)
     {
-        $this->currentDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', ($date ?? date('Y-m-d')).' 00:00:00');
+        $this->currentDate = \DateTimeImmutable::createFromFormat('Y-m-d', substr($date ?? date('Y-m-d'), 0, 10));
         $this->today = new \DateTimeImmutable('now');
 
         $this->weekdays = $this->loadWeekdays();
@@ -264,6 +264,11 @@ class Structure
     public function getTimetables()
     {
         return $this->timetables;
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
     }
 
     public function getWeekdays()

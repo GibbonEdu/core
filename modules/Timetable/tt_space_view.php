@@ -110,8 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
             $ttDate = null;
             if (!empty($_REQUEST['ttDate'])) {
-                $date = Format::dateConvert($_REQUEST['ttDate']);
-                $ttDate = strtotime('last Sunday +1 day', strtotime($date));
+                $ttDate = Format::dateConvert($_REQUEST['ttDate']);
             }
 
             // Create timetable context

@@ -12,6 +12,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set specialDay = structure.getSpecialDay(day.date) %}
 {% set indexDepth = {0: '', 1: 'pl-2', 2: 'pl-4', 3: 'pl-6', 4: 'pl-8'} %}
 
+
 <div class="relative flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
 
     {% set column = structure.getColumn(day.date) %}
@@ -39,14 +40,26 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set firstItem = false %}
             {% endif %}
 
-            <div class="relative group flex items-start justify-start cursor-pointer border-t border-gray-300 transition duration-300 {{ not firstItem ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(item.duration) }}px">
+            <div class="relative group flex items-start justify-start border-t border-gray-300 transition duration-300 {{ not firstItem ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(item.duration) }}px">
 
                 <div class="flex w-full items-start justify-between border-gray-500 px-1.5 py-1">
                     <span class="text-xxs text-gray-500 ">{{ item.duration >= 15 ? item.title }}</span>
                     <span class="inline md:hidden lg:inline text-xxs text-gray-500 opacity-0 group-hover:opacity-100 transition duration-300">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
                 </div>
+
+                {% set lastTimeEnd = item.timeEnd %}
+
+                {% if item.date > structure.getToday.format('Y-m-d') or (isToday and item.timeStart >= now) %}
+                    {% if gibbonSpaceID and layers['Bookings'].isActive and not item.overlap %}
+                        {% set iconSize = item.duration >= 50 ? 'size-6' : item.duration >= 30 ? 'size-5' : 'size-3' %}
+                        <a x-show="{{ layers['Bookings'].getID }}" href="{{ absoluteURL }}/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID={{ gibbonSpaceID }}&date={{ item.date }}&timeStart={{ item.timeStart }}&timeEnd={{ item.timeEnd }}&source=tt" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ __('Add Facility Booking') }}">
+                            {{  icon('solid', 'add', iconSize ~ ' text-gray-600 hover:text-gray-800') }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+                    
             </div>
-            {% set lastTimeEnd = item.timeEnd %}
+            
         {% endfor %}
     </div>
 

@@ -51,13 +51,11 @@ class StaffCoverLayer extends AbstractTimetableLayer
 
     public function checkAccess(TimetableContext $context) : bool
     {
-        return Access::allows('Staff', 'coverage_my');
+        return Access::allows('Staff', 'coverage_my')  && $context->has('gibbonPersonID') && $context->has('gibbonSchoolYearID');
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
     {
-        if (!$context->has('gibbonSchoolYearID') || !$context->has('gibbonPersonID')) return;
-
         $criteria = $this->staffCoverageGateway->newQueryCriteria()
             ->filterBy('dateStart', $dateRange->getStartDate()->format('Y-m-d'))
             ->filterBy('dateEnd', $dateRange->getEndDate()->format('Y-m-d'))
