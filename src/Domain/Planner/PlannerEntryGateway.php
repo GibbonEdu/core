@@ -357,6 +357,7 @@ class PlannerEntryGateway extends QueryableGateway
 
         WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
         AND gibbonPlannerEntry.date BETWEEN :dateStart AND :dateEnd
+        AND gibbonCourseClassPerson.role NOT LIKE '%- Left'
         GROUP BY gibbonPlannerEntry.gibbonPlannerEntryID
         HAVING COUNT(gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID) = 0
         ORDER BY timeStart, timeEnd, FIND_IN_SET(gibbonCourseClassPerson.role, 'Teacher,Assistant,Student') DESC";
