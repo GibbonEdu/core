@@ -90,14 +90,8 @@ class Form implements OutputableInterface
             ->setID($id)
             ->setClass($class)
             ->setAction($action)
-            ->setMethod($method);
-
-        // Add the CSRF and Nonce tokens to all POST forms
-        if(strtolower($method) == 'post') {
-            $tokenHandler = $container->get(TokenHandler::class);
-            $form->addHiddenValue('csrftoken', $tokenHandler->getCSRF());
-            $form->addHiddenValue('nonce', $tokenHandler->getNonce());
-        }
+            ->setMethod($method)
+            ->setTokens($container);
 
         // Enable quick save by default on edit and settings pages
         if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
@@ -261,6 +255,22 @@ class Form implements OutputableInterface
     public function setAction(string $action)
     {
         $this->setAttribute('action', $action);
+
+        return $this;
+    }
+
+    /**
+     * Adds the CSRF and Nonce tokens to all POST forms
+     *
+     * @return void
+     */
+    public function setTokens($container)
+    {
+        if(strtoupper($this->getMethod()) == 'POST') {
+            $tokenHandler = $container->get(TokenHandler::class);
+            $this->addHiddenValue('csrftoken', $tokenHandler->getCSRF());
+            $this->addHiddenValue('nonce', $tokenHandler->getNonce());
+        }
 
         return $this;
     }
