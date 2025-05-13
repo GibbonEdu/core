@@ -114,46 +114,109 @@ Rich Text Editor
 
 
 <div id="editorcontainer" class="relative">
-    <textarea class="tinymce w-full ml-0 float-none focus:shadow-none focus:border-gray-500" name="{{ name }}" id="{{ id }}" rows="{{ rows }}" style="height: {{ rows * 18 }}px;" {% if required %} x-validate.required data-error-msg="{{__('This field is required') }}" {% endif %} >
+    <textarea class="tinymce w-full ml-0 float-none focus:shadow-none focus:border-gray-500" name="{{ name }}" id="{{ id }}" rows="{{ rows }}" style="height: {{ rows * 18 }}px;" {% if required %} x-validate.required data-error-msg="{{__('This field is required') }}" {% endif %} {{ tinymceInit ? 'data-tinymceinit="true"'}} {{ onKeyDownSubmitUrl ? 'data-autosave="'~onKeyDownSubmitUrl~'"' }} >
         {{- value -}}
     </textarea>
 </div>
 
 <script type="text/javascript">
-    function tinymceSetupListener(event) {
-        {% if tinymceInit %}
-        tinyMCE.execCommand('mceAddControl', false, '{{ id }}');
-        {% endif %}
 
-        {% if onKeyDownSubmitUrl %}
-        setTimeout(function () {
-            tinyMCE.get('{{ id }}').on('keydown', function () {
-                tinyMCE.triggerSave();
-                gibbonFormSubmitQuiet($('#{{ onKeyDownSubmitFormId }}'), '{{ onKeyDownSubmitUrl }}')
-            })
-        }, 100);
-        {% endif %}
+$(document).ready(function(){
+    try {
+        tinymce.remove('#{{ id }}');
+    } catch (e) {}
 
-        $('#{{ id }}edButtonPreview').addClass('active');
-        $('#{{ id }}edButtonHTML').click(function () {
-            tinyMCE.execCommand('mceRemoveEditor', false, '{{ id }}');
-            $('#{{ id }}edButtonHTML').addClass('active');
-            $('#{{ id }}edButtonPreview').removeClass('active');
-            $(".{{ id }}resourceSlider").hide();
-            $("#{{ id }}mediaInner").hide();
-        });
-        $('#{{ id }}edButtonPreview').click(function () {
-            tinyMCE.execCommand('mceAddEditor', false, '{{ id }}');
-            $('#{{ id }}edButtonPreview').addClass('active');
-            $('#{{ id }}edButtonHTML').removeClass('active');
-            $("#{{ id }}mediaInner").show();
-        });
-    }
+    // Initialize tinymce
+    tinymce.init({
+        selector: "#{{ id }}",
+        width: '100%',
+        menubar : false,
+        resize: true,
+        toolbar_mode: 'sliding',
+        toolbar: 'bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink hr charmap | fullscreen | styleselect fontselect fontsizeselect | table | subscript superscript | cut copy paste undo redo ',
+        plugins: 'table lists paste link hr charmap fullscreen',
+        statusbar: true,
+        contextmenu: false,
+        branding: false,
+        valid_elements: Gibbon.config.tinymce.valid_elements,
+        extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
+        invalid_elements: '',
+        apply_source_formatting : true,
+        browser_spellcheck: true,
+        convert_urls: false,
+        relative_urls: false,
+        default_link_target: "_blank",
+        color_map: [
+            "#BFEDD2", "Light Green", 
+            "#FBEEB8", "Light Yellow", 
+            "#F8CAC6", "Light Red", 
+            "#ECCAFA", "Light Purple", 
+            "#C2E0F4", "Light Blue", 
+            "#2DC26B", "Green", 
+            "#F1C40F", "Yellow", 
+            "#FF0000", "Red", 
+            "#B96AD9", "Purple", 
+            "#3598DB", "Blue", 
+            "#169179", "Dark Turquoise", 
+            "#E67E23", "Orange", 
+            "#BA372A", "Dark Red", 
+            "#843FA1", "Dark Purple", 
+            "#236FA1", "Dark Blue", 
+            "#ECF0F1", "Light Gray", 
+            "#CED4D9", "Medium Gray", 
+            "#95A5A6", "Gray", 
+            "#7E8C8D", "Dark Gray", 
+            "#34495E", "Navy Blue", 
+            "#000000", "Black", 
+            "#ffffff", "White", 
+        ],
+        init_instance_callback: (editor) => {
 
-    if (!document.tinymceSetupListenerAdded) {
-        document.tinymceSetupListenerAdded = true;
-        document.addEventListener('tinymceSetup', tinymceSetupListener);
-    } else {
-        tinymceSetupListener()
-    }
+            // Enable quick save from within tinymce
+            editor.addShortcut("meta+s", "Custom Ctrl+S", function (e) {
+                editor.formElement.dispatchEvent(new Event('quicksave'));
+            });
+            // Enable validation checking
+            editor.on('blur', (e) => {
+                tinymce.triggerSave();
+                e.target.targetElm.dispatchEvent(new Event('blur'));
+            });
+
+            // Add events for toggling Visual and HTML tabs
+            var previewButton = document.getElementById(editor.id + 'edButtonPreview');
+            var htmlButton = document.getElementById(editor.id + 'edButtonHTML');
+            var resourceSliders = document.getElementsByClassName(editor.id + 'resourceSlider');
+            var mediaInner = document.getElementById(editor.id + 'mediaInner');
+
+            previewButton.classList.add('active');
+
+            htmlButton.addEventListener('click', function (event) {
+                editor.hide();
+                htmlButton.classList.add('active');
+                previewButton.classList.remove('active');
+                mediaInner?.classList.add('hidden');
+                Array.from(resourceSliders)?.forEach((element) => element.classList.add('hidden'));
+            });
+
+            previewButton.addEventListener('click', function (event) {
+                editor.show();
+                htmlButton.classList.remove('active');
+                previewButton.classList.add('active');
+                mediaInner?.classList.remove('hidden');
+                Array.from(resourceSliders)?.forEach((element) => element.classList.remove('hidden'));
+            });
+
+            if (editor.targetElm.hasAttribute('data-autosave')) {
+                setTimeout(function () {
+                    editor.on('keydown', function () {
+                        tinymce.triggerSave();
+                        gibbonFormSubmitQuiet($('#'+editor.formElement.id), editor.targetElm.getAttribute('data-autosave'))
+                    })
+                }, 100);
+            }
+        }
+    });
+
+});
+
 </script>
