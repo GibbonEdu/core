@@ -74,6 +74,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     // Check for special days
     $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($start->format('Y-m-d'), $end->format('Y-m-d'))->fetchGroupedUnique();
 
+    $datesList = new DataSet($dates);
+    $datesList->transform(function (&$date) use (&$unavailable, &$request, &$specialDays, &$specialDayGateway, &$session) {
+        $specialDay = $specialDays[$date['date']] ?? [];
+
+        // Is this date unavailable: absent, already booked, or has an availability exception
+        if (isset($unavailable[$date['date']])) {
+            $times = $unavailable[$date['date']];
+
+            foreach ($times as $time) {
+                // Handle full day and partial day unavailability
+                if ($time['allDay'] == 'Y'
+                || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
+                || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
+                    && $time['timeStart'] < $request['timeEnd']
+                    && $time['timeEnd'] > $request['timeStart'])) {
+
+                    // Free up teachers if their class is off timetable
+                    if ($time['status'] == 'Teaching' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
+                        $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $time['contextID'], $date['date']);
+                        if ($offTimetable) continue;
+                    }
+
+                    $date['status'] = __($time['status'] ?? 'Not Available');
+                }
+            }
+        }
+    });
+
     $fullName = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
 
     $table = DataTable::create('staffAbsenceDates');
@@ -88,35 +116,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $table->addColumn('dateLabel', __('Date'))
         ->format(Format::using('dateReadable', 'date'));
 
-    $table->addCheckboxColumn('requestDates', 'date')
-        ->width('15%')
-        ->checked(true)
-        ->format(function ($date) use (&$unavailable, &$request, &$specialDays, &$specialDayGateway, &$session) {
-            $specialDay = $specialDays[$date['date']] ?? [];
-
-            // Is this date unavailable: absent, already booked, or has an availability exception
-            if (isset($unavailable[$date['date']])) {
-                $times = $unavailable[$date['date']];
-
-                foreach ($times as $time) {
-                    // Handle full day and partial day unavailability
-                    if ($time['allDay'] == 'Y'
-                    || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
-                    || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
-                        && $time['timeStart'] < $request['timeEnd']
-                        && $time['timeEnd'] > $request['timeStart'])) {
-
-                        // Free up teachers if their class is off timetable
-                        if ($time['status'] == 'Teaching' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable') {
-                            $offTimetable = $specialDayGateway->getIsClassOffTimetableByDate($session->get('gibbonSchoolYearID'), $time['contextID'], $date['date']);
-                            if ($offTimetable) continue;
-                        }
-
-                        return Format::small(__($time['status'] ?? 'Not Available'));
-                    }
-                }
-            }
+    $table->addColumn('status', __('Status'))
+        ->format(function ($date) {
+            return !empty($date['status']) ? Format::tag($date['status'], 'error') : '';
         });
 
-    echo $table->render(new DataSet($dates));
+    $table->addColumn('override', '')
+        ->width('4%')
+        ->format(function ($date) {
+            return !empty($date['status']) ? Format::small(__('Override').'?') : '';
+        });
+
+    $table->addCheckboxColumn('requestDates', 'date')
+        ->width('15%')
+        ->checked(function ($date) {
+            return empty($date['status']) ? $date['date'] : '';
+        });
+
+    echo $table->render($datesList);
 }

@@ -61,7 +61,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
             ->filterBy('dateEnd', $dateRange->getEndDate()->format('Y-m-d'))
             ->filterBy('status', 'Accepted');
                     
-        $staffCoverage = $this->staffCoverageGateway->queryCoverageByPersonCovering($criteria, $context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'));
+        $staffCoverage = $this->staffCoverageGateway->queryCoverageByPersonCovering($criteria, $context->get('gibbonSchoolYearID'), $context->get('gibbonPersonID'), false);
 
         $canViewPlanner = Access::allows('Planner', 'planner_view_full');
 
