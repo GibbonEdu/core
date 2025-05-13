@@ -246,18 +246,20 @@ class Timetable implements OutputableInterface
         $columns = $this->structure->getColumns();
 
         foreach ($this->layers as $layer) {
+            // Check for timetabled items that overlap periods (for bookings)
             if ($layer->getType() == 'timetabled') {
                 foreach ($columns as $date => $column) {
                     foreach ($layer->getItemsByDate($date) as $item) {
                         foreach ($column as $period) {
-                            if ($item->checkOverlap($period)) {
-                                $period->set('overlap', true);
+                            if ($item->checkOverlap($period, false)) {
+                                $period->addStatus('overlap');
                             }
                         }
                     }
                 }
             }
 
+            // Check for identical timed items within the same layer (stack them)
             $itemsGrouped = array_reduce($layer->getItems(), function ($group, $item) {
                 $group[$item->getKey()][] = $item;
                 return $group;
@@ -277,6 +279,24 @@ class Timetable implements OutputableInterface
             $layer->filterItems(function ($item) {
                 return $item->isActive();
             });
+
+            // Check non-timetabled items that overlap lower items (add indicator icon)
+            if ($layer->getType() != 'timetabled') {
+                foreach ($layer->getItems() as $item) {
+                    if ($item->allDay) continue;
+                    
+                    foreach ($this->layers as $otherLayer) {
+                        if (!$otherLayer->isActive()) continue;
+                        if ($otherLayer->getOrder() >= $layer->getOrder()) continue;
+
+                        foreach ($otherLayer->getItems() as $otherItem) {
+                            if ($item->checkOverlap($otherItem, false) && $otherItem->isActive()) {
+                                $item->addStatus('overlap');
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return $this;

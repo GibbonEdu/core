@@ -219,11 +219,11 @@ class TimetableItem
         }
     }
 
-    public function checkOverlap(TimetableItem $other)
+    public function checkOverlap(TimetableItem $other, bool $checkAllDay = true)
     {
         if ($other->date != $this->date) return false;
 
-        if ($other->allDay == 'Y') return true;
+        if ($other->allDay == 'Y' && $checkAllDay) return true;
 
         return ($this->timeStart >= $other->timeStart && $this->timeStart < $other->timeEnd)
             || ($other->timeStart >= $this->timeStart && $other->timeStart < $this->timeEnd);

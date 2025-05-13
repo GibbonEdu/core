@@ -12,7 +12,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set color = structure.getColors(item.color ?? layer.getColor) %}
 {% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
 
-<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative z-10 outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }}  {{ item.style == 'stripe' ? 'bg-stripe-overlay' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px;" :class="{'hidden': !{{ layer.getID }} }"
+<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }}  {{ item.style == 'stripe' ? 'bg-stripe-overlay' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px;" :class="{'hidden': !{{ layer.getID }} }"
 x-tooltip.white="
     <div class='w-72 flex flex-col py-2 gap-1 overflow-hidden'>
         <div class='px-2 pb-1'>
@@ -109,5 +109,11 @@ x-tooltip.white="
         <a href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
             {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
         </a>
+    {% endif %}
+
+    {% if item.hasStatus('overlap') and duration >= 40 %}
+    <div href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1" title="{{ __('Click & drag to see overlapping items') }}">
+        {{  icon('outline', 'layers', 'size-5 text-gray-500 hover:text-gray-600') }}
+    </div>
     {% endif %}
 </div>

@@ -50,7 +50,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set lastTimeEnd = item.timeEnd %}
 
                 {% if item.date > structure.getToday.format('Y-m-d') or (isToday and item.timeStart >= now) %}
-                    {% if gibbonSpaceID and layers['Bookings'].isActive and not item.overlap %}
+                    {% if gibbonSpaceID and layers['Bookings'].isActive and not item.hasStatus('overlap') %}
                         {% set iconSize = item.duration >= 50 ? 'size-6' : item.duration >= 30 ? 'size-5' : 'size-3' %}
                         <a x-show="{{ layers['Bookings'].getID }}" href="{{ absoluteURL }}/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID={{ gibbonSpaceID }}&date={{ item.date }}&timeStart={{ item.timeStart }}&timeEnd={{ item.timeEnd }}&source=tt" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ __('Add Facility Booking') }}">
                             {{  icon('solid', 'add', iconSize ~ ' text-gray-600 hover:text-gray-800') }}
