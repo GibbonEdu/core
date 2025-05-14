@@ -72,7 +72,7 @@ table:
         name: "Department"
         desc: "Short Name"
         args: { filter: string, custom: true }
-        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: name|nameShort  }
     borrowable: 
         name: "Borrowable?"
         desc: "Is item available for loan?"
