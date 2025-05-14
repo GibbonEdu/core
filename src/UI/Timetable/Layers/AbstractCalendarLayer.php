@@ -149,7 +149,7 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
     
             $getEventsUrl = '/me/calendarView?'.http_build_query($queryParams);
     
-            $events = $graph->createRequest('GET', $getEventsUrl)
+            @$events = $graph->createRequest('GET', $getEventsUrl)
                 // Add the user's timezone to the Prefer header
                 ->addHeaders(array(
                 'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
@@ -193,7 +193,7 @@ abstract class AbstractCalendarLayer extends AbstractTimetableLayer implements C
     
             try {
                 $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
-                $calendarListEntry = $service->events->listEvents($calendarFeed, $optParams);
+                @$calendarListEntry = $service->events->listEvents($calendarFeed, $optParams);
             } catch (\Exception $e) {
                 $getFail = true;
             }
