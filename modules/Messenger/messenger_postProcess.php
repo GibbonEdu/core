@@ -47,6 +47,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
     $sendTestEmail = $_POST['sendTestEmail'] ?? 'N';
     $saveMode = $_POST['saveMode'] ?? 'Preview';
+    $emailFrom = $_POST['emailFrom'] ?? $session->get('email');
+    $emailFrom = $emailFrom == 'Other' ? ($_POST['emailFromOther'] ?? $session->get('email')) : $emailFrom;
     $data = [
         'gibbonSchoolYearID'=> $session->get('gibbonSchoolYearID'),
         'status'            => $_POST['status'] ?? 'Draft',
@@ -58,8 +60,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'sms'               => $_POST['sms'] ?? 'N',
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
-        'emailFrom'         => $_POST['emailFrom'] ?? $session->get('email'),
-        'emailReplyTo'      => $_POST['emailReplyTo'] ?? $session->get('email'),
+        'emailFrom'         => $emailFrom,
+        'emailReplyTo'      => $_POST['emailReplyTo'] ?? $emailFrom,
         'emailReceipt'      => $_POST['emailReceipt'] ?? 'N',
         'emailReceiptText'  => $_POST['emailReceiptText'] ?? '',
         'enableSharingLink' => $_POST['enableSharingLink'] ?? 'N',

@@ -160,8 +160,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             if ($emailReplyTo!="") {
                 $mail->AddReplyTo($emailReplyTo, '');
             }
-            if ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+            if ($from==$session->get('organisationEmail')) {
                 $mail->SetFrom($from, $session->get('organisationName'));
+            } elseif ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+                $user = $container->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
+                $mail->SetFrom($from, ($user['preferredName'] ?? '').' '.($user['surname'] ?? '') );
             } else { //Else, send from individual
                 $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
             }
@@ -346,9 +349,22 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $mail = $this->getContainer()->get(Mailer::class);
 
         $mail->Subject = __('Draft').': '.$message['subject'];
-        $mail->SetFrom($message['emailFrom']);
-        $mail->AddReplyTo($message['emailReplyTo']);
         $mail->AddAddress($session->get('email'));
+
+        $from = $message['emailFrom'];
+        $emailReplyTo = $message['emailReplyTo'] ?? '';
+
+        if ($emailReplyTo!="") {
+            $mail->AddReplyTo($emailReplyTo, '');
+        }
+        if ($from==$session->get('organisationEmail')) {
+            $mail->SetFrom($from, $session->get('organisationName'));
+        } elseif ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+            $user = $this->getContainer()->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
+            $mail->SetFrom($from, ($user['preferredName'] ?? '').' '.($user['surname'] ?? '') );
+        } else { //Else, send from individual
+            $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
+        }
 
         $message['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $message['body']);
 

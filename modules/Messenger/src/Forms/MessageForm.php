@@ -138,14 +138,27 @@ class MessageForm extends Form
                 if ($this->session->has('emailAlternate')) {
                     $from[$this->session->get('emailAlternate')] = $this->session->get('emailAlternate');
                 }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_fromSchool') && $this->session->has('organisationEmail')) {
+                $canSendFromSchool = isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_fromSchool');
+                $fromOther = !empty($values['emailFrom']) && empty($from[$values['emailFrom']]);
+                if ($canSendFromSchool && $this->session->has('organisationEmail')) {
                     $from[$this->session->get('organisationEmail')] = $this->session->get('organisationEmail');
+                    $from['Other'] = __('Other');
                 }
+                if ($fromOther) {
+                    $values['emailFromOther'] = $values['emailFrom'];
+                    $values['emailFrom'] = 'Other';
+                }
+
                 $row = $form->addRow()->addClass('email');
                     $row->addLabel('emailFrom', __('Email From'));
-                    $row->addSelect('emailFrom')->fromArray($from)->required();
+                    $row->addSelect('emailFrom')->fromArray($from)->required()->selected($fromOther ? 'Other' : '');
 
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_fromSchool')) {
+                if ($canSendFromSchool) {
+                    $form->toggleVisibilityByClass('emailFromOther')->onSelect('emailFrom')->when('Other');
+                    $row = $form->addRow()->addClass('emailFromOther');
+                        $row->addLabel('emailFromOther', __('Email Address'));
+                        $row->addEmail('emailFromOther')->required();
+
                     $row = $form->addRow()->addClass('email');
                         $row->addLabel('emailReplyTo', __('Reply To'));
                         $row->addEmail('emailReplyTo');
