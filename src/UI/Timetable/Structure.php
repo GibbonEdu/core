@@ -253,12 +253,12 @@ class Structure
 
     public function getStartTime() : string
     {
-        return $this->timeRangeStart->format('H:i:s');
+        return $this->timeStart;
     }
 
     public function getEndTime() : string
     {
-        return $this->timeRangeEnd->format('H:i:s');
+        return $this->timeEnd;
     }
 
     public function getTimetables()

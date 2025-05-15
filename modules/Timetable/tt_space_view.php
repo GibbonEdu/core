@@ -72,18 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                         ->setUrl(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search))
                         ->directLink();
                 }
-
-                $table->addHeaderAction('print', __('Print'))
-                    ->setURL('/report.php')
-                    ->addParam('q', '/modules/Timetable/tt_space_view.php')
-                    ->addParam('gibbonSpaceID', $gibbonSpaceID)
-                    ->addParam('gibbonTTID', $gibbonTTID)
-                    ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                    ->addParam('format', 'print')
-                    ->setTarget('_blank')
-                    ->directLink()
-                    ->displayLabel();
-            }
+            
 
             $table->addColumn('name', __('Name'));
 
@@ -106,6 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                     }
                 });
 
+            }
+
             echo $table->render([$row]);
 
             $ttDate = null;
@@ -117,7 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             $context = $container->get(TimetableContext::class)
                 ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
                 ->set('gibbonSpaceID', $gibbonSpaceID)
-                ->set('gibbonTTID', $gibbonTTID);
+                ->set('gibbonTTID', $gibbonTTID)
+                ->set('format', $format);
 
             // Build and render timetable
             echo $container->get(Timetable::class)

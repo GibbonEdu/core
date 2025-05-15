@@ -32,7 +32,7 @@ include './gibbon.php';
 $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? null;
-$narrow = $_REQUEST['narrow'] ?? 'trim';
+$format = $_REQUEST['format'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     // Access denied
@@ -55,19 +55,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     // Get and update preferences
     $userGateway = $container->get(UserGateway::class);
 
-    if (!empty($gibbonTTID) && $gibbonPersonID == $session->get('gibbonPersonID')) {
-        $userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), 'tt', 'gibbonTTID', preg_replace('/[^0-9]/', '', $gibbonTTID));
+    if (!empty($gibbonTTID)) {
+        $userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), 'ttOptions', 'gibbonTTID', preg_replace('/[^0-9]/', '', $gibbonTTID));
     }
-
-    $preferences = $userGateway->getUserPreferences($session->get('gibbonPersonID'));
 
     // Create timetable context
     $context = $container->get(TimetableContext::class)
         ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
         ->set('gibbonPersonID', $gibbonPersonID)
         ->set('gibbonSpaceID', $gibbonSpaceID)
-        ->set('gibbonTTID', $gibbonTTID ?? $preferences['tt']['gibbonTTID'])
-        ->set('layerStates', $preferences['ttLayers'] ?? []);
+        ->set('gibbonTTID', $gibbonTTID)
+        ->set('format', $format);
 
     // Build and render timetable
     echo $container->get(Timetable::class)

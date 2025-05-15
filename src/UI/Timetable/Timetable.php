@@ -90,7 +90,12 @@ class Timetable implements OutputableInterface
     {
         $this->context = $context;
 
-        $this->structure->setTimetable($this->context->get('gibbonSchoolYearID'), $this->context->get('gibbonTTID'));
+        $this->context->loadData($this->access->getPreferences());
+
+        $gibbonTTID = $this->context->has('gibbonTTID')
+            ? $this->context->get('gibbonTTID')
+            : $this->context->get('ttOptions')['gibbonTTID'] ?? null;
+        $this->structure->setTimetable($this->context->get('gibbonSchoolYearID'), $gibbonTTID);
         $this->context->set('gibbonTTID', $this->structure->getActiveTimetable());
 
         return $this;
@@ -162,10 +167,12 @@ class Timetable implements OutputableInterface
             'gibbonPersonID' => $this->context->get('gibbonPersonID'),
             'gibbonSpaceID'  => $this->context->get('gibbonSpaceID'),
             'gibbonTTID'     => $this->context->get('gibbonTTID'),
+            'options'        => $this->context->get('ttOptions'),
             'timetables'     => $this->structure->getTimetables(),
             'structure'      => $this->structure,
             'layers'         => $this->layers,
             'layersToggle'   => json_encode($this->getLayerStates()),
+            'format'         => $this->context->get('format'),
         ]);
     }
 
@@ -309,9 +316,9 @@ class Timetable implements OutputableInterface
      */
     protected function toggleLayers()
     {
-        if (!$this->context->has('layerStates')) return;
+        if (!$this->context->has('ttLayers')) return;
 
-        $layerStates = $this->context->get('layerStates'); 
+        $layerStates = $this->context->get('ttLayers'); 
 
         foreach ($this->layers as $layer) {
             $layer->setActive($layerStates[$layer->getID()] ?? 1);
@@ -339,10 +346,10 @@ class Timetable implements OutputableInterface
     protected function getUrlParams() : array
     {
         return [
-            'q'                    => $_GET['q'] ?? '',
-            'gibbonPersonID'       => $this->context->get('gibbonPersonID'),
-            'gibbonSpaceID'       => $this->context->get('gibbonSpaceID'),
-            'gibbonTTID'           => $this->context->get('gibbonTTID'),
+            'q'              => $_GET['q'] ?? '',
+            'gibbonPersonID' => $this->context->get('gibbonPersonID'),
+            'gibbonSpaceID'  => $this->context->get('gibbonSpaceID'),
+            'gibbonTTID'     => $this->context->get('gibbonTTID'),
         ];
     }
 }

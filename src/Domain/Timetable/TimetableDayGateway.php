@@ -153,6 +153,7 @@ class TimetableDayGateway extends QueryableGateway
                     AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonCourseClassPerson.role='Teacher'
                 AND gibbonCourseClassPerson.reportable='Y'
+                AND gibbonPerson.status='Full'
                 AND FIND_IN_SET(gibbonTTDayRowClass.gibbonTTDayRowClassID, :gibbonTTDayRowClassID)
                 AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
                 ORDER BY surname, preferredName";

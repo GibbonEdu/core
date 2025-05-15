@@ -23,6 +23,7 @@ namespace Gibbon\UI\Timetable;
 
 use Gibbon\Support\Facades\Access;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
 /**
@@ -36,11 +37,13 @@ use Gibbon\Domain\Students\StudentGateway;
 class TimetableAccess
 {
     protected $session;
+    protected $userGateway;
     protected $studentGateway;
 
-    public function __construct(Session $session, StudentGateway $studentGateway)
+    public function __construct(Session $session, UserGateway $userGateway, StudentGateway $studentGateway)
     {
         $this->session = $session;
+        $this->userGateway = $userGateway;
         $this->studentGateway = $studentGateway;
     }
 
@@ -65,5 +68,12 @@ class TimetableAccess
         }
 
         return false;
+    }
+
+    public function getPreferences()
+    {
+        if (!$this->session->has('gibbonPersonID')) return [];
+        
+        return $this->userGateway->getUserPreferences($this->session->get('gibbonPersonID'));
     }
 }

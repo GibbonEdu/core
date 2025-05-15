@@ -128,17 +128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                         ->prepend((!empty($search)) ? ' | ' : '');
                     }
 
-                    $table->addHeaderAction('print', __('Print'))
-                        ->setURL('/report.php')
-                        ->addParam('q', '/modules/Timetable/tt_view.php')
-                        ->addParam('gibbonPersonID', $gibbonPersonID)
-                        ->addParam('gibbonTTID', $gibbonTTID)
-                        ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                        ->addParam('format', 'print')
-                        ->setTarget('_blank')
-                        ->directLink()
-                        ->displayLabel();
-
                     if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                         $table->addHeaderAction('export', __('Export'))
                             ->modalWindow()
@@ -149,10 +138,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     }
                 }
 
-
-            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
-                        $table->addColumn('yearGroup', __('Year Group'));
-                        $table->addColumn('formGroup', __('Form Group'));
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', false, false]));
+            $table->addColumn('yearGroup', __('Year Group'));
+            $table->addColumn('formGroup', __('Form Group'));
 
             echo $table->render([$row]);
 
@@ -165,7 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             $context = $container->get(TimetableContext::class)
                 ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
                 ->set('gibbonPersonID', $gibbonPersonID)
-                ->set('gibbonTTID', $gibbonTTID);
+                ->set('gibbonTTID', $gibbonTTID)
+                ->set('format', $format);
 
             // Build and render timetable
             echo $container->get(Timetable::class)

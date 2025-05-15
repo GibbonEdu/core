@@ -577,17 +577,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
 
-                            $table->addHeaderAction('print', __('Print'))
-                                ->setURL('/report.php')
-                                ->addParam('q', '/modules/Timetable/tt_view.php')
-                                ->addParam('gibbonPersonID', $gibbonPersonID)
-                                ->addParam('gibbonTTID', $_GET['gibbonTTID'] ?? '')
-                                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                                ->setIcon('print')
-                                ->setTarget('_blank')
-                                ->directLink()
-                                ->displayLabel();
-
                             if ($gibbonPersonID == $session->get('gibbonPersonID')) {
                                 $table->addHeaderAction('export', __('Export'))
                                     ->modalWindow()

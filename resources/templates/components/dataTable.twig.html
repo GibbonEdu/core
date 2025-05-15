@@ -20,7 +20,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block table %}
 
-    <header class="relative">
+    <header class="relative print:hidden">
         {% block header %}
     
             {% if table.getHeader %}

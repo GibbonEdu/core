@@ -8,11 +8,11 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
-{% set isActive = isToday and now > item.timeStart and now <= item.timeEnd %}
+{% set isActive = isToday and now > item.timeStart and now <= item.timeEnd and not format == 'print' %}
 {% set color = structure.getColors(item.color ?? layer.getColor) %}
 {% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
 
-<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }}  {{ item.style == 'stripe' ? 'bg-stripe-overlay' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px;" :class="{'hidden': !{{ layer.getID }} }"
+<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} {{ format == 'print' and not layer.isActive ? 'hidden' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px;" :class="{'hidden': !{{ layer.getID }} }"
 x-tooltip.white="
     <div class='w-72 flex flex-col py-2 gap-1 overflow-hidden'>
         <div class='px-2 pb-1'>
@@ -69,8 +69,6 @@ x-tooltip.white="
         </span>
         {% endif %}
     </a>
-
-
     
     {% if item.overlap and item.overlap|length > 0 %}
     <button class="block rounded absolute top-0 right-0 mt-1 mr-1 p-0.5 text-xxs leading-none bg-transparent hover:bg-gray-500/50 text-red-700 hover:text-red-800" @click="showOverlap = true">
@@ -83,7 +81,6 @@ x-tooltip.white="
 
     <div x-cloak x-transition x-show="showOverlap" @click.outside="showOverlap = false" class="absolute p-2 -ml-2 mt-8 z-20 flex flex-col gap-2 items-start justify-end rounded outline outline-1 outline-gray-400 bg-white shadow-lg" style="width: calc(100% + 1rem)">
         {% for overlap in item.overlap %}
-
             <div class="relative w-full">
                 {{ include('ui/timetableItem.twig.html', {item: overlap, overlap: true}) }}
             </div>
@@ -91,29 +88,31 @@ x-tooltip.white="
     </div>
     {% endif %}
 
-    {% set iconSize = duration >= 50 ? 'size-6' : duration >= 30 ? 'size-5' : 'size-3' %}
+    {% if format != 'print' %}
+        {% set iconSize = duration >= 50 ? 'size-6' : duration >= 30 ? 'size-5' : 'size-3' %}
 
-    {% if item.primaryAction and duration >= 20 %}
-        {% set action = item.primaryAction %}
-        {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
-        
-        <a href="{{ action.url }}" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
-            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
-        </a>
-    {% endif %}
+        {% if item.primaryAction and duration >= 20 %}
+            {% set action = item.primaryAction %}
+            {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
+            
+            <a href="{{ action.url }}" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
+                {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
+            </a>
+        {% endif %}
 
-    {% if item.secondaryAction and duration >= 20 %}
-        {% set action = item.secondaryAction %}
-        {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
+        {% if item.secondaryAction and duration >= 20 %}
+            {% set action = item.secondaryAction %}
+            {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
 
-        <a href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
-            {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
-        </a>
-    {% endif %}
+            <a href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
+                {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
+            </a>
+        {% endif %}
 
-    {% if item.hasStatus('overlap') and duration >= 40 %}
-    <div href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1" title="{{ __('Click & drag to see overlapping items') }}">
-        {{  icon('outline', 'layers', 'size-5 text-gray-500 hover:text-gray-600') }}
-    </div>
+        {% if item.hasStatus('overlap') and duration >= 40 %}
+        <div href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1" title="{{ __('Click & drag to see overlapping items') }}">
+            {{  icon('outline', 'layers', 'size-5 text-gray-500 hover:text-gray-600') }}
+        </div>
+        {% endif %}
     {% endif %}
 </div>

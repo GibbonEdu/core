@@ -35,8 +35,9 @@ class TimetableContext
         'gibbonSchoolYearID' => '',
         'gibbonPersonID'     => '',
         'gibbonSpaceID'      => '',
-        'gibbonTTID'         => '',
-        'layerStates'        => '',
+        'ttOptions'          => '',
+        'ttLayers'           => '',
+        'format'             => '',
     ];
 
     public function has($key)
