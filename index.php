@@ -348,7 +348,7 @@ $page->addHeadExtra($session->get('analytics'));
  * STYLESHEETS & CSS
  */
 $page->stylesheets->addMultiple([
-    'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
+    'jquery-ui'    => 'lib/jquery-ui/css/jquery-ui.min.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
 ], ['weight' => -1]);
 

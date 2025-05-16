@@ -37,6 +37,7 @@ v29.0.00
         System: improved the colour picker to add a pre-set colour palette
         System: added IDD country codes to all countries in the database
         System: added a log entry for resetting password through 'Forgot Password"
+        System: updated jQuery UI library to v1.14.1
         Admissions: added the ability to re-send the submission email from the Process tab in Edit Application
         Admissions: added the option to display customised success message when student applications are successfully submitted
         Admissions: added Emergency Contacts for students as an option in the Form Builder
