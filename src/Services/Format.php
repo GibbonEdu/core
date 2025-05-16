@@ -1166,9 +1166,11 @@ class Format
      */
     public static function colorSwatch($color)
     {
-        $color = '#'.trim(preg_replace('/[^a-zA-Z0-9]/', '', $color), '#');
+        $color = trim(preg_replace('/[^a-fA-F0-9]/', '', $color), '#');
+        $colorHex = !empty($color) ? '#'.$color : '#ffffff00';
+        $colorTitle = !empty($color) ? $colorHex : __('None');
 
-        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$color.'" title="'.$color.'"></div>';
+        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$colorHex.'" title="'.$colorTitle.'"></div>';
     }
 
     /**
