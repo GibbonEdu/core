@@ -73,6 +73,7 @@ v29.0.00
         Timetable Admin: added an Edit Timetable by Class button to Course Enrolment by Class
         User Admin: improved the image uploader in Manage Users, detect invalid images
         User Admin: added Name in Characters to searchable fields
+        User Admin: added the ability to add Custom Fields to Family records
 
     
     Bug Fixes

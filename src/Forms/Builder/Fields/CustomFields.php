@@ -39,7 +39,7 @@ class CustomFields extends AbstractFieldGroup
         $this->customFieldGateway = $customFieldGateway;
         $this->customFieldHandler = $customFieldHandler;
 
-        $contexts = ['User', 'Medical Form', 'Individual Needs'];
+        $contexts = ['User', 'Family', 'Medical Form', 'Individual Needs'];
         $params = ['applicationForm' => 1];
         $customFields = $this->customFieldGateway->selectCustomFields($contexts, [])->fetchAll();
 

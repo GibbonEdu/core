@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Forms\CustomFieldHandler;
 
 require_once '../../gibbon.php';
 
@@ -45,10 +46,19 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         $homeAddressDistrict = $_POST['homeAddressDistrict'] ?? '';
         $homeAddressCountry = $_POST['homeAddressCountry'] ?? '';
 
+        $customRequireFail = false;
+        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Family', [], $customRequireFail);
+
+        if ($customRequireFail) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+
         //Write to database
         try {
-            $data = array('name' => $name, 'status' => $status, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'gibbonFamilyID' => $gibbonFamilyID);
-            $sql = 'UPDATE gibbonFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry WHERE gibbonFamilyID=:gibbonFamilyID';
+            $data = array('name' => $name, 'status' => $status, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'fields' => $fields, 'gibbonFamilyID' => $gibbonFamilyID);
+            $sql = 'UPDATE gibbonFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, fields=:fields WHERE gibbonFamilyID=:gibbonFamilyID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

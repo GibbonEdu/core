@@ -839,6 +839,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</tr>';
                                 echo '</table>';
 
+                                $table = DataTable::createDetails('family');
+                                $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Family', [], $rowFamily['fields'] ?? '');
+                                echo $table->render([['' => '']]);
+
                                 //Get adults
 
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);

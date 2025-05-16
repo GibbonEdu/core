@@ -25,6 +25,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Http\Url;
+use Gibbon\Forms\CustomFieldHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
     // Access denied
@@ -92,6 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $row = $form->addRow();
                 $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
                 $row->addSelectCountry('homeAddressCountry');
+
+            // CUSTOM FIELDS
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Family', [], $family['fields'] ?? '');
 
             $row = $form->addRow();
                 $row->addFooter();
