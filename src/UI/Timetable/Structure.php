@@ -392,7 +392,7 @@ class Structure
     protected function loadTimetables($gibbonSchoolYearID, $gibbonTTID)
     {   
         $timetables = $this->timetableGateway->selectActiveTimetables($gibbonSchoolYearID)->fetchKeyPair();
-        $this->gibbonTTID = empty($gibbonTTID) ? key($timetables) : $gibbonTTID;
+        $this->gibbonTTID = empty($gibbonTTID) || empty($timetables[$gibbonTTID]) ? key($timetables) : $gibbonTTID;
 
         return $timetables;
     }
