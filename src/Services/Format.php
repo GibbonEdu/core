@@ -1158,6 +1158,26 @@ class Format
         return $courseName .'.'. $className;
     }
 
+    /**
+     * Displays a color swatch of the given Hex colour.
+     *
+     * @param string $color
+     * @return string
+     */
+    public static function colorSwatch($color)
+    {
+        $color = '#'.trim(preg_replace('/[^a-zA-Z0-9]/', '', $color), '#');
+
+        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$color.'" title="'.$color.'"></div>';
+    }
+
+    /**
+     * Displays an alert box with the provided message and error level.
+     *
+     * @param string $message
+     * @param string $level
+     * @return string
+     */
     public static function alert($message, $level = 'error')
     {
         return '<div class="'.$level.'">'.$message.'</div>';
