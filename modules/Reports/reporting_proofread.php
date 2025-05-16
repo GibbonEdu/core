@@ -61,6 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->setTitle(__('View'));
     $form->setClass('noIntBorder w-full');
     $form->enableQuickSave();
+    $form->enableQuickSubmit()->setAttribute('hx-trigger', 'change from:.auto-submit')->setAttribute('hx-include', '[name="filter"]');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', '/modules/Reports/reporting_proofread.php');
@@ -181,31 +182,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }
 
     $filters = [
-        'status:Edited' => __('Status').': '.__('Pending Edits'),
-        'status:Any' => __('Status').': '.__('Show All'),
-        'target:Per Group' => __('Target').': '.__('Per Group'),
-        'target:Per Student' => __('Target').': '.__('Per Student'),
+        'status::Edited' => __('Status').': '.__('Pending Edits'),
+        'status::Any' => __('Status').': '.__('Show All'),
+        'target::Per Group' => __('Target').': '.__('Per Group'),
+        'target::Per Student' => __('Target').': '.__('Per Student'),
     ];
 
     $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
-        $group['scope:'.$item['scopeName']] = __('Scope').': '.$item['scopeName'];
+        $group['scope::'.$item['scopeName']] = __('Scope').': '.$item['scopeName'];
         return $group;
     }, []));
 
     // $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
-    //     $group['criteria:'.$item['criteriaName']] = __('Criteria').': '.$item['criteriaName'];
+    //     $group['criteria::'.$item['criteriaName']] = __('Criteria').': '.$item['criteriaName'];
     //     return $group;
     // }, []));
 
     // $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
-    //     $group['class:'.$item['nameShort']] = __('Class').': '.$item['nameShort'];
+    //     $group['class::'.$item['nameShort']] = __('Class').': '.$item['nameShort'];
     //     return $group;
     // }, []));
 
     if ($gibbonPersonID == $session->get('gibbonPersonID')) {
         $filterOptions = $form->getFactory()->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('auto-submit filters float-none w-48 pl-2 border leading-none h-full sm:h-8 rounded')
+            ->setClass('auto-submit filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200 rounded-md w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6')
             ->placeholder(__('Filters'))
             ->selected($filter)
             ->getOutput();
@@ -220,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }, 0);
 
     // Enable filtering proofs by status, even though this cannot be done through the criteria
-    if ($filter == 'status:Edited') {
+    if ($filter == 'status::Edited') {
         $proofReading = array_reduce($proofsTotal, function ($group, $item) use (&$proofs) {
             $proofData = $proofs[$item['gibbonReportingValueID']] ?? [];
             if (!empty($proofData) && $proofData['status'] == 'Edited') {
