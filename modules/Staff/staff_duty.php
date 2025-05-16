@@ -24,7 +24,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\Staff\StaffDutyGateway;
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
-use Gibbon\Session\TokenHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == false) {
     // Access denied
@@ -64,12 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == 
 
         $maxCount = max($maxCount, count($dutyList));
     }
-    $tokenHandler = $container->get(TokenHandler::class);
+
     $page->writeFromTemplate('dutySchedule.twig.html', [
         'canEdit'   => $highestAction == 'Duty Schedule_edit',
         'duty'      => $duty,
         'maxCount'  => $maxCount,
-        'csrftoken' => $tokenHandler->getCSRF(),
-        'nonce'     => $tokenHandler->getNonce(),
     ]);
 }
