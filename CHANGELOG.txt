@@ -88,6 +88,7 @@ v29.0.00
         Activities: fixed new sign-up system to honour the registration Y/N setting per activity
         Activities: fixed the delete action not allowing duplicate enrolments to be deleted in Manage Enrolments
         Admissions: fixed default tab selection after saving a form in Edit Application
+        Activities: fixed error on Activities Overview when changing Category filter after Activity filter
         Attendance: fixed unable to add new partial future absence if a future future absence exists
         Attendance: removed non-Full teachers from Form Groups Not Registered reports
         Attendance: fixed duplicate classes in Classes Not Registered report

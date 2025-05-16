@@ -100,8 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_overview
 
     $activities = $activityGateway->selectActivityDetailsByCategory($params['gibbonActivityCategoryID'])->fetchGroupedUnique();
 
-    if (!empty($params['gibbonActivityID'])) {
-        $activities = [$params['gibbonActivityID'] => $activities[$params['gibbonActivityID']] ?? ''];
+    if (!empty($params['gibbonActivityID']) && !empty($activities[$params['gibbonActivityID']])) {
+        $activities = [$params['gibbonActivityID'] => $activities[$params['gibbonActivityID']]];
     }
 
     if (empty($activities)) {
