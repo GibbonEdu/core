@@ -67,6 +67,7 @@ v29.0.00
         System Admin: adjusted action access for Column Rows import
         System Admin: added new imports for Columns and Tie Days to Dates in timetable
         System Admin: added new Units import for Unit Planner
+        System Admin: added columnColor to Markbook Column import, enabled color field checking in ImportType class
         Timetable: removed the display of declined events from Google Calendar on the timetable
         Timetable Admin: added an Edit Timetable by Class button to Course Enrolment by Class
         User Admin: improved the image uploader in Manage Users, detect invalid images

@@ -846,6 +846,10 @@ class ImportType
                 $value = !empty($value) ? preg_replace("/[^0-9]/u", '', $value) : $defaultValue;
                 break;
 
+            case 'color':
+                $value = !empty($value) ? preg_replace("/[^#0-9a-fA-F]/", '', $value) : $defaultValue;
+                break;
+
             case 'phone':   // Handle phone numbers - strip all non-numeric chars
                 $value = !empty($value) ? preg_replace("/[^0-9,\/]/u", '', $value) : $defaultValue;
 
@@ -1008,6 +1012,10 @@ class ImportType
             } break;
 
             case 'phonecode':   if (!empty($value) && !isset($this->phoneCodes[ $value ])) {
+                return false;
+            } break;
+
+            case 'color':   if (preg_match('/^#(?:[0-9a-fA-F]{3}){1,2}$/', $value) == 0) {
                 return false;
             } break;
 
