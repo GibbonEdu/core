@@ -95,6 +95,7 @@ v29.0.00
         Attendance: fixed duplicate classes in Classes Not Registered report
         Attendance: fixed invalid date formatting in Attendance Summary by Date
         Finance: fixed missing Ad Hoc fee names in bulk-action Export spreadsheet data
+        Finance: fixed bulk action selection and print action on Manage Expenses table
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
         Planner: fixed Visual and HTML tabs not working in newly created Smart Blocks 

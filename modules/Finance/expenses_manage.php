@@ -26,6 +26,7 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\FinanceBudgetCycleGateway;
 use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -285,7 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         ->addParam('gibbonFinanceExpenseID')
         ->addParam('search', $criteria->getSearchText(true))
         ->addParams($urlParams)
-        ->format(function ($expense, $actions) use ($highestAction) {
+        ->format(function ($expense, $actions) use ($highestAction, $urlParams) {
 
             if ($highestAction == 'Manage Expenses_all' && $expense['status'] == 'Requested' && $expense['approvalRequired'] == true) {
                 $actions->addAction('approve', __('Approve/Reject'))
@@ -297,7 +298,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                     ->setURL('/modules/Finance/expenses_manage_view.php');
 
             $actions->addAction('print', __('Print'))
-                    ->setURL('/modules/Finance/expenses_manage_print.php');
+                    ->setURL(Url::fromHandlerModuleRoute('report.php', 'Finance', 'expenses_manage_print_print')->withQueryParams($urlParams + ['gibbonFinanceExpenseID' => $expense['gibbonFinanceExpenseID']]))
+                    ->directLink();
 
             if ($highestAction == 'Manage Expenses_all') {
                 if ($expense['status'] == 'Requested' || $expense['status'] == 'Approved' || $expense['status'] == 'Ordered' || ($expense['status'] == 'Paid' && $expense['paymentReimbursementStatus'] == 'Requested')) {
