@@ -817,7 +817,7 @@ table.smallIntBorder td.noPadding {
     max-height: 74px !important;
 }
 
-.blockInputs input:not([type=submit]):not([type=checkbox]),
+.blockInputs input:not([type=submit]):not([type=checkbox]):not([type=radio]),
 .blockInputs select,
 .blockInputs textarea:not(.tinymce) {
     background: transparent;
