@@ -65,9 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/pettyCash.php') ==
     $criteriaBalance = $pettyCashGateway->newQueryCriteria()
         ->searchBy($pettyCashGateway->getSearchableColumns(), $params['search'])
         ->pageSize(0);
+        
     $balance = $pettyCashGateway->queryPettyCashBalance($criteriaBalance, $gibbonSchoolYearID)->getRow(0);
-
-    if (!empty($balance)) {
+    if (!empty($balance['total'])) {
         echo Format::alert(__('Total petty cash needing repaid (in this list): {total}', ['total' => Format::currency($balance['total'])]), 'message');
     }
 

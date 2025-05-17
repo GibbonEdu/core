@@ -485,6 +485,8 @@ class Format
      */
     public static function currency($value, $includeName = false, $decimals = 2)
     {
+        if (is_null($value)) return '';
+
         return static::$settings['currencySymbol'] . number_format($value, $decimals) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
