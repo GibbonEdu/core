@@ -1191,8 +1191,13 @@ class Format
             return $dateOriginal;
         }
 
-        if (is_int($dateOriginal) && empty($expectedFormat)) {
+        if (empty($expectedFormat) && is_int($dateOriginal)) {
             $dateOriginal = date('Y-m-d', $dateOriginal);
+            $expectedFormat = 'Y-m-d';
+        }
+
+        if (empty($expectedFormat) && stripos($dateOriginal, '/') !== false) {
+            $dateOriginal = date('Y-m-d', strtotime($dateOriginal));
             $expectedFormat = 'Y-m-d';
         }
 

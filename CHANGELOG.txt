@@ -93,6 +93,7 @@ v29.0.00
         Attendance: fixed unable to add new partial future absence if a future future absence exists
         Attendance: removed non-Full teachers from Form Groups Not Registered reports
         Attendance: fixed duplicate classes in Classes Not Registered report
+        Attendance: fixed invalid date formatting in Attendance Summary by Date
         Finance: fixed missing Ad Hoc fee names in bulk-action Export spreadsheet data
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
