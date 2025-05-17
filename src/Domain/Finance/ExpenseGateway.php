@@ -34,7 +34,7 @@ class ExpenseGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryExpensesByBudgetCycleID(QueryCriteria $criteria, $gibbonFinanceBudgetCycleID)
+    public function queryExpensesByBudgetCycleID(QueryCriteria $criteria, $gibbonFinanceBudgetCycleID, $gibbonPersonID = null)
     {
         $query = $this
             ->newQuery()
@@ -49,11 +49,19 @@ class ExpenseGateway extends QueryableGateway
                 'gibbonFinanceExpense.cost',
                 'gibbonFinanceExpense.purchaseBy',
                 'gibbonFinanceBudget.name AS budget',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.surname',
                 "FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled') AS defaultSortOrder"
             ])
             ->innerJoin('gibbonFinanceBudget', 'gibbonFinanceExpense.gibbonFinanceBudgetID = gibbonFinanceBudget.gibbonFinanceBudgetID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonFinanceExpense.gibbonPersonIDCreator')
             ->where('gibbonFinanceExpense.gibbonFinanceBudgetCycleID = :gibbonFinanceBudgetCycleID')
             ->bindValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
+
+        if (!empty($gibbonPersonID)) {
+            $query->where('gibbonFinanceExpense.gibbonPersonIDCreator = :gibbonPersonID')
+                ->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
 
         $criteria->addFilterRules([
             'budget' => function ($query, $gibbonFinanceBudgetID) {
