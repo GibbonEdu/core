@@ -98,6 +98,7 @@ v29.0.00
         Finance: fixed missing Ad Hoc fee names in bulk-action Export spreadsheet data
         Finance: fixed bulk action selection and print action on Manage Expenses table
         Finance: fixed online payment for invoices with a Paid - Partial status
+        Finance: fixed spreadsheet error when exporting invoices with Pending status
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
         Planner: fixed Visual and HTML tabs not working in newly created Smart Blocks 

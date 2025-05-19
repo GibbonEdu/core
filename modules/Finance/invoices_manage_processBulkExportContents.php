@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			}
 			$x = '';
 			if (! $feeError) {
-				$x .= number_format($totalFee, 2, ".", "") ;
+				$x .= number_format($totalFee ?? 0, 2, ".", "") ;
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $x);
 			}
             $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
@@ -230,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, !empty($row["paidDate"]) ? Format::date($row["paidDate"]) : '');
             $excel->getActiveSheet()->getStyleByColumnAndRow(11, $r)->applyFromArray($style_border);
 			//Column L
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ""));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"] ?? 0, 2, ".", ""));
             $excel->getActiveSheet()->getStyleByColumnAndRow(12, $r)->applyFromArray($style_border);
             //Column M
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(13, $r, strip_tags($row["notes"]));
