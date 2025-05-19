@@ -108,7 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $col->addLabel('type', __('Type'));
         $col->addSelect('type')
         ->fromArray($types)
-        
         ->selected($type)
         ->placeholder();
 

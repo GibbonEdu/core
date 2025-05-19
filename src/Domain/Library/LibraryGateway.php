@@ -179,10 +179,10 @@ class LibraryGateway extends QueryableGateway
                     ->where('gibbonLibraryItem.producer LIKE :producer')
                     ->bindValue('producer', '%' . $producer . '%');
             },
-            'category' => function ($query, $category) {
+            'type' => function ($query, $type) {
                 return $query
-                    ->where('gibbonLibraryItem.gibbonLibraryTypeID = :category')
-                    ->bindValue('category', $category);
+                    ->where('gibbonLibraryItem.gibbonLibraryTypeID = :type')
+                    ->bindValue('type', $type);
             },
             'collection' => function ($query, $collection) {
                 return $query
