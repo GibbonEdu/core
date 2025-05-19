@@ -293,7 +293,7 @@ class MpdfRenderer implements ReportRendererInterface
                 mkdir(dirname($outputPath), 0755, true);
             }
 
-            $this->pdf->Output($outputPath, 'F');
+            @$this->pdf->Output($outputPath, 'F');
             unset($this->pdf);
         }
     }
