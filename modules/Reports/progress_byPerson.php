@@ -124,6 +124,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
                     ->setURL('/modules/Reports/reporting_my.php');
         });
 
-    echo $table->render(new DataSet(array_values($progressByPerson)));
+    echo $table->render((new DataSet(array_values($progressByPerson)))->removePagination());
 
 }

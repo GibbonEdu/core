@@ -129,7 +129,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     
     {% set buttonStyle = ' relative inline-flex items-center text-sm sm:text-xs font-semibold ring-1 focus:outline-offset-0' %}
     
-    {% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
+    {% if dataSet.getPage > 0 and (dataSet.getResultCount > dataSet.getPageSize or filterOptions) %}
     <nav class="pagination isolate mb-2 inline-flex rounded-md" aria-label="Pagination">
         <button type="button" class="paginate px-1.5 rounded-l-md bg-white text-gray-600 ring-gray-400  {{ not dataSet.isFirstPage ? 'cursor-pointer hover:bg-gray-200'}} {{ buttonStyle }}" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}}>
             <span class="sr-only">
