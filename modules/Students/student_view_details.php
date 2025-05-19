@@ -915,6 +915,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
+                                    } else {
+                                        echo Format::small(__('N/A'));
                                     }
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
@@ -933,6 +935,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
+                                    } else {
+                                        echo Format::small(__('N/A'));
                                     }
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
@@ -949,6 +953,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo __('Email')." 2: <a href='mailto:".$rowMember['emailAlternate']."'>".$rowMember['emailAlternate'].'</a><br/>';
                                         }
                                         echo '<br/>';
+                                    } else {
+                                        echo Format::small(__('N/A'));
                                     }
                                     echo '</td>';
                                     echo '</tr>';
