@@ -48,9 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setTitle(__('Search'));
     $form->setClass('noIntBorder w-full');
-
-    $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('q', '/modules/Reports/templates_fonts.php');
+    
+    $form->addHiddenValue('q', '/modules/Reports/templates_assets_fonts.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Name'));
