@@ -102,7 +102,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ day.dateDisplay }}
                         </div>
                     {% else %}
-                        <a class="{{ blockWidth }} {{ dayClass }} {{ day.endOfDay.statusClass }} relative z-10" data-log="{{ attendance.tooltip(day) }}"
+                        <a class="{{ blockWidth }} {{ dayClass }} {{ day.endOfDay.statusClass }} relative z-10" x-tooltip.white="{{ attendance.tooltip(day) }}"
                             {% if canTakeAttendanceByPerson %}
                                 href="{{ absoluteURL }}/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID={{ day.gibbonPersonID }}&currentDate={{ day.date }}"
                             {% endif %}>
@@ -137,7 +137,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     Display a tooltip of attendance data for a single day. Should not contain " double quotes.
 -->#}
 {% macro tooltip(day) %}
-    <section class='-mx-2 p-4 border text-center {{ day.endOfDay.statusClass }}'>
+    <section class='w-64 -mx-2 p-4 rounded-md border text-center {{ day.endOfDay.statusClass }}'>
         {{ day.dateDisplay }}<br/>
         
         <span class='font-bold text-base leading-normal'>{{ __(day.endOfDay.type) }}</span><br/>
@@ -194,45 +194,3 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 {% endmacro badge %}
 
-
-{% block footer %}
-
-
-{#<!--
-    Configure a custom tooltip for Student History. This ensures it doesn't 
-    conflict with existing tooltips, and also displays on mobile devices.
--->#}
-<style>
-    .tooltip-reset {
-        background: #ffffff !important;
-        min-width: 16rem;
-    }
-    .w-1\/7 {
-        width: 14.28%;
-    }
-</style>
-<script>
-$('#studentHistory').tooltip({
-    items: "a[data-log]",
-    show: 800,
-    hide: false,
-    content: function () {
-        return $(this).data('log');
-    },
-    tooltipClass: "tooltip-reset",
-    position: {
-        my: "center bottom-5",
-        at: "center top",
-        using: function (position, feedback) {
-            $(this).css(position);
-            $("<div>").
-                addClass("arrow").
-                addClass(feedback.vertical).
-                addClass(feedback.horizontal).
-                appendTo(this);
-        }
-    }
-});
-</script>
-
-{% endblock footer %}
