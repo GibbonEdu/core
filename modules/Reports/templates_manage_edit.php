@@ -187,33 +187,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $prototypeCoreSections = $prototypeSectionGateway->selectPrototypeSections('Core')->fetchGrouped();
     $prototypeAdditionalSections = $prototypeSectionGateway->selectPrototypeSections('Additional')->fetchGrouped();
 
-    // SETTINGS FORM
-    // $form = Form::create('settings', $session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
-
-    // $form->addHiddenValue('address', $session->get('address'));
-    // $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
-
-    // $fonts = ['Helvetica', 'Arial', 'Times New Roman'];
-    // $row = $form->addRow();
-    //     $row->addLabel('font', __('Font'));
-    //     $row->addSelect('font')->fromArray($fonts);
-
-    // $row = $form->addRow();
-    //     $row->addLabel('size', __('Size'));
-    //     $row->addNumber('size');
-
-    // $row = $form->addRow();
-    //     $row->addLabel('color', __('Color'));
-    //     $row->addTextField('color');
-
-    // $row = $form->addRow();
-    //     $row->addSubmit();
-
-
     echo $page->fetchFromTemplate('ui/templateBuilder.twig.html', [
         'gibbonReportTemplateID' => $gibbonReportTemplateID,
         'template' => $values,
-        // 'form'     => $form->getOutput(),
         'headers'  => $headerTable->render($headerSections),
         'body'     => $bodyTable->render($bodySections),
         'footers'  => $footerTable->render($footerSections),
