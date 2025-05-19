@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 
     if (empty($lendingAction)) {
         // If there is only one result that is an exact match, go directly to the lending log
-        header(!empty($item)
+        header(!empty($urlParams['name']) && !empty($item)
             ? "Location: {$URLSuccess}&gibbonLibraryItemID=".$item['gibbonLibraryItemID']
             : "Location: {$URL}"
         );
