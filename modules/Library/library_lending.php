@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     $form->setClass('noIntBorder w-full');
 
     $row = $form->addRow();
-    $row->addLabel('name', __('ID/Name/Producer'));
+    $row->addLabel('name', __('ID/Name/Producer'))->description(__('If only one match exists, it will be automatically opened.'));
     $row->addTextField('name')->setValue($name)->maxLength(50);
 
     $data = array();
