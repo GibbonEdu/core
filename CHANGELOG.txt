@@ -94,6 +94,7 @@ v29.0.00
         Attendance: removed non-Full teachers from Form Groups Not Registered reports
         Attendance: fixed duplicate classes in Classes Not Registered report
         Attendance: fixed invalid date formatting in Attendance Summary by Date
+        Attendance: fixed order of days in Student History when first day of the week is Saturday
         Finance: fixed missing Ad Hoc fee names in bulk-action Export spreadsheet data
         Finance: fixed bulk action selection and print action on Manage Expenses table
         Markbook: fixed attainment percentage values now updating from raw attainment values

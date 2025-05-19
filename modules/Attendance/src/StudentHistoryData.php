@@ -76,14 +76,8 @@ class StudentHistoryData
             ->fetchGrouped();
 
         // Get Weekdays
-        $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y'";
+        $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y' ORDER BY sequenceNumber";
         $daysOfWeek = $this->pdo->select($sql)->fetchKeyPair();
-        if ($firstDayOfTheWeek == 'Sunday' && in_array('Sunday', $daysOfWeek)) {
-            $daysOfWeek = array('Sun' => 'Sunday') + $daysOfWeek;
-        }
-        if ($firstDayOfTheWeek == 'Saturday' && in_array('Saturday', $daysOfWeek)) {
-            $daysOfWeek = array('Sat' => 'Saturday') + $daysOfWeek;
-        }
 
         // Get Terms
         $criteria = $this->termGateway->newQueryCriteria(true)
