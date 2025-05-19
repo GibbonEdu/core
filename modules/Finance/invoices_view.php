@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
     // Access denied
@@ -34,6 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
         $entryCount = 0;
 
         $page->breadcrumbs->add(__('View Invoices'));
+
+
+        //Online payment
+        $settingGateway = $container->get(SettingGateway::class);
+        $enablePayments = $settingGateway->getSettingByScope('System', 'enablePayments');
+        $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
 
         if ($highestAction=="View Invoices_myChildren") {
             //Test data access field for permission
@@ -124,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                     //Add in filter wheres
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
                     //SQL for NOT Pending
-                    $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
+                    $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.key, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
 
@@ -267,10 +274,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo "<span style='font-style: italic; font-size: 75%'>".Format::date($row['invoiceDueDate']).'</span>';
                             echo '</td>';
                             echo '<td>';
+
+                            if ($enablePayments == 'Y' and $row['status'] != 'Paid' && $row['status'] != 'Cancelled' && $row['status'] != 'Refunded') {
+
+                                $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
+                                $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
+
+                                if ($financeOnlinePaymentEnabled == 'Y' && (empty($financeOnlinePaymentThreshold) || $financeOnlinePaymentThreshold >= $totalFee) && $totalFee > 0 && !empty($row['key'])) {
+                                    echo "<a class='button rounded-md inline-flex items-center justify-center bg-gray-50 mr-1' style='font-weight: bold' href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoices_payOnline.php&gibbonFinanceInvoiceID=".$row['gibbonFinanceInvoiceID']."&key=".$row['key']."' title='".__('Pay Now')."'>".icon('solid', 'pay', 'size-6').'</a> ';
+                                }
+                            }
+
                             if ($row['status'] == 'Issued') {
-                                echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'>".icon('solid', 'print', 'size-5')."</a>";
+                                echo "<a class='button rounded-md inline-flex items-center justify-center bg-gray-50 mr-1' title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'>".icon('solid', 'print', 'size-6')."</a>";
                             } elseif ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
-                                echo "<a title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'>".icon('solid', 'print', 'size-5')."</a>";
+                                echo "<a class='button rounded-md inline-flex items-center justify-center bg-gray-50 mr-1' title='".__('Print')."' target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'>".icon('solid', 'print', 'size-6')."</a>";
                             }
                             echo "<script type='text/javascript'>";
                             echo '$(document).ready(function(){';
@@ -282,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '});';
                             echo '</script>';
                             if (!empty($row['notes'])) {
-                                echo "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                                echo "<a class='button rounded-md inline-flex items-center justify-center bg-gray-50 mr-1 show_hide-$count' title='View Notes'  onclick='false'>".icon('solid', 'view', 'size-6 pointer-events-none')."</a>";
                             }
                             echo '</td>';
                             echo '</tr>';

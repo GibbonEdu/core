@@ -57,7 +57,7 @@ if (!$payment->incomingPayment()) {
     $keyReadFail = false;
     try {
         $dataKeyRead = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'key' => $key);
-        $sqlKeyRead = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND `key`=:key AND status='Issued'";
+        $sqlKeyRead = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND `key`=:key AND (status='Issued' OR status='Paid - Partial')";
         $resultKeyRead = $connection2->prepare($sqlKeyRead);
         $resultKeyRead->execute($dataKeyRead);
     } catch (PDOException $e) {
@@ -93,13 +93,19 @@ if (!$payment->incomingPayment()) {
                 $feeTotal += $rowFees['fee'];
             }
 
-            if ($payment->isEnabled() and $feeTotal > 0) {
+            $feeRemaining = $feeTotal;
+            if ($feeTotal > 0 && !empty($rowKeyRead['paidAmount']) && $rowKeyRead['paidAmount'] < $feeTotal) {
+                $feeRemaining = floatval($feeTotal) - floatval($rowKeyRead['paidAmount']);
+            }
+
+
+            if ($payment->isEnabled() && $feeTotal > 0 && $feeRemaining > 0) {
                 $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
                 $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
                 if ($financeOnlinePaymentEnabled == 'Y') {
-                    if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
+                    if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeRemaining) {
                         // Let's make a payment
-                        $return = $payment->requestPayment($feeTotal, __('Invoice Number') .' '.$gibbonFinanceInvoiceID);
+                        $return = $payment->requestPayment($feeRemaining, __('Invoice Number') .' '.$gibbonFinanceInvoiceID);
 
                         if (!empty($return)) {
                             $URL .= '&return='.$return;
