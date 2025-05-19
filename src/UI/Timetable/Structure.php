@@ -355,7 +355,7 @@ class Structure
         $this->activeDay = $weekdays[0]['nameShort'] ?? $this->today->format('D');
 
         foreach ($weekdays as $weekday) {
-            if ($this->today->format('D') == $weekday['nameShort']) $this->activeDay = $weekday['nameShort'];
+            if ($this->today->format('D') == $weekday['nameShort']) $this->activeDay = $weekday;
 
             $this->expandTimeRange($weekday['schoolStart'], $weekday['schoolEnd']);
         }
