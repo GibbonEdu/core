@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $form->toggleVisibilityByClass('copyTo')->onSelect('action')->when('Duplicate');
 
     // DATA TABLE
-    $table = $form->addRow()->addDataTable('units', $criteria)->withData($units);
+    $table = $form->addRow()->addDataTable('unitList', $criteria)->withData($units);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Planner/units_add.php')

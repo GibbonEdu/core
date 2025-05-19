@@ -155,7 +155,7 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         if (empty($filters)) return '';
 
-        $groupAlign = $dataSet->getTotalCount() > 25 ? 'right' : '';
+        $groupAlign = $dataSet->getResultCount() > 20 ? 'right' : '';
 
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
