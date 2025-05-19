@@ -376,6 +376,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $row->addLabel('contactPriority', __('Contact Priority'))->description(__('The order in which school should contact family members.'));
                 $row->addSelect('contactPriority')->fromArray($priorities)->required();
 
+            $form->toggleVisibilityByClass('contact')->onSelect('contactPriority')->whenNot('1');
+
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactCall', __('Call?'))->description(__('Receive non-emergency phone calls from school?'));
                 $row->addYesNo('contactCall')->required();
@@ -397,34 +399,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $row->addSubmit();
 
             echo $form->getOutput();
-
-            echo "<script type=\"text/javascript\">
-                $(document).ready(function(){
-                    $(\"#contactCall\").attr(\"disabled\", \"disabled\");
-                    $(\"#contactSMS\").attr(\"disabled\", \"disabled\");
-                    $(\"#contactEmail\").attr(\"disabled\", \"disabled\");
-                    $(\"#contactMail\").attr(\"disabled\", \"disabled\");
-                    $(\"#contactPriority\").change(function(){
-                        if ($('#contactPriority').val()==\"1\" ) {
-                            $(\"#contactCall\").attr(\"disabled\", \"disabled\");
-                            $(\"#contactCall\").val(\"Y\");
-                            $(\"#contactSMS\").attr(\"disabled\", \"disabled\");
-                            $(\"#contactSMS\").val(\"Y\");
-                            $(\"#contactEmail\").attr(\"disabled\", \"disabled\");
-                            $(\"#contactEmail\").val(\"Y\");
-                            $(\"#contactMail\").attr(\"disabled\", \"disabled\");
-                            $(\"#contactMail\").val(\"Y\");
-                        }
-                        else {
-                            $(\"#contactCall\").removeAttr(\"disabled\");
-                            $(\"#contactSMS\").removeAttr(\"disabled\");
-                            $(\"#contactEmail\").removeAttr(\"disabled\");
-                            $(\"#contactMail\").removeAttr(\"disabled\");
-                        }
-                     });
-                });
-            </script>";
         }
     }
 }
-?>
