@@ -197,8 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     ->setIcon('copy')
                     ->setURL('/modules/Planner/units_duplicate.php');
 
-            $actions->addAction('export', __('Export'))
-                    ->setIcon('download')
+            $actions->addAction('view', __('Overview'))
                     ->addParam('sidebar', 'false')
                     ->setURL('/modules/Planner/units_dump.php');
         });
