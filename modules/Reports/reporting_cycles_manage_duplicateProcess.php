@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         'dateEnd'               => $_POST['dateEnd'] ?? '',
         'cycleNumber'           => $_POST['cycleNumber'] ?? '1',
         'cycleTotal'            => $_POST['cycleTotal'] ?? '1',
+        'sequenceNumber'        => $_POST['sequenceNumber'] ?? '1',
     ];
 
     $data['dateStart'] = Format::dateConvert($data['dateStart']);
