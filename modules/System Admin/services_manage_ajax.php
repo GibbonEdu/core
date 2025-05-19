@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
     $client = new Client();
     $response = $client->request('GET', $apiEndpoint, [
         'headers' => ['Referer' => $session->get('absoluteURL').'/index.php'],
-        'query' => $params,
+        'query' => http_build_query($params, '', '&', PHP_QUERY_RFC3986),
         'exceptions' => false,
     ]);
 
