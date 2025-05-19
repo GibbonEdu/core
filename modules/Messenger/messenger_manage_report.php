@@ -202,7 +202,7 @@ else {
                     ->setIcon('add')
                     ->displayLabel(); 
 
-                    $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
+                    $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end mb-2');
                     $row->addSubmit(__('Go'));
                 }
 
@@ -360,7 +360,7 @@ else {
                     ->setIcon('add')
                     ->displayLabel(); 
 
-                    $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
+                    $row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end mb-2');
                     $row->addSubmit(__('Go'));
                 }
 
