@@ -11624,27 +11624,3 @@ VALUES
     (00000000062227,000000005430,00000000000009,000000039684,'Playtime','Hands On','50','<ul>\r\n<li>You now have the remainder of the lesson to keep playing with your wallpaper.</li>\r\n<li>How can you improve the way your work looks?</li>\r\n</ul>','',17,'N'),
     (00000000062228,000000005430,00000000000010,000000039685,'Finish, Export & Submit','Hands On','50','<ul>\r\n<li>You now have 35 minutes to put the finishing touches on your work.</li>\r\n<li>The video below might help you if you are stuck getting your CC license set up and put into Acorn:</li>\r\n</ul>\r\n<p style=\"text-align: center;\"><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0NFLmAlTDVE?rel=0\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe></p>\r\n<ul>\r\n<li>Leave enough time to save your work as a PNG file: png files can be opened by people who don\'t have Acorn, and are also smaller than Acorn files. When you save, you will lose your layers though, so keep the Acorn file as well in case you want to go back and edit some more.</li>\r\n<li>Finally, submit your work to Gibbon.</li>\r\n</ul>','',18,'N'),
     (00000000062229,000000005430,00000000000010,000000039686,'Raster vs. Vector','Teacher Talk','20','<ul>\r\n<li>To finish this unit, let\'s consider the ideas of <span style=\"text-decoration: underline;\"><strong>raster</strong></span> and <span style=\"text-decoration: underline;\"><strong>vector</strong></span> graphics.</li>\r\n<li>See <em>Teachers Notes</em> for details.</li>\r\n</ul>','<ul>\r\n<li>Teacher to introduce students to how graphics are represented, stored and displayed on computers.</li>\r\n<li>Most graphics programs store graphics as raster images. <br />\r\n<ul>\r\n<li>What is a raster?</li>\r\n<li>When are rasters good?</li>\r\n<li>Example raster formats? What are their strengths and weaknesses.</li>\r\n</ul>\r\n</li>\r\n<li>Some programs store graphics as vector images\r\n<ul>\r\n<li>What is a vector?</li>\r\n<li>When are vectors good?</li>\r\n<li>Example vector formats?</li>\r\n</ul>\r\n</li>\r\n<li>The Acorn file format (.acorn) uses raster for most elements, but some things (like text) are stored as vectors.</li>\r\n<li>Students should use the .acorn format whilst working on the box.</li>\r\n</ul>',19,'N');
-
---
--- Dumping data for table `gibbonSchoolYear`
---
-INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`)
-VALUES
-    (025,'2025-2026','Current',3,'2025-05-19','2026-06-29'),
-    (026,'2026-2027','Upcoming',4,'2026-08-10','2027-06-29');
-
---
--- Dumping data for table `gibbonSchoolYearTerm`
---
-INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearID`, `sequenceNumber`, `name`, `nameShort`, `firstDay`, `lastDay`)
-VALUES
-    (00034,025,31,'Term 1','T1','2025-05-19','2026-01-04'),
-    (00035,025,32,'Term 2','T2','2026-01-05','2026-04-19'),
-    (00036,025,33,'Term 3','T3','2026-04-13','2026-06-29'),
-    (00037,026,34,'Term 1','T1','2026-08-10','2027-01-03'),
-    (00038,026,35,'Term 2','T2','2027-01-04','2027-04-11'),
-    (00039,026,36,'Term 3','T3','2027-04-12','2027-06-29');
-
---
--- Dumping data for table `gibbonSchoolYearSpecialDay`
---
