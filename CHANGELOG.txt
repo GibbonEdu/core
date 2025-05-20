@@ -23,11 +23,11 @@ v29.0.00
 --------
 
     Headlines
-        A new mobile-responsive timetable UI
+        A new mobile-responsive Timetable UI with layer visibility toggles
         An improved library borrowing page in Student Profile with tabs and quick lending actions
-        A simple Petty Cash system for tracking small expenses
-
-    Changes With Important Notices
+        An option to add new recipients to existing messages in Messenger
+        A color-coded Markbook option for easier visual identification
+        A simple Petty Cash system in Finance for tracking small expenses
 
     Security
         System: added nonce and CSRF token handling to all POST forms
