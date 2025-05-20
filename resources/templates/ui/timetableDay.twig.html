@@ -12,7 +12,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set specialDay = structure.getSpecialDay(day.date) %}
 {% set indexDepth = {0: '', 1: 'pl-2', 2: 'pl-4', 3: 'pl-6', 4: 'pl-8'} %}
 
-
 <div class="relative flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
 
     {% set column = structure.getColumn(day.date) %}
@@ -50,7 +49,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set lastTimeEnd = item.timeEnd %}
 
                 {% if item.date > structure.getToday.format('Y-m-d') or (isToday and item.timeStart >= now) %}
-                    {% if gibbonSpaceID and layers['Bookings'].isActive and not item.hasStatus('overlap') and format != 'print' %}
+                    {% if gibbonSpaceID and layers['Bookings'].isActive and layers['Bookings'].isBookable and not item.hasStatus('overlap') and format != 'print' %}
                         {% set iconSize = item.duration >= 50 ? 'size-6' : item.duration >= 30 ? 'size-5' : 'size-3' %}
                         <a x-show="{{ layers['Bookings'].getID }}" href="{{ absoluteURL }}/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID={{ gibbonSpaceID }}&date={{ item.date }}&timeStart={{ item.timeStart }}&timeEnd={{ item.timeEnd }}&source=tt" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ __('Add Facility Booking') }}">
                             {{  icon('solid', 'add', iconSize ~ ' text-gray-600 hover:text-gray-800') }}

@@ -25,6 +25,7 @@ use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Support\Facades\Access;
 use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\Domain\School\FacilityGateway;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 /**
@@ -35,10 +36,13 @@ use Gibbon\Domain\Timetable\FacilityBookingGateway;
  */
 class BookingsLayer extends AbstractTimetableLayer
 {
+    protected $facilityGateway;
     protected $facilityBookingGateway;
+    protected $facility;
 
-    public function __construct(FacilityBookingGateway $facilityBookingGateway)
+    public function __construct(FacilityBookingGateway $facilityBookingGateway, FacilityGateway $facilityGateway)
     {
+        $this->facilityGateway = $facilityGateway;
         $this->facilityBookingGateway = $facilityBookingGateway;
 
         $this->name = 'Bookings';
@@ -53,9 +57,10 @@ class BookingsLayer extends AbstractTimetableLayer
     }
     
     public function loadItems(\DatePeriod $dateRange, TimetableContext $context) 
-    {
+    {   
         $bookings = $this->facilityBookingGateway->selectFacilityBookingsByDateRange($dateRange->getStartDate()->format('Y-m-d'), $dateRange->getEndDate()->format('Y-m-d'), $context->get('gibbonPersonID'), $context->get('gibbonSpaceID'))->fetchAll();
-
+        
+        $this->facility = $this->facilityGateway->getByID($context->get('gibbonSpaceID'), ['bookable']);
         $canViewSpaceTimetable = Access::allows('Timetable', 'tt_space_view');
 
         foreach ($bookings as $booking) {
@@ -70,5 +75,10 @@ class BookingsLayer extends AbstractTimetableLayer
                 'link'      => $canViewSpaceTimetable ? Url::fromModuleRoute('Timetable', 'tt_space_view')->withQueryParams(['gibbonSpaceID' => $booking['foreignKeyID'] ?? '', 'ttDate' => $booking['date']]) : '',
             ]);
         }
+    }
+
+    public function isBookable()
+    {
+        return !empty($this->facility) && $this->facility['bookable'] == 'Y';
     }
 }
