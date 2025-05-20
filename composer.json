@@ -56,7 +56,7 @@
         "monolog/monolog": "^1.24",
         "phpoffice/phpspreadsheet": "^1.6",
         "fzaninotto/faker": "^1.8",
-        "mpdf/mpdf": "^8.0",
+        "mpdf/mpdf": "^8.2.5",
         "league/omnipay": "^3",
         "omnipay/paypal": "^3.0",
         "omnipay/stripe": "dev-master as v3.1.1",
