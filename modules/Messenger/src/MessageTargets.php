@@ -39,10 +39,6 @@ use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 class MessageTargets
 {
     protected $report;
-    protected $session;
-    protected $db;
-    protected $settingGateway;
-    protected $logGateway;
     protected $roleGateway;
     protected $messengerReceiptGateway;
     protected $logGateway;
