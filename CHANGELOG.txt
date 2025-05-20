@@ -75,7 +75,6 @@ v29.0.00
         User Admin: improved the image uploader in Manage Users, detect invalid images
         User Admin: added Name in Characters to searchable fields
         User Admin: added the ability to add Custom Fields to Family records
-
     
     Bug Fixes
         System: fixed issue with search terms containing a : full colon (special character) 
