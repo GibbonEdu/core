@@ -101,6 +101,7 @@ v29.0.00
         Finance: fixed online payment for invoices with a Paid - Partial status
         Finance: fixed spreadsheet error when exporting invoices with Pending status
         Finance: fixed missing budget cycle name from Print page in Manage Expenses
+        Individual Needs: fixed search filters on teacher view of Manage Investigations page
         Library: fixed Advanced Search not searching items by type in Browse Library
         Markbook: fixed attainment percentage values now updating from raw attainment values
         Messenger: fixed required members field when editing a Messenger Group
