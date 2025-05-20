@@ -1803,7 +1803,7 @@ CREATE TABLE `gibbonFamilyRelationship` (
   `gibbonPersonID1` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID2` int(10) UNSIGNED ZEROFILL NOT NULL,
   `relationship` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT COMMENT='Person 1 is [relationship] to person 2?';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Person 1 is [relationship] to person 2?';
 
 -- --------------------------------------------------------
 
@@ -4434,7 +4434,7 @@ CREATE TABLE `gibbonPlannerEntryStudentHomework` (
   `homeworkDueDateTime` datetime NOT NULL,
   `homeworkDetails` mediumtext NOT NULL,
   `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=InnoDB DEFAULT COMMENT='Allows students to add homework deadlines themselves';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves';
 
 -- --------------------------------------------------------
 
