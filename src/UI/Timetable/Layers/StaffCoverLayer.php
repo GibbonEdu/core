@@ -75,7 +75,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
                 'title'       => $coverage['contextName'],
                 'label'       => $coverage['courseName'],
                 'subtitle'    => $coverage['roomName'] ?? '',
-                'description' => __('Covering for {name}', ['name' => $fullName]).'<br/>'.$coverage['notesStatus'],
+                'description' => __('Covering for {name}', ['name' => $fullName]),
                 'location'    => $coverage['roomName'] ?? '',
                 'phone'       => $coverage['phoneInternal'] ?? '',
                 'allDay'      => $coverage['allDay'] == 'Y',
@@ -85,6 +85,14 @@ class StaffCoverLayer extends AbstractTimetableLayer
                 'timeStart'   => $coverage['timeStart'],
                 'timeEnd'     => $coverage['timeEnd'],
             ]);
+
+            // Handle room changes
+            if (!empty($coverage['spaceChanged'])) {
+                $item->addStatus('spaceChanged')
+                    ->set('location', $coverage['roomNameChange'] ?? __('No Facility'))
+                    ->set('subtitle', $coverage['roomNameChange'] ?? __('No Facility'))
+                    ->set('phone', $coverage['phoneChange']);
+            }
 
             $planner = !empty($coverage['gibbonCourseClassID']) 
                 ? $this->plannerEntryGateway->getPlannerEntryByClassTimes($coverage['gibbonCourseClassID'], $coverage['date'], $coverage['timeStart'], $coverage['timeEnd'])
