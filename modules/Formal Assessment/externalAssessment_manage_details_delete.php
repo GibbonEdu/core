@@ -46,7 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             //Let's go!
             $row = $result->fetch();
 
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/externalAssessment_manage_details_deleteProcess.php?gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/externalAssessment_manage_details_deleteProcess.php?search=$search&allStudents=$allStudents");
+            $form->addHiddenValue('gibbonExternalAssessmentStudentID', $gibbonExternalAssessmentStudentID);
+            $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
             echo $form->getOutput();
         }
     }

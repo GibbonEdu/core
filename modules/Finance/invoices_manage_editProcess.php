@@ -354,10 +354,9 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             }
 
                             if ($emailFail) {
-                                $gibbonModuleID = getModuleIDFromName($connection2, 'Finance');
                                 $logArray = [];
                                 $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : $emails;
-                                $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Finance - Reminder Email Failure', $logArray);
+                                $logGateway->addLog($session->get("gibbonSchoolYearID"), 'Finance', $session->get("gibbonPersonID"), 'Finance - Reminder Email Failure', $logArray);
                             }
                         }
                     }

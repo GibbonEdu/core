@@ -25,9 +25,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$currentDate = $_GET['currentDate'] ?? '';
+$gibbonAttendanceLogPersonID = $_POST['gibbonAttendanceLogPersonID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$currentDate = $_POST['currentDate'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 

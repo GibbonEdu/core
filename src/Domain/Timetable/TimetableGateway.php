@@ -49,6 +49,18 @@ class TimetableGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectActiveTimetables($gibbonSchoolYearID) 
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name
+                FROM gibbonTT 
+                WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.active='Y'
+                GROUP BY gibbonTT.gibbonTTID
+                ORDER BY gibbonTT.name";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectClassesByTimetable($gibbonTTID)
     {
         $data = ['gibbonTTID' => $gibbonTTID];
@@ -61,6 +73,18 @@ class TimetableGateway extends QueryableGateway
                 AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonTT.gibbonYearGroupIDList)
                 GROUP BY gibbonCourseClass.gibbonCourseClassID
                 ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTimetablesByClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT DISTINCT gibbonTTDay.gibbonTTID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                GROUP BY gibbonTTDay.gibbonTTID";
 
         return $this->db()->select($sql, $data);
     }

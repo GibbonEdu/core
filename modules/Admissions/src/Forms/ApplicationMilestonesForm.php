@@ -65,7 +65,7 @@ class ApplicationMilestonesForm extends Form
 
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);
-        $form->addHiddenValue('tab', 1);
+        $form->addHiddenValue('tab', 2);
 
         $checkIcon = icon('basic', 'check', 'milestoneCheck size-6 fill-current mr-3 -my-2 text-green-600');
         $crossIcon = icon('basic', 'cross', 'milestoneCross size-6 fill-current mr-3 -my-2 text-red-700');

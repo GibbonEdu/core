@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_staff_manage_deleteProcess.php?gibbonStaffUpdateID=".$gibbonStaffUpdateID);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_staff_manage_deleteProcess.php");
+    $form->addHiddenValue('gibbonStaffUpdateID', $gibbonStaffUpdateID);
     echo $form->getOutput();
 }

@@ -78,7 +78,7 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID');
 
         if (!empty($gibbonPersonIDCreator)) {
-            $query->where('gibbonINInvestigation.gibbonPersonIDCreator=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonIDCreator')
+            $query->where('(gibbonINInvestigation.gibbonPersonIDCreator=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonIDCreator)')
                 ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
         }
 

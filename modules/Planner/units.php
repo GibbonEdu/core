@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $form->toggleVisibilityByClass('copyTo')->onSelect('action')->when('Duplicate');
 
     // DATA TABLE
-    $table = $form->addRow()->addDataTable('units', $criteria)->withData($units);
+    $table = $form->addRow()->addDataTable('unitList', $criteria)->withData($units);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Planner/units_add.php')
@@ -172,8 +172,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         'active:N' => __('Active').': '.__('No'),
     ]);
 
-    $table->addColumn('name', __('Name'))->context('Primary');
-    $table->addColumn('description', __('Description'))->context('Secondary');
+    $table->addColumn('name', __('Name'))
+        ->context('Primary');
+    $table->addColumn('description', __('Description'))
+        ->context('Secondary')
+        ->width('45%');
     $table->addColumn('active', __('Active'))
         ->width('10%')
         ->format(Format::using('yesNo', 'active'));
@@ -194,8 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     ->setIcon('copy')
                     ->setURL('/modules/Planner/units_duplicate.php');
 
-            $actions->addAction('export', __('Export'))
-                    ->setIcon('download')
+            $actions->addAction('view', __('Overview'))
                     ->addParam('sidebar', 'false')
                     ->setURL('/modules/Planner/units_dump.php');
         });

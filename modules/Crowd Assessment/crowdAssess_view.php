@@ -46,6 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     // Check existence of and access to this lesson.
     $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
     $sql = getLessons($guid, $connection2, $and);
+
+    if (empty($sql[0]) || empty($sql[1])) return;
+    
     $lesson = $pdo->select($sql[1], $sql[0])->fetch();
 
     if (empty($lesson)) {
@@ -73,6 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $sqlList = getStudents($guid, $connection2, $role, $lesson['gibbonCourseClassID'], $lesson['homeworkCrowdAssessOtherTeachersRead'], $lesson['homeworkCrowdAssessOtherParentsRead'], $lesson['homeworkCrowdAssessSubmitterParentsRead'], $lesson['homeworkCrowdAssessClassmatesParentsRead'], $lesson['homeworkCrowdAssessOtherStudentsRead'], $lesson['homeworkCrowdAssessClassmatesRead']);
 
     // DATA TABLE
+    if (empty($sqlList[0]) || empty($sqlList[1])) return;
+
     $students = $pdo->select($sqlList[1], $sqlList[0])->fetchAll();
     foreach ($students as $index => $student) {
         $homework = $plannerHomeworkGateway->selectBy(['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $student['gibbonPersonID']])->fetch();

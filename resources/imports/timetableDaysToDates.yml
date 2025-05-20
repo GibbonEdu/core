@@ -1,0 +1,44 @@
+details:
+    type: timetableDaysToDates
+    category: Timetable
+    name: Tie Days to Dates
+    table: gibbonTTDayDate
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action:  Tie Days to Dates
+primaryKey:
+    gibbonTTDayDateID
+fields:
+    gibbonTTID: 
+        name: "Timetable"
+        desc: "Timetable short name. Must already exist."
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTT, key: gibbonTTID, field: nameShort  }
+    
+    gibbonTTDayID: 
+        name: "Day"
+        desc: "Timetable day short name. Must already exist."
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTTDay, key: gibbonTTDayID, field: nameShort  }
+    date: 
+        name: "Date"
+        desc: "Format: YYYY-MM-DD"
+        args: { filter: date, required: true }
+tables:
+    gibbonTTDayDate: 
+        primaryKey:
+            gibbonTTDayDateID
+        fields:
+            - gibbonTTDayID
+            - date
+    gibbonTTDay:
+        primaryKey:
+            gibbonTTDayID
+        fields:
+            - gibbonTTID
+            - gibbonTTColumnID
+            - name
+            - nameShort
+            - color
+            - fontColor

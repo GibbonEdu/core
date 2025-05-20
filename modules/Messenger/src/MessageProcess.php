@@ -145,7 +145,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             }
 
             //Set log
-            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $message["address"]), $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
+            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Messenger', $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
         }
 
         if ($email=="Y") {
@@ -160,8 +160,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             if ($emailReplyTo!="") {
                 $mail->AddReplyTo($emailReplyTo, '');
             }
-            if ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+            if ($from==$session->get('organisationEmail')) {
                 $mail->SetFrom($from, $session->get('organisationName'));
+            } elseif ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+                $user = $container->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
+                $mail->SetFrom($from, ($user['preferredName'] ?? '').' '.($user['surname'] ?? '') );
             } else { //Else, send from individual
                 $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
             }
@@ -284,7 +287,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                     ]);
                     if(!$mail->Send()) {
                         $partialFail = TRUE;
-                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $message["address"]), $session->get('gibbonPersonID'), 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry['contactDetail']));
+                        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Messenger', $session->get('gibbonPersonID'), 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry['contactDetail']));
                         $emailErrors[] = $reportEntry['contactDetail'];
                     } else {
                         $messengerReceiptGateway->update($reportEntry['gibbonMessengerReceiptID'], ['sent' => 'Y']);
@@ -346,9 +349,22 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $mail = $this->getContainer()->get(Mailer::class);
 
         $mail->Subject = __('Draft').': '.$message['subject'];
-        $mail->SetFrom($message['emailFrom']);
-        $mail->AddReplyTo($message['emailReplyTo']);
         $mail->AddAddress($session->get('email'));
+
+        $from = $message['emailFrom'];
+        $emailReplyTo = $message['emailReplyTo'] ?? '';
+
+        if ($emailReplyTo!="") {
+            $mail->AddReplyTo($emailReplyTo, '');
+        }
+        if ($from==$session->get('organisationEmail')) {
+            $mail->SetFrom($from, $session->get('organisationName'));
+        } elseif ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
+            $user = $this->getContainer()->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
+            $mail->SetFrom($from, ($user['preferredName'] ?? '').' '.($user['surname'] ?? '') );
+        } else { //Else, send from individual
+            $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
+        }
 
         $message['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $message['body']);
 
@@ -369,6 +385,79 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         return $mail->Send();
     }
 
+    public function runSendEmailToRecipients($gibbonMessengerID, $gibbonMessengerReceiptIDs)
+    {
+        $container = $this->getContainer();
+        $pdo = $container->get(Connection::class);
+        $connection2 = $pdo->getConnection();
+        $session = $container->get(Session::class);
+
+        $messengerGateway = $container->get(MessengerGateway::class);
+        $message = $messengerGateway->getByID($gibbonMessengerID);
+
+        $partialFail = false;
+
+        // Prep message
+        $emailCount = 0;
+        
+
+        $mail= $container->get(Mailer::class);
+        $mail->SMTPKeepAlive = true;
+        $mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
+        
+
+        // Scan through recipients
+        foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
+
+            // Check recipient status
+            $dataReceipt = ["gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID];
+            $sqlReceipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
+            $resultReceipt = $connection2->prepare($sqlReceipt);
+            $resultReceipt->execute($dataReceipt);
+
+            if ($resultReceipt->rowCount() != 1) {
+                $partialFail = true;
+            } else {
+                $rowReceipt = $resultReceipt->fetch();
+
+                $mail->Subject = $rowReceipt['sent'] == 'Y' && $message['emailReceipt'] == 'Y' ? __('REMINDER:').' '.$message['subject'] : $message['subject'];
+                $bodyReminder = $rowReceipt['sent'] == 'Y' ? "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" : '';
+                
+                // Resend message
+                $emailCount ++;
+                $mail->ClearAddresses();
+                $mail->AddAddress($rowReceipt['contactDetail']);
+
+                // Deal with email receipt and body finalisation
+                if ($message['emailReceipt'] == 'Y') {
+                    $bodyReadReceipt = '<hr style="border: 1px solid #dddddd;"><a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowReceipt['gibbonPersonID'].'&key='.$rowReceipt['key'].'">'.$message['emailReceiptText'].'</a><hr style="border: 1px solid #dddddd;"><br/>';
+                    if (strpos($bodyReminder, '[confirmLink]') !== false) {
+                        $bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
+                    } else {
+                        $bodyOut = $bodyReminder.$bodyReadReceipt.$message['body'];
+                    }
+                } else {
+                    $bodyOut = $message['body'];
+                }
+
+                $mail->renderBody('mail/email.twig.html', [
+                    'title'  => $message['subject'],
+                    'body'   => $bodyOut
+                ]);
+                
+                if(!$mail->Send()) {
+                    $partialFail = TRUE ;
+                } else {
+                    // Update the sent status of the recipient
+                    if ($rowReceipt['sent'] == 'N') {
+                        $container->get(MessengerReceiptGateway::class)->update($gibbonMessengerReceiptID, ['sent' => 'Y']);
+                    }
+                }
+            }
+        }
+        return $partialFail;
+    }
+    
     protected function handleFakeReadReceiptLink($body, $emailReceiptText)
     {
         $session = $this->getContainer()->get(Session::class);

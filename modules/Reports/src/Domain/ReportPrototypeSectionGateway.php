@@ -31,7 +31,7 @@ class ReportPrototypeSectionGateway extends QueryableGateway
 
     private static $tableName = 'gibbonReportPrototypeSection';
     private static $primaryKey = 'gibbonReportPrototypeSectionID';
-    private static $searchableColumns = ['gibbonReportPrototypeSection.name'];
+    private static $searchableColumns = ['gibbonReportPrototypeSection.name', 'type', 'category'];
     
     /**
      * @param QueryCriteria $criteria
@@ -43,8 +43,21 @@ class ReportPrototypeSectionGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportPrototypeSection.gibbonReportPrototypeSectionID', 'name', 'type', 'category', 'templateFile', 'fonts' ]);
+            ->cols(['gibbonReportPrototypeSection.gibbonReportPrototypeSectionID', 'name', 'type', 'category', 'templateFile', 'active', 'fonts' ]);
 
+        $criteria->addFilterRules([
+            'active' => function ($query, $active) {
+                return $query
+                    ->where('gibbonReportPrototypeSection.active = :active')
+                    ->bindValue('active', $active);
+            },
+            'type' => function ($query, $type) {
+                return $query
+                    ->where('gibbonReportPrototypeSection.type = :type')
+                    ->bindValue('type', $type);
+            },
+        ]);
+        
         return $this->runQuery($query, $criteria);
     }
 
@@ -77,5 +90,13 @@ class ReportPrototypeSectionGateway extends QueryableGateway
                 WHERE gibbonReportPrototypeSectionID=:gibbonReportPrototypeSectionID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function updateActiveStatus($gibbonReportPrototypeSectionIDList, $active)
+    {
+        $data = ['gibbonReportPrototypeSectionIDList' => $gibbonReportPrototypeSectionIDList, 'active' => $active];
+        $sql = "UPDATE gibbonReportPrototypeSection SET gibbonReportPrototypeSection.active=:active WHERE FIND_IN_SET(gibbonReportPrototypeSectionID, :gibbonReportPrototypeSectionIDList)";
+
+        return $this->db()->update($sql, $data);
     }
 }

@@ -40,7 +40,7 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
         $keyReadFail = false;
         try {
             $dataKeyRead = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'key' => $key);
-            $sqlKeyRead = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND `key`=:key AND status='Issued'";
+            $sqlKeyRead = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND `key`=:key AND (status='Issued' OR status='Paid - Partial')";
             $resultKeyRead = $connection2->prepare($sqlKeyRead);
             $resultKeyRead->execute($dataKeyRead);
         } catch (PDOException $e) {
@@ -70,7 +70,13 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
                     $feeTotal += $rowFees['fee'];
                 }
 
-                if ($payment->isEnabled() and $feeTotal > 0) {
+                $feeRemaining = $feeTotal;
+                if ($feeTotal > 0 && !empty($rowKeyRead['paidAmount']) && $rowKeyRead['paidAmount'] < $feeTotal) {
+                    $feeRemaining = floatval($feeTotal) - floatval($rowKeyRead['paidAmount']);
+                }
+
+
+                if ($payment->isEnabled() && $feeTotal > 0 && $feeRemaining > 0) {
                     $settingGateway = $container->get(SettingGateway::class);
                     $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
                     $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
@@ -80,7 +86,7 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
                         echo __('Online Payment');
                         echo '</h3>';
                         echo '<p>';
-                        if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
+                        if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeRemaining) {
                             echo sprintf(__('Payment can be made by credit card, using our secure %2$s payment gateway. When you press Pay Online Now, you will be directed to %2$s in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $session->get('systemName'), $paymentGateway).' ';
 
                             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/invoices_payOnlineProcess.php');
@@ -90,7 +96,7 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
                             $form->addHiddenValue('key', $key);
 
                             $row = $form->addRow();
-                                $row->addContent($session->get('currency').$feeTotal);
+                                $row->addContent($session->get('currency').$feeRemaining);
                                 $row->addSubmit(__('Pay Online Now'));
 
                             echo $form->getOutput();
@@ -99,10 +105,10 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
                         }
                         echo '</p>';
                     } else {
-                        $page->addError(__('Your request failed due to a database error.'));
+                        $page->addError(__('Online payment options are not available at this time.'));
                     }
                 } else {
-                    $page->addError(__('Your request failed due to a database error.'));
+                    $page->addError(__('Online payment options are not available at this time.'));
                 }
             }
         }

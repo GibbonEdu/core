@@ -34,7 +34,7 @@ TODO: add template variable details.
                     <div class="flex-grow flex items-center justify-end text-right text-sm text-{{ themeColour }}-200">
                         {% if isLoggedIn and currentUser %}
 
-                        <a href="{{ currentUser.url ?? './index.php?q=/preferences.phpe' }}" class="hidden sm:block text-{{ themeColour }}-200 hover:text-white">
+                        <a href="{{ currentUser.url ?? './index.php?q=/preferences.php' }}" class="hidden sm:block text-{{ themeColour }}-200 hover:text-white">
                             {{ currentUser.name }}
                         </a>
 

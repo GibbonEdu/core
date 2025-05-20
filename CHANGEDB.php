@@ -890,3 +890,54 @@ ALTER TABLE `gibbonStaff` ADD `coveragePriority` INT(1) DEFAULT 0 AFTER `coverag
 ++$count;
 $sql[$count][0] = '28.0.01';
 $sql[$count][1] = "";
+
+//v29.0.00
+++$count;
+$sql[$count][0] = '29.0.00';
+$sql[$count][1] = "
+CREATE TABLE `gibbonFinancePettyCash` (`gibbonFinancePettyCashID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `gibbonSchoolYearID` VARCHAR(3) NOT NULL , `gibbonPersonID` INT(10) NOT NULL , `amount` DECIMAL(12,2) NOT NULL , `reason` VARCHAR(90) NULL , `notes` TEXT NULL , `gibbonPersonIDCreated` INT(10) NULL , `timestampCreated` TIMESTAMP NULL , `actionRequired` VARCHAR(60) NULL , `gibbonPersonIDStatus` INT(10) NULL , `timestampStatus` TIMESTAMP NULL , `status` VARCHAR(60) NOT NULL , PRIMARY KEY (`gibbonFinancePettyCashID`)) ENGINE = InnoDB CHARSET=utf8 COLLATE=utf8_general_ci;end
+INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance'), 'Petty Cash', 0, 'Expenses', 'Allows users to track basic payments and refunds of petty cash.', 'pettyCash.php,pettyCash_addEdit.php,pettyCash_delete.php,pettyCash_action.php','pettyCash.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Finance' AND gibbonAction.name='Petty Cash'));end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Finance', 'pettyCashReasons', 'Petty Cash Reasons', 'A comma-separated list.', 'Lunch Money,Small Purchase,Other');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Finance', 'pettyCashDefaultAction', 'Default Action Required', '', 'None');end
+INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `type`, `templateType`, `moduleName`, `templateName`, `templateSubject`, `templateBody`, `variables`, `timestamp`) VALUES (NULL, 'Core', 'Student Petty Cash', 'Finance', 'Student Petty Cash', 'Notice of Petty Cash Balance', '<p>Dear {{parentTitle}} {{parentPreferredName}} {{parentSurname}},</p>\r\n<p>This is a notice to let you know that {{studentPreferredName}} has a petty cash balance of <strong>{{amount}}</strong>. Please help us to remind them to repay this amount to the school.</p>\r\n<p>This is an automated message. Please contact {{organisationEmail}} with any questions.</p>', '{\r\n\"parentEmail\": [\"safeEmail\"], \r\n\"date\": [\"date\"],\r\n\"amount\": [\"randomFloat\", 2, 10, 100],\r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentOfficialName\": [\"name\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"organisationEmail\": [\"safeEmail\"],\r\n\"organisationName\": [\"name\"]\r\n}', '2025-01-24 09:30:16');end
+INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `type`, `templateType`, `moduleName`, `templateName`, `templateSubject`, `templateBody`, `variables`, `timestamp`) VALUES (NULL, 'Core', 'Staff Petty Cash', 'Finance', 'Staff Petty Cash', 'Notice of Petty Cash Balance', '<p>Dear {{preferredName}},</p>\r\n<p>This is a notice to let you know that you have a petty cash balance of <strong>{{amount}}</strong>. Please help us to repay this amount at your earliest convenience.</p>\r\n<p>This is an automated message. Please contact {{organisationEmail}} with any questions.</p>', '{\r\n\"email\": [\"safeEmail\"], \r\n\"date\": [\"date\"],\r\n\"amount\": [\"randomFloat\", 2, 10, 100],\r\n\"title\": [\"titleFemale\"],\r\n\"preferredName\": [\"firstName\"],\r\n\"surname\": [\"lastName\"],\r\n\"organisationEmail\": [\"safeEmail\"],\r\n\"organisationName\": [\"name\"]\r\n}', '2025-01-24 09:30:16');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Petty Cash Notification', 'Finance', 'Petty Cash', 'Core', 'All', 'Y');end
+ALTER TABLE `gibbonMarkbookColumn` ADD `columnColor` VARCHAR(7) NULL DEFAULT NULL AFTER `description`;end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '242' WHERE `printable_name` = 'Congo';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '243' WHERE `printable_name` = 'Congo, the Democratic Republic of the';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '246' WHERE `printable_name` = 'British Indian Ocean Territory';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '673' WHERE `printable_name` = 'Brunei Darussalam';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '225' WHERE `printable_name` = 'Cote D\'Ivoire';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '500' WHERE `printable_name` = 'Falkland Islands (Malvinas)';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '594' WHERE `printable_name` = 'French Guiana';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '590' WHERE `printable_name` = 'Guadeloupe';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '39' WHERE `printable_name` = 'Holy See (Vatican City State)';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '98' WHERE `printable_name` = 'Iran, Islamic Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '389' WHERE `printable_name` = 'Macedonia, the Former Yugoslav Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '596' WHERE `printable_name` = 'Martinique';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '691' WHERE `printable_name` = 'Micronesia, Federated States of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '373' WHERE `printable_name` = 'Moldova, Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '970' WHERE `printable_name` = 'Palestinian Territory, Occupied';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '64' WHERE `printable_name` = 'Pitcairn';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '262' WHERE `printable_name` = 'Reunion';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '47' WHERE `printable_name` = 'Svalbard and Jan Mayen';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '963' WHERE `printable_name` = 'Syrian Arab Republic';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '255' WHERE `printable_name` = 'Tanzania, United Republic of';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '1 284' WHERE `printable_name` = 'Virgin Islands, British';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '1 340' WHERE `printable_name` = 'Virgin Islands, U.s.';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
+UPDATE `gibbonCountry` SET `iddCountryCode` = '212' WHERE `printable_name` = 'Western Sahara';end
+UPDATE `gibbonCountry` SET `printable_name` = 'Serbia, Republic of', `iddCountryCode` = '381' WHERE `printable_name` = 'Serbia and Montenegro';end
+INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Montenegro', '382');end
+ALTER TABLE `gibbonBehaviour` CHANGE `type` `type` ENUM('Positive','Negative','Observation') NOT NULL;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'observationDescriptors', 'Observation Descriptors', 'Allowable choices for observation behaviour', '');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Observation Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'successMessage', 'Success Message', 'Customised text to display when an application is succesfully submitted', 'Your application was successfully submitted. Please read the information in the green box above the application form for additional information.');end
+ALTER TABLE `gibbonReportPrototypeSection` ADD `active` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `category`;end
+ALTER TABLE `gibbonSpace` ADD `bookable` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `active`;end
+ALTER TABLE `gibbonPerson` ADD `preferences` TEXT NULL AFTER `cookieConsent`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD INDEX `duplicateCheck` (`gibbonMessengerID`, `gibbonPersonID`) USING BTREE;end
+ALTER TABLE `gibbonFamily` ADD `fields` TEXT NULL AFTER `familySync`;end
+
+";

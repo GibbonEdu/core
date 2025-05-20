@@ -98,11 +98,11 @@ class PlannerFormFactory extends DatabaseFormFactory
             $smartBlockTemplate = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('contentsLabel', __('Block Contents'))->setClass('mt-3 -mb-2');
-                $col->addTextArea('contents', $guid)->setRows(20)->addData('tinymce')->addData('media', '1')->setValue($smartBlockTemplate);
+                $col->addTextArea('contents')->addData('tinymce')->addData('media', '1')->setRows(20)->setValue($smartBlockTemplate);
 
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'))->setClass('mt-3 -mb-2');
-                $col->addTextArea('teachersNotes', $guid)->setRows(20)->addData('tinymce')->addData('media', '1');
+                $col->addTextArea('teachersNotes')->addData('tinymce')->addData('media', '1')->setRows(20);
 
         return $blockTemplate;
     }
@@ -231,7 +231,7 @@ class PlannerFormFactory extends DatabaseFormFactory
 
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
             if ($allowOutcomeEditing == 'Y') {
-                $col->addTextArea('outcomecontents')->setRows(10)->addData('tinymce');
+                $col->addEditor('outcomecontents')->setRows(10);
             } else {
                 $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
                     ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');

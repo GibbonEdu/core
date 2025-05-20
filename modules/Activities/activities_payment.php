@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $defaultActions = array('Generate Invoice - Simulate' => __('Generate Invoice - Simulate'));
 
         $row = $form->addRow();
-            $bulkAction = $row->addColumn()->addClass('flex justify-end items-center');
+            $bulkAction = $row->addColumn()->addClass('flex justify-end items-center mb-4');
             $bulkAction->addSelect('action')
                 ->fromArray($billingSchedules)
                 ->fromArray($defaultActions)

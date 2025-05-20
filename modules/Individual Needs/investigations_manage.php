@@ -77,7 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->fromPOST();
 
         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
-        $criteria2 = $contributionsGateway->newQueryCriteria();
 
         if ($highestAction == 'Manage Investigations_all') {
             $records = $investigationGateway->queryInvestigations($criteria, $session->get('gibbonSchoolYearID'));

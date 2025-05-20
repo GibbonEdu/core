@@ -69,11 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $date = $_GET['date'] ?? '';
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->chainedTo('dateEnd')->isRequired()->setValue($date);
+        $row->addDate('dateStart')->chainedTo('dateEnd')->required()->setValue($date);
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->chainedFrom('dateStart')->isRequired()->setValue($date);
+        $row->addDate('dateEnd')->chainedFrom('dateStart')->required()->setValue($date);
 
     $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
@@ -91,23 +91,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         $col = $row->addColumn('time')->addClass('right inline gap-2');
         $col->addTime('timeStart')
             ->setClass('flex-1')
-            ->isRequired();
+            ->required();
         $col->addTime('timeEnd')
             ->chainedTo('timeStart')
             ->setClass('flex-1')
-            ->isRequired();
+            ->required();
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDCoverage', __('Substitute'));
         if ($internalCoverage == 'Y') {
             $row->addSelectStaff('gibbonPersonIDCoverage')
             ->placeholder()
-            ->isRequired();
+            ->required();
         } else {
             $row->addSelectPerson('gibbonPersonIDCoverage')
                 ->fromArray($availableSubs)
                 ->placeholder()
-                ->isRequired();
+                ->required();
         }
         
 
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         $row->addSelectStaff('gibbonPersonID')
             ->placeholder()
             ->selected($session->get('gibbonPersonID'))
-            ->isRequired();
+            ->required();
 
     $statusOptions = [
         'Accepted'  => __('Assign'),
@@ -130,11 +130,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     ];
     $row = $form->addRow()->addClass('subSelected');
         $row->addLabel('status', __('Type'));
-        $row->addSelect('status')->fromArray($statusOptions)->isRequired();
+        $row->addSelect('status')->fromArray($statusOptions)->required();
 
     $row = $form->addRow()->addClass('subSelected');
         $row->addLabel('reason', __('Reason'));
-        $row->addTextField('reason')->maxLength(30);
+        $row->addTextField('reason')->maxLength(30)->required();
 
     $row = $form->addRow()->addClass('subSelected');
         $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));

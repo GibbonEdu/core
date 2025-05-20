@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
 
             //Attempt to write logo
-            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleIDFromName($connection2, 'Students'), $session->get('gibbonPersonID'), 'Application Form - Delete', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'applicationFormContents' => serialize($row)), $_SERVER['REMOTE_ADDR']);
+            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Students', $session->get('gibbonPersonID'), 'Application Form - Delete', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'applicationFormContents' => serialize($row)), $_SERVER['REMOTE_ADDR']);
 
 
             // Clean up the application form relationships

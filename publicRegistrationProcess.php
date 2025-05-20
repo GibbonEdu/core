@@ -39,6 +39,8 @@ $proceed = false;
 
 $settingGateway = $container->get(SettingGateway::class);
 
+$publicRegistrationMinimumAge = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationMinimumAge');
+
 if ($session->exists('username') == false) {
     $enablePublicRegistration = $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
@@ -65,12 +67,7 @@ if ($proceed == false) {
     $preferredName = trim($firstName);
     $officialName = $firstName.' '.$surname;
     $gender = $_POST['gender'] ?? '';
-    $dob = $_POST['dob'] ?? '';
-    if ($dob == '') {
-        $dob = null;
-    } else {
-        $dob = Format::dateConvert($dob);
-    }
+    $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
     $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
     $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
     $username = trim($_POST['usernameCheck']);
@@ -81,7 +78,7 @@ if ($proceed == false) {
     $gibbonRoleIDPrimary = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultRole');
     $gibbonRoleIDAll = $gibbonRoleIDPrimary;
 
-    if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $email == '' or $username == '' or $password == '' or $gibbonRoleIDPrimary == '' or $gibbonRoleIDPrimary == '' or ($status != 'Pending Approval' and $status != 'Full')) {
+    if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or ($publicRegistrationMinimumAge != '' and $dob == '') or $email == '' or $username == '' or $password == '' or $gibbonRoleIDPrimary == '' or $gibbonRoleIDPrimary == '' or ($status != 'Pending Approval' and $status != 'Full')) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
@@ -135,8 +132,6 @@ if ($proceed == false) {
     }
 
     // Check publicRegistrationMinimumAge
-    $publicRegistrationMinimumAge = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationMinimumAge');
-
     if (!empty($publicRegistrationMinimumAge) > 0 and $publicRegistrationMinimumAge > (new DateTime('@'.Format::timestamp($dob)))->diff(new DateTime())->y) {
         header("Location: {$URL->withReturn('error5')}");
         exit;

@@ -89,14 +89,20 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         </div>
                     {% elseif day.specialDay %}
                         <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500" title="{{ __('School Closed') }}">
-                            {{ day.specialDay }}
+                            {{ day.dateDisplay }}<br/>
+                            <b>{{ day.specialDay }}</b>
+                        </div>
+                    {% elseif day.logs is empty and day.offTimetable %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-blue-100 border-blue-700 text-blue-700" title="{{ __('Off Timetable') }}">
+                            {{ day.dateDisplay }}<br/>
+                            <b>{{ day.offTimetable }}</b>
                         </div>
                     {% elseif day.logs is empty and day.classLogs is empty %}
                         <div class="{{ blockWidth }} {{ dayClass }} bg-gray-200 border-gray-600 text-gray-700" title="{{ __('No Data') }}">
                             {{ day.dateDisplay }}
                         </div>
                     {% else %}
-                        <a class="{{ blockWidth }} {{ dayClass }} {{ day.endOfDay.statusClass }} relative z-10" data-log="{{ attendance.tooltip(day) }}"
+                        <a class="{{ blockWidth }} {{ dayClass }} {{ day.endOfDay.statusClass }} relative z-10" x-tooltip.white="{{ attendance.tooltip(day) }}"
                             {% if canTakeAttendanceByPerson %}
                                 href="{{ absoluteURL }}/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID={{ day.gibbonPersonID }}&currentDate={{ day.date }}"
                             {% endif %}>
@@ -104,7 +110,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ attendance.badge(day) }}
 
                             <span>{{ day.dateDisplay }}</span>
-                            <span class="mt-1 font-bold">{{ __(day.endOfDay.type) }}</span>
+                            <span class="mt-1 font-bold">{{ day.offTimetable ? __(day.offTimetable) : __(day.endOfDay.type) }}</span>
 
                             {% if printView %}
                                 <span class="mt-1">
@@ -131,7 +137,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     Display a tooltip of attendance data for a single day. Should not contain " double quotes.
 -->#}
 {% macro tooltip(day) %}
-    <section class='-mx-2 p-4 border text-center {{ day.endOfDay.statusClass }}'>
+    <section class='w-64 -mx-2 p-4 rounded-md border text-center {{ day.endOfDay.statusClass }}'>
         {{ day.dateDisplay }}<br/>
         
         <span class='font-bold text-base leading-normal'>{{ __(day.endOfDay.type) }}</span><br/>
@@ -188,45 +194,3 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 {% endmacro badge %}
 
-
-{% block footer %}
-
-
-{#<!--
-    Configure a custom tooltip for Student History. This ensures it doesn't 
-    conflict with existing tooltips, and also displays on mobile devices.
--->#}
-<style>
-    .tooltip-reset {
-        background: #ffffff !important;
-        min-width: 16rem;
-    }
-    .w-1\/7 {
-        width: 14.28%;
-    }
-</style>
-<script>
-$('#studentHistory').tooltip({
-    items: "a[data-log]",
-    show: 800,
-    hide: false,
-    content: function () {
-        return $(this).data('log');
-    },
-    tooltipClass: "tooltip-reset",
-    position: {
-        my: "center bottom-5",
-        at: "center top",
-        using: function (position, feedback) {
-            $(this).css(position);
-            $("<div>").
-                addClass("arrow").
-                addClass(feedback.vertical).
-                addClass(feedback.horizontal).
-                appendTo(this);
-        }
-    }
-});
-</script>
-
-{% endblock footer %}

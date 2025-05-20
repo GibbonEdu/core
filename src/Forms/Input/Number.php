@@ -100,7 +100,6 @@ class Number extends TextField
         if (!empty($this->decimalPlaces) && $this->decimalPlaces > 0) {
             $this->addValidation('Validate.Format', 'pattern: /^[0-9\-]+(\.[0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
         }
-
         return $this;
     }
 
@@ -110,6 +109,10 @@ class Number extends TextField
      */
     protected function getElement()
     {
-        return Component::render(Number::class, $this->getAttributeArray() + []);
+        
+        $stepValue = $this->onlyInteger ? "1" : ($this->decimalPlaces > 0 ? "0." . str_repeat("0", $this->decimalPlaces - 1) . "1" : "1");
+
+        $attributes = $this->getAttributeArray() + ["min" => $this->min, "max" => $this->max, "step" => $stepValue];
+        return Component::render(Number::class, $attributes);
     }
 }

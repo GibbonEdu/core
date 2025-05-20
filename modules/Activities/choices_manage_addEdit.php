@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage_
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'));
-        $row->addSelectUsers('gibbonPersonID', $session->get('gibbonSchoolYearID'), ['includeStudents' => true])
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))
             ->required()
             ->placeholder()
             ->selected($params['mode'] == 'edit' ? $params['gibbonPersonID'] : '')

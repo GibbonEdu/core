@@ -185,10 +185,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             $fees = [];
 			$dataTotal=array("gibbonFinanceInvoiceID"=>$row["gibbonFinanceInvoiceID"]);
 			if ($row["status"]=="Pending") {
-				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2, gibbonFinanceFee.name, gibbonFinanceFeeCategory.name as category
+				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2, (CASE WHEN feeType = 'Ad Hoc' THEN gibbonFinanceInvoiceFee.name else gibbonFinanceFee.name END) as name, (CASE WHEN feeType = 'Ad Hoc' THEN category2.name else category1.name END) as category
 					FROM gibbonFinanceInvoiceFee
 						LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID)
-                        LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID=gibbonFinanceFee.gibbonFinanceFeeCategoryID)
+                        LEFT JOIN gibbonFinanceFeeCategory AS category1 ON (category1.gibbonFinanceFeeCategoryID=gibbonFinanceFee.gibbonFinanceFeeCategoryID)
+                        LEFT JOIN gibbonFinanceFeeCategory as category2 ON (category2.gibbonFinanceFeeCategoryID=gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID)
 					WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 			}
 			else {
@@ -210,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			}
 			$x = '';
 			if (! $feeError) {
-				$x .= number_format($totalFee, 2, ".", "") ;
+				$x .= number_format($totalFee ?? 0, 2, ".", "") ;
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $x);
 			}
             $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
@@ -229,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, !empty($row["paidDate"]) ? Format::date($row["paidDate"]) : '');
             $excel->getActiveSheet()->getStyleByColumnAndRow(11, $r)->applyFromArray($style_border);
 			//Column L
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ""));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"] ?? 0, 2, ".", ""));
             $excel->getActiveSheet()->getStyleByColumnAndRow(12, $r)->applyFromArray($style_border);
             //Column M
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(13, $r, strip_tags($row["notes"]));

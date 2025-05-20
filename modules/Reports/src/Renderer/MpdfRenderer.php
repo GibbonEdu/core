@@ -194,7 +194,17 @@ class MpdfRenderer implements ReportRendererInterface
 
         $config = [
             'mode' => 'utf-8',
-            'format' => strtoupper($this->template->getData('pageSize', 'A4')) == 'LETTER' ? [215.9, 279.4] : [210, 297],
+            'format' => (function() {
+                $pageSize = strtoupper($this->template->getData('pageSize', 'A4'));
+                switch ($pageSize) {
+                    case 'LETTER':
+                        return [215.9, 279.4];
+                    case 'A3':
+                        return [297, 420];
+                    default:
+                        return [210, 297]; // A4
+                }
+            })(),
             'orientation' => $this->template->getData('orientation', 'P'),
             'useOddEven' => '0',
             'mirrorMargins' => $this->hasMode(self::OUTPUT_MIRROR) ? '1' : '0',
@@ -283,7 +293,7 @@ class MpdfRenderer implements ReportRendererInterface
                 mkdir(dirname($outputPath), 0755, true);
             }
 
-            $this->pdf->Output($outputPath, 'F');
+            @$this->pdf->Output($outputPath, 'F');
             unset($this->pdf);
         }
     }

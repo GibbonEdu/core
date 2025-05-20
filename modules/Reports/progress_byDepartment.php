@@ -123,6 +123,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byDepartm
             });
     }
 
-    echo $table->render(new DataSet(array_values($progressByDepartment)));
+    echo $table->render((new DataSet(array_values($progressByDepartment)))->removePagination());
 
 }

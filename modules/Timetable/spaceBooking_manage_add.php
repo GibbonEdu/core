@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $timeEnd = isset($_GET['timeEnd'])? $_GET['timeEnd'] : '';
 
             // Collect facilities
-            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace WHERE active='Y' ORDER BY name";
+            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace WHERE active='Y' AND bookable='Y' ORDER BY name";
             $results = $pdo->executeQuery(array(), $sql);
             if ($results->rowCOunt() > 0) {
                 $facilities['--'.__('Facilities').'--'] = $results->fetchAll(\PDO::FETCH_KEY_PAIR);
@@ -295,14 +295,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         $row->addAlert(__('Your request failed because your inputs were invalid.'), 'error');
                     }
 
-                    if ($available == true) {
+                    if ($available == true || $canOverride) {
+                        $row = $form->addRow();
+                            $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
+                            $row->addCheckbox('override')->setValue('Y');
 
-                        if ($canOverride) {
-                            $row = $form->addRow();
-                                $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
-                                $row->addCheckbox('override')->setValue('Y');
-                        }
-                            
                         $row = $form->addRow();
                             $row->addSubmit();
                     } else {

@@ -86,6 +86,7 @@ abstract class AbstractFormProcess
     public function shutdown(FormDataInterface $formData)
     {
         $formData->setResult($this->getProcessName().'Result', $this->result ?? true);
+        $formData->setResult($this->getProcessName().'ResultDate', date('Y-m-d H:i:s'));
     }
 
     public function verify(FormBuilderInterface $builder, FormDataInterface $formData = null)

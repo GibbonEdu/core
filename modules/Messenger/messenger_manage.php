@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/Messenger/messenger_manage_delete.php');
 
-            if (!is_null($values['emailReceipt']) && $values['status'] == 'Sent') {
+            if ($values['email'] == 'Y' && $values['status'] == 'Sent') {
                 $actions->addAction('send', __('View Send Report'))
                         ->setURL('/modules/Messenger/messenger_manage_report.php')
                         ->setIcon('document-check');

@@ -23,7 +23,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
+$gibbonAdmissionsApplicationID = $_POST['gibbonAdmissionsApplicationID'] ?? '';
 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 $search = $_REQUEST['search'] ?? '';
 

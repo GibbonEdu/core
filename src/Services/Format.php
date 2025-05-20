@@ -485,6 +485,8 @@ class Format
      */
     public static function currency($value, $includeName = false, $decimals = 2)
     {
+        if (is_null($value)) return '';
+
         return static::$settings['currencySymbol'] . number_format($value, $decimals) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
@@ -628,7 +630,7 @@ class Format
             $url = 'mailto:'.$url;
         } else {
             $url = str_replace(' ', '%20', $url);
-            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $url);
         }
 
         $url = str_replace(['"', "'"], ['%22', '%27'], $url);
@@ -653,7 +655,7 @@ class Format
      */
     public static function hyperlinkAll(string $value)
     {
-        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
+        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+?)(?=[.,;:!]*(?:\s|$))/';
         return preg_replace($pattern, '$1<a target="_blank" rel="noopener noreferrer" href="$2">$2</a>', $value);
     }
 
@@ -1158,6 +1160,28 @@ class Format
         return $courseName .'.'. $className;
     }
 
+    /**
+     * Displays a color swatch of the given Hex colour.
+     *
+     * @param string $color
+     * @return string
+     */
+    public static function colorSwatch($color)
+    {
+        $color = trim(preg_replace('/[^a-fA-F0-9]/', '', $color), '#');
+        $colorHex = !empty($color) ? '#'.$color : '#ffffff00';
+        $colorTitle = !empty($color) ? $colorHex : __('None');
+
+        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$colorHex.'" title="'.$colorTitle.'"></div>';
+    }
+
+    /**
+     * Displays an alert box with the provided message and error level.
+     *
+     * @param string $message
+     * @param string $level
+     * @return string
+     */
     public static function alert($message, $level = 'error')
     {
         return '<div class="'.$level.'">'.$message.'</div>';
@@ -1169,8 +1193,13 @@ class Format
             return $dateOriginal;
         }
 
-        if (is_int($dateOriginal) && empty($expectedFormat)) {
+        if (empty($expectedFormat) && is_int($dateOriginal)) {
             $dateOriginal = date('Y-m-d', $dateOriginal);
+            $expectedFormat = 'Y-m-d';
+        }
+
+        if (empty($expectedFormat) && stripos($dateOriginal, '/') !== false) {
+            $dateOriginal = date('Y-m-d', strtotime($dateOriginal));
             $expectedFormat = 'Y-m-d';
         }
 

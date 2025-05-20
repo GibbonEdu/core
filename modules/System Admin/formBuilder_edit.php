@@ -85,7 +85,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $row->addLabel('active', __('Active'))->description(__('If yes, this form is open for new submissions'));
         $row->addYesNo('active')->required();
 
-    $row = $form->addRow();
+    $form->toggleVisibilityByClass('activeForm')->onRadio('active')->when('Y');
+
+    $row = $form->addRow()->addClass('activeForm');
         $row->addLabel('public', __('Public'))->description(__('If yes, members of the public can submit applications'));
         $row->addYesNo('public')->required();
 

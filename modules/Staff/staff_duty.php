@@ -51,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == 
     $staffDutyPersonGateway = $container->get(StaffDutyPersonGateway::class);
     $dutyRoster = $staffDutyPersonGateway->selectDutyRoster()->fetchGrouped();
 
+    $maxCount = 0;
     foreach ($duty as $weekday => $dutyList) {
 
         $duty[$weekday] = array_map(function ($item) use (&$weekday, &$dutyRoster) {
@@ -59,10 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty.php') == 
             });
             return $item;
         }, $dutyList);
+
+        $maxCount = max($maxCount, count($dutyList));
     }
 
     $page->writeFromTemplate('dutySchedule.twig.html', [
-        'canEdit' => $highestAction == 'Duty Schedule_edit',
-        'duty'    => $duty,
+        'canEdit'   => $highestAction == 'Duty Schedule_edit',
+        'duty'      => $duty,
+        'maxCount'  => $maxCount,
     ]);
 }

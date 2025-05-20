@@ -143,6 +143,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                 ->addParam('gibbonTTID', $gibbonTTID)
                 ->displayLabel();
 
+            $table->addColumn('color', __('Colour'))
+                ->width('8%')
+                ->format(Format::using('colorSwatch', 'color'));
+
             $table->addColumn('name', __('Name'));
             $table->addColumn('nameShort', __('Short Name'));
             $table->addColumn('columnName', __('Column'));

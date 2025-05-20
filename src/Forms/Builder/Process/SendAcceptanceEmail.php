@@ -61,6 +61,10 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
             return false;
         }
 
+        if ($builder->getConfig('mode') == 'edit' && $builder->getConfig('status') != 'Accepted') {
+            return false;
+        }
+
         return true;
     }
 

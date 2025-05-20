@@ -76,7 +76,7 @@ class SchoolYearTermGateway extends QueryableGateway
 
     public function selectSchoolClosuresByTerm($gibbonSchoolYearTermID, $grouped = false)
     {
-        $gibbonSchoolYearTermIDList = !is_array($gibbonSchoolYearTermID) ?: implode(',', $gibbonSchoolYearTermID);
+        $gibbonSchoolYearTermIDList = !is_array($gibbonSchoolYearTermID) ? $gibbonSchoolYearTermID : implode(',', $gibbonSchoolYearTermID);
         $data = array('gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList);
         if ($grouped) {
             $sql = "SELECT MIN(date) as groupBy, name, MIN(date) as firstDay, MAX(date) as lastDay
@@ -97,6 +97,34 @@ class SchoolYearTermGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectOffTimetableDaysByTermAndPerson($gibbonSchoolYearTermID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearTermID' => $gibbonSchoolYearTermID, 'gibbonPersonID' => $gibbonPersonID];
+
+        $sql = "SELECT gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name
+            FROM gibbonSchoolYearSpecialDay
+            JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID)
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYearTerm.gibbonSchoolYearID)
+            WHERE gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID=:gibbonSchoolYearTermID
+            AND gibbonSchoolYearSpecialDay.type='Off Timetable'
+            AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
+            AND (FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) OR FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))
+            ORDER BY gibbonSchoolYearSpecialDay.date";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getTermsDatesByDateRange($dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT  MIN(firstDay) as firstDay, MAX(lastDay) as lastDay
+                FROM gibbonSchoolYearTerm
+                WHERE (:dateStart BETWEEN firstDay AND lastDay) OR (:dateEnd BETWEEN firstDay AND lastDay)
+                GROUP BY gibbonSchoolYearID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getCurrentTermByDate($date)
     {
         $data = array('date' => $date);
@@ -105,8 +133,7 @@ class SchoolYearTermGateway extends QueryableGateway
                 WHERE firstDay<=:date AND lastDay>=:date
                 LIMIT 0, 1";
 
-        $result = $this->db()->select($sql, $data);
-        return ($result->rowCount() == 1) ? $result->fetch() : false;
+        return $this->db()->selectOne($sql, $data);
     }
 
     /**

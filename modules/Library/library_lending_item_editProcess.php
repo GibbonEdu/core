@@ -34,9 +34,14 @@ $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
 $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
 $status = $_GET['status'] ?? '';
 
+$gibbonPersonIDStudent = $_REQUEST['gibbonPersonIDStudent'] ?? '';
+$lendingAction = $_REQUEST['lendingAction'] ?? '';
+
 if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
+    $URL = !empty($gibbonPersonIDStudent)
+        ? $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonIDStudent&search=&search=&allStudents=&subpage=Library Borrowing&lendingAction=$lendingAction"
+        : $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
     if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_edit.php') == false) {
         $URL .= '&return=error0';
@@ -65,18 +70,15 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
             } else {
                 //Validate Inputs
                 $status = $_POST['status'] ?? '';
-                $type = 'Other';
-                if ($status == 'Decommissioned') {
-                    $type = 'Decommission';
-                } elseif ($status == 'Lost') {
-                    $type = 'Loss';
-                } elseif ($status == 'On Loan') {
-                    $type = 'Loan';
-                } elseif ($status == 'Repair') {
-                    $type = 'Repair';
-                } elseif ($status == 'Reserved') {
-                    $type = 'Reserve';
-                }
+                $typeActions = [
+                    'Decommissioned' => 'Decommission',
+                    'Lost'           => 'Loss',
+                    'On Loan'        => 'Loan',
+                    'Repair'         => 'Repair',
+                    'Reserved'       => 'Reserve',
+                ];
+                $type = $typeActions[$status] ?? 'Other';
+
                 $returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
                 $returnAction = $_POST['returnAction'] ?? '';
                 $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? null;

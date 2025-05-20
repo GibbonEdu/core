@@ -65,8 +65,10 @@ if (!$session->has('gibbonPersonID')) {
     $form->addHiddenValue($id.'address', $session->get('address'));
 
     $row = $form->addRow();
-        $row->addWebLink("<img title='".__('Close')."' src='./themes/".($session->get('gibbonThemeName') ?? 'Default')."/img/iconCross.png'/>")
-            ->onClick("formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();")->addClass('right');
+        $row->addButton(icon('solid', 'cross', 'size-5 fill-current text-red-700'))
+            ->onClick("formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();")
+            ->addClass('float-right')
+            ->setType('blank');
 
     for ($i = 1; $i < 5; ++$i) {
         $row = $form->addRow();
@@ -79,7 +81,6 @@ if (!$session->has('gibbonPersonID')) {
         $row->addSelect('imagesAsLinks')->fromArray(array('N' => __('Image'), 'Y' => __('Link')))->required();
 
     $row = $form->addRow();
-        $row->addContent(getMaxUpload(true));
         $row->addSubmit(__('Upload'))->setColor('purple');
 
     $output .= $form->getOutput();

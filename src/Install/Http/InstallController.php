@@ -901,7 +901,7 @@ class InstallController
             );
 
         if (!$config->hasDatabaseInfo()) {
-            throw new \Exception(__('You have not provide appropriate database info.'));
+            throw new \Exception(__('You have not provided appropriate database info.').json_encode($data));
         }
 
         // Check config values for ' " \ / chars which will cause errors in config.php

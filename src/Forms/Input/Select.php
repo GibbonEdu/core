@@ -47,10 +47,13 @@ class Select extends Input
     /**
      * Sets the selected element(s) of the select input.
      * @param   mixed  $value
+     * @param   bool  $replaceValue     Should an existing value be replace if the incoming one is blank?
      * @return  self
      */
-    public function selected($value)
+    public function selected($value, $replaceValue = true)
     {
+        if (!$replaceValue && !empty($this->selected) && empty($value)) return $this;
+
         $this->selected = $value;
 
         return $this;

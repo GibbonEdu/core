@@ -62,14 +62,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $row = $form->addRow()->addHeading('Invoices', __('Invoices'));
 
     $setting = $settingGateway->getSettingByScope('Finance', 'invoiceText', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setValue($setting['value']);
 
     $setting = $settingGateway->getSettingByScope('Finance', 'invoiceNotes', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setValue($setting['value']);
 
     $invoiceeNameStyle = array(
         'Surname, Preferred Name' => __('Surname') . ', ' . __('Preferred Name'),
@@ -169,6 +169,22 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addSelectStaff($setting['name'])
             ->selected($setting['value'])
             ->placeholder('');
+
+    $row = $form->addRow()->addHeading('Petty Cash', __('Petty Cash'));
+
+    $setting = $settingGateway->getSettingByScope('Finance', 'pettyCashReasons', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(2);
+
+    $setting = $settingGateway->getSettingByScope('Finance', 'pettyCashDefaultAction', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromArray([
+            'None'   => __('None'),
+            'Repay'  => __('Needs Repaid'),
+            'Refund' => __('Needs Refunded'),
+        ])->selected($setting['value'])->required();
 
     $row = $form->addRow();
         $row->addFooter();

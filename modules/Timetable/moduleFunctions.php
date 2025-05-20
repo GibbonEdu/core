@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\FacilityGateway;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Event;
 use Microsoft\Graph\Model\Location;
@@ -30,6 +31,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\Staff\StaffDutyPersonGateway;
+use GuzzleHttp\Exception\ConnectException;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd, &$gibbonCourseClassID = null)
@@ -191,16 +193,16 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 {
     global $container, $session;
 
-    $settingGateway = $container->get(SettingGateway::class);
-    $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
-    $ssoMicrosoft = json_decode($ssoMicrosoft, true);
     $calendarEventsCache = 'calendarCache-'.date('W', $startDayStamp).'-'.substr($xml, 0, 24);
-
     $calendarRefresh = $_REQUEST['ttCalendarRefresh'] ?? false;
 
     if ($session->has($calendarEventsCache) && (empty($calendarRefresh) || $calendarRefresh == 'false')) {
         return $session->get($calendarEventsCache);
     }
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
+    $ssoMicrosoft = json_decode($ssoMicrosoft, true);
 
     if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
         $eventsSchool = [];
@@ -265,15 +267,16 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
-        $service = $container->get('Google_Service_Calendar');
-        $getFail = empty($service);
+        
 
         $calendarListEntry = array();
 
         try {
+            $service = $container->get('Google_Service_Calendar');
+            $getFail = empty($service);
             $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
             $calendarListEntry = $service->events->listEvents($xml, $optParams);
-        } catch (Exception $e) {
+        } catch (Exception | ConnectException $e) {
             $getFail = true;
         }
 
@@ -282,15 +285,29 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         } else {
             $count = 0;
             foreach ($calendarListEntry as $entry) {
-                $multiDay = false;
-                if (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
-                    $multiDay = true;
+                $hideEvent = false;
+
+                // Prevent displaying events that this user has declined
+                $email = $session->get('email');
+                $attendees = $entry['attendees'] ?? [];
+                foreach ($attendees as $attendee) {
+                    if (!empty($attendee['email']) && $attendee['email'] != $email) continue;
+                    if (!empty($attendee['responseStatus']) && strtolower($attendee['responseStatus'])  == 'declined') {
+                        $hideEvent = true;
+                    }
                 }
-                if ($entry['start']['dateTime'] == '') {
+
+                if ($hideEvent) continue;
+                
+                $multiDay = false;
+                if (empty($entry['start']['dateTime'])) {
                     if ((strtotime($entry['end']['date']) - strtotime($entry['start']['date'])) / (60 * 60 * 24) > 1) {
                         $multiDay = true;
                     }
+                } elseif (substr($entry['start']['dateTime'], 0, 10) != substr($entry['end']['dateTime'], 0, 10)) {
+                    $multiDay = true;
                 }
+                
 
                 if ($multiDay) { //This event spans multiple days
                     if ($entry['start']['date'] != $entry['start']['end']) {
@@ -1778,9 +1795,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                     //Check for lesson plan
                                     $bgImg = 'none';
 
-                                if (!empty($rowPeriods['gibbonCourseClassID']) && $height >= 30) {
+                                if (!empty($rowPeriods['gibbonCourseClassID'])) {
                                     $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Manage Exceptions')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>";
-                                    $output .= icon('solid', 'user-minus', 'size-6 text-gray-600 hover:text-gray-800');
+                                    $output .= icon('solid', 'user-minus', ($height >= 30 ? 'size-6' : 'size-3 -mb-1').' text-gray-600 hover:text-gray-800');
                                     $output .= "</a>";
                                 }
                                 $output .= '</div>';
@@ -2531,7 +2548,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
 function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDay = [], $specialDayStart = '', $specialDayEnd = '', $activities = [])
 {
-    global $session;
+    global $session, $container;
 
     $schoolCalendarAlpha = 0.85;
     $ttAlpha = 1.0;
@@ -2675,7 +2692,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                                 return ($event[3] == $date) && ( ($event[4] >= $effectiveStart && $event[4] < $effectiveEnd) || ($effectiveStart >= $event[4] && $effectiveStart < $event[5]) );
                             });
 
-                        if (empty($overlappingBookings)) {
+                        $space = $container->get(FacilityGateway::class)->getByID($gibbonSpaceID);
+                        $bookable = $space['bookable'];
+
+                        if (empty($overlappingBookings) && $bookable == 'Y') {
                             $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Booking')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'>";
                             $output .= icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800');
                             $output .= "</a>";
@@ -2843,7 +2863,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $gibbonTTDayRowClassID = str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, "0", STR_PAD_LEFT);
                     
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
-                        if ($offTimetableClass) {
+                        if ($offTimetableClass && $bookable == 'Y') {
                             $output .= "<a class='absolute right-0 bottom-0 p-1 pointer-events-auto' title='".__('Add Facility Booking')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$targetDate.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'>";
                             $output .= icon('solid', 'add', 'size-6 text-gray-600 hover:text-gray-800');
                             $output .= "</a>";

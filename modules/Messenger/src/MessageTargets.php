@@ -22,12 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Messenger;
 
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Data\PasswordPolicy;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\LogGateway;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 
 /**
  * MessageTargets
@@ -43,13 +44,19 @@ class MessageTargets
     protected $settingGateway;
     protected $logGateway;
     protected $roleGateway;
+    protected $messengerReceiptGateway;
+    protected $logGateway;
+    protected $settingGateway;
+    protected $session;
+    protected $db;
 
     public function __construct(
         Session $session,
         Connection $db,
         SettingGateway $settingGateway,
         LogGateway $logGateway,
-        RoleGateway $roleGateway
+        RoleGateway $roleGateway,
+        MessengerReceiptGateway $messengerReceiptGateway
     )
     {
         $this->session = $session;
@@ -57,6 +64,7 @@ class MessageTargets
         $this->settingGateway = $settingGateway;
         $this->logGateway = $logGateway;
         $this->roleGateway = $roleGateway;
+        $this->messengerReceiptGateway = $messengerReceiptGateway;
     }
 
     public function createMessageTargets($gibbonMessengerID, &$partialFail = false)
@@ -107,7 +115,7 @@ class MessageTargets
 
         //Year Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
-            if ($_POST["yearGroup"]=="Y") {
+            if (!empty($_POST['yearGroup']) && $_POST["yearGroup"]=="Y") {
                 $staff = $_POST["yearGroupsStaff"] ?? [];
                 $students = $_POST["yearGroupsStudents"] ?? [];
                 $parents="N";
@@ -133,7 +141,7 @@ class MessageTargets
 
         //Form Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-            if ($_POST["formGroup"]=="Y") {
+            if (!empty($_POST['formGroup']) && $_POST["formGroup"]=="Y") {
                 $staff = $_POST["formGroupsStaff"] ?? [];
                 $students = $_POST["formGroupsStudents"] ?? [];
                 $parents="N";
@@ -159,7 +167,7 @@ class MessageTargets
 
         //Course Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-            if ($_POST["course"]=="Y") {
+            if (!empty($_POST['course']) && $_POST["course"]=="Y") {
                 $staff = $_POST["coursesStaff"] ?? [];
                 $students = $_POST["coursesStudents"] ?? [];
                 $parents="N";
@@ -185,7 +193,7 @@ class MessageTargets
 
         //Class Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-            if ($_POST["class"]=="Y") {
+            if (!empty($_POST['class']) && $_POST["class"]=="Y") {
                 $staff = $_POST["classesStaff"] ?? [];
                 $students = $_POST["classesStudents"] ?? [];
                 $parents="N";
@@ -211,7 +219,7 @@ class MessageTargets
 
         //Activity Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-            if ($_POST["activity"]=="Y") {
+            if (!empty($_POST['activity']) && $_POST["activity"]=="Y") {
                 $staff = $_POST["activitiesStaff"] ?? [];
                 $students = $_POST["activitiesStudents"] ?? [];
                 $parents="N";
@@ -237,7 +245,7 @@ class MessageTargets
 
         //Applicants
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
-            if ($_POST["applicants"]=="Y") {
+            if (!empty($_POST['applicants']) && $_POST["applicants"]=="Y") {
                 $students = $_POST["applicantsStudents"] ;
                 $parents = $_POST["applicantsParents"] ;
                 $choices = $_POST["applicantList"] ?? [];
@@ -259,7 +267,7 @@ class MessageTargets
 
         //Houses
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-            if ($_POST["houses"]=="Y") {
+            if (!empty($_POST['houses']) && $_POST["houses"]=="Y") {
                 $choices = $_POST["houseList"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -279,7 +287,7 @@ class MessageTargets
 
         //Transport
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
-            if ($_POST["transport"]=="Y") {
+            if (!empty($_POST['transport']) && $_POST["transport"]=="Y") {
                         $staff = $_POST["transportStaff"] ?? [];
                         $students = $_POST["transportStudents"] ?? [];
                         $parents="N";
@@ -305,7 +313,7 @@ class MessageTargets
 
         //Attendance
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-            if ($_POST["attendance"]=="Y") {
+            if (!empty($_POST['attendance']) && $_POST["attendance"]=="Y") {
                 $choices = $_POST["attendanceStatus"] ?? [];
                 $students = $_POST["attendanceStudents"] ?? [];
                 $parents = $_POST["attendanceParents"] ?? [];
@@ -327,7 +335,7 @@ class MessageTargets
 
         //Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my")) {
-            if ($_POST["group"] == "Y") {
+            if (!empty($_POST['group']) && $_POST["group"] == "Y") {
                 $staff = $_POST["groupsStaff"] ?? [];
                 $students = $_POST["groupsStudents"] ?? [];
                 $parents = "N";
@@ -356,7 +364,7 @@ class MessageTargets
         
         // Mailing List
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
-            if ($_POST["mailingList"] == "Y") {
+            if (!empty($_POST['mailingList']) && $_POST["mailingList"] == "Y") {
                 $choices = $_POST["mailingLists"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -376,7 +384,7 @@ class MessageTargets
 
         //Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
-            if ($_POST["individuals"]=="Y") {
+            if (!empty($_POST['individuals']) && $_POST["individuals"]=="Y") {
                 $choices = $_POST["individualList"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -395,7 +403,7 @@ class MessageTargets
         }
     }
 
-    public function createMessageRecipientsFromTargets($gibbonMessengerID, $data, &$partialFail = false)
+    public function createMessageRecipientsFromTargets($gibbonMessengerID, $data, &$partialFail = false) : array
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
@@ -425,7 +433,7 @@ class MessageTargets
 
         //Roles
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
-            if ($_POST["role"]=="Y") {
+            if (!empty($_POST['role']) && $_POST["role"]=="Y") {
                 $choices=$_POST["roles"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -514,7 +522,7 @@ class MessageTargets
 
         //Role Categories
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
-            if ($_POST["roleCategory"]=="Y") {
+            if (!empty($_POST['roleCategory']) && $_POST["roleCategory"]=="Y") {
                 $choices=$_POST["roleCategories"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -599,7 +607,7 @@ class MessageTargets
 
         //Year Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
-            if ($_POST["yearGroup"]=="Y") {
+            if (!empty($_POST['yearGroup']) && $_POST["yearGroup"]=="Y") {
                 $staff=$_POST["yearGroupsStaff"] ;
                 $students=$_POST["yearGroupsStudents"] ;
                 $parents="N" ;
@@ -776,7 +784,7 @@ class MessageTargets
 
         //Form Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-            if ($_POST["formGroup"]=="Y") {
+            if (!empty($_POST['formGroup']) && $_POST["formGroup"]=="Y") {
                 $staff=$_POST["formGroupsStaff"] ;
                 $students=$_POST["formGroupsStudents"] ;
                 $parents="N" ;
@@ -934,7 +942,7 @@ class MessageTargets
 
         //Course Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-            if ($_POST["course"]=="Y") {
+            if (!empty($_POST['course']) && $_POST["course"]=="Y") {
                 $staff=$_POST["coursesStaff"] ;
                 $students=$_POST["coursesStudents"] ;
                 $parents="N" ;
@@ -1118,7 +1126,7 @@ class MessageTargets
 
         //Class Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-            if ($_POST["class"]=="Y") {
+            if (!empty($_POST['class']) && $_POST["class"]=="Y") {
                 $staff=$_POST["classesStaff"] ;
                 $students=$_POST["classesStudents"] ;
                 $parents="N" ;
@@ -1303,7 +1311,7 @@ class MessageTargets
 
         //Activity Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-            if ($_POST["activity"]=="Y") {
+            if (!empty($_POST['activity']) && $_POST["activity"]=="Y") {
                 $staff=$_POST["activitiesStaff"] ;
                 $students=$_POST["activitiesStudents"] ;
                 $parents="N" ;
@@ -1461,7 +1469,7 @@ class MessageTargets
 
         //Applicants
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
-            if ($_POST["applicants"] == "Y") {
+            if (!empty($_POST['applicants']) && $_POST["applicants"] == "Y") {
                 $staff="N" ;
                 $students = $_POST["applicantsStudents"] ;
                 $parents = $_POST["applicantsParents"] ;
@@ -1659,7 +1667,7 @@ class MessageTargets
 
         //Houses
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-            if ($_POST["houses"]=="Y") {
+            if (!empty($_POST['houses']) && $_POST["houses"]=="Y") {
                 $choices=$_POST["houseList"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -1710,7 +1718,7 @@ class MessageTargets
 
         //Transport
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
-            if ($_POST["transport"]=="Y") {
+            if (!empty($_POST['transport']) && $_POST["transport"]=="Y") {
                 $staff=$_POST["transportStaff"] ;
                 $students=$_POST["transportStudents"] ;
                 $parents="N" ;
@@ -1868,7 +1876,7 @@ class MessageTargets
 
         //Target Absent students / Attendance Status
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-            if ($_POST["attendance"]=="Y") {
+            if (!empty($_POST['attendance']) && $_POST["attendance"]=="Y") {
                 $choices = $_POST["attendanceStatus"] ?? [];
                 $students = $_POST["attendanceStudents"] ?? [];
                 $parents = $_POST["attendanceParents"] ?? [];
@@ -2019,7 +2027,7 @@ class MessageTargets
 
         //Groups
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
-            if ($_POST["group"]=="Y") {
+            if (!empty($_POST['group']) && $_POST["group"]=="Y") {
                 $staff=$_POST["groupsStaff"] ;
                 $students=$_POST["groupsStudents"] ;
                 $parents="N" ;
@@ -2173,7 +2181,7 @@ class MessageTargets
 
         // Mailing List
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_mailingList")) {
-            if ($_POST["mailingList"]=="Y") {
+            if (!empty($_POST['mailingList']) && $_POST["mailingList"]=="Y") {
                 $choices=$_POST["mailingLists"] ?? [];
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
@@ -2203,16 +2211,17 @@ class MessageTargets
             }
         }
 
-        //Individuals
+        // Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             if ($_POST["individuals"]=="Y") {
                 $choices=$_POST["individualList"] ?? [];
+                $parents=$_POST["individualsParents"] ?? 'N';
                 if (!empty($choices)) {
                     foreach ($choices as $t) {
                         try {
-                            $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
-                            $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Individuals', id=:id" ;
-                            $result=$connection2->prepare($sql);
+                            $data = ["gibbonMessengerID"=>$AI, "id"=>$t, "parents" => $parents];
+                            $sql = "INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Individuals', id=:id, staff='N', students='N', parents=:parents";
+                            $result = $connection2->prepare($sql);
                             $result->execute($data);
                         }
                         catch(\PDOException $e) {
@@ -2221,32 +2230,101 @@ class MessageTargets
 
                         if ($email=="Y") {
                             try {
-                                $dataEmail=array("gibbonPersonID"=>$t);
-                                $sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT email='' AND gibbonPersonID=:gibbonPersonID AND status='Full'" ;
-                                $resultEmail=$connection2->prepare($sqlEmail);
+                                $dataEmail = ["gibbonPersonID"=>$t];
+                                $sqlEmail = "SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT email='' AND gibbonPersonID=:gibbonPersonID AND status='Full'" ;
+                                $resultEmail = $connection2->prepare($sqlEmail);
                                 $resultEmail->execute($dataEmail);
                             }
                             catch(\PDOException $e) { }
                             while ($rowEmail=$resultEmail->fetch()) {
                                 $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Individuals', $t, 'Email', $rowEmail["email"]);
                             }
+
+                            if ($parents=="Y") {
+                                try {
+                                    $dataStudents = ["gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$t];
+                                    $sqlStudents = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                                    $resultStudents = $connection2->prepare($sqlStudents);
+                                    $resultStudents->execute($dataStudents);
+                                }
+                                catch(\PDOException $e) { }
+                                while ($rowStudents = $resultStudents->fetch()) {
+                                    try {
+                                        $dataFamily = ["gibbonPersonID"=>$rowStudents["gibbonPersonID"]];
+                                        $sqlFamily = "SELECT DISTINCT gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
+                                        $resultFamily = $connection2->prepare($sqlFamily);
+                                        $resultFamily->execute($dataFamily);
+                                    }
+                                    catch(\PDOException $e) { }
+                                    while ($rowFamily = $resultFamily->fetch()) {
+                                        try {
+                                            $dataEmail = ["gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]];
+                                            $sqlEmail = "SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
+                                            $resultEmail = $connection2->prepare($sqlEmail);
+                                            $resultEmail->execute($dataEmail);
+                                        }
+                                        catch(\PDOException $e) { }
+                                        while ($rowEmail = $resultEmail->fetch()) {
+                                            $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Individuals', $t, 'Email', $rowEmail["email"], $rowStudents['gibbonPersonID'], Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student'));
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        if ($sms=="Y" AND $countryCode!="") {
+
+                        if ($sms == "Y" AND $countryCode != "") {
                             try {
-                                $dataEmail=array("gibbonPersonID"=>$t);
-                                $sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-                                $resultEmail=$connection2->prepare($sqlEmail);
+                                $dataEmail = ["gibbonPersonID"=>$t];
+                                $sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                $sqlEmail.= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                $sqlEmail.= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                $sqlEmail.= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                                $resultEmail = $connection2->prepare($sqlEmail);
                                 $resultEmail->execute($dataEmail);
                             }
                             catch(\PDOException $e) { }
-                            while ($rowEmail=$resultEmail->fetch()) {
+                            while ($rowEmail = $resultEmail->fetch()) {
                                 $countryCodeTemp = $countryCode;
                                 if ($rowEmail["countryCode"]=="")
                                     $countryCodeTemp = $rowEmail["countryCode"];
                                 $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+                            }
+
+                            if ($parents=="Y") {
+                                try {
+                                    $dataStudents = ["gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$t];
+                                    $sqlStudents = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+                                    $resultStudents=$connection2->prepare($sqlStudents);
+                                    $resultStudents->execute($dataStudents);
+                                }
+                                catch(\PDOException $e) { }
+                                while ($rowStudents = $resultStudents->fetch()) {
+                                    try {
+                                        $dataFamily = ["gibbonPersonID"=>$rowStudents["gibbonPersonID"]];
+                                        $sqlFamily = "SELECT DISTINCT gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
+                                        $resultFamily = $connection2->prepare($sqlFamily);
+                                        $resultFamily->execute($dataFamily);
+                                    }
+                                    catch(\PDOException $e) { }
+                                    while ($rowFamily = $resultFamily->fetch()) {
+                                        try {
+                                            $dataEmail = ["gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]];
+                                            $sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y')" ;
+                                            $sqlEmail.= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y')" ;
+                                            $sqlEmail.= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y')" ;
+                                            $sqlEmail.= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y')";
+                                            $resultEmail=$connection2->prepare($sqlEmail);
+                                            $resultEmail->execute($dataEmail);
+                                        }
+                                        catch(\PDOException $e) { }
+                                        while ($rowEmail = $resultEmail->fetch()) {
+                                            $countryCodeTemp = $countryCode;
+                                            if ($rowEmail["countryCode"] == "")
+                                                $countryCodeTemp = $rowEmail["countryCode"];
+                                            $this->reportAdd($emailReceipt, $rowEmail['gibbonPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -2254,22 +2332,37 @@ class MessageTargets
             }
         }
 
-        //Write report entries
+        $gibbonMessengerReceiptIDList = [];
+
+        // Write report entries
         foreach ($this->report as $reportEntry) {
             try {
+                $uniqueData = [
+                    'gibbonMessengerID' => $AI,
+                    'gibbonPersonID' => $reportEntry[0],
+                ];
+
+                // Prevent adding the record if it already exists in the table
+                if (!empty($_POST['manualRecipient']) && !$this->messengerReceiptGateway->unique($uniqueData, ['gibbonMessengerID', 'gibbonPersonID'])) {
+                    continue;
+                }
+
                 $confirmed = $reportEntry[5] != '' ? 'N' : null;
 
                 $data = ["gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed, "gibbonPersonIDListStudent" => $reportEntry[6], 'nameListStudent' => json_encode($reportEntry[7]), 'unsubscribeKey' => $reportEntry[8]];
                 $sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, confirmedTimestamp=NULL, gibbonPersonIDListStudent=:gibbonPersonIDListStudent, nameListStudent=:nameListStudent, unsubscribeKey=:unsubscribeKey" ;
                 $result=$connection2->prepare($sql);
                 $result->execute($data);
+
+                $gibbonMessengerReceiptID = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
+                $gibbonMessengerReceiptIDList[] = $gibbonMessengerReceiptID;
             }
             catch(\PDOException $e) {
                 $partialFail = true;
             }
         }
-
-        return count($this->report);
+        
+        return $gibbonMessengerReceiptIDList;
     }
 
     /**

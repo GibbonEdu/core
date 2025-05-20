@@ -1288,7 +1288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $cell->addContent(Format::name('', $person['preferredName'], $person['surname'], 'Staff', false))->wrap('<b>', '</b>');
                             }
 
-                            $cell->addContent($person['role']);
+                            $cell->addContent(__($person['role']));
                         }
 
                         if ($canTakeAttendance && date('Y-m-d') >= $values['date']) {

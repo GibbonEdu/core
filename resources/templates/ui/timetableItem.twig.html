@@ -1,0 +1,118 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set isActive = isToday and now > item.timeStart and now <= item.timeEnd and not format == 'print' %}
+{% set color = structure.getColors(item.color ?? layer.getColor) %}
+{% set duration = item.allDay ? 30 : structure.timeDifference(item.timeStart, item.timeEnd) %}
+
+<div x-data="{showOverlap: false}" class="{{ not item.allDay and not overlap ? 'ttItem' }} flex flex-col w-full rounded outline hover:ring {{ isActive ? 'relative outline-3 ' ~ color.outline : 'outline-1 ' ~ color.outlineLight }} {{ color.outlineHover }} {{ color.background }} {{ item.style == 'stripe' ? 'bg-stripe-overlay' }} {{ format == 'print' and not layer.isActive ? 'hidden' }}" style="height: {{ structure.minutesToPixels(duration) -1 }}px;" :class="{'hidden': !{{ layer.getID }} }"
+x-tooltip.white="
+    <div class='w-72 flex flex-col py-2 gap-1 overflow-hidden'>
+        <div class='px-2 pb-1'>
+            <div class='flex justify-between leading-normal'>
+                <span class='font-semibold text-sm'>{{ item.label ?? item.title }}</span>
+                <span class='tag ml-2 text-xxs h-5  border-0 outline outline-1 {{ color.outlineLight }} {{ color.text }} {{ color.background }}'>{{ item.type }}</span>
+            </div>
+            <div class='font-normal mt-1'>{{ item.description ?? item.subtitle }}</div>
+        </div>
+        
+        <div class='px-2 pt-2 border-t flex justify-between leading-relaxed'>
+            <div>{{ icon('outline', 'clock', 'size-4 text-gray-600 inline align-middle mr-1', {'stroke-width': 2.4})|escape }} {{ item.allDay ? __('All Day') : item.timeStart|slice(0,5)|trim('0', 'left') ~ ' - ' ~ item.timeEnd|slice(0,5)|trim('0', 'left') }}
+                {{ isActive ? formatUsing('tag', __('Active'), 'success ml-2 text-xxs' )|escape }}
+                {{ item.hasStatus('absent') ? formatUsing('tag', __('Absent'), 'dull ml-2 text-xxs')|escape }}
+            </div>
+        </div>
+
+        {% if item.location or item.phone %}
+        <div class='px-2 flex justify-between leading-relaxed'>
+            <div>
+                {{ item.location ? icon('solid', 'map-pin', 'size-4 text-gray-600 inline align-middle mr-1')|escape }} {{ item.location }} 
+                {{ item.hasStatus('spaceChanged') ? formatUsing('tag', __('Changed'), 'error ml-2 text-xxs')|escape }}
+            </div>
+            <div>{{ item.phone ? icon('solid', 'phone', 'size-4 text-gray-600 inline align-middle mr-1')|escape }} {{ item.phone }}</div>
+        </div>
+        {% endif %}
+    </div>
+">
+
+    {% if duration >= 40 %}
+    <div class="flex items-start justify-between  border-gray-500 py-1 px-1.5">
+        <span class="text-xxs text-gray-700 ">{{ item.period ?? item.type }}</span>
+        {% if item.overlap is empty %}
+        <span class="inline md:hidden lg:inline text-xxs text-gray-700 ">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    
+    <a href="{{ item.link }}" class="flex flex-col items-center cursor-pointer h-full px-2 {{ duration >= 40 ? 'justify-start' : 'justify-center' }} {{ color.text }} {{ color.textHover }}">
+        {% if duration >= 15 %}
+        <div class="inline-block font-bold {{ duration > 30 and item.title|length <= 20 ? 'text-sm' : 'text-xs mt-1' }}">
+            {{ duration >= 40 ? item.title|slice(0,40) : item.title|slice(0,22) }}
+        </div>
+        {% endif %}
+
+        {% if duration >= 40 and item.subtitle %}
+        <span class="inline-block text-xxs rounded {{ item.hasStatus('spaceChanged') ? 'border border-red-700 text-red-700 px-1' : 'text-gray-700' }}">
+            {% if item.hasStatus('spaceChanged') %}
+                {{ icon('basic', 'arrow-move', 'size-3 text-red-700 inline align-sub') }}
+            {% endif %}
+
+            {{ item.subtitle|slice(0,30) }}
+        </span>
+        {% endif %}
+    </a>
+    
+    {% if item.overlap and item.overlap|length > 0 %}
+    <button class="block rounded absolute top-0 right-0 mt-1 mr-1 p-0.5 text-xxs leading-none bg-transparent hover:bg-gray-500/50 text-red-700 hover:text-red-800" @click="showOverlap = true">
+        <span class="h-3 font-semibold">
+            +{{ item.overlap|length }}
+        </span>
+
+        {{ icon('outline', 'squares', 'size-4 inline align-middle', {'stroke-width': 2}) }}
+    </button>
+
+    <div x-cloak x-transition x-show="showOverlap" @click.outside="showOverlap = false" class="absolute p-2 -ml-2 mt-8 z-20 flex flex-col gap-2 items-start justify-end rounded outline outline-1 outline-gray-400 bg-white shadow-lg" style="width: calc(100% + 1rem)">
+        {% for overlap in item.overlap %}
+            <div class="relative w-full">
+                {{ include('ui/timetableItem.twig.html', {item: overlap, overlap: true}) }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if format != 'print' %}
+        {% set iconSize = duration >= 50 ? 'size-6' : duration >= 30 ? 'size-5' : 'size-3' %}
+
+        {% if item.primaryAction and duration >= 20 %}
+            {% set action = item.primaryAction %}
+            {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
+            
+            <a href="{{ action.url }}" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
+                {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
+            </a>
+        {% endif %}
+
+        {% if item.secondaryAction and duration >= 20 %}
+            {% set action = item.secondaryAction %}
+            {% set iconClass = action.iconClass ? action.iconClass : 'text-gray-600 hover:text-gray-800' %}
+
+            <a href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1 cursor-pointer pointer-events-auto" title="{{ action.label }}">
+                {{  icon(action.iconLibrary ?? 'solid', action.icon, iconSize ~ ' ' ~ iconClass) }}
+            </a>
+        {% endif %}
+
+        {% if item.hasStatus('overlap') and duration >= 40 %}
+        <div href="{{ action.url }}" class="absolute bottom-0 left-0 ml-1" title="{{ __('Click & drag to see overlapping items') }}">
+            {{  icon('outline', 'layers', 'size-5 text-gray-500 hover:text-gray-600') }}
+        </div>
+        {% endif %}
+    {% endif %}
+</div>

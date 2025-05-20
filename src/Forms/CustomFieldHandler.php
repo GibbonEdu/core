@@ -61,6 +61,7 @@ class CustomFieldHandler
         $this->contexts = [
             __('User Admin') => [
                 'User' => __('User'),
+                'Family' => __('Family'),
             ],
             __('Staff') => [
                 'Staff' => __('Staff'),
@@ -130,6 +131,9 @@ class CustomFieldHandler
                 'Basic Information' => __('Basic Information'),
                 'First Aid'         => __('First Aid'),
                 'Biography'         => __('Biography'),
+            ],
+            'Family' => [
+                'General Information' => __('General Information'),
             ],
             'Student Enrolment' => [
                 'Basic Information' => __('Basic Information'),

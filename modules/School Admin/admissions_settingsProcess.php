@@ -49,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_se
             'publicApplications',
             'milestones',
             'howDidYouHear',
+            'successMessage',
         ],
     ];
 

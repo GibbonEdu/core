@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (empty($log['timestampTaken'])) return Format::small(__('N/A'));
 
                         return $currentDate != substr($log['timestampTaken'], 0, 10)
-                            ? Format::dateReadable($log['timestampTaken'])
-                            : Format::dateReadable($log['timestampTaken']);
+                            ? Format::dateTimeReadable($log['timestampTaken'])
+                            : Format::dateTimeReadable($log['timestampTaken']);
                     });
 
                 $table->addColumn('direction', __('Attendance'))
@@ -191,7 +191,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 if (count($logs) + $classLogCount == 0) {
                     $schoolTable->addMetaData('blankSlate', __('There is currently no attendance data today for the selected student.'));
                 }
-
                 echo $schoolTable->render($logs);
 
                 // Class Attendance

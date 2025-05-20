@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
@@ -66,8 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
         $arrTypes = array(
+            'Negative' => __('Negative'),
             'Positive' => __('Positive'),
-            'Negative' => __('Negative')
+            'Observation' => __('Observation')
         );
 
         $row = $form->addRow();
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->fromPOST();
 
         
-            if ($highestAction == 'Manage Behaviour Records_all') {
+        if ($highestAction == 'Manage Behaviour Records_all') {
             $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
         } else if ($highestAction == 'Manage Behaviour Records_my') {
             $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
@@ -100,11 +101,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
 
         $behaviourFollowUpGateway = $container->get(BehaviourFollowUpGateway::class);
-         // Join follow up based on behaviour ID
+         // Join follow-up based on behaviour ID
          $behaviourIDs = $records->getColumn('gibbonBehaviourID');
-        
          $followUpData = $behaviourFollowUpGateway->selectFollowUpsByBehaviorID($behaviourIDs)->fetchGrouped();
-
          $records->joinColumn('gibbonBehaviourID', 'followUps', $followUpData);
 
         // DATA TABLE
@@ -135,15 +134,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
 
         $table->addExpandableColumn('comment')
-            ->format(function($beahviour) {
+            ->format(function($behaviour) {
                 $output = '';
-                if (!empty($beahviour['comment'])) {
+                if (!empty($behaviour['comment'])) {
                     $output .= Format::bold(__('Incident')).'<br/>';
-                    $output .= nl2br($beahviour['comment']).'<br/>';
+                    $output .= nl2br($behaviour['comment']).'<br/>';
                 }
 
-                if (!empty($beahviour['followUps'])) {
-                    foreach ($beahviour['followUps'] as $followUp) { 
+                if (!empty($behaviour['followUps'])) {
+                    foreach ($behaviour['followUps'] as $followUp) { 
                         $output .= '<br/>'.Format::bold(__('Follow Up By ').$followUp['firstName']._(' ').$followUp['surname']).'<br/>';
                         $output .= nl2br($followUp['followUp']).'<br/>';
                     }
@@ -163,24 +162,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $table->addColumn('date', __('Date'))
             ->context('primary')
-            ->format(function($beahviour) {
-                if (substr($beahviour['timestamp'], 0, 10) > $beahviour['date']) {
-                    return __('Updated:').' '.Format::date($beahviour['timestamp']).'<br/>'
-                         . __('Incident:').' '.Format::date($beahviour['date']).'<br/>';
+            ->format(function($behaviour) {
+                if (substr($behaviour['timestamp'], 0, 10) > $behaviour['date']) {
+                    return __('Updated:').' '.Format::date($behaviour['timestamp']).'<br/>'
+                         . __('Incident:').' '.Format::date($behaviour['date']).'<br/>';
                 } else {
-                    return Format::date($beahviour['timestamp']);
+                    return Format::date($behaviour['timestamp']);
                 }
             });
 
         $table->addColumn('type', __('Type'))
             ->context('secondary')
             ->width('5%')
-            ->format(function($beahviour) {
-                if ($beahviour['type'] == 'Negative') {
+            ->format(function($behaviour) {
+                if ($behaviour['type'] == 'Negative') {
                     return icon('solid', 'cross', 'size-6 fill-current text-red-700');
-                } elseif ($beahviour['type'] == 'Positive') {
-                    return icon('solid', 'check', 'size-6 fill-current text-green-600');
-                }
+                } elseif ($behaviour['type'] == 'Positive') {
+                    return icon('solid', 'add', 'size-6 fill-current text-green-600');
+                } elseif ($behaviour['type'] == 'Observation') {
+                    return icon('solid','view', 'size-6 fill-current text-blue-600');
+                } 
             });
 
         if ($enableDescriptors == 'Y') {

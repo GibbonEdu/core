@@ -48,6 +48,9 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Module\Students\View\LibraryBorrowingView;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\UI\Timetable\Timetable;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -574,17 +577,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
 
-                            $table->addHeaderAction('print', __('Print'))
-                                ->setURL('/report.php')
-                                ->addParam('q', '/modules/Timetable/tt_view.php')
-                                ->addParam('gibbonPersonID', $gibbonPersonID)
-                                ->addParam('gibbonTTID', $_GET['gibbonTTID'] ?? '')
-                                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                                ->setIcon('print')
-                                ->setTarget('_blank')
-                                ->directLink()
-                                ->displayLabel();
-
                             if ($gibbonPersonID == $session->get('gibbonPersonID')) {
                                 $table->addHeaderAction('export', __('Export'))
                                     ->modalWindow()
@@ -596,18 +588,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             echo $table->render([['' => '']]);
 
-                            include './modules/Timetable/moduleFunctions.php';
-                            $ttDate = null;
-                            if (!empty($_REQUEST['ttDate'])) {
-                                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
-                            }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
-                            if ($tt != false) {
-                                $page->addData('preventOverflow', false);
-                                echo $tt;
-                            } else {
-                                echo $page->getBlankSlate();
-                            }
+                            $ttDate = !empty($_REQUEST['ttDate']) ? Format::dateConvert($_REQUEST['ttDate']) : null;
+                            $gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
+                            
+                            // Create timetable context
+                            $context = $container->get(TimetableContext::class)
+                                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                ->set('gibbonPersonID', $gibbonPersonID)
+                                ->set('gibbonTTID', $gibbonTTID);
+
+                            // Build and render timetable
+                            echo $container->get(Timetable::class)
+                                ->setDate($ttDate)
+                                ->setContext($context)
+                                ->addCoreLayers($container)
+                                ->getOutput();
                         } else {
                             echo '<h4>';
                             echo __('Class List');
@@ -844,6 +839,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</tr>';
                                 echo '</table>';
 
+                                $table = DataTable::createDetails('family');
+                                $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Family', [], $rowFamily['fields'] ?? '');
+                                echo $table->render([['' => '']]);
+
                                 //Get adults
 
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
@@ -916,6 +915,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
+                                    } else {
+                                        echo Format::small(__('N/A'));
                                     }
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
@@ -934,6 +935,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
+                                    } else {
+                                        echo Format::small(__('N/A'));
                                     }
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
@@ -950,6 +953,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo __('Email')." 2: <a href='mailto:".$rowMember['emailAlternate']."'>".$rowMember['emailAlternate'].'</a><br/>';
                                         }
                                         echo '<br/>';
+                                    } else {
+                                        echo Format::small(__('N/A'));
                                     }
                                     echo '</td>';
                                     echo '</tr>';
@@ -1127,7 +1132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
                         }
-
+                        
                         echo '<h4>';
                         echo __('Emergency Contacts');
                         echo '</h4>';
@@ -1146,7 +1151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo "<td style=width: 34%; 'vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-                        if ($row['website'] != '') {
+                        if ($row['emergency1Number2'] != '') {
                             echo $row['emergency1Number2'];
                         }
                         echo '</td>';
@@ -1165,7 +1170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-                        if ($row['website'] != '') {
+                        if ($row['emergency2Number2'] != '') {
                             echo $row['emergency2Number2'];
                         }
                         echo '</td>';
@@ -2254,68 +2259,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                     } elseif ($subpage == 'Library Borrowing') {
-                        if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
+                        if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php') == false) {
                             $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
-                            //Print borrowing record
-                            $libraryGateway = $container->get(LibraryReportGateway::class);
-                            $criteria = $libraryGateway->newQueryCriteria(true)
-                                ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
-                                ->filterBy('gibbonPersonID', $gibbonPersonID)
-                                ->fromPOST('lendingLog');
+                            $page->return->addReturns([
+                                'warning1' => __('This action is not possible for the selected record. Please check the status in the Lending & Activity Log.'),
+                                'warning3' => __('The specified record cannot be found.'),
+                            ]);
 
-                            $items = $libraryGateway->queryStudentReportData($criteria);
-                            $lendingTable = DataTable::createPaginated('lendingLog', $criteria);
-                            $lendingTable
-                              ->modifyRows(function ($item, $row) {
-                                if ($item['status'] == 'On Loan') {
-                                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row;
-                                }
-                                return $row;
-                              });
-                            $lendingTable
-                              ->addExpandableColumn('details')
-                              ->format(function ($item) {
-                                $detailTable = "<table>";
-                                $fields = json_decode($item['fields'], true) ?? [];
-                                $typeFields = json_decode($item['typeFields'], true) ?? [];
-                                foreach ($typeFields as $typeField) {
-                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']] ?? '');
-                                }
-                                $detailTable .= '</table>';
-                                return $detailTable;
-                              });
-                            $lendingTable
-                              ->addColumn('imageLocation')
-                              ->width('120px')
-                              ->format(function ($item) {
-                                return Format::photo($item['imageLocation'], 75);
-                              });
-                            $lendingTable
-                              ->addColumn('name', __('Name'))
-                              ->description(__('Author/Producer'))
-                              ->format(function ($item) {
-                                return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
-                              });
-                            $lendingTable
-                              ->addColumn('id', __('ID'))
-                              ->format(function ($item) {
-                                return sprintf('<b>%1$s</b>', $item['id']);
-                              });
-                            $lendingTable
-                              ->addColumn('spaceName', __('Location'))
-                              ->format(function ($item) {
-                                return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
-                              });
-                            $lendingTable
-                              ->addColumn('timestampOut', __('Return Date'))
-                              ->description(__('Borrow Date'))
-                              ->format(function ($item) {
-                                  return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : Format::date($item['timestampReturn']), Format::small(Format::date($item['timestampOut'])));
-                              });
-                            $lendingTable
-                              ->addColumn('status', __('Status'));
-                            echo $lendingTable->render($items);
+                            //Print borrowing record
+                            $libraryBorrowing = $container->get(LibraryBorrowingView::class);
+                            $libraryBorrowing->setStudent($gibbonPersonID)->compose($page);
                         }
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
@@ -2335,20 +2289,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
 
-                            include './modules/Timetable/moduleFunctions.php';
-                            $ttDate = null;
-                            if (isset($_POST['ttDate'])) {
-                                $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
-                            }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable");
-                            if ($tt != false) {
-                                echo $tt;
-                            } else {
-                                echo $page->getBlankSlate();
-                            }
+                            $ttDate = !empty($_REQUEST['ttDate']) ? Format::dateConvert($_REQUEST['ttDate']) : null;
+                            $gibbonTTID = $_REQUEST['gibbonTTID'] ?? '';
+                            
+                            // Create timetable context
+                            $context = $container->get(TimetableContext::class)
+                                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                ->set('gibbonPersonID', $gibbonPersonID)
+                                ->set('gibbonTTID', $gibbonTTID);
+
+                            // Build and render timetable
+                            echo $container->get(Timetable::class)
+                                ->setDate($ttDate)
+                                ->setContext($context)
+                                ->addCoreLayers($container)
+                                ->getOutput();
                         }
                     } elseif ($subpage == 'Activities') {
-                        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent'))) {
+                        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent')) && !isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_myChildren.php') && !(isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php'))) {
                             $page->addError(__('Your request failed because you do not have access to this action.'));
                         } else {
                             echo '<p>';
@@ -2359,8 +2317,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($dateType == 'Term') {
                                 $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
                             }
-
-
                                 $dataYears = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlYears = 'SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
                                 $resultYears = $connection2->prepare($sqlYears);
@@ -2379,7 +2335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role 
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.gibbonSchoolYearID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonSchoolYearTerm.nameShort ORDER BY gibbonSchoolYearTerm.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role 
                                         FROM gibbonActivity 
                                         JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
                                         LEFT JOIN gibbonActivityCategory ON (gibbonActivityCategory.gibbonActivityCategoryID=gibbonActivity.gibbonActivityCategoryID) 
@@ -2418,12 +2374,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             }
                                           });
                                     $table->addColumn('status', __('Status'))->translatable();
+
+                                    $canViewActivities = isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_full.php');
                                     $table->addActionColumn()
-                                          ->format(function ($activity, $actions) {
-                                            $actions->addAction('view', __('View Details'))
-                                              ->setURL('/modules/Activities/activities_view_full.php')
-                                              ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
-                                              ->modalWindow(1000, 500);
+                                          ->format(function ($activity, $actions) use ($session, $canViewActivities) {
+                                            $role = $session->get('gibbonRoleIDCurrentCategory');
+                                            
+                                            if ($canViewActivities) {
+                                                $actions->addAction('view', __('View Details'))
+                                                    ->setURL('/modules/Activities/activities_view_full.php')
+                                                    ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                                                    ->modalWindow(1000, 500);
+                                            } else if ($role == 'Student' && $activity['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) { 
+                                                $actions->addAction('view', __('View Details'))
+                                                    ->setURL('/modules/Activities/explore_activity.php')
+                                                    ->addParam('sidebar', 'false')
+                                                    ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                                                    ->modalWindow(1200, 600);
+                                            }
                                           });
                                     echo $table->render($resultData);
                                 }
@@ -2620,8 +2588,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Reports'>".__('Reports').'</a></li>';
                         ++$studentMenuCount;
                     }
-
-                    if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php')) {
+                    if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_myChildren.php') || isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php')) {
                         $style = '';
                         if ($subpage == 'Activities') {
                             $style = "style='font-weight: bold'";
@@ -2652,7 +2619,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Individual Needs'>".__('Individual Needs').'</a></li>';
                         ++$studentMenuCount;
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php')) {
+                    if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php')) {
                         $style = '';
                         if ($subpage == 'Library Borrowing') {
                             $style = "style='font-weight: bold'";

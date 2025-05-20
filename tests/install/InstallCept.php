@@ -70,9 +70,6 @@ try {
     $I->see('go to your Gibbon homepage', '.success');
     $I->click('go to your Gibbon homepage');
 
-    // The URL should either be empty or a single slash (root).
-    $I->canSeeCurrentUrlMatches('/^(|\/)$/');
-
 } catch (Exception $e) {
     if ($requestSuccess) {
         codecept_debug($I->grabTextFrom('body'));

@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: ${{ matrix.name }} (PHP ${{ matrix.php-version }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php-version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
@@ -161,7 +161,7 @@ jobs:
           mysqldump -u root --protocol=tcp --column-statistics=0 gibbon_test > ./tests/_dump/mysqldump.sql
 
       - name: Save Test Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ failure() || matrix.experimental }}
         with:
           name: Test Artifacts (PHP ${{ matrix.php-version }})

@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $setting = $settingGateway->getSettingByScope('Application Form', 'studentDefaultWebsite', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addURL($setting['name'])->setValue($setting['value']);
+        $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'autoHouseAssign', true);
     $row = $form->addRow();

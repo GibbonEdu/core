@@ -92,8 +92,10 @@ class SessionFactory
         // which is currently used in many Process pages.
         // TODO: replace this logic when switching to routing.
         $address = $_GET['q'] ?? $_POST['address'] ?? '';
-        $module = $address ? getModuleName($address) : '';
-        $action = $address ? getActionName($address) : basename($_SERVER['PHP_SELF']);
+        $path = !empty($address) ? $address : $_SERVER['SCRIPT_FILENAME'];
+
+        $module = getModuleName($path);
+        $action = getActionName($path);
 
         // Create the instance from information of container
         // and environment.

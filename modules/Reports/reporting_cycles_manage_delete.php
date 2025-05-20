@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_deleteProcess.php?gibbonReportingCycleID='.$gibbonReportingCycleID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_deleteProcess.php', true);
+    $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
     echo $form->getOutput();
 }

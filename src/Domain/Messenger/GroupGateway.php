@@ -99,6 +99,14 @@ class GroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectGroupsByPersonAndOwner($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID ORDER BY name) UNION (SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID) ORDER BY name";
+        
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectGroupByID($gibbonGroupID)
     {
         $data = array('gibbonGroupID' => $gibbonGroupID);

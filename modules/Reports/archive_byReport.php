@@ -66,7 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
 
             return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                 'progressName'   => __('Read'),
-                'progressColour' => 'green',
+                'progressColour' => 'bg-green-300',
+                'progressBorder' => 'border-green-600',
                 'progressCount'  => $report['readCount'],
                 'totalCount'     => $report['totalCount'],
                 'width'          => 'w-48',

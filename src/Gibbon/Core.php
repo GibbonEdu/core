@@ -23,6 +23,7 @@ namespace Gibbon;
 
 use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
+use Gibbon\Support\Facades\Facade;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Psr\Container\ContainerInterface;
@@ -95,6 +96,7 @@ class Core
             SessionFactory::setCurrentSchoolYear($this->session, $container->get(SchoolYearGateway::class)->getCurrentSchoolYear());
         }
 
+        Facade::setFacadeContainer($container);
         Format::setupFromSession($this->session);
 
         $installType = $this->session->get('installType');

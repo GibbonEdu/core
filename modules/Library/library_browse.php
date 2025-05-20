@@ -76,6 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $form = Form::createBlank('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('mb-6');
+    $form->addData('advanced-options', !empty($name) || !empty($producer) || !empty($location) || !empty($type) || !empty($collection) || !empty($readerAge));
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
     $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
@@ -107,7 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $col->addLabel('type', __('Type'));
         $col->addSelect('type')
         ->fromArray($types)
-        
         ->selected($type)
         ->placeholder();
 
@@ -124,8 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $ageArray=range(2,21);
         $col->addSelect('readerAge')->fromArray($ageArray)->selected($readerAge)->placeholder();
 
-	$locationToggle = 'on';
-    $row->addCheckBox('locationToggle')->description(__('Include Books Outside of Library?'))->checked(($locationToggle == 'on'))->setValue('on')->setLabelClass('text-xs');
+    $row->addCheckBox('locationToggle')->description(__('Include Books Outside of Library?'))->checked($locationToggle)->setValue('on')->setLabelClass('text-xs');
 
 
     echo $form->getOutput();

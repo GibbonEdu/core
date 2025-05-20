@@ -83,6 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_send.p
 
     $sent = $values['status'] == 'Sent' || (!empty($_GET['return']) && $_GET['return'] == 'success1');
 
+     // Display a warning if the [confirmLink] tag exists in the body when read receipts are not enabled
+    if (!$sent && !empty($values['body']) && $values['emailReceipt'] == 'N') {
+        if (strpos($values['body'], '[confirmLink]') !== false) {
+            $page->addError(__('Warning: You have included [confirmLink] in your message text, however read receipts have not been turned on for this message. Please enable read receipts to use the [confirmLink] feature, otherwise this tag will be automatically removed from your email.'));
+        }
+    }
+
     // QUERY
     $criteria = $messengerReceiptGateway->newQueryCriteria()
         ->sortBy(['targetType', 'role',  'surname', 'preferredName'])

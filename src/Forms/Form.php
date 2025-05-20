@@ -23,12 +23,13 @@ namespace Gibbon\Forms;
 
 use Gibbon\Http\Url;
 use Gibbon\Tables\Action;
+use Gibbon\Session\TokenHandler;
 use Gibbon\Forms\View\FormBlankView;
 use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
+use League\Container\ContainerAwareTrait;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
-use League\Container\ContainerAwareTrait;
 
 /**
  * Form
@@ -89,7 +90,8 @@ class Form implements OutputableInterface
             ->setID($id)
             ->setClass($class)
             ->setAction($action)
-            ->setMethod($method);
+            ->setMethod($method)
+            ->setTokens($container);
 
         // Enable quick save by default on edit and settings pages
         if ($form->checkActionList($action, ['settingsProcess', 'editProcess'])) {
@@ -253,6 +255,22 @@ class Form implements OutputableInterface
     public function setAction(string $action)
     {
         $this->setAttribute('action', $action);
+
+        return $this;
+    }
+
+    /**
+     * Adds the CSRF and Nonce tokens to all POST forms
+     *
+     * @return void
+     */
+    public function setTokens($container)
+    {
+        if(strtoupper($this->getMethod()) == 'POST') {
+            $tokenHandler = $container->get(TokenHandler::class);
+            $this->addHiddenValue('csrftoken', $tokenHandler->getCSRF());
+            $this->addHiddenValue('nonce', $tokenHandler->getNonce());
+        }
 
         return $this;
     }
@@ -460,9 +478,9 @@ class Form implements OutputableInterface
      * Enables submitting the form and reloading without a page refresh.
      * @return self
      */
-    public function enableQuickSave()
+    public function enableQuickSave(bool $enabled = true)
     {
-        $this->renderer->addData('quickSave', true);
+        $this->renderer->addData('quickSave', $enabled);
         return $this;
     }
 

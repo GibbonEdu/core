@@ -1198,7 +1198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
 
                     if (!empty($partialFailures)) {
-                        $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleIDFromName($connection2, 'Students'), $session->get('gibbonPersonID'), 'Application Form - Partial Fail', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'partialFailures' => implode(',', $partialFailures)), $_SERVER['REMOTE_ADDR']);
+                        $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Students', $session->get('gibbonPersonID'), 'Application Form - Partial Fail', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'partialFailures' => implode(',', $partialFailures)), $_SERVER['REMOTE_ADDR']);
                     }
 
                     if ($failStatus == true) {

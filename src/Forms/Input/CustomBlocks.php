@@ -195,7 +195,9 @@ class CustomBlocks implements OutputableInterface
         $output .= '<div class="customBlocks '.($this->compact ? 'compact' : '').'" id="' . $this->name. '">';
 
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
-            $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
+            if (!empty($this->settings['placeholder'])) {
+                $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
+            }
    
             $output .= '<div class="blockTemplate relative '.($this->compact ? 'compact h-min' : '').'" style="display: none;">';
                 $output .= '<div class="blockInputs flex py-3 pr-4">';

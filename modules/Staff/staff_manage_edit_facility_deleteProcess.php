@@ -21,8 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
-$gibbonSpacePersonID = $_GET['gibbonSpacePersonID'] ?? '';
+$gibbonStaffID = $_POST['gibbonStaffID'] ?? '';
+$gibbonSpacePersonID = $_POST['gibbonSpacePersonID'] ?? '';
 $allStaff = '';
 if (isset($_GET['allStaff'])) {
     $allStaff = $_GET['allStaff'] ?? '';

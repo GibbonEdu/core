@@ -70,8 +70,8 @@ class ApplicationFormStorage extends AbstractFormStorage
             $data = array_merge($existingData, $this->getData());
 
             $saved = $this->admissionsApplicationGateway->update($values['gibbonAdmissionsApplicationID'], [
-                'data'                   => json_encode($data),
-                'result'                 => json_encode($this->getResults()),
+                'data'                   => json_encode($data, JSON_UNESCAPED_UNICODE),
+                'result'                 => json_encode($this->getResults(), JSON_UNESCAPED_UNICODE),
                 'status'                 => $this->getStatus(),
                 'priority'               => $this->getAny('priority', $existingData['priority'] ?? ''),
                 'gibbonFormPageID'       => $this->context['gibbonFormPageID'] ?? $values['gibbonFormPageID'],
@@ -89,8 +89,8 @@ class ApplicationFormStorage extends AbstractFormStorage
             // Create a new submission
             $saved = $this->admissionsApplicationGateway->insert($this->context + [
                 'identifier'         => $identifier,
-                'data'               => json_encode($this->getData()),
-                'result'             => json_encode($this->getResults()),
+                'data'               => json_encode($this->getData(), JSON_UNESCAPED_UNICODE),
+                'result'             => json_encode($this->getResults(), JSON_UNESCAPED_UNICODE),
                 'gibbonSchoolYearID' => $this->getAny('gibbonSchoolYearIDEntry'),
                 'gibbonYearGroupID'  => $this->getOrNull('gibbonYearGroupIDEntry'),
                 'gibbonFormGroupID'  => $this->getOrNull('gibbonFormGroupIDEntry'),

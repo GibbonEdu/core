@@ -1223,7 +1223,8 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
                     JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
                     WHERE gibbonAction.URLList LIKE :actionName
                         AND gibbonPermission.gibbonRoleID=:gibbonRoleID
-                        AND gibbonModule.name=:moduleName ";
+                        AND gibbonModule.name=:moduleName 
+                        AND gibbonModule.active='Y' ";
 
                     if ($sub != '') {
                         $data['sub'] = $sub;
@@ -1281,13 +1282,18 @@ function isModuleAccessible($guid, $connection2, $address = '')
 //Get the module name from the address
 function getModuleName($address)
 {
-    return substr(substr($address, 9), 0, strpos(substr($address, 9), '/'));
+    $pos = stripos($address, 'modules/');
+    $dir = substr($address, $pos+8);
+    return $pos !== false ? substr($dir, 0, stripos($dir, '/')) : '';
 }
 
 //Get the action name from the address
 function getActionName($address)
 {
-    return substr($address, (10 + strlen(getModuleName($address))));
+    $module = getModuleName($address);
+    return !empty($module) 
+        ? substr($address, (10 + strlen($module)))
+        : basename($address);
 }
 
 //Using the current address, checks to see that a module exists and is ready to use, returning the ID if it is

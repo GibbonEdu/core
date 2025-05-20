@@ -1,0 +1,77 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set isToday = structure.getToday.format('Y-m-d') == day.date %}
+{% set specialDay = structure.getSpecialDay(day.date) %}
+{% set indexDepth = {0: '', 1: 'pl-2', 2: 'pl-4', 3: 'pl-6', 4: 'pl-8'} %}
+
+<div class="relative flex-1 flex-col" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
+
+    {% set column = structure.getColumn(day.date) %}
+
+    {% if specialDay.type == 'School Closure' %}
+    <div class="flex-1 flex flex-col items-center justify-center gap-1 rounded-b border border-red-800/50 bg-red-200" style="height: {{ structure.minutesToPixels(structure.timeDifference(structure.getStartTime, structure.getEndTime)) }}px">
+        <span class="text-sm text-red-800">
+            {{ __('School Closed') }}
+        </span>
+        <span class="text-xs text-red-800">
+            {{ specialDay.name }}
+        </span>
+    </div>
+    {% else %}
+    
+    <div class=" flex flex-col rounded-b border-b border-r border-l {{ not column ? 'flex-1' }} {{ isToday ? 'bg-yellow-50'}} ">
+        
+        {% set lastTimeEnd = structure.getStartTime %}
+        {% for item in column %}
+            {% set firstItem = loop.first %}
+
+            {% if lastTimeEnd is not empty and item.timeStart != lastTimeEnd %}
+            <div class="flex border-t opacity-50 {{ not loop.first ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(structure.timeDifference(lastTimeEnd, item.timeStart)) }}px">
+            </div>
+            {% set firstItem = false %}
+            {% endif %}
+
+            <div class="relative group flex items-start justify-start border-t border-gray-300 transition duration-300 {{ not firstItem ? 'border-dashed' }}" style="height: {{ structure.minutesToPixels(item.duration) }}px">
+
+                <div class="flex w-full items-start justify-between border-gray-500 px-1.5 py-1">
+                    <span class="text-xxs text-gray-500 ">{{ item.duration >= 15 ? item.title }}</span>
+                    <span class="inline md:hidden lg:inline text-xxs text-gray-500 opacity-0 group-hover:opacity-100 transition duration-300">{{ item.timeStart|slice(0,5)|trim('0', 'left') }} - {{ item.timeEnd|slice(0,5)|trim('0', 'left') }}</span>
+                </div>
+
+                {% set lastTimeEnd = item.timeEnd %}
+
+                {% if item.date > structure.getToday.format('Y-m-d') or (isToday and item.timeStart >= now) %}
+                    {% if gibbonSpaceID and layers['Bookings'].isActive and layers['Bookings'].isBookable and not item.hasStatus('overlap') and format != 'print' %}
+                        {% set iconSize = item.duration >= 50 ? 'size-6' : item.duration >= 30 ? 'size-5' : 'size-3' %}
+                        <a x-show="{{ layers['Bookings'].getID }}" href="{{ absoluteURL }}/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID={{ gibbonSpaceID }}&date={{ item.date }}&timeStart={{ item.timeStart }}&timeEnd={{ item.timeEnd }}&source=tt" class="absolute bottom-0 right-0 mr-1 cursor-pointer pointer-events-auto" title="{{ __('Add Facility Booking') }}">
+                            {{  icon('solid', 'add', iconSize ~ ' text-gray-600 hover:text-gray-800') }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+                    
+            </div>
+            
+        {% endfor %}
+    </div>
+
+    {% endif %}
+
+    {% for layer in layers %}
+        {% if structure.isLayerVisible(layer.getType, day.date) %}
+            {% for item in layer.getItemsByDate(day.date) %}
+                <div class="absolute left-0 w-full px-px {{ attribute(indexDepth, item.index) }}" style="top: {{ structure.timeToPixels(item.timeStart) + 1 }}px">
+                {{ include('ui/timetableItem.twig.html') }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+</div>

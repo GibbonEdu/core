@@ -61,11 +61,11 @@ class NewStudentDetailsView extends AbstractFormView
 
         $row = $form->addRow()->setClass('newStudentDetails');
             $row->addLabel('studentDefaultEmail', __('Student Default Email'))->description(__('Set default email for students on acceptance, using [username] to insert username.'));
-            $row->addEmail('studentDefaultEmail');
+            $row->addTextField('studentDefaultEmail');
     
         $row = $form->addRow()->setClass('newStudentDetails');
             $row->addLabel('studentDefaultWebsite', __('Student Default Website'))->description(__('Set default website for students on acceptance, using [username] to insert username.'));
-            $row->addURL('studentDefaultWebsite');
+            $row->addTextField('studentDefaultWebsite');
     }
 
     public function display(Form $form, FormDataInterface $data)

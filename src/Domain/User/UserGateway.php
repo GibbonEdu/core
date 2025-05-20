@@ -45,7 +45,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     private static $tableName = 'gibbonPerson';
     private static $primaryKey = 'gibbonPersonID';
 
-    private static $searchableColumns = ['preferredName', 'firstName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
+    private static $searchableColumns = ['preferredName', 'firstName', 'surname', 'gibbonPerson.nameInCharacters', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
     private static $scrubbableKey = false;
     private static $scrubbableColumns = ['passwordStrong' => 'randomString', 'passwordStrongSalt' => 'randomString', 'address1' => '', 'address1District' => '', 'address1Country' => '', 'address2' => '', 'address2District' => '', 'address2Country' => '', 'phone1Type' => '', 'phone1CountryCode' => '', 'phone1' => '', 'phone3Type' => '', 'phone3CountryCode' => '', 'phone3' => '', 'phone2Type' => '', 'phone2CountryCode' => '', 'phone2' => '', 'phone4Type' => '', 'phone4CountryCode' => '', 'phone4' => '', 'website' => '', 'languageFirst' => '', 'languageSecond' => '', 'languageThird' => '', 'countryOfBirth' => '',  'ethnicity' => '', 'religion' => '', 'profession' => '', 'employer' => '', 'jobTitle' => '', 'emergency1Name' => '', 'emergency1Number1' => '', 'emergency1Number2' => '', 'emergency1Relationship' => '', 'emergency2Name' => '', 'emergency2Number1' => '', 'emergency2Number2' => '', 'emergency2Relationship' => '', 'transport' => '', 'transportNotes' => '', 'calendarFeedPersonal' => '', 'lockerNumber' => '', 'vehicleRegistration' => '', 'personalBackground' => '', 'studentAgreements' =>null, 'fields' => ''];
@@ -213,5 +213,57 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         $sql = "UPDATE gibbonPerson SET gibbonRoleIDAll=REPLACE(REPLACE(gibbonRoleIDAll, :gibbonRoleID, ''), ',,', '') WHERE gibbonPersonID=:gibbonPersonID AND gibbonRoleIDAll LIKE CONCAT('%', :gibbonRoleID, '%')";
 
         return $this->db()->update($sql, $data);
+    }
+
+    public function selectActiveUsersBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName, gibbonRole.category FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID = gibbonPerson.gibbonRoleIDPrimary) LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPerson.status = 'Full' ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getTransportList() 
+    {
+        $sql = "SELECT DISTINCT transport FROM gibbonPerson WHERE status = 'Full' AND NOT transport='' ORDER BY transport";
+
+        return $this->db()->select($sql);
+    }
+
+    public function getUserPreferences($gibbonPersonID) 
+    {
+        $user = $this->getByID($gibbonPersonID, ['preferences']);
+        $preferences = !empty($user['preferences']) ? json_decode($user['preferences'] ?? '', true) : []; 
+
+        return $preferences;
+    }
+
+    public function getUserPreferenceByScope($gibbonPersonID, $scope, $key, $default = null) 
+    {
+        $preferences = $this->getUserPreferences($gibbonPersonID);
+
+        return $preferences[$scope][$key] ?? $default;
+    }
+
+    public function setUserPreferences($gibbonPersonID, $newPreferences, $replace = false) 
+    {
+        $preferences = $replace
+            ? $newPreferences
+            : array_replace($this->getUserPreferences($gibbonPersonID), $newPreferences);
+
+        return $this->update($gibbonPersonID, [
+            'preferences' => json_encode($preferences),
+        ]);
+    }
+
+    public function setUserPreferenceByScope($gibbonPersonID, $scope, $key, $value) 
+    {
+        $preferences = $this->getUserPreferences($gibbonPersonID);
+
+        $preferences[$scope][$key] = $value;
+
+        return $this->update($gibbonPersonID, [
+            'preferences' => json_encode($preferences),
+        ]);
     }
 }

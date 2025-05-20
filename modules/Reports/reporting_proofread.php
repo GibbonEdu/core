@@ -61,6 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->setTitle(__('View'));
     $form->setClass('noIntBorder w-full');
     $form->enableQuickSave();
+    $form->enableQuickSubmit()->setAttribute('hx-trigger', 'change from:.auto-submit')->setAttribute('hx-include', '[name="filter"]');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', '/modules/Reports/reporting_proofread.php');
@@ -181,31 +182,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }
 
     $filters = [
-        'status:Edited' => __('Status').': '.__('Pending Edits'),
-        'status:Any' => __('Status').': '.__('Show All'),
-        'target:Per Group' => __('Target').': '.__('Per Group'),
-        'target:Per Student' => __('Target').': '.__('Per Student'),
+        'status::Edited' => __('Status').': '.__('Pending Edits'),
+        'status::Any' => __('Status').': '.__('Show All'),
+        'target::Per Group' => __('Target').': '.__('Per Group'),
+        'target::Per Student' => __('Target').': '.__('Per Student'),
     ];
 
     $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
-        $group['scope:'.$item['scopeName']] = __('Scope').': '.$item['scopeName'];
+        $group['scope::'.$item['scopeName']] = __('Scope').': '.$item['scopeName'];
         return $group;
     }, []));
 
     // $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
-    //     $group['criteria:'.$item['criteriaName']] = __('Criteria').': '.$item['criteriaName'];
+    //     $group['criteria::'.$item['criteriaName']] = __('Criteria').': '.$item['criteriaName'];
     //     return $group;
     // }, []));
 
     // $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
-    //     $group['class:'.$item['nameShort']] = __('Class').': '.$item['nameShort'];
+    //     $group['class::'.$item['nameShort']] = __('Class').': '.$item['nameShort'];
     //     return $group;
     // }, []));
 
     if ($gibbonPersonID == $session->get('gibbonPersonID')) {
         $filterOptions = $form->getFactory()->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('auto-submit filters float-none w-48 pl-2 border leading-none h-full sm:h-8 rounded')
+            ->setClass('auto-submit filters float-none w-24 sm:leading-none sm:h-8 sm:text-sm border-0 ring-1 ring-inset ring-gray-400 focus:ring-gray-400 hover:bg-gray-200 rounded-md w-full min-w-16 border py-2 text-gray-900  placeholder:text-gray-500 focus:ring-1 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6')
             ->placeholder(__('Filters'))
             ->selected($filter)
             ->getOutput();
@@ -220,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }, 0);
 
     // Enable filtering proofs by status, even though this cannot be done through the criteria
-    if ($filter == 'status:Edited') {
+    if ($filter == 'status::Edited') {
         $proofReading = array_reduce($proofsTotal, function ($group, $item) use (&$proofs) {
             $proofData = $proofs[$item['gibbonReportingValueID']] ?? [];
             if (!empty($proofData) && $proofData['status'] == 'Edited') {
@@ -238,8 +239,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         'totalCount' => count($proofsTotal),
         'progressCount' => $proofsDone,
         'partialCount' => max(0, count($proofs) - $proofsDone),
-        'progressColour' => 'green',
-        'partialColour' => 'blue',
+        'progressColour' => 'bg-green-300',
+        'progressBorder' => 'border-green-600',
+        'partialColour' => 'bg-blue-300',
     ]);
 
     $form = Form::createTable('reportingProof', $session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
@@ -285,9 +287,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
         $section = $form->addRow()
             ->addDetails()
-            ->addClass('border bg-gray-100 rounded mb-2 p-2')
+            ->addClass('border rounded mb-2 p-2')
             ->addClass($proof['status'] == 'Done' || $proof['status'] == 'Accepted' ? 'success bg-green-100' : '')
-            ->addClass($proof['status'] == 'Edited' ? 'message bg-blue-50' : '')
+            ->addClass($proof['status'] == 'Edited' ? 'message bg-blue-100' : 'bg-gray-100')
             ->setID('student'.str_pad($criteria['gibbonPersonIDStudent'], 10, '0', STR_PAD_LEFT))
             ->summary($summaryText)
             ->opened(empty($proof['status']) || ($proofReview && $proof['status'] == 'Edited'));
@@ -338,10 +340,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
 
-            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-2 justify-between items-center');
-                $col = $colRow->addColumn()->setClass('flex h-10 border rounded items-center bg-gray-200');
+            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 justify-between items-center');
+                $col = $colRow->addColumn()->setClass('flex h-12 px-2 border rounded items-center bg-gray-200');
                 $col->addRadio("status[{$gibbonReportingValueID}]")
-                    ->setClass('statusInput text-base leading-loose')
+                    ->setClass('statusInput text-base leading-loose whitespace-nowrap')
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->fromArray($actions);
@@ -374,10 +376,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 ->readonly($proof['status'] != 'Edited')
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
 
-            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-2 justify-between items-center');
-                $col = $colRow->addColumn()->setClass('flex h-10 border rounded items-center bg-gray-200');
+            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 justify-between items-center');
+                $col = $colRow->addColumn()->setClass('flex h-12 px-2 border rounded items-center bg-gray-200');
                 $col->addRadio("status[{$gibbonReportingValueID}]")
-                    ->setClass('statusInput text-base leading-loose')
+                    ->setClass('statusInput text-base leading-loose whitespace-nowrap')
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->checked($proof['status'])
@@ -405,21 +407,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 ?>
 
 <script>
-$('input.statusInput').change(function() {
+$('.statusInput input[type="radio"]').change(function() {
     var details = $(this).parents('details').first();
+    var textarea = details.find('textarea.commentEditor');
+    console.log(textarea);
 
     if ($(this).val() == 'Done' || $(this).val() == 'Accepted') {
-        details.removeClass('message bg-blue-50').removeClass('error bg-red-100');
+        details.removeClass('message bg-blue-100').removeClass('error bg-red-100').removeClass('bg-gray-100');
         details.addClass('success bg-green-100');
-        details.find('textarea').attr('readonly', true);
+        textarea.attr('readonly', true);
+        textarea.addClass('border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400');
     } else if ($(this).val() == 'Edited' || $(this).val() == 'Revised') {
-        details.removeClass('success bg-green-100').removeClass('error bg-red-100');
-        details.addClass('message bg-blue-50');
-        details.find('textarea').attr('readonly', false);
+        details.removeClass('success bg-green-100').removeClass('error bg-red-100').removeClass('bg-gray-100');;
+        details.addClass('message bg-blue-100');
+        textarea.attr('readonly', false);
+        textarea.removeClass('border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400');
     } else if ($(this).val() == 'Declined') {
-        details.removeClass('success bg-green-100').removeClass('message bg-blue-50');
+        details.removeClass('success bg-green-100').removeClass('message bg-blue-100');
         details.addClass('error bg-red-100');
-        details.find('textarea').attr('readonly', false);
+        textarea.attr('readonly', false);
+        textarea.removeClass('border-dashed text-gray-600 cursor-not-allowed :ring-0 focus:border-gray-400');
     }
 
     window.onbeforeunload = function(event) {

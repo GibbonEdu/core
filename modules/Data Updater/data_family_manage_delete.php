@@ -45,7 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         } else {
             //Let's go!
             
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_family_manage_deleteProcess.php?gibbonFamilyUpdateID=".$gibbonFamilyUpdateID);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_family_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonFamilyUpdateID', $gibbonFamilyUpdateID);
             echo $form->getOutput();
         }
     }

@@ -71,7 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/choices_manage.
     $choices = $choiceGateway->queryChoices($criteria, $session->get('gibbonSchoolYearID'));
 
     // TABLE
-    $table = DataTable::createPaginated('choices', $criteria);
+    $table = DataTable::createPaginated('choices', $criteria)
+        ->setTitle(__('Choices'));
 
     $table->addHeaderAction('generate', __('Generate Enrolments'))
         ->setURL('/modules/Activities/choices_manage_generate.php')

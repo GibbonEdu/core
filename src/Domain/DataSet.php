@@ -79,6 +79,16 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Remove page size values, disabling pagination for this data set.
+     *
+     * @return self
+     */
+    public function removePagination()
+    {
+        return $this->setPagination(-1, -1);
+    }
+
+    /**
      * Implements \Countable, allowing the data set to be counted.
      *
      * @return int
@@ -186,7 +196,9 @@ class DataSet implements \Countable, \IteratorAggregate
      */
     public function getPageFrom()
     {
-        return (($this->page-1) * $this->pageSize + 1);
+        return $this->pageSize > 0 
+            ? (($this->page-1) * $this->pageSize + 1)
+            : 1;
     }
 
     /**
@@ -196,7 +208,9 @@ class DataSet implements \Countable, \IteratorAggregate
      */
     public function getPageTo()
     {
-        return max(1, min( ($this->page * $this->pageSize), $this->resultCount));
+        return $this->pageSize > 0 
+            ? max(1, min( ($this->page * $this->pageSize), $this->resultCount))
+            : $this->resultCount;
     }
 
     /**

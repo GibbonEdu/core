@@ -136,9 +136,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     }
                 }
 
-                echo '<h2 class=\'bigTop\'>';
+                echo '<h3 class=\'mt-4\'>';
                 echo $row['name'].' - '.$row['nameShort'];
-                echo '</h2>';
+                echo '</h3>';
 
                 
                     $dataUnit = array('gibbonCourseID' => $gibbonCourseID);

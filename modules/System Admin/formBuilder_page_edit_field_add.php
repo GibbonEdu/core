@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroupName);
             $fields = $fieldGroupClass->getFieldOptions();
 
-            $form->addRow()->addHeading($fieldGroupLabel)->append($fieldGroupClass->getDescription());
+            $form->addRow()->addHeading($fieldGroupName, $fieldGroupLabel)->append($fieldGroupClass->getDescription());
 
             $col = $form->addRow()->addColumn()->addClass('');
 
@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 if ($fieldGroup == 'CustomFields') {
                     $col->addSubheading($heading);
                 } elseif (!empty($heading)) {
-                    $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
+                    $groupName = 'heading'.preg_replace('/[\s\~`\!@%#$%\^&\*\(\)+={}\[\]|\\:;"\'<>,\.\?\/]/', '', $heading);
                     $field = $fieldGroupClass->getField($groupName);
 
                     $description = '<div class="flex-1 text-left"><span class="text-sm font-bold uppercase text-gray-800 -ml-2">'.__($heading).'</span></div><div>'.($field['type'] ?? '').'</div>';
@@ -218,6 +218,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 }
 
                 foreach ($headingFields as $fieldName => $label) {
+                    $fieldName = preg_replace('/[\s\~`\!@%#$%\^&\*\(\)+={}\[\]|\\:;"\'<>,\.\?\/]/', '', $fieldName);
+
                     $description = '<div class="flex-1 text-left"><span class="text-sm -ml-2">'.$label.'</span></div>';
                     $col->addCheckbox("fields[$fieldGroupName][{$fieldName}]")
                         ->setValue($fieldName)

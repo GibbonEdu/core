@@ -114,6 +114,35 @@ class StudentFields extends AbstractFieldGroup
                 'type'        => 'phone',
                 'acquire'     => ['phone1' => 'varchar', 'phone1Type' => 'varchar', 'phone1CountryCode' => 'varchar','phone2' => 'varchar', 'phone2Type' => 'varchar', 'phone2CountryCode' => 'varchar'],
             ],
+            'headingEmergencyContacts' => [
+                'label' => __('Emergency Contacts'),
+                'type' => 'subheading',
+                'description' => __('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'),
+            ],
+            'emergency1Name' => [
+                'label' => __('Contact 1 Name'),
+            ],
+            'emergency1Relationship' => [
+                'label' => __('Contact 1 Relationship'),
+            ],
+            'emergency1Number1' => [
+                'label' => __('Contact 1 Number 1'),
+            ],
+            'emergency1Number2' => [
+                'label' => __('Contact 1 Number 2'),
+            ],
+            'emergency2Name' => [
+                'label' => __('Contact 2 Name'),
+            ],
+            'emergency2Relationship' => [
+                'label' => __('Contact 2 Relationship'),
+            ],
+            'emergency2Number1' => [
+                'label' => __('Contact 2 Number 1'),
+            ],
+            'emergency2Number2' => [
+                'label' => __('Contact 2 Number 2'),
+            ],
         ];
     }
 
@@ -214,6 +243,40 @@ class StudentFields extends AbstractFieldGroup
                     $col->addLabel('phone'.$i, __('Phone').' '.$i)->description(__($field['description']))->addClass('sm:w-2/5');
                     $col->addPhoneNumber('phone'.$i)->required($required && $i == 1)->addClass('flex-1');
                 }
+                break;
+
+            // EMERGENCY CONTACTS
+            case 'emergency1Name':
+                $row->addLabel('emergency1Name', __('Contact 1 Name'));
+                $row->addTextField('emergency1Name')->maxLength(90);
+                break;
+            case 'emergency1Relationship':
+                $row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
+                $row->addSelectEmergencyRelationship('emergency1Relationship');
+                break;
+            case 'emergency1Number1':
+                $row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
+                $row->addTextField('emergency1Number1')->maxLength(30);
+                break;
+            case 'emergency1Number2':
+                $row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
+                $row->addTextField('emergency1Number2')->maxLength(30);
+                break;
+            case 'emergency2Name':
+                $row->addLabel('emergency2Name', __('Contact 2 Name'));
+                $row->addTextField('emergency2Name')->maxLength(90);
+                break;
+            case 'emergency2Relationship':
+                $row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
+                $row->addSelectEmergencyRelationship('emergency2Relationship');
+                break;
+            case 'emergency2Number1':
+                $row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
+                $row->addTextField('emergency2Number1')->maxLength(30);
+                break;
+            case 'emergency2Number2':
+                $row->addLabel('emergency2Number2', __('Contact 2 Number 2'));
+                $row->addTextField('emergency2Number2')->maxLength(30);
                 break;
         }
 

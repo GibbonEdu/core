@@ -54,6 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/investigations_manage_deleteProcess.php?gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/investigations_manage_deleteProcess.php");
+    $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+    $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+    $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
+    $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
     echo $form->getOutput();
 }

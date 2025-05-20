@@ -252,11 +252,32 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 }
 
 .bg-stripe {
-    background-image: linear-gradient(45deg, #fafafa 25%, #f4f4f4 25%, #f4f4f4 50%, #fafafa 50%, #fafafa 75%, #f4f4f4 75%, #f4f4f4 100%); background-size: 23.0px 23.0px;
+    background-image: linear-gradient(45deg, #fafafa 25%, #f4f4f4 25%, #f4f4f4 50%, #fafafa 50%, #fafafa 75%, #f4f4f4 75%, #f4f4f4 100%);
+    background-size: 23.0px 23.0px;
 }
 
 .bg-stripe-dark {
-    background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;
+    background-image: linear-gradient(45deg, #dedede 25%, #f1f1f1 25%, #f1f1f1 50%, #dedede 50%, #dedede 75%, #f1f1f1 75%, #f1f1f1 100%);
+    background-size: 23.0px 23.0px;
+}
+
+.bg-stripe-overlay {
+    background-image: linear-gradient(45deg, #00000012 25%, #00000000 25%, #00000000 50%, #00000012 50%, #00000012 75%, #00000000 75%, #00000000 100%);
+    background-repeat: repeat;
+    background-size: 23.0px 23.0px;
+}
+
+.animate-bg-slide {
+    animation: bg-slide 0.75s linear infinite;
+}
+
+@keyframes bg-slide {
+    0% {
+        background-position: 0 50%;
+    }
+    100% {
+        background-position: 23.0px 50%;
+    }
 }
 
 
@@ -400,6 +421,11 @@ input[type="checkbox"] + .error-msg {
 select[multiple] + .error-msg {
     @apply top-auto -bottom-5;
 }
+
+textarea + .error-msg {
+    @apply top-auto bottom-0 mb-2 ml-2;
+}
+
 
 .tinymce + .error-msg,
 .tox-tinymce + .error-msg  {

@@ -158,6 +158,16 @@ class ClassGroupTable extends DataTable
         $this->addColumn('role')
             ->setClass('text-xs text-gray-600 italic leading-snug')
             ->translatable();
+        
+        if ($canViewConfidential) {
+            $this->addColumn('reportable')
+                ->format(function ($person) {
+                    if ($person['role'] == 'Student' && $person['reportable'] == "N") {
+                        return Format::tag(__("Not Reportable"), 'dull text-xxs');      
+                    }
+            });
+        }
+            
     }
 
     private function getCheckboxScript($id)

@@ -76,8 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
         if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
-            
-            if (!empty($versionFromFile['coreVersion']) && version_compare($versionFromFile['coreVersion'], $version, '>')) {
+
+            if (empty($versionFromFile)) {
+                $module['versionDisplay'] = __('Version check failed');
+                $module['status'] = __('Warning');
+                $module['warning'] = true;
+            } elseif (!empty($versionFromFile['coreVersion']) && version_compare($versionFromFile['coreVersion'], $version, '>')) {
                 $module['status'] = Format::bold(__('Requires {version}', ['version' => 'v'.$versionFromFile['coreVersion']])).'<br/>';
                 $module['warning'] = true;
             } else if (version_compare($versionFromFile['moduleVersion'], $module['version'], '>')) {

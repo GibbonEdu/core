@@ -47,13 +47,17 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         $this->template = $template;
     }
 
-    public function getViewClass() : string
+    public function getViewClass(): string
     {
         return SendSubmissionEmailView::class;
     }
 
     public function isEnabled(FormBuilderInterface $builder)
     {
+        if ($builder->getConfig('mode') == 'process' && $builder->getConfig($this->getProcessName().'Enabled') != 'Y') {
+            return false;
+        }
+        
         return $builder->getConfig('sendSubmissionEmail') == 'Y';
     }
 
@@ -75,9 +79,9 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
             } else {
                 $label = __($field['label']);
                 if (stripos($fieldName, 'parent1') !== false && stripos($field['label'], 'Parent') === false) {
-                    $label = __('Parent/Guardian').' 1 '.$label;
+                    $label = __('Parent/Guardian') . ' 1 ' . $label;
                 } else if (stripos($fieldName, 'parent2') !== false && stripos($field['label'], 'Parent') === false) {
-                    $label = __('Parent/Guardian').' 2 '.$label;
+                    $label = __('Parent/Guardian') . ' 2 ' . $label;
                 }
                 $details[$label]  = $fieldGroup->displayFieldValue($builder, $fieldName, $field, $data);
             }
@@ -109,7 +113,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
 
         $this->mail->setDefaultSender($template->renderSubject($templateData));
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
-        
+
         $this->mail->renderBody('mail/message.twig.html', [
             'title'  => $template->renderSubject($templateData),
             'body'   => $template->renderBody(array_merge($data, $templateData)),
@@ -125,6 +129,8 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         // Send the email
         $sent = $this->mail->Send();
         $this->setResult($sent);
+
+        $formData->setResult('submissionEmail', $builder->getConfig('accountEmail'));
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)

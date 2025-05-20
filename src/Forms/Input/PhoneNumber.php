@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\Traits\ButtonGroupTrait;
 use Gibbon\View\Component;
 
 /**
@@ -32,6 +33,8 @@ use Gibbon\View\Component;
  */
 class PhoneNumber extends Input
 {
+    use ButtonGroupTrait;
+    
     protected $column;
 
     protected $phoneType;

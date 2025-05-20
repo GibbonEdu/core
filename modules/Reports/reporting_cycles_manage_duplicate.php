@@ -63,6 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
+    $form->addHiddenValue('sequenceNumber', $values['sequenceNumber']);
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearID', __('School Year'));

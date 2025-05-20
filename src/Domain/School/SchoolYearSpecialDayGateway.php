@@ -54,6 +54,24 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getIsStudentOffTimetableByDate($gibbonSchoolYearID, $gibbonPersonID, $date)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date];
+        $sql = "SELECT gibbonSchoolYearSpecialDay.gibbonSchoolYearSpecialDayID as offTimetable 
+            FROM gibbonPerson AS student
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID ) 
+            JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=:date AND gibbonSchoolYearSpecialDay.type='Off Timetable')
+            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND student.gibbonPersonID=:gibbonPersonID 
+            AND student.status='Full' 
+            AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+            AND (student.dateEnd IS NULL OR student.dateEnd>=:date)
+            AND (FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList)
+            OR FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getIsFormGroupOffTimetableByDate($gibbonSchoolYearID, $gibbonFormGroupID, $date)
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $date];

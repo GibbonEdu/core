@@ -53,8 +53,7 @@ trait ScrubByPerson
 
         // Only get users whose dateEnd is before the cutoff, falling back to using the lastTimestamp
         $query->where('((gibbonPerson.dateEnd IS NOT NULL AND gibbonPerson.dateEnd < :cutoffDate) 
-            OR (gibbonPerson.dateEnd IS NULL AND gibbonPerson.lastTimestamp IS NOT NULL AND gibbonPerson.lastTimestamp < :cutoffDate) 
-            OR (gibbonPerson.dateEnd IS NULL AND gibbonPerson.lastTimestamp IS NULL))')
+            OR (gibbonPerson.dateEnd IS NULL AND gibbonPerson.lastTimestamp IS NOT NULL AND gibbonPerson.lastTimestamp < :cutoffDate))')
             ->bindValue('cutoffDate', $cutoffDate);
 
         return $this->runSelect($query)->fetchGroupedUnique();

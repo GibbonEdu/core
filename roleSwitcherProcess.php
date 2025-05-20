@@ -29,11 +29,14 @@ $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
 $gibbonRoleID = str_pad(intval($gibbonRoleID), 3, '0', STR_PAD_LEFT);
 
 $session->set('pageLoads', null);
+$URL = Url::fromRoute();
 
 //Check for parameter
-if (empty(intval($gibbonRoleID))) {
-    $URL = Url::fromRoute()->withReturn('error0');
-    header("Location: {$URL}");
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+} elseif (empty(intval($gibbonRoleID))) {
+    header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
     // Check for access to role
@@ -41,8 +44,7 @@ if (empty(intval($gibbonRoleID))) {
     $role = $roleGateway->getAvailableUserRoleByID($session->get('gibbonPersonID'), $gibbonRoleID);
 
     if (empty($role) || empty($role['category'])) {
-        $URL = Url::fromRoute()->withReturn('error0');
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error0')}");
         exit;
     }
 

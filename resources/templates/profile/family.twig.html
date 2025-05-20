@@ -119,6 +119,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {{ formatUsing('phone', person['phone' ~ i], person['phone' ~ i ~ 'CountryCode'], person['phone' ~ i ~ 'Type'])}}
                         {% endif %}
                     {% endfor %}
+                {% else %}
+                    {{ formatUsing('small', __('N/A') ) }}
                 {% endif %}
             </td>
             <td class="{{ class }}" style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>
@@ -131,6 +133,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {{ formatUsing('phone', person['phone' ~ i], person['phone' ~ i ~ 'CountryCode'], person['phone' ~ i ~ 'Type'])}}
                         {% endif %}
                     {% endfor %}
+                {% else %}
+                    {{ formatUsing('small', __('N/A') ) }}
                 {% endif %}
             </td>
             <td class="{{ class }}" style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>
@@ -146,6 +150,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {{ __('Email') }} 2: <a href="mailto:{{ person.emailAlternate }}">{{ person.emailAlternate }}</a><br />
                     {% endif %}
                     <br />
+                {% else %}
+                    {{ formatUsing('small', __('N/A') ) }}
                 {% endif %}
             </td>
         </tr>

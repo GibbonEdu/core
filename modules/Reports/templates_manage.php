@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\View\GridView;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.php') == false) {
@@ -36,20 +36,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
     // QUERY
     $criteria = $templateGateway->newQueryCriteria(true)
         ->sortBy('name', 'ASC')
-        ->filterBy('active', 'Y')
+        ->filterBy('active', $_GET['active'] ?? 'Y')
         ->fromPOST();
 
     $templates = $templateGateway->queryTemplates($criteria);
 
     // GRID TABLE
-    $table = $container->get(DataTable::class);
+    $table = DataTable::createPaginated('templates', $criteria);
     $table->setTitle(__('Template Library'));
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Reports/templates_manage_add.php')
         ->displayLabel();
+        
+    $table->addHeaderAction('fonts', __('Manage Fonts'))
+        ->setIcon('delivery2')
+        ->setURL('/modules/Reports/templates_assets_fonts.php')
+        ->displayLabel();
 
-    $table->addHeaderAction('fonts', __('Manage Assets'))
+    $table->addHeaderAction('assets', __('Manage Assets'))
         ->setIcon('delivery2')
         ->setURL('/modules/Reports/templates_assets.php')
         ->displayLabel();
@@ -57,8 +62,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
     $table->addMetaData('gridClass', 'content-center justify-center');
     $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 text-center mb-4');
 
+    $table->addMetaData('filterOptions', [
+        'active:Y'          => __('Active').': '.__('Yes'),
+        'active:N'          => __('Active').': '.__('No'),
+    ]);
+
+    $table->modifyRows(function($values, $row) {
+        if (!empty($values['active']) && $values['active'] != 'Y') $row->addClass('error');
+        return $row;
+    });
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('context', __('Context'));
+
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     $table->addActionColumn()
         ->addParam('gibbonReportTemplateID')
@@ -76,8 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
                     ->setIcon('copy')
                     ->setURL('/modules/Reports/templates_manage_duplicate.php');
 
-            $actions->addAction('delete', __('Delete'))
+            if ($template['active'] == 'N') {
+                $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Reports/templates_manage_delete.php');
+            }
         });
 
     echo $table->render($templates);

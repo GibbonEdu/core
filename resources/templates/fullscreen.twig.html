@@ -7,6 +7,10 @@ Gibbon™, Gibbon Education Ltd. (Hong Kong)
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
+{% if iframe == 'true' %}
+<iframe src="{{ iframeSrc }}" width="100%" height="{{ iframeHeight|default(700) - 100 }}" seamless></iframe>
+{% else %}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,3 +28,5 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ content|join("\n")|raw }}
     </body>
 </html>
+
+{% endif %}

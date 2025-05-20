@@ -110,9 +110,11 @@ if ($proceed == false) {
         $row->addLabel('gender', __('Gender'));
         $row->addSelectGender('gender')->required();
 
-    $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'));
-        $row->addDate('dob')->required();
+    if ($publicRegistrationMinimumAge != "") {
+        $row = $form->addRow();
+            $row->addLabel('dob', __('Date of Birth'));
+            $row->addDate('dob')->required();
+    }
 
     $row = $form->addRow();
         $row->addLabel('usernameCheck', __('Username'));
@@ -128,7 +130,7 @@ if ($proceed == false) {
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('Password'));
         $row->addPassword('passwordNew')
-            ->addPasswordPolicy($pdo)
+            ->addPasswordPolicy($container->get(PasswordPolicy::class))
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);

@@ -111,14 +111,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     }
                 }
 
-                $notificationSender->sendNotificationsAsBcc();
+                $notificationSender->sendNotifications();
 
                 //Create notification to person I am replying to
                 if (is_null($replyToID) == false) {
                     $notificationText = __('{person} has replied to a comment you made on lesson plan {lessonName}.', ['person' => $personName, 'lessonName' => $row['name']]);
                     $notificationSender->addNotification($replyToID, $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
 
-                    $notificationSender->sendNotificationsAsBcc();
+                    $notificationSender->sendNotifications();
                 }
 
                 $URL .= '&return=success0';

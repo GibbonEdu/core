@@ -310,7 +310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             foreach ($logs as $log) {
                                 if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
                                     $name = $log['type'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'];
-                                } else if ($log['context'] == 'Future') {
+                                } else if ($log['context'] == 'Future' && $log['date'] == $targetDate) {
                                     $name = $class['columnName'] . ' - ' . $log['type'] . ' '. $log['reason'];
                                 }
                             }
@@ -342,8 +342,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         }, []);
 
                         // Account for whole-day future absences that this student already has
-                        $futureAbsences = array_filter($logs, function ($log) {
-                            return $log['context'] == 'Future';
+                        $futureAbsences = array_filter($logs, function ($log) use ($targetDate) {
+                            return $log['context'] == 'Future' && $log['date'] == $targetDate;
                         });
                         if (count($futureAbsences) > 0) {
                             $disabled = array_keys($classOptions);
@@ -422,8 +422,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     }
 
                     // Account for whole-day future absences that this student already has
-                    $futureAbsences = array_filter($logs, function ($log) {
-                        return $log['context'] == 'Future';
+                    $futureAbsences = array_filter($logs, function ($log) use ($targetDate) {
+                        return $log['context'] == 'Future' && $log['date'] == $targetDate;
                     });
                     if (count($futureAbsences) > 0) {
                         $disabled = true;

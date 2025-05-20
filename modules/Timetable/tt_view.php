@@ -23,6 +23,8 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\TimetableContext;
+use Gibbon\UI\Timetable\Timetable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $search = $_GET['search'] ?? '';
         $allUsers = $_GET['allUsers'] ?? '';
-        $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+        $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
         $format = $_GET['format'] ?? '';
 
 
@@ -126,17 +128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                         ->prepend((!empty($search)) ? ' | ' : '');
                     }
 
-                    $table->addHeaderAction('print', __('Print'))
-                        ->setURL('/report.php')
-                        ->addParam('q', '/modules/Timetable/tt_view.php')
-                        ->addParam('gibbonPersonID', $gibbonPersonID)
-                        ->addParam('gibbonTTID', $gibbonTTID)
-                        ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                        ->addParam('format', 'print')
-                        ->setTarget('_blank')
-                        ->directLink()
-                        ->displayLabel();
-
                     if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                         $table->addHeaderAction('export', __('Export'))
                             ->modalWindow()
@@ -147,24 +138,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     }
                 }
 
-
-            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
-                        $table->addColumn('yearGroup', __('Year Group'));
-                        $table->addColumn('formGroup', __('Form Group'));
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', false, false]));
+            $table->addColumn('yearGroup', __('Year Group'));
+            $table->addColumn('formGroup', __('Form Group'));
 
             echo $table->render([$row]);
 
             $ttDate = null;
             if (!empty($_REQUEST['ttDate'])) {
-                $ttDate = Format::timestamp(Format::dateConvert($_REQUEST['ttDate']));
+                $ttDate = Format::dateConvert($_REQUEST['ttDate']);
             }
 
-            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_view.php', "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search", '', $format == 'print' ? 'narrow' : 'full');
-            if ($tt != false) {
-                echo $tt;
-            } else {
-                echo $page->getBlankSlate();
-            }
+            // Create timetable context
+            $context = $container->get(TimetableContext::class)
+                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                ->set('gibbonPersonID', $gibbonPersonID)
+                ->set('gibbonTTID', $gibbonTTID)
+                ->set('format', $format);
+
+            // Build and render timetable
+            echo $container->get(Timetable::class)
+                ->setDate($ttDate)
+                ->setContext($context)
+                ->addCoreLayers($container)
+                ->getOutput(); 
 
             //Set sidebar
             $session->set('sidebarExtra', Format::userPhoto($row['image_240'], 240));

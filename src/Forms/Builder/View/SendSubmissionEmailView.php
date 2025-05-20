@@ -69,15 +69,15 @@ class SendSubmissionEmailView extends AbstractFormView
     {
         if (!$data->exists($this->getResultName())) return;
 
-        if (!$data->has('email')) return;
+        if (!$data->has('submissionEmail') && !$data->has('parent1email')) return;
 
         $col = $form->addRow()->addColumn();
         $col->addLabel($this->getResultName(), $this->getName());
 
         if ($data->hasResult($this->getResultName())) {
-            $col->addContent(Format::alert(__('An email was sent to {email}', ['email' => $data->get('email')]), 'success'));
+            $col->addContent(Format::alert(__('An email was sent to {email}', ['email' => $data->getResult('submissionEmail', $data->get('parent1email'))]), 'success'));
         } else {
-            $col->addContent(Format::alert(__('Email failed to send to {email}', ['email' => $data->get('email')]), 'warning'));
+            $col->addContent(Format::alert(__('Email failed to send to {email}', ['email' => $data->getResult('submissionEmail', $data->get('parent1email'))]), 'warning'));
         }
     }
 }

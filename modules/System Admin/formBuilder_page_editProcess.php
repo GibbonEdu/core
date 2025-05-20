@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         'name'         => $_POST['name'] ?? '',
         'introduction' => $_POST['introduction'] ?? '',
         'postscript'   => $_POST['postscript'] ?? '',
+        'gibbonFormID' => $_POST['gibbonFormID'] ?? '',
     ];
 
     // Validate the required values are present
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
 
     // Validate that this record is unique
-    if (!$formPageGateway->unique($data, ['name'], $gibbonFormPageID)) {
+    if (!$formPageGateway->unique($data, ['name', 'gibbonFormID'], $gibbonFormPageID)) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;

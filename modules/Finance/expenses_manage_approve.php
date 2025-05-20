@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+use Gibbon\Domain\Finance\FinanceExpenseApproverGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -80,14 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                     $page->addError(__('An error has occurred with your expense and budget settings.'));
                 } else {
                     //Check if there are approvers
-                    try {
-                        $data = array();
-                        $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                    }
-
+                    $result = $container->get(FinanceExpenseApproverGateway::class)->selectExpenseApprovers();
+                    
                     if ($result->rowCount() < 1) {
                         $page->addError(__('An error has occurred with your expense and budget settings.'));
                     } else {

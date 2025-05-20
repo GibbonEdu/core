@@ -19,10 +19,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -49,12 +50,14 @@ $studentOrderBy = $session->get('markbookOrderBy', null) ?? $_GET['markbookOrder
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart');
 
+//Get grade scale gateway
+$gradeScaleGateway = $container->get(GradeScaleGateway::class);
+
 // This script makes entering raw marks easier, by capturing the enter key and moving to the next field insted of submitting
 echo "<script type='text/javascript'>";
 ?>
     $(document).ready(function(){
         autosize($('textarea'));
-    });
 
     // Map [Enter] key to work like the [Tab] key
     // Daniel P. Clark 2014
@@ -106,8 +109,9 @@ echo "<script type='text/javascript'>";
         // We need to capture the [Shift] key and check the [Enter] key either way.
         if (e.shiftKey) { enterKey() } else { enterKey() }
     });
+});
 
-    <?php
+<?php
 echo '</script>';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
@@ -465,7 +469,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $col = $row->onlyIf($hasAttainment)->addColumn();
                         $col->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
                             ->setClass('w-auto gradeSelect inline-block')
-                            ->selected($student['attainmentValue']);
+                            ->selected($student['attainmentValue'], false);
 
                         if ($hasAttainment && $hasAttainmentRubric) {
                             $rubricLink = clone $rubricLinkSource;
@@ -479,7 +483,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $col = $row->onlyIf($hasAttainment)->addColumn();
                             $effort = $col->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
                                 ->setClass('w-auto gradeSelect inline-block')
-                                ->selected($student['effortValue']);
+                                ->selected($student['effortValue'], false);
 
                             if ($hasEffort && $hasEffortRubric) {
                                 $rubricLink = clone $rubricLinkSource;

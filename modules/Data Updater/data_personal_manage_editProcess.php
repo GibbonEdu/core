@@ -487,14 +487,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             }
 
                             //Set log
-                            $gibbonModuleID=getModuleIDFromName($connection2, 'User Admin') ;
                             $privacyValues=array() ;
                             $privacyValues['oldValue'] = $privacy_old ;
                             $privacyValues['newValue'] = $_POST['newprivacy'] ;
                             $privacyValues['gibbonPersonIDRequestor'] = $row['gibbonPersonIDUpdater'] ;
                             $privacyValues['gibbonPersonIDAcceptor'] = $session->get("gibbonPersonID") ;
 
-                            $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                            $logGateway->addLog($session->get("gibbonSchoolYearID"), 'User Admin', $session->get("gibbonPersonID"), 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
 
                         }
                     }
