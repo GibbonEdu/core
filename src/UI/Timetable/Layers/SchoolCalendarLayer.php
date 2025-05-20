@@ -41,7 +41,7 @@ class SchoolCalendarLayer extends AbstractCalendarLayer
         $this->name = 'School Calendar';
         $this->color = 'green';
         $this->type = 'optional';
-        $this->order = 10;
+        $this->order = 0;
     }
 
     public function checkAccess(TimetableContext $context) : bool

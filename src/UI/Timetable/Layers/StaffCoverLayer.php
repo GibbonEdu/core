@@ -46,7 +46,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
 
         $this->name = 'Staff Cover';
         $this->color = 'pink';
-        $this->order = 8;
+        $this->order = 50;
     }
 
     public function checkAccess(TimetableContext $context) : bool

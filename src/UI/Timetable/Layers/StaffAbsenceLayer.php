@@ -48,7 +48,7 @@ class StaffAbsenceLayer extends AbstractTimetableLayer
         $this->name = 'Staff Absence';
         $this->color = 'gray';
         $this->type = 'optional';
-        $this->order = 0;
+        $this->order = 5;
     }
 
     public function checkAccess(TimetableContext $context) : bool

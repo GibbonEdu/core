@@ -41,7 +41,7 @@ class PersonalCalendarLayer extends AbstractCalendarLayer
         $this->name = 'Personal Calendar';
         $this->color = 'cyan';
         $this->type = 'optional';
-        $this->order = 12;
+        $this->order = 60;
     }
     
     public function checkAccess(TimetableContext $context) : bool

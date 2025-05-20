@@ -42,7 +42,7 @@ class StaffDutyLayer extends AbstractTimetableLayer
 
         $this->name = 'Staff Duty';
         $this->color = 'yellow';
-        $this->order = 2;
+        $this->order = 30;
     }
     
     public function checkAccess(TimetableContext $context) : bool

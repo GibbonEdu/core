@@ -61,7 +61,7 @@ class ClassesLayer extends AbstractTimetableLayer
 
         $this->name = 'Classes';
         $this->color = 'blue';
-        $this->order = 1;
+        $this->order = 20;
     }
 
     public function checkAccess(TimetableContext $context) : bool

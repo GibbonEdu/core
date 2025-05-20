@@ -44,7 +44,7 @@ class BookingsLayer extends AbstractTimetableLayer
         $this->name = 'Bookings';
         $this->color = 'orange';
         $this->type = 'optional';
-        $this->order = 3;
+        $this->order = 40;
     }
 
     public function checkAccess(TimetableContext $context) : bool
