@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             $row = $form->addRow();
                 $row->addLabel('search', __('Search'))->description(__('Activity name.'));
-                $row->addTextField('search')->setValue($search)->maxLength(20);
+                $row->addTextField('search')->setValue($search);
 
             $row = $form->addRow();
                 $row->addSearchSubmit($session, __('Clear Search'));
