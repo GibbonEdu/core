@@ -468,7 +468,7 @@ class ActivityGateway extends QueryableGateway
     public function getNextActivityByID($gibbonActivityCategoryID, $gibbonActivityID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonActivityID' => $gibbonActivityID];
-        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MIN(name) FROM gibbonActivity WHERE name > (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID";
+        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MIN(name) FROM gibbonActivity WHERE name > (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID AND active='Y') AND gibbonActivityCategoryID=:gibbonActivityCategoryID AND active='Y'";
 
         return $this->db()->selectOne($sql, $data);
     }
@@ -476,7 +476,7 @@ class ActivityGateway extends QueryableGateway
     public function getPreviousActivityByID($gibbonActivityCategoryID, $gibbonActivityID)
     {
         $data = ['gibbonActivityCategoryID' => $gibbonActivityCategoryID, 'gibbonActivityID' => $gibbonActivityID];
-        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MAX(name) FROM gibbonActivity WHERE name < (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID";
+        $sql = "SELECT * FROM gibbonActivity WHERE name=(SELECT MAX(name) FROM gibbonActivity WHERE name < (SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID AND gibbonActivityCategoryID=:gibbonActivityCategoryID) AND gibbonActivityCategoryID=:gibbonActivityCategoryID AND active='Y') AND gibbonActivityCategoryID=:gibbonActivityCategoryID AND active='Y'";
 
         return $this->db()->selectOne($sql, $data);
     }
