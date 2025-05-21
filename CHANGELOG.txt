@@ -29,6 +29,7 @@ v30.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
 
     Bug Fixes
 

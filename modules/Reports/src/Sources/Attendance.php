@@ -31,6 +31,7 @@ class Attendance extends DataSource
     private static $schoolYearTerms;
     private static $daysOfWeek;
     private static $schoolClosures;
+    private static $offTimetable;
 
     public function getSchema()
     {
@@ -72,6 +73,17 @@ class Attendance extends DataSource
             static::$schoolClosures = $this->db()->select($sql, $data)->fetchKeyPair();
         }
 
+        if (empty(static::$offTimetable)) {
+            $data = ['gibbonReportID' => $ids['gibbonReportID']];
+            $sql = "SELECT gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name
+                    FROM gibbonReport 
+                    JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
+                    JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID)
+                    WHERE gibbonReport.gibbonReportID=:gibbonReportID AND gibbonSchoolYearSpecialDay.type='Off Timetable'
+                    ORDER BY date";
+            static::$offTimetable = $this->db()->select($sql, $data)->fetchKeyPair();
+        }
+
         $data = [
             'gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'],
             'gibbonReportID'       => $ids['gibbonReportID']
@@ -111,9 +123,19 @@ class Attendance extends DataSource
                 $attendance['total']++;
 
                 $logs = $values[$date->format('Y-m-d')] ?? [];
+                $offTimetable = static::$offTimetable[$date->format('Y-m-d')] ?? [];
+
                 $endOfDay = end($logs);
 
-                if (empty($logs)) continue;
+                // Handle off-timetable days where attendance is not taken
+                if (empty($endOfDay) && !empty($offTimetable)) {
+                    $endOfDay = [
+                        'direction' => 'In',
+                        'scope'     => 'Offsite',
+                    ];
+                }
+
+                if (empty($endOfDay)) continue;
 
                 if ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite') {
                     $attendance['absent']++;
