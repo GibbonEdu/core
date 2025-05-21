@@ -32,6 +32,7 @@ v30.0.00
         Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
         Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
+        Timetable: added staff duty and activity names to Staff Coverage layer on the timetable
 
     Bug Fixes
 

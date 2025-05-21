@@ -97,4 +97,15 @@ class StaffDutyPersonGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
+
+    public function getDutyDetailsByID($gibbonStaffDutyPersonID)
+    {
+        $data = ['gibbonStaffDutyPersonID' => $gibbonStaffDutyPersonID];
+        $sql = "SELECT gibbonStaffDuty.* 
+                FROM gibbonStaffDuty 
+                JOIN gibbonStaffDutyPerson ON (gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID)
+                WHERE gibbonStaffDutyPerson.gibbonStaffDutyPersonID=:gibbonStaffDutyPersonID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

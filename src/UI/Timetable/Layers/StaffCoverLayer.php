@@ -27,6 +27,9 @@ use Gibbon\Support\Facades\Access;
 use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Staff\StaffDutyPersonGateway;
+use Gibbon\UI\Timetable\Layers\AbstractTimetableLayer;
 
 /**
  * Timetable UI: StaffCoverLayer
@@ -38,11 +41,15 @@ class StaffCoverLayer extends AbstractTimetableLayer
 {
     protected $staffCoverageGateway;
     protected $plannerEntryGateway;
+    protected $staffDutyPersonGateway;
+    protected $activityGateway;
 
-    public function __construct(StaffCoverageGateway $staffCoverageGateway, PlannerEntryGateway $plannerEntryGateway)
+    public function __construct(StaffCoverageGateway $staffCoverageGateway, PlannerEntryGateway $plannerEntryGateway, StaffDutyPersonGateway $staffDutyPersonGateway, ActivityGateway $activityGateway)
     {
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->plannerEntryGateway = $plannerEntryGateway;
+        $this->staffDutyPersonGateway = $staffDutyPersonGateway;
+        $this->activityGateway = $activityGateway;
 
         $this->name = 'Staff Cover';
         $this->color = 'pink';
@@ -72,7 +79,7 @@ class StaffCoverLayer extends AbstractTimetableLayer
 
             $item = $this->createItem($coverage['date'])->loadData([
                 'type'        => __('Covering'),
-                'title'       => $coverage['contextName'],
+                'title'       => __($coverage['contextName']),
                 'label'       => $coverage['courseName'],
                 'subtitle'    => $coverage['roomName'] ?? '',
                 'description' => __('Covering for {name}', ['name' => $fullName]),
@@ -85,6 +92,22 @@ class StaffCoverLayer extends AbstractTimetableLayer
                 'timeStart'   => $coverage['timeStart'],
                 'timeEnd'     => $coverage['timeEnd'],
             ]);
+
+            // Handle Duty Coverage
+            if ($coverage['contextName'] == 'Staff Duty') {
+                $duty = $this->staffDutyPersonGateway->getDutyDetailsByID($coverage['foreignTableID'], ['name', 'nameShort']);
+                $item->set('title', $duty['nameShort'] ?? '');
+                $item->set('label', $duty['name'] ?? '');
+                $item->set('description', __($coverage['contextName']).': '.$item->description);
+            }
+
+            // Handle Activity Coverage
+            if ($coverage['contextName'] == 'Activity') {
+                $activity = $this->activityGateway->getActivityDetailsByID($coverage['foreignTableID']);
+                $item->set('title', $activity['name'] ?? '');
+                $item->set('subtitle', $activity['space'] ?? '');
+                $item->set('description', __($coverage['contextName']).': '.$item->description);
+            }
 
             // Handle room changes
             if (!empty($coverage['spaceChanged'])) {
