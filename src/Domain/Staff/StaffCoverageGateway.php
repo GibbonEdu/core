@@ -292,10 +292,6 @@ class StaffCoverageGateway extends QueryableGateway
             ->bindValue('dateStart', $dateStart)
             ->bindValue('dateEnd', $dateEnd);
 
-        if (!empty($gibbonPersonID)) {
-            $query->where('gibbonStaffCoverage.gibbonPersonIDCoverage=:gibbonPersonID')->bindValue('gibbonPersonID', $gibbonPersonID);
-        }
-
         return $this->runSelect($query);
     }
 
