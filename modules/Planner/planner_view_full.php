@@ -29,6 +29,7 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
@@ -1171,6 +1172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
+                            $offTimetableStudents = $container->get(SchoolYearSpecialDayGateway::class)->selectOffTimetableStudentsByClass($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $values['date'])->fetchKeyPair();
+
                             // Build attendance data
                             foreach ($participants as $key => $student) {
                                 if ($student['role'] != 'Student') continue;
@@ -1199,6 +1202,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $participants[$key]['cellHighlight'] = 'bg-blue-200';
                                 } elseif ($attendance->isTypeLate($log['type'])) {
                                     $participants[$key]['cellHighlight'] = 'bg-orange-200';
+                                } elseif (!empty($offTimetableStudents[$student['gibbonPersonID']])) {
+                                    $participants[$key]['cellHighlight'] = 'bg-stripe-overlay';
+                                    $participants[$key]['tag'] = Format::tag($offTimetableStudents[$student['gibbonPersonID']], 'dull leading-tight');
                                 }
 
                                 $participants[$key]['log'] = $log;
@@ -1289,6 +1295,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
 
                             $cell->addContent(__($person['role']));
+
+                            if (!empty($person['tag'])) {
+                                $cell->addContent($person['tag']);
+                            }
                         }
 
                         if ($canTakeAttendance && date('Y-m-d') >= $values['date']) {

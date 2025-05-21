@@ -30,6 +30,7 @@ v30.0.00
 
     Tweaks & Additions
         Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
+        Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
 
     Bug Fixes
 

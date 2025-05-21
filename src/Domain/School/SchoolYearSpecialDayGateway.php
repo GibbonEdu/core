@@ -109,4 +109,23 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
 
         return !empty($result) && ($result['studentTotal'] > 0 && $result['studentCount'] <= 0);
     }
+
+    public function selectOffTimetableStudentsByClass($gibbonSchoolYearID, $gibbonCourseClassID, $date)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date];
+        $sql = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonSchoolYearSpecialDay.name
+            FROM gibbonCourseClassPerson 
+            JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) 
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) 
+            JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=:date AND gibbonSchoolYearSpecialDay.type='Off Timetable')
+            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonCourseClassPerson.role='Student' 
+            AND student.status='Full' 
+            AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+            AND (student.dateStart IS NULL OR student.dateStart<=:date) 
+            AND (student.dateEnd IS NULL OR student.dateEnd>=:date)
+            AND (FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonSchoolYearSpecialDay.gibbonYearGroupIDList) OR FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, gibbonSchoolYearSpecialDay.gibbonFormGroupIDList))";
+
+        return $this->db()->select($sql, $data);
+    }
 }
