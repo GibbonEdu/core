@@ -19,6 +19,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v30.0.00
+--------
+
+    Headlines
+
+    Security
+
+    Changes With Important Notices
+
+    Tweaks & Additions
+
+    Bug Fixes
+
+    Deprecations
+
 v29.0.00
 --------
 

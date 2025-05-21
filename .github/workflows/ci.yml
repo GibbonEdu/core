@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
+        php-version: ["8.0", "8.1", "8.2", "8.3"]
         experimental: [false]
         name: ["CI Test"]
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: gibbon_test

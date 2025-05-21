@@ -940,3 +940,8 @@ ALTER TABLE `gibbonPerson` ADD `preferences` TEXT NULL AFTER `cookieConsent`;end
 ALTER TABLE `gibbonMessengerReceipt` ADD INDEX `duplicateCheck` (`gibbonMessengerID`, `gibbonPersonID`) USING BTREE;end
 ALTER TABLE `gibbonFamily` ADD `fields` TEXT NULL AFTER `familySync`;end
 ";
+
+//v30.0.00
+++$count;
+$sql[$count][0] = '30.0.00';
+$sql[$count][1] = "";

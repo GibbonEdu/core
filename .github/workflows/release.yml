@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         # Use the lowest supported version to build release.
-        php-version: ["7.4"]
+        php-version: ["8.0"]
 
     steps:
 
