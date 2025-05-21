@@ -290,18 +290,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
 
                         if ($values['role'] == 'Teacher') {
-                            $table->addHeaderAction('edit', __('Edit'))
-                                ->setURL('/modules/Planner/planner_edit.php')
-                                ->addParams($params)
-                                ->displayLabel();
-
                             if (!empty($gibbonMarkbookColumnID)) {
-                                $table->addHeaderAction('markbook', __('Markbook'))
+                                $table->addHeaderAction('markbook', __('Linked Markbook'))
                                     ->setURL('/modules/Markbook/markbook_edit_data.php')
                                     ->addParam('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
                                     ->addParams($params)
                                     ->displayLabel();
                             }
+
+                            $table->addHeaderAction('edit', __('Edit'))
+                                ->setURL('/modules/Planner/planner_edit.php')
+                                ->addParams($params)
+                                ->displayLabel();
                         }
 
                         $col = $table->addColumn('Basic Information');

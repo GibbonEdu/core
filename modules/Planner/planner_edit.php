@@ -156,6 +156,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];
                 }
 
+                $dataMarkbook = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                $sqlMarkbook = 'SELECT mb.gibbonMarkbookColumnID FROM gibbonMarkbookColumn AS mb WHERE :gibbonPlannerEntryID=mb.gibbonPlannerEntryID';
+                $gibbonMarkbookColumnID = $pdo->selectOne($sqlMarkbook, $dataMarkbook);
+
                 $returns = array();
                 $returns['success1'] = __('Your request was completed successfully.').__('You can now edit more details of your newly duplicated entry.');
                 $page->return->addReturns($returns);
@@ -165,6 +169,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $form->addHiddenValue('address', $session->get('address'));
                 
+                if (!empty($gibbonMarkbookColumnID)) {
+                    $form->addHeaderAction('markbook', __('Linked Markbook'))
+                        ->setURL('/modules/Markbook/markbook_edit_data.php')
+                        ->addParam('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
+                        ->addParams($params)
+                        ->displayLabel();
+                }
+                
                 $params["gibbonPlannerEntryID"] = $gibbonPlannerEntryID;
                 $form->addHeaderAction('view', __('View'))
                     ->setURL('/modules/Planner/planner_view_full.php')
@@ -172,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     ->setIcon('plus')
                     ->displayLabel();
 
+                
                 //BASIC INFORMATION
                 $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
@@ -327,11 +340,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 // MARKBOOK
                 $form->addRow()->addHeading(__('Markbook'));
                 // Check database for a linked markbook column
-                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                $sql = 'SELECT mb.gibbonMarkbookColumnID FROM gibbonMarkbookColumn AS mb WHERE :gibbonPlannerEntryID=mb.gibbonPlannerEntryID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-                if ($result->rowCount() != 0) {
+                
+                if (!empty($gibbonMarkbookColumnID)) {
                     $row = $form->addRow();
                     $row->addLabel('markbook', __('Markbook Column Already Created'))->description(__('A Markbook column has already been created for this assignment.'));
                 } else {
