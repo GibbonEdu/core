@@ -45,4 +45,20 @@ class FamilyChildGateway extends QueryableGateway implements ScrubbableGateway
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['comment' => ''];
+
+    public function selectStudentByFamilyID($gibbonFamilyID, $gibbonSchoolYearID) 
+    {
+        $data = ['gibbonFamilyID' => $gibbonFamilyID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectStudentByAdultID($gibbonPersonID, $gibbonPersonID2)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID2];
+        $sql = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+        
+        return $this->db()->select($sql, $data);
+    }
 }

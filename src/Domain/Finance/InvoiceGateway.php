@@ -167,4 +167,12 @@ class InvoiceGateway extends QueryableGateway
         ]);
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectInvoicesByPersonID($gibbonSchoolYearID, $gibbonPersonID) 
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.key, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID = gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID = gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID = gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID = gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID = :gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID = :gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }

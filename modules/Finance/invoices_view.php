@@ -21,13 +21,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Google\Service\Keep\Family;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Finance\InvoiceGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
@@ -36,34 +42,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
         $page->breadcrumbs->add(__('View Invoices'));
 
-
-        //Online payment
+        // Online payment
         $settingGateway = $container->get(SettingGateway::class);
         $enablePayments = $settingGateway->getSettingByScope('System', 'enablePayments');
         $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
 
-        if ($highestAction=="View Invoices_myChildren") {
-            //Test data access field for permission
-            
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+        if ($highestAction == "View Invoices_myChildren") {
+            // Test data access field for permission
+            $familyAdultGateway = $container->get(FamilyAdultGateway::class);
+            $adults = $familyAdultGateway->selectBy(['gibbonPersonID' => $session->get('gibbonPersonID'), 'childDataAccess' => 'Y']);
 
-            if ($result->rowCount() < 1) {
+            if (empty($adults)) {
                 echo $page->getBlankSlate();
             } else {
-                //Get child list
+                // Get child list
                 $count = 0;
-                $options = array();
-                while ($row = $result->fetch()) {
-                    
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
+                $options = [];
+                while ($row = $adults->fetch()) {
+                    $familyChildGateway = $container->get(FamilyChildGateway::class);
+                    $resultChild = $familyChildGateway->selectStudentByFamilyID($row['gibbonFamilyID'], $session->get('gibbonSchoolYearID'));
+
+                        // $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                        // $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                        // $resultChild = $connection2->prepare($sqlChild);
+                        // $resultChild->execute($dataChild);
+
                     while ($rowChild = $resultChild->fetch()) {
-                        $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                        $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                     }
                 }
 
@@ -72,14 +77,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 } elseif (count($options) == 1) {
                     $_GET['search'] = key($options);
                 } else {
-                    echo '<h2>';
-                    echo 'Choose Student';
-                    echo '</h2>';
 
-                    $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
+                    $gibbonPersonID = (isset($_GET['search'])) ? $_GET['search'] : null;
 
                     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-                    $form->setClass('noIntBorder w-full standardForm');
+                    $form->setClass('noIntBorder fullWidth');
+                    $form->setTitle(__('Choose Student'));
 
                     $form->addHiddenValue('q', '/modules/Finance/invoices_view.php');
                     $form->addHiddenValue('address', $session->get('address'));
@@ -99,25 +102,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                     $gibbonPersonID = $_GET['search'] ?? '';
                 }
             }
-        } else if ($highestAction=="View Invoices_mine") {
+        } else if ($highestAction == "View Invoices_mine") {
             $gibbonPersonID = $session->get("gibbonPersonID");
             $options = [$gibbonPersonID];
         }
 
         if (!empty($gibbonPersonID) and count($options) > 0) {
-            //Confirm access to this student
-            try {
-                if ($highestAction=="View Invoices_myChildren") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                } else if ($highestAction=="View Invoices_mine") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID" ;
-                }
-                $resultChild = $connection2->prepare($sqlChild);
-                $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
+            // Confirm access to this student
+            if ($highestAction == "View Invoices_myChildren") {
+                // $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
+                // $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                $resultChild = $familyChildGateway->selectStudentByAdultID($gibbonPersonID, $session->get('gibbonPersonID'));
+            } else if ($highestAction == "View Invoices_mine") {
+                // $dataChild = array('gibbonPersonID' => $gibbonPersonID);
+                // $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID";
+                $resultChild = $container->get(UserGateway::class)->selectStudentAcessByPersonID($gibbonPersonID);
             }
+
             if ($resultChild->rowCount() < 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
@@ -128,24 +129,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 if ($gibbonSchoolYearID != '') {
                    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['search' => $gibbonPersonID]);
 
-                    //Add in filter wheres
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-                    //SQL for NOT Pending
-                    $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.key, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                  
+                    // $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
+                    // $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.key, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
+                    // $result = $connection2->prepare($sql);
+                    // $result->execute($data);
 
-                    if ($result->rowCount() < 1) {
-                        echo '<h3>';
-                        echo __('View');
-                        echo '</h3>';
+                    // $invoices = $container->get(InvoiceGateway::class)->selectInvoicesByPersonID($gibbonSchoolYearID, $gibbonPersonID)->fetchAll();
 
+                     $result = $container->get(InvoiceGateway::class)->selectInvoicesByPersonID($gibbonSchoolYearID, $gibbonPersonID);
+
+                    if (empty($result)) {
                         echo $page->getBlankSlate();
                     } else {
-                        echo '<h3>';
-                        echo __('View');
-                        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__('%1$s invoice(s) in current view'), $result->rowCount()).'</span>';
-                        echo '</h3>';
+
+                        // Data Table
+                        $table = DataTable::create('invoices');
+                        $table->setTitle(__('View'));
+                        $table->setDescription(__(sprintf(__('%1$s invoice(s) in current view'), count($result))));                        
+
+                        // echo '<h3>';
+                        // echo __('View');
+                        // echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__('%1$s invoice(s) in current view'), $result->rowCount()).'</span>';
+                        // echo '</h3>';
 
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
@@ -224,6 +230,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             }
                             echo '</td>';
                             echo '<td>';
+
+
 							//Calculate total value
 							$totalFee = 0;
                             $feeError = false;
@@ -264,6 +272,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                                     echo number_format($row['paidAmount'], 2, '.', ',').'</span>';
                                 }
                             }
+
+
                             echo '</td>';
                             echo '<td>';
                             if (is_null($row['invoiceIssueDate'])) {
