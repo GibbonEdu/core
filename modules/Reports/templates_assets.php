@@ -164,6 +164,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
                 $actions->addAction('edit', __('Edit'))
                         ->addParam('sidebar', 'false')
                         ->setURL('/modules/Reports/templates_assets_components_edit.php');
+            }
+            
+            if ($template['type'] == 'Additional' && $template['active'] == 'N') {
                 $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/Reports/templates_assets_components_delete.php');
             }
