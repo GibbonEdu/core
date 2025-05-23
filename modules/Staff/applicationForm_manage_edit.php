@@ -303,7 +303,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     }
                 }
 
-                $row = $form->addRow()->addContent(getMaxUpload());
                 $form->addHiddenValue('fileCount', count($requiredDocumentsList));
             }
 

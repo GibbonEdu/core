@@ -238,14 +238,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($dateType == 'Term' and $maxPerTerm > 0) {
                         echo "<div class='warning'>";
                         echo __("Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:");
-                        $terms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
+
+                        $terms = $container->get(SchoolYearTermGateway::class)->selectTermsBySchoolYear($session->get('gibbonSchoolYearID'))->fetchAll();
+
                         echo '<ul>';
-                        for ($i = 0; $i < count($terms); $i = $i + 2) {
+                        foreach ($terms as $termCount => $term) {
                             echo '<li>';
-                            echo '<b>'.$terms[($i + 1)].':</b> ';
+                            echo '<b>'.$term['name'].':</b> ';
 
 
-                                $dataActivityCount = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$terms[$i].'%');
+                                $dataActivityCount = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term['gibbonSchoolYearTermID'].'%');
                                 $sqlActivityCount = "SELECT * FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
                                 $resultActivityCount = $connection2->prepare($sqlActivityCount);
                                 $resultActivityCount->execute($dataActivityCount);

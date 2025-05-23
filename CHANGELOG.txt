@@ -38,6 +38,7 @@ v30.0.00
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
 
     Deprecations
+        Removed all functions in functions.php flagged for deprecation since v25
 
 v29.0.00
 --------

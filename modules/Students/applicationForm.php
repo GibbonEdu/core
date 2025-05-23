@@ -850,7 +850,6 @@ if ($proceed == false) {
                     ->setMaxUpload(false);
         }
 
-        $row = $form->addRow()->addContent(getMaxUpload());
         $form->addHiddenValue('fileCount', count($requiredDocumentsList));
     }
 
