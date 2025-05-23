@@ -35,6 +35,7 @@ v30.0.00
         Timetable: added staff duty and activity names to Staff Coverage layer on the timetable
 
     Bug Fixes
+        Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
 
     Deprecations
 

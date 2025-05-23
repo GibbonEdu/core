@@ -93,7 +93,6 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         
         $email = $message['email'] ?? 'N';
         $from = $message['emailFrom'];
-        $emailReplyTo = $message['emailReplyTo'] ?? '';
 
         $sms = $message['sms'] ?? 'N';
         $smsCreditBalance = ($sms == 'Y' && !empty($message['smsCreditBalance'])) ? $message['smsCreditBalance'] : null;
@@ -157,17 +156,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             $mail->SMTPDebug = 0;
             $mail->Debugoutput = 'error_log';
             
-            if ($emailReplyTo!="") {
-                $mail->AddReplyTo($emailReplyTo, '');
-            }
-            if ($from==$session->get('organisationEmail')) {
-                $mail->SetFrom($from, $session->get('organisationName'));
-            } elseif ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
-                $user = $container->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
-                $mail->SetFrom($from, ($user['preferredName'] ?? '').' '.($user['surname'] ?? '') );
-            } else { //Else, send from individual
-                $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
-            }
+            $this->setFromAddress($mail, $session, $message['emailFrom'], $message['emailReplyTo']);
             
             // Turn copy-pasted div breaks into paragraph breaks
             $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
@@ -350,21 +339,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         $mail->Subject = __('Draft').': '.$message['subject'];
         $mail->AddAddress($session->get('email'));
-
-        $from = $message['emailFrom'];
-        $emailReplyTo = $message['emailReplyTo'] ?? '';
-
-        if ($emailReplyTo!="") {
-            $mail->AddReplyTo($emailReplyTo, '');
-        }
-        if ($from==$session->get('organisationEmail')) {
-            $mail->SetFrom($from, $session->get('organisationName'));
-        } elseif ($from!=$session->get('email')) {	//If sender is using school-wide address, send from school
-            $user = $this->getContainer()->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
-            $mail->SetFrom($from, ($user['preferredName'] ?? '').' '.($user['surname'] ?? '') );
-        } else { //Else, send from individual
-            $mail->SetFrom($from, $session->get('preferredName') . " " . $session->get('surname'));
-        }
+        $this->setFromAddress($mail, $session, $message['emailFrom'], $message['emailReplyTo']);
 
         $message['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $message['body']);
 
@@ -392,6 +367,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $connection2 = $pdo->getConnection();
         $session = $container->get(Session::class);
 
+        $logGateway = $container->get(LogGateway::class);
         $messengerGateway = $container->get(MessengerGateway::class);
         $message = $messengerGateway->getByID($gibbonMessengerID);
 
@@ -399,12 +375,10 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         // Prep message
         $emailCount = 0;
-        
 
         $mail= $container->get(Mailer::class);
         $mail->SMTPKeepAlive = true;
-        $mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
-        
+        $this->setFromAddress($mail, $session, $message['emailFrom'], $message['emailReplyTo']);
 
         // Scan through recipients
         foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
@@ -447,6 +421,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                 
                 if(!$mail->Send()) {
                     $partialFail = TRUE ;
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Messenger', $rowReceipt['gibbonPersonID'], 'Email Send Status', ['Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $rowReceipt['contactDetail']]);
                 } else {
                     // Update the sent status of the recipient
                     if ($rowReceipt['sent'] == 'N') {
@@ -467,6 +442,25 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             return str_replace('[confirmLink]', $bodyReadReceipt, $body);
         } else {
             return $bodyReadReceipt.$body;
+        }
+    }
+
+    protected function setFromAddress($mail, $session, string $from, string $replyTo = '')
+    {
+        if (!empty($replyTo)) {
+            $mail->AddReplyTo($replyTo, '');
+        }
+
+        if ($from == $session->get('organisationEmail')) {
+            // If sender is using school-wide address, send from school
+            $mail->SetFrom($from, $session->get('organisationName'));
+        } elseif ($from != $session->get('email') && $from != $session->get('emailAlternate')) {	
+            // If sender is using a different address, get the sender name
+            $user = $this->getContainer()->get(UserGateway::class)->selectBy(['email' => $from], ['preferredName', 'surname'])->fetch();
+            $mail->SetFrom($from, !empty($user) ? $user['preferredName'].' '.$user['surname'] : '');
+        } else { 
+            // Else, send from individual
+            $mail->SetFrom($from, $session->get('preferredName').' '.$session->get('surname'));
         }
     }
 
