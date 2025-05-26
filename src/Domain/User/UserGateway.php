@@ -267,7 +267,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         ]);
     }
 
-    public function selectStudentAcessByPersonID($gibbonPersonID) 
+    public function selectStudentAccessByPersonID($gibbonPersonID) 
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID";

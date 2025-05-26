@@ -1,4 +1,7 @@
 <?php
+
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\FamilyChildGateway;
 /*
 Gibbon: the flexible, open school platform
 Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
@@ -45,22 +48,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             //Confirm access to this student
             try {
                 if ($highestAction=="View Invoices_myChildren") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                    $resultChild = $container->get(FamilyChildGateway::class)->selectStudentByAdultID($gibbonPersonID, $session->get('gibbonPersonID'));
                 } else if ($highestAction=="View Invoices_mine") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID" ;
+                    $resultChild = $container->get(UserGateway::class)->selectStudentAccessByPersonID($gibbonPersonID);
                 }
-                $resultChild = $connection2->prepare($sqlChild);
-                $resultChild->execute($dataChild);
             } catch (PDOException $e) {
             }
+
             if ($resultChild->rowCount() < 1) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $rowChild = $resultChild->fetch();
-
-
+                
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
                     $result = $connection2->prepare($sql);
