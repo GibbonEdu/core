@@ -700,7 +700,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             if (!file_exists($include)) {
                 $hookOutput = Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
             } else {
-                $hookOutput = include $include;
+               try {
+                    $hookOutput = include $include;
+                } catch (\Throwable $e) {
+                    $hookOutput = Format::alert(__('The selected page cannot be displayed due to an error: %s', $e->getMessage()), 'error');
+                }
             }
 
             $tabs[$hookData['name']] = [

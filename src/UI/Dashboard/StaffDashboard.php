@@ -23,19 +23,19 @@ namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Http\Url;
 use Gibbon\View\View;
-use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Tables\Prefab\BehaviourTable;
 use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\FormGroupTable;
+use Gibbon\Contracts\Database\Connection;
 use League\Container\ContainerAwareTrait;
-use League\Container\ContainerAwareInterface;
-use Gibbon\Domain\System\HookGateway;
 use Gibbon\Tables\Prefab\TodaysLessonsTable;
-use Gibbon\Tables\Prefab\BehaviourTable;
+use League\Container\ContainerAwareInterface;
 
 /**
  * Staff Dashboard View Composer
@@ -246,7 +246,11 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
             if (!file_exists($include)) {
                 $hookOutput = Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
             } else {
-                $hookOutput = include $include;
+                try {
+                    $hookOutput = include $include;
+                } catch (\Throwable $e) {
+                    $hookOutput = Format::alert(__('The selected page cannot be displayed due to an error: %s', $e->getMessage()), 'error');
+                }
             }
 
             $tabs[$hookData['name']] = [
