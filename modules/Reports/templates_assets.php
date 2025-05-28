@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
@@ -145,6 +146,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         });
 
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+
+    $userGateway = $container->get(UserGateway::class);
+    $table->addColumn('gibbonPersonIDLastEdit', __('Last Edited By'))
+            ->format(function ($row) use ($userGateway) {
+            if(empty($row['gibbonPersonIDLastEdit'])) {
+                return __('N/A');
+            }
+            $person = $userGateway->getByID($row['gibbonPersonIDLastEdit']);
+            $output = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+            return $output;
+        });
 
     $table->addActionColumn()
         ->addParam('gibbonReportPrototypeSectionID')

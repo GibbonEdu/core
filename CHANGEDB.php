@@ -944,4 +944,7 @@ ALTER TABLE `gibbonFamily` ADD `fields` TEXT NULL AFTER `familySync`;end
 //v30.0.00
 ++$count;
 $sql[$count][0] = '30.0.00';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+ALTER TABLE `gibbonReportPrototypeSection` ADD `gibbonPersonIDLastEdit` INT(10) UNSIGNED ZEROFILL NULL;end
+ALTER TABLE `gibbonReportPrototypeSection` ADD `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;end
+";

@@ -43,7 +43,7 @@ class ReportPrototypeSectionGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportPrototypeSection.gibbonReportPrototypeSectionID', 'name', 'type', 'category', 'templateFile', 'active', 'fonts' ]);
+            ->cols(['gibbonReportPrototypeSection.gibbonReportPrototypeSectionID', 'name', 'type', 'category', 'templateFile', 'active', 'fonts', 'gibbonPersonIDLastEdit']);
 
         $criteria->addFilterRules([
             'active' => function ($query, $active) {

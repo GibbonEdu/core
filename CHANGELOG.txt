@@ -33,6 +33,7 @@ v30.0.00
         Messenger: enabled resending to any recipient when read receipts are off in Send Report
         Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
         Reports: prevented deletion of template assets that are not set to inactive
+        Reports: added a way for tracking and displaying who last edited an asset
         Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
         Staff: limited Add Staff list to users who are not already staff but have a staff role
