@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('category', __('Category'))->translatable();
     $table->addColumn('status', __('Status'))
-        ->width('20%')
+        ->width('10%')
         ->notSortable()
         ->format(function ($template) {
             return '<span class="tag '.($template['statusClass'] ?? '').'" title="'.($template['statusTitle'] ?? '').'">'.$template['status'].'</span>';
