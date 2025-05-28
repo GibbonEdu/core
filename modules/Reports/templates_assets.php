@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     $userGateway = $container->get(UserGateway::class);
-    $table->addColumn('gibbonPersonIDLastEdit', __('Last Edited By'))
+    $table->addColumn('gibbonPersonIDLastEdit', __('Edited By'))
             ->format(function ($row) use ($userGateway) {
             if(empty($row['gibbonPersonIDLastEdit'])) {
                 return __('N/A');
