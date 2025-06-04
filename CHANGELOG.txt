@@ -36,6 +36,7 @@ v30.0.00
         Reports: added a way for tracking and displaying who last edited an asset
         Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
+        Planner: added a highlight for Off Timetable Lessons in the "Year Overview" mode
         Staff: limited Add Staff list to users who are not already staff but have a staff role
         System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         Timetable: added coverage details for staff duty and activities on the timetable
