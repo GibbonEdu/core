@@ -353,4 +353,12 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                 
         return $this->db()->update($sql, $data);
     }
+
+    public function selectNegativeBehavioursByStudent($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60)))];
+        $sql = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type = 'Negative' AND date>:date";
+        
+        return $this->db()->select($sql, $data);
+    }
 }

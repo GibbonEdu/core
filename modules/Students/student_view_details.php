@@ -24,33 +24,34 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Domain\User\UserGateway;
+use Gibbon\UI\Timetable\Timetable;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\UI\Timetable\TimetableContext;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\FirstAidGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
-use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
-use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Students\View\LibraryBorrowingView;
-use Gibbon\UI\Timetable\TimetableContext;
-use Gibbon\UI\Timetable\Timetable;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -2469,8 +2470,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $sidebarExtra = '';
                     //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
-                        $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-
+                        $alert = $container->get(Alert::class)->getAlertBar($gibbonPersonID, $row['privacy'], '', false, true);
+                        
                         $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">';
                         if ($alert == '') {
                              $sidebarExtra .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
