@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
     // Access denied
@@ -28,15 +29,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     //Proceed!
     $page->breadcrumbs->add(__('Manage Alert Levels'));
 
-    $data = array();
+    $data = [];
     $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
     $result = $connection2->prepare($sql);
     $result->execute($data);
+
+    $settingGateway = $container->get(SettingGateway::class);
 
     //Let's go!
     $form = Form::create('alertLevelSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/alertLevelSettingsProcess.php' );
 
     $form->addHiddenValue('address', $session->get('address'));
+
+    $row = $form->addRow()->addHeading('Alert Types', __('Alert Types'));
+    $setting = $settingGateway->getSettingByScope('Alert', 'alertTypes', true);
+
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $count = 0;
     while ($rowSQL = $result->fetch()) {

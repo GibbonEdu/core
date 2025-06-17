@@ -88,7 +88,7 @@ class Alert
             }
 
             // Output alerts
-            $classDefault = 'block align-middle text-center font-bold border-0 border-t-2 ';
+            $classDefault = 'block align-middle text-center font-bold border-0 border-t-2';
             $classDefault .= $large ? 'text-4xl w-10 pt-1 mr-2 leading-none' : 'text-xs w-4 pt-px mr-1 leading-none';
 
             foreach ($this->alerts as $alert) {

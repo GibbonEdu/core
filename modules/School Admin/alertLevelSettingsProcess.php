@@ -64,6 +64,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
             }
         }
 
+        // Update the Alert Types in gibbonSetting
+        $alertTypes= '';
+
+        foreach (explode(',', $_POST['alertTypes']) as $alertType) {
+            $alertTypes .= trim($alertType).',';
+        }
+        $alertTypes = substr($alertTypes, 0, -1);
+
+         // Validate Inputs
+        if ($alertTypes == '') {
+            $partialFail = true;
+        } else {
+            try {
+                $data = ['value' => $alertTypes];
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Alert' AND name='alertTypes'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $partialFail = false;
+            }
+        }
+        
         //Deal with failed update
         if ($partialFail == true) {
             $URL .= '&return=warning1';
