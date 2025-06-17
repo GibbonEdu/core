@@ -131,11 +131,14 @@ class Alert
         // Privacy
         $this->calculatePrivacyAlerts($gibbonPersonID, $privacy);
 
+        // Wellbeing
+        $this->calculateWellbeingAlerts($gibbonPersonID);
+
         return $this;
     }
 
 
-    // Individual Needs
+    // Individual Needs Alert
     protected function calculateIndividualNeedsAlerts($gibbonPersonID)
     {
         $resultAlert = $this->iNPersonDescriptorGateway->selectINPersonDescriptorsandAlertLevelsByPersonID($gibbonPersonID);
@@ -155,7 +158,7 @@ class Alert
         }
     }
 
-    // Academic Alerts
+    // Academic Alert
     protected function calculateAcademicAlerts($gibbonPersonID)
     {
         $resultAlert = $this->markbookEntryGateway->selectCompletedMarkbookByStudent($gibbonPersonID, $this->session->get('gibbonSchoolYearID'));
@@ -186,7 +189,7 @@ class Alert
         }
     }
 
-    // Behaviour
+    // Behaviour Alert
     protected function calculateBehaviourAlerts($gibbonPersonID)
     {
         $resultAlert = $this->behaviourGateway->selectNegativeBehavioursByStudent($gibbonPersonID);
@@ -213,7 +216,7 @@ class Alert
         }
     }
 
-    // Medical
+    // Medical Alert
     protected function calculateMedicalAlerts($gibbonPersonID)
     {
         if ($alert = $this->medicalGateway->getHighestMedicalRisk($gibbonPersonID)) {
@@ -229,7 +232,7 @@ class Alert
         }
     }
 
-    // Privacy
+    // Privacy Alert
     protected function calculatePrivacyAlerts($gibbonPersonID, $privacy)
     {
         $privacySetting = $this->settingGateway->getSettingByScope('User Admin', 'privacy');
@@ -249,7 +252,23 @@ class Alert
         }
     }
 
-     private function getAlertThresholds($type)
+    // Wellbeing Alert
+    protected function calculateWellbeingAlerts($gibbonPersonID)
+    {
+       if ($alert = $this->alertGateway->getHighestWellbeingAlert($gibbonPersonID, $this->session->get('gibbonSchoolYearID'))) {
+            $this->alerts[] = [
+                'highestLevel'    => __($alert['name']),
+                'highestColour'   => '#BF40BF',
+                'highestColourBG' => $alert['colorBG'],
+                'tag'             => __('W'),
+                'title'           => sprintf(__('Wellbeing alerts are set, up to a maximum of %1$s'), $alert['name']),
+                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID]),
+            ];
+        }
+    }
+
+    private function getAlertThresholds($type)
     {
         return [
             'low' => $this->settingGateway->getSettingByScope('Students', "{$type}AlertLowThreshold"),

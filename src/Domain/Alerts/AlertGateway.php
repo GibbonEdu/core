@@ -108,4 +108,12 @@ class AlertGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function getHighestWellbeingAlert($gibbonPersonID, $gibbonSchoolYearID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'status' => "Approved", 'type' => "Wellbeing"];
+        $sql = 'SELECT * FROM gibbonAlert JOIN gibbonAlertLevel ON (gibbonAlert.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE (gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND status=:status AND type=:type) ORDER BY gibbonAlertLevel.sequenceNumber DESC';
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
