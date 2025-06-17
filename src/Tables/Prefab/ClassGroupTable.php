@@ -21,14 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
-use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 /**
  * ClassGroupTable
@@ -53,6 +54,7 @@ class ClassGroupTable extends DataTable
 
     public function build($gibbonSchoolYearID, $gibbonCourseClassID)
     {
+        global $container;
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
@@ -78,7 +80,7 @@ class ClassGroupTable extends DataTable
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
 
-        if ($canEditEnrolment && count($participants) > 0) {
+        if ($canEditEnrolment && $participants->rowCount() > 0) {
             $this->addHeaderAction('edit', __('Edit Enrolment'))
                 ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
@@ -108,9 +110,13 @@ class ClassGroupTable extends DataTable
             $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonCourseClassID));
 
             $this->addColumn('alerts')
-                ->format(function ($person) use ($guid, $connection2, $gibbonCourseClassID) {
+                ->format(function ($person) use ($gibbonCourseClassID, $container) {
+                    $output = '';
                     $divExtras = ' data-conf="confidential'.$gibbonCourseClassID.'"';
-                    return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
+                    // $output = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
+                    $output = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], $divExtras);
+
+                    return $output;
                 });
         }
 

@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Alerts\AlertGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
@@ -46,6 +47,7 @@ class Alert
     protected $iNPersonDescriptorGateway;
     protected $markbookEntryGateway;
     protected $behaviourGateway;
+    protected $alertGateway;
     protected $alerts = [];
 
     public function __construct(
@@ -57,6 +59,7 @@ class Alert
         INPersonDescriptorGateway $iNPersonDescriptorGateway,
         MarkbookEntryGateway $markbookEntryGateway,
         BehaviourGateway $behaviourGateway,
+        AlertGateway $alertGateway
     ) {
         $this->db = $db;
         $this->session = $session;
@@ -66,6 +69,7 @@ class Alert
         $this->iNPersonDescriptorGateway = $iNPersonDescriptorGateway;
         $this->markbookEntryGateway = $markbookEntryGateway;
         $this->behaviourGateway = $behaviourGateway;
+        $this->alertGateway = $alertGateway;
     }
 
     public function getAlertBar($gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self") 
@@ -74,12 +78,10 @@ class Alert
         $connection2 = $this->db->getConnection();
        
         $output = '';
-        $target = $target == "_blank" ? "_blank" : "_self";
+        $target = ($target == "_blank") ? "_blank" : "_self";
 
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-
-        if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes')
-        {
+        if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
             // Calculate All ALERTS
             $this->calculateAlerts($gibbonPersonID, $privacy);
 
@@ -88,13 +90,14 @@ class Alert
             }
 
             // Output alerts
-            $classDefault = 'block align-middle text-center font-bold border-0 border-t-2';
-            $classDefault .= $large ? 'text-4xl w-10 pt-1 mr-2 leading-none' : 'text-xs w-4 pt-px mr-1 leading-none';
+            $classDefault = 'block align-middle text-center font-bold border-0 border-t-2 ';
+            $classDefault .= $large
+            ? 'text-4xl w-10 pt-1 mr-2 leading-none'
+            : 'text-xs w-4 pt-px mr-1 leading-none';
 
             foreach ($this->alerts as $alert) {
                 $style = "color: {$alert['highestColour']}; border-color: {$alert['highestColour']}; background-color: {$alert['highestColourBG']};";
                 $class = $classDefault . ' ' . ($alert['class'] ?? 'float-left');
-
                 $output .= Format::link($alert['link'], $alert['tag'], [
                     'title' => $alert['title'],
                     'class' => $class,
@@ -161,7 +164,7 @@ class Alert
         $thresholds = $this->getAlertThresholds('academic');
         $alertData = $this->determineAlertLevelAndThresholdText($resultAlertCount, $thresholds);
 
-        if ($alertData) {
+        if (!empty($alertData)) {
             $gibbonAlertLevelID = $alertData['level'] ?? '';
             $alertThresholdText = $alertData['text'] ?? '';
             
@@ -192,7 +195,7 @@ class Alert
         $thresholds = $this->getAlertThresholds('behaviour');
         $alertData = $this->determineAlertLevelAndThresholdText($resultAlertCount, $thresholds);
 
-        if ($alertData) {
+        if (!empty($alertData)) {
             $gibbonAlertLevelID = $alertData['level'] ?? '';
             $alertThresholdText = $alertData['text'] ?? '';
 

@@ -1246,18 +1246,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 ->addClass($person['cellHighlight'] ?? '');
 
                             // Display alerts and birthdays, teacher only
+                            $alert = '';
                             if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && $teacher == true) {
+                                // $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
                                 $alert = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
                             }
-                            
+                                                        
                             if ($person['role'] == 'Student' && $canViewConfidential) {
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
-
+                            
                             // Display a photo per user
                             $cell->addContent(Format::userPhoto($person['image_240'], 75, ''))
                                 ->setClass('relative')
-                                ->prepend($alert ?? '')
+                                ->prepend($alert)
                                 ->append($icon ?? '');
 
                             if ($person['role'] == 'Student') {

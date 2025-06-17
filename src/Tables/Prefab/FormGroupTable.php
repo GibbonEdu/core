@@ -21,14 +21,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Components\Alert;
+use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Students\StudentGateway;
 
 /**
  * FormGroupTable
@@ -53,6 +54,7 @@ class FormGroupTable extends DataTable
 
     public function build($gibbonFormGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, surname, preferredName')
     {
+        global $container;
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
@@ -107,9 +109,12 @@ class FormGroupTable extends DataTable
             $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonFormGroupID));
 
             $this->addColumn('alerts')
-                ->format(function ($person) use ($guid, $connection2, $gibbonFormGroupID) {
+                ->format(function ($person) use ($gibbonFormGroupID, $container) {
                     $divExtras = ' data-conf="confidential'.$gibbonFormGroupID.'"';
-                    return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
+                    // $output = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
+                    $output = $container->get(Alert::class)->getAlertBar($person['gibbonPersonID'], $person['privacy'], $divExtras);
+
+                    return $output;
                 });
         }
 
