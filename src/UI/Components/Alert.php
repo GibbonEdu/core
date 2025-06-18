@@ -82,6 +82,7 @@ class Alert
 
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
         if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
+            
             // Calculate All ALERTS
             $this->calculateAlerts($gibbonPersonID, $privacy);
 
@@ -110,6 +111,7 @@ class Alert
                 $output = "<div {$divExtras} class='w-20 lg:w-24 h-6 text-left py-1 px-0 mx-auto'>{$output}</div>";
             }
         }
+        
         return $output;
     }
 
