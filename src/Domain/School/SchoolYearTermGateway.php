@@ -79,21 +79,42 @@ class SchoolYearTermGateway extends QueryableGateway
         $gibbonSchoolYearTermIDList = !is_array($gibbonSchoolYearTermID) ? $gibbonSchoolYearTermID : implode(',', $gibbonSchoolYearTermID);
         $data = array('gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList);
         if ($grouped) {
-            $sql = "SELECT MIN(date) as groupBy, name, MIN(date) as firstDay, MAX(date) as lastDay
+            $sql = "SELECT MIN(date) as groupBy, name, type, MIN(date) as firstDay, MAX(date) as lastDay
                 FROM gibbonSchoolYearSpecialDay
                 WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
                 AND type='School Closure'
                 GROUP BY name
                 ORDER BY date";
         } else {
-            $sql = "SELECT date, name
+            $sql = "SELECT date, name, type
                 FROM gibbonSchoolYearSpecialDay
                 WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
                 AND type='School Closure'
                 ORDER BY date";
         }
         
+        return $this->db()->select($sql, $data);
+    }
 
+     public function selectOffTimetablesByTerm($gibbonSchoolYearTermID, $grouped = false)
+    {
+        $gibbonSchoolYearTermIDList = !is_array($gibbonSchoolYearTermID) ? $gibbonSchoolYearTermID : implode(',', $gibbonSchoolYearTermID);
+        $data = array('gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList);
+        if ($grouped) {
+            $sql = "SELECT MIN(date) as groupBy, name, type, MIN(date) as firstDay, MAX(date) as lastDay
+                FROM gibbonSchoolYearSpecialDay
+                WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
+                AND type='Off Timetable'
+                GROUP BY name
+                ORDER BY date";
+        } else {
+            $sql = "SELECT date, name, type
+                FROM gibbonSchoolYearSpecialDay
+                WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)
+                AND type='Off Timetable'
+                ORDER BY date";
+        }
+        
         return $this->db()->select($sql, $data);
     }
 

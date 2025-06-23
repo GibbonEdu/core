@@ -173,6 +173,7 @@ class Timetable implements OutputableInterface
             'layers'         => $this->layers,
             'layersToggle'   => json_encode($this->getLayerStates()),
             'format'         => $this->context->get('format'),
+            'edit'           => $this->context->get('edit'),
         ]);
     }
 

@@ -157,29 +157,56 @@ class ClassesLayer extends AbstractTimetableLayer
                     'iconClass' => !empty($person) ? 'text-pink-500 hover:text-pink-800' : 'text-gray-600 hover:text-gray-800',
                 ]);
             }
-            
-            // Add buttons to access or create lesson plans
-            $planner = $lessons[$class['lessonID']] ?? [];
-            if ($canViewLessons && !empty($planner)) {
-                $item->set('primaryAction', [
-                    'name'      => 'view',
-                    'label'     => __('Lesson planned: {name}',['name' => htmlPrep($planner['name'])]),
-                    'url'       => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $planner['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $planner['gibbonPlannerEntryID'], 'search' => $context->get('gibbonPersonID')]),
-                    'icon'      => 'check',
-                    'iconClass' => 'text-blue-500 hover:text-blue-800',
-                ]);
 
+            $planner = $lessons[$class['lessonID']] ?? [];
+            if (!empty($planner)) {
                 unset($lessons[$class['lessonID']]);
             }
-            if ($canAddLessons && empty($planner)) {
-                $item->set('primaryAction', [
-                    'name'      => 'add',
-                    'label'     => __('Add lesson plan'),
-                    'url'       => Url::fromModuleRoute('Planner', 'planner_add')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $class['gibbonCourseClassID'], 'date' => $class['date'], 'timeStart' => $class['timeStart'], 'timeEnd' => $class['timeEnd']]),
-                    'icon'      => 'add',
-                    'iconClass' => 'text-gray-600 hover:text-gray-800',
-                ]);
+            
+            if ($context->get('edit')) {
+                // Add timetable-editing buttons for Edit mode
+                $canEditTimetable = Access::allows('Timetable Admin', 'courseEnrolment_manage_byPerson_edit');
+                if ($canEditTimetable && $class['date'] >= date('Y-m-d')) {
+                    $item->set('primaryAction', [
+                        'name'      => 'change',
+                        'label'     => __('Add Facility Change'),
+                        'url'       => Url::fromModuleRoute('Timetable', 'spaceChange_manage_add')->withQueryParams(['step' => '2', 'gibbonTTDayRowClassID' => $class['gibbonTTDayRowClassID'].'-'.$class['date'], 'gibbonCourseClassID' => $class['gibbonCourseClassID'], 'source' => $context->get('gibbonSpaceID')]),
+                        'icon'      => 'next',
+                        'iconClass' => 'text-gray-600 hover:text-gray-800',
+                    ]);
+                }
+
+                if ($canEditTimetable) {
+                    $item->set('secondaryAction', [
+                        'name'      => 'edit',
+                        'label'     => __('Manage Exceptions'),
+                        'url'       => Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception')->withQueryParams(['gibbonSchoolYearID' => $context->get('gibbonSchoolYearID'), 'gibbonTTID' => $class['gibbonTTID'], 'gibbonTTDayID' => $class['gibbonTTDayID'], 'gibbonTTDayRowClassID' => $class['gibbonTTDayRowClassID'], 'gibbonTTColumnRowID' => $class['gibbonTTColumnRowID'], 'gibbonCourseClassID' => $class['gibbonCourseClassID']]),
+                        'icon'      => 'user-minus',
+                        'iconClass' => 'text-gray-600 hover:text-gray-800',
+                    ]);
+                }
+            } else {
+                // Add buttons to access or create lesson plans
+                if ($canViewLessons && !empty($planner)) {
+                    $item->set('primaryAction', [
+                        'name'      => 'view',
+                        'label'     => __('Lesson planned: {name}',['name' => htmlPrep($planner['name'])]),
+                        'url'       => Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $planner['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $planner['gibbonPlannerEntryID'], 'search' => $context->get('gibbonPersonID')]),
+                        'icon'      => 'check',
+                        'iconClass' => 'text-blue-500 hover:text-blue-800',
+                    ]);
+                }
+                if ($canAddLessons && empty($planner)) {
+                    $item->set('primaryAction', [
+                        'name'      => 'add',
+                        'label'     => __('Add lesson plan'),
+                        'url'       => Url::fromModuleRoute('Planner', 'planner_add')->withQueryParams(['viewBy' => 'class', 'gibbonCourseClassID' => $class['gibbonCourseClassID'], 'date' => $class['date'], 'timeStart' => $class['timeStart'], 'timeEnd' => $class['timeEnd']]),
+                        'icon'      => 'add',
+                        'iconClass' => 'text-gray-600 hover:text-gray-800',
+                    ]);
+                }
             }
+            
             
         }
 

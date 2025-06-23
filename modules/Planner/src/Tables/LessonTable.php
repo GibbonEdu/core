@@ -25,10 +25,11 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 /**
  * LessonTable
@@ -45,17 +46,18 @@ class LessonTable
     protected $settingGateway;
     protected $plannerEntryGateway;
     protected $schoolYearTermGateway;
-
+    protected $schoolYearSpecialDayGateway;
     protected $homeworkNameSingular;
     protected $homeworkNamePlural;
 
-    public function __construct(Session $session, Connection $db, SettingGateway $settingGateway, PlannerEntryGateway $plannerEntryGateway, SchoolYearTermGateway $schoolYearTermGateway)
+    public function __construct(Session $session, Connection $db, SettingGateway $settingGateway, PlannerEntryGateway $plannerEntryGateway, SchoolYearTermGateway $schoolYearTermGateway, SchoolYearSpecialDayGateway $schoolYearSpecialDayGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->settingGateway = $settingGateway;
         $this->plannerEntryGateway = $plannerEntryGateway;
         $this->schoolYearTermGateway = $schoolYearTermGateway;
+        $this->schoolYearSpecialDayGateway = $schoolYearSpecialDayGateway;
 
         $this->homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
         $this->homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
@@ -113,7 +115,9 @@ class LessonTable
             $today = date('Y-m-d');
             
             if (!empty($values['closure'])) {
-                $row->addClass('message');
+                $row->addClass('warning');
+            } elseif (!empty($values['offTimetableDay'])) {
+                $row->addClass('bg-stripe-overlay');
             } elseif ($now > $values['timeStart'] && $now < $values['timeEnd'] && $values['date'] == $today) {
                 $row->addClass('current');
             } else if ($values['date'] < $today || ($values['date'] == $today && $now > $values['timeEnd']) ) {
@@ -286,7 +290,8 @@ class LessonTable
         $table->addColumn('lessonNumber', __('Lesson<br/>Number'))
             ->notSortable()
             ->format(function ($values) {
-                return Format::bold($values['lessonNumber']);
+                $output = !empty($values['offTimetableDay']) ? Format::bold($values['lessonNumber']).'<br/>'.Format::small($values['offTimetableDay']) : Format::bold($values['lessonNumber']);
+                return $output;
             });
 
         $table->addColumn('date', __('Date'))
@@ -327,12 +332,13 @@ class LessonTable
     {
         $terms = $this->schoolYearTermGateway->selectTermDetailsBySchoolYear($gibbonSchoolYearID)->fetchGroupedUnique();
         $closures = $this->schoolYearTermGateway->selectSchoolClosuresByTerm(array_keys($terms), true)->fetchGroupedUnique();
+        $offTimetables = $this->schoolYearTermGateway->selectOffTimetablesByTerm(array_keys($terms), false)->fetchAll();
 
         $lessonData = [];
         $lessonCount = count($lessons);
 
         foreach ($lessons as $lessonIndex => $lesson) {
-
+            
             foreach ($terms as $termID => $term) {
                 if ($term['firstDay'] !== false && $lesson['date'] > $term['firstDay']) {
                     $lessonData[] = [
@@ -352,7 +358,7 @@ class LessonTable
             }
 
             foreach ($closures as $firstDay => $closure) {
-                if ($closure !== false && $lesson['date'] > $firstDay) {
+                if ($closure !== false && $lesson['date'] > $firstDay && $closure['type'] == 'School Closure') {
                     $lessonData[] = [
                         'lessonNumber' => $closure['name'],
                         'closure' => Format::dateRange($closure['firstDay'], $closure['lastDay']),
@@ -360,6 +366,15 @@ class LessonTable
                     $closures[$firstDay] = false;
                 }
             }
+
+            $index = array_search($lesson['date'], array_column($offTimetables, 'date'));
+            if ($index !== false) {
+                $classOffTimetable = $this->schoolYearSpecialDayGateway->getIsClassOffTimetableByDate($gibbonSchoolYearID, $lesson['gibbonCourseClassID'], $lesson['date']);
+                if ($classOffTimetable) {
+                    $lesson['offTimetableDay'] = $offTimetables[$index]['name'];
+                }
+            }
+
 
             $lessonData[] = $lesson;
 
@@ -373,7 +388,6 @@ class LessonTable
                 }
             }
         }
-
 
         return $lessonData;
     }

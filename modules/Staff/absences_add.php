@@ -280,7 +280,6 @@ $(document).ready(function() {
                 'timeStart': $('#timeStart').val(),
                 'timeEnd': $('#timeEnd').val(),
             }, function(result) {
-                console.log('loaded');
                 $('input[name="timetableClasses[]"]').trigger('change');
                 $('input[name="requestDates[]"]').trigger('change');
             });

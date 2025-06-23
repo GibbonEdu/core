@@ -29,6 +29,8 @@ v30.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
+        System: switched interface strings from Value Added License to Catalyst License
         Individual Needs: enabled viewing IN records for past students as read-only
         Messenger: enabled resending to any recipient when read receipts are off in Send Report
         Reports: updated Attendance data source to handle Off Timetable days where no attendance is taken
@@ -36,14 +38,16 @@ v30.0.00
         Reports: added a way for tracking and displaying who last edited an asset
         Planner: added a highlight for Off Timetable students in View Lesson Plan attendance list
         Planner: added a button to access Linked Markbook from Edit Lesson Plan page
+        Planner: added a highlight for Off Timetable Lessons in the "Year Overview" mode
         Staff: limited Add Staff list to users who are not already staff but have a staff role
-        System: updated SpreadsheetRenderer to support exporting data from multiple DataTables
         Timetable: added coverage details for staff duty and activities on the timetable
+        User Admin: added Sibling as option to Emergency Relationship select
 
     Bug Fixes
-        Staff: fixed coverage longer than one week not including staff duty and activity cover
         System: fixed toggle field direction for right-to-left languages
+        Staff: fixed coverage longer than one week not including staff duty and activity cover
         Messenger: fixed missing From address on emails when using the Add Recipient action in Send Report
+        Timetable Admin: fixed missing Manage Exceptions button on the timetable in Course Enrolment by Person
 
     Deprecations
         Removed all functions in functions.php flagged for deprecation since v25

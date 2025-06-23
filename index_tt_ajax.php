@@ -33,6 +33,7 @@ $gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? null;
 $format = $_REQUEST['format'] ?? '';
+$edit = $_REQUEST['edit'] ?? false;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     // Access denied
@@ -50,11 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $ttDate = Format::dateConvert($_REQUEST['ttDate']);
     }
 
-    $edit = ($_REQUEST['edit'] ?? false) && isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
-
     // Get and update preferences
     $userGateway = $container->get(UserGateway::class);
-
     if (!empty($gibbonTTID)) {
         $userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), 'ttOptions', 'gibbonTTID', preg_replace('/[^0-9]/', '', $gibbonTTID));
     }
@@ -65,7 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         ->set('gibbonPersonID', $gibbonPersonID)
         ->set('gibbonSpaceID', $gibbonSpaceID)
         ->set('gibbonTTID', $gibbonTTID)
-        ->set('format', $format);
+        ->set('format', $format)
+        ->set('edit', $edit);
 
     // Build and render timetable
     echo $container->get(Timetable::class)

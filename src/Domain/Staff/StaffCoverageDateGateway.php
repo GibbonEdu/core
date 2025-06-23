@@ -135,7 +135,7 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         $query->unionAll()
             ->cols([
-                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', '"Staff Duty" as context', 'gibbonStaffDuty.name as contextName', 'gibbonStaffDuty.gibbonStaffDutyID as contextID', '"gibbonStaffDutyPerson" as foreignTable', 'gibbonStaffDutyPerson.gibbonStaffDutyPersonID as foreignTableID',  "DATE_ADD(:dateStart, INTERVAL (((1-DAYOFWEEK(:dateStart)) % 7)+gibbonDaysOfWeek.gibbonDaysOfWeekID) % 7 DAY) as date", '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage, coverage.preferredName as preferredNameCoverage'
+                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', '"Staff Duty" as context', 'gibbonStaffDuty.name as contextName', 'gibbonStaffDuty.gibbonStaffDutyID as contextID', '"gibbonStaffDutyPerson" as foreignTable', 'gibbonStaffDutyPerson.gibbonStaffDutyPersonID as foreignTableID',  "DATE_ADD((:dateStart - INTERVAL (WEEKDAY(:dateStart)) DAY), INTERVAL gibbonDaysOfWeek.gibbonDaysOfWeekID-1 DAY) as date", '"Staff Duty" as period', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage, coverage.preferredName as preferredNameCoverage'
             ])
             ->from('gibbonStaffDutyPerson')
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
@@ -154,7 +154,7 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         $query->unionAll()
             ->cols([
-                'gibbonActivitySlot.gibbonActivitySlotID as groupBy', '"Activity" as context', 'gibbonActivity.name as contextName', 'gibbonActivity.gibbonActivityID as contextID', '"gibbonActivitySlot" as foreignTable', 'gibbonActivitySlot.gibbonActivitySlotID as foreignTableID', "DATE_ADD(:dateStart, INTERVAL (((1-DAYOFWEEK(:dateStart)) % 7)+gibbonDaysOfWeek.gibbonDaysOfWeekID) % 7 DAY) as date", '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 
+                'gibbonActivitySlot.gibbonActivitySlotID as groupBy', '"Activity" as context', 'gibbonActivity.name as contextName', 'gibbonActivity.gibbonActivityID as contextID', '"gibbonActivitySlot" as foreignTable', 'gibbonActivitySlot.gibbonActivitySlotID as foreignTableID', "DATE_ADD((:dateStart - INTERVAL (WEEKDAY(:dateStart)) DAY), INTERVAL gibbonDaysOfWeek.gibbonDaysOfWeekID-1 DAY) as date", '"Activity" as period', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 
                 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 'coverage.surname as surnameCoverage', 'coverage.preferredName as preferredNameCoverage'
             ])
             ->from('gibbonActivity')

@@ -234,7 +234,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $context = $container->get(TimetableContext::class)
                 ->set('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->set('gibbonPersonID', $gibbonPersonID)
-                ->set('gibbonTTID', $gibbonTTID);
+                ->set('gibbonTTID', $gibbonTTID)
+                ->set('edit', true);
 
             // Build and render timetable
             echo $container->get(Timetable::class)
