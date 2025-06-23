@@ -127,6 +127,14 @@ class ActionGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectActionByModuleAndRole($gibbonModuleID, $gibbonRoleIDCurrent)
+    {
+        $data = ['gibbonModuleID' => $gibbonModuleID, 'actionName' => 'View CAS in Student Profile', 'gibbonRoleID' => $gibbonRoleIDCurrent];
+        $sql = 'SELECT gibbonAction.name FROM gibbonAction JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) WHERE (gibbonAction.name=:actionName) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonAction.gibbonModuleID=:gibbonModuleID';
+
+        return $this->db()->select($sql, $data);
+    }
     
     public function insertPermissionByAction($gibbonActionID, $gibbonRoleID)
     {

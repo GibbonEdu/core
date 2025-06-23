@@ -91,4 +91,12 @@ class HookGateway extends QueryableGateway
 
         return $hooks;
     }
+
+    public function selectPermissionByRoleToHook($gibbonRoleIDCurrent, $sourceModuleName, $sourceModuleAction)
+    {
+    $data = ['gibbonRoleIDCurrent' => $gibbonRoleIDCurrent, 'sourceModuleName' => $sourceModuleName];
+    $sql = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonModule.name='".$sourceModuleName."') JOIN gibbonAction ON (gibbonAction.name='".$sourceModuleAction."') JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Student Profile' ORDER BY name";
+
+    return $this->db()->select($sql, $data);
+    }
 }
