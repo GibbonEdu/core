@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableContext;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -37,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         $gibbonSpaceID = isset($_REQUEST['gibbonSpaceID']) ? $_REQUEST['gibbonSpaceID'] : '';
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
         $gibbonTTID = isset($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
+        $format = $_GET['format'] ?? '';
 
         
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
@@ -58,6 +61,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             //Create Details Table
             $table = DataTable::createDetails('basicInfo');
 
+            if ($format == 'print') {
+                $table->addHeaderAction('print', __('Print'))
+                    ->setURL('#')
+                    ->onClick('javascript:window.print(); return false;');
+            } else {
+                if ($search != '') {
+                    $table->addHeaderAction('searchResults', __('Back to Search Results'))
+                        ->setIcon('search')
+                        ->setUrl(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search))
+                        ->directLink();
+                }
+            
+
             $table->addColumn('name', __('Name'));
 
             $table->addColumn('type', __('Type'));
@@ -70,50 +86,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             $table->addColumn('phoneInternal', __('Phone Number'))
                 ->width('100%');
 
-            echo $table->render([$row]);
+            $table->addColumn('bookable', __('Bookable'))
+                ->format(function ($values) {
+                    if ($values['bookable'] == 'Y') {
+                        return Format::tag(__('Yes'), 'success');
+                    } else {
+                        return Format::tag(__('No'), 'dull');
+                    }
+                });
 
-            if ($search != '') {
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
             }
 
-            $page->navigator->addHeaderAction('print', __('Print'))
-                ->setURL('/report.php')
-                ->addParam('q', '/modules/Timetable/tt_space_view.php')
-                ->addParam('gibbonSpaceID', $gibbonSpaceID)
-                ->addParam('gibbonTTID', $gibbonTTID)
-                ->addParam('ttDate', $_REQUEST['ttDate'] ?? '')
-                ->setIcon('print')
-                ->setTarget('_blank')
-                ->directLink()
-                ->displayLabel();
+            echo $table->render([$row]);
 
             $ttDate = null;
             if (!empty($_REQUEST['ttDate'])) {
-                $date = Format::dateConvert($_REQUEST['ttDate']);
-                $ttDate = strtotime('last Sunday +1 day', strtotime($date));
+                $ttDate = Format::dateConvert($_REQUEST['ttDate']);
             }
 
-            if (isset($_POST['fromTT'])) {
-                if ($_POST['fromTT'] == 'Y') {
-                    if (isset($_POST['spaceBookingCalendar'])) {
-                        if ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y') {
-                            $session->set('viewCalendarSpaceBooking', 'Y');
-                        } else {
-                            $session->set('viewCalendarSpaceBooking', 'N');
-                        }
-                    } else {
-                        $session->set('viewCalendarSpaceBooking', 'N');
-                    }
-                }
-            }
+            // Create timetable context
+            $context = $container->get(TimetableContext::class)
+                ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                ->set('gibbonSpaceID', $gibbonSpaceID)
+                ->set('gibbonTTID', $gibbonTTID)
+                ->set('format', $format);
 
-            $tt = renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_space_view.php', "&gibbonSpaceID=$gibbonSpaceID&search=$search");
-
-            if ($tt != false) {
-                echo $tt;
-            } else {
-                echo $page->getBlankSlate();
-            }
+            // Build and render timetable
+            echo $container->get(Timetable::class)
+                ->setDate($ttDate)
+                ->setContext($context)
+                ->addCoreLayers($container)
+                ->getOutput(); 
         }
     }
 }

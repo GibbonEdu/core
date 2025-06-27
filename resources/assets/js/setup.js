@@ -18,103 +18,38 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$(document).ready(function(){
+document.addEventListener("DOMContentLoaded", () => {
 
-    $(document).trigger('gibbon-setup');
+    htmx.onLoad(function (content) {
+        
+        // Initialize all legacy Thickbox links as HTMX AJAX calls
+        Array.from(document.getElementsByClassName('thickbox')).forEach((element) => {
+            if (element.nodeName != 'A') return;
+            
+            element.setAttribute('hx-boost', 'true');
+            element.setAttribute('hx-target', '#modalContent');
+            element.setAttribute('hx-push-url', 'false');
+            element.setAttribute('hx-swap', 'innerHTML show:no-scroll swap:0s');
+            element.setAttribute('x-on:htmx:after-on-load', 'modalOpen = true');
+            element.classList.remove('thickbox');
 
-    // Initialize datepicker
-    var dateDefaults = $.datepicker.regional[Gibbon.config.datepicker.locale];
-    dateDefaults.dateFormat = Gibbon.config.datepicker.dateFormat;
-    dateDefaults.firstDay = Gibbon.config.datepicker.firstDay;
-    
-    $.datepicker.setDefaults(dateDefaults);
-    
+            element.setAttribute('x-on:click', element.getAttribute('href').includes('_delete') ? "modalType = 'delete'" : "modalType = 'view'");
 
-    // Initialize tooltip
-    if ($(window).width() > 768) {
-        $(document).tooltip({
-            show: 800,
-            hide: false,
-            items: "*[title]:not(.tox-edit-area__iframe):not(.tox-collection__item):not(.tox-button):not(.tox-tbtn--select)",
-            content: function () {
-                return $(this).prop('title');
-            },
-            open: function(event, ui) {
-                ui.tooltip.delay(3000).fadeTo(1000, 0);
-            },
-            position: {
-                my: "center bottom-20",
-                at: "center top",
-                using: function (position, feedback) {
-                    $(this).css(position);
-                    $("<div>").
-                        addClass("arrow").
-                        addClass(feedback.vertical).
-                        addClass(feedback.horizontal).
-                        appendTo(this);
-                }
+            htmx.process(element);
+        });
+
+        // Convert all title attributes into x-tooltip attributes
+        Array.from(document.querySelectorAll('[title]')).forEach((element) => {
+            if (element.title != undefined && element.title != '') {
+                element.setAttribute('x-tooltip', element.title.replaceAll('"', '\''));
+                element.title = '';
             }
         });
-    }
 
-    // Initialize latex
-    $(".latex").latex();
+        $(document).trigger('gibbon-setup');
 
-    // Initialize tinymce
-    tinymce.init({
-        selector: "div#editorcontainer textarea",
-        width: '100%',
-        menubar : false,
-        resize: true,
-        toolbar_mode: 'sliding',
-        toolbar: 'bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink hr charmap | fullscreen | styleselect fontselect fontsizeselect | table | subscript superscript | cut copy paste undo redo ',
-        plugins: 'table lists paste link hr charmap fullscreen',
-        statusbar: true,
-        contextmenu: false,
-        branding: false,
-        valid_elements: Gibbon.config.tinymce.valid_elements,
-        extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
-        invalid_elements: '',
-        apply_source_formatting : true,
-        browser_spellcheck: true,
-        convert_urls: false,
-        relative_urls: false,
-        default_link_target: "_blank",
-        color_map: [
-            "#BFEDD2", "Light Green", 
-            "#FBEEB8", "Light Yellow", 
-            "#F8CAC6", "Light Red", 
-            "#ECCAFA", "Light Purple", 
-            "#C2E0F4", "Light Blue", 
-            "#2DC26B", "Green", 
-            "#F1C40F", "Yellow", 
-            "#FF0000", "Red", 
-            "#B96AD9", "Purple", 
-            "#3598DB", "Blue", 
-            "#169179", "Dark Turquoise", 
-            "#E67E23", "Orange", 
-            "#BA372A", "Dark Red", 
-            "#843FA1", "Dark Purple", 
-            "#236FA1", "Dark Blue", 
-            "#ECF0F1", "Light Gray", 
-            "#CED4D9", "Medium Gray", 
-            "#95A5A6", "Gray", 
-            "#7E8C8D", "Dark Gray", 
-            "#34495E", "Navy Blue", 
-            "#000000", "Black", 
-            "#ffffff", "White", 
-        ],
+        // Initialize latex
+        $(".latex").latex();
     });
 
-    // Sticky Observer
-    const el = document.querySelector(".submitRow.sticky");
-    const observer = new IntersectionObserver( 
-        function([e]) { 
-            e.target.classList.toggle("shadow-top", e.intersectionRatio < 1);
-            e.target.classList.toggle("bg-gray-300", e.intersectionRatio < 1);
-        },
-        { threshold: [1] }
-    );
-
-    if (el != undefined) observer.observe(el);
 });

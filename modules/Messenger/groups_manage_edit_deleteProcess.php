@@ -23,8 +23,8 @@ use Gibbon\Domain\Messenger\GroupGateway;
 
 include '../../gibbon.php';
 
-$gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonGroupID = $_POST['gibbonGroupID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_edit_delete.php&gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID";

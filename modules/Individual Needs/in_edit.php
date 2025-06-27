@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
 
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.name AS yearGroup, gibbonFormGroup.nameShort AS formGroup, dateStart, dateEnd, image_240 FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonPerson.status, gibbonYearGroup.name AS yearGroup, gibbonFormGroup.nameShort AS formGroup, dateStart, dateEnd, image_240 FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -68,6 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $student = $result->fetch();
+
+            $readOnly = $student['status'] == 'Left';
 
             $search = $_GET['search'] ?? null;
             $allStudents = $_GET['allStudents'] ?? null;
@@ -122,8 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     return $item['archiveTitle'].' ('.Format::date(substr($item['archiveTimestamp'], 0, 10)).')';
                 }, $archivedIEPs);
 
-                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-                $form->setClass('blank fullWidth');
+                $form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
                 $form->addHiddenValue('address', $session->get('address'));
 
                 $col = $form->addRow()->addColumn()->addClass('flex justify-end items-center');
@@ -148,17 +149,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             echo $table->render([$student]);
 
-            $form = Form::create('individualNeeds', $session->get('absoluteURL').'/modules/'.$session->get('module')."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+            $form = Form::createBlank('individualNeeds', $session->get('absoluteURL').'/modules/'.$session->get('module')."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('w-full blank');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
             // IN STATUS TABLE - TODO: replace this with OO
             $form->addRow()->addSubheading(__('Individual Needs Status'))->setClass('mt-4 mb-2');
 
-            $statusTableDisabled = (!empty($gibbonINArchiveID) || $highestAction == 'Individual Needs Records_view' || $highestAction == 'Individual Needs Records_viewContribute')? 'disabled' : '';
+            $statusTableDisabled = (!empty($gibbonINArchiveID) || $highestAction == 'Individual Needs Records_view' || $highestAction == 'Individual Needs Records_viewContribute' || $readOnly)? 'disabled' : '';
             $statusTableDescriptors = !empty($gibbonINArchiveID)? $archivedIEP['descriptors'] : '';
             $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, $statusTableDisabled, $statusTableDescriptors);
 
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $form->addRow()->addSubheading(__('Educational Assistants'))->setClass('mt-4 mb-2');
 
                 if (!empty($educationalAssistants)) {
-                    $table = $form->addRow()->addTable()->addClass('smallIntBorder fullWidth colorOddEven');
+                    $table = $form->addRow()->addTable()->addClass('smallIntBorder w-full colorOddEven');
                     $header = $table->addHeaderRow();
                         $header->addContent(__('Name'));
                         $header->addContent(__('Comment'));
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                             $row->addContent(Format::name('', $ea['preferredName'], $ea['surname'], 'Staff', true, true));
                             $row->addContent($ea['comment']);
 
-                        if ($highestAction == 'Individual Needs Records_viewEdit') {
+                        if ($highestAction == 'Individual Needs Records_viewEdit' && !$readOnly) {
                             $row->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$session->get('gibbonThemeName').'/img/garbage.png"/></a>')
                                 ->setURL($session->get('absoluteURL').'/modules/'.$session->get('module').'/in_edit_assistant_deleteProcess.php')
                                 ->addParam('address', $_GET['q'])
@@ -201,10 +201,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // ADD EDUCATIONAL ASSISTANTS
-            if (empty($gibbonINArchiveID) && $highestAction == 'Individual Needs Records_viewEdit') {
+            if (empty($gibbonINArchiveID) && $highestAction == 'Individual Needs Records_viewEdit' && !$readOnly) {
                 $form->addRow()->addSubheading(__('Add New Assistants'))->setClass('mt-4 mb-2');
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full');
 
                 $row = $table->addRow();
                     $row->addLabel('staff', __('Staff'))->addClass('w-1/2');
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             // DISPLAY AND EDIT IEP
 
 
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full mt-2');
 
             $table->addRow()->addHeading('Individual Education Plan', __('Individual Education Plan'))->setClass('mt-4 mb-2');
 
@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 // CURRENT IEP
                 $col = $table->addRow()->addColumn();
                     $col->addContent(__('Targets'))->wrap('<strong style="font-size: 135%;">', '</strong>');
-                    if ($highestAction == 'Individual Needs Records_viewEdit') {
+                    if ($highestAction == 'Individual Needs Records_viewEdit' && !$readOnly) {
                         $col->addEditor('targets', $guid)->showMedia(true)->setRows(20)->setValue($IEP['targets']);
                     } else {
                         $col->addContent($IEP['targets'])->wrap('<p>', '</p>');
@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
                 $col = $table->addRow()->addColumn();
                     $col->addContent(__('Teaching Strategies'))->wrap('<strong style="font-size: 135%;">', '</strong>');
-                    if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
+                    if (($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') && !$readOnly) {
                         $col->addEditor('strategies', $guid)->showMedia(true)->setRows(20)->setValue($IEP['strategies']);
                     } else {
                         $col->addContent($IEP['strategies'])->wrap('<p>', '</p>');
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
                 $col = $table->addRow()->addColumn();
                     $col->addContent(__('Notes & Review'))->wrap('<strong style="font-size: 135%;">', '</strong>');
-                    if ($highestAction == 'Individual Needs Records_viewEdit') {
+                    if ($highestAction == 'Individual Needs Records_viewEdit' && !$readOnly) {
                         $col->addEditor('notes', $guid)->showMedia(true)->setRows(20)->setValue($IEP['notes']);
                     } else {
                         $col->addContent($IEP['notes'])->wrap('<p>', '</p>');
@@ -275,8 +275,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table], $IEP['fields'] ?? []);
             }
 
-            if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute')) {
-                $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')->addRow()->addSubmit();
+            if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute') && !$readOnly) {
+                $form->addRow()->addTable()->setClass('smallIntBorder w-full mt-2')->addRow()->addSubmit();
             }
 
             echo $form->getOutput();

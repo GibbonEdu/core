@@ -45,6 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
             $colorBG = $_POST['colorBG'.$i] ?? '';
             $description = $_POST['description'.$i] ?? '';
 
+            // Filter valid colour values
+            $color = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($color, 0, 7));
+            $colorBG = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($colorBG, 0, 7));
+
             //Validate Inputs
             if ($gibbonAlertLevelID == '' or $name == '' or $nameShort == '' or $color == '' or $colorBG == '') {
                 $partialFail = true;

@@ -10,7 +10,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% do form.addClass('formTable')%}
 
-<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+<form {{ form.getAttributeString|raw }} x-data="{'submitting': false}">
 
     {% if form.getTitle %}
         <h2>{{ form.getTitle }}</h2>
@@ -24,9 +24,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    {% set renderStyle = "blank" not in form.getClass ? 'blank' : 'table' %}
-
-    <table class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" cellspacing="0">
+    <table class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden bg-gray-50 rounded border mt-3" cellspacing="0">
         
     {% for row in form.getRows %}
         {% set rowLoop = loop %}
@@ -35,12 +33,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% for element in row.getElements %}
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
-            
-            {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
-                {% set class = ' bg-gray-300' %}
-            {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                {% set class = '-mb-1 sm:mb-0' %}
-            {% endif %}
 
             <td class="{{ class }} {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
                 {{ element.getOutput|raw }}

@@ -79,7 +79,7 @@ class FormGroupTable extends DataTable
         $this->setID('formGroup'.$gibbonFormGroupID);
         $this->setTitle(__('Students'));
 
-        $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
+        $this->addMetaData('gridClass', 'rounded-sm bg-blue-50 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
 
         if ($canPrint) {
@@ -115,10 +115,10 @@ class FormGroupTable extends DataTable
 
         $this->addColumn('image_240')
             ->setClass('relative')
-            ->format(function ($person) use ($canViewStudents) {
+            ->format(function ($person) use ($canViewStudents, $canViewConfidential) {
                 $url =  Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $person['gibbonPersonID']);
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
-                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                $icon = $canViewConfidential ? Format::userBirthdayIcon($person['dob'], $person['preferredName']) : '';
 
                 return $canViewStudents
                     ? Format::link($url, $photo).$icon

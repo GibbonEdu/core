@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->setTitle(__('Filter'));
 

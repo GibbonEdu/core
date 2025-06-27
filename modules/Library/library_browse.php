@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $location = trim($_REQUEST['location'] ?? '');
     $locationToggle = trim($_REQUEST['locationToggle'] ?? '');
     $everything = trim($_REQUEST['everything'] ?? '');
+    $readerAge = trim($_REQUEST['readerAge'] ?? 0);
 
     $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
 
@@ -72,61 +73,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }, array());
 
 
-    $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
+    $form = Form::createBlank('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('fullWidth blank border-transparent mb-6');
+    $form->setClass('mb-6');
+    $form->addData('advanced-options', !empty($name) || !empty($producer) || !empty($location) || !empty($type) || !empty($collection) || !empty($readerAge));
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
 
     $row = $form->addRow()->addLabel('Browse the Library', __('Browse the Library'))->addClass('text-2xl pb-2');
 
-    $row = $form->addRow()->addClass('grid sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4');
-        $row->addTextField('everything')->setClass('fullWidth sm:col-span-2 md:col-span-4 lg:col-span-6')->setValue($everything)->placeholder('Search for a Book!');
-        $row->addSearchSubmit($session, __('Clear Search'))->addClass('sm:col-start-3 md:col-start-5 lg:col-start-7');
+    $row = $form->addRow()->addClass('flex items-center');
+        $row->addTextField('everything')->setClass('flex-1')->setValue($everything)->placeholder('Search for a Book!')->groupAlign('left');
+        $row->addSubmit(__('Search'))->groupAlign('right');
+        $row->addAdvancedOptionsToggle()->addClass('ml-2 inline-flex h-10');
 
-    $row = $form->addRow();
-        $row->setClass('advancedOptions hidden grid grid-cols-6 gap-4');
+    $row = $form->addRow()->advancedOptions();
+        $row->setClass('grid grid-cols-7 gap-4 items-center mt-2');
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('name', __('Title'));
         $col->setClass('');
-        $col->addTextField('name')->setClass('fullWidth')->setValue($name);
+        $col->addTextField('name')->setValue($name);
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('producer', __('Author/Producer'));
-        $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
+        $col->addTextField('producer')->setValue($producer);
 
     $form->toggleVisibilityByClass('allLocations')->onCheckbox('locationToggle')->when('on');
 
-    $col = $row->addColumn()->setClass('allLocations quarterWidth');
+    $col = $row->addColumn()->setClass('allLocations');
         $col->addLabel('location', __('Location'));
-        $col->addSelectSpace('location')->setClass('fullWidth')->setValue($location)->placeHolder()->selected($location);
+        $col->addSelectSpace('location')->setValue($location)->placeHolder()->selected($location);
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('type', __('Type'));
         $col->addSelect('type')
         ->fromArray($types)
-        ->setClass('fullWidth')
         ->selected($type)
         ->placeholder();
 
-    $col = $row->addColumn()->setClass('quarterWidth');
+    $col = $row->addColumn()->setClass('');
         $col->addLabel('collection', __('Collection'));
         $col->addSelect('collection')
         ->fromArray($collections)
         ->chainedTo('type', $collectionsChained)
-        ->setClass('fullWidth')
         ->selected($collection)
         ->placeholder();
         
-    $col = $row->addColumn()->setClass('quarterWidth');
-        $col->addCheckBox('locationToggle')->description('Include Books Outside of Library?')->checked(($locationToggle == 'on'))->setValue('on');
+    $col = $row->addColumn()->setClass('');
+        $col->addLabel('readerAge', __('Readers Age'));
+        $ageArray=range(2,21);
+        $col->addSelect('readerAge')->fromArray($ageArray)->selected($readerAge)->placeholder();
 
-    $row = $form->addRow();
-        $row->addAdvancedOptionsToggle()->addClass('pt-2');
+    $row->addCheckBox('locationToggle')->description(__('Include Books Outside of Library?'))->checked($locationToggle)->setValue('on')->setLabelClass('text-xs');
+
 
     echo $form->getOutput();
 
-    if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location)){
+    if(empty($everything) && empty($collection) && empty($producer) && empty($name) && empty($location) && empty($readerAge)){
         // Display a collection of books on visual library shelves
         $libraryShelves = [];
         $shelfNames = [];
@@ -190,8 +193,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             $locationName = $pdo->select($locationSql)->fetch();
         }
 
+        
+
         $criteria = $gateway->newQueryCriteria()
             ->sortBy('id')
+            ->filterBy('agecheck',$readerAge)
             ->filterBy('name', $name)
             ->filterBy('producer', $producer)
             ->filterBy('type', $type)
@@ -200,10 +206,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             ->filterBy('everything', $everything)
             ->pageSize(100)
             ->fromPOST();
-
-        $searchItems = $gateway->queryBrowseItems($criteria)->toArray();
-        $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $locationName['name']];
         
+        $searchItems = $gateway->queryBrowseItems($criteria)->toArray();
+        $searchTerms = ['Everything' => $everything, 'Name' => $name, 'Producer' => $producer, 'Collection' => $collection, 'Location' => $locationName['name'],'Reader Age' => $readerAge];	
+		
         echo $page->fetchFromTemplate('librarySearch.twig.html', [
             'searchItems' => $searchItems,
             'searchTerms' => $searchTerms,

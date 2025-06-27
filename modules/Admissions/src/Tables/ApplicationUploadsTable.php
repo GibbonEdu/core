@@ -60,12 +60,16 @@ class ApplicationUploadsTable extends DataTable
             ->addClass('h-12')
             ->format(function($values)  {
                 $filePath = $this->session->get('absolutePath').'/'.$values['path'];
-                $icon = !empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0) ? 'cross' : 'check';
-                $iconRequired = $values['required'] == 'Y' ? 'cross' : 'question';
-                return $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                    'icon' => empty($values['path']) ? $iconRequired : $icon,
-                    'iconClass' => 'w-6 h-6 text-gray-500 fill-current ml-2 -my-2'
-                ]);
+                $fileMissing = !empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0);
+                $iconClass = 'size-6 fill-current ml-2 -my-2';
+
+                if ($fileMissing || (empty($values['path']) && $values['required'] == 'Y')) {
+                    return icon('solid', 'cross', $iconClass.' text-red-700');
+                } elseif (empty($values['path']) && $values['required'] != 'Y') {
+                    return icon('solid', 'question-mark', $iconClass.' text-gray-500');
+                } else {
+                    return icon('solid', 'check', $iconClass.' text-green-600');
+                }
             });
         $table->addColumn('name', __('Document'))
             ->format(function($values)  {

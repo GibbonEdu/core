@@ -45,3 +45,17 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     global $container;
     return $container->get(MessengerGateway::class)->getMessages($mode, $date);
 }
+
+function hasEmojis($string) {
+
+    $regexEmoticons = '/[\x{1F300}-\x{1F5FF}\x{1F600}-\x{1F64F}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1F1E0}-\x{1F1FF}]/u';
+
+    return preg_match($regexEmoticons, $string) ? true : false;
+}
+
+function removeEmoji($text) {
+
+    $regexEmoticons = '/[\x{1F300}-\x{1F5FF}\x{1F600}-\x{1F64F}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1F1E0}-\x{1F1FF}]/u';
+
+    return preg_replace($regexEmoticons, '', $text);
+}

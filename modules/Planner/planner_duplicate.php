@@ -290,11 +290,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                         $row = $form->addRow();
                             $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
-                            $row->addTime('timeStart')->setValue(substr($next['start'], 0, 5))->required();
+                            $row->addTime('timeStart')->setValue(substr($next['start'] ?? '', 0, 5))->required();
 
                         $row = $form->addRow();
                             $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
-                            $row->addTime('timeEnd')->setValue(substr($next['end'], 0, 5))->required();
+                            $row->addTime('timeEnd')->setValue(substr($next['end'] ?? '', 0, 5))->required();
 
                         if ($values['homework'] == 'Y') {
                             $form->addRow()->addHeading($homeworkNamePlural, __($homeworkNamePlural));
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                             $row = $form->addRow();
                                 $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description("Format: hh:mm (24hr)");
-                                $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'], 0, 5))->required();
+                                $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'] ?? '', 0, 5))->required();
 
                             if ($values['homeworkSubmission'] == 'Y') {
                                 $row = $form->addRow();

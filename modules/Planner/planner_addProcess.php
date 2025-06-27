@@ -24,6 +24,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 
 include '../../gibbon.php';
 
@@ -267,6 +268,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     header("Location: {$URL}");
                     exit();
                 } else {
+                    // Clear autosave
+                    $container->get(FormSessionStorage::class)->clear('plannerAdd'.$gibbonCourseClassID);
+
                     //Jump to Markbook?
                     $markbook = $_POST['markbook'] ?? '';
                     if ($markbook == 'Y') {

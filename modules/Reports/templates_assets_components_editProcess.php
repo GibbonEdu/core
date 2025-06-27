@@ -32,6 +32,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' 
 require_once __DIR__.'/moduleFunctions.php';
 
 $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? '';
+$gibbonPersonIDLastEdit = $session->get('gibbonPersonID') ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_components_edit.php&gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID.'&sidebar=false';
 
@@ -69,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
 
     // Parse and update template data based on yaml front-matter
     if ($data = parseComponent($templatePath, $templatePath.'/'.$values['templateFile'], 'Additional')) {
+        $data =  ['gibbonPersonIDLastEdit'  => $gibbonPersonIDLastEdit];
         $updated = $prototypeGateway->update($gibbonReportPrototypeSectionID, $data);
         $partialFail &= !$updated;
     }

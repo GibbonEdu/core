@@ -123,7 +123,7 @@ if ($proceed == false) {
 
     // Load values from the form data storage
     $values = $formData->getData();
-    $values['secondParent'] = $formData->get('secondParent') ?? ($formData->has('parent2surname') ? 'Yes' : 'No');
+    $values['secondParent'] = $formData->get('secondParent') ?? ($formData->has('parent2surname') ? 'No' : 'Yes');
 
     // Is the current application incomplete?
     $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';

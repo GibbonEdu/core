@@ -36,7 +36,7 @@ class StaffUpdateGateway extends QueryableGateway
     private static $tableName = 'gibbonStaffUpdate';
     private static $primaryKey = 'gibbonStaffUpdateID';
 
-    private static $searchableColumns = ['person.surname', 'person.preferredName', 'person.username'];
+    private static $searchableColumns = ['target.surname', 'target.preferredName', 'target.username'];
     
     /**
      * @param QueryCriteria $criteria
@@ -48,10 +48,10 @@ class StaffUpdateGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffUpdateID', 'gibbonStaffUpdate.status', 'gibbonStaffUpdate.timestamp', 'person.title', 'person.preferredName', 'person.surname', 'person.gibbonPersonID as gibbonPersonIDTarget', 'updater.gibbonPersonID as gibbonPersonIDUpdater', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
+                'gibbonStaffUpdateID', 'gibbonStaffUpdate.status', 'gibbonStaffUpdate.timestamp', 'target.title', 'target.preferredName', 'target.surname', 'target.gibbonPersonID as gibbonPersonIDTarget', 'updater.gibbonPersonID as gibbonPersonIDUpdater', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
             ])
             ->leftJoin('gibbonStaff', 'gibbonStaff.gibbonStaffID=gibbonStaffUpdate.gibbonStaffID')
-            ->leftJoin('gibbonPerson AS person', 'person.gibbonPersonID=gibbonStaff.gibbonPersonID')
+            ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonStaff.gibbonPersonID')
             ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonStaffUpdate.gibbonPersonIDUpdater')
             ->where('gibbonStaffUpdate.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);

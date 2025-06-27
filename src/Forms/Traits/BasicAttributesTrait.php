@@ -29,7 +29,8 @@ namespace Gibbon\Forms\Traits;
  */
 trait BasicAttributesTrait
 {
-    private $attributes = array();
+    private $attributes = [];
+    private $attributeDefaults = ['id' => '', 'name' => '', 'class' => '', 'disabled' => '', 'readonly' => ''];
 
     /**
      * Set the id attribute.
@@ -38,6 +39,7 @@ trait BasicAttributesTrait
      */
     public function setID($id = '')
     {
+        $id = str_replace(['[',']'], '', $id);
         $this->setAttribute('id', $id);
         return $this;
     }
@@ -148,7 +150,7 @@ trait BasicAttributesTrait
      * @param  string  $key
      * @param  mixed   $value
      */
-    protected function setAttribute($key, $value)
+    public function setAttribute($key, $value = '')
     {
         $this->attributes[$key] = $value;
         return $this;
@@ -159,31 +161,36 @@ trait BasicAttributesTrait
      * @param   string  $key
      * @return  mixed
      */
-    protected function getAttribute($key)
+    public function getAttribute($key)
     {
-        return (isset($this->attributes[$key]))? $this->attributes[$key] : null;
+        return $this->attributes[$key] ?? null;
     }
 
     /**
      * Get the internal collection of attributes.
      * @return  array
      */
-    protected function getAttributeArray()
+    public function getAttributeArray()
     {
-        return $this->attributes;
+        return array_merge($this->attributeDefaults, ['attributes' => $this->getAttributeString(false, 'class')], $this->attributes);
     }
 
     /**
      * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
-     * @param   array|bool  $filter  Return a filtered subset of attributes by name.
+     * @param   array|string  $filter  Return a filtered subset of attributes by name.
      * @return  string
      */
-    public function getAttributeString($filter = false)
+    public function getAttributeString($filter = '', $exclude = '')
     {
-        $attributes = $this->getAttributeArray();
-        if ($filter !== false) {
+        $attributes = $this->attributes;
+        if (!empty($filter)) {
             $filter = is_string($filter)? explode(',', $filter) : $filter;
             $attributes = array_intersect_key($attributes, array_flip($filter));
+        }
+
+        if (!empty($exclude) && isset($attributes[$exclude])) {
+            $exclude = is_string($exclude)? explode(',', $exclude) : $exclude;
+            $attributes = array_diff_key($attributes, array_flip($exclude));
         }
 
         $output = implode(' ', array_map(
@@ -191,8 +198,10 @@ trait BasicAttributesTrait
                 if (is_bool($attributes[$key])) {
                     return $attributes[$key]? $key : '';
                 }
-                if (isset($attributes[$key]) && $attributes[$key] != '') {
-                    return $key.'="'.htmlPrep($attributes[$key]).'"';
+                if (isset($attributes[$key])) {
+                    return $attributes[$key] != ''
+                        ? $key.'="'.htmlPrep($attributes[$key]).'"'
+                        : $key;
                 }
                 return '';
             },

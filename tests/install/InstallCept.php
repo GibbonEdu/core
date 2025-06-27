@@ -33,7 +33,7 @@ try {
     $I->fillField('databaseUsername', getenv('DB_USERNAME'));
     $I->fillField('databasePassword', getenv('DB_PASSWORD'));
 
-    $I->selectOption('demoData', 'Y');
+    $I->fillField('demoData', 'Y');
     $I->click('Submit');
 
     // STEP 3 --------------------------------------
@@ -69,9 +69,6 @@ try {
     // Follow the go to homepage link to the front page.
     $I->see('go to your Gibbon homepage', '.success');
     $I->click('go to your Gibbon homepage');
-
-    // The URL should either be empty or a single slash (root).
-    $I->canSeeCurrentUrlMatches('/^(|\/)$/');
 
 } catch (Exception $e) {
     if ($requestSuccess) {

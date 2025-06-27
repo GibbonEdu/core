@@ -35,7 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 } else {
     //Proceed!
     $alarm = $_POST['alarm'] ?? '';
-    $attachmentCurrent = $_POST['attachmentCurrent'] ?? '';
     $alarmCurrent = $_POST['alarmCurrent'] ?? '';
 
     //Validate Inputs
@@ -44,7 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         header("Location: {$URL}");
     } else {
         //DEAL WITH CUSTOM SOUND SETTING
+        $alarmGateway = $container->get(AlarmGateway::class);
+        $settingGateway = $container->get(SettingGateway::class);
+
         $time = time();
+        $attachmentCurrent = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound');
+
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
             $fileUploader = new Gibbon\FileUploader($pdo, $session);
@@ -60,11 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                 exit;
             }
         } else {
-            $attachment = $attachmentCurrent;
+            // Remove the attachment if it has been deleted, otherwise retain the original value
+            $attachment = empty($_POST['attachmentCurrent']) ? '' : $attachmentCurrent;
         }
-
-        $alarmGateway = $container->get(AlarmGateway::class);
-        $settingGateway = $container->get(SettingGateway::class);
+        
         //Write setting to database
         $dataWhere = ['scope' => 'System Admin', 'name' => 'customAlarmSound'];
         $settingGateway->updateWhere($dataWhere, ['value' => $attachment]);

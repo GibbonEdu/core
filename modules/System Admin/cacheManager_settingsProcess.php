@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     $_POST['cachePath'] = '/'.trim($_POST['cachePath'], '/');
 
     if (!is_dir($session->get('absolutePath').'/'.$_POST['cachePath'])) {
-        mkdir($session->get('absolutePath').'/'.$_POST['cachePath'], 0755);
+        mkdir($session->get('absolutePath').'/'.$_POST['cachePath'], 0755, true);
     }
 
     foreach ($settingsToUpdate as $scope => $settings) {

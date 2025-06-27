@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = $settingGateway->getSettingByScope('System', 'absoluteURL', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addURL($setting['name'])->setValue($setting['value'])->maxLength(100)->required();
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(100)->required();
 
     $setting = $settingGateway->getSettingByScope('System', 'absolutePath', true);
     $row = $form->addRow();

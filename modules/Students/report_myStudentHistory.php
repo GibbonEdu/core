@@ -41,7 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
         ->fromPOST();
 
     $students = $studentGateway->queryStudentHistoryByPerson($criteria, $session->get('gibbonPersonID'));
-
+    $students->removePagination();
+    
     // Render table
     $gridRenderer = new GridView($container->get('twig'));
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);

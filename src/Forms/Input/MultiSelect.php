@@ -59,20 +59,18 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
 
         $this->sortBySelect = $factory->createSelect($name . "Sort")
             ->placeholder(__("Sort by Name"))
-            ->setClass("w-9/12 mt-1")
+            ->setClass("flex-1")
             ->addClass("floatNone")
             ->wrap('<div class="w-full">', '</div>');
 
-        $this->addButton = $factory->createButton(__("Add"), '', $name . 'Add')
-            ->addClass("w-9/12")
-            ->wrap('<div class="w-full">', '</div>');
-        $this->removeButton = $factory->createButton(__("Remove"), '', $name . 'Remove')
-            ->addClass("w-9/12 mt-1")
-            ->wrap('<div class="w-full">', '</div>');
+        $this->addButton = $factory->createButton(__("Add"), '', $name . 'Add')->setIcon('add', 'text-green-600')
+            ->addClass("flex-1");
+        $this->removeButton = $factory->createButton(__("Remove"), '', $name . 'Remove')->setIcon('cross', 'text-red-700')
+            ->addClass("flex-1");
 
         $this->searchBox = $factory->createTextField($name . "Search")
             ->placeholder(__("Search"))
-            ->setClass("w-9/12 mt-1")
+            ->setClass("flex-1")
             ->addClass("floatNone")
             ->wrap('<div class="w-full">', '</div>');
     }
@@ -180,16 +178,21 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             $output .= $this->sourceSelect->getOutput();
         $output .= '</div>';
 
-        $output .= '<div class="w-full sm:w-1/3 text-center py-2 sm:py-0">';
-            $output .= $this->addButton->getOutput();
-            $output .= $this->removeButton->getOutput();
+        $output .= '<div class="w-full sm:w-1/3 flex flex-col items-center px-4 py-2 sm:py-0 gap-2">';
+
+            $output .= '<div class="flex w-full items-center justify-between gap-2">';
+                $output .= $this->addButton->getOutput();
+                $output .= $this->removeButton->getOutput();
+            $output .= '</div>';
+
+
             if (!empty($this->sortableAttributes)) {
                 $output .= $this->sortBySelect->getOutput();
             }
             $output .= $this->searchBox->getOutput();
         $output .= '</div>';
 
-        $output .= '<div  class="w-full sm:w-1/3">';
+        $output .= '<div  class="w-full sm:w-1/3 relative">';
             $output .= $this->destinationSelect->getOutput();
         $output .= '</div>';
 
@@ -212,15 +215,6 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
     public function addValidation($type, $params = '')
     {
         return $this->destinationSelect->addValidation($type, $params);
-    }
-
-    /**
-     * Get the combined validation output from the right-hand select.
-     * @return  string
-     */
-    public function getValidationOutput()
-    {
-        return $this->destinationSelect->getValidationOutput();
     }
 
     public function getClass() {

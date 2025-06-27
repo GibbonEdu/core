@@ -262,7 +262,7 @@ class ActivityReportGateway extends QueryableGateway
           'gibbonActivity.programStart',
           'gibbonActivity.programEnd',
           'gibbonActivityStudent.status',
-          'GROUP_CONCAT(term.nameShort) as terms',
+          'GROUP_CONCAT(DISTINCT term.nameShort) as terms',
           'gibbonSchoolYear.name as yearName',
           'gibbonSchoolYear.sequenceNumber as yearSequenceNumber',
           'gibbonActivity.active',

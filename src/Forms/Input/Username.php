@@ -44,11 +44,12 @@ class Username extends TextField
         $alertText .= __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname')."\n";
 
         $button = $form->getFactory()->createButton(__('Generate'));
-        $button->addClass('generateUsername -ml-px rounded-r-sm')
+        $button->addClass('generateUsername')
+            ->groupAlign('right')
             ->addData('alert', $alertText)
             ->setTabIndex(-1);
 
-        $this->append($button->getOutput());
+        $this->groupAlign('left')->append($button->getOutput());
 
         return $this;
     }

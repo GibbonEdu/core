@@ -43,18 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     //Proceed!
     $statusCurrent = $_POST['statusCurrent'] ?? '';
     $status = $_POST['status'] ?? '';
-    $type = 'Other';
-    if ($status == 'Decommissioned') {
-        $type = 'Decommission';
-    } elseif ($status == 'Lost') {
-        $type = 'Loss';
-    } elseif ($status == 'On Loan') {
-        $type = 'Loan';
-    } elseif ($status == 'Repair') {
-        $type = 'Repair';
-    } elseif ($status == 'Reserved') {
-        $type = 'Reserve';
-    }
+    $typeActions = [
+        'Decommissioned' => 'Decommission',
+        'Lost'           => 'Loss',
+        'On Loan'        => 'Loan',
+        'Repair'         => 'Repair',
+        'Reserved'       => 'Reserve',
+    ];
+    $type = $typeActions[$status] ?? 'Other';
+
     $gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? null;
     $returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
     $returnAction = $_POST['returnAction'] ?? '';

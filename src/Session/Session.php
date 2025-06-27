@@ -49,12 +49,7 @@ class Session implements SessionInterface
      * @param string $action
      *   Optional string of the current action.
      */
-    public function __construct(
-        string $guid,
-        string $address = '',
-        string $module = '',
-        string $action = ''
-    )
+    public function __construct(string $guid, string $address = '', string $module = '', string $action = '')
     {
         // Backwards compatibility for external modules.
         $this->guid = $guid;
@@ -65,7 +60,7 @@ class Session implements SessionInterface
         $this->set('module', $module);
         $this->set('action', $action);
     }
-
+    
     public function setGuid(string $_guid)
     {
         $this->guid = $_guid;

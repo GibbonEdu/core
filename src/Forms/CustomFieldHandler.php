@@ -61,6 +61,7 @@ class CustomFieldHandler
         $this->contexts = [
             __('User Admin') => [
                 'User' => __('User'),
+                'Family' => __('Family'),
             ],
             __('Staff') => [
                 'Staff' => __('Staff'),
@@ -130,6 +131,9 @@ class CustomFieldHandler
                 'Basic Information' => __('Basic Information'),
                 'First Aid'         => __('First Aid'),
                 'Biography'         => __('Biography'),
+            ],
+            'Family' => [
+                'General Information' => __('General Information'),
             ],
             'Student Enrolment' => [
                 'Basic Information' => __('Basic Information'),
@@ -228,6 +232,9 @@ class CustomFieldHandler
 
                 // Upload the file, return the /uploads relative path
                 $fieldValue = $this->fileUploader->uploadFromPost($file, $fieldName);
+            } else if (empty($_POST[$fieldName])) {
+                // Remove the attachment if it has been deleted, otherwise retain the original value
+                $fieldValue = null;
             }
         }
 
@@ -255,7 +262,7 @@ class CustomFieldHandler
 
         if (!empty($params['heading'])) {
             $table = $context == 'Individual Needs' 
-                ? $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')
+                ? $form->addRow()->addTable()->setClass('smallIntBorder w-full mt-2')
                 : $form;
 
             $row = $table->addRow()->addClass($params['class'] ?? '');
@@ -278,7 +285,7 @@ class CustomFieldHandler
             // Handle creating a new heading if the form doesn't already have one
             if (!empty($heading) && !$form->hasHeading($heading)) {
                 $table = $context == 'Individual Needs' 
-                    ? $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')
+                    ? $form->addRow()->addTable()->setClass('smallIntBorder w-full mt-2')
                     : $form;
 
                 $row = $table->addRow()->addClass($params['class'] ?? '');
@@ -291,6 +298,10 @@ class CustomFieldHandler
                     $fieldValue = Format::date($fieldValue);
                 } elseif (!empty($fieldValue) && $field['type'] == 'checkboxes') {
                     $fieldValue = explode(',', $fieldValue);
+                }
+
+                if (!empty($params['requiredOverride'])) {
+                    $field['required'] = $params['requiredOverride'];
                 }
 
                 $name = $prefix.$field['gibbonCustomFieldID'];

@@ -19,12 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Services\Format;
-use Gibbon\Data\Validator;
+use Gibbon\Domain\Activities\ActivityPhotoGateway;
+use Gibbon\FileUploader;
 
 require_once '../../gibbon.php';
 
@@ -43,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Proceed!
     //Check if gibbonActivityID specified
     $activityGateway = $container->get(ActivityGateway::class);
+    $activityPhotoGateway = $container->get(ActivityPhotoGateway::class);
 
     if (!$activityGateway->exists($gibbonActivityID)) {
         $URL .= '&return=error1';
@@ -155,22 +158,88 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 }
             }
 
+            $fileUploader = $container->get(FileUploader::class);
+            $fileUploader->getFileExtensions('Graphics/Design');
+    
+            // Update the photos
+            $photos = $_POST['photos'] ?? [];
+            $photoOrder = $_POST['photoOrder'] ?? [];
+            $photoSequence = !empty($photoOrder) ? max($photoOrder) + 1 : 0;
+            $photoIDs = [];
+
+            foreach ($photos as $index => $photo) {
+
+                $photoData = [
+                    'gibbonActivityID' => $gibbonActivityID,
+                    'filePath'           => $photo['filePath'] ?? '',
+                    'caption'            => $photo['caption'] ?? '',
+                    'sequenceNumber'     => array_search($index, $photoOrder) ?? false,
+                ];
+
+                if (!empty($_FILES['photos']['tmp_name'][$index]['fileUpload'])) {
+                    $file = [
+                        'name' => $_FILES['photos']['name'][$index]['fileUpload'] ?? '',
+                        'type' => $_FILES['photos']['type'][$index]['fileUpload'] ?? '',
+                        'tmp_name' => $_FILES['photos']['tmp_name'][$index]['fileUpload'] ?? '',
+                        'error' => $_FILES['photos']['error'][$index]['fileUpload'] ?? '',
+                        'size' => $_FILES['photos']['size'][$index]['fileUpload'] ?? '',
+                    ];
+            
+                    // Upload the file, return the /uploads relative path
+                    $activityName = str_replace(' ', '-', $name);
+                    $photoData['filePath'] = $fileUploader->uploadAndResizeImage($file, $activityName, 1024, 80);
+                }
+
+                if (empty($photoData['filePath'])) {
+                    $partialFail = true;
+                    continue;
+                }
+
+                if ($photoData['sequenceNumber'] === false) {
+                    $photoData['sequenceNumber'] = $photoSequence;
+                    $photoSequence++;
+                }
+
+                $gibbonActivityPhotoID = $photo['gibbonActivityPhotoID'] ?? '';
+
+                if (!empty($gibbonActivityPhotoID)) {
+                    $partialFail &= !$activityPhotoGateway->update($gibbonActivityPhotoID, $photoData);
+                } else {
+                    $gibbonActivityPhotoID = $activityPhotoGateway->insert($photoData);
+                    $partialFail &= !$gibbonActivityPhotoID;
+                }
+
+                $photoIDs[] = str_pad($gibbonActivityPhotoID, 12, '0', STR_PAD_LEFT);
+            }
+
+            // Remove photos that have been deleted from the filesystem
+            $cleanupPhotos = $activityPhotoGateway->selectPhotosNotInList($gibbonActivityID, $photoIDs)->fetchAll();
+            foreach ($cleanupPhotos as $photo) {
+                $activityPhotoGateway->delete($photo['gibbonActivityPhotoID']);
+
+                $photoPath = $session->get('absolutePath').'/'.$photo['filePath'];
+                if (!empty($photo['filePath']) && file_exists($photoPath)) {
+                    unlink($photoPath);
+                }
+            }
+
             //Write to database
             $type = $_POST['type'] ?? '';
 
             $data = [
-                'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
-                'name'                  => $name,
-                'provider'              => $provider,
-                'type'                  => $type,
-                'active'                => $active,
-                'registration'          => $registration,
-                'gibbonYearGroupIDList' => $gibbonYearGroupIDList,
-                'maxParticipants'       => $maxParticipants,
-                'payment'               => $payment,
-                'paymentType'           => $paymentType,
-                'paymentFirmness'       => $paymentFirmness,
-                'description'           => $description
+                'gibbonSchoolYearID'       => $session->get('gibbonSchoolYearID'),
+                'gibbonActivityCategoryID' => $_POST['gibbonActivityCategoryID'] ?? '',
+                'name'                     => $name,
+                'provider'                 => $provider,
+                'type'                     => $type,
+                'active'                   => $active,
+                'registration'             => $registration,
+                'gibbonYearGroupIDList'    => $gibbonYearGroupIDList,
+                'maxParticipants'          => $maxParticipants,
+                'payment'                  => $payment,
+                'paymentType'              => $paymentType,
+                'paymentFirmness'          => $paymentFirmness,
+                'description'              => $description
             ];
 
             if ($dateType == 'Date') {

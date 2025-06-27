@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('View As'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Reports/reporting_my.php');
@@ -126,8 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
             'reportingCycle' => $reportingCycle,
             'milestones' => json_decode($reportingCycle['milestones'], true),
             'proofsTotal' => $proofsTotal,
-            'progressColour' => 'green',
-            'partialColour' => 'blue',
+            'progressColour' => 'bg-green-300',
+            'progressBorder' => 'border-green-600',
+            'partialColour' => 'bg-blue-300',
             'totalCount' => count($proofReading),
             'progressCount' => $proofsDone,
             'partialCount' => max(0, $proofsTotal - $proofsDone)
@@ -142,8 +143,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
             $table = DataTable::create('reportsMy');
             $table->setTitle($scope['name']);
             $table->setDescription(__('You have access from {dateStart} to {dateEnd}.', [
-                'dateStart' => Format::dateReadable($scope['dateStart'], '%b %e'),
-                'dateEnd' => Format::dateReadable($scope['dateEnd'], '%b %e'),
+                'dateStart' => Format::dateReadable($scope['dateStart'], Format::MEDIUM_NO_YEAR),
+                'dateEnd' => Format::dateReadable($scope['dateEnd'], Format::MEDIUM_NO_YEAR),
             ]));
 
             $table->addColumn('criteriaName', __('Name'))->width('35%');

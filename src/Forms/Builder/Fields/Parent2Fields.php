@@ -242,12 +242,12 @@ class Parent2Fields extends AbstractFieldGroup
                 break;
 
             case 'parent2phone':
-                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
+                $colGroup = $row->addColumn()->setClass('flex-col flex-1 justify-between items-start gap-2');
                 $phoneCount = $field['options'] ?? 2;
                 for ($i = 1; $i <= $phoneCount; ++$i) {
-                    $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
-                    $col->addLabel('parent2phone'.$i, __('Phone').' '.$i)->description(__($field['description']));
-                    $col->addPhoneNumber('parent2phone'.$i)->required($required && $i == 1);
+                    $col = $colGroup->addColumn()->setClass('flex flex-col sm:flex-row content-center p-0 gap-2 sm:gap-4 justify-between sm:items-start');
+                    $col->addLabel('parent2phone'.$i, __('Phone').' '.$i)->description(__($field['description']))->addClass('sm:w-2/5');
+                    $col->addPhoneNumber('parent2phone'.$i)->required($required && $i == 1)->addClass('flex-1');
                 }
                 break;
 

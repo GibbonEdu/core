@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
                 ->description($description)
                 ->alignRight()
                 ->setLabelClass('w-full')
-                ->addClass('border rounded p-6 my-2 bg-blue-100');
+                ->addClass('border rounded p-6 my-2 bg-blue-50');
         }
 
     $row = $form->addRow();

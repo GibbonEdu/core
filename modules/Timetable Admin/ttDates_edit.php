@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('dateStamp', $dateStamp)
                 ->addParam('gibbonTTDayID')
-                ->format(function ($subcategory, $actions) use ($gibbon) {
+                ->format(function ($subcategory, $actions) use ($session) {
                     $actions->addAction('delete', __('Delete'))
                             ->setURL('/modules/' . $session->get('module') . '/ttDates_edit_delete.php');
                 });

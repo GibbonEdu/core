@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
     // FORM
     $form = Form::create('dutyEdit', $session->get('absoluteURL').'/modules/Staff/staff_duty_editProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
+    $form->removeMeta();
 
     // Custom Block Template
     $addBlockButton = $form->getFactory()->createButton(__('Add Time Slot'))->addClass('addBlock');
@@ -69,8 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_duty_edit.php'
             $row->addLabel('gibbonDaysOfWeekIDList', __('Weekday'));
             $row->addCheckbox('gibbonDaysOfWeekIDList')
                 ->fromQuery($pdo, $sqlWeekdays)
-                ->setLabelClass('w-20')
-                ->setClass('my-3')
+                // ->setLabelClass('w-20')
                 ->inline()
                 ->alignLeft();
 

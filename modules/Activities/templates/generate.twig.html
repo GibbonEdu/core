@@ -1,0 +1,301 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% import _self as generate %}
+
+<section id="generateGroups" class="h-full flex font-sans">
+
+    {% if activities %}
+
+    <div id="activities" class="activitiesContainer w-3/4">
+        {% for gibbonActivityID, activity in activities %}
+        <div class="bg-gray-100 border p-3 mb-4 mr-4 rounded-md">
+            <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
+                <div class="flex-1 font-bold text-base text-gray-800">
+                    {{ activity.name }}
+                </div>
+
+                {% if mode == 'student' %}
+                    <div class="w-24">
+                        Max: {{ activity.maxParticipants }}
+                    </div>
+                    <div class="w-24">
+                        Current: <span class="enrolmentCount">{{ activity.enrolmentCount }}</span>
+                    </div>
+                    <div class="w-24 text-right">
+                        <span class="enrolmentStatus tag text-xxs ml-2"></span>
+                    </div>
+                {% elseif mode == 'staff' %}
+                    <div class="w-24">
+                        Staff: <span class="groupCount"></span>
+                    </div>
+                    <div class="w-24">
+                        Enrolments: <span class="enrolmentCount">{{ activity.enrolmentCount }}</span>
+                    </div>
+
+                    <div class="w-24 text-right">
+                        <span class="enrolmentRatio tag text-xxs ml-2"></span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="enrolmentGroup grid grid-cols-3 grid-flow-row items-start"
+                data-group="{{ gibbonActivityID }}"
+                data-max="{{ activity.maxParticipants }}" data-count="{{ activity.enrolmentCount }}" style="min-height: 6rem;">
+
+                {% for person in groups[gibbonActivityID] %}
+                {% if mode == 'student' %}
+                {{ generate.enrolment(person, signUpChoices) }}
+                {% elseif mode == 'staff' %}
+                {{ generate.staffing(person) }}
+                {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="sticky h-full top-0 w-1/4">
+        <div id="unassigned"
+            class="unassignedContainer w-full bg-gray-100 border p-3 mb-4 pb-4 rounded-md h-full max-h-screen overflow-y-scroll">
+
+            <div class="flex justify-between items-center mb-2 text-xs text-gray-600">
+                <h5 class="mt-0 p-0">
+                    {{ __('Unassigned') }}
+                </h5>
+
+                <div class="w-24 text-right">
+                    Current: <span class="enrolmentCount">0</span>
+                </div>
+            </div>
+
+
+            <div class="enrolmentGroup h-full" data-group="0" style="min-height: 8rem;">
+
+                {% for person in groups[0] %}
+                {% if mode == 'student' %}
+                {{ generate.enrolment(person, signUpChoices) }}
+                {% elseif mode == 'staff' %}
+                {{ generate.staffing(person) }}
+                {% endif %}
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% macro enrolment(person, signUpChoices) %}
+<div class="enrolmentPerson flex items-center justify-between bg-white shadow rounded-md mb-2 p-3 text-sm border hover:bg-blue-100 hover:border-blue-500 cursor-move group"
+    style="max-width: 18rem;" data-person="{{ person.gibbonPersonID }}" data-choice1="{{ person.choice1 }}"
+    data-choice2="{{ person.choice2 }}" data-choice3="{{ person.choice3 }}" data-choice4="{{ person.choice4 }}"
+    data-choice5="{{ person.choice5 }}" data-preferredName="{{ person.preferredName }}"
+    data-surname="{{ person.surname }}" data-formGroup="{{ person.formGroup }}">
+
+    <input type="hidden" name="person[{{ person.gibbonPersonID }}]" value="{{ person.gibbonActivityID ?? 0 }}">
+
+    <div>{{ person.preferredName }} {{ person.surname }} {{ person.formGroup ? " ("~person.formGroup~")" }}</div>
+
+    {% if person.enrolled %}
+    <span class="tag dull text-xxs ml-2">{{ __('Enrolled') }}</span>
+    {% endif %}
+
+    <span class="choiceTag tag dull text-xxs ml-2" title="
+        {%- for i in range(1, signUpChoices ) -%}
+            {{ i }}: {{ person[ ('choice' ~ i ~ 'Name') ] |default('None') }}<br/>
+        {%- endfor -%}
+        ">N/A</span>
+</div>
+{% endmacro enrolment %}
+
+{% macro staffing(person) %}
+<div class="groupStaff enrolmentPerson cursor-move hover:bg-blue-100 hover:border-blue-500 flex items-center justify-between bg-white shadow rounded-md mb-2 p-3 text-sm border group"
+    style="max-width: 18rem;" data-person="{{ person.gibbonPersonID }}" data-preferredName="{{ person.preferredName }}"
+    data-surname="{{ person.surname }}">
+
+    <input type="hidden" name="person[{{ person.gibbonPersonID }}][{{ person.gibbonActivityID ?? 0 }}]" value="{{ person.gibbonActivityID ?? 0 }}">
+
+    <div>{{ person.preferredName }} {{ person.surname }}</div>
+
+    {% set role = person.role ?? person.type ?? '' %}
+
+    <span class="personType ml-2 text-xxs tag {{ person.type == 'Teaching' ? 'message' : 'bg-purple-200 text-purple-700'}} hidden">{{ person.type }}</span>
+
+    <select name="role[{{ person.gibbonPersonID }}][{{ person.gibbonActivityID ?? 0 }}]" class="ml-2 text-xxs py-1 px-2 h-6 message border-0 hidden">
+        <option value="Organiser" {{ person.role == 'Organiser' ? 'selected' }}>{{ __('Organiser') }}</option>
+        <option value="Coach" {{ role == 'Coach' ? 'selected' }}>{{ __('Coach') }}</option>
+        <option value="Assistant" {{ role == 'Assistant' ? 'selected' }}>{{ __('Assistant') }}</option>
+        <option value="Other" {{ role == 'Other' ? 'selected' }}>{{ __('Other') }}</option>
+    </select>
+</div>
+{% endmacro staffing %}
+
+<script>
+
+    $('#generateGroups .enrolmentGroup').sortable({
+        tolerance: 5,
+        cursor: "move",
+        items: ".enrolmentPerson",
+        connectWith: ".enrolmentGroup",
+        zIndex: 20,
+        // containment: "#generateGroups",
+
+    });
+
+    $('#generateGroups .enrolmentGroup').droppable({
+        accept: '.enrolmentPerson',
+
+        over: function (event, ui) {
+            $(this).addClass('bg-gray-200');
+            $(ui.draggable).addClass('z-50');
+
+            recalculateStatus(ui.draggable, this);
+        },
+        out: function (event, ui) {
+            $(this).removeClass('bg-gray-200');
+            $(ui.draggable).removeClass('z-50');
+        },
+        deactivate: function (event, ui) {
+            $(this).removeClass('bg-gray-200');
+            $(ui.draggable).removeClass('z-50');
+        },
+        drop: function (event, ui) {
+            $(ui.draggable).removeClass('z-50');
+
+            recalculateStatus(ui.draggable, this);
+            recalculateGroups();
+        },
+    });
+
+{% if mode == 'student' %}
+
+    function recalculateGroups() {
+
+        $('#generateGroups .enrolmentGroup').each(function (element) {
+            var maxParticipants = $(this).data('max');
+            var enrolmentCount = $(this).parent().find('.enrolmentPerson:not(.ui-sortable-helper)').length;
+
+            $(this).parent().find('.enrolmentCount').first().html(enrolmentCount);
+
+            var enrolmentStatus = '';
+            var enrolmentStatusClass = '';
+
+            if (enrolmentCount < $(this).data('min')) {
+                enrolmentStatus = 'Low';
+                enrolmentStatusClass = 'warning';
+            } else if (enrolmentCount == $(this).data('max')) {
+                enrolmentStatus = 'Full';
+                enrolmentStatusClass = 'success';
+            } else if (enrolmentCount > $(this).data('max')) {
+                enrolmentStatus = 'Over';
+                enrolmentStatusClass = 'error';
+            } else {
+                enrolmentStatus = Math.round((enrolmentCount / maxParticipants) * 100) + '%';
+                enrolmentStatusClass = 'dull';
+            }
+
+            $(this).parent().find('.enrolmentStatus').removeClass('warning error success dull').addClass(enrolmentStatusClass);
+            $(this).parent().find('.enrolmentStatus').first().html(enrolmentStatus);
+        });
+    }
+
+    function recalculateStatus(person, group) {
+        var person = $(person);
+        var personChoice = person.find('input[name^="person"]').first();
+        personChoice.val($(group).data('group'));
+
+        // Update the display of the person itself 
+        if ($(group).data('group') == $(person).data('choice1') && $(person).data('choice1') != 0) {
+            $('span.choiceTag', person).removeClass('dull message warning error success').addClass('success').html('1st');
+        } else if ($(group).data('group') == $(person).data('choice2') && $(person).data('choice2') != 0) {
+            $('span.choiceTag', person).removeClass('dull message warning error success').addClass('message').html('2nd');
+        } else if ($(group).data('group') == $(person).data('choice3') && $(person).data('choice3') != 0) {
+            $('span.choiceTag', person).removeClass('dull message warning error success').addClass('warning').html('3rd');
+        } else if ($(group).data('group') == $(person).data('choice4') && $(person).data('choice4') != 0) {
+            $('span.choiceTag', person).removeClass('dull message warning error success').addClass('warning').html('4th');
+        } else if ($(group).data('group') == $(person).data('choice5') && $(person).data('choice5') != 0) {
+            $('span.choiceTag', person).removeClass('dull message warning error success').addClass('warning').html('5th');
+        } else {
+            if ($(person).data('choice1') + $(person).data('choice2') + $(person).data('choice3') + $(person).data('choice4') + $(person).data('choice5') < 1) {
+                $('span.choiceTag', person).removeClass('dull message warning error success').addClass('error').html('None');
+            } else {
+                $('span.choiceTag', person).removeClass('dull message warning error success').addClass('dull').html('N/A');
+            }
+
+        }
+    }
+
+{% elseif mode == 'staff' %}
+
+    function recalculateGroups() {
+        $('#generateGroups .enrolmentGroup').each(function (element) {
+            var enrolmentCount = $(this).data('count');
+            var groupCount = $(this).parent().find('.groupStaff:not(.ui-sortable-helper)').length;
+
+            $(this).parent().find('.groupCount').first().html(groupCount);
+
+            var staffRatio = enrolmentCount > 0 ? Math.ceil( groupCount / enrolmentCount) : groupCount;
+            var enrolmentRatio = groupCount > 0 ? Math.ceil( enrolmentCount / groupCount ) : enrolmentCount; 
+            
+            var enrolmentRatioClass = 'dull';
+
+            if (staffRatio == 0 || enrolmentRatio >= 14) {
+                enrolmentRatioClass = 'error';
+            } else if (enrolmentRatio == 0 || enrolmentRatio >= 8) {
+                enrolmentRatioClass = 'warning';
+            }
+
+            $(this).parent().find('.enrolmentRatio').first().html('Ratio '+( staffRatio+':'+enrolmentRatio ));
+            $(this).parent().find('.enrolmentRatio').removeClass('warning error success dull').addClass(enrolmentRatioClass);
+        });
+    }
+
+    function recalculateStatus(person, group) {
+        var person = $(person);
+        var personChoice = person.find('input[name^="person"]').first();
+        personChoice.val($(group).data('group'));
+
+        var personRole = person.find('select[name^="role"]').first();
+        var personType = person.find('.personType').first();
+        if ($(group).data('group') > 0) {
+            $(personRole).show();
+            $(personType).hide();
+        } else {
+            $(personRole).hide();
+            $(personType).show();
+        }
+    }
+
+{% endif %}
+
+    $(document).ready(function () {
+        recalculateGroups();
+
+        $('#generateGroups .enrolmentPerson').each(function (element) {
+            recalculateStatus(this, $(this).parent());
+        });
+    });
+
+    // $(document).on('change', 'select[name^="role"]', function() {
+    //     if ($(this).val() == 'Organiser') {
+    //         $(this).removeClass('message bg-purple-200 text-purple-700').addClass('success');
+    //     } else if ($(this).val() == 'Teacher') {
+    //         $(this).removeClass('success bg-purple-200 text-purple-700').addClass('message');
+    //     } else if ($(this).val() == 'Support') {
+    //         $(this).removeClass('success message').addClass('bg-purple-200 text-purple-700');
+    //     }
+    // });
+
+</script>

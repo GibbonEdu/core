@@ -23,8 +23,6 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Symfony\Component\Yaml\Yaml;
-
-$_POST['address'] = '/modules/Reports/templates_assets.php';
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -50,13 +48,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
     $yaml = new Yaml();
 
+    $absolutePath = str_replace('\\', '/', $absolutePath);
+    $customAssetPath = str_replace('\\', '/', $customAssetPath);
+
     $parseAndUpdateComponents = function ($directoryPath, $templateType) use (&$prototypeGateway, &$yaml, &$partialFail, &$count) {
         // Get all twig files in this folder and sub-folders
         $directoryPath = trim($directoryPath, '/');
         if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
 
         if (!is_dir($directoryPath)) {
-            mkdir($directoryPath, 0755);
+            mkdir($directoryPath, 0755, true);
         }
 
         $directoryFiles = [];
@@ -101,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
 
         if (!is_dir($directoryPath)) {
-            mkdir($directoryPath, 0755);
+            mkdir($directoryPath, 0755, true);
         }
         
         $directoryFiles = [];

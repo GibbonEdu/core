@@ -73,11 +73,12 @@ class SchoolYearGateway extends QueryableGateway
      *
      * @return array
      */
-    public function getSchoolYearList($activeOnly = false)
+    public function getSchoolYearList($activeOnly = false, $desc = false)
     {
         $sql = "SELECT gibbonSchoolYearID AS value, name FROM gibbonSchoolYear ";
         if ($activeOnly) $sql .= "WHERE (status='Current' OR status='Upcoming') ";
         $sql .= "ORDER BY sequenceNumber";
+        if ($desc) $sql .= " DESC";
 
         return $this->db()->select($sql)->fetchKeyPair();
     }

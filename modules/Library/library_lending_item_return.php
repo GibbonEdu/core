@@ -25,6 +25,7 @@ use Gibbon\Services\Format;
 
 $gibbonLibraryItemEventID = trim($_GET['gibbonLibraryItemEventID']) ?? '';
 $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']) ?? '';
+$lendingAction = $_REQUEST['lendingAction'] ?? '';
 
 $page->breadcrumbs
     ->add(__('Lending & Activity Log'), 'library_lending.php')
@@ -60,6 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('gibbonPersonIDStudent', $_REQUEST['gibbonPersonIDStudent'] ?? '');
+            $form->addHiddenValue('lendingAction', $lendingAction == 'SignOut'? 'Return' : $lendingAction);
             
             if (!empty($name) or !empty($gibbonLibraryTypeID) or !empty($gibbonSpaceID) or !empty($status)) {
                 $params = [

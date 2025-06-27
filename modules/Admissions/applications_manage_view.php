@@ -110,7 +110,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
             ->addParam('format', 'export')
             ->setTarget('_blank')
-            ->prepend(' | ')
             ->directLink()
             ->displayLabel();
     }

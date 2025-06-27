@@ -48,5 +48,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'fileExtensions_manage_delete.php', array('gibbonFileExtensionID' => $gibbonFileExtensionID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

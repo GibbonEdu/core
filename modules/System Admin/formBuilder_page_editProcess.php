@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['introduction' => 'HTML', 'postscript' => 'HTML']);
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $gibbonFormPageID = $_POST['gibbonFormPageID'] ?? '';
@@ -40,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         'name'         => $_POST['name'] ?? '',
         'introduction' => $_POST['introduction'] ?? '',
         'postscript'   => $_POST['postscript'] ?? '',
+        'gibbonFormID' => $_POST['gibbonFormID'] ?? '',
     ];
 
     // Validate the required values are present
@@ -57,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
 
     // Validate that this record is unique
-    if (!$formPageGateway->unique($data, ['name'], $gibbonFormPageID)) {
+    if (!$formPageGateway->unique($data, ['name', 'gibbonFormID'], $gibbonFormPageID)) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;

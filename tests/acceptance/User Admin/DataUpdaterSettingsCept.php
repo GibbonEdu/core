@@ -40,7 +40,7 @@ $I->selectOption('settings[Staff][emergency2Number2]', 'required');
 $I->selectOption('settings[Staff][emergency2Relationship]', 'required');
 $I->selectOption('settings[Staff][vehicleRegistration]', 'required');
 
-$I->click('#dataUpdaterSettingsFields input[type=submit]');
+$I->click('#dataUpdaterSettingsFields [type=submit]');
 
 // Verify Results ----------------------------------------------
 

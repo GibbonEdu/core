@@ -164,8 +164,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $row = $form->addRow();
                     $row->addLabel('gibbonSpaceID', __('Facility'));
                     $col = $row->addColumn()->addClass('flex-col');
-                    $col->addSelectSpace('gibbonSpaceID')->addClass('flex-1');
-                    $col->addContent('<br/><div id="facilityStatus"></div>');
+                    $col->addSelectSpace('gibbonSpaceID')->addClass('flex-1 w-full');
+                    $col->addContent('<br/><div id="facilityStatus" class="w-full"></div>');
 
                 $row = $form->addRow();
                     $row->addFooter();

@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentBorrowingRecord.php");
 
@@ -75,8 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
         $table->setTitle(__('Report Data'));
         $table->modifyRows(function ($item, $row) {
             if ($item['status'] == 'On Loan') {
-                return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row;
+                return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('success');
             }
+            if ($item['status'] == 'Reserved') $row->addClass('message');
+            if ($item['status'] == 'Decommissioned' || $item['status'] == 'Lost') $row->addClass('error');
             return $row;
         });
         $table

@@ -49,6 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $step = 1;
         }
 
+        $canOverride = $highestAction == 'Manage Facility Bookings_allBookings';
+
         //Step 1
         if ($step == 1) {
             echo '<h2>';
@@ -69,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $timeEnd = isset($_GET['timeEnd'])? $_GET['timeEnd'] : '';
 
             // Collect facilities
-            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace WHERE active='Y' ORDER BY name";
+            $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace WHERE active='Y' AND bookable='Y' ORDER BY name";
             $results = $pdo->executeQuery(array(), $sql);
             if ($results->rowCOunt() > 0) {
                 $facilities['--'.__('Facilities').'--'] = $results->fetchAll(\PDO::FETCH_KEY_PAIR);
@@ -204,6 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
                     if ($repeat == 'No') {
                         $gibbonCourseClassID = null;
+                        $offTimetable = false;
                         $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd, $gibbonCourseClassID);
 
                         if (!$available && !empty($gibbonCourseClassID)) {
@@ -221,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         } else {
                             $row = $form->addRow()->addClass('error');
                             $row->addLabel('dates[]', Format::date($date))->description(__('Not Available'));
-                            $row->addCheckbox('dates[]')->setValue($date)->disabled();
+                            $row->addCheckbox('dates[]')->setValue($date)->disabled(!$canOverride);
                         }
                     } elseif ($repeat == 'Daily' and $repeatDaily >= 2 and $repeatDaily <= 20) {
                         $continue = true;
@@ -245,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled(!$canOverride);
                                 }
                             } else {
                                 ++$failCount;
@@ -277,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled(!$canOverride);
                                 }
                             } else {
                                 ++$failCount;
@@ -292,7 +295,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         $row->addAlert(__('Your request failed because your inputs were invalid.'), 'error');
                     }
 
-                    if ($available == true) {
+                    if ($available == true || $canOverride) {
+                        $row = $form->addRow();
+                            $row->addLabel('override', __('Override'))->description(__('Allows you to override availability checks to make this booking.'));
+                            $row->addCheckbox('override')->setValue('Y');
+
                         $row = $form->addRow();
                             $row->addSubmit();
                     } else {

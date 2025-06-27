@@ -45,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo __('Search');
         echo '</h3>';
 
-        $form = Form::create("searchBox", $session->get('absoluteURL') . "/index.php", "get", "noIntBorder fullWidth standardForm");
-        $form->setClass('noIntBorder fullWidth');
+        $form = Form::create("searchBox", $session->get('absoluteURL') . "/index.php", "get", "noIntBorder w-full standardForm");
+        $form->setClass('noIntBorder w-full');
         $form->addHiddenValue("q", "/modules/Finance/billingSchedule_manage.php");
 
         $row = $form->addRow();

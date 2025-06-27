@@ -107,7 +107,7 @@ class Header
 
             $links['preferences'] = [
                 'name' => __('Preferences'),
-                'url'  => Url::fromRoute('preferences'),
+                'url'  => Url::fromRoute('preferences')->withQueryParam('sidebar', 'false'),
             ];
 
             if ($this->session->has('emailLink')) {
@@ -178,6 +178,8 @@ class Header
 
         $messageWallLatestPost = $this->messengerGateway->getRecentMessageWallTimestamp();
 
+        $houseLogo = file_exists($this->session->get('absolutePath').'/'.$this->session->get('gibbonHouseIDLogo')) ? $this->session->get('gibbonHouseIDLogo') : '';
+
         return [
             'url'           => $profileURL ?? '',
             'name'          => $this->session->get('preferredName').' '.$this->session->get('surname'),
@@ -185,7 +187,7 @@ class Header
             'roleCategory'  => $this->session->get('gibbonRoleIDCurrentCategory'),
             'image_240'     => $this->session->get('image_240'),
             'houseName'     => $this->session->get('gibbonHouseIDName'),
-            'houseLogo'     => $this->session->get('gibbonHouseIDLogo'),
+            'houseLogo'     => $houseLogo,
             'messengerRead' => strtotime((string) $this->session->get('messengerLastRead')) >= $messageWallLatestPost,
         ];
     }

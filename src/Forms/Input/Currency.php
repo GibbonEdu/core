@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\View\Component;
+
 /**
  * Date
  *
@@ -33,17 +35,19 @@ class Currency extends Number
     protected $onlyInteger = false;
 
     /**
-     * Adds currency format to the label description (if not already present)
-     * @return string|bool
+     * Gets the HTML output for this form element.
+     * @return  string
      */
-    public function getLabelContext($label)
+    protected function getElement()
     {
         global $session;
 
-        if (stristr($label->getDescription(), 'In ') === false) {
-            return sprintf(__('In %1$s.'), $session->get('currency'));
-        }
+        list($currencyName, $currencySymbol) = explode(' ', $session->get('currency'));
 
-        return false;
+        return Component::render(Currency::class, $this->getAttributeArray() + [
+            'groupClass'     => $this->getGroupClass(),
+            'currencyName'   => $currencyName,
+            'currencySymbol' => $currencySymbol,
+        ]);
     }
 }

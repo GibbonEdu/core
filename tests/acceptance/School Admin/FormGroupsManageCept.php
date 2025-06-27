@@ -50,5 +50,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'formGroup_manage_delete.php', array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

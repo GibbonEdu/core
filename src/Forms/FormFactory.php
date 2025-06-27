@@ -21,14 +21,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Column;
+use Gibbon\Forms\Layout\Meta;
 use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\FormFactoryInterface;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Http\Url;
 use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Action;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * FormFactory
@@ -65,6 +67,14 @@ class FormFactory implements FormFactoryInterface
     public function createColumn($id = ''): Column
     {
         return new Layout\Column($this, $id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createMeta(): Meta
+    {
+        return new Layout\Meta($this);
     }
 
     public function createTable($id = '')
@@ -132,6 +142,11 @@ class FormFactory implements FormFactoryInterface
     	return new Layout\WebLink($content);
     }
 
+    public function createAction($name, $label = '')
+    {
+    	return new Action($name, $label);
+    }
+
     /* BASIC INPUT --------------------------- */
 
     public function createCustomField($name, $fields = array())
@@ -181,18 +196,18 @@ class FormFactory implements FormFactoryInterface
 
     public function createEmail($name)
     {
-        return (new Input\TextField($name))->addValidation('Validate.Email')->maxLength(75);
+        return (new Input\TextField($name))
+            ->addValidation('Validate.Email')
+            ->maxLength(75);
     }
 
     //A URL web link
     public function createURL($name)
     {
         return (new Input\TextField($name) )
+            ->setType('url')
             ->placeholder('http://')
-            ->addValidation(
-                'Validate.Format',
-                'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "'.__('Must start with http:// or https://').'"'
-            );
+            ->addValidation('Validate.URL');
     }
 
     public function createNumber($name)
@@ -235,6 +250,11 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
+    public function createToggle($name)
+    {
+        return (new Input\Toggle($name));
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -248,14 +268,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\MultiSelect($this, $name);
     }
 
-    public function createButton($label = 'Button', $onClick = '', $id = null)
+    public function createButton($label = 'Button', $onClick = null, $id = null)
     {
-        $button = new Input\Button($label, $onClick);
-        if(!empty($id)) {
-            $button->setID($id)->setName($id);
-        }
-
-        return $button;
+        return new Input\Button($label, 'button', $onClick, $id);
     }
 
     public function createCustomBlocks($name, Session $session, bool $canDelete = true)
@@ -295,10 +310,9 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
-    public function createSubmit($label = 'Submit', $class = '')
+    public function createSubmit($label = 'Submit', $id = null)
     {
-        $content = sprintf('<input type="submit" value="%1$s" class="%2$s">', __($label), $class);
-        return $this->createContent($content)->setClass('right');
+        return $this->createButton(__($label), null, $id)->setType('submit')->addClass('text-right');
     }
 
     public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())
@@ -306,43 +320,39 @@ class FormFactory implements FormFactoryInterface
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
         $clearURL = Url::fromRoute()->withQueryParams($parameters);
-        $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
+        $clearLink = sprintf('<a href="%s" class="right px-3 py-2 text-xs font-medium text-gray-600">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
-        return $this->createSubmit('Go')->prepend($clearLink);
+        return $this->createSubmit(__('Go'))->prepend($clearLink);
     }
 
     public function createConfirmSubmit($label = 'Yes', $cancel = false)
     {
-        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
-        return $this->createSubmit($label)->prepend($cancelLink);
+        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right px-3 py-2 text-xs font-medium text-gray-600">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
+        return $this->createSubmit(__($label))->prepend($cancelLink);
     }
 
     public function createAdvancedOptionsToggle()
     {
-        return $this->createContent('<a class="button rounded-sm" onclick="false" data-toggle=".advancedOptions">'.__('Advanced Options').'</a>')
-                ->wrap('<span class="small">', '</span>')
-                ->setClass('left');
+        return $this->createButton(__('Advanced Options'))
+            ->setAttribute('@click', 'advancedOptions = !advancedOptions')
+            ->setClass('text-xs bg-transparent');
     }
 
     public function createFooter($required = true)
     {
-        $content = '';
-        if ($required) {
-            $content = '<span class="text-xs text-gray-600">* '.__('denotes a required field').'</span>';
-        }
-        return $this->createContent($content);
+        return $this->createContent('');
     }
 
     /* PRE-DEFINED INPUT --------------------------- */
 
     public function createYesNo($name)
     {
-        return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+        return $this->createToggle($name)->setYesNo();
     }
 
     public function createYesNoRadio($name)
     {
-        return $this->createRadio($name)->fromArray(array('Y' => __('Yes'), 'N' => __('No') ))->inline(true);
+        return $this->createToggle($name)->setYesNo();
     }
 
     public function createCheckAll($name = 'checkall')
@@ -398,6 +408,7 @@ class FormFactory implements FormFactoryInterface
             'Guardian'       => __('Guardian'),
             'Grandmother'    => __('Grandmother'),
             'Grandfather'    => __('Grandfather'),
+            'Sibling'        => __('Sibling'),
             'Friend'         => __('Friend'),
             'Other Relation' => __('Other Relation'),
             'Doctor'         => __('Doctor'),
@@ -440,7 +451,7 @@ class FormFactory implements FormFactoryInterface
             'uk_UA' => 'українська мова - Україна',
             'ur_PK' => 'پاکستان - اُردُو',
             'zh_CN' => '汉语 - 中国',
-            'zh_HK' => '體字 - 香港',
+            'zh_HK' => '繁體字 - 香港',
         );
 
         return $this->createSelect($name)->fromArray($languages);
@@ -485,6 +496,7 @@ class FormFactory implements FormFactoryInterface
                 'BWP P' => 'Botswana Pula (P)',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
+                'CLP $' => 'Chilean Peso ($)',
                 'CNY ¥' => 'Chinese Renminbi (¥)',
                 'COP $' => 'Colombian Peso ($)',
                 'EGP £' => 'Egyptian Pound (£)',
@@ -505,6 +517,7 @@ class FormFactory implements FormFactoryInterface
                 'MAD' => 'Moroccan Dirham (MAD)',
                 'NAD N$' => 'Namibian Dollar (N$)',
                 'NPR ₨' => 'Nepalese Rupee (₨)',
+                'NIO C$' => 'Nicaraguan Córdoba (C$)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'OMR ر.ع.' => 'Omani Rial (ر.ع.)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',

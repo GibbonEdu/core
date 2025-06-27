@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
+use Gibbon\Session\TokenHandler;
 
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {
@@ -32,7 +34,7 @@ register_shutdown_function(function () {
 
 // Check for the autoloader file
 if (!file_exists(__DIR__.'/vendor/autoload.php')) {
-    $message = 'Fatal Error: Missing composer autoloader. Your vendor folder is likely not installed. If you are running cutting edge code, navigate to your base dir in a terminal window and run the "composer install" command. See the Cutting Edge Code documentation for more information: https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/cutting-edge-code/';
+    $message = 'Fatal Error: Missing composer autoloader. Your vendor folder is likely not installed. If you are running cutting edge code, navigate to your base dir in a terminal window and run the "composer install" command. See the Cutting Edge Code documentation for more information: https://docs.gibbonedu.org/introduction/installation-options/cutting-edge-code';
     include __DIR__.'/error.php';
     exit;
 }
@@ -144,4 +146,26 @@ if (!empty($session->get('module'))) {
 }
 
 // Sanitize incoming user-supplied GET variables
-$_GET = $container->get(\Gibbon\Data\Validator::class)->sanitizeUrlParams($_GET);
+$validator = $container->get(Validator::class);
+$_GET = $validator->sanitizeUrlParams($_GET);
+$tokenHandler = $container->get(TokenHandler::class);
+
+// Check for CSRF token and nonce when posting any form
+if (!empty($_POST) && count($_POST) > 1 && stripos($_SERVER['PHP_SELF'], 'Process.php') !== false) {
+    
+    // Validate CSRF token
+    if (!$tokenHandler->validateCsrfToken()) {
+        $URL = $_SERVER['HTTP_REFERER'].'&return=error9';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Validate nonce
+    if (!$tokenHandler->validateNonce()) {
+        $URL = $_SERVER['HTTP_REFERER'].'&return=error10';
+        header("Location: {$URL}");
+        exit;
+    }
+}
+
+

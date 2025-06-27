@@ -45,7 +45,7 @@ $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
 
-//generate a unique and random incidentID for multiple behavior records
+// Generate a unique and random incidentID for multiple behavior records
 $salt = getSalt();
 $gibbonMultiIncidentID = hash('sha256', $salt);
 
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         foreach ($gibbonPersonIDMulti as $gibbonPersonID) {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date),'gibbonMultiIncidentID' => $gibbonMultiIncidentID, 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => Format::dateConvert($date),'gibbonMultiIncidentID' => $gibbonMultiIncidentID, 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'fields' => $fields, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
                 $sql = 'INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, gibbonMultiIncidentID=:gibbonMultiIncidentID, descriptor=:descriptor, level=:level, comment=:comment, fields=:fields, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -110,8 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } 
 
             // Attempt to notify tutor(s) and EA(s) of negative behaviour
-
-            $dataDetail = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
+            $dataDetail = ['gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID];
             $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
             $resultDetail = $connection2->prepare($sqlDetail);
             $resultDetail->execute($dataDetail);
@@ -120,10 +119,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
             $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-            $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
+            $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
+
+            // Add extra details to the notification
+            $details = [__('Date') => Format::date($date), __('Time') => date('H:i'), __('Type') => $type];
+            if (!empty($descriptor)) $details[__('Descriptor')] = $descriptor;
+            if (!empty($level)) $details[__('Level')] = $level;
 
             // Raise a new notification event
-            $event = new NotificationEvent('Behaviour', $type == 'Positive' ? 'New Positive Record' : 'New Negative Record');
+            $eventType = '';
+            switch ($type) {
+                case 'Positive':
+                    $eventType = 'New Positive Record';
+                    break;
+                case 'Negative':
+                    $eventType = 'New Negative Record';
+                    break;
+                case 'Observation':
+                    $eventType = 'New Observation Record';
+                    break;
+            }
+            $event = new NotificationEvent('Behaviour', $eventType);
+            $event->setNotificationDetails($details);
             $event->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
                 'type' => strtolower($type),
                 'person' => $staffName,
@@ -156,13 +173,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     ]);
 
                     if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
-                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
+                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink, $details);
                     }
                     if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
-                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
+                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink, $details);
                     }
                     if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
-                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink, $details);
                     }
                 }
             }
@@ -172,6 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if (!empty($studentIN)) {
                 // Raise a notification event for IN students
                 $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
+                $eventIN->setNotificationDetails($details);
                 $eventIN->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
                     'type' => strtolower($type),
                     'person' => $staffName, 

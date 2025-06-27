@@ -23,8 +23,8 @@ namespace Gibbon\Services;
 
 use DateTime;
 use DateTimeImmutable;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Http\Url;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Format values based on locale and system settings.
@@ -36,13 +36,31 @@ class Format
 {
     use FormatResolver;
 
+    public const NONE = -1;
+    public const FULL = 0;
+    public const LONG = 1;
+    public const MEDIUM = 2;
+    public const SHORT = 3;
+    
+    public const FULL_NO_YEAR = 100;
+    public const LONG_NO_YEAR = 101;
+    public const MEDIUM_NO_YEAR = 102;
+    public const SHORT_NO_YEAR = 103;
+
     protected static $settings = [
-        'dateFormatPHP'     => 'd/m/Y',
-        'dateTimeFormatPHP' => 'd/m/Y H:i',
-        'timeFormatPHP'     => 'H:i',
+        'dateFormatPHP'        => 'd/m/Y',
+        'dateTimeFormatPHP'    => 'd/m/Y H:i',
+        'timeFormatPHP'        => 'H:i',
+        'dateFormatFull'       => 'l, F j',
+        'dateFormatLong'       => 'F j',
+        'dateFormatMedium'     => 'M j',
+        'dateFormatIntlFull'   => 'EEEE, d MMMM',
+        'dateFormatIntlLong'   => 'd MMMM',
+        'dateFormatIntlMedium' => 'd MMM',
+        'dateFormatGenerate'   => true,
     ];
 
-    protected static $intlFormatterAvailable = false;
+    public static $intlFormatterAvailable = false;
 
     /**
      * Sets the internal formatting options from an array.
@@ -53,6 +71,18 @@ class Format
     {
         static::$settings = array_replace(static::$settings, $settings);
         static::$intlFormatterAvailable = class_exists('IntlDateFormatter');
+
+        // Generate best-fit date formats for this locale, if possible
+        if (static::$settings['dateFormatGenerate'] && class_exists('IntlDatePatternGenerator')) {
+            $intlPatternGenerator = new \IntlDatePatternGenerator(static::$settings['code']);
+            static::$settings['dateFormatIntlFull'] = $intlPatternGenerator->getBestPattern('EEEEMMMMd');
+            static::$settings['dateFormatIntlLong'] = $intlPatternGenerator->getBestPattern('MMMMd');
+            static::$settings['dateFormatIntlMedium'] = $intlPatternGenerator->getBestPattern('MMMd');
+        } else {
+            static::$settings['dateFormatIntlFull'] = static::$settings['code'] == 'en_GB' ? 'EEEE, d MMMM' : 'EEEE, MMMM d';
+            static::$settings['dateFormatIntlLong'] = static::$settings['code'] == 'en_GB' ? 'd MMMM' : 'MMMM d';
+            static::$settings['dateFormatIntlMedium'] = static::$settings['code'] == 'en_GB' ? 'd MMM' : 'MMM d';
+        }
     }
 
     /**
@@ -90,7 +120,12 @@ class Format
         if (empty($dateString)) {
             return '';
         }
-        $date = static::createDateTime($dateString, strlen($dateString) == 10 ? 'Y-m-d' : null);
+
+        if (is_string($dateString) && stripos($dateString, '/') !== false) {
+            return $dateString;
+        }
+
+        $date = static::createDateTime($dateString, is_string($dateString) && strlen($dateString) == 10 ? 'Y-m-d' : null);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
@@ -105,6 +140,11 @@ class Format
         if (empty($dateString)) {
             return '';
         }
+
+        if (is_string($dateString) && stripos($dateString, '-') === 4) {
+            return $dateString;
+        }
+
         $date = static::createDateTime($dateString, static::$settings['dateFormatPHP']);
         return $date ? $date->format('Y-m-d') : $dateString;
     }
@@ -118,6 +158,9 @@ class Format
      */
     public static function dateTime($dateString, $format = false)
     {
+        if (empty($dateString)) {
+            return '';
+        }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
@@ -125,31 +168,122 @@ class Format
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
-     * @param DateTime|string $dateString
-     * @return string
+     * @param DateTime|string $dateString   The date string to format.
+     * @param int|string     $dateFormat    (Optional) An int to specify the date format used with IntlDateFormatter
+     *                                      If a string is passed, it will return the default format.
+     *                                      See: https://www.php.net/manual/en/class.intldateformatter.php
+     *                                      See: https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+     *                                      Default: \IntlDateFormatter::MEDIUM
+     * @param int|string     $timeFormat    (Optional) An int to specify the time format used with IntlDateFormatter
+     *                                      Default: \IntlDateFormatter::NONE
+     *
+     * @return string  The formatted date string.
      */
-    public static function dateReadable($dateString, $format = '%b %e, %Y')
+    public static function dateReadable($dateString, $dateFormat = null, $timeFormat = null) : string
     {
         if (empty($dateString)) {
             return '';
         }
-        $date = static::createDateTime($dateString);
-        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
+
+        if (!static::$intlFormatterAvailable) {
+            return static::date($dateString, static::getDateFallback($dateFormat, $timeFormat));
+        }
+
+        $formatter = new \IntlDateFormatter(
+            static::$settings['code'],
+            is_int($dateFormat) && $dateFormat < 100 ? $dateFormat : \IntlDateFormatter::MEDIUM,
+            is_int($timeFormat) ? $timeFormat : \IntlDateFormatter::NONE,
+            null,
+            null,
+            static::getDatePattern($dateFormat)
+        );
+
+        return mb_convert_case(
+            $formatter->format(static::createDateTime($dateString)),
+            MB_CASE_TITLE,
+        );
     }
 
     /**
-     * Formats a YYYY-MM-DD date as a readable string with month names and times.
+     * A shortcut for formatting a YYYY-MM-DD date as a readable string with month names and times.
      *
-     * @param DateTime|string $dateString
-     * @return string
+     * @param DateTime|string $dateString  The date string to format.
+
+     * @return string  The formatted date string.
      */
-    public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
+    public static function dateTimeReadable($dateString) : string
     {
-        if (empty($dateString)) {
-            return '';
+        return static::dateReadable($dateString, static::MEDIUM, static::SHORT);
+    }
+
+    /**
+     * Gets a IntlDateFormatter pattern string for a given format constant.
+     * Extends the IntlDateFormatter options by adding NO_YEAR options.
+     *
+     * @param string|int    $dateFormat
+     * @return string       The IntlDateFormatter pattern string.
+     */
+    protected static function getDatePattern($dateFormat = null)
+    {
+        if (is_string($dateFormat)) {
+            return null;
         }
-        $date = static::createDateTime($dateString);
-        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
+        
+        switch ($dateFormat) {
+            case static::FULL_NO_YEAR:
+                return static::$settings['dateFormatIntlFull'];
+            case static::LONG_NO_YEAR:
+                return static::$settings['dateFormatIntlLong'];
+            case static::MEDIUM_NO_YEAR:
+            case static::SHORT_NO_YEAR:
+                return static::$settings['dateFormatIntlMedium'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a generic format for DateTime classes, to be used as a fallback
+     * when IntlDateFormatter is not available.
+     *
+     * @param string|int    $dateFormat
+     * @param string|int    $timeFormat
+     * @return string       The DateTime format string.
+     */
+    protected static function getDateFallback($dateFormat = null, $timeFormat = null)
+    {
+        if (is_null($dateFormat)) {
+            $dateFormat = static::MEDIUM;
+        }
+
+        switch ($dateFormat) {
+            case static::NONE:
+                $format = '';
+                break;
+            case static::FULL:
+            case static::FULL_NO_YEAR:
+                $format = static::$settings['dateFormatFull'];
+                break;
+            case static::LONG:
+            case static::LONG_NO_YEAR:
+                $format = static::$settings['dateFormatLong'];
+                break;
+            default:
+                $format = static::$settings['dateFormatMedium'];
+        }
+
+        if ($dateFormat >= 0 && $dateFormat < 100) {
+            $format .= ' Y'; 
+        }
+
+        if ($timeFormat != null && $timeFormat != static::NONE) {
+            $format .= !empty($format) ? ', ' : '';
+            $format .= $timeFormat == static::FULL
+                ? 'H:i:s'
+                : 'H:i';
+        }
+
+        return $format;
     }
 
     /**
@@ -161,6 +295,14 @@ class Format
      */
     public static function dateRange($dateFrom, $dateTo, $format = false)
     {
+        if (empty($dateFrom) || empty($dateTo)) {
+            return '';
+        }
+
+        if ($dateFrom == $dateTo) {
+            return static::date($dateFrom, $format);
+        }
+
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
     }
 
@@ -184,36 +326,14 @@ class Format
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
 
-        if (static::$intlFormatterAvailable) {
-            $formatter = new \IntlDateFormatter(null, \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
-
-            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $formatter->setPattern('MMM d, yyyy');
-                $output = $formatter->format($startTime);
-            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $formatter->setPattern('MMM d');
-                $output = $formatter->format($startTime) . ' - ';
-                $formatter->setPattern('d, yyyy');
-                $output .= $formatter->format($endTime);
-            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $formatter->setPattern('MMM d');
-                $output = $formatter->format($startTime) . ' - ';
-                $formatter->setPattern('MMM d, yyyy');
-                $output .= $formatter->format($endTime);
-            } else {
-                $formatter->setPattern('MMM d, yyyy');
-                $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
-            }
+        if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+            $output = static::dateReadable($startTime, static::MEDIUM);
+        } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+            $output = static::dateReadable($startTime, static::MEDIUM_NO_YEAR) . ' - ';
+            $output .= static::dateReadable($endTime, static::MEDIUM);
         } else {
-            if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-                $output = $startDate->format('M j, Y');
-            } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-                $output = $startDate->format('M j').' - '.$endDate->format('j, Y');
-            } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-                $output = $startDate->format('M j').' - '.$endDate->format('M j, Y');
-            } else {
-                $output = $startDate->format('M j, Y').' - '.$endDate->format('M j, Y');
-            }
+            $output = static::dateReadable($startTime, static::MEDIUM) . ' - ';
+            $output .= static::dateReadable($endTime, static::MEDIUM);
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -228,6 +348,10 @@ class Format
      */
     public static function dateFromTimestamp($timestamp, $format = false)
     {
+        if (empty($timestamp)) {
+            return '';
+        }
+
         $date = static::createDateTime($timestamp, 'U');
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
     }
@@ -243,7 +367,7 @@ class Format
         if (empty($dateString)) {
             return '';
         }
-        if (strlen($dateString) == 10) {
+        if (is_string($dateString) && strlen($dateString) == 10) {
             $dateString .= ' 00:00:00';
         }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
@@ -296,7 +420,11 @@ class Format
      */
     public static function timestamp($dateString, $timezone = null)
     {
-        if (strlen($dateString) == 10) {
+        if (empty($dateString)) {
+            return '';
+        }
+
+        if (is_string($dateString) && strlen($dateString) == 10) {
             $dateString .= ' 00:00:00';
         }
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s', $timezone);
@@ -312,7 +440,11 @@ class Format
      */
     public static function time($timeString, $format = false)
     {
-        $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
+        if (empty($timeString)) {
+            return '';
+        }
+
+        $convertFormat = is_string($timeString) && strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
         $date = static::createDateTime($timeString, $convertFormat);
         return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
     }
@@ -353,6 +485,8 @@ class Format
      */
     public static function currency($value, $includeName = false, $decimals = 2)
     {
+        if (is_null($value)) return '';
+
         return static::$settings['currencySymbol'] . number_format($value, $decimals) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
@@ -365,6 +499,8 @@ class Format
      */
     public static function yesNo($value, $translate = true)
     {
+        if (empty($value)) return '';
+        
         $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
 
         return $translate ? __($value) : $value;
@@ -413,10 +549,10 @@ class Format
      * @param int $length
      * @return string
      */
-    public static function truncate($value, $length = 40)
+    public static function truncate($value, $length = 40, $class = '')
     {
-        return strlen($value) > $length
-            ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
+        return is_string($value) && strlen($value) > $length
+            ? "<span title='".htmlPrep($value)."' class='".$class."'>".substr(htmlPrep($value), 0, $length).'...</span>'
             : $value;
     }
 
@@ -457,11 +593,13 @@ class Format
      * Formats a string of additional details for a hover-over tooltip.
      *
      * @param string $value
+     * @param string $tooltip
+     * @param string $class
      * @return string
      */
-    public static function tooltip($value, $tooltip = '')
+    public static function tooltip($value, $tooltip = '', $class = '')
     {
-        return '<span title="'.$tooltip.'">'.$value.'</span>';
+        return '<span title="'.$tooltip.'" class="'.$class.'">'.$value.'</span>';
     }
 
     /**
@@ -475,6 +613,8 @@ class Format
      */
     public static function link($url, $text = '', $attr = [])
     {
+        $isExternal = stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url;
+
         if (empty($url)) {
             return $text;
         }
@@ -486,13 +626,21 @@ class Format
         }
 
         if (stripos($url, '@') !== false) {
+            $url = filter_var($url, FILTER_SANITIZE_EMAIL);
             $url = 'mailto:'.$url;
-        }
-        if (substr($url, 0, 2) == './') {
-            $url = static::$settings['absoluteURL'].substr($url, 1);
+        } else {
+            $url = str_replace(' ', '%20', $url);
+            $url = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $url);
         }
 
-        if (stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url) {
+        $url = str_replace(['"', "'"], ['%22', '%27'], $url);
+        
+        if (substr($url, 0, 2) == './') {
+            $url = static::$settings['absoluteURL'].substr($url, 1);
+            $isExternal = false;
+        }
+
+        if ($isExternal) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank" rel="noopener noreferrer">'.$text.'</a>';
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
@@ -507,7 +655,7 @@ class Format
      */
     public static function hyperlinkAll(string $value)
     {
-        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
+        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+?)(?=[.,;:!]*(?:\s|$))/';
         return preg_replace($pattern, '$1<a target="_blank" rel="noopener noreferrer" href="$2">$2</a>', $value);
     }
 
@@ -542,7 +690,12 @@ class Format
      */
     public static function age($dateString, $short = false)
     {
+        if (empty($dateString)) {
+            return '';
+        }
+        
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        
         if (!$date) {
             return __('Unknown');
         }
@@ -919,7 +1072,7 @@ class Format
 
         if ($daysUntilNextBirthday == 0) {
             $title = __("{name}'s birthday today!", ['name' => $preferredName]);
-            $icon = 'gift_pink.png';
+            $iconClass = 'bg-pink-500 text-white';
         } else {
             $title = __n(
                 "{count} day until {name}'s birthday!",
@@ -927,10 +1080,10 @@ class Format
                 $daysUntilNextBirthday,
                 ['name' => $preferredName]
             );
-            $icon = 'gift.png';
+            $iconClass = 'text-gray-600 bg-white';
         }
 
-        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+        return Format::tooltip(icon('outline', 'gift', 'absolute bottom-0 -ml-4 size-7 shadow p-0.5 rounded-md '.$iconClass, ['stroke-width' => '1.8']), $title);
     }
 
     /**
@@ -945,6 +1098,10 @@ class Format
      */
     protected static function daysUntilNextBirthday(string $birthday): int
     {
+        if (empty($birthday)) {
+            return '';
+        }
+
         // DateTime of 00:00:00 today
         $today = new \DateTime('today');
 
@@ -1003,6 +1160,28 @@ class Format
         return $courseName .'.'. $className;
     }
 
+    /**
+     * Displays a color swatch of the given Hex colour.
+     *
+     * @param string $color
+     * @return string
+     */
+    public static function colorSwatch($color)
+    {
+        $color = trim(preg_replace('/[^a-fA-F0-9]/', '', $color), '#');
+        $colorHex = !empty($color) ? '#'.$color : '#ffffff00';
+        $colorTitle = !empty($color) ? $colorHex : __('None');
+
+        return '<div class="rounded-md border h-8 w-8" style="background-color:'.$colorHex.'" title="'.$colorTitle.'"></div>';
+    }
+
+    /**
+     * Displays an alert box with the provided message and error level.
+     *
+     * @param string $message
+     * @param string $level
+     * @return string
+     */
     public static function alert($message, $level = 'error')
     {
         return '<div class="'.$level.'">'.$message.'</div>';
@@ -1014,6 +1193,16 @@ class Format
             return $dateOriginal;
         }
 
+        if (empty($expectedFormat) && is_int($dateOriginal)) {
+            $dateOriginal = date('Y-m-d', $dateOriginal);
+            $expectedFormat = 'Y-m-d';
+        }
+
+        if (empty($expectedFormat) && stripos($dateOriginal, '/') !== false) {
+            $dateOriginal = date('Y-m-d', strtotime($dateOriginal));
+            $expectedFormat = 'Y-m-d';
+        }
+
         return !empty($expectedFormat)
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
@@ -1023,27 +1212,17 @@ class Format
      * Format a given datetime / timestamp into localized day of week name.
      *
      * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     * @param bool $short
      *
      * @return string|false
      */
-    public static function dayOfWeekName($datetime)
+    public static function dayOfWeekName($datetime, $short = false)
     {
         if (!static::$intlFormatterAvailable) {
-            return DateTime::createFromFormat('D', $datetime);
+            return static::createDateTime($datetime)->format($short ? 'D' : 'l');
         }
 
-        static $formatter;
-        if (!isset($formatter)) {
-            $formatter = new \IntlDateFormatter(
-                null,
-                \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                null,
-                null,
-                'EEEE'
-            );
-        }
-        return $formatter->format($datetime);
+        return static::getIntlFormatter($short ? 'EEE' : 'EEEE')->format(static::createDateTime($datetime));
     }
 
     /**
@@ -1051,27 +1230,17 @@ class Format
      * (i.e. from Jan to Sep).
      *
      * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     * @param bool $short
      *
      * @return string|false
      */
-    public static function monthName($datetime)
+    public static function monthName($datetime, $short = false)
     {
         if (!static::$intlFormatterAvailable) {
-            return DateTime::createFromFormat('M', $datetime);
+            return static::createDateTime($datetime)->format($short ? 'M' : 'F');
         }
 
-        static $formatter;
-        if (!isset($formatter)) {
-            $formatter = new \IntlDateFormatter(
-                null,
-                \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                null,
-                null,
-                'MMM'
-            );
-        }
-        return $formatter->format($datetime);
+        return static::getIntlFormatter($short ? 'MMM' : 'MMMM')->format(static::createDateTime($datetime));
     }
 
     /**
@@ -1085,20 +1254,26 @@ class Format
     public static function monthDigits($datetime)
     {
         if (!static::$intlFormatterAvailable) {
-            return DateTime::createFromFormat('m', $datetime);
+            return static::createDateTime($datetime)->format('m');
         }
 
+        return static::getIntlFormatter('MM')->format(static::createDateTime($datetime));
+    }
+
+    protected static function getIntlFormatter($pattern = null)
+    {
         static $formatter;
+
         if (!isset($formatter)) {
             $formatter = new \IntlDateFormatter(
-                null,
+                static::$settings['code'],
                 \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                null,
-                null,
-                'MM'
+                \IntlDateFormatter::FULL
             );
         }
-        return $formatter->format($datetime);
+
+        $formatter->setPattern($pattern);
+
+        return $formatter;
     }
 }

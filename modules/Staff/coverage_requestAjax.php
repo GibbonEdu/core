@@ -22,8 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Module\Staff\Forms\CoverageRequestForm;
 
-$_POST['address'] = '/modules/Staff/coverage_request.php';
-
 require_once '../../gibbon.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
@@ -36,15 +34,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     die(Format::alert(__('You have not specified one or more required parameters.'), 'error flex-1'));
 } else {
     // Proceed!
-    $dateStart = Format::dateConvert($dateStart);
-    $dateEnd = Format::dateConvert($dateEnd);
     $allDay = $_POST['allDay'] ?? '';
     $timeStart = $_POST['timeStart'] ?? '';
     $timeEnd = $_POST['timeEnd'] ?? '';
     
     // FORM
     $form = $container->get(CoverageRequestForm::class)->createForm($gibbonPersonID, $dateStart, $dateEnd, $allDay, $timeStart, $timeEnd);
-    $form->setClass('blank standardForm flex-1');
+    $form->setClass('flex-1');
     $form->setAction('ajax');
 
     echo $form->getOutput();

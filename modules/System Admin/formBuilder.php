@@ -62,13 +62,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
     $table->addActionColumn()
         ->addParam('gibbonFormID')
         ->format(function ($form, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/System Admin/formBuilder_edit.php');
+
             if ($form['pages'] > 0) {
                 $actions->addAction('view', __('Preview'))
                     ->setURL('/modules/System Admin/formBuilder_preview.php');
             }
-
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/System Admin/formBuilder_edit.php');
 
             if ($form['pages'] > 0) {
                 $actions->addAction('design', __('Design'))

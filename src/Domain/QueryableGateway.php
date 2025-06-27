@@ -184,12 +184,19 @@ abstract class QueryableGateway extends Gateway
 
             $query->where(function ($query) use ($criteria, $searchable) {
                 $searchText = $criteria->getSearchText();
+                $searchTextEncoded = str_replace('\\', '\\\\', trim(json_encode($searchText), '"'));
+
                 foreach ($criteria->getSearchColumns() as $count => $column) {
                     if (!in_array($column, $searchable)) continue;
 
                     $column = $this->escapeIdentifier($column);
                     $query->orWhere("{$column} LIKE :search{$count}");
                     $query->bindValue(":search{$count}", "%{$searchText}%");
+
+                    if ($searchText != $searchTextEncoded) {
+                        $query->orWhere("{$column} LIKE :searchX{$count}");
+                        $query->bindValue(":searchX{$count}", "%{$searchTextEncoded}%");
+                    }
                 }
             });
         }

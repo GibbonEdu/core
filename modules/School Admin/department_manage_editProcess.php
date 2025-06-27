@@ -92,7 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = $_POST['logo'] ?? '';
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $attachment = empty($_POST['logo']) ? '' : $row['logo'];
                 }
 
                 //Scan through staff

@@ -99,8 +99,9 @@ class PersonalDocumentHandler
                         if (empty($value)) {
                             $personalDocumentFail = true;
                         }
-                    } else {
-                        $data[$field] = $attachment;
+                    } else if (empty($attachment)) {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $data[$field] = null;
                     }
                 } else {
                     // Handle all other data
@@ -148,7 +149,7 @@ class PersonalDocumentHandler
         $changeCount = 0;
 
         foreach ($documentsOld as $gibbonPersonalDocumentTypeID => $document) {
-            $row = $form->addRow()->setClass('head heading')->addContent(__($document['name']));
+            $row = $form->addRow()->setClass('head bg-gray-200')->addContent(__($document['name']));
 
             // Add the existing document ID, so we can check against it later when processing the update
             if (!empty($documentsNew[$gibbonPersonalDocumentTypeID])) {

@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
     if (!empty($gibbonSchoolYearID)) {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
-    
+
     $reportGateway = $container->get(ReportGateway::class);
 
     // QUERY

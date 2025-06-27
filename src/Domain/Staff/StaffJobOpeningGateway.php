@@ -56,7 +56,7 @@ class StaffJobOpeningGateway extends QueryableGateway
         $criteria->addFilterRules([
             'active' => function ($query, $active) {
                 return $query
-                    ->where('gibbonStaffJobOpening.active = :active')
+                    ->where('gibbonStaffJobOpening.active = :active AND dateOpen <= CURRENT_DATE() ')
                     ->bindValue('active', ucfirst($active));
             },
         ]);

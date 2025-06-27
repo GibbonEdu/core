@@ -71,7 +71,7 @@ class GradeScaleGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
-
+  
     public function selectActiveGradeScales()
     {
         $data = [];
@@ -83,8 +83,21 @@ class GradeScaleGateway extends QueryableGateway
     public function selectGradesByScale($gibbonScaleID)
     {
         $data = ['gibbonScaleID' => $gibbonScaleID];
-		$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
+		    $sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
 
         return $this->db()->select($sql, $data);
+    }
+  
+    public function getDefaultGrade($gibbonScaleID)
+    {
+        $select = $this
+            ->newSelect()
+            ->cols(['gibbonScaleGrade.value'])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonScaleGrade', "gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID AND gibbonScaleGrade.isDefault='Y'")
+            ->where('gibbonScale.gibbonScaleID = :gibbonScaleID')
+            ->bindValue('gibbonScaleID', $gibbonScaleID);
+
+        return $this->runSelect($select)->fetchColumn(0);
     }
 }

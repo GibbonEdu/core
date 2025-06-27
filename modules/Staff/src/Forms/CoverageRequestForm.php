@@ -65,7 +65,7 @@ class CoverageRequestForm
     {
         $canSelectSubstitutes = $this->coverageMode == 'Requested'; // TODO: && $values['status'] == 'Approved'
         $classesNeedingCover = 0;
-        
+
         // Get timetabled classes and non-class records that need coverage (activities and duty)
         $classes = $this->staffCoverageDateGateway->selectPotentialCoverageByPersonAndDate($this->session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateStart, $dateEnd)->fetchAll();
         $classes = array_map(function ($item) {
@@ -114,19 +114,30 @@ class CoverageRequestForm
             }
         }
 
-        // Look for available subs
+        
+
+        // FORM
+        $form = Form::createBlank('staffAbsenceEdit', '');
+
+        $form->setFactory(DatabaseFormFactory::create($this->db));
+
+        if ($canSelectSubstitutes) {
+
+            // Look for available subs
         $criteria = $this->substituteGateway->newQueryCriteria()
-            ->filterBy('allStaff', $this->internalCoverage == 'Y')
-            ->sortBy('gibbonSubstitute.priority', 'DESC')
-            ->sortBy(['surname', 'preferredName']);
+        ->filterBy('allStaff', $this->internalCoverage == 'Y')
+        ->sortBy('gibbonSubstitute.priority', 'DESC')
+        ->sortBy(['surname', 'preferredName']);
 
-        $availabilityCount = 0;
-        $availableSubs = [];
+    $availabilityCount = 0;
+    $availableSubs = [];
 
-        foreach ($coverageByTimetable ? $classes : $absenceDates as $index => $date) {
-            if (!empty($date['gibbonStaffCoverageID'])) continue; // Already covered
+    foreach ($coverageByTimetable ? $classes : $absenceDates as $index => $date) {
+        if (!empty($date['gibbonStaffCoverageID'])) continue; // Already covered
 
             $availableByDate = $this->substituteGateway->queryAvailableSubsByDate($criteria, $date['date'], $date['timeStart'], $date['timeEnd'])->toArray();
+            //$availableByDate = [];
+            
             $availabilityCount += !empty($availableByDate)? 1 : 0;
 
             $availableSubs = array_merge($availableSubs, $availableByDate);
@@ -157,13 +168,6 @@ class CoverageRequestForm
             return $group;
         }, []);
 
-        // FORM
-        $form = Form::create('staffAbsenceEdit', '');
-
-        $form->setFactory(DatabaseFormFactory::create($this->db));
-
-        if ($canSelectSubstitutes) {
-
             $requestTypes = ['Broadcast'  => __('Any available substitute')];
 
             if (!empty($availableSubs) || ($coverageByTimetable && $availabilityCount > 0)) {
@@ -176,12 +180,12 @@ class CoverageRequestForm
 
             $form->toggleVisibilityByClass('individualOptions')->onSelect('requestType')->when('Individual');
             $form->toggleVisibilityByClass('broadcastOptions')->onSelect('requestType')->when('Broadcast');
-                
+
             // Broadcast
             if (!empty($availableSubs)) {
                 $col = $form->addRow()->addClass('broadcastOptions')->addColumn();
                 $col->addAlert(__("This option sends a request out to all available substitutes. There are currently {count} substitutes with availability for this time period. You'll receive a notification once your request is accepted.", ['count' => Format::bold(count($availableSubs))]), 'message');
-                
+
                 if ($coverageByTimetable && $classesNeedingCover > $availabilityCount) {
                     $col->addAlert(__("There are currently no available substitutes for {count} of the following classes.", ['count' => Format::bold($classesNeedingCover - $availabilityCount)]).' '.__('A notification will be sent to administration.'), 'warning');
                 }
@@ -223,7 +227,7 @@ class CoverageRequestForm
         $table->addColumn('dateLabel', __('Date'))
             ->format(Format::using('dateReadable', 'date'))
             ->formatDetails(function ($coverage) {
-                return Format::small(Format::dateReadable($coverage['date'], '%A'));
+                return Format::small(Format::dayOfWeekName($coverage['date']));
             });
 
         if ($coverageByTimetable) {
@@ -248,7 +252,7 @@ class CoverageRequestForm
                 ->width('15%')
                 ->checked(function ($class) use ($allDay, $timeStart, $timeEnd) {
                     if ($class['offTimetable']) return false;
-                    
+
                     $insideTimeRange = $class['timeStart'] < $timeEnd.':00' && $class['timeEnd'] > $timeStart.':00';
 
                     return $allDay == 'Y' || $insideTimeRange ? $class['contextCheckboxID'] : false;
@@ -273,9 +277,9 @@ class CoverageRequestForm
                         $times = $unavailable[$date['date']];
 
                         foreach ($times as $time) {
-                        
+
                             // Handle full day and partial day unavailability
-                            if ($time['allDay'] == 'Y' 
+                            if ($time['allDay'] == 'Y'
                             || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
                             || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
                                 && $time['timeStart'] < $request['timeEnd']

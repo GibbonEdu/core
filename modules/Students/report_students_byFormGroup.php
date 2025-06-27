@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Choose Form Group'))
             ->setFactory(DatabaseFormFactory::create($pdo))
-            ->setClass('noIntBorder fullWidth');
+            ->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_students_byFormGroup.php");
 

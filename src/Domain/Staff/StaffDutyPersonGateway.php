@@ -65,7 +65,7 @@ class StaffDutyPersonGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->cols([
-                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', 'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonDaysOfWeek.gibbonDaysOfWeekID', 'gibbonDaysOfWeek.name as dayOfWeek'
+                'gibbonStaffDuty.gibbonStaffDutyID as groupBy', 'gibbonStaffDutyPerson.gibbonStaffDutyPersonID', 'gibbonStaffDuty.gibbonStaffDutyID', 'gibbonStaffDuty.name', 'gibbonStaffDuty.nameShort', 'gibbonStaffDuty.timeStart', 'gibbonStaffDuty.timeEnd', 'gibbonDaysOfWeek.gibbonDaysOfWeekID', 'gibbonDaysOfWeek.name as dayOfWeek'
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonStaffDuty', 'gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID')
@@ -96,5 +96,16 @@ class StaffDutyPersonGateway extends QueryableGateway
             ->orderBy(['gibbonStaffDuty.sequenceNumber']);
 
         return $this->runSelect($query);
+    }
+
+    public function getDutyDetailsByID($gibbonStaffDutyPersonID)
+    {
+        $data = ['gibbonStaffDutyPersonID' => $gibbonStaffDutyPersonID];
+        $sql = "SELECT gibbonStaffDuty.* 
+                FROM gibbonStaffDuty 
+                JOIN gibbonStaffDutyPerson ON (gibbonStaffDuty.gibbonStaffDutyID=gibbonStaffDutyPerson.gibbonStaffDutyID)
+                WHERE gibbonStaffDutyPerson.gibbonStaffDutyPersonID=:gibbonStaffDutyPersonID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }

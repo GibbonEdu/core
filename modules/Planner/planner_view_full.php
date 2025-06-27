@@ -29,9 +29,11 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -49,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     } else {
 
         $settingGateway = $container->get(SettingGateway::class);
+        $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
         $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
         $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
@@ -188,16 +191,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     // planner's parameters
                     $params = [];
                     $params['gibbonPlannerEntryID'] = $gibbonPlannerEntryID;
-                    if ($date != '') {
-                        $params['date'] = $_GET['date'] ?? '';
-                    }
-                    if ($viewBy != '') {
-                        $params['viewBy'] = $_GET['viewBy'] ?? '';
-                    }
-                    if ($gibbonCourseClassID != '') {
-                        $params['gibbonCourseClassID'] = $gibbonCourseClassID;
-                    }
+                    $params['gibbonCourseClassID'] = $values['gibbonCourseClassID'];
+                    $params['date'] = $values['date'];
+                    $params['viewBy'] = $viewBy;
                     $params['subView'] = $subView;
+                    $params['search'] = $gibbonPersonID;
                     $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
                     $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
@@ -240,97 +238,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         }
                         echo '</h2>';
-                        echo "<div style='float: right; width: 35%; padding-right: 3px; margin-top: -52px'>";
-                        if (strstr($values['role'], 'Guest') == false) {
-                            //Links to previous and next lessons
-                            echo "<p style='text-align: right; margin-top: 10px'>";
-                            echo "<span style='font-size: 85%'>".__('For this class:').'</span><br/>';
-                            try {
-                                if ($values['role'] == 'Teacher' or $highestAction == 'Lesson Planner_viewOnly') {
-                                    $dataPrevious = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'date1' => $values['date'], 'date2' => $values['date'], 'timeStart' => $values['timeStart']);
-                                    $sqlPrevious = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date<:date1 OR (date=:date2 AND timeStart<:timeStart)) ORDER BY date DESC, timeStart DESC";
-                                } else {
-                                    if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
-                                        $dataPrevious = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPersonID' => $gibbonPersonID, 'date1' => $values['date'], 'date2' => $values['date'], 'timeStart' => $values['timeStart']);
-                                        $sqlPrevious = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (date<:date1 OR (date=:date2 AND timeStart<:timeStart)) AND viewableParents='Y' ORDER BY date DESC, timeStart DESC";
-                                    } else {
-                                        $dataPrevious = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPersonID' => $session->get('gibbonPersonID'), 'date1' => $values['date'], 'date2' => $values['date'], 'timeStart' => $values['timeStart']);
-                                        $sqlPrevious = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (date<:date1 OR (date=:date2 AND timeStart<:timeStart)) AND viewableStudents='Y' ORDER BY date DESC, timeStart DESC";
-                                    }
-                                }
-                                $resultPrevious = $connection2->prepare($sqlPrevious);
-                                $resultPrevious->execute($dataPrevious);
-                            } catch (PDOException $e) {
-                            }
-                            if ($resultPrevious->rowCount() > 0) {
-                                $rowPrevious = $resultPrevious->fetch();
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$rowPrevious['gibbonPlannerEntryID']."&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=".$rowPrevious['gibbonCourseClassID']."&date=$date'>".__('Previous Lesson').'</a>';
-                            } else {
-                                echo __('Previous Lesson');
-                            }
 
-                            echo ' | ';
-
-                            try {
-                                if ($values['role'] == 'Teacher' or $highestAction == 'Lesson Planner_viewOnly') {
-                                    $dataNext = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'date1' => $values['date'], 'date2' => $values['date'], 'timeStart' => $values['timeStart']);
-                                    $sqlNext = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date>:date1 OR (date=:date2 AND timeStart>:timeStart)) ORDER BY date, timeStart";
-                                } else {
-                                    if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
-                                        $dataNext = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPersonID' => $gibbonPersonID, 'date1' => $values['date'], 'date2' => $values['date'], 'timeStart' => $values['timeStart']);
-                                        $sqlNext = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (date>:date1 OR (date=:date2 AND timeStart>:timeStart)) AND viewableParents='Y' ORDER BY date, timeStart";
-                                    } else {
-                                        $dataNext = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPersonID' => $session->get('gibbonPersonID'), 'date1' => $values['date'], 'date2' => $values['date'], 'timeStart' => $values['timeStart']);
-                                        $sqlNext = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (date>:date1 OR (date=:date2 AND timeStart>:timeStart)) AND viewableStudents='Y' ORDER BY date, timeStart";
-                                    }
-                                }
-                                $resultNext = $connection2->prepare($sqlNext);
-                                $resultNext->execute($dataNext);
-                            } catch (PDOException $e) {
-                            }
-                            if ($resultNext->rowCount() > 0) {
-                                $rowNext = $resultNext->fetch();
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$rowNext['gibbonPlannerEntryID']."&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=".$rowNext['gibbonCourseClassID']."&date=$date'>".__('Next Lesson').'</a>';
-                            } else {
-                                echo __('Next Lesson');
-                            }
-                            echo '</p>';
-                        }
-                        echo '</div>';
                         echo '</div>';
 
-                        if ($values['role'] == 'Teacher') {
-                            echo "<div class='linkTop'>";
-                            echo '<tr>';
-                            echo '<td colspan=3>';
-                            if ($values['gibbonUnitID'] != '') {
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$values['date']."&subView=$subView&gibbonUnitID=".$values['gibbonUnitID']."'>".__('Unit Overview').'</a> | ';
-                            }
-                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$values['date']."&subView=$subView'>".__('Edit')."<img style='margin: 0 0 -4px 3px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> | ";
-
-                            $dataMarkbook = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                            $sqlMarkbook = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                            $resultMarkbook = $connection2->prepare($sqlMarkbook);
-                            $resultMarkbook->execute($dataMarkbook);
-                            if ($resultMarkbook->rowCount() == 1) {
-                                $rowMarkbook = $resultMarkbook->fetch();
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$rowMarkbook['gibbonMarkbookColumnID']."'>".__('Linked Markbook')."<img style='margin: 0 5px -4px 3px' title='".__('Linked Markbook')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/></a> | ";
-                            }
-                            echo "<input type='checkbox' name='confidentialPlan' class='confidentialPlan' value='Yes' />";
-                            echo "<span title='".__('Includes student data & teacher\'s notes')."' style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show Confidential Data').'</span>';
-                            echo '</td>';
-                            echo '</tr>';
-                            echo '</div>';
-                        } else {
-                            echo "<div class='linkTop'>";
-                            if ($values['gibbonUnitID'] != '') {
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$values['date']."&subView=$subView&gibbonUnitID=".$values['gibbonUnitID']."&search=$gibbonPersonID'>".__('Unit Overview').'</a>';
-                            }
-                            echo '</div>';
-                        }
+                        
+                    
+                        $dataMarkbook = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                        $sqlMarkbook = 'SELECT gibbonMarkbookColumnID FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                        $gibbonMarkbookColumnID = $pdo->selectOne($sqlMarkbook, $dataMarkbook);
+                           
 
                         // Details Table
                         $table = DataTable::createDetails('overview');
+
+                        if (strstr($values['role'], 'Guest') == false) {
+                            $previousLesson = $plannerEntryGateway->getPreviousLesson($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['role']);
+                            $nextLesson = $plannerEntryGateway->getNextLesson($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['role']);
+
+                            $form = Form::createBlank('nav', '');
+                            $form->addHiddenValue('address', $session->get('address'));
+                            $form->addClass('flex-grow flex justify-start items-end');
+                        
+                            $navUrl = Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams($params);
+
+                            $row = $form->addRow();
+                            $col = $row->addColumn()->addClass('flex-1 flex items-center');
+                                $col->addButton(__('Previous Lesson'))
+                                    ->groupAlign('left')
+                                    ->addClass('text-xs')
+                                    ->setAction(!empty($previousLesson) 
+                                        ? $navUrl->withQueryParam('gibbonPlannerEntryID', $previousLesson['gibbonPlannerEntryID']) : '');
+                                $col->addButton(__('Next Lesson'))
+                                    ->groupAlign('right')
+                                    ->addClass('text-xs')
+                                    ->setAction(!empty($nextLesson) ? 
+                                        $navUrl->withQueryParam('gibbonPlannerEntryID', $nextLesson['gibbonPlannerEntryID']) : '');
+                            
+                            $table->addHeaderContent($form->getOutput());
+                        }
+
+                        if ($values['role'] == 'Teacher') {
+                            $table->addHeaderContent("<input type='checkbox' x-model='globalShowHide' name='confidentialPlan' class='confidentialPlan rounded' value='Yes' /><span title='".__('Includes student data & teacher\'s notes')."' class='text-xs italic mr-2' > ".__('Show Confidential Data').'</span>');
+                        }
+
+                        if (!empty($values['gibbonUnitID'])) {
+                            $table->addHeaderAction('book-open', __('Unit Overview'))
+                                ->setURL('/modules/Planner/planner_unitOverview.php')
+                                ->addParam('gibbonUnitID', $values['gibbonUnitID'])
+                                ->addParams($params)
+                                ->displayLabel();
+                        }
+
+                        if ($values['role'] == 'Teacher') {
+                            if (!empty($gibbonMarkbookColumnID)) {
+                                $table->addHeaderAction('markbook', __('Linked Markbook'))
+                                    ->setURL('/modules/Markbook/markbook_edit_data.php')
+                                    ->addParam('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
+                                    ->addParams($params)
+                                    ->displayLabel();
+                            }
+
+                            $table->addHeaderAction('edit', __('Edit'))
+                                ->setURL('/modules/Planner/planner_edit.php')
+                                ->addParams($params)
+                                ->displayLabel();
+                        }
 
                         $col = $table->addColumn('Basic Information');
 
@@ -409,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 echo '</td>';
                                 echo '<td>';
                                 echo "<script type='text/javascript'>";
-                                echo '$(document).ready(function(){';
+                                echo 'htmx.onLoad(function (content) {';
                                 echo "\$(\".description-$count\").hide();";
                                 echo "\$(\".show_hide-$count\").fadeIn(1000);";
                                 echo "\$(\".show_hide-$count\").click(function(){";
@@ -465,8 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $ttPeriod = $container->get(TimetableDayDateGateway::class)->getTimetabledPeriodByClassAndTime($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd']);
 
                         // LESSON CONTENTS
-                        $form = Form::create('smartBlockCompletion', $session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
-                        $form->setClass('blank');
+                        $form = Form::createBlank('smartBlockCompletion', $session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
 
                         $form->setTitle(__('Lesson Content'));
                         $description = '';
@@ -479,7 +450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
 
                         if (!empty($values['teachersNotes']) and ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') and ($values['role'] == 'Teacher' or $values['role'] == 'Assistant' or $values['role'] == 'Technician')) {
-                            $description .= '<div id="teachersNotes" class="unit-block rounded p-8 mb-4 border bg-red-200 text-gray-700"><h3 class="m-0">'.__('Teacher\'s Notes').'</h3>'.$values['teachersNotes'].'</div>';
+                            $description .= '<div x-cloak x-show="globalShowHide" x-transition id="teachersNotes" class="unit-block rounded p-8 mb-4 border bg-blue-50 text-gray-700"><h3 class="m-0">'.__('Teacher\'s Notes').'</h3>'.$values['teachersNotes'].'</div>';
                         }
 
                         $form->setDescription($description);
@@ -494,25 +465,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if ($values['role'] == 'Teacher' and $teacher == true) {
                                 $form->addHeaderAction('blocks', __m('Edit Blocks'))
                                     ->setURL('/modules/Planner/planner_edit.php', '#SmartBlocks')
-                                    ->addParam('viewBy', $viewBy)
-                                    ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
-                                    ->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)
-                                    ->addParam('date', $values['date'])
-                                    ->addParam('subView', $subView)
+                                    ->addParams($params)
                                     ->displayLabel()
-                                    ->prepend(__('Smart Blocks').': ')
-                                    ->append(' | ');
+                                    ->prepend(__('Smart Blocks').': ');
 
-                                $form->addHeaderAction('unit', __m('Edit Unit'))
-                                    ->setURL('/modules/Planner/units_edit_working.php')
-                                    ->addParam('viewBy', $viewBy ?? '')
-                                    ->addParam('gibbonCourseClassID', $gibbonCourseClassID ?? '')
-                                    ->addParam('gibbonCourseID', $values['gibbonCourseID'] ?? '')
-                                    ->addParam('gibbonUnitID', $values['gibbonUnitID'] ?? '')
-                                    ->addParam('gibbonUnitClassID', $gibbonUnitClassID ?? '')
-                                    ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
-                                    ->addParam('subView', $subView ?? '')
-                                    ->displayLabel();
+                                if (!empty($values['gibbonUnitID'])) {
+                                    $form->addHeaderAction('unit', __m('Edit Unit'))
+                                        ->setURL('/modules/Planner/units_edit_working.php')
+                                        ->addParams($params)
+                                        ->addParam('gibbonCourseID', $values['gibbonCourseID'] ?? '')
+                                        ->addParam('gibbonUnitID', $values['gibbonUnitID'] ?? '')
+                                        ->addParam('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+                                        ->addParam('subView', $subView ?? '')
+                                        ->displayLabel();
+                                }
                             }
 
                             $templateView = $container->get(View::class);
@@ -634,13 +600,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
 															if ($rowVersion['type'] == 'File') {
-																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                $rowVersion['location'] = str_replace(['?','#'], ['%3F', '%23'], $rowVersion['location'] ?? '');
+																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
 															} else {
                                                                 if (strlen($rowVersion['location'])<=40) {
-                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
                                                                 }
                                                                 else {
-                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 50).'...'.'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".substr($rowVersion['location'], 0, 50).'...'.'</a>';
                                                                 }
 															}
 														?>
@@ -720,7 +687,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 
                                             $row = $form->addRow();
-                                                $row->addFooter();
                                                 $row->addSubmit();
 
                                             echo $form->getOutput();
@@ -790,13 +756,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
 															if ($rowVersion['type'] == 'File') {
-																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                $rowVersion['location'] = str_replace(['?','#'], ['%3F', '%23'], $rowVersion['location'] ?? '');
+																echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
 															} else {
                                                                 if (strlen($rowVersion['location'])<=40) {
-                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".$rowVersion['location'].'</a>';
                                                                 }
                                                                 else {
-                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 40).'...'.'</a>';
+                                                                    echo "<a href='".$rowVersion['location']."' target='_blank'>".substr($rowVersion['location'], 0, 40).'...'.'</a>';
                                                                 }
 															}
                                                             ?>
@@ -937,7 +904,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 															$locationPrint = substr($locationPrint, 0, 15).'...';
 														}
 														if ($rowVersion['type'] == 'File') {
-															echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."'>".$locationPrint.'</a>';
+                                                            $rowVersion['location'] = str_replace(['?','#'], ['%3F', '%23'], $rowVersion['location'] ?? '');
+															echo "<a href='".$session->get('absoluteURL').'/'.$rowVersion['location']."' target='_blank'>".$locationPrint.'</a>';
 														} else {
 															echo "<a target='_blank' href='".$rowVersion['location']."'>".$locationPrint.'</a>';
 														}
@@ -1032,7 +1000,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										<tr >
 											<td>
 												<b><?php echo __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]) ?></b><br/>
-												<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
+												<span class="italic small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
 											</td>
 											<td >
 												<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5); } ?>
@@ -1061,7 +1029,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 									<script type="text/javascript">
 										/* Homework Control */
-										$(document).ready(function(){
+										htmx.onLoad(function (content) {
 											<?php
 											if ($checkedNo == 'checked') {
 												?>
@@ -1143,7 +1111,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $col->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->setValue($rowMyHomework['homeworkDetails'] ?? '');
 
                                 $row = $form->addRow();
-                                    $row->addFooter();
                                     $row->addSubmit();
 
                                 echo '<tr><td colspan="3">';
@@ -1197,47 +1164,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd'])->fetchAll();
                         $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y'];
 
-                        // Build attendance data
-                        foreach ($participants as $key => $student) {
-                            if ($student['role'] != 'Student') continue;
-
-                            $result = $attendanceGateway->selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $student['gibbonPersonID'], $values['date']);
-
-                            $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
-                            $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
-
-                            //Check for school prefill if attendance not taken in this class
-                            if ($result->rowCount() == 0) {
-                                $result = $attendanceGateway->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $values['date'], $crossFillClasses);
-
-                                $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
-                                $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
-
-                                if ($log['prefill'] == 'N') {
-                                    $log = $defaults;
-                                }
-                            }
-
-                            $participants[$key]['cellHighlight'] = '';
-                            if ($attendance->isTypeAbsent($log['type'])) {
-                                $participants[$key]['cellHighlight'] = 'bg-red-200';
-                            } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
-                                $participants[$key]['cellHighlight'] = 'bg-blue-200';
-                            } elseif ($attendance->isTypeLate($log['type'])) {
-                                $participants[$key]['cellHighlight'] = 'bg-orange-200';
-                            }
-
-                            $participants[$key]['log'] = $log;
-                        }
-
                         // ATTENDANCE FORM
-                        $form = Form::create('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
-                        $form->setClass('noIntBorder fullWidth');
+                        $form = Form::createBlank('attendanceByClass', $session->get('absoluteURL') . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
+                        $form->setClass('w-full font-sans text-xs text-gray-700');
                         $form->setAutocomplete('off');
                         $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
 
                         // Display the date this attendance was taken, if any
                         if ($canTakeAttendance) {
+                            $offTimetableStudents = $container->get(SchoolYearSpecialDayGateway::class)->selectOffTimetableStudentsByClass($session->get('gibbonSchoolYearID'), $gibbonCourseClassID, $values['date'])->fetchKeyPair();
+
+                            // Build attendance data
+                            foreach ($participants as $key => $student) {
+                                if ($student['role'] != 'Student') continue;
+
+                                $result = $attendanceGateway->selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $student['gibbonPersonID'], $values['date']);
+
+                                $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+                                $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
+
+                                //Check for school prefill if attendance not taken in this class
+                                if ($result->rowCount() == 0) {
+                                    $result = $attendanceGateway->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $values['date'], $crossFillClasses);
+
+                                    $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                                    $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
+
+                                    if ($log['prefill'] == 'N') {
+                                        $log = $defaults;
+                                    }
+                                }
+
+                                $participants[$key]['cellHighlight'] = '';
+                                if ($attendance->isTypeAbsent($log['type'])) {
+                                    $participants[$key]['cellHighlight'] = 'bg-red-200';
+                                } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
+                                    $participants[$key]['cellHighlight'] = 'bg-blue-200';
+                                } elseif ($attendance->isTypeLate($log['type'])) {
+                                    $participants[$key]['cellHighlight'] = 'bg-orange-200';
+                                } elseif (!empty($offTimetableStudents[$student['gibbonPersonID']])) {
+                                    $participants[$key]['cellHighlight'] = 'bg-stripe-overlay';
+                                    $participants[$key]['tag'] = Format::tag($offTimetableStudents[$student['gibbonPersonID']], 'dull leading-tight');
+                                }
+
+                                $participants[$key]['log'] = $log;
+                            }
+
                             // Try to determine the timetable period for this lesson
                             $form->addHiddenValue('gibbonTTDayRowClassID', $ttPeriod['gibbonTTDayRowClassID'] ?? '');
 
@@ -1257,27 +1229,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         }
 
-                        $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
+                        $grid = $form->addRow()->addGrid('attendance')->setClass('border bg-blue-50 rounded p-2 ')->setBreakpoints('w-1/2');
 
                         // Display attendance grid
                         $count = 0;
+
+                        $canViewConfidential = ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
 
                         foreach ($participants as $person) {
                             $form->addHiddenValue($count . '-gibbonPersonID', $person['gibbonPersonID']);
                             $form->addHiddenValue($count . '-prefilled', $person['log']['prefilled'] ?? '');
 
                             $cell = $grid->addCell()
-                                ->setClass('text-center py-4 px-1 -mr-px -mb-px flex flex-col justify-start')
+                                ->setClass('text-center py-4 px-1 flex flex-col justify-start')
                                 ->addClass($person['cellHighlight'] ?? '');
 
                             // Display alerts and birthdays, teacher only
                             if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && $teacher == true) {
-                                $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "id='confidentialPlan$count'");
+                                $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "x-cloak x-show='globalShowHide'");
                             }
 
-                            $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
-                                || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
-                            if ($person['role'] == 'Student' && $canViewStudents) {
+                            if ($person['role'] == 'Student' && $canViewConfidential) {
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
 
@@ -1295,16 +1267,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $cell->addSelect($count . '-type')
                                         ->fromArray($attendance->getAttendanceTypes($restricted))
                                         ->selected($person['log']['type'] ?? '')
-                                        ->setClass('mx-auto float-none w-24 text-xs p-0 m-0 mb-px')
+                                        ->setClass('mx-auto float-none w-24 text-xs sm:text-xs p-1 m-0 mb-px')
                                         ->readOnly($restricted);
                                     $cell->addSelect($count . '-reason')
                                         ->fromArray($attendance->getAttendanceReasons())
                                         ->selected($person['log']['reason'] ?? '')
-                                        ->setClass($count.'-attendance mx-auto float-none w-24 text-xs p-0 m-0 mb-px');
+                                        ->setClass($count.'-attendance mx-auto float-none w-24 text-xs sm:text-xs p-1 m-0 mb-px');
                                     $cell->addTextField($count . '-comment')
                                         ->maxLength(255)
                                         ->setValue($person['log']['comment'] ?? '')
-                                        ->setClass($count.'-attendance mx-auto float-none w-24 text-xs p-0 m-0');
+                                        ->setClass($count.'-attendance mx-auto float-none w-24 text-xs sm:text-xs p-1 m-0');
                                 }
 
                                 // Display a student profile link if this user has access
@@ -1322,7 +1294,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $cell->addContent(Format::name('', $person['preferredName'], $person['surname'], 'Staff', false))->wrap('<b>', '</b>');
                             }
 
-                            $cell->addContent($person['role']);
+                            $cell->addContent(__($person['role']));
+
+                            if (!empty($person['tag'])) {
+                                $cell->addContent($person['tag']);
+                            }
                         }
 
                         if ($canTakeAttendance && date('Y-m-d') >= $values['date']) {
@@ -1333,7 +1309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $form->addHiddenValue('count', $count);
                             $form->addHiddenValues($params);
 
-                            $form->addRow()->addSubmit();
+                            $form->addRow()->addSubmit()->addClass('mt-2');
                         }
 
                         $page->addSidebarExtra($form->getOutput());
@@ -1344,7 +1320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         if (!empty($guests)) {
                             $form = Form::create('plannerGuests', '');
-                            $form->setClass('noIntBorder fullWidth');
+                            $form->setClass('noIntBorder w-full');
                             $form->setTitle(__('Guests'));
 
                             $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
@@ -1359,50 +1335,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             $page->addSidebarExtra($form->getOutput());
                         }
-
-                        ?>
-						<script type="text/javascript">
-							/* Confidential Control */
-							$(document).ready(function(){
-								$("#teachersNotes").slideUp("fast");
-								$(".teachersNotes").slideUp("fast");
-								<?php
-                                for ($i = 0; $i < $count; ++$i) {
-                                    ?>
-									$("#confidentialPlan<?php echo $i ?>").css("display","none");
-									<?php
-
-                                }
-                        		?>
-
-								$(".confidentialPlan").click(function(){
-									if ($('input[name=confidentialPlan]:checked').val()=="Yes" ) {
-										$("#teachersNotes").slideDown("fast", $(".teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}"));
-										$(".teachersNotes").slideDown("fast", $("#teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}"));
-										<?php
-                                        for ($i = 0; $i < $count; ++$i) {
-                                            ?>
-											$("#confidentialPlan<?php echo $i ?>").slideDown("fast", $("#confidentialPlan<?php echo $i ?>").css("{'display' : 'table-row', 'border' : 'right'}"));
-											<?php
-                                        }
-                        			?>
-                        			}
-									else {
-										$("#teachersNotes").slideUp("fast");
-										$(".teachersNotes").slideUp("fast");
-										<?php
-                                        for ($i = 0; $i < $count; ++$i) {
-                                            ?>
-											$("#confidentialPlan<?php echo $i ?>").slideUp("fast");
-											<?php
-
-                                        }
-                        			?>
-                        			}
-								 });
-							});
-						</script>
-						<?php
 
                     }
                 }

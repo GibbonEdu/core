@@ -49,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
     }
 
     $data = [
+        'reason'      => $_POST['reason'],
         'notesStatus' => $_POST['notesStatus'],
     ];
 

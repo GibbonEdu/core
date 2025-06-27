@@ -25,6 +25,10 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
 
 include '../../gibbon.php';
 
@@ -42,119 +46,94 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $settingGateway = $container->get(SettingGateway::class);
     $enableStudentNotes = $settingGateway->getSettingByScope('Students', 'enableStudentNotes');
     $noteCreationNotification = $settingGateway->getSettingByScope('Students', 'noteCreationNotification');
+    $noteGateway = $container->get(StudentNoteGateway::class);
 
     if ($enableStudentNotes != 'Y') {
         $URL .= '&return=error0';
         header("Location: {$URL}");
-    } else {
-        if ($gibbonPersonID == '' or $subpage == '') {
-            echo 'Fatal error loading this page!';
-        } else {
-            //Check for existence of student
-            try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = 'SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.status, gibbonStudentEnrolment.gibbonYearGroupID
-                    FROM gibbonPerson
-                    LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                    WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+        exit;
+    } 
+
+    if ($gibbonPersonID == '' or $subpage == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    } 
+    //Check for existence of student
+    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
+
+    if (empty($student)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $title = $_POST['title'] ?? '';
+    $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'] ?? null;
+    $note = $_POST['note'] ?? '';
+
+    if (empty($title) || empty($note)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+    
+    //Write to database
+    $inserted = $noteGateway->insert([
+        'gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID,
+        'title' => $title,
+        'note' => $note,
+        'gibbonPersonID' => $gibbonPersonID,
+        'gibbonPersonIDCreator' => $session->get('gibbonPersonID'),
+        'timestamp' => date('Y-m-d H:i:s', time()),
+    ]);
+
+    if (!$inserted) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Attempt to issue alerts form tutor(s) and teacher(s) according to settings
+    if ($student['status'] == 'Full') {
+
+        // Raise a new notification event
+        $event = new NotificationEvent('Students', 'Student Notes');
+
+        $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
+        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
+
+        $event->setNotificationText(sprintf(__('%1$s has added a student note ("%2$s") about %3$s.'), $staffName, $title, $studentName));
+        $event->setActionLink("/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
+
+        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+        $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+        if ($noteCreationNotification == 'Tutors' || $noteCreationNotification == 'Tutors & Teachers') {
+            // Add form group tutors
+            $tutors = $container->get(FormGroupGateway::class)->selectTutorsByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
+            foreach ($tutors as $tutor) {
+                $event->addRecipient($tutor['gibbonPersonID']);
             }
 
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            } else {
-                $row = $result->fetch();
-                $status = $row['status'];
+            // Add the HOY if there is one
+            $yearGroup = $container->get(YearGroupGateway::class)->getByID($student['gibbonYearGroupID']);
+            if (!empty($yearGroup['gibbonPersonIDHOY'])) {
+                $event->addRecipient($yearGroup['gibbonPersonIDHOY']);
+            }
 
-                //Proceed!
-                //Validate Inputs
-                $title = $_POST['title'] ?? '';
-                $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'] ?? '';
-                if ($gibbonStudentNoteCategoryID == '') {
-                    $gibbonStudentNoteCategoryID = null;
-                }
-                $note = $_POST['note'] ?? '';
-
-                if ($note == '' or $title == '') {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
-                } else {
-                    //Write to database
-                    try {
-                        $data = array('gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID, 'title' => $title, 'note' => $note, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s', time()));
-                        $sql = 'INSERT INTO gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Attempt to issue alerts form tutor(s) and teacher(s) according to settings
-                    if ($status == 'Full') {
-
-                        // Raise a new notification event
-                        $event = new NotificationEvent('Students', 'New Student Note');
-
-                        $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-                        $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
-
-                        $event->setNotificationText(sprintf(__('%1$s has added a student note ("%2$s") about %3$s.'), $staffName, $title, $studentName));
-                        $event->setActionLink("/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
-
-                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
-                        $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
-
-                        if ($noteCreationNotification == 'Tutors' or $noteCreationNotification == 'Tutors & Teachers') {
-                            try {
-                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                                $sql = "SELECT gibbonPerson.gibbonPersonID
-    								FROM gibbonStudentEnrolment
-    								JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-    								LEFT JOIN gibbonPerson ON ((gibbonPerson.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor AND gibbonPerson.status='Full') OR (gibbonPerson.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor2 AND gibbonPerson.status='Full') OR (gibbonPerson.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor3 AND gibbonPerson.status='Full'))
-    								WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {}
-                            while ($rowTutors = $result->fetch()) {
-                                $event->addRecipient($rowTutors['gibbonPersonID']);
-                            }
-
-                            // Add the HOY if there is one
-                            $yearGroup = $container->get(YearGroupGateway::class)->getByID($row['gibbonYearGroupID']);
-                            $yearGroupHOY = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '');
-                            if (!empty($yearGroupHOY)) {
-                                $event->addRecipient($yearGroupHOY['gibbonPersonID']);
-                            }
-
-                        }
-                        if ($noteCreationNotification == 'Tutors & Teachers') {
-
-                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                                $sql = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            while ($row = $result->fetch()) {
-                                $event->addRecipient($row['gibbonPersonID']);
-                            }
-                        }
-
-                        // Send notifications
-                        $event->sendNotifications($pdo, $session);
-                    }
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
-                }
+        }
+        if ($noteCreationNotification == 'Tutors & Teachers') {
+            $teachers = $container->get(CourseEnrolmentGateway::class)->selectClassTeachersByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
+            foreach ($teachers as $teacher) {
+                $event->addRecipient($teacher['gibbonPersonID']);
             }
         }
+
+        // Send notifications
+        $event->sendNotifications($pdo, $session);
     }
+
+    $URL .= '&return=success0';
+    header("Location: {$URL}");
 }

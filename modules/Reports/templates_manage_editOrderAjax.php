@@ -21,24 +21,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 
-$_POST['address'] = '/modules/Reports/templates_manage_edit.php';
-
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_edit.php') == false) {
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
+    $order = $_POST['order'];
 
-    if (empty($order) || empty($data['gibbonReportTemplateID'])) {
+    if (empty($order) || empty($gibbonReportTemplateID)) {
         exit;
     } else {
         $templateSectionGateway = $container->get(ReportTemplateSectionGateway::class);
 
         $count = 1;
         foreach ($order as $gibbonReportTemplateSectionID) {
+            if (empty($gibbonReportTemplateSectionID)) continue;
 
             $updated = $templateSectionGateway->update($gibbonReportTemplateSectionID, ['sequenceNumber' => $count]);
             $count++;

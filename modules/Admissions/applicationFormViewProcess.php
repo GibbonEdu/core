@@ -20,11 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
-use Gibbon\Domain\User\FamilyGateway;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonID = $session->get('gibbonPersonID');
 

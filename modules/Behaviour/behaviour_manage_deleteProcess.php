@@ -23,9 +23,9 @@ include '../../gibbon.php';
 
 $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? '';
 $address = $_POST['address'] ?? '';
-$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
-$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
+$gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_delete.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";

@@ -40,17 +40,20 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     $output .= __('Choose A Class');
     $output .= '</h2>';
 
-    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::createBlank('searchForm', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
-    $form->setClass('smallIntBorder w-full');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('flex');
         $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
             ->selected($gibbonCourseClassID)
             ->placeholder()
-            ->setClass('fullWidth');
-        $row->addSubmit(__('Go'));
+            ->groupAlign('left')
+            ->setClass('flex-grow');
+        $row->addSubmit(__('Go'))
+            ->setType('quickSubmit')
+            ->groupAlign('right')
+            ->setClass('flex');
 
     $output .= $form->getOutput();
     $output .= '</div>';
@@ -69,58 +72,52 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $output = '';
 
-    $output .= "<h3 style='margin-top: 0px'>";
-    $output .= __('Choose Class');
-    $output .= '</h3>';
+    // $output .= "<h3 style='margin-top: 0px'>";
+    // $output .= __('Choose Class');
+    // $output .= '</h3>';
 
-    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get')->enableQuickSubmit();
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
 
-    $col = $form->addRow()->addColumn()->addClass('inline right');
+    $col = $form->addRow();
 
     // SEARCH
     $search = $_GET['search'] ?? '';
 
-    $col->addContent(__('Search').':');
+    $col->addContent(__('Search').':')->setClass('flex-shrink');
     $col->addTextField('search')
-        ->setClass('shortWidth')
+        ->setClass('flex-1')
         ->setValue($search);
 
-    // TERM
-    if ($enableGroupByTerm == 'Y' ) {
-        $selectTerm = ($session->has('markbookTerm'))? $session->get('markbookTerm') : 0;
-        $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
+    $selectTerm = ($session->has('markbookTerm'))? $session->get('markbookTerm') : -1;
+    $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
 
-        if (!isset($_GET['gibbonSchoolYearTermID'])) { //Set to current term if not already set
-            $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-            $currentTerm = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
-            if (isset($currentTerm['gibbonSchoolYearTermID'])) {
-                $selectTerm = $currentTerm['gibbonSchoolYearTermID'];
-            }
-
+    if (!isset($_GET['gibbonSchoolYearTermID']) && $enableColumnWeighting == 'Y') { //Set to current term if not already set
+        $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+        $currentTerm = $schoolYearTermGateway->getCurrentTermByDate(date('Y-m-d'));
+        if (isset($currentTerm['gibbonSchoolYearTermID'])) {
+            $selectTerm = $currentTerm['gibbonSchoolYearTermID'];
         }
-        
-        $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
-        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-        $result = $pdo->executeQuery($data, $sql);
-        $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');
-        $col->addSelect('gibbonSchoolYearTermID')
-            ->fromArray(array('-1' => __('All Terms')))
-            ->fromArray($terms)
-            ->selected($selectTerm)
-            ->setClass('shortWidth');
-
-        $session->set('markbookTermName', isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm);
-        $session->set('markbookTerm', $selectTerm);
-    } else {
-        $session->set('markbookTerm', 0);
-        $session->set('markbookTermName', __('All Columns'));
     }
+    
+    $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
+    $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+    $result = $pdo->executeQuery($data, $sql);
+    $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+    $col->addContent(__('Term').':')->setClass('flex-shrink');
+    $col->addSelect('gibbonSchoolYearTermID')
+        ->fromArray(array('-1' => __('All Terms')))
+        ->fromArray($terms)
+        ->selected($selectTerm)
+        ->setClass('flex-1');
+
+    $session->set('markbookTermName', isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm);
+    $session->set('markbookTerm', $selectTerm);
 
     // SORT BY
     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$session->get('gibbonSchoolYearID') );
@@ -136,8 +133,8 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             'surname'       => __('Surname'),
             'preferredName' => __('Preferred Name'),
         );
-        $col->addContent(__('Sort By').':')->prepend('&nbsp;&nbsp;');
-        $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('shortWidth');
+        $col->addContent(__('Sort By').':')->setClass('flex-shrink');
+        $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('flex-1');
 
         $session->set('markbookOrderBy', $selectOrderBy);
     }
@@ -154,23 +151,23 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $filters['marked'] = __('Marked');
     $filters['unmarked'] = __('Unmarked');
 
-    $col->addContent(__('Show').':')->prepend('&nbsp;&nbsp;');
+    $col->addContent(__('Show').':')->setClass('flex-shrink');
     $col->addSelect('markbookFilter')
         ->fromArray($filters)
         ->selected($selectFilter)
-        ->setClass('shortWidth');
+        ->setClass('flex-1');
 
     // CLASS
-    $col->addContent(__('Class').':')->prepend('&nbsp;&nbsp;');
+    $col->addContent(__('Class').':')->setClass('flex-shrink');
     $col->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
-        ->setClass('mediumWidth')
+        ->setClass('flex-1')
         ->selected($gibbonCourseClassID);
 
-    $col->addSubmit(__('Go'));
+    $col->addSubmit(__('Go'))->setClass('max-w-24');
 
     if (!empty($search)) {
         $clearURL = $session->get('absoluteURL').'/index.php?q='.$session->get('address');
-        $clearLink = sprintf('<a href="%s" class="small" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
+        $clearLink = sprintf('<a href="%s" class="text-xs" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
 
         $form->addRow()->addContent($clearLink)->addClass('right');
     }
@@ -311,6 +308,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
         }
 
         if ($submission['type'] == 'File') {
+            $submission['location'] = str_replace(['?','#'], ['%3F', '%23'], $submission['location'] ?? '');
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$session->get('absoluteURL').'/'.$submission['location']."'>$linkText</a></span>";
         } elseif ($submission['type'] == 'Link') {
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";

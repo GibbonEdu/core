@@ -23,7 +23,6 @@ namespace Gibbon\Forms\View;
 
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\View\FormRendererInterface;
 
 /**
@@ -34,6 +33,8 @@ use Gibbon\Forms\View\FormRendererInterface;
  */
 class FormView extends View implements FormRendererInterface
 {
+    protected $template = 'components/form.twig.html';
+
     /**
      * Transform a Form object into HTML and javascript output using a Twig template.
      * @param   Form    $form
@@ -45,7 +46,12 @@ class FormView extends View implements FormRendererInterface
         $this->addData('javascript', $this->getInlineJavascript($form));
         $this->addData('totalColumns', $this->getColumnCount($form));
 
-        return $this->render('components/form.twig.html');
+        return $this->render($this->template);
+    }
+
+    public function setTemplate(string $template)
+    {
+        $this->template = $template;
     }
 
     protected function getInlineJavascript(Form $form)
@@ -68,13 +74,5 @@ class FormView extends View implements FormRendererInterface
         return array_reduce($form->getRows(), function ($count, $row) {
             return max($count, $row->getElementCount());
         }, 0);
-    }
-
-    /**
-     * @deprecated Empty-method for module backwards compatibility.
-     * Will be removed by the end of the mobile-responsive refactoring.
-     */
-    public function setWrapper($name, $value) {
-        return $this;
     }
 }

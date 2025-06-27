@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
 
         $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.gibbonFormGroupID, gibbonActivityStudent.status, gibbonFormGroup.nameShort as formGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
         $studentResult = $connection2->prepare($sql);
         $studentResult->execute($data);
 
@@ -110,6 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         );
     }
 
+    $today = date('Y-m-d');
     $activity = $activityResult->fetch();
     $activity['participants'] = $studentResult->rowCount();
 
@@ -168,20 +169,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     // Handle activities with no time slots or start/end, but don't return because there can still be previous records
     if (empty($activityWeekDays) || empty($activityTimespan)) {
-        echo "<div class='error'>";
-        echo __('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.');
-        echo '</div>';
+        echo Format::alert(__('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.'), 'error');
     }
 
     if (count($activitySessions) <= 0) {
         echo $page->getBlankSlate();
     } else {
-        $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
-        $form->setClass('blank block w-full');
+        $form = Form::createBlank('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
+        $form->setClass('block w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
-        
+
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             $form->addHeaderAction('download', __('Export to Excel'))
                 ->setURL('/modules/Activities/report_attendanceExport.php')
@@ -191,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 ->directLink();
         }
 
-        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn();
+        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper relative smallIntBorder w-full max-w-full')->addColumn();
 
         // Headings as a separate table
         $table = $row->addTable()->setClass('mini w-full m-0 border-0');
@@ -199,9 +198,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $header->addContent(__('Student'))->addClass('w-56 py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
-                ->addClass('emphasis subdued right');
+                ->addClass('italic subdued right');
 
-        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600 -mt-1')
+        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-56 border-l-2 border-gray-600')
             ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
 
         $row = $table->addRow();
@@ -213,28 +212,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
-            $dateLabel = $col->addContent(Format::dateReadable($sessionDate, '%a<br>%b %e'))->addClass('w-10 mx-auto whitespace-nowrap');
+            $dateLabel = $col->addContent(
+                Format::dayOfWeekName($sessionDate, true) . '<br>' .
+                Format::dateReadable($sessionDate, Format::MEDIUM_NO_YEAR)
+            )->addClass('w-10 mx-auto whitespace-nowrap');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
-                $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
-                    ->setURL('')
-                    ->addClass('editColumn')
+                $col->addButton(__('Edit'))
+                    ->addClass('editColumn text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
+                    ->setIcon('edit')
+                    ->setType('blank')
                     ->addData('checked', '')
                     ->addData('column', strval($i))
                     ->addData('date', $sessionTimestamp);
             } else {
-                $col->addWebLink(sprintf($icon, __('Add'), 'page_new.png'))
-                    ->setURL('')
-                    ->addClass('editColumn')
+                $col->addButton(__('Add'))
+                    ->addClass('editColumn text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
+                    ->setIcon('add')
+                    ->setType('blank')
                     ->addData('checked', 'checked')
                     ->addData('column', strval($i))
                     ->addData('date', $sessionTimestamp);
                 $dateLabel->addClass('subdued');
             }
 
-            $col->addWebLink(sprintf($icon, __('Clear'), 'garbage.png'))
-                ->setURL('')
-                ->addClass('clearColumn hidden')
+            $col->addButton(__('Clear'))
+                ->addClass('clearColumn hidden text-xxs text-gray-600 hover:text-gray-800 text-center mt-1')
+                ->setIcon('delete')
+                ->setType('blank')
                 ->addData('column', strval($i));
 
             $i++;
@@ -262,6 +267,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                 ->setClass('')
                 ->prepend(($index+1).') ');
+
+            $link->append(' &nbsp;&nbsp;'.Format::small($student['formGroup'] ?? ''));
 
             if ($log['direction'] == 'Out' && $log['scope'] == 'Offsite') {
                 $link->append(Format::tag(__($log['type']), 'error ml-2 text-xxs absolute whitespace-nowrap inline-block'));
@@ -293,14 +300,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row->addContent(__('Total students:'))->addClass('text-right w-56 h-8 absolute left-0 ml-px');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
+            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate]) || $sessionDate <= $today
                 ? $attendanceCount[$sessionDate].' / '.$activity['participants']
                 : '');
         }
 
         $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full doublescroll-wrapper')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
-                ->wrap('<span class="small emphasis">', '</span>');
+                ->wrap('<span class="text-xs italic">', '</span>');
             $row->addSubmit();
 
         echo $form->getOutput();
@@ -308,3 +315,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo '<br/>';
     }
 }
+?>
+
+<script type="text/javascript">
+	// Fills the column with checkboxes to create the attenance formdata (naming pattern --> $_POST data)
+    $("button.editColumn").click( function(){
+    	var editing = $(this).parent().data('editing');
+
+    	if (!editing || editing == false) {
+    		$(this).parent().data('editing', true);
+
+    		var date = $(this).data('date');
+	    	var column = $(this).data('column');
+	    	var checkedDefault = $(this).data('checked');
+
+	    	var rows = $(this).parents('table').find("td.col" + column).each(function(){
+	    		
+	    		var checked = ( $(this).html() != "")? "checked" : checkedDefault;
+                if ($(this).hasClass('unchecked')) checked = '';
+                
+		    	$(this).html("<input type='checkbox' name='attendance["+ column +"]["+ $(this).parent().data('student') +"]' "+ checked +">");
+		    	$(this).addClass('bg-purple-100');
+		    });
+
+			$(this).parent().parent().addClass('bg-purple-100');
+			$(this).parent().parent().append("<input type='hidden' name='sessions["+ column +"]' value='" + date + "'>");
+
+		    $(this).addClass('hidden');
+			$(this).parent().parent().find('.clearColumn').removeClass('hidden');
+	    }
+
+    } );
+
+    // Clears the column checkboxes
+    $("button.clearColumn").click(function(){
+    	
+    	if (confirm("Are you sure you want to clear the attendance recorded for this date?")) {
+
+    		$(this).parent().data('editing', false);
+
+	    	var column = $(this).data('column');
+			var rows = $(this).parent().parents('table').find("td.col" + column).each(function(){
+	    		$(this).html("<input name='attendance["+ column +"]["+ $(this).parent().data('student') +"]' type='checkbox'>");
+	    	});
+
+	    	$(this).addClass('hidden');
+			$(this).parent().parent().find('.editColumn').removeClass('hidden');
+			$(this).parent().parent().find('.addColumn').removeClass('hidden');
+	    }
+    });
+
+</script>

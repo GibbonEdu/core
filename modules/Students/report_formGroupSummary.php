@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupS
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_formGroupSummary.php");
 

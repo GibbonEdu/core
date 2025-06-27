@@ -47,7 +47,7 @@ class Label extends Element implements RowDependancyInterface
     {
         $this->label = $label;
         $this->setAttribute('for', $for);
-        $this->addClass('font-medium mt-4 sm:my-1 text-sm text-gray-700');
+        $this->addClass('font-medium my-0 text-base/6 sm:text-sm/6 text-gray-800');
     }
 
     /**
@@ -57,7 +57,7 @@ class Label extends Element implements RowDependancyInterface
     public function setRow($row)
     {
         $this->row = $row;
-        if (!$row instanceof Column) $this->addClass('sm:max-w-xs');
+        if (!$row instanceof Column) $this->addClass('');
     }
 
     /**
@@ -171,17 +171,20 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
         
-        $output .= '<label '.$this->getAttributeString().'>';
+        $this->addClass('-mt-1');
+        $output .= '<label '.$this->getAttributeString().' aria-label="'.$this->label.'">';
         $output .= $this->label;
-        $output .= $this->getRequired()? ' <span class="text-sm text-gray-500 font-light">*</span>' : '';
-        
-
+    
         if ($this->getReadonly()) {
             if (!empty($this->description)) {
                 $this->description .= ' ';
             }
 
-            $this->description .= __('This value cannot be changed.');
+            $this->setTitle(__('This value cannot be changed.'));
+            $output .= icon('solid', 'lock-closed', 'inline size-3 ml-2 text-gray-400');
+
+        } elseif ($this->getRequired()) {
+            $output .= ' <span class="text-sm text-red-600 font-light">*</span>';
         }
 
         if ($context = $this->getLabelContext()) {
@@ -189,9 +192,9 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<br/><span class="text-xxs text-gray-600 font-normal mt-1 sm:mt-0">';
+            $output .= '<div class="mt-1 sm:mt-2 text-sm sm:text-xs text-gray-600 font-light">';
             $output .= $this->getDescription();
-            $output .= '</span>';
+            $output .= '</div>';
         }
 
         $output .= '</label>';

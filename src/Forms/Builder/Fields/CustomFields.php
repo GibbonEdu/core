@@ -39,7 +39,7 @@ class CustomFields extends AbstractFieldGroup
         $this->customFieldGateway = $customFieldGateway;
         $this->customFieldHandler = $customFieldHandler;
 
-        $contexts = ['User', 'Medical Form', 'Individual Needs'];
+        $contexts = ['User', 'Family', 'Medical Form', 'Individual Needs'];
         $params = ['applicationForm' => 1];
         $customFields = $this->customFieldGateway->selectCustomFields($contexts, [])->fetchAll();
 
@@ -114,5 +114,15 @@ class CustomFields extends AbstractFieldGroup
     public function getFieldDataFromPOST(string $fieldName, array $field)  
     {
         return $this->customFieldHandler->getFieldValueFromPOST($fieldName, $field['fieldType']);
+    }
+
+    public function shouldValidate(FormBuilderInterface $formBuilder, array &$data, string $fieldName)
+    {
+        $fieldInfo = $this->getField($fieldName);
+
+        // TODO: Fix this. Hack to make parent custom fields work :(
+        if ($fieldInfo['activePersonParent']) return false;
+
+        return true;
     }
 }

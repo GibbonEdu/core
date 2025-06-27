@@ -12,13 +12,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% for document in documents %}
 
         {% if document.path %}
-        <a href="{{ absoluteURL }}/{{ document.path }}" target="_blank" class="flex flex-wrap justify-start items-center rounded bg-gray-100 hover:bg-blue-100 border hover:border-blue-500 text-gray-800 hover:text-blue-700 cursor-pointer font-sans my-2 p-4 ">
+        <a href="{{ absoluteURL }}/{{ document.path }}" target="_blank" class="flex flex-wrap justify-start items-center rounded bg-gray-100 hover:bg-blue-50 border hover:border-blue-500 text-gray-800 hover:text-blue-700 cursor-pointer font-sans my-2 p-4 ">
         {% else %}
         <a class="flex flex-wrap justify-start items-center rounded bg-gray-100 border text-gray-800 font-sans my-2 p-4 ">
         {% endif %}
 
             <div class="w-full sm:w-2/5 xl:w-1/3 flex mb-4 sm:mb-0 flex items-center">
-                {{ include('ui/icons.twig.html', {'icon': 'file' }) }}
+                {{ icon('large', 'file', 'size-8 fill-current') }}
 
                 <div class="ml-4">
                     <div class="text-sm font-medium">

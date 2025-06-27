@@ -19,11 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
+use Gibbon\Domain\Students\StudentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,11 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'] ?? '';
         $params['gibbonCourseClassID'] = $gibbonCourseClassID;
     }
-    $gibbonPersonID = null;
-    if (isset($_GET['search'])) {
-        $gibbonPersonID = $_GET['search'] ?? '';
-    }
-
+    $search = $_GET['search'] ?? '';
+    
     //My children's classes
     if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
 
@@ -109,119 +108,97 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ->add(__('My Children\'s Classes'), 'planner.php')
             ->add(__('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]));
 
-        //Test data access field for permission
+        // Get children for this adult
+        $children = $container->get(StudentGateway::class)->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetchGroupedUnique();
 
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-            $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowCount() < 1) {
+        if (empty($children)) {
             echo $page->getBlankSlate();
+        } elseif (count($children) == 1) {
+            $gibbonPersonID = key($children);
         } else {
-            //Get child list
-            $count = 0;
-            $options = array();
-            while ($row = $result->fetch()) {
+            $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
+            $form->setTitle(__('Choose'));
+            $form->setClass('noIntBorder w-full');
 
-                    $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                    $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-                    $resultChild = $connection2->prepare($sqlChild);
-                    $resultChild->execute($dataChild);
-
-                while ($rowChild = $resultChild->fetch()) {
-                    $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
-                    $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
-                    ++$count;
-                }
+            $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('q', '/modules/'.$session->get('module').'/planner_deadlines.php');
+            if (isset($gibbonCourseClassID) && $gibbonCourseClassID != '') {
+                $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+                $form->addHiddenValue('viewBy', 'class');
+            }
+            else {
+                $form->addHiddenValue('viewBy', 'date');
             }
 
-            if ($count == 0) {
-                echo $page->getBlankSlate();
-            } elseif ($count == 1) {
-                $gibbonPersonID = $gibbonPersonIDArray[0];
+            $row = $form->addRow();
+            $row->addLabel('search', __('Student'));
+            $row->addSelect('search')
+                ->fromArray(Format::nameListArray($children, 'Student'))
+                ->selected($search)
+                ->placeholder();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSearchSubmit($session);
+
+            echo $form->getOutput();
+
+            $gibbonPersonID = $search;
+        }
+
+        if (!empty($gibbonPersonID) && !empty($children[$gibbonPersonID])) {
+            //Confirm access to this student
+
+                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
+                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                $resultChild = $connection2->prepare($sqlChild);
+                $resultChild->execute($dataChild);
+            if ($resultChild->rowCount() < 1) {
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
-                echo '<h3>';
-                echo __('Choose');
-                echo '</h3>';
-
-                $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
-
-                $form->setClass('noIntBorder fullWidth');
-
-                $form->addHiddenValue('address', $session->get('address'));
-                $form->addHiddenValue('q', '/modules/'.$session->get('module').'/planner_deadlines.php');
-                if (isset($gibbonCourseClassID) && $gibbonCourseClassID != '') {
-                    $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
-                    $form->addHiddenValue('viewBy', 'class');
-                }
-                else {
-                    $form->addHiddenValue('viewBy', 'date');
-                }
-
-                $row = $form->addRow();
-                $row->addLabel('search', __('Student'));
-                $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
-
-                $row = $form->addRow();
-                    $row->addFooter();
-                    $row->addSearchSubmit($session);
-
-                echo $form->getOutput();
-            }
-
-            if ($gibbonPersonID != '' and $count > 0) {
-                //Confirm access to this student
-
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
-                    $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-                    $resultChild = $connection2->prepare($sqlChild);
-                    $resultChild->execute($dataChild);
-                if ($resultChild->rowCount() < 1) {
-                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
-                } else {
-                    $rowChild = $resultChild->fetch();
+                $rowChild = $resultChild->fetch();
 
 
 
-                    $proceed = true;
-                    if ($viewBy == 'class') {
-                        if ($gibbonCourseClassID == '') {
+                $proceed = true;
+                if ($viewBy == 'class') {
+                    if ($gibbonCourseClassID == '') {
+                        $proceed = false;
+                    } else {
+
+                            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher' ORDER BY course, class";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        if ($result->rowCount() != 1) {
                             $proceed = false;
-                        } else {
-
-                                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher' ORDER BY course, class";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            if ($result->rowCount() != 1) {
-                                $proceed = false;
-                            }
                         }
                     }
-
-                    if ($proceed == false) {
-                        echo Format::alert(__('Your request failed because you do not have access to this action.'));
-                    } else {
-                        // DEADLINES
-                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
-
-                        echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
-                            'gibbonPersonID' => $gibbonPersonID,
-                            'deadlines' => $deadlines,
-                            'heading' => 'h3',
-                            'viewBy' => $viewBy,
-                        ]);
-
-                        // HOMEWORK TABLE
-                        $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
-                        $table->setTitle($homeworkNamePlural);
-
-                        echo $table->getOutput();
-                    }
-
                 }
+
+                if ($proceed == false) {
+                    echo Format::alert(__('Your request failed because you do not have access to this action.'));
+                } else {
+                    // DEADLINES
+                    $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
+
+                    echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+                        'gibbonPersonID' => $gibbonPersonID,
+                        'deadlines' => $deadlines,
+                        'heading' => 'h3',
+                        'viewBy' => $viewBy,
+                    ]);
+
+                    // HOMEWORK TABLE
+                    $table = $container->get(HomeworkTable::class)->create($session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
+                    $table->setTitle($homeworkNamePlural);
+
+                    echo $table->getOutput();
+                }
+
             }
         }
+    
     } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
         //Get current role category
         $category = $session->get('gibbonRoleIDCurrentCategory');

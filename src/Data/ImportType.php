@@ -292,26 +292,24 @@ class ImportType
             }
         }
 
-        uasort($importTypes, array('self', 'sortImportTypes'));
+        uasort($importTypes, function($a, $b)
+        {
+            if ($a->getDetail('grouping') != $b->getDetail('grouping')) {
+                return $a->getDetail('grouping') <=> $b->getDetail('grouping');
+            }
+    
+            if ($a->getDetail('category') != $b->getDetail('category')) {
+                return $a->getDetail('category') <=> $b->getDetail('category');
+            }
+    
+            if ($a->getDetail('name') != $b->getDetail('name')) {
+                return $a->getDetail('name') <=> $b->getDetail('name');
+            }
+    
+            return 0;
+        });
 
         return $importTypes;
-    }
-
-    protected static function sortImportTypes($a, $b)
-    {
-        if ($a->getDetail('grouping') != $b->getDetail('grouping')) {
-            return $a->getDetail('grouping') <=> $b->getDetail('grouping');
-        }
-
-        if ($a->getDetail('category') != $b->getDetail('category')) {
-            return $a->getDetail('category') <=> $b->getDetail('category');
-        }
-
-        if ($a->getDetail('name') != $b->getDetail('name')) {
-            return $a->getDetail('name') <=> $b->getDetail('name');
-        }
-
-        return 0;
     }
 
     /**
@@ -831,12 +829,6 @@ class ImportType
 
                 break;
 
-            case 'schoolyear': // Change school years formated as 2015-16 to 2015-2016
-                if (preg_match('/(^\d{4}[-]\d{2}$)/u', $value) > 0) {
-                    $value = mb_substr($value, 0, 5) . mb_substr($value, 0, 2) . mb_substr($value, 5, 2);
-                }
-                break;
-
             case 'gender':  // Handle various gender formats
                 $strvalue = str_replace('.', '', $strvalue);
                 if ($strvalue == 'M' || $strvalue == 'MALE' || $strvalue == 'MR') {
@@ -852,6 +844,10 @@ class ImportType
 
             case 'numeric':
                 $value = !empty($value) ? preg_replace("/[^0-9]/u", '', $value) : $defaultValue;
+                break;
+
+            case 'color':
+                $value = !empty($value) ? preg_replace("/[^#0-9a-fA-F]/", '', $value) : $defaultValue;
                 break;
 
             case 'phone':   // Handle phone numbers - strip all non-numeric chars
@@ -1019,7 +1015,7 @@ class ImportType
                 return false;
             } break;
 
-            case 'schoolyear':  if (preg_match('/(^\d{4}[-]\d{4}$)/u', $value) > 1) {
+            case 'color':   if (preg_match('/^#(?:[0-9a-fA-F]{3}){1,2}$/', $value) == 0) {
                 return false;
             } break;
 

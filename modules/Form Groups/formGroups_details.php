@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setTitle(__('Filters'));
-                $form->setClass('noIntBorder fullWidth');
+                $form->setClass('noIntBorder w-full');
 
                 $form->addHiddenValue('q', "/modules/".$session->get('module')."/formGroups_details.php");
                 $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);

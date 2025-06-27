@@ -30,7 +30,7 @@ use Gibbon\Forms\Builder\Storage\FormDataInterface;
 class ApplicationCheckView extends AbstractFormView
 {
     protected $session;
-    
+
     public function __construct(Session $session)
     {
         $this->session = $session;
@@ -43,7 +43,7 @@ class ApplicationCheckView extends AbstractFormView
 
     public function configure(Form $form)
     {
-        
+
     }
 
     public function display(Form $form, FormDataInterface $data)

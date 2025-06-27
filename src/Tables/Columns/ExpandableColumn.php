@@ -46,11 +46,7 @@ class ExpandableColumn extends Column
         $table->addMetaData('allowHTML', [$id]);
 
         $table->modifyRows(function ($data, $row, $columnCount) {
-            return $row->append($this->getExpandedContent($data, $columnCount));
-        });
-
-        $this->modifyCells(function ($data, $cell) {
-            return $cell->addClass('expandable');
+            return $row->setAttribute('x-data', $this->expanded ? '{expanded: true}' : '{expanded: false}');
         });
     }
 
@@ -82,7 +78,7 @@ class ExpandableColumn extends Column
     public function getOutput(&$data = [], $joinDetails = true)
     {
         if ($content = parent::getOutput($data, $joinDetails)) {
-            return '<a onclick="return false;" class="expander"></a>';
+            return '<button type="button" class="expander w-8 h-8 bg-transparent" @click="expanded = !expanded" :class="{\'expanded\': expanded}"></button>'.$this->getExpandedContent($data);
         } else {
             return '';
         }
@@ -92,17 +88,16 @@ class ExpandableColumn extends Column
      * Output the content of the expanded row. Can be set by the column ID, or with the column's formatter callable.
      *
      * @param array $data
-     * @param int $columnCount
      * @return string
      */
-    public function getExpandedContent(&$data = array(), $columnCount = 1)
+    public function getExpandedContent(&$data = [])
     {
         $output = '';
 
         if ($content = parent::getOutput($data)) {
-            $output .= '<tr style="'.($this->expanded ? '' : 'display:none').';"><td colspan="'.$columnCount.'">';
+            $output .= '<div x-show="expanded" x-collapse @click.outside="expanded = false" class="absolute left-0 w-full bg-white p-6 border rounded-md shadow-md z-40">';
             $output .= $content;
-            $output .= '</td></tr>';
+            $output .= '</div>';
         }
         return $output;
     }

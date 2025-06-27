@@ -79,7 +79,7 @@ class SimpleRenderer implements RendererInterface
                 $output .= '</div>';
             }
         } else {
-            $this->addClass('fullWidth');
+            $this->addClass('w-full');
 
             $output .= '<table '.$this->getAttributeString().' cellspacing="0">';
 

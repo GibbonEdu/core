@@ -39,6 +39,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_se
 
     $settingGateway = $container->get(SettingGateway::class);
 
+    $setting = $settingGateway->getSettingByScope('Application Form', 'publicApplications', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+        
     $setting = $settingGateway->getSettingByScope('Admissions', 'admissionsEnabled', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -72,6 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_se
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $setting = $settingGateway->getSettingByScope('Application Form', 'successMessage', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);

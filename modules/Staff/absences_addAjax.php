@@ -23,6 +23,10 @@ use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
+// Override the ini to keep this process alive
+ini_set('max_execution_time', 1800);
+set_time_limit(1800);
+
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') == false) {
     die();
 } else {

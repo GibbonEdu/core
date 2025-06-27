@@ -59,6 +59,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% if student.status != 'Full' %}
                 <span class="tag error ml-2 text-xxs">{{ student.status }}</span>
             {% endif %}
+
+            {% if student.role == 'Student - Left' %}
+                <span class="tag error ml-2 text-xxs">{{ __('Left') }}</span>
+            {% endif %}
         </div>
     </a>
 {% endmacro studentLink %}

@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $date = $_GET['date'] ?? '';
     $period = $_GET['period'] ?? '';
     $gibbonPersonIDList = $_GET['ids'] ?? [];

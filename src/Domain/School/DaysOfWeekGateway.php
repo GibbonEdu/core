@@ -38,6 +38,13 @@ class DaysOfWeekGateway extends QueryableGateway
     private static $tableName = 'gibbonDaysOfWeek';
     private static $primaryKey = 'gibbonDaysOfWeekID';
 
+    public function selectSchoolWeekdays()
+    {
+        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql);
+    }
+
     public function getDayOfWeekByDate($date)
     {
         $data = ['dayOfWeek' => date('l', strtotime($date))];
@@ -45,4 +52,6 @@ class DaysOfWeekGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    
 }

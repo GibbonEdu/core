@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
 
     // SEARCH
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', '/modules/Data Updater/data_finance_manage.php');

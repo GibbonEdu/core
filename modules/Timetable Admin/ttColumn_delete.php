@@ -40,7 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_d
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/ttColumn_deleteProcess.php?gibbonTTColumnID=$gibbonTTColumnID", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/ttColumn_deleteProcess.php", true);
+            $form->addHiddenValue('gibbonTTColumnID', $gibbonTTColumnID);
             echo $form->getOutput();
         }
     }

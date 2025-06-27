@@ -305,12 +305,16 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
             // Honey pot field?
             $form->addRow()->addClass('hidden')->addTextField($this->getDetail('honeyPot'));
-
-            // Add submit with back button
-            $button = $this->pageNumber > 1 ?"<a href='".(string)$pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => ($this->pageNumber-1)])->withAbsoluteUrl()."' class='button inline-block rounded-sm border-gray-400 text-gray-400 text-center w-24 mr-4'>".__('Back')."</a>" : '';
-
+           
             $row = $form->addRow();
-                $row->addFooter()->prepend($button);
+
+                // Add submit with back button
+                if ($this->pageNumber > 1) {
+                $row->addAction('back', __('Back'))
+                    ->setUrl($pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => ($this->pageNumber-1)])->withAbsoluteUrl())
+                    ->setIcon('chevron-left', '', 'basic')
+                    ->displayLabel();
+                }
                 $row->addSubmit($this->pageNumber == $this->finalPageNumber ? __('Submit') : __('Next'));
         }
 

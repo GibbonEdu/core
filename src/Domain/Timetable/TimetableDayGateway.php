@@ -79,6 +79,21 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectTTDaysByDateRange($gibbonTTID, $dateStart, $dateEnd)
+    {
+        $data = ['gibbonTTID' => $gibbonTTID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT gibbonTTDayDate.date as groupBy, gibbonTTDayDate.date, gibbonTTDay.gibbonTTColumnID, gibbonTTDay.gibbonTTDayID, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTTDay.color, gibbonTTDay.fontColor, gibbonTT.nameShortDisplay
+                FROM gibbonTT
+                JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+                ORDER BY gibbonTTDay.name
+        ";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectTTDayRowsByID($gibbonTTDayID)
     {
         $data = array('gibbonTTDayID' => $gibbonTTDayID);
@@ -126,8 +141,10 @@ class TimetableDayGateway extends QueryableGateway
     }
 
     public function selectTTDayRowClassTeachersByID($gibbonTTDayRowClassID) {
+        $gibbonTTDayRowClassID = is_array($gibbonTTDayRowClassID)? implode(',', $gibbonTTDayRowClassID) : $gibbonTTDayRowClassID;
+
         $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID);
-        $sql = "SELECT DISTINCT title, surname, preferredName, gibbonTTDayRowClassException.gibbonPersonID AS exception
+        $sql = "SELECT DISTINCT gibbonTTDayRowClass.gibbonTTDayRowClassID as groupBy, title, surname, preferredName, gibbonTTDayRowClassException.gibbonPersonID AS exception
                 FROM gibbonPerson
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
@@ -135,8 +152,10 @@ class TimetableDayGateway extends QueryableGateway
                 LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID
                     AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonCourseClassPerson.role='Teacher'
-                AND gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
-                AND gibbonTTDayRowClassExceptionID IS NULL
+                AND gibbonCourseClassPerson.reportable='Y'
+                AND gibbonPerson.status='Full'
+                AND FIND_IN_SET(gibbonTTDayRowClass.gibbonTTDayRowClassID, :gibbonTTDayRowClassID)
+                AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
                 ORDER BY surname, preferredName";
 
         return $this->db()->select($sql, $data);

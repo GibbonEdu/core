@@ -12,8 +12,8 @@ $addFormValues = array(
     'name' => 'Testing',
     'status' => 'Upcoming',
     'sequenceNumber' => '999',
-    'dateStart' => '01/01/2020',
-    'dateEnd' => '01/12/2020',
+    'dateStart' => '2020-01-01',
+    'dateEnd' => '2021-01-01',
 );
 
 $I->submitForm('#content form', $addFormValues, 'Submit');
@@ -31,8 +31,8 @@ $editFormValues = array(
     'name' => 'Testing 2',
     'status' => 'Current',
     'sequenceNumber' => '998',
-    'dateStart' => '01/01/2010',
-    'dateEnd' => '01/12/2030',
+    'dateStart' => '2010-01-01',
+    'dateEnd' => '2020-01-01',
 );
 
 $I->submitForm('#content form', $editFormValues, 'Submit');
@@ -41,5 +41,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('Finance', 'budgetCycles_manage_delete.php', array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

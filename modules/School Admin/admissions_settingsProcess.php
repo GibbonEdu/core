@@ -46,8 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_se
             'welcomeText',
         ],
         'Application Form' => [
+            'publicApplications',
             'milestones',
             'howDidYouHear',
+            'successMessage',
         ],
     ];
 

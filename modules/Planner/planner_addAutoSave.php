@@ -36,7 +36,15 @@ if (empty($_POST)) {
     exit();
 }
 
+$autoSaveData = $_POST;
+
+$gibbonCourseClassID = $autoSaveData['gibbonCourseClassID'] ?? '';
+
+unset($autoSaveData['gibbonCourseClassID']);
+unset($autoSaveData['gibbonUnitID']);
+unset($autoSaveData['courseClassName']);
+
 $formData = $container->get(FormSessionStorage::class);
-$formData->load('plannerAdd');
-$formData->addData($_POST);
-$formData->save('plannerAdd');
+$formData->load('plannerAdd'.$gibbonCourseClassID);
+$formData->addData($autoSaveData);
+$formData->save('plannerAdd'.$gibbonCourseClassID);

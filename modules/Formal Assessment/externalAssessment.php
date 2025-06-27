@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment.php');
 
@@ -107,14 +107,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 ->fromQuery($pdo, $sql)
                 ->required()
                 ->placeholder()
-                ->setClass('w-32');
+                ->setClass('w-32 mr-2');
             $col->addDate('date')
                 ->placeholder(__('Date'))
-                ->setClass('w-32');
-            $col->addYesNo('copyToGCSECheck')
+                ->setClass('mr-2 w-32');
+            $col->addSelect('copyToGCSECheck')
+                ->fromArray(['Y' => __('Yes'), 'N' => __('No')])
                 ->required()
                 ->placeholder(__('Copy Target Grades?'))
-                ->setClass('w-32 copyToGCSE');
+                ->setClass('mr-2 copyToGCSE');
             $col->addSubmit(__('Go'));
 
         $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');

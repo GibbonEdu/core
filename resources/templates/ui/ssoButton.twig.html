@@ -10,23 +10,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% if clientName %}
 <a target="_top" class="login block mb-4" href="{{ authURL }}" onclick="addOAuth2LoginParams(this)">
-    <button type="button" class="w-full bg-white rounded shadow border border-gray-400 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">
+    <button type="button" class="w-full bg-white rounded-md shadow border border-gray-500 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">
         <img class="w-10 h-10" src="themes/{{ gibbonThemeName }}/img/{{ service }}-login.svg">
         <span class="flex-grow text-lg">{{ __('Sign in with {service}', {'service': clientName } ) }}</span>
     </button>
 </a>
 
 {% else %}
-
     <script>
-    $(".loginOptionsOAuth2").hide();
-    $(".showOAuth2Options").click(function(){
-        if ($('.loginOptionsOAuth2').is(':hidden')) $(".loginTableOAuth2").removeClass('blank').addClass('noIntBorder');
-        $(".loginOptionsOAuth2").fadeToggle(1000, function() {
-            if ($('.loginOptionsOAuth2').is(':hidden')) $(".loginTableOAuth2").removeClass('noIntBorder').addClass('blank');
-        });
-    });
-
     function addOAuth2LoginParams(element)
     {
         $(element).attr('href', function() {
@@ -38,5 +29,4 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         });
     }
     </script>
-
 {% endif %}

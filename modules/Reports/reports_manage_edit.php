@@ -111,9 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
 
     $row = $form->addRow();
         $row->addLabel('accessDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Reports are hidden until date is reached.'));
-        $col = $row->addColumn('accessDate')->setClass('inline');
-        $col->addDate('accessDate')->setValue(substr($values['accessDate'], 0, 11))->addClass('mr-2');
-        $col->addTime('accessTime')->setValue(substr($values['accessDate'], 11, 5));
+        $col = $row->addColumn('accessDate')->setClass('inline gap-2');
+        $col->addDate('accessDate')->setValue(substr($values['accessDate'], 0, 11))->addClass('flex-1');
+        $col->addTime('accessTime')->setValue(substr($values['accessDate'], 11, 5))->addClass('flex-1');
 
     $row = $form->addRow();
         $row->addFooter();

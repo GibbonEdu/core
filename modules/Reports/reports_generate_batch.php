@@ -37,12 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
 
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    
+
     $report = $reportGateway->getByID($gibbonReportID);
-    
+
     if (empty($gibbonReportID) || empty($report)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
             ->required()
             ->setClass('status w-32');
         $col->addSelect('twoSided')
-            ->fromArray(['Y' => __('Two-sided'), 'N' => __('Single-sided')])
+            ->fromArray(['N' => __('Single-sided'), 'Y' => __('Two-sided')])
             ->required()
             ->setClass('status w-32 ml-1');
         $col->addSubmit(__('Go'));
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->addParam('gibbonReportID', $gibbonReportID)
         ->format(function ($report, $actions) use (&$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
-            
+
             if (count($reportLogs) == 0) {
                 $actions->addAction('run', __('Run'))
                         ->setIcon('run')

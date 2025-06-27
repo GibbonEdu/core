@@ -26,6 +26,8 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Markbook\MarkbookView;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 
 // Lock the file so other scripts cannot call it
 if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') ) return;
@@ -124,17 +126,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         'courseClass' => Format::courseClassName($class['course'], $class['class']),
     ]));
 
-    //Add multiple columns
-    if ($multiAdd) {
-        $params = [
-            "gibbonCourseClassID" => $gibbonCourseClassID
-        ];
-        $page->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
-            ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
-            ->addParams($params)
-            ->setIcon('page_new_multi')
-            ->displayLabel();
-    }
 
     //Get class chooser
     echo classChooser($guid, $pdo, $gibbonCourseClassID);
@@ -181,22 +172,100 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     // Load the columns for the current page
     $markbook->loadColumnsFromDataSet($columns);
 
-    if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
-        echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-			if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-	            if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
-	                echo " | <a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$session->get('gibbonThemeName')."/img/run.png'/></a>";
-	            }
-	        }
-		}
-        echo '</div>';
 
-        echo "<div class='warning'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+    // Display Pagination
+    echo "<div class='linkTop flex justify-between items-center mt-4'>";
+    
+    // Print table header info
+    echo '<p class="pr-4 text-xs text-gray-600 text-left">';
+        if (!empty($teacherList)) {
+            echo '<span class="text-sm font-semibold text-gray-800">'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</span>.<br/>';
+        }
+        if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
+            echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, use the Newer and Older links.');
+        } else {
+            echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
+        }
+        
+        if ($markbook->hasExternalAssessments() == true) {
+            echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
+        }
+    echo '</p>';
+
+    // Display the Top Links
+    if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+        echo '<script>
+            function resetOrder(){
+                $( "#dialog" ).dialog();
+            }
+            function resetOrderAction(order){
+                if(order==1){
+                    window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=1";
+                }else if(order==2){
+                    window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=2";
+                }
+            }
+        </script>';
+        echo '<div id="dialog" title="'.__('Reset Order').'" style="display:none;">
+            '.__('Are you sure you want to reset the ordering of all the columns in this class?').'<br>
+            <button onclick="resetOrderAction(1)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by entry order').'</button><br>
+            <button onclick="resetOrderAction(2)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by date').'</button>
+        </div>';
+
+        $form = Form::create('links', '');
+
+        $form->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Markbook/markbook_edit_add.php')
+            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+            ->displayLabel();
+
+        if ($multiAdd) {
+            $form->addHeaderAction('addMulti', __('Add Multiple'))
+                ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->setIcon('page_new_multi')
+                ->displayLabel();
+        }
+
+        $form->addHeaderAction('target', __('Targets'))
+            ->setURL('/modules/Markbook/markbook_edit_targets.php')
+            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+            ->displayLabel();
+
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
+            $form->addHeaderAction('config', __('Weightings'))
+                ->setURL('/modules/Markbook/weighting_manage.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->displayLabel();
+        }
+
+        if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
+            $form->addHeaderAction('refresh', __('Reset Order'))
+                ->onClick('resetOrder()')
+                ->setURL('#')
+                ->displayLabel();
+        }
+
+        if ($markbook->getColumnCountTotal() > 0) {
+            $form->addHeaderAction('export', __('Export'))
+                ->setURL('/modules/Markbook/markbook_viewExportAll.php')
+                ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->addParam('return', 'markbook_view.php')
+                ->directLink()
+                ->displayLabel();
+        }
+
+        echo $form->getOutput();
+    }
+    echo '</div>';
+
+    if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
+        echo Format::alert(__('There are no records to display.'), 'empty');
+        return;
     } else {
+
+        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') ) {
+
         // Cache all personalized target data
         $markbook->cachePersonalizedTargets( $gibbonCourseClassID );
 
@@ -211,31 +280,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
         }
 
-        echo '<h3>';
-        echo __('Results');
-        echo '</h3>';
-
-        // Print table header info
-        echo '<p>';
-            if (!empty($teacherList)) {
-                echo '<b>'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</b>. ';
-            }
-            if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
-                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, use the Newer and Older links.');
-            } else {
-                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
-            }
-            
-            if ($markbook->hasExternalAssessments() == true) {
-                echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
-            }
-        echo '</p>';
-
-        // Display Pagination
-        echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') ) {
-
-        	echo "<div style='padding-top: 16px; margin-right: 10px; text-align: left; width: 300px; float: left;'>";
+        	echo "<div class='flex-grow text-left py-1 text-sm'>";
 
 	        	echo ( ($session->get('markbookTerm') == -1)? __("All Terms") : $session->get('markbookTermName') ) ." : ";
 
@@ -261,46 +306,10 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 	        echo '</div>';
         }
 
-        // Display the Top Links
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a> | ";
-			echo '<script>
-					function resetOrder(){
-					    $( "#dialog" ).dialog();
-					}
-					function resetOrderAction(order){
-						if(order==1){
-							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=1";
-						}else if(order==2){
-							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=2";
-						}
-					}
-				</script>';
-			echo '<div id="dialog" title="'.__('Reset Order').'" style="display:none;">
-                      '.__('Are you sure you want to reset the ordering of all the columns in this class?').'<br>
-                      <button onclick="resetOrderAction(1)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by entry order').'</button><br>
-                      <button onclick="resetOrderAction(2)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by date').'</button>
-                    </div>';
-			echo "<a href='#' onclick='resetOrder()'>".__('Reset Order')."<img title='".__('Reset Order')."' src='./themes/".$session->get('gibbonThemeName')."/img/reincarnate.png'/></a> | ";
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Targets')."<img title='".__('Set Personalised Attainment Targets')."' src='./themes/".$session->get('gibbonThemeName')."/img/target.png'/></a> | ";
-            if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
-                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$session->get('gibbonThemeName')."/img/run.png'/></a> | ";
-                }
-            }
-            echo "<a href='".$session->get('absoluteURL')."/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".__('Export to Excel')."<img title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
-
-        } else {
-            echo '<br clear="both"/>';
-        }
-        echo '</div>';
-
         // Check to see if we have no columns to display. This can happen if the page number is incorrect.
         // Do this here so users still have access to buttons.
         if ($markbook->getColumnCountThisPage() <= 0) {
-            echo "<div class='warning'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo Format::alert(__('There are no records to display.'), 'empty');
             return;
         }
 
@@ -385,8 +394,8 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             // Build a mini list for the hover-over info
             // TODO: Move this stuff into markbookColumn class
-            $info = '<h6 style="color:#ffffff;">'.$column->getData('description').'</h6>';
-            $info .= '<ul style="margin: 0;">';
+            $info = '<div class="font-bold text-sm leading-6 mb-2">'.$column->getData('description').'</div>';
+            $info .= '<ul class="m-0 ml-4 w-48 text-xs">';
             $info .= '<li>'.__('Type').' - '.$markbook->getTypeDescription( $columnType ) .'</li>';
 
             $weightInfo = '';
@@ -434,11 +443,13 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             $info .= '</ul>';
 
-            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='padding: 0px 0px 30px 0px !important; text-align: center;vertical-align: top;'>";
+            $columnColor =  $column->getData('columnColor');
+            $columnColor = !empty($columnColor) && strtolower($columnColor) != '#ffffff'? 'background-color: '.preg_replace('/[^a-zA-Z0-9\#]/', '', $columnColor).'88;' : '';
+            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='padding: 0px 0px 30px 0px !important; text-align: center;vertical-align: top; {$columnColor}'>";
 
             echo ($canEditThisClass) ? "<div class='dragtable-drag-handle'></div>" :  "<br/>";
 
-            echo "<span title='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
+            echo "<span x-tooltip.bottom='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
             echo "<span class='details'>";
 
 
@@ -455,25 +466,25 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
             echo '</span>';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
-                echo '<div class="columnActions">';
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                echo '<div class="columnActions flex items-center justify-center gap-2">';
+                echo "<a class='inline-block text-gray-600 hover:text-gray-800' title='".__('Edit')."' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'>".icon('solid', 'edit', 'size-6')."</a>";
 
-                echo "<a class='miniIcon' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/> ";
+                echo "<a class='inline-block text-gray-600 hover:text-gray-800' title='".__('Enter Data')."' class='miniIcon' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'>".icon('solid', 'markbook', 'size-6');
 
                     // Add mini checkmarks if the column is marked and included in calculations
-                    if ( $includeMarks ) {
-                        $weightInfo = __('Marked on').' '.Format::date($column->getData('completeDate') ).'<br/>';
-                        echo "<img title='$weightInfo' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick_double.png'/>";
+                    if ($includeMarks) {
+                        $weightInfo = __('Marked on').' '.Format::date($column->getData('completeDate') ).'<br/>'.$weightInfo;
+                        echo '<div class="absolute right-0 bottom-0 -mr-1 -mb-1" title="'.$weightInfo.'">'.icon('solid', 'check', 'size-4 text-green-600 bg-gray-150 rounded-full').'</div>';
                     } else {
                         if ($markbook->getSetting('enableColumnWeighting') == 'Y' ) {
                             $weightInfo = '<strong>'.__('Excluded from averages').':</strong><br/>'. $weightInfo;
                         }
-                        echo "<img title='$weightInfo' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/>";
+                        echo '<div class="absolute right-0 bottom-0 -mr-1 -mb-1" title="'.$weightInfo.'">'.icon('solid', 'cross', 'size-4 text-red-700 bg-gray-150 rounded-full').'</div>';
                     }
 
-                echo "</a> ";
-                echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-                echo "<a href='".$session->get('absoluteURL').'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
+                echo "</a>";
+                echo "<a class='thickbox inline-block text-gray-600 hover:text-gray-800' title='".__('Delete')."' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."&width=650&height=135'>".icon('solid', 'delete', 'size-6')."</a> ";
+                echo "<a class='inline-block text-gray-600 hover:text-gray-800' title='".__('Export to Excel')."' href='".$session->get('absoluteURL').'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".icon('solid', 'download', 'size-6')."</a>";
                 echo '</div>';
             }
 
@@ -484,13 +495,13 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             	echo '</th>';
             } else {
                 if ($enableModifiedAssessment == 'Y') {
-                    echo "<th class='columnLabel smallColumn'>";
+                    echo "<th class='columnLabel smallColumn' style='{$columnColor}'>";
                         echo __('Mod');
                     echo '</th>';
                 }
                 if ($column->displayAttainment() ) {
 
-                    echo "<th class='columnLabel medColumn'>";
+                    echo "<th class='columnLabel medColumn' style='{$columnColor}'>";
 
                     $scale = '';
                     if ($markbook->getSetting('enableRawAttainment') == 'Y' && $session->has('markbookFilter') ) {
@@ -519,7 +530,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     echo '</th>';
                 }
                 if ($column->displayEffort() ) {
-                    echo "<th class='columnLabel medColumn'>";
+                    echo "<th class='columnLabel medColumn' style='{$columnColor}'>";
                     
                         $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDEffort'));
                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -538,17 +549,17 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     echo '</th>';
                 }
                 if ($column->displayComment()) {
-                    echo "<th class='columnLabel largeColumn'>";
+                    echo "<th class='columnLabel largeColumn' style='{$columnColor}'>";
                     echo "<span title='".__('Comment')."'>".__('Com').'</span>';
                     echo '</th>';
                 }
                 if ($column->displayUploadedResponse()) {
-                    echo "<th class='columnLabel smallColumn'>";
+                    echo "<th class='columnLabel smallColumn' style='{$columnColor}'>";
                     echo "<span title='".__('Uploaded Response')."'>".__('Upl').'</span>';
                     echo '</th>';
                 }
                 if ($column->displaySubmission()) {
-                    echo "<th class='columnLabel smallColumn'>";
+                    echo "<th class='columnLabel smallColumn' style='{$columnColor}'>";
                     echo "<span title='".__('Submitted Work')."'>".__('Sub').'</span>';
                     echo '</th>';
 
@@ -636,13 +647,13 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         try {
             if ($studentOrderBy == 'rollOrder') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$session->get('gibbonSchoolYearID') );
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder, dateEnrolled, dateUnenrolled FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
             } else if ($studentOrderBy == 'preferredName') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, dateEnrolled, dateUnenrolled FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
             } else {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, dateEnrolled, dateUnenrolled FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
             }
 
             $resultStudents = $connection2->prepare($sqlStudents);
@@ -664,7 +675,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 ++$count;
 
                 echo "<tr >";
-                echo '<td class="firstColumn '.($count % 2 == 0 ? 'odd' : 'even').'">';
+                echo '<td class="firstColumn text-left '.($count % 2 == 0 ? 'odd' : 'even').'">';
 
                 if ($studentOrderBy == 'rollOrder' && !empty($rowStudents['rollOrder']) ) {
                     echo $rowStudents['rollOrder'].') ';
@@ -711,19 +722,50 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
 
                 	$column = $markbook->getColumn( $i );
-
-                	echo "<td class='columnLabel' style='padding: 0 !important;'>";
-                	echo '<table class="columnLabels blank" cellspacing=0><tr>';
-
-
+                    $columnClass = 'columnLabel';
                     
-                        $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-                        $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
-                        $resultEntry = $connection2->prepare($sqlEntry);
-                        $resultEntry->execute($dataEntry);
-                    if ($resultEntry->rowCount() == 1) {
-                        $rowEntry = $resultEntry->fetch();
+                    $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
+                    $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
+                    $rowEntry = $pdo->selectOne($sqlEntry, $dataEntry);
+                    $rowWork = [];
 
+                    if ($column->displaySubmission()) {
+                        $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
+                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+                        $rowWork = $pdo->selectOne($sqlWork, $dataWork);
+                    }
+
+                    $newEnrollment = false;
+                    
+                    // Check if class enrolment date exists and is after the Go Live date for this column
+                    if (!empty($rowStudents['dateEnrolled']) && !empty($column->getData('completeDate')) && $rowStudents['dateEnrolled'] > $column->getData('completeDate')) {
+                        $newEnrollment = true;
+                    }
+                    
+                    // Check if student enrolment date is after the Go Live date for this column
+                    if (!empty($column->getData('completeDate')) && $rowStudents['dateStart'] > $column->getData('completeDate')) {
+                        $newEnrollment = true;
+                    }
+
+                    // Check if this student doesn't have an entry, and the Go Live date has passed
+                    if (empty($rowEntry) && empty($rowWork) && !empty($column->getData('completeDate')) && date('Y-m-d') >= $column->getData('completeDate') && (empty($column->getData('lessonDate')) || $rowStudents['dateStart'] >= $column->getData('lessonDate') ) ) {
+                        $newEnrollment = true;
+                    }
+
+                    // Check if student does actually have data for this column
+                    if ($newEnrollment && (!empty($rowEntry['attainmentValue']) || !empty($rowEntry['effortValue']) || !empty($rowEntry['comment']) || !empty($rowEntry['response'])) || !empty($rowWork)) {
+                        $newEnrollment = false;
+                    }
+                    
+                    if ($newEnrollment) {
+                        $columnClass .= ' dull';
+                    }
+
+                	echo "<td class='{$columnClass}' style='padding: 0 !important;'>";
+                	echo '<table class="columnLabels blank" cellspacing=0><tr>';
+                        
+                    if (!empty($rowEntry)) {
+                        
                         if ($enableModifiedAssessment == 'Y') {
                             echo "<td class='medColumn'>";
                                 echo $rowEntry['modifiedAssessment'];
@@ -760,20 +802,20 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                                 echo "<div $styleAttainment title='".htmlPrep($attainmentDesc)."'>" . $attainment;
 
-                                if ($attainment !== '' && $attainment != __('Inc')) {
+                                if ($attainment !== '' &&  is_numeric(rtrim($attainment, "%"))) {
                                     @$totals['attainment'][$i]['total'] += floatval($attainment);
                                     @$totals['attainment'][$i]['count'] += 1;
                                 }
                             }
                             if ($column->hasAttainmentRubric()) {
-                                echo "<a class='thickbox rubricIcon' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img title='".__('View Rubric')."' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
+                                echo "<a title='".__('View Rubric')."' class='thickbox rubricIcon text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'>".icon('solid', 'markbook', 'size-4')."</a>";
                             }
 
                             if ($column->hasAttainmentGrade()) {
 
                                 if (empty($attainment) && $column->hasAttainmentRubric() == false) {
                                     if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                        print "<a class='markbookQuickEdit' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Edit") . "' src='./themes/" . $session->get("gibbonThemeName") . "/img/config.png' width='14' height='14'/></a> " ;
+                                        print "<a title='" . __("Edit") . "' class='markbookQuickEdit text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'>".icon('solid', 'edit', 'size-4')."</a> " ;
                                     }
                                 }
 
@@ -799,14 +841,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                 echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>" . $effort;
                             }
                             if ($column->hasEffortRubric()) {
-                                echo "<a class='thickbox rubricIcon' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img title='".__('View Rubric')."' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
+                                echo "<a title='".__('View Rubric')."' class='thickbox rubricIcon text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'>".icon('solid', 'markbook', 'size-4')."</a>";
                             }
                             if ($column->hasEffortGrade()) {
 
                                 if (empty($effort) && $column->hasEffortRubric() == false) {
 
                                     if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                        print "<a class='markbookQuickEdit' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Edit") . "' src='./themes/" . $session->get("gibbonThemeName") . "/img/config.png' width='14' height='14'/></a> " ;
+                                        print "<a  title='" . __("Edit") . "' class='markbookQuickEdit text-gray-600 hover:text-gray-800 inline-block ml-2 align-middle' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'>".icon('solid', 'edit', 'size-4')."</a> " ;
                                     }
                                 }
 
@@ -838,7 +880,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     } else {
                         $editLink = '';
                         if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                            $editLink = "<a class='markbookQuickEdit' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $session->get("gibbonThemeName") . "/img/page_new_mini.png'/></a> " ;
+                            $editLink = "<a title='".__("Add")."' class='markbookQuickEdit inline-block' href='" . $session->get("absoluteURL") . "/index.php?q=/modules/" . $session->get("module") . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'>".icon('solid', 'add', 'size-4 text-green-600 mt-1')."</a> " ;
                         }
 
                         if ($enableModifiedAssessment == 'Y') {
@@ -863,13 +905,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                         echo "<td class='smallColumn'>";
                         
-                            $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
-                            $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                            $resultWork = $connection2->prepare($sqlWork);
-                            $resultWork->execute($dataWork);
-                        if ($resultWork->rowCount() > 0) {
-                            $rowWork = $resultWork->fetch();
-
+                        if (!empty($rowWork)) {
                             if ($rowWork['status'] == 'Exemption') {
                                 $linkText = __('Exe');
                             } elseif ($rowWork['version'] == 'Final') {
@@ -888,19 +924,20 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                             }
 
                             if ($rowWork['type'] == 'File') {
-                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
+                                $rowWork['location'] = str_replace(['?','#'], ['%3F', '%23'], $rowWork['location'] ?? '');
+                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."' target='_blank'>$linkText</a></span>";
                             } elseif ($rowWork['type'] == 'Link') {
-                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."' target='_blank'>$linkText</a></span>";
                             } else {
                                 echo "<span title='$status. ".__('Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
                             }
                         } else {
                             if (date('Y-m-d H:i:s') < $column->getData('homeworkDueDateTime') ) {
                                 echo "<span title='".__('Pending')."'>Pen</span>";
-                            } else {
+                            } else  {
                                 if ($rowStudents['dateStart'] > $column->getData('lessonDate') ) {
                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
-                                } else {
+                                } else if (!$newEnrollment) {
                                     if ($column->getData('homeworkSubmissionRequired') == 'Required') {
                                         echo "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                                     } else {
@@ -1011,7 +1048,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 $attainmentAverage = ($attainmentCount > 0 && $attainmentTotal > 0)? ($attainmentTotal / $attainmentCount) : '';
 
                 if ($columnFilter == 'raw' && $markbook->getSetting('enableRawAttainment') == 'Y') {
-                    echo '<td class="dataColumn dataDivider dataDividerTop">'.round($attainmentAverage, 1).'</td>';
+                    echo '<td class="dataColumn dataDivider dataDividerTop">'.round(floatval($attainmentAverage), 1).'</td>';
                 } else {
                     echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($attainmentAverage).'</td>';
                 }

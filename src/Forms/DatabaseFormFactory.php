@@ -382,7 +382,7 @@ class DatabaseFormFactory extends FormFactory
         $data = ['gibbonPersonIDList' => implode(',', $people)];
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username
                 FROM gibbonPerson
-                WHERE status='Full'
+                WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                 AND FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList)
                 ORDER BY FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList), surname, preferredName";
 
@@ -399,10 +399,10 @@ class DatabaseFormFactory extends FormFactory
     {
         $params = array_replace(['includeStudents' => false, 'includeStaff' => false, 'useMultiSelect' => false], $params);
 
-        $users = array();
+        $users = [];
+        $data = [];
 
         if ($params['includeStaff'] == true) {
-            $data = array('date' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
                     FROM gibbonPerson
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
@@ -430,6 +430,7 @@ class DatabaseFormFactory extends FormFactory
                      ";
 
             if (!empty($gibbonSchoolYearID)) {
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')];
                 $sql .= "WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                         AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                         AND (dateStart IS NULL OR dateStart<=:date)
@@ -438,7 +439,7 @@ class DatabaseFormFactory extends FormFactory
 
             $sql .= " ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
 
-            $result = $this->pdo->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')]);
+            $result = $this->pdo->select($sql, $data);
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
@@ -622,9 +623,15 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->select($sql, $data);
 
         $grades = ($results->rowCount() > 0)? $results->fetchAll() : array();
-        $gradeOptions = array_reduce($grades, function ($group, $item) use ($params) {
+        $default = '';
+
+        $gradeOptions = array_reduce($grades, function ($group, $item) use ($params, &$default) {
             $identifier = $params['valueMode'] == 'id' ? 'gibbonScaleGradeID' : 'value';
             $value = $params['labelMode'] == 'descriptor' ? $item['descriptor'] : $item['value'];
+
+            if ($item['isDefault'] == 'Y') {
+                $default = $value;
+            }
 
             if ($params['labelMode'] == 'both') {
                 $value = $item['value'] == $item['descriptor'] ? $item['value'] : $item['value'].' - '.$item['descriptor'];
@@ -634,10 +641,9 @@ class DatabaseFormFactory extends FormFactory
             return $group;
         }, []);
 
-        $default = array_search('Y', array_column($grades, 'isDefault'));
-        $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
+        $selected = ($params['honourDefault'] && !empty($default))? $default: '';
 
-        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect');
+        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect w-auto');
     }
 
     public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')

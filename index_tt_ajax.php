@@ -19,44 +19,57 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\UI\Timetable\Timetable;
+use Gibbon\UI\Timetable\TimetableContext;
 
-//Gibbon system-wide includes
+// Gibbon system-wide includes
 include './gibbon.php';
 
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
-    if ($session->get('i18n')['code'] != null) {
-        putenv('LC_ALL='.$session->get('i18n')['code']);
-        setlocale(LC_ALL, $session->get('i18n')['code']);
-        bindtextdomain('gibbon', './i18n');
-        textdomain('gibbon');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
-    }
-}
-
-//Setup variables
-$output = '';
-$id = $_POST['gibbonTTID'] ?? '';
+// Setup variables
+$gibbonTTID = $_REQUEST['gibbonTTID'] ?? null;
+$gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? $session->get('gibbonPersonID');
+$gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? null;
+$format = $_REQUEST['format'] ?? '';
+$edit = $_REQUEST['edit'] ?? false;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
-    //Acess denied
-    $page->addError(__('Your request failed because you do not have access to this action.'));
+    // Access denied
+    echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
 } else {
     include './modules/Timetable/moduleFunctions.php';
-    $ttDate = '';
-    if (!empty($_POST['ttDate'])) {
-        $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
+
+    $ttDate = null;
+
+    if (!empty($_REQUEST['ttDateNav'])) {
+        $ttDate = $_REQUEST['ttDateNav'];
+    } elseif (!empty($_REQUEST['ttDateChooser'])) {
+        $ttDate = $_REQUEST['ttDateChooser'];
+    } elseif (!empty($_REQUEST['ttDate'])) {
+        $ttDate = Format::dateConvert($_REQUEST['ttDate']);
     }
 
-    $tt = renderTT($guid, $connection2, $session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
-    if ($tt != false) {
-        $output .= $tt;
-    } else {
-        $output .= "<div class='error'>";
-        $output .= __('There is no information for the date specified.');
-        $output .= '</div>';
+    // Get and update preferences
+    $userGateway = $container->get(UserGateway::class);
+    if (!empty($gibbonTTID)) {
+        $userGateway->setUserPreferenceByScope($session->get('gibbonPersonID'), 'ttOptions', 'gibbonTTID', preg_replace('/[^0-9]/', '', $gibbonTTID));
     }
+
+    // Create timetable context
+    $context = $container->get(TimetableContext::class)
+        ->set('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'))
+        ->set('gibbonPersonID', $gibbonPersonID)
+        ->set('gibbonSpaceID', $gibbonSpaceID)
+        ->set('gibbonTTID', $gibbonTTID)
+        ->set('format', $format)
+        ->set('edit', $edit);
+
+    // Build and render timetable
+    echo $container->get(Timetable::class)
+        ->setDate($ttDate)
+        ->setContext($context)
+        ->addCoreLayers($container)
+        ->getOutput(); 
 }
-
-echo $output;

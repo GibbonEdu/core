@@ -66,6 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('gibbonPersonIDStudent', $_REQUEST['gibbonPersonIDStudent'] ?? '');
+            $form->addHiddenValue('lendingAction', $_REQUEST['lendingAction'] ?? '');
             
             if (!empty($name) or !empty($gibbonLibraryTypeID) or !empty($gibbonSpaceID) or !empty($status)) {
                $params = [

@@ -42,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_del
         return;
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reports_manage_deleteProcess.php?gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonReportID='.$gibbonReportID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Reports/reports_manage_deleteProcess.php', true);
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+    $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     echo $form->getOutput();
 }

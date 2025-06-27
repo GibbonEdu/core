@@ -236,12 +236,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         $col->addTextField($setting['name'])->required()->maxLength(60)->setValue($setting['value']);
         $col->addTextField($settingRev['name'])->required()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
 
-    $form->loadAllValuesFrom($formats);
-
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();
 }
-?>

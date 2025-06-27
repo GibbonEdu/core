@@ -107,7 +107,7 @@ class INFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'sen':
                 $row->addLabel('sen', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('sen')->required($required)->selected($default)->placeholder();
+                $row->addYesNo('sen')->required($required)->selected($default ?? 'N')->placeholder();
                 break;
 
             case 'senDetails':

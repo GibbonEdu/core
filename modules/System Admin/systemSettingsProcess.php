@@ -25,7 +25,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['indexText' => 'HTML', 'analytics' => 'RAW']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['indexText' => 'HTML', 'analytics' => 'RAW', 'emailLink' => 'URL', 'webLink' => 'URL']);
 include '../../config.php';
 
 // Module includes
@@ -112,6 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         if (empty($_POST['organisationLogo'])) {
             $partialFail = true;
         }
+    } else {
+        $_POST['organisationLogo'] = $settingGateway->getSettingByScope('System', 'organisationLogo');
     }
 
     // Update fields

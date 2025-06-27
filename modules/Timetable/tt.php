@@ -34,6 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestProfileAction = getHighestGroupedAction($guid, '/modules/Students/student_view.php', $connection2);
+
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
@@ -47,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $staffGateway = $container->get(StaffGateway::class);
 
         $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
+        $canViewFullProfile = ($highestProfileAction == 'View Student Profile_full' or $highestProfileAction == 'View Student Profile_fullNoNotes' or $highestProfileAction == 'View Student Profile_fullEditAllNotes');
 
         if ($canViewAllTimetables) {
             $criteria = $studentGateway->newQueryCriteria(true)
@@ -57,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
 
             $form = Form::create('ttView', $session->get('absoluteURL').'/index.php', 'get');
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
             $form->setTitle(__('Search'));
 
             $form->addHiddenValue('q', '/modules/'.$session->get('module').'/tt.php');
@@ -105,7 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
             $table = DataTable::createPaginated('timetables', $criteria);
 
-            $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+            if ($canViewFullProfile) {
+                $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+            }
 
             $table->addMetaData('filterOptions', [
                 'role:student'    => __('Role').': '.__('Student'),
@@ -136,10 +141,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 $roleCategory = ($person['roleCategory'] == 'Student' || !empty($person['yearGroup']))? 'Student' : 'Staff';
                 return Format::name('', $person['preferredName'], $person['surname'], $roleCategory, true, true);
             });
+
         if ($canViewAllTimetables) {
             $table->addColumn('roleCategory', __('Role Category'))
-                ->format(function($person) {
-                    return __($person['roleCategory']) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                ->format(function($person) use ($canViewFullProfile) {
+                    return $canViewFullProfile 
+                        ? __($person['roleCategory']) . '<br/>'.Format::small(Format::userStatusInfo($person))
+                        : __($person['roleCategory']);
                 });
         }
         $table->addColumn('yearGroup', __('Year Group'));

@@ -135,14 +135,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                 ->setURL('/modules/Timetable Admin/tt_edit_byClass.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonTTID', $gibbonTTID)
-                ->displayLabel()
-                ->append('&nbsp;&nbsp;|&nbsp;&nbsp;');
+                ->displayLabel();
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Timetable Admin/tt_edit_day_add.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonTTID', $gibbonTTID)
                 ->displayLabel();
+
+            $table->addColumn('color', __('Colour'))
+                ->width('8%')
+                ->format(Format::using('colorSwatch', 'color'));
 
             $table->addColumn('name', __('Name'));
             $table->addColumn('nameShort', __('Short Name'));

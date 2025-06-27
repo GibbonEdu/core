@@ -13,32 +13,33 @@ Main Menu: Displays the top-level categories and active modules.
 <hr class="opacity-25 border-{{ themeColour }}-300 border-b-0 mx-0 -my-px">
 <ul class="list-none flex flex-wrap items-center my-3 -mx-4">
     <li class="mx-0 px-0">
-        <a class="block uppercase font-bold text-sm text-gray-100 hover:text-gray-800 no-underline ml-1 px-4 py-3" href="{{ absoluteURL }}/index.php">{{ __('Home') }}</a>
+        <a hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:no-scroll swap:0s" class="block uppercase font-bold text-sm text-gray-100 hover:text-gray-800 no-underline ml-1 px-4 py-3" href="{{ absoluteURL }}/index.php">{{ __('Home') }}</a>
     </li>
 
     {% if isLoggedIn %}
         {% for categoryName, items in menuMain %}
-        <li class="sm:relative group mx-0 px-0 ">
-            <a class="block uppercase font-bold text-sm text-gray-100 hover:text-gray-800 no-underline px-4 py-3" href="#">{{ __(categoryName) }}</a>
+        <li class="sm:relative group mx-0 px-0 " x-data="{menuOpen: false}" @mouseleave="menuOpen = false" @click.outside="menuOpen = false">
+            <a @mouseenter="menuOpen = true" @click="menuOpen = true" :class="{'text-gray-800': menuOpen, 'text-gray-100': !menuOpen}" class="block uppercase font-bold text-sm text-gray-100 no-underline px-4 py-3 cursor-pointer">{{ __(categoryName) }}</a>
 
-            <ul class="list-none bg-gray-800 absolute hidden group-hover:block w-full sm:w-48 left-0 m-0 py-1 sm:p-1 z-50 {{ rightToLeft ? 'right-0' : 'left-0' }}">
+            <ul x-cloak x-show="menuOpen" x-transition:enter.duration.250ms x-transition:leave.duration.0s class="list-none bg-black bg-opacity-75 backdrop-blur-lg backdrop-contrast-125 backdrop-saturate-150 rounded-md absolute w-available ms-4 me-4 sm:mx-0 sm:w-52  my-0 p-1 sm:p-1.5 z-50 {{ rightToLeft ? 'right-0' : 'left-0' }}">
                 {% for item in items %}
-                <li class="hover:bg-{{ themeColour }}-700">
-                    <a class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-1 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" href="{{ item.url }}">
+                <li class="hover:bg-{{ themeColour }}-700 rounded">
+                    <a @click="menuOpen = false" class="block text-sm text-white focus:text-{{ themeColour }}-200 no-underline px-2 py-2 md:py-1 leading-normal {{ rightToLeft ? 'text-right' : 'text-left' }}" href="{{ item.url }}">
                         {{ __(item.name, item.textDomain) }}
                     </a>
                 </li>
                 {% endfor %}
             </ul>
+            <div x-cloak x-show="menuOpen" class="absolute -left-8 h-48 m-0 z-40" style="width:calc(100% + 8rem);"></div>
         </li>
         {% endfor %}
     {% endif %}
 
-    <li class=" notificationTray flex-grow">
+    <li class=" notificationTray flex-grow relative">
         <div class="flex flex-row-reverse items-center">
 
-            <div id="finderTray" class="mr-2 w-auto sm:w-full max-w-sm" style="min-width: 240px;">
-                {{ fastFinder|raw }}
+            <div id="finderTray" class="mr-4 w-auto sm:w-full max-w-sm">
+                {{ include('finder.twig.html') }}
             </div>
 
             {{ include('tray.twig.html') }}

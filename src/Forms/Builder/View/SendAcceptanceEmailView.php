@@ -48,7 +48,7 @@ class SendAcceptanceEmailView extends AbstractFormView
 
     public function getDescription() : string
     {
-        return '';
+        return __('Send an email to the student and/or parent once the form has been accepted.');
     }
 
     public function configure(Form $form)

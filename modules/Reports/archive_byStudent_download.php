@@ -27,8 +27,6 @@ use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
-$_POST['address'] = '/modules/Reports/archive_byStudent_download.php';
-
 require_once '../../gibbon.php';
 
 $accessToken = $_GET['token'] ?? '';

@@ -48,18 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
-    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setTitle(__('Search'));
-    $form->setClass('noIntBorder fullWidth');
-
-    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/user_manage.php');
+    $form = Form::createSearch();
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
+        $row->addLabel('search', __('Search For'))
+            ->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
-    $row = $form->addRow();
-        $row->addSearchSubmit($session, __('Clear Search'));
+    $form->addRow()->addSearchSubmit('', __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -124,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             return $output;
         });
 
-    $table->addColumn('username', __('Username'))->context('primary');
+    $table->addColumn('username', __('Username'));
 
     // ACTIONS
     $table->addActionColumn()

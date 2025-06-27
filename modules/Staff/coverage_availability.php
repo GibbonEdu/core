@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         ->fromPOST();
 
     $dates = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
-    
+
     $bulkActions = array(
         'Delete' => __('Delete'),
     );
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
 
     echo $form->getOutput();
 
-    
+
     $form = Form::create('staffAvailability', $session->get('absoluteURL').'/modules/Staff/coverage_availability_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));

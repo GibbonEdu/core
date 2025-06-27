@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
             $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-            $email = trim($_POST['email'] ?? '');
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $phone1Type = $_POST['phone1Type'] ?? '';
             $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
             $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1'] ?? '');
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $parent1relationship = $_POST['parent1relationship'] ?? null;
             $parent1languageFirst = $_POST['parent1languageFirst'] ?? null;
             $parent1languageSecond = $_POST['parent1languageSecond'] ?? null;
-            $parent1email = trim($_POST['parent1email'] ?? '');
+            $parent1email = filter_var(trim($_POST['parent1email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $parent1phone1Type = $_POST['parent1phone1Type'] ?? null;
             if (isset($_POST['parent1phone1']) and $parent1phone1Type == '') {
                 $parent1phone1Type = 'Other';
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $parent2relationship = $_POST['parent2relationship'] ?? null;
             $parent2languageFirst = $_POST['parent2languageFirst'] ?? null;
             $parent2languageSecond = $_POST['parent2languageSecond'] ?? null;
-            $parent2email = trim($_POST['parent2email'] ?? '');
+            $parent2email = filter_var(trim($_POST['parent2email'] ?? ''), FILTER_SANITIZE_EMAIL);
             $parent2phone1Type = $_POST['parent2phone1Type'] ?? null;
             if (isset($_POST['parent2phone1']) and $parent2phone1Type == '') {
                 $parent2phone1Type = 'Other';

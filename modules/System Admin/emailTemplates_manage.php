@@ -49,11 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $actions = $table->addActionColumn()
         ->addParam('gibbonEmailTemplateID')
         ->format(function ($values, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/System Admin/emailTemplates_manage_edit.php');
+                    
             $actions->addAction('duplicate', __('Duplicate'))
                     ->setIcon('copy')
                     ->setURL('/modules/System Admin/emailTemplates_manage_duplicate.php');
-            $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/System Admin/emailTemplates_manage_edit.php');
 
             if ($values['type'] == 'Custom') {
                 $actions->addAction('delete', __('Delete'))

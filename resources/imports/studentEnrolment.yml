@@ -1,10 +1,11 @@
 details:
     type: studentEnrolment
+    category: Students
     name: Student Enrolment
     table: gibbonStudentEnrolment
     modes: { update: true, insert: true, export: true }
 access:
-    module: Students
+    module: Admissions
     action: Student Enrolment
 primaryKey:
     gibbonStudentEnrolmentID

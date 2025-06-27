@@ -57,7 +57,7 @@ $gibbonFamilyUpdateID = $I->grabValueFromURL('gibbonFamilyUpdateID');
 // Delete ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_family_manage_delete.php', array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();
 
 // Reset Data ------------------------------------------------

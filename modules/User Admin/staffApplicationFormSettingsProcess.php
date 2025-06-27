@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['staffApplicationFormIntroduction' => 'HTML', 'staffApplicationFormQuestions' => 'HTML', 'staffApplicationFormPostscript' => 'HTML', 'staffApplicationFormAgreement' => 'HTML', 'staffApplicationFormRequiredDocumentsText' => 'HTML', 'staffApplicationFormNotificationMessage' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['staffApplicationFormIntroduction' => 'HTML', 'staffApplicationFormQuestions' => 'HTML', 'staffApplicationFormPostscript' => 'HTML', 'staffApplicationFormAgreement' => 'HTML', 'staffApplicationFormRequiredDocumentsText' => 'HTML', 'staffApplicationFormNotificationMessage' => 'HTML', 'refereeLinks' => 'URL']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffApplicationFormSettings.php';
 

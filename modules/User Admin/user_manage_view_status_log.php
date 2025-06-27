@@ -62,6 +62,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
             $table->addColumn('reason', __('Reason'));
 
+            $table->addColumn('modified', __('Person'))
+                ->format(function($values) {
+                    return !empty($values['gibbonPersonIDModified'])
+                        ? Format::nameLinked($values['gibbonPersonIDModified'], '', $values['preferredName'], $values['surname'], 'Staff', false, true)
+                        : Format::small(__('N/A'));
+                });
+
             echo $table->render($userStatusLogGateway->queryStatusLogByPerson($criteria, $gibbonPersonID));
         }
     }

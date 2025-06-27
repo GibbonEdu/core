@@ -68,14 +68,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
             }
 
-            /** @var PasswordPolicy */
-            $policies = $container->get(PasswordPolicy::class);
-            if (($policiesHTML = $policies->describeHTML()) !== '') {
-                echo "<div class='warning'>";
-                echo $policiesHTML;
-                echo '</div>';
-            }
-
             $form = Form::create('resetUserPassword', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 
             $form->addHiddenValue('address', $session->get('address'));
@@ -87,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $row = $form->addRow();
                 $row->addLabel('passwordNew', __('Password'));
                 $row->addPassword('passwordNew')
-                    ->addPasswordPolicy($pdo)
+                    ->addPasswordPolicy($container->get(PasswordPolicy::class))
                     ->addGeneratePasswordButton($form)
                     ->required()
                     ->maxLength(30);
@@ -111,8 +103,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             echo '<br/>';
 
             // LOGIN TROUBLESHOOTING
-            $trueIcon = "<img title='" . __('Yes'). "' src='".$session->get('absoluteURL')."/themes/".$session->get('gibbonThemeName')."/img/iconTick.png' class='w-5 h-5 mr-4 float-right' />";
-            $falseIcon = "<img title='" . __('No'). "' src='".$session->get('absoluteURL')."/themes/".$session->get('gibbonThemeName')."/img/iconCross.png' class='w-5 h-5 mr-4 float-right' />";
+            $trueIcon =  icon('solid', 'check', 'size-6 ml-2 fill-current text-green-600');
+            $falseIcon = icon('solid', 'cross', 'size-6 ml-2 fill-current text-red-700');
 
             $form = Form::create('loginAccess', "")->setClass('smallIntBorder w-full');
             $form->setTitle(__('Login Troubleshooting'));

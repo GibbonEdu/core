@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML', 'url*' => 'URL']);
 
 //Module includes
 include './moduleFunctions.php';

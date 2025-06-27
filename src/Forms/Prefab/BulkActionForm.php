@@ -22,8 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Prefab;
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\FormFactory;
-use Gibbon\Forms\FormRenderer;
 
 /**
  * BulkActionForm
@@ -41,7 +39,10 @@ class BulkActionForm extends Form
             ->setID($id)
             ->setClass($class)
             ->setAction($action)
-            ->setMethod($method);
+            ->setMethod($method)
+            ->setTokens($container);
+        
+        $form->renderer->setTemplate('components/formBlank.twig.html');
 
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
         $form->addHiddenValue('address', $_GET['q']);

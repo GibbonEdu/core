@@ -38,7 +38,9 @@ class ApplicationFamilyTable extends DataTable
 {
     protected $view;
     protected $session;
+    
     protected $formUploadGateway;
+    protected $applicationGateway;
 
     public function __construct(Session $session, View $view, AdmissionsApplicationGateway $applicationGateway)
     {

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Finance\FinanceBudgetCycleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_delete.php') == false) {
     // Access denied
@@ -31,18 +32,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     if ($gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-            $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
+            $result = $container->get(FinanceBudgetCycleGateway::class)->getByID($gibbonFinanceBudgetCycleID);
+            
+        if (empty($result)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            //Let's go!
-            $row = $result->fetch();
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgetCycles_manage_deleteProcess.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
+            // Let's go!
+            $row = $result;
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgetCycles_manage_deleteProcess.php");
+            $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
             echo $form->getOutput();
         }
     }

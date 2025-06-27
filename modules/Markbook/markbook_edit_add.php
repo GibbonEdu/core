@@ -137,7 +137,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $row = $form->addRow();
                     $row->addLabel('description', __('Description'));
-                    $row->addTextField('description')->required()->maxLength(1000)->setValue($summary);
+                    $col = $row->addColumn('description');
+                    $col->addTextField('description')->required()->maxLength(1000)->setValue($summary);
+                    $col->addColor('columnColor')->hideField()->setPalette('background')->addClass('ml-2');
 
                 // TYPE
                 $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
@@ -178,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                         $row->addLabel('date', __('Date'));
                         $row->addDate('date')->setValue(Format::date($date))->required();
                 } else {
-                    $form->addHiddenValue('date', Format::date($date));
+                    $form->addHiddenValue('date', $date);
                 }
 
                 $form->addRow()->addHeading('Assessment', __('Assessment'));

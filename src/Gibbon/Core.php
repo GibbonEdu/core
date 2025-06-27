@@ -21,8 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\View\Component;
 use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
+use Gibbon\Support\Facades\Facade;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Psr\Container\ContainerInterface;
@@ -87,7 +89,7 @@ class Core
         $db = $container->get('db');
         $this->session = $container->get('session');
 
-        if (empty($this->session->get('systemSettingsSet'))) {
+        if (!$this->session->has('systemSettingsSet') || !$this->session->has('absoluteURL')) {
             SessionFactory::populateSettings($this->session, $db);
         }
 
@@ -95,8 +97,10 @@ class Core
             SessionFactory::setCurrentSchoolYear($this->session, $container->get(SchoolYearGateway::class)->getCurrentSchoolYear());
         }
 
+        Facade::setFacadeContainer($container);
         Format::setupFromSession($this->session);
-
+        Component::setupFromSession($this->session);
+        
         $installType = $this->session->get('installType');
         if (empty($installType) || $installType == 'Production') {
             ini_set('display_errors', 0);

@@ -60,6 +60,7 @@ class MarkbookView
     protected $externalAssessmentFields;
     protected $personalizedTargets;
 
+    
     /**
      * Row data from gibbonMarkbookWeight
      * @var array
@@ -72,6 +73,12 @@ class MarkbookView
      */
     protected $weightedAverages;
 
+    /**
+     * Holds the sums for total and cumulative raw values from markbookEntry
+     * @var array
+     */
+    protected $rawAverages;
+    
     /**
      * SQL statements to be appended to the query to filter the current view
      * @var array
@@ -812,7 +819,7 @@ class MarkbookView
         if ($result->rowCount() > 0) {
             while ($entry = $result->fetch()) {
                 // Exclude incomplete values -- maybe make this a setting later?
-                if ($entry['attainmentValue'] == 'Incomplete' || stripos($entry['attainmentValue'], 'Inc') !== false) {
+                if (!is_numeric(rtrim($entry['attainmentValue'], "%"))) {
                     continue;
                 }
 
@@ -948,6 +955,8 @@ class MarkbookView
                 return;
             }
 
+            
+
             if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '' and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
                 $gibbonExternalAssessmentID = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], 0, strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-'));
                 $gibbonExternalAssessmentIDCategory = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], (strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-') + 1));
@@ -955,17 +964,17 @@ class MarkbookView
                 try {
                     $dataExternalAssessment = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'category' => $gibbonExternalAssessmentIDCategory);
                     $courseNameTokens = explode(' ', $courseName);
-                    $courseWhere = ' AND (';
-                    $whereCount = 1;
+                    $courseWhere = [];
+                    $whereCount = 0;
                     foreach ($courseNameTokens as $courseNameToken) {
                         if (strlen($courseNameToken) > 3) {
                             $dataExternalAssessment['token' . $whereCount] = '%' . $courseNameToken . '%';
-                            $courseWhere .= "gibbonExternalAssessmentField.name LIKE :token$whereCount OR ";
+                            $courseWhere[] = "gibbonExternalAssessmentField.name LIKE :token$whereCount";
                             ++$whereCount;
                         }
                     }
-
-                    $courseWhere = ($whereCount < 1) ? '' : substr($courseWhere, 0, -4) . ')';
+                    
+                    $courseWhere = !empty($courseWhere) ? 'AND ('.implode(' OR ', $courseWhere).')' : $courseWhere;
 
                     $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category, gibbonScale.name AS scale
                         FROM gibbonExternalAssessmentField

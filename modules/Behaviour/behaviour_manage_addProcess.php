@@ -137,10 +137,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
                     $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
-                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
+                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
+
+                    // Add extra details to the notification
+                    $details = [__('Date') => Format::date($date), __('Time') => date('H:i'), __('Type') => $type];
+                    if (!empty($descriptor)) $details[__('Descriptor')] = $descriptor;
+                    if (!empty($level)) $details[__('Level')] = $level;
 
                     // Raise a new notification event
-                    $event = new NotificationEvent('Behaviour', $type == 'Positive' ? 'New Positive Record' : 'New Negative Record');
+                    $eventType = '';
+                    switch ($type) {
+                        case 'Positive':
+                            $eventType = 'New Positive Record';
+                            break;
+                        case 'Negative':
+                            $eventType = 'New Negative Record';
+                            break;
+                        case 'Observation':
+                            $eventType = 'New Observation Record';
+                            break;
+                    }
+                    $event = new NotificationEvent('Behaviour', $eventType);
+                    $event->setNotificationDetails($details);
                     $event->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
                         'type' => strtolower($type),
                         'person' => $staffName,
@@ -173,13 +191,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             ]);
 
                             if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
+                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink, $details);
                             }
                             if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
+                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink, $details);
                             }
                             if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink, $details);
                             }
                         }
                     }
@@ -189,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     if (!empty($studentIN)) {
                         // Raise a notification event for IN students
                         $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
-                        
+                        $eventIN->setNotificationDetails($details);
                         $eventIN->setNotificationText(__('{person} has created a {type} behaviour record for {student}.', [
                             'type' => strtolower($type),
                             'person' => $staffName, 

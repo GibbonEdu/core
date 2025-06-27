@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $result = $pdo->executeQuery($data, $sql);
 
     $factory = FormFactory::create();
-    $table = $factory->createTable('detailsTable')->setClass('fullWidth');
+    $table = $factory->createTable('detailsTable')->setClass('w-full');
 
     if ($result->rowCount() != 1) {
         $table->addRow()->addAlert(__('The specified record cannot be found.'), 'error');
@@ -85,5 +85,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     echo $table->getOutput();
-    echo '<script type="text/javascript">'.$table->getValidationOutput().'</script>';
 }

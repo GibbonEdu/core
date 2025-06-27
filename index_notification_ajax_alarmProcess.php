@@ -29,7 +29,10 @@ $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
 $URL = Url::fromRoute();
 
 //Proceed!
-if (empty($gibbonAlarmID)) {
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+} elseif (empty($gibbonAlarmID)) {
     header("Location: {$URL}");
 } else {
     //Check alarm

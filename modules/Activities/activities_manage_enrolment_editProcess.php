@@ -101,8 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $event->sendNotifications($pdo, $session);
         
         // Set log
-        $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
+        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), 'Activities', $session->get('gibbonPersonID'), 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
     }
 
     $URL .= '&return=success0';

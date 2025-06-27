@@ -48,9 +48,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo __('Choose A Student');
             echo '</h3>';
 
-            $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get", "noIntBorder fullWidth standardForm");
+            $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get", "noIntBorder w-full standardForm");
 			$form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('noIntBorder fullWidth');
+            $form->setClass('noIntBorder w-full');
 			$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
 			$form->addHiddenValue('address', $session->get('address'));
 
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 					echo '</h2>';
 
 					$form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get");
-					$form->setClass('noIntBorder fullWidth standardForm');
+					$form->setClass('noIntBorder w-full standardForm');
 
 					$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
 					$form->addHiddenValue('address', $session->get('address'));

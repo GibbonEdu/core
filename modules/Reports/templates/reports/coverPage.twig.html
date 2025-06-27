@@ -36,17 +36,17 @@ config:
     </tr>
     <tr>
         <td colspan=3 style="text-align:center; line-height: 1.4; font-size: 48px; font-weight: bold; color: #444444;">
-            {{- report.name -}} 
+            {{- report.name -}}
         </td>
     </tr>
     <tr>
         <td colspan=3 style="text-align:center; line-height: 1.8; font-size: 24px; font-weight: normal; color: #444444;">
-            {{- school.organisationName -}} 
+            {{- school.organisationName -}}
         </td>
     </tr>
     <tr>
         <td colspan=3 style="text-align:center; line-height: 1.1; font-size: 14px; font-weight: normal; color: #888888;">
-            {{- formatUsing('dateReadable', report.date) -}} 
+            {{- formatUsing('dateReadable', report.date) -}}
         </td>
     </tr>
     <tr>
@@ -57,9 +57,9 @@ config:
     </tr>
     <tr>
         <td colspan=3 style="text-align:center;">
-        
+
             <img src="{{ absoluteURL }}/{{ student.image_240|default('themes/'~gibbonThemeName~'/img/anonymous_240.jpg') }}" style="height: 64mm" >
-              
+
         </td>
     </tr>
     <tr>

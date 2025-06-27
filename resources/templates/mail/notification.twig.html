@@ -13,6 +13,26 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <h2 style="margin-top: 0px;">{{ title }}</h2>
 {% endblock %}
 
+{% block body %}
+
+    {{ body|raw }}
+
+    {% if details|length > 0 %}
+        <hr style="border:none;border-bottom:1px solid #ececec;margin:1.5rem 0;width:100%;">
+
+        <ul>
+            {% for label, value in details %}
+            <li style="padding: 3px 0px;">
+                <b>{{ label }}</b>: {{ value|raw }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <hr style="border:none;border-bottom:1px solid #ececec;margin:1.5rem 0;width:100%;">
+    {% endif %}
+
+{% endblock %}
+
 {% block bodyBottom %}
     <span style="font-size: 12px; line-height: 18px;">
         {{ __('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.')|format(systemName, '<a href="' ~ absoluteURL ~ '/index.php?q=notifications.php" style="' ~ linkStyle ~ '">', '</a>')|raw }}

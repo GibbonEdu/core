@@ -86,7 +86,7 @@ class MessengerGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_date1', 'gibbonMessenger.messageWall_date2', 'gibbonMessenger.messageWall_date3', 'gibbonMessenger.emailReceipt', 'gibbonMessenger.confidential', 'gibbonMessenger.status', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category',
+                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_dateStart', 'gibbonMessenger.messageWall_dateEnd', 'gibbonMessenger.emailReceipt', 'gibbonMessenger.confidential', 'gibbonMessenger.status', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category',
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonMessenger.gibbonPersonID')
             ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
@@ -235,6 +235,9 @@ class MessengerGateway extends QueryableGateway
 
         }
 
+        $dataPosts['date'] = $date;
+        $dateWhere = "(:date BETWEEN gibbonMessenger.messageWall_dateStart AND gibbonMessenger.messageWall_dateEnd)";
+
         //My roles
         $roles = $session->get('gibbonRoleIDAll');
         $sqlWhere = '(';
@@ -245,11 +248,9 @@ class MessengerGateway extends QueryableGateway
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
         }
+
         if ($sqlWhere != '(') {
-            $dataPosts['date1'] = $date;
-            $dataPosts['date2'] = $date;
-            $dataPosts['date3'] = $date;
-            $sqlPosts = "(SELECT gibbonMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role: ', gibbonRole.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole AS authorRole ON (gibbonPerson.gibbonRoleIDPrimary=authorRole.gibbonRoleID) JOIN gibbonRole ON (gibbonMessengerTarget.id=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Role' AND (messageWall_date1=:date1 OR messageWall_date2=:date2 OR messageWall_date3=:date3) AND $sqlWhere)";
+            $sqlPosts = "(SELECT gibbonMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role: ', gibbonRole.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole AS authorRole ON (gibbonPerson.gibbonRoleIDPrimary=authorRole.gibbonRoleID) JOIN gibbonRole ON (gibbonMessengerTarget.id=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Role' AND $dateWhere AND $sqlWhere)";
         }
 
         //My role categories
@@ -271,17 +272,11 @@ class MessengerGateway extends QueryableGateway
             $sqlWhere = substr($sqlWhere, 0, -3).')';
         }
         if ($sqlWhere != '(') {
-            $dataPosts['date1'] = $date;
-            $dataPosts['date2'] = $date;
-            $dataPosts['date3'] = $date;
-            $sqlPosts = $sqlPosts." UNION (SELECT DISTINCT gibbonMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role Category: ', gibbonRole.category) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole AS authorRole ON (gibbonPerson.gibbonRoleIDPrimary=authorRole.gibbonRoleID) JOIN gibbonRole ON (gibbonMessengerTarget.id=gibbonRole.category) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Role Category' AND (messageWall_date1=:date1 OR messageWall_date2=:date2 OR messageWall_date3=:date3) AND $sqlWhere)";
+            $sqlPosts = $sqlPosts." UNION (SELECT DISTINCT gibbonMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role Category: ', gibbonRole.category) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole AS authorRole ON (gibbonPerson.gibbonRoleIDPrimary=authorRole.gibbonRoleID) JOIN gibbonRole ON (gibbonMessengerTarget.id=gibbonRole.category) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Role Category' AND $dateWhere AND $sqlWhere)";
         }
 
         //My year groups
         if ($staff) {
-            $dataPosts['date4'] = $date;
-            $dataPosts['date5'] = $date;
-            $dataPosts['date6'] = $date;
             $dataPosts['gibbonSchoolYearID0'] = $session->get('gibbonSchoolYearID');
             $dataPosts['gibbonPersonID0'] = $session->get('gibbonPersonID');
             // Include staff by courses taught in the same year group.
@@ -296,8 +291,8 @@ class MessengerGateway extends QueryableGateway
                     JOIN gibbonStaff ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                     WHERE gibbonMessenger.status='Sent' AND gibbonStaff.gibbonPersonID=:gibbonPersonID0
                     AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID0
-                    AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' AND
-                    (messageWall_date1=:date4 OR messageWall_date2=:date5 OR messageWall_date3=:date6)
+                    AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' 
+                    AND $dateWhere
                     GROUP BY gibbonMessenger.gibbonMessengerID )";
             // Include staff who are tutors of any student in the same year group.
             $sqlPosts .= "UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, 'Year Groups' AS source
@@ -311,25 +306,19 @@ class MessengerGateway extends QueryableGateway
                     JOIN gibbonStaff ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonStaff.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonStaff.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonStaff.gibbonPersonID)
                     WHERE gibbonMessenger.status='Sent' AND gibbonStaff.gibbonPersonID=:gibbonPersonID0
                     AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID0
-                    AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' AND
-                    (messageWall_date1=:date4 OR messageWall_date2=:date5 OR messageWall_date3=:date6)
+                    AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' 
+                    AND $dateWhere
                     GROUP BY gibbonMessenger.gibbonMessengerID)";
         }
         if ($student) {
-            $dataPosts['date7'] = $date;
-            $dataPosts['date8'] = $date;
-            $dataPosts['date9'] = $date;
             $dataPosts['gibbonSchoolYearID1'] = $session->get('gibbonSchoolYearID');
             $dataPosts['gibbonPersonID1'] = $session->get('gibbonPersonID');
-            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonMessenger.status='Sent' AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID1 AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date7 OR messageWall_date2=:date8 OR messageWall_date3=:date9) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID1 AND students='Y')";
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonMessenger.status='Sent' AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID1 AND gibbonMessengerTarget.type='Year Group' AND $dateWhere AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID1 AND students='Y')";
         }
         if ($parent and !empty($children)) {
-            $dataPosts['date10'] = $date;
-            $dataPosts['date11'] = $date;
-            $dataPosts['date12'] = $date;
             $dataPosts['gibbonSchoolYearID2'] = $session->get('gibbonSchoolYearID');
             $dataPosts['children'] = implode(',', $children);
-            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonMessenger.status='Sent' AND FIND_IN_SET(gibbonStudentEnrolment.gibbonPersonID, :children) AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date10 OR messageWall_date2=:date11 OR messageWall_date3=:date12) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND parents='Y')";
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonMessenger.status='Sent' AND FIND_IN_SET(gibbonStudentEnrolment.gibbonPersonID, :children) AND gibbonMessengerTarget.type='Year Group' AND $dateWhere AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND parents='Y')";
         }
 
         //My form groups
@@ -354,28 +343,19 @@ class MessengerGateway extends QueryableGateway
                 }
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
                 if ($sqlWhere != '(') {
-                    $dataPosts['date13'] = $date;
-                    $dataPosts['date14'] = $date;
-                    $dataPosts['date15'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonFormGroup ON (gibbonMessengerTarget.id=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date13 OR messageWall_date2=:date14 OR messageWall_date3=:date15) AND $sqlWhere AND staff='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonFormGroup ON (gibbonMessengerTarget.id=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Form Group' AND $dateWhere AND $sqlWhere AND staff='Y')";
                 }
             }
         }
         if ($student) {
-            $dataPosts['date16'] = $date;
-            $dataPosts['date17'] = $date;
-            $dataPosts['date18'] = $date;
             $dataPosts['gibbonSchoolYearID3'] = $session->get('gibbonSchoolYearID');
             $dataPosts['gibbonPersonID2'] = $session->get('gibbonPersonID');
-            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessenger.status='Sent' AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date16 OR messageWall_date2=:date17 OR messageWall_date3=:date18) AND students='Y')";
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessenger.status='Sent' AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonMessengerTarget.type='Form Group' AND $dateWhere AND students='Y')";
         }
         if ($parent and !empty($children)) {
-            $dataPosts['date19'] = $date;
-            $dataPosts['date20'] = $date;
-            $dataPosts['date21'] = $date;
             $dataPosts['gibbonSchoolYearID4'] = $session->get('gibbonSchoolYearID');
             $dataPosts['children'] = implode(',', $children);
-            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessenger.status='Sent' AND FIND_IN_SET(gibbonStudentEnrolment.gibbonPersonID, :children) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date19 OR messageWall_date2=:date20 OR messageWall_date3=:date21) AND parents='Y')";
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessenger.status='Sent' AND FIND_IN_SET(gibbonStudentEnrolment.gibbonPersonID, :children) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Form Group' AND $dateWhere AND parents='Y')";
         }
 
         //My courses
@@ -396,16 +376,10 @@ class MessengerGateway extends QueryableGateway
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
                 if ($staff) {
-                    $dataPosts['date22'] = $date;
-                    $dataPosts['date23'] = $date;
-                    $dataPosts['date24'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', gibbonCourse.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourse ON (gibbonMessengerTarget.id=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Course' AND (messageWall_date1=:date22 OR messageWall_date2=:date23 OR messageWall_date3=:date24) AND $sqlWhere AND staff='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', gibbonCourse.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourse ON (gibbonMessengerTarget.id=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Course' AND $dateWhere AND $sqlWhere AND staff='Y')";
                 }
                 if ($student) {
-                    $dataPosts['date25'] = $date;
-                    $dataPosts['date26'] = $date;
-                    $dataPosts['date27'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', gibbonCourse.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourse ON (gibbonMessengerTarget.id=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Course' AND (messageWall_date1=:date25 OR messageWall_date2=:date26 OR messageWall_date3=:date27) AND $sqlWhere AND students='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', gibbonCourse.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourse ON (gibbonMessengerTarget.id=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Course' AND $dateWhere AND $sqlWhere AND students='Y')";
                 }
             }
         }
@@ -424,10 +398,7 @@ class MessengerGateway extends QueryableGateway
                 }
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
                 if ($sqlWhere != '(') {
-                    $dataPosts['date28'] = $date;
-                    $dataPosts['date29'] = $date;
-                    $dataPosts['date30'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', gibbonCourse.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourse ON (gibbonMessengerTarget.id=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Course' AND (messageWall_date1=:date28 OR messageWall_date2=:date29 OR messageWall_date3=:date30) AND $sqlWhere AND parents='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', gibbonCourse.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourse ON (gibbonMessengerTarget.id=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Course' AND $dateWhere AND $sqlWhere AND parents='Y')";
                 }
             }
         }
@@ -450,16 +421,10 @@ class MessengerGateway extends QueryableGateway
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
                 if ($staff) {
-                    $dataPosts['date31'] = $date;
-                    $dataPosts['date32'] = $date;
-                    $dataPosts['date33'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourseClass ON (gibbonMessengerTarget.id=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Class' AND (messageWall_date1=:date31 OR messageWall_date2=:date32 OR messageWall_date3=:date33) AND $sqlWhere AND staff='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourseClass ON (gibbonMessengerTarget.id=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Class' AND $dateWhere AND $sqlWhere AND staff='Y')";
                 }
                 if ($student) {
-                    $dataPosts['date34'] = $date;
-                    $dataPosts['date35'] = $date;
-                    $dataPosts['date36'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourseClass ON (gibbonMessengerTarget.id=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Class' AND (messageWall_date1=:date34 OR messageWall_date2=:date35 OR messageWall_date3=:date36) AND $sqlWhere AND students='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourseClass ON (gibbonMessengerTarget.id=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Class' AND $dateWhere AND $sqlWhere AND students='Y')";
                 }
             }
         }
@@ -480,10 +445,7 @@ class MessengerGateway extends QueryableGateway
                 }
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
                 if ($sqlWhere != '(') {
-                    $dataPosts['date37'] = $date;
-                    $dataPosts['date38'] = $date;
-                    $dataPosts['date39'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourseClass ON (gibbonMessengerTarget.id=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Class' AND (messageWall_date1=:date37 OR messageWall_date2=:date38 OR messageWall_date3=:date39) AND $sqlWhere AND parents='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonCourseClass ON (gibbonMessengerTarget.id=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Class' AND $dateWhere AND $sqlWhere AND parents='Y')";
                 }
             }
         }
@@ -505,10 +467,7 @@ class MessengerGateway extends QueryableGateway
                 }
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
                 if ($sqlWhere != '(') {
-                    $dataPosts['date40'] = $date;
-                    $dataPosts['date41'] = $date;
-                    $dataPosts['date42'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', gibbonActivity.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonActivity ON (gibbonMessengerTarget.id=gibbonActivity.gibbonActivityID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Activity' AND (messageWall_date1=:date40 OR messageWall_date2=:date41 OR messageWall_date3=:date42) AND $sqlWhere AND staff='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', gibbonActivity.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonActivity ON (gibbonMessengerTarget.id=gibbonActivity.gibbonActivityID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Activity' AND $dateWhere AND $sqlWhere AND staff='Y')";
                 }
             }
         }
@@ -528,10 +487,7 @@ class MessengerGateway extends QueryableGateway
                 }
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
                 if ($sqlWhere != '(') {
-                    $dataPosts['date43'] = $date;
-                    $dataPosts['date44'] = $date;
-                    $dataPosts['date45'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', gibbonActivity.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonMessengerTarget.id=gibbonActivity.gibbonActivityID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Activity' AND (messageWall_date1=:date43 OR messageWall_date2=:date44 OR messageWall_date3=:date45) AND $sqlWhere AND students='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', gibbonActivity.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonMessengerTarget.id=gibbonActivity.gibbonActivityID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Activity' AND $dateWhere AND $sqlWhere AND students='Y')";
                 }
             }
         }
@@ -551,27 +507,18 @@ class MessengerGateway extends QueryableGateway
                 }
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
                 if ($sqlWhere != '(') {
-                    $dataPosts['date46'] = $date;
-                    $dataPosts['date47'] = $date;
-                    $dataPosts['date48'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', gibbonActivity.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonActivity ON (gibbonMessengerTarget.id=gibbonActivity.gibbonActivityID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Activity' AND (messageWall_date1=:date46 OR messageWall_date2=:date47 OR messageWall_date3=:date48) AND $sqlWhere AND parents='Y')";
+                    $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', gibbonActivity.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonActivity ON (gibbonMessengerTarget.id=gibbonActivity.gibbonActivityID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Activity' AND $dateWhere AND $sqlWhere AND parents='Y')";
                 }
             }
         }
 
         //Houses
-        $dataPosts['date49'] = $date;
-        $dataPosts['date50'] = $date;
-        $dataPosts['date51'] = $date;
         $dataPosts['gibbonPersonID3'] = $session->get('gibbonPersonID');
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Houses: ', gibbonHouse.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS inHouse ON (gibbonMessengerTarget.id=inHouse.gibbonHouseID) JOIN gibbonHouse ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Houses' AND (messageWall_date1=:date49 OR messageWall_date2=:date50 OR messageWall_date3=:date51) AND inHouse.gibbonPersonID=:gibbonPersonID3)";
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Houses: ', gibbonHouse.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS inHouse ON (gibbonMessengerTarget.id=inHouse.gibbonHouseID) JOIN gibbonHouse ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Houses' AND $dateWhere AND inHouse.gibbonPersonID=:gibbonPersonID3)";
 
         //Individuals
-        $dataPosts['date52'] = $date;
-        $dataPosts['date53'] = $date;
-        $dataPosts['date54'] = $date;
         $dataPosts['gibbonPersonID4'] = $session->get('gibbonPersonID');
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, 'Individual: You' AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS individual ON (gibbonMessengerTarget.id=individual.gibbonPersonID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Individuals' AND (messageWall_date1=:date52 OR messageWall_date2=:date53 OR messageWall_date3=:date54) AND individual.gibbonPersonID=:gibbonPersonID4)";
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, 'Individual: You' AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS individual ON (gibbonMessengerTarget.id=individual.gibbonPersonID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Individuals' AND $dateWhere AND individual.gibbonPersonID=:gibbonPersonID4)";
 
 
         //Attendance
@@ -586,11 +533,8 @@ class MessengerGateway extends QueryableGateway
 
             if ($resultAttendance->rowCount() > 0) {
                 $studentAttendance = $resultAttendance->fetch();
-                $dataPosts['date55'] = $date;
-                $dataPosts['date56'] = $date;
-                $dataPosts['date57'] = $date;
                 $dataPosts['attendanceType1'] = $studentAttendance['type'].' '.$date;
-                $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType1 AND (messageWall_date1=:date55 OR messageWall_date2=:date56 OR messageWall_date3=:date57) )";
+                $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType1 AND $dateWhere )";
 
             }
         }
@@ -605,18 +549,14 @@ class MessengerGateway extends QueryableGateway
 
             if ($resultAttendance->rowCount() > 0) {
                 $studentAttendance = $resultAttendance->fetch();
-                $dataPosts['date57'] = $date;
-                $dataPosts['date58'] = $date;
-                $dataPosts['date59'] = $date;
                 $dataPosts['attendanceType2'] = $studentAttendance['type'].' '.$date;
-                $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."') AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType2 AND (messageWall_date1=:date57 OR messageWall_date2=:date58 OR messageWall_date3=:date59) )";
+                $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."') AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType2 AND $dateWhere )";
 
             }
         }
 
         // Groups
         if ($staff) {
-            $dataPosts['date60'] = $date;
             $dataPosts['gibbonPersonID5'] = $session->get('gibbonPersonID');
             $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
             FROM gibbonMessenger
@@ -627,10 +567,9 @@ class MessengerGateway extends QueryableGateway
             JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID)
             WHERE gibbonGroupPerson.gibbonPersonID=:gibbonPersonID5
             AND gibbonMessenger.status='Sent' AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.staff='Y'
-            AND (messageWall_date1=:date60 OR messageWall_date2=:date60 OR messageWall_date3=:date60) )";
+            AND $dateWhere )";
         }
         if ($student) {
-            $dataPosts['date61'] = $date;
             $dataPosts['gibbonPersonID6'] = $session->get('gibbonPersonID');
             $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
             FROM gibbonMessenger
@@ -641,10 +580,9 @@ class MessengerGateway extends QueryableGateway
             JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID)
             WHERE gibbonMessenger.status='Sent' AND gibbonGroupPerson.gibbonPersonID=:gibbonPersonID6
             AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.students='Y'
-            AND (messageWall_date1=:date61 OR messageWall_date2=:date61 OR messageWall_date3=:date61) )";
+            AND $dateWhere )";
         }
         if ($parent and !empty($children)) {
-            $dataPosts['date62'] = $date;
             $dataPosts['gibbonPersonID7'] = $session->get('gibbonPersonID');
             $dataPosts['children'] = implode(',', $children);
             $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
@@ -656,12 +594,11 @@ class MessengerGateway extends QueryableGateway
             JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID)
             WHERE gibbonMessenger.status='Sent' AND (gibbonGroupPerson.gibbonPersonID=:gibbonPersonID7 OR FIND_IN_SET(gibbonGroupPerson.gibbonPersonID, :children))
             AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.parents='Y'
-            AND (messageWall_date1=:date62 OR messageWall_date2=:date62 OR messageWall_date3=:date62) )";
+            AND $dateWhere )";
         }
 
         // Transport
         if ($staff) {
-            $dataPosts['date63'] = $date;
             $dataPosts['gibbonPersonID8'] = $session->get('gibbonPersonID');
             $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
             JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
@@ -670,10 +607,9 @@ class MessengerGateway extends QueryableGateway
             JOIN gibbonPerson as transportee ON (FIND_IN_SET(gibbonMessengerTarget.id, transportee.transport))
             WHERE gibbonMessenger.status='Sent' AND transportee.gibbonPersonID=:gibbonPersonID8
             AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.staff='Y'
-            AND (messageWall_date1=:date63 OR messageWall_date2=:date63 OR messageWall_date3=:date63) )";
+            AND $dateWhere )";
         }
         if ($student) {
-            $dataPosts['date64'] = $date;
             $dataPosts['gibbonPersonID9'] = $session->get('gibbonPersonID');
             $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
             JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
@@ -682,10 +618,9 @@ class MessengerGateway extends QueryableGateway
             JOIN gibbonPerson as transportee ON (FIND_IN_SET(gibbonMessengerTarget.id, transportee.transport))
             WHERE gibbonMessenger.status='Sent' AND transportee.gibbonPersonID=:gibbonPersonID9
             AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.students='Y'
-            AND (messageWall_date1=:date64 OR messageWall_date2=:date64 OR messageWall_date3=:date64) )";
+            AND $dateWhere )";
         }
         if ($parent and !empty($children)) {
-            $dataPosts['date65'] = $date;
             $dataPosts['gibbonPersonID10'] = $session->get('gibbonPersonID');
             $dataPosts['children'] = implode(',', $children);
             $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
@@ -695,7 +630,7 @@ class MessengerGateway extends QueryableGateway
             JOIN gibbonPerson as transportee ON (FIND_IN_SET(gibbonMessengerTarget.id, transportee.transport))
             WHERE gibbonMessenger.status='Sent' AND (transportee.gibbonPersonID=:gibbonPersonID10 OR FIND_IN_SET(transportee.gibbonPersonID, :children))
             AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.parents='Y'
-            AND (messageWall_date1=:date65 OR messageWall_date2=:date65 OR messageWall_date3=:date65) )";
+            AND $dateWhere )";
         }
 
         //SPIT OUT RESULTS

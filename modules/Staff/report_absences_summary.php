@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
     // Translated array of months in the current school year
     foreach ($dateRange as $monthDate) {
-        $months[$monthDate->format('Y-m-d')] = Format::dateReadable($monthDate->format('Y-m-d'), '%B %Y');
+        $months[$monthDate->format('Y-m-d')] = Format::monthName($monthDate->format('Y-m-d')).' '.$monthDate->format('Y');
     }
 
     // Setup the date range used for this report
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Staff/report_absences_summary.php');
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
             }
 
             $calendar[] = [
-                'name'  => Format::dateReadable($monthDate->format('Y-m-d'), '%b'),
+                'name'  => Format::monthName($monthDate->format('Y-m-d'), true),
                 'days'  => $days,
             ];
         }
@@ -173,8 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
                     if (empty($day)) return '';
                     $dateText = $day['date']->format($dateFormat);
                     $url = $baseURL.'&dateStart='.$dateText.'&dateEnd='.$dateText.'&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
-                    $title =  Format::dateReadable($day['date'], '%A');
-                    $title .= '<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
+                    $title =  Format::dayOfWeekName($day['date']);
+                    $title .= '<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     if ($day['count'] > 0) {
                         $title .= '<br/>'.__n('{count} Absence', '{count} Absences', $day['count']);
                     }

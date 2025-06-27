@@ -33,5 +33,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'district_manage_delete.php', array('gibbonDistrictID' => $gibbonDistrictID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

@@ -29,10 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     //Acess denied
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
-    $dateFormat = $session->get('i18n')['dateFormatPHP'];
-    $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
+    $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date('Y-m-d');
 
-    $page->breadcrumbs->add(($date === date($dateFormat)) ?
+    $page->breadcrumbs->add(($date === date('Y-m-d')) ?
         __('Today\'s Messages').' ('.$date.')' :
         __('View Messages').' ('.$date.')');
 
@@ -55,24 +54,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
     }
 
-	$form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php');
-	$form->setClass('blank fullWidth');
+	$form = Form::createBlank('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php');
 
 	$form->addHiddenValue('address', $session->get('address'));
 
-	$row = $form->addRow()->addClass('flex flex-wrap');
+	$row = $form->addRow()->addClass('flex flex-wrap mb-4');
 
 	$link = $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php';
-	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
-	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
+	$prevDay = DateTime::createFromFormat('Y-m-d', $date)->modify('-1 day')->format('Y-m-d');
+	$nextDay = DateTime::createFromFormat('Y-m-d', $date)->modify('+1 day')->format('Y-m-d');
 
 	$col = $row->addColumn()->addClass('flex-1 flex items-center');
-		$col->addButton(__('Previous Day'))->addClass('buttonLink mr-px rounded-l-sm hover:bg-gray-400')->onClick("window.location.href='{$link}&date={$prevDay}'");
-		$col->addButton(__('Next Day'))->addClass('buttonLink rounded-r-sm hover:bg-gray-400')->onClick("window.location.href='{$link}&date={$nextDay}'");
+		$col->addButton(__('Previous Day'))
+            ->groupAlign('left')
+            ->onClick("window.location.href='{$link}&date={$prevDay}'");
+		$col->addButton(__('Next Day'))
+            ->groupAlign('right')
+            ->onClick("window.location.href='{$link}&date={$nextDay}'");
 
 	$col = $row->addColumn()->addClass('flex items-center justify-end');
-		$col->addDate('date')->setValue($date)->setClass('shortWidth');
-		$col->addSubmit(__('Go'));
+		$col->addDate('date')->setValue($date)->setClass('shortWidth')->groupAlign('left');
+		$col->addSubmit(__('Go'))->groupAlign('right');
 
 	echo $form->getOutput();
 

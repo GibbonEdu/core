@@ -19,7 +19,6 @@ $newFormValues = array(
     'organisationName'              => 'Syndicate of Wordwide Gibbon Testers',
     'organisationNameShort'         => 'SWGT',
     'organisationEmail'             => 'test@testing.test',
-    'organisationLogo'              => 'test.png',
     'country'                       => 'Antarctica',
     'firstDayOfTheWeek'             => 'Sunday',
     'timezone'                      => 'UTC',

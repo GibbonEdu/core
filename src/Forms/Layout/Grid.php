@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
@@ -32,7 +31,7 @@ use Gibbon\Forms\Traits\BasicAttributesTrait;
  * @version v15
  * @since   v15
  */
-class Grid implements OutputableInterface, ValidatableInterface
+class Grid implements OutputableInterface
 {
     use BasicAttributesTrait;
 
@@ -103,7 +102,7 @@ class Grid implements OutputableInterface, ValidatableInterface
      */
     public function getOutput()
     {
-        $this->setClass('w-full flex flex-wrap items-stretch');
+        $this->addClass('w-full flex flex-wrap items-stretch');
 
         $output = '<div '.$this->getAttributeString().'>';
 
@@ -116,35 +115,6 @@ class Grid implements OutputableInterface, ValidatableInterface
         }
 
         $output .= '</div>';
-
-        return $output;
-    }
-
-    /**
-     * Dead-end stub for interface: grids cannot validate.
-     * @param   string  $name
-     * @return  self
-     */
-    public function addValidation($name)
-    {
-        return $this;
-    }
-
-    /**
-     * Iterate over each element in the collection and get the combined validation output.
-     * @return  string
-     */
-    public function getValidationOutput()
-    {
-        $output = '';
-
-        foreach ($this->getElements() as $cell) {
-            foreach ($cell->getElements() as $element) {
-                if ($element instanceof ValidatableInterface) {
-                    $output .= $element->getValidationOutput();
-                }
-            }
-        }
 
         return $output;
     }

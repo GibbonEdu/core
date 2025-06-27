@@ -23,6 +23,7 @@ namespace Gibbon\Tables;
 
 use Gibbon\Forms\Layout\WebLink;
 use Gibbon\Http\Url;
+use Gibbon\View\Component;
 
 /**
  * Action link representation for HTML listings.
@@ -61,14 +62,28 @@ class Action extends WebLink
      *
      * @var string
      */
-    protected $urlFragment = null;
+    protected $urlFragment;
 
     /**
      * The icon name, without any path or filetype
      *
-     * @var string|Gibbon\Url
+     * @var string
      */
     protected $icon;
+
+    /**
+     * The icon css class
+     *
+     * @var string
+     */
+    protected $iconClass;
+
+    /**
+     * The icon library (basic, solid, outline, etc.)
+     *
+     * @var string
+     */
+    protected $iconLibrary;
 
     /**
      * Boolean flag indicate if the link opens a modal box.
@@ -113,24 +128,7 @@ class Action extends WebLink
 
         // Pre-defined settings for common actions
         switch ($this->name) {
-            case 'add':     $this->setIcon('page_new');
-                            break;
-            case 'addMultiple':
-                            $this->setIcon('page_new_multi');
-                            break;
-            case 'edit':    $this->setIcon('config');
-                            break;
-            case 'delete':  $this->setIcon('garbage')->modalWindow(650, 250);
-                            break;
-            case 'print':   $this->setIcon('print');
-                            break;
-            case 'export':  $this->setIcon('download');
-                            break;
-            case 'import':  $this->setIcon('upload');
-                            break;
-            case 'view':    $this->setIcon('zoom');
-                            break;
-            case 'accept':   $this->setIcon('iconTick');
+            case 'delete':  $this->modalWindow(650, 250);
                             break;
         }
     }
@@ -211,9 +209,11 @@ class Action extends WebLink
      * @param string $icon
      * @return self
      */
-    public function setIcon($icon)
+    public function setIcon($icon, $class = '', $library = 'solid')
     {
         $this->icon = $icon;
+        $this->iconClass = $class;
+        $this->iconLibrary = $library;
 
         return $this;
     }
@@ -244,11 +244,7 @@ class Action extends WebLink
      */
     public function modalWindow($width = 650, $height = 650)
     {
-        $this->modal = true;
-
-        $this->addClass('thickbox underline')
-            ->addParam('width', $width)
-            ->addParam('height', $height);
+        $this->modal = !empty($width);
 
         return $this;
     }
@@ -289,21 +285,6 @@ class Action extends WebLink
             return $this->getLabel();
         }
 
-        if ($icon = $this->getIcon()) {
-            // Allow modules to specify their own icons if needed
-            $icon = substr($icon, 0, 4) != 'http'
-                ? $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/'.$icon.'.png'
-                : $icon;
-
-            $this->setContent(sprintf('%1$s<img alt="%2$s" title="%2$s" src="'.$icon.'" width="25" height="25" class="ml-1">',
-                ($this->displayLabel? $this->getLabel() : ''),
-                $this->getLabel(),
-                $this->getIcon()
-            ));
-        } else {
-            $this->setContent($this->getLabel());
-        }
-
         $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
         // Allow ActionColumn level params to auto-fill from the row data, if they're not set
@@ -316,6 +297,25 @@ class Action extends WebLink
             $queryParams[$key] = $value;
         }
 
+        if ($this->modal) {
+            $this->setAttribute('hx-boost', 'true')
+                ->setAttribute('hx-target', '#modalContent')
+                ->setAttribute('hx-push-url', 'false')
+                ->setAttribute('x-on:htmx:after-on-load', 'modalOpen = true')
+                ->setAttribute('x-on:click', "modalType = '{$this->name}'")
+                ->setAttribute('hx-swap', 'innerHTML show:no-scroll swap:0s');
+        } elseif (!$this->external && !$this->direct && $this->url != '#') {
+            $this->setAttribute('hx-boost', 'true')
+                ->setAttribute('hx-target', '#content-wrap')
+                ->setAttribute('hx-select', '#content-wrap')
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
+        } elseif (!empty($this->getAttribute('hx-confirm'))) {
+            $this->setAttribute('hx-post', Url::fromHandlerRoute(ltrim($this->url, '/')) )
+                ->setAttribute('hx-target', '#content-wrap')
+                ->setAttribute('hx-select', '#content-wrap')
+                ->setAttribute('hx-swap', 'outerHTML show:window:top swap:0s');
+        }
+
         if ($this->url instanceof Url) {
             $this->setAttribute('href', (string)$this->url);
         } elseif ($this->external) {
@@ -326,14 +326,21 @@ class Action extends WebLink
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         } else if ($this->modal) {
             $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
-                ->withQueryParams($queryParams)
-                ->withFragment(ltrim($this->urlFragment ?? '', '#')));
-        } else {
+                ->withQueryParams($queryParams));
+        } else if ($this->url != '#') {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)
                 ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         }
 
-        return parent::getOutput();
+        return Component::render(Action::class, $this->getAttributeArray() + [
+            'action'       => $this->name,
+            'modal'        => $this->modal,
+            'icon'         => $this->icon,
+            'iconClass'    => $this->iconClass,
+            'iconLibrary'  => $this->iconLibrary,
+            'label'        => $this->label,
+            'displayLabel' => $this->displayLabel,
+        ]);
     }
 }

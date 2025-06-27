@@ -160,7 +160,7 @@ class Finder extends TextField
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
         $output .= '<script type="text/javascript">';
-        $output .= '$(document).ready(function() {';
+        $output .= '$(document).ready(function () {';
         $output .= '$("#'.$this->getID().'").tokenInput(';
 
         if (!empty($this->ajaxURL)) {

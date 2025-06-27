@@ -24,5 +24,4 @@ namespace Gibbon\Forms;
 interface ValidatableInterface
 {
     public function addValidation($name);
-    public function getValidationOutput();
 }

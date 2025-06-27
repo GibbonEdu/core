@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('q', "/modules/Individual Needs/investigations_manage.php");
@@ -77,7 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->fromPOST();
 
         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
-        $criteria2 = $contributionsGateway->newQueryCriteria();
 
         if ($highestAction == 'Manage Investigations_all') {
             $records = $investigationGateway->queryInvestigations($criteria, $session->get('gibbonSchoolYearID'));

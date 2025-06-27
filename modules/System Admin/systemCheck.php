@@ -35,8 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $versionDB = $container->get(SettingGateway::class)->getSettingByScope('System', 'version');
 
-    $trueIcon = "<img title='" . __('Yes'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-    $falseIcon = "<img title='" . __('No'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+    $trueIcon =  icon('solid', 'check', 'size-6 ml-2 fill-current text-green-600');
+    $falseIcon = icon('solid', 'cross', 'size-6 ml-2 fill-current text-red-700');
 
     $versionTitle = __('%s Version');
     $versionMessage = __('%s requires %s version %s or higher');
@@ -68,38 +68,38 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $statusCheck = checkUploadsFolderStatus($session->get('absoluteURL'));
     if (!$statusCheck) {
         echo Format::alert(__('The system check has detected that your uploads folder may be publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
-            'documentation' => Format::link('https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config', __('Post-Install and Server Config')),
+            'documentation' => Format::link('https://docs.gibbonedu.org/introduction/post-installation', __('Post-Install and Server Config')),
         ]), 'error');
     }
 
-    $form = Form::createTable('systemCheck', "")->setClass('smallIntBorder w-full');
+    $form = Form::create('systemCheck', "");
 
     $form->addRow()->addHeading('System Requirements', __('System Requirements'));
 
     $row = $form->addRow();
         $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'PHP', $phpRequirement));
-        $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
-        $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
+        $row->addTextField('phpVersion')->setValue($phpVersion)->readonly()
+            ->append((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('mysqlVersionLabel', sprintf($versionTitle, 'MySQL'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'MySQL', $mysqlRequirement));
-        $row->addTextField('mysqlVersion')->setValue($mysqlVersion)->readonly();
-        $row->addContent((version_compare($mysqlVersion, $mysqlRequirement, '>='))? $trueIcon : $falseIcon);
+        $row->addTextField('mysqlVersion')->setValue($mysqlVersion)->readonly()
+            ->append((version_compare($mysqlVersion, $mysqlRequirement, '>='))? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('mysqlCollationLabel', __('MySQL Collation'))->description(sprintf( __('Database collation should be set to %s'), 'utf8_general_ci or utf8mb3_general_ci'));
-        $row->addTextField('mysqlCollation')->setValue($mysqlCollation)->readonly();
-        $row->addContent(($mysqlCollation == 'utf8_general_ci' || $mysqlCollation == 'utf8mb3_general_ci')? $trueIcon : $falseIcon);
+        $row->addTextField('mysqlCollation')->setValue($mysqlCollation)->readonly()
+            ->append(($mysqlCollation == 'utf8_general_ci' || $mysqlCollation == 'utf8mb3_general_ci')? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
-        $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
-        $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+        $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly()
+            ->append((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('backgroundProcessingLabel', __('Background Processing'))->description(__('Requires PHP exec() function access'));
         $row->addTextField('backgroundProcessing')->setValue($backgroundProcessing ? __('Enabled') : __('Not Available'))->readonly();
-        $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+        $row->addContent($backgroundProcessing? $trueIcon : $falseIcon);
 
     // APACHE MODULES
     if ($apacheVersion !== false) {
@@ -110,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             $active = @in_array($moduleName, $apacheModules);
             $row = $form->addRow();
                 $row->addLabel('moduleLabel', $moduleName);
-                $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
-                $row->addContent(($active)? $trueIcon : $falseIcon);
+                $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly()
+                    ->append(($active)? $trueIcon : $falseIcon);
         }
     }
 
@@ -125,8 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             $installed = @extension_loaded($extension);
             $row = $form->addRow();
                 $row->addLabel('extensionLabel', $extension);
-                $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
-                $row->addContent(($installed)? $trueIcon : $falseIcon);
+                $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly()
+                    ->append(($installed)? $trueIcon : $falseIcon);
         }
     }
 
@@ -151,8 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
             $row = $form->addRow();
                 $row->addLabel('settingLabel', '<b>'.$setting.'</b> <small>'.$operator.' '.$compare.'</small>');
-                $row->addTextField('setting')->setValue($value)->readonly();
-                $row->addContent($isValid? $trueIcon : $falseIcon);
+                $row->addTextField('setting')->setValue($value)->readonly()
+                    ->append($isValid? $trueIcon : $falseIcon);
         }
     }
 
@@ -161,18 +161,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('System not publicly writeable'));
-        $row->addTextArea('systemWrite')->setValue(sprintf(__('%s files checked (%s publicly writeable)'), $fileCount, $publicWriteCount))->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
-        $row->addContent($publicWriteCount == 0? $trueIcon : $falseIcon);
+        $row->addTextArea('systemWrite')->setValue(sprintf(__('%s files checked (%s publicly writeable)'), $fileCount, $publicWriteCount))->setRows(1)->addClass(' max-w-1/2 text-left')->readonly()
+            ->append($publicWriteCount == 0? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('Uploads folder not publicly accessible'));
-        $row->addTextArea('systemWrite')->setValue($session->get('absoluteURL').'/uploads')->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
-        $row->addContent($statusCheck? $trueIcon : $falseIcon);
+        $row->addTextArea('systemWrite')->setValue($session->get('absoluteURL').'/uploads')->setRows(1)->addClass(' max-w-1/2 text-left')->readonly()
+            ->append($statusCheck? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('uploadsFolderLabel', __('Uploads folder server writeable'));
-        $row->addTextField('uploadsFolder')->setValue($session->get('absoluteURL').'/uploads')->readonly();
-        $row->addContent(is_writable($session->get('absolutePath').'/uploads')? $trueIcon : $falseIcon);
+        $row->addTextField('uploadsFolder')->setValue($session->get('absoluteURL').'/uploads')->readonly()
+            ->append(is_writable($session->get('absolutePath').'/uploads')? $trueIcon : $falseIcon);
 
     echo $form->getOutput();
 }

@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             //Let's go!
             $row = $result->fetch();
 
-            $overdue = (strtotime(date('Y-m-d')) - strtotime($row['returnExpected'])) / (60 * 60 * 24);
+            $overdue = !empty($row['returnExpected']) ? (strtotime(date('Y-m-d')) - strtotime($row['returnExpected'])) / (60 * 60 * 24) : 0;
             if ($overdue > 0 and $row['status'] == 'On Loan') {
                 echo "<div class='error'>";
                 echo sprintf(__('This item is now %1$s%2$s days overdue'), '<u><b>', $overdue).'</b></u>.';
@@ -139,8 +139,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $table->modifyRows(function ($item, $row) {
                 if ($item['status'] == 'On Loan') {
-                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('warning');
+                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('success');
                 }
+                if ($item['status'] == 'Reserved') $row->addClass('message');
+                if ($item['status'] == 'Decommissioned' || $item['status'] == 'Lost') $row->addClass('error');
                 return $row;
             });
 

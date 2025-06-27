@@ -30,7 +30,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
 
@@ -54,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $passwordForceReset = $_POST['passwordForceReset'] ?? '';
     $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'] ?? '';
     $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-    $email = trim($_POST['email'] ?? '');
-    $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
     $address1 = $_POST['address1'] ?? '';
     $address1District = $_POST['address1District'] ?? '';
     $address1Country = $_POST['address1Country'] ?? '';
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     }
     $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
     $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-    $website = $_POST['website'] ?? '';
+    $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
     $languageFirst = $_POST['languageFirst'] ?? '';
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
@@ -173,20 +173,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
-                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+                            $attachment1 = $fileUploader->uploadAndResizeImage($file, $username.'_240', 480, 100);
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
-                            } else {
-                                //Check image sizes
-                                $size1 = getimagesize($path.'/'.$attachment1);
-                                $width1 = $size1[0];
-                                $height1 = $size1[1];
-                                $aspect1 = $height1 / $width1;
-                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
-                                    $attachment1 = '';
-                                    $imageFail = true;
-                                }
                             }
                         }
                     }
@@ -210,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     // Create the status log
-                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created')]);
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created'), 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';

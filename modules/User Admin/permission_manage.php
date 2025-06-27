@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     $gibbonRoleID = isset($_GET['gibbonRoleID'])? $_GET['gibbonRoleID'] : '';
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/permission_manage.php');
 
@@ -106,15 +106,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $permissionsArray = ($resultPermissions->rowCount() > 0)? $resultPermissions->fetchAll() : array();
         $totalCount = 0;
 
-        $form = Form::create('permissions', $session->get('absoluteURL').'/modules/'.$session->get('module').'/permission_manageProcess.php');
-        $form->setClass('w-full blank overflow-x-auto');
+        $form = Form::createBlank('permissions', $session->get('absoluteURL').'/modules/'.$session->get('module').'/permission_manageProcess.php');
+        $form->setClass('overflow-x-auto');
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
         $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
 
         while ($rowModules = $resultModules->fetch()) {
             $form->addRow()->addHeading($rowModules['name'], __($rowModules['name']));
-            $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
+            $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight w-full');
 
             
                 $dataActions = array('gibbonModuleID' => $rowModules['gibbonModuleID']);
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                 ->append(sprintf(__('This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=%1$s</i> to your php.ini file on your server.'), $total_vars_rounded));
         } else {
             $row = $form->addRow();
-            $row->addSubmit();
+            $row->addSubmit()->addClass('mt-2');
         }
 
         echo $form->getOutput();

@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityTypeGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings.php') == false) {
     // Access denied
@@ -30,6 +31,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('Activity Settings'));
+
+    echo Format::alert("Please note that the old competitive activity sign-up system has been replaced with a much more balanced and feature-rich sign-up system. This gives students better backup choices, and reduces the stress of sign-up by removing the time pressure, which is also better for server load. The settings on this page control the old sign-up system, which is still accessible through the Activities > View Activities page.<br/></br>The new system can be found in Activities > Manage Categories, where each category can have it's own settings, and works in conjunction with the new Explore Activities page. If you do not plan to use the new system right away, please disable Explore Activities in User Admin > Manage Permissions. <br/></br><b>The old competitive sign-up system will be deprecated and removed in Gibbon v30.0.00</b>", 'message');
 
     $form = Form::create('activitySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activitySettingsProcess.php');
 

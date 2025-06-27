@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
+use Gibbon\View\Component;
 
 /**
  * Radio
@@ -34,7 +35,7 @@ class Radio extends Input
     use MultipleOptionsTrait;
 
     protected $inline = false;
-    protected $align = 'right';
+    protected $align = 'left';
 
     public function __construct($name)
     {
@@ -122,42 +123,20 @@ class Radio extends Input
      */
     protected function getElement()
     {
-        $output = '';
-
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
-
             // Select the first option by default for required Radio elements with no checked value set
             if ($this->getRequired() && is_null($this->getValue())) {
                 $firstOption = key($this->getOptions());
                 $this->checked($firstOption);
             }
-
-            $this->addClass('flex-none');
-
-            $count = 0;
-            $totalOptions = count($this->getOptions());
-            foreach ($this->getOptions() as $value => $label) {
-                $this->setAttribute('checked', $this->getIsChecked($value));
-                $id = !empty($this->getID())? $this->getID() : $this->getName().$count;
-
-                if ($this->inline) {
-                    $output .= '&nbsp;&nbsp;<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'>&nbsp;';
-                    $output .= '<label for="'.$id.'">'.$label.'</label>';
-                } elseif ($this->align == 'left') {
-                    $output .= '<div class="flex text-left '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
-                    $output .= '<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'>';
-                    $output .= '<label class="leading-compact ml-2" for="'.$id.'">'.$label.'</label><br/>';
-                    $output .= '</div>';
-                } else {
-                    $output .= '<div class="flex justify-'.($this->align == 'center' ? 'between' : 'end').' text-right '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
-                    $output .= '<label class="leading-compact mr-1" for="'.$id.'">'.$label.'</label>&nbsp;';
-                    $output .= '<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'><br/>';
-                    $output .= '</div>';
-                }
-                $count++;
-            }
         }
 
-        return $output;
+        return Component::render(Radio::class, $this->getAttributeArray() + [
+            'options'      => $this->getOptions(),
+            'totalOptions' => $this->getOptionCount(),
+            'inline'       => $this->inline,
+            'align'        => $this->align,
+            'count'        => 0,
+        ]);
     }
 }

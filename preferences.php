@@ -56,26 +56,20 @@ if (!$session->exists("username")) {
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }
-    $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
+    // $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
 
-    //Check if there is an existing MFA Secret, so that we don't create a new one accidentally, and to have the correct values load below...
-    if (!empty($values['mfaSecret'])) {
-        $secret = $values['mfaSecret'];
-        $secretcheck = !empty($secret) ? 'Y' : 'N';
-    } else {
-        $secret = $tfa->createSecret();
-        $secretcheck = 'N';
-    }
+    // //Check if there is an existing MFA Secret, so that we don't create a new one accidentally, and to have the correct values load below...
+    // if (!empty($values['mfaSecret'])) {
+    //     $secret = $values['mfaSecret'];
+    //     $secretcheck = !empty($secret) ? 'Y' : 'N';
+    // } else {
+    //     $secret = $tfa->createSecret();
+    //     $secretcheck = 'N';
+    // }
 
     $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading('Reset Password', __('Reset Password'));
-
-    /** @var PasswordPolicy */
-    $policies = $container->get(PasswordPolicy::class);
-    if (($policiesHTML = $policies->describeHTML()) !== '') {
-        $form->addRow()->addAlert($policiesHTML, 'warning');
-    }
 
     $row = $form->addRow();
         $row->addLabel('password', __('Current Password'));
@@ -86,7 +80,7 @@ if (!$session->exists("username")) {
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('New Password'));
         $row->addPassword('passwordNew')
-            ->addPasswordPolicy($pdo)
+            ->addPasswordPolicy($container->get(PasswordPolicy::class))
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);
@@ -98,14 +92,14 @@ if (!$session->exists("username")) {
             ->required()
             ->maxLength(30);
 
-    if ($secretcheck == 'Y') {
-        $row = $form->addRow();
-            $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to change your password, please input the current 6 digit token'));
-            $row->addNumber('mfaCode')->isRequired(); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
-    }
+    // if ($secretcheck == 'Y') {
+    //     $row = $form->addRow();
+    //         $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to change your password, please input the current 6 digit token'));
+    //         $row->addNumber('mfaCode')->isRequired(); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
+    // }
 
-    $form->addHiddenValue('mfaSecret', $secret);
-    $form->addHiddenValue('mfaEnable', $secretcheck);
+    // $form->addHiddenValue('mfaSecret', $secret);
+    // $form->addHiddenValue('mfaEnable', $secretcheck);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -154,28 +148,27 @@ if (!$session->exists("username")) {
             $row->addYesNo('receiveNotificationEmails');
 
 
-        $form->addHiddenValue('mfaSecret', $secret);
+        // $form->addHiddenValue('mfaSecret', $secret);
+
+    //     $row = $form->addRow();
+    //         $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
+    //         $row->addYesNo('mfaEnable')->selected($secretcheck);
 
 
-        $row = $form->addRow();
-            $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
-            $row->addYesNo('mfaEnable')->selected($secretcheck);
-
-
-       //If MFA wasn't previously set, show the MFA QR code.
-        if ($secretcheck == 'N') {
-            $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
-            $row = $form->addRow()->addClass('toggle');
-                $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
-                $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
-        }
-        //If MFA was previously set, and is being disabled
-        if ($secretcheck == 'Y' && !empty($values['mfaSecret'])) {
-            $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('N');
-            $row = $form->addRow()->addClass('toggle');
-                $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to disable your Multi Factor Authentication, please input the current 6 digit token'));
-                $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
-        }
+    //    //If MFA wasn't previously set, show the MFA QR code.
+    //     if ($secretcheck == 'N') {
+    //         $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
+    //         $row = $form->addRow()->addClass('toggle');
+    //             $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
+    //             $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
+    //     }
+    //     //If MFA was previously set, and is being disabled
+    //     if ($secretcheck == 'Y' && !empty($values['mfaSecret'])) {
+    //         $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('N');
+    //         $row = $form->addRow()->addClass('toggle');
+    //             $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to disable your Multi Factor Authentication, please input the current 6 digit token'));
+    //             $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
+    //     }
 
         //TODO: Allow for easy reset of MFA secret, currently would need to disable and then re-enable MFA to do so
 
@@ -185,7 +178,7 @@ if (!$session->exists("username")) {
             include_once($session->get('absolutePath').'/modules/Messenger/src/Signature.php');
             $signature = $container->get(Signature::class)->getSignature($session->get('gibbonPersonID'));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('bg-white');
                 $row->addContent($signature.'<br/>');
         }
 

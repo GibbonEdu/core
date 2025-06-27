@@ -121,6 +121,14 @@ class Row
         return $conditional? $this : new NullElement();
     }
 
+    public function advancedOptions()
+    {
+        return $this
+            ->setAttribute('x-cloak')
+            ->setAttribute('x-show', 'advancedOptions')
+            ->setAttribute('x-transition.duration.200ms');
+    }
+
     /**
      * Adds an outputtable element to the row's internal collection.
      * @param  OutputableInterface  $element
@@ -171,7 +179,7 @@ class Row
      */
     public function isLastElement($element)
     {
-        return (end($this->formElements) == $element);
+        return (end($this->formElements) === $element);
     }
 
     /**

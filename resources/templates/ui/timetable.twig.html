@@ -1,0 +1,113 @@
+{#<!--
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set now = structure.getToday.format('H:i:s') %}
+
+<div id="timetable" name='tt' x-data='{ ttDate: "", ttID: "{{ gibbonTTID }}", ttRefresh: false, ttPopup: false, ttActiveDay: "{{ structure.getActiveDay.nameShort }}", showCurrentTime: {{ options.showCurrentTime is same as ('0') ? 'false' : 'true' }} }' @ttpopup.window="ttPopup = false">
+
+    <div x-data="{{ layersToggle }}" class="relative" >
+
+    {% if format != 'print' %}
+        {{ include('ui/timetableNav.twig.html') }}
+    {% endif %}
+
+    <div class="flex flex-row gap-2 xl:gap-3 w-full mt-4">
+        <div class="w-12 flex-col content-center justify-center">
+            <span class="block text-xxs text-gray-600">{{ __('Week') }} {{ structure.getCurrentDate.format('W') }}</span>
+        </div>
+
+        {% for day in structure.getWeekdays %}
+
+        {% set timetableDay = structure.getTimetableDay(day.date) %}
+
+        <div class="flex-1">
+            <button @click="ttActiveDay = '{{ day.nameShort }}';" class="flex w-full items-center justify-center print:justify-between md:justify-between leading-none py-2 px-3 rounded-t border text-gray-700" :class="{'font-bold md:font-normal bg-white border-gray-400 md:bg-gray-100 ': ttActiveDay == '{{ day.nameShort }}', 'font-normal bg-gray-100 border-gray-200 md:border-gray-400': ttActiveDay != '{{ day.nameShort }}'}" 
+                {%if timetableDay.color %} style="background-color: {{ timetableDay.color }}; color: {{ timetableDay.fontColor }};" {% endif %}
+            >
+                <span class="text-xs">
+                    {{ timetableDay.nameShort and timetableDay.nameShortDisplay == "Timetable Day Short Name" ? timetableDay.nameShort : day.nameShort }}
+                </span>
+                <span class="hidden print:inline-block md:inline-block text-base font-bold">{{ day.date|date('d') }}</span>
+            </button>
+    
+        </div>
+    
+        {% endfor %}
+    </div>
+    
+    <div class="flex flex-row gap-2 xl:gap-3 w-full">
+    
+        <div class="w-12 mb-2">
+            <span class="inline-block text-xxs text-gray-600">{{ __('All Day Events') }}</span>
+        </div>
+
+        {% for day in structure.getWeekdays %}
+
+        {% set isToday = structure.getToday.format('Y-m-d') == day.date %}
+        
+        <div class="flex-1 flex-col border-r border-l pb-1 {{ isToday ? 'bg-yellow-50'}}" :class="{'flex': ttActiveDay == '{{ day.nameShort }}', 'hidden md:flex': ttActiveDay != '{{ day.nameShort }}'}">
+    
+            {% for layer in layers %}
+                {% for item in layer.getItemsByDate(day.date|date('Y-m-d'), true) %}
+                    <div class="relative" style="top: {{ structure.timeToPixels(item.timeStart) }}px">
+                    {{ include('ui/timetableItem.twig.html') }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+    
+        </div>
+        {% endfor %}
+    </div>
+        
+    <div class="relative flex flex-row gap-2 xl:gap-3 w-full">
+    
+        {% if structure.isCurrentWeek and structure.getStartTime <= now and structure.getEndTime >= now and format != 'print' %}
+
+        {% if structure.getStartTime < structure.getActiveDay.schoolStart %}
+            {% set dayOffset = structure.timeToPixels(structure.getStartTime) - structure.timeToPixels(structure.getActiveDay.schoolStart) %}
+        {% endif %}
+
+        <div x-show="showCurrentTime" class="print:hidden absolute ml-1 w-full left-0" style="top: {{ structure.timeToPixels(now) + dayOffset }}px">
+            <div class="border-b-2 border-blue-500 w-full"></div>
+            <div class="absolute origin-center text-center left-0 -mt-3 rounded-full border border-blue-500 bg-blue-500 w-10 shadow">
+                <span class="inline-block text-xxs text-white uppercase leading-loose">{{ structure.getToday.format('G:i') }}</span>
+            </div>
+            <div class="absolute origin-center w-1.5 h-1.5 right-0 -mr-1 -mt-1 rounded-full bg-blue-500 shadow"></div>
+        </div>
+        {% endif %}
+
+        <div class="w-12">
+            {% for time in structure.getTimeRange %}
+            <div class="leading-none text-center" style="height: {{ structure.minutesToPixels(60) }}px">
+                <span class="block text-xxs text-gray-500 uppercase">{{ time.format('G:i') }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% for day in structure.getWeekdays %}
+            {{ include('ui/timetableDay.twig.html') }}
+        {% endfor %}
+    </div>
+
+    </div>
+</div>
+   
+<script>
+    {% if format != 'print' %}
+    htmx.onLoad(function (content) {
+        $('.ttItem').draggable({
+            containment: '#timetable',
+            revert: true,
+            zIndex: 50,
+            cursor: 'move',
+        });
+    });
+    {% endif %}
+</script>

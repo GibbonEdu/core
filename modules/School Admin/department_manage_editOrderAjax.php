@@ -21,16 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Departments\DepartmentGateway;
 
-$_POST['address'] = '/modules/School Admin/department_manage.php';
-
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage.php') == false) {
     exit;
 } else {
     // Proceed!
-    $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $order = $_POST['order'] ?? [];
 
     if (empty($order)) {
         exit;

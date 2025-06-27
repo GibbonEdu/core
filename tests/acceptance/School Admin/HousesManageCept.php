@@ -35,5 +35,5 @@ $I->seeSuccessMessage();
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'house_manage_delete.php', array('gibbonHouseID' => $gibbonHouseID));
 
-$I->click('Yes');
+$I->click('Delete');
 $I->seeSuccessMessage();

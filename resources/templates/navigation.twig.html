@@ -12,14 +12,17 @@ current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
-{% set sidebarClass = 'shadow bg-white rounded px-8 mb-6' %}
+{% set sidebarClass = 'shadow bg-white rounded px-6 mb-6' %}
 
-<div class="mx-4 sm:mx-0 relative sm:static">
+{% if sidebar or menuModule is not empty %}
+<div class="mx-4 sm:mx-0 relative sm:static" x-data="{moduleMenu: false}" @keydown.escape.window="moduleMenu = false" @click.outside="moduleMenu = false" x-init="moduleMenu = false">
 
     {% if menuModule %}
-    <button data-toggle="#navigation" class="relative w-full flex rounded justify-center items-center sm:w-48 bg-white sm:border border-grey-600 border-solid p-2 mb-4 sm:mt-4 sm:absolute sm:top-0 sm:right-0 sm:mr-6 z-40 {{ sidebar ? 'lg:hidden' }}">
-        <span class="text-gray-600 text-sm sm:text-xs font-bold uppercase ">{{ __('Module Menu') }}</span>
-        <svg class="fill-current h-4 w-4 sm:h-3 sm:w-3 text-gray-600 ml-2" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>{{ __('Module Menu') }}</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+    <button @click="moduleMenu = !moduleMenu" class="relative w-full flex rounded justify-center items-center sm:w-48 bg-white sm:border border-grey-600 border-solid p-2 mb-4 sm:mt-4 sm:absolute sm:top-0 sm:right-0 sm:mr-6 z-40 {{ sidebar ? 'lg:hidden' }}">
+        <span class="text-gray-600 text-sm sm:text-xs font-bold uppercase ">
+            {{ __('Module Menu') }}
+        </span>
+        {{ icon('basic', 'menu', 'size-6 sm:size-5 text-gray-600 ml-2') }}
     </button>
     {% endif %}
 
@@ -36,34 +39,36 @@ collapsed drop-down list in 'mini' view-mode.
     {% if sidebar and sidebarContents is iterable %}
         {% for sidebarContent in sidebarContents %}
             {% if sidebarContent %}
-            <div class="{{ sidebarClass }} md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} pb-6 lg:pb-8">
+            <div class="{{ sidebarClass }} md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-4 lg:pt-0' }} pb-6 lg:pb-8">
                 {{ sidebarContent|raw }}
             </div>
             {% endif %}
         {% endfor %}
     {% elseif sidebar and sidebarContents %}
-        <div class="{{ sidebarClass }} md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} pb-6 lg:pb-8">
+        <div class="{{ sidebarClass }} md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-4 lg:pt-0' }} pb-6 lg:pb-8">
             {{ sidebarContents|raw }}
         </div>
     {% endif %}
     
     {% if menuModule %}
-    <nav id="navigation" class="{{ sidebarClass }} w-full font-sans hidden absolute top-0 z-30 sm:mt-16 pt-6 pt-12 sm:pt-6
-        {{ sidebar ? 'lg:block lg:static lg:p-0 lg:py-6 lg:mx-0 lg:mt-0' : '' }}">
+    <nav x-cloak="{{ sidebar ? 'mobile' : 'on' }}"  :class="moduleMenu ? 'block' : 'hidden'" x-data="{ menuItemActive: '{{ menuItemActive|replace({' ': '-', '&': '', '\'': ''}) }}' }" class="{{ sidebarClass }} w-full font-sans absolute top-0 z-30 sm:mt-16 pt-6 pt-12 sm:pt-6
+        {{ sidebar ? 'lg:block lg:static lg:p-0 lg:py-6 lg:mx-0 lg:mt-0' : '' }}" >
 
         <ul class="w-full  list-none column-1 sm:column-2 md:column-3 m-0 px-0  
             {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:px-8' : '' }}">
 
             {% for categoryName, items in menuModule %}
                 <li class="w-full column-no-break p-0">
-                    <h5 class="m-0 mb-1 text-sm px-1 pt-2 pb-1 text-{{ themeColour }}-600 border-b-0">
+                    <h5 class="m-0 mb-1 text-sm px-px pt-2 pb-1 text-{{ themeColour }}-600 border-b-0 uppercase">
                         {{ __(categoryName, (items|first).textDomain) }}
                     </h5>
-
+                    
                     <ul class="list-none m-0 mb-6">
                     {% for item in items %}
-                        <li class="p-0 text-sm leading-normal lg:leading-normal">
-                            <a href="{{ item.url }}" class="block -mx-2 px-3 py-1 -my-1 text-gray-700 hover:underline {{ item.active ? 'text-gray-800 bg-transparent-300 font-semibold rounded-sm' : '' }}">
+                        <li class="-mx-4 -my-1">
+                            <a @click="moduleMenu = false" hx-boost="true" hx-target="#content-wrap" hx-select="#content-wrap" hx-swap="outerHTML show:window:top swap:0s" 
+                            @click="menuItemActive = '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}'"
+                            href="{{ item.url }}" class="block relative text-gray-700 no-underline px-3 py-1  text-sm leading-normal lg:leading-normal rounded transition cursor-pointer hover:bg-gray-200" :class="[ (menuItemActive === '{{ item.actionName|replace({' ': '-', '&': '', '\'': ''}) }}' ) ? 'navigation-link text-gray-900 bg-gray-300 font-semibold' : '' ] ">
                                 {{ __(item.name, item.textDomain) }}
                             </a>
                         </li>
@@ -84,3 +89,4 @@ collapsed drop-down list in 'mini' view-mode.
     {% endif %}
 </div>
 
+{% endif %}

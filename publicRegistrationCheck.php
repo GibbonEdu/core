@@ -27,10 +27,10 @@ $username = $_POST['username'] ?? '';
 $currentUsername = $_POST['currentUsername'] ?? '';
 
 if (!empty($currentUsername) && $currentUsername == $username) {
-    echo '0';
+    die('0');
 } else if (!empty($username)) {
     $generator = new UsernameGenerator($pdo);
-    echo $generator->isUsernameUnique($username)? '0' : '1';
+    die($generator->isUsernameUnique($username)? '0' : '1');
 }
 
 $email = $_POST['email'] ?? '';
@@ -40,5 +40,5 @@ if (!empty($email)) {
     $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email";
     $result = $pdo->executeQuery($data, $sql);
 
-    echo ($result && $result->rowCount() == 1)? $result->fetchColumn(0) : -1;
+    die(($result && $result->rowCount() == 1)? $result->fetchColumn(0) : -1);
 }

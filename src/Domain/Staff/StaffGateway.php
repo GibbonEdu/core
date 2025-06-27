@@ -38,7 +38,7 @@ class StaffGateway extends QueryableGateway
     private static $tableName = 'gibbonStaff';
     private static $primaryKey = 'gibbonStaffID';
 
-    private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonStaff.jobTitle'];
+    private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonPerson.nameInCharacters', 'gibbonStaff.jobTitle'];
 
     /**
      * Queries the list of users for the Manage Staff page.
@@ -131,6 +131,18 @@ class StaffGateway extends QueryableGateway
         $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function selectPotentialStaff() {
+        $sql = "SELECT gibbonPerson.gibbonPersonID
+            FROM gibbonPerson 
+            JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+            LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            WHERE gibbonStaff.gibbonStaffID IS NULL
+            AND gibbonRole.category='Staff'
+            GROUP BY gibbonPerson.gibbonPersonID";
+
+        return $this->db()->select($sql);
     }
 
     public function getIsPreferredNameUnique($preferredName)

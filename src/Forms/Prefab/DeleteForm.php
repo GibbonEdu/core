@@ -33,18 +33,20 @@ class DeleteForm extends Form
 {
     public static function createForm($action, $confirmation = false, $submit = true)
     {
-        $form = parent::create('deleteRecord'.substr(md5(random_bytes(10)), 0, 20), $action);
+        $form = parent::createBlank('deleteRecord'.substr(md5(random_bytes(10)), 0, 20), $action);
         $form->addHiddenValue('address', $_GET['q']);
+        $form->addClass('font-sans text-xs text-gray-700');
 
         foreach ($_GET as $key => $value) {
+            if (is_array($value)) continue;
             $form->addHiddenValue($key, $value);
         }
 
         $row = $form->addRow();
-            $col = $row->addColumn();
-            $col->addContent(__('Are you sure you want to delete this record?'))->wrap('<strong>', '</strong>');
+            $col = $row->addColumn()->addClass('mb-4');
+            $col->addContent(__('Are you sure you want to delete this record?'))->wrap('<div class="font-bold text-base mb-2">', '</div>');
             $col->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))
-                ->wrap('<span style="color: #cc0000"><i>', '</i></span>');
+                ->wrap('<span class="text-red-700">', '</span>');
 
         if ($confirmation) {
             $row = $form->addRow();
@@ -58,7 +60,7 @@ class DeleteForm extends Form
         }
 
         if ($submit) {
-            $form->addRow()->addConfirmSubmit();
+            $form->addRow()->addClass('mt-6')->addConfirmSubmit(__('Delete'))->setColor('red');
         }
 
         return $form;

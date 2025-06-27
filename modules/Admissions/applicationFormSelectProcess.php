@@ -20,12 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\EmailTemplate;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $email = $_POST['admissionsLoginEmail'] ?? '';

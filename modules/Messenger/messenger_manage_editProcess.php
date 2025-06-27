@@ -29,6 +29,9 @@ use Gibbon\Domain\Messenger\MessengerTargetGateway;
 
 require_once '../../gibbon.php';
 
+//Module includes
+include './moduleFunctions.php';
+
 $gibbonMessengerID = $_POST['gibbonMessengerID'] ?? '';
 $sendTestEmail = $_POST['sendTestEmail'] ?? '';
 $search = $_GET['search'] ?? '';
@@ -79,22 +82,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $data = [
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
-        'messageWall_date1' => !empty($_POST['date1']) ? Format::dateConvert($_POST['date1']) : null,
-        'messageWall_date2' => !empty($_POST['date2']) ? Format::dateConvert($_POST['date2']) : null,
-        'messageWall_date3' => !empty($_POST['date3']) ? Format::dateConvert($_POST['date3']) : null,
+        'messageWall_dateStart' => !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null,
+        'messageWall_dateEnd' => !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null,
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
         'confidential'      => $_POST['confidential'] ?? 'N',
         'includeSignature'  => $_POST['includeSignature'] ?? 'N',
         'timestamp'         => date('Y-m-d H:i:s'),
+        'enableSharingLink' => $_POST['enableSharingLink'] ?? 'N',
     ];
 
     if ($status == 'Draft') {
+        $emailFrom = $_POST['emailFrom'] ?? $session->get('email');
+        $emailFrom = $emailFrom == 'Other' ? ($_POST['emailFromOther'] ?? $session->get('email')) : $emailFrom;
+
         $data += [
             'email'            => $_POST['email'] ?? 'N',
             'sms'              => $_POST['sms'] ?? 'N',
-            'emailFrom'        => $_POST['emailFrom'] ?? $session->get('email'),
-            'emailReplyTo'     => $_POST['emailReplyTo'] ?? $session->get('email'),
+            'emailFrom'        => $emailFrom,
+            'emailReplyTo'     => $_POST['emailReplyTo'] ?? $emailFrom,
             'emailReceipt'     => $_POST['emailReceipt'] ?? 'N',
             'emailReceiptText' => $_POST['emailReceiptText'] ?? '',
         ];
@@ -112,6 +118,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         exit;
     }
 
+    // Check for any emojis in the message and remove them
+    $containsEmoji = hasEmojis($data['body']);
+    if ($containsEmoji) { 
+        $data['body'] = removeEmoji($data['body']);
+    }
+    
     // Write to database
     $updated = $messengerGateway->update($gibbonMessengerID, $data);
     if (!$updated) {
@@ -144,6 +156,20 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             exit;
         }
 
+        if ($_POST["individuals"]=="Y") {
+            $partcipantCount = count($_POST["individualList"]);
+
+            if($partcipantCount > 50) {
+                $URL.="&return=warning4";
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+
+        if ($containsEmoji) {
+            $URLSend .= '&return=warning3';
+        }
+        
         header("Location: {$URLSend}");
         exit;
     } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {
@@ -154,9 +180,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $messengerTargetGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
     $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
 
-    $URL .= $partialFail
-        ? "&return=error4"
-        : "&return=success0";
+    if ($partialFail) {
+        $URL .= '&return=error4';
+    } else {
+        $URL .= $containsEmoji
+            ? "&return=warning3"
+            : "&return=success0";
+    }
     
     header("Location: {$URL}");
 }

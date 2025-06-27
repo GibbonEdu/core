@@ -111,11 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                         echo '<fieldset>';
 
                         $form = Form::create('action', $session->get('absoluteURL').'/modules/Markbook/markbook_edit_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookCopyClassID='.$gibbonMarkbookCopyClassID);
-                        $form->setClass('fullWidth');
+                        $form->setClass('w-full');
 
                         $form->addHiddenValue('address', $session->get('address'));
 
-                        $table = $form->addRow()->addTable()->setClass('fullWidth colorOddEven noMargin noPadding noBorder');
+                        $table = $form->addRow()->addTable()->setClass('w-full colorOddEven noMargin noPadding noBorder');
 
                         $header = $table->addHeaderRow();
                             $header->addCheckAll()->checked(true);

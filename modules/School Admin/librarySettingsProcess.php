@@ -35,6 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/librarySettin
     $browseBGColor = $_POST['browseBGColor'] ?? '';
     $browseBGImage = $_POST['browseBGImage'] ?? '';
 
+    // Filter valid colour values
+    $browseBGColor = preg_replace('/[^a-fA-F0-9\#]/', '', mb_substr($browseBGColor, 0, 7));
+
     //Validate Inputs
     if ($defaultLoanLength == '') {
         $URL .= '&return=error3';

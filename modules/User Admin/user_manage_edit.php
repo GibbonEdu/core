@@ -253,21 +253,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row->addLabel('emailAlternate', __('Alternate Email'));
                 $row->addEmail('emailAlternate');
 
+            $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
+
             $row = $form->addRow();
+                $row->addLabel('showAddresses', __('Enter Personal Address?'));
+                $row->addYesNo('showAddresses')->setValue($addressSet ?? 'N');
+
+            $form->toggleVisibilityByClass('address')->onClick('showAddresses')->when('Y');
+
+            $row = $form->addRow()->addClass('address');
             $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
                 ->append('<ol>')
                 ->append('<li>'.__('If the user is not in a family.').'</li>')
                 ->append('<li>'.__('If the user\'s family does not have a home address set.').'</li>')
                 ->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
                 ->append('</ol>');
-
-            $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
-
-            $row = $form->addRow();
-                $row->addLabel('showAddresses', __('Enter Personal Address?'));
-                $row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
-
-            $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
             $row = $form->addRow()->addClass('address');
                 $row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
@@ -299,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         $adressee = Format::name($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
                         $row = $table->addRow()->addClass('address');
-                        $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
+                        $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('w-full');
                         $row->addCheckbox($addressCount.'-matchAddress')->setValue($rowAddress['gibbonPersonID']);
 
                         $addressCount++;
@@ -550,7 +550,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $studentAgreementOptions = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions');
                 if (!empty($studentAgreementOptions)) {
                     $options = array_map('trim', explode(',', $studentAgreementOptions));
-                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements']));
+                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements'] ?? ''));
 
                     $row = $form->addRow();
                     $row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
@@ -560,10 +560,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             // CUSTOM FIELDS
             $params = compact('student', 'staff', 'parent', 'other');
+            $params['requiredOverride'] = 'N';
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
             $row = $form->addRow();
-                $row->addFooter()->append('<small>'.getMaxUpload(true).'</small>');
+                $row->addFooter();
                 $row->addSubmit();
 
             $form->loadAllValuesFrom($values);

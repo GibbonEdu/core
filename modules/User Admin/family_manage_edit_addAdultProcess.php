@@ -75,7 +75,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                 } else {
                     //Validate Inputs
                     $comment = $_POST['comment2'] ?? '';
-                    $childDataAccess = $_POST['childDataAccess'] ?? '';
+                    $childDataAccess = $_POST['childDataAccess'] ?? 'Y';
                     $contactPriority = $_POST['contactPriority'] ?? '';
                     if ($contactPriority == 1) {
                         $contactCall = 'Y';
@@ -84,7 +84,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                         $contactMail = 'Y';
                     } else {
                         $contactCall = $_POST['contactCall'] ?? 'N';
-                        $contactSMS = $_POST['contactSMS'] ?? 'N;
+                        $contactSMS = $_POST['contactSMS'] ?? 'N';
                         $contactEmail = $_POST['contactEmail'] ?? 'N';
                         $contactMail = $_POST['contactMail'] ?? 'N';
                     }

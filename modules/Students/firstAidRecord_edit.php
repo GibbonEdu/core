@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     if ($gibbonFirstAidID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFirstAidID' => $gibbonFirstAidID);
             $sql = "SELECT gibbonFirstAid.*, patient.gibbonPersonID AS gibbonPersonIDPatient, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
                 FROM gibbonFirstAid
@@ -94,21 +94,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             $row = $form->addRow();
                 $row->addLabel('timeIn', __('Time In'));
-                $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->required()->readonly();
+                $row->addTime('timeIn')->setValue(!empty($values['timeIn']) ? substr($values['timeIn'], 0, 5) : '')->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('timeOut', __('Time Out'));
-                $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5))->chainedTo('timeIn')->readonly($mode != 'edit');
+                $row->addTime('timeOut')->setValue(!empty($values['timeOut']) ? substr($values['timeOut'], 0, 5) : '')->chainedTo('timeIn')->readonly($mode != 'edit');
 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Description'));
-                $column->addTextArea('description')->setValue($values['description'])->setRows(8)->setClass('fullWidth')->readonly();
+                $column->addTextArea('description')->setValue($values['description'])->setRows(8)->setClass('w-full')->readonly();
 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('actionTaken', __('Action Taken'));
-                $column->addTextArea('actionTaken')->setValue($values['actionTaken'])->setRows(8)->setClass('fullWidth')->readonly();
+                $column->addTextArea('actionTaken')->setValue($values['actionTaken'])->setRows(8)->setClass('w-full')->readonly();
 
             $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
@@ -122,8 +122,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             if (!empty($values['followUp'])) {
                 $row = $form->addRow();
                     $column = $row->addColumn();
-                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
-                    $column->addContent($values['followUp'])->setClass('fullWidth');
+                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateTimeReadable($values['timestamp'])]));
+                    $column->addContent($values['followUp'])->setClass('w-full');
             }
 
             //Print new-style followup as log
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('followUp', (empty($logs) ? __('Follow Up') : __('Further Follow Up')) .' / '.__('Notes'))->description(__('If you are the student\'s teacher, please include details such as: the location & lesson, what lead up to the incident, what was the incident, what did you do.'));
-                $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+                $column->addTextArea('followUp')->setRows(8)->setClass('w-full');
 
 
             // CUSTOM FIELDS

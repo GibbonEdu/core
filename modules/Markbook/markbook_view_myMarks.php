@@ -84,7 +84,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
     }
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php','get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
 
@@ -129,7 +129,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
     $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
     $form->addHiddenValue('details', 'No');
     $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)->inline(true)
-        ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span> &nbsp;&nbsp;');
+        ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="text-xs italic inline-block">', '</span> &nbsp;&nbsp;');
 
     $rowFilter = $form->addRow();
         $rowFilter->addSearchSubmit($session, __('Clear Filters'))->prepend($showHide->getOutput());
@@ -445,7 +445,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                 $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                 if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                    renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID);
+                    renderStudentCumulativeMarks($gibbon, $pdo, $session->get('gibbonPersonID'), $rowList['gibbonCourseClassID'], $gibbonSchoolYearTermID ?? '');
                 }
 
                 echo '</table>';

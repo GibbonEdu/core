@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo '</h2>';
 
         $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/in_view.php');
 
@@ -105,10 +105,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
                 if ($person['status'] != 'Full') return;
 
                 if ($highestAction == 'Individual Needs Records_view') {
-                    $actions->addAction('view', __('View Individual Needs Details'))
+                    $actions->addAction('view', __('View'))
                             ->setURL('/modules/Individual Needs/in_edit.php');
                 } else if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
-                    $actions->addAction('edit', __('Edit Individual Needs Details'))
+                    $actions->addAction('edit', __('Edit'))
                             ->setURL('/modules/Individual Needs/in_edit.php');
                 }
             });

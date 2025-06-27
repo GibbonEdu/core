@@ -30,7 +30,7 @@ use Gibbon\Domain\User\RoleGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['website' => 'URL']);
 
 //Module includes
 include './moduleFunctions.php';
@@ -91,8 +91,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     $other = true;
                 }
             }
-
-            $attachment1 = $_POST['attachment1'] ?? '';
 
             //Proceed!
             $title = $_POST['title'] ?? '';
@@ -171,8 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $gibbonRoleIDAll = (is_array($gibbonRoleIDAll))? implode(',', array_unique($gibbonRoleIDAll)) : $row['gibbonRoleIDAll'];
 
             $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
-            $email = trim($_POST['email'] ?? '');
-            $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+            $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $emailAlternate = filter_var(trim($_POST['emailAlternate'] ?? ''), FILTER_SANITIZE_EMAIL);
             $address1 = $_POST['address1'] ?? '';
             $address1District = $_POST['address1District'] ?? '';
             $address1Country = $_POST['address1Country'] ?? '';
@@ -203,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
             $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
             $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
-            $website = $_POST['website'] ?? '';
+            $website = filter_var(trim($_POST['website'] ?? ''), FILTER_SANITIZE_URL);
             $languageFirst = $_POST['languageFirst'] ?? '';
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
@@ -280,83 +278,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
-                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+                            $attachment1 = $fileUploader->uploadAndResizeImage($file, $username.'_240', 480, 100);
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
-                            } else {
-                                //Check image sizes
-                                if (function_exists('getimagesize') && function_exists('imagecreatetruecolor')) {
-                                    $imageSize = getimagesize($path.'/'.$attachment1);
-                                    $width = $imageSize[0] ?? '';
-                                    $height = $imageSize[1] ?? '';
-                                    $aspect = $height / $width;
-
-                                    if ($width > 360 || $height > 480 || $aspect < 1.2 || $aspect > 1.4) {
-                                        $src_x = $src_y = $dst_x = $dst_y = 0;
-                                        $src_y = 0;
-                                        $src_w = $width;
-                                        $src_h = $height;
-                                        $maxWidth = 360;
-                                        $maxHeight = 480;
-
-                                        // New crop if needed
-                                        if ($aspect < 1.2) {
-                                            $src_w = $height / 1.2;
-                                            $src_x = ($width - $src_w) / 2;
-                                        }
-                                        else if ($aspect > 1.4) {
-                                            $src_h = $width * 1.4;
-                                            $src_y = ($height - $src_h) / 2;
-                                        }
-
-                                        $dst_w = $src_w;
-                                        $dst_h = $src_h;
-
-                                        // New compressed image if needed
-                                        if ($src_w > $maxWidth) {
-                                            $new_ratio = $maxWidth / $src_w;
-                                            $dst_w = $maxWidth;
-                                            $dst_h = $src_h * $new_ratio;
-                                        }
-                                        if ($src_h > $maxHeight) {
-                                            $new_ratio = $maxHeight / $src_h;
-                                            $dst_h = $maxHeight;
-                                            $dst_w = $src_w * $new_ratio;
-                                        }
-
-                                        $imagePath =  $path.'/'.$attachment1;
-
-                                        // Resampling the image
-                                        if (!empty($imageSize) && file_exists($imagePath)) {
-                                            $image_p = imagecreatetruecolor($dst_w, $dst_h);
-                                            $extension = mb_substr(mb_strrchr(strtolower($imagePath), '.'), 1);
-
-                                            switch ($extension) {
-                                                case 'png':     $image = imagecreatefrompng($imagePath); break;
-                                                case 'gif':     $image = imagecreatefromgif($imagePath); break;
-                                                case 'webp':    $image = imagecreatefromwebp($imagePath); break;
-                                                default:        $image = imagecreatefromjpeg($imagePath);
-                                            }
-
-                                            imagecopyresampled($image_p, $image,
-                                                            $dst_x, $dst_y,
-                                                            $src_x, $src_y,
-                                                            $dst_w, $dst_h,
-                                                            $src_w, $src_h);
-
-                                            imagedestroy($image);
-                                            imagejpeg($image_p, $imagePath, 100);
-                                        }
-                                    }
-                                }
                             }
                         }
+                    } else {
+                        // Remove the attachment if it has been deleted, otherwise retain the original value
+                        $attachment1 = empty($_POST['attachment1']) ? '' : $row['image_240'];
                     }
 
                     // CUSTOM FIELDS
                     $customRequireFail = false;
                     $params = compact('student', 'staff', 'parent', 'other');
+                    $params['requiredOverride'] = 'N';
                     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
 
                     // PERSONAL DOCUMENTS
@@ -384,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $statusReason = $_POST['statusReason'] ?? '';
 
                             $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
-                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason]);
+                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason, 'gibbonPersonIDModified' => $session->get('gibbonPersonID')]);
                         }
 
                         //Deal with change to privacy settings
@@ -448,11 +384,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 }
 
                                 //Set log
-                                $gibbonModuleID=getModuleIDFromName($connection2, 'User Admin') ;
                                 $privacyValues=array() ;
                                 $privacyValues['oldValue'] = $privacy_old ;
                                 $privacyValues['newValue'] = $privacy ;
-                                $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                                $logGateway->addLog($session->get("gibbonSchoolYearID"), 'User Admin', $session->get("gibbonPersonID"), 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
                             }
                         }
 

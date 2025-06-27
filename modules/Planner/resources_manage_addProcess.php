@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['html' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['html' => 'HTML', 'link' => 'URL']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/resources_manage_add.php&search='.$_GET['search'];
 $time = time();

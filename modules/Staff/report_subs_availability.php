@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $subGateway = $container->get(SubstituteGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
+    $coverageInternal = $settingGateway->getSettingByScope('Staff', 'coverageInternal');
 
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
@@ -47,8 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $allDay = $_GET['allDay'] ?? null;
     $timeStart = $_GET['timeStart'] ?? null;
     $timeEnd = $_GET['timeEnd'] ?? null;
-    $allStaff = $_GET['allStaff'] ?? $settingGateway->getSettingByScope('Staff', 'coverageInternal');
-    
+    $allStaff = $_GET['allStaff'] ?? $coverageInternal;
+
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
 
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('sidebar', $_GET['sidebar'] ?? '');
@@ -77,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $row = $form->addRow();
         $row->addLabel('allDay', __('When'));
         $row->addSelect('allDay')->fromArray($allDayOptions)->selected($allDay);
-    
+
     $form->toggleVisibilityByClass('timeOptions')->onSelect('allDay')->when('N');
 
     $row = $form->addRow()->addClass('timeOptions');
@@ -93,9 +94,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeEnd);
 
-    $row = $form->addRow();
-        $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
-        $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
+    if ($coverageInternal != 'Y') {
+        $row = $form->addRow();
+            $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
+            $row->addCheckbox('allStaff')->checked($allStaff)->setValue('Y');
+    }
 
     $row = $form->addRow();
         $row->addFooter();
@@ -117,11 +120,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     });
 
     $dayOfWeek = $container->get(DaysOfWeekGateway::class)->getDayOfWeekByDate($date);
-    
+
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
     $table->setTitle(__('Substitute Availability'));
-    $table->setDescription(Format::dateReadable($dateObject->format('Y-m-d'), '%A, %b %e'));
+    $table->setDescription(Format::dateReadable($dateObject->format('Y-m-d'), Format::FULL));
 
     $table->addHeaderAction('calendar', __('Weekly').' '.__('View'))
         ->setIcon('planner')
@@ -189,9 +192,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
                 $output .= '<br/>';
                 $output .= CoverageMiniCalendar::renderTimeRange($dayOfWeek, $person['dates'] ?? [], $dateObject);
             }
-            
-            
-            
+
+
+
             return $output;
         });
 

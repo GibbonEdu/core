@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         echo '</h2>';
 
         $form = Form::create('ttSpace', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/tt_space.php');
 

@@ -25,5 +25,9 @@ use Gibbon\Forms\Form;
 
 interface FormRendererInterface
 {
+    public function addData($key, $value = null);
+
+    public function setTemplate(string $template);
+
     public function renderForm(Form $form);
 }

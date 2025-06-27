@@ -43,6 +43,9 @@ class AbsenceView
     protected $staffCoverageGateway;
     protected $coverageView;
 
+    protected $gibbonStaffAbsenceID;
+    protected $gibbonPersonIDViewing;
+
     public function __construct(StaffAbsenceGateway $staffAbsenceGateway, StaffCoverageGateway $staffCoverageGateway, UserGateway $userGateway, CoverageView $coverageView)
     {
         $this->staffAbsenceGateway = $staffAbsenceGateway;

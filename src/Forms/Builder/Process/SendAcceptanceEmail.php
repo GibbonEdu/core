@@ -32,7 +32,8 @@ use Gibbon\Services\Format;
 
 class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = [''];
+    protected $requiredFields = ['email', 'parent1email', 'parent2email'];
+    protected $requiredFieldLogic = 'ANY';
 
     private $session;
     private $mail;
@@ -57,6 +58,10 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
         }
 
         if ($builder->getConfig('mode') == 'process' && $builder->getConfig($this->getProcessName().'Enabled') != 'Y') {
+            return false;
+        }
+
+        if ($builder->getConfig('mode') == 'edit' && $builder->getConfig('status') != 'Accepted') {
             return false;
         }
 

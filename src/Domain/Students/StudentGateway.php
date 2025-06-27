@@ -38,7 +38,7 @@ class StudentGateway extends QueryableGateway
     private static $tableName = 'gibbonStudentEnrolment';
     private static $primaryKey = 'gibbonStudentEnrolmentID';
 
-    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.firstName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonPerson.email', 'gibbonPerson.emailAlternate', 'gibbonPerson.studentID', 'gibbonPerson.phone1', 'gibbonPerson.vehicleRegistration'];
+    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.firstName', 'gibbonPerson.surname', 'gibbonPerson.nameInCharacters', 'gibbonPerson.username', 'gibbonPerson.email', 'gibbonPerson.emailAlternate', 'gibbonPerson.studentID', 'gibbonPerson.phone1', 'gibbonPerson.vehicleRegistration'];
 
     /**
      * @param QueryCriteria $criteria
@@ -216,7 +216,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' as roleCategory
+        $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, 'Student' as roleCategory
                 FROM gibbonFamilyAdult
                 JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
                 JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -235,22 +235,30 @@ class StudentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getStudentByFamilyAdult($gibbonPersonIDStudent, $gibbonPersonIDAdult)
+    {
+        $data = ['gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDAdult' => $gibbonPersonIDAdult, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonIDStudent AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDAdult AND childDataAccess='Y'";
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID, $onlyFull = true)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy, gibbonStudentEnrolment.fields
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, email, image_240, gender, dateStart, dateEnd, gibbonPerson.status, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy, gibbonStudentEnrolment.fields
                 FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
-                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
+                LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
 
         if ($onlyFull) {
             $data['today'] = date('Y-m-d');
             $sql .= " AND gibbonPerson.status='Full'
                 AND (dateStart IS NULL OR dateStart<=:today)
-                AND (dateEnd IS NULL  OR dateEnd>=:today) ";
+                AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                AND gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL";
         }
 
         return $this->db()->select($sql, $data);
@@ -317,6 +325,7 @@ class StudentGateway extends QueryableGateway
                 SELECT DISTINCT '' as classID, gibbonPerson.gibbonPersonID, surname, preferredName, email, image_240, 'IN Assistant' as type, 2 as listOrder
                 FROM gibbonPerson
                     JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE status='Full'
                     AND gibbonPersonIDStudent=:gibbonPersonID
             )

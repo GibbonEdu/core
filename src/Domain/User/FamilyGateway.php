@@ -135,7 +135,7 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
             ->innerJoin('gibbonPerson', 'gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where('FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList)')
             ->bindValue('gibbonFamilyIDList', $gibbonFamilyIDList)
-            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+            ->orderBy(['gibbonFamilyAdult.contactPriority', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
 
         return $this->runSelect($query);
     }
@@ -174,6 +174,30 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
         if (!$allUsers) $sql .= " AND gibbonPerson.status='Full'";
 
         $sql .= " GROUP BY gibbonFamilyChild.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyAdultID ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectContactPriority1AdultsByStudent($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "
+            SELECT
+                gibbonFamilyAdult.gibbonPersonID,
+                gibbonPerson.title,
+                gibbonPerson.preferredName,
+                gibbonPerson.surname,
+                gibbonPerson.status,
+                gibbonPerson.email
+            FROM gibbonFamilyChild
+                JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+                JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+                JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            WHERE
+                gibbonFamilyChild.gibbonPersonID=:gibbonPersonID
+                AND gibbonFamilyAdult.childDataAccess='Y'
+                AND gibbonFamilyAdult.contactPriority=1
+                AND gibbonPerson.status='Full'";
 
         return $this->db()->select($sql, $data);
     }

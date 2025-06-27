@@ -40,6 +40,7 @@ class NotificationEvent
     protected $event;
     protected $text;
     protected $actionLink;
+    protected $details = [];
 
     protected $scopes = array();
     protected $recipients = array();
@@ -66,6 +67,16 @@ class NotificationEvent
     public function setNotificationText($text)
     {
         $this->text = $text;
+    }
+
+    /**
+     * Defines the additional details to be included in the notification when emailed to recipients, as a bullet list.
+     *
+     * @param  array  $details
+     */
+    public function setNotificationDetails($details)
+    {
+        $this->details = $details;
     }
 
     /**
@@ -149,18 +160,6 @@ class NotificationEvent
     }
 
     /**
-     * Send notifications for this event as BCC. Helper method to clarify the intent of the sending option.
-     *
-     * @param Connection $pdo
-     * @param session $session
-     * @return array Send report with success/fail counts.
-     */
-    public function sendNotificationsAsBcc(Connection $pdo, session $session)
-    {
-        return $this->sendNotifications($pdo, $session, true);
-    }
-
-    /**
      * Adds event listeners to the recipients list, then pushes a notification for each recipient to the notification sender.
      * Does not perform the sending of notifications (can be used for bulk processing).
      *
@@ -183,7 +182,7 @@ class NotificationEvent
         }
 
         foreach ($this->recipients as $gibbonPersonID) {
-            $sender->addNotification($gibbonPersonID, $this->text, $this->moduleName, $this->actionLink);
+            $sender->addNotification($gibbonPersonID, $this->text, $this->moduleName, $this->actionLink, $this->details);
         }
 
         return $this->getRecipientCount();

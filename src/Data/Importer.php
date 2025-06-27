@@ -167,7 +167,6 @@ class Importer
      */
     public function openCSVFile($csvFile)
     {
-        ini_set("auto_detect_line_endings", true);
         $this->csvFileHandler = fopen($csvFile, "r");
         return ($this->csvFileHandler !== false);
     }

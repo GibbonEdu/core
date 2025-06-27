@@ -23,8 +23,6 @@ use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 use Gibbon\Data\Validator;
 
-$_POST['address'] = '/modules/Reports/reporting_proofread.php';
-
 require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);

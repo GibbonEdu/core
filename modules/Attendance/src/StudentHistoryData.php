@@ -76,14 +76,8 @@ class StudentHistoryData
             ->fetchGrouped();
 
         // Get Weekdays
-        $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y'";
+        $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y' ORDER BY sequenceNumber";
         $daysOfWeek = $this->pdo->select($sql)->fetchKeyPair();
-        if ($firstDayOfTheWeek == 'Sunday' && in_array('Sunday', $daysOfWeek)) {
-            $daysOfWeek = array('Sun' => 'Sunday') + $daysOfWeek;
-        }
-        if ($firstDayOfTheWeek == 'Saturday' && in_array('Saturday', $daysOfWeek)) {
-            $daysOfWeek = array('Sat' => 'Saturday') + $daysOfWeek;
-        }
 
         // Get Terms
         $criteria = $this->termGateway->newQueryCriteria(true)
@@ -97,6 +91,7 @@ class StudentHistoryData
 
         foreach ($terms as $index => $term) {
             $specialDays = $this->termGateway->selectSchoolClosuresByTerm($term['gibbonSchoolYearTermID'])->fetchKeyPair();
+            $offTimetableDays = $this->termGateway->selectOffTimetableDaysByTermAndPerson($term['gibbonSchoolYearTermID'], $gibbonPersonID)->fetchKeyPair();
 
             $firstDay = new DateTimeImmutable($term['firstDay']);
             $lastDay = new DateTimeImmutable($term['lastDay']);
@@ -164,6 +159,12 @@ class StudentHistoryData
                     ];
                 }
 
+                // Handle off-timetable days where attendance is not taken
+                if (empty($logs[$dateYmd]) && !empty($offTimetableDays[$dateYmd])) {
+                    $endOfDay['status'] = 'present';
+                    $presentCount++;
+                }
+
                 $dayData = [
                     'date'            => $dateYmd,
                     'dateDisplay'     => Format::date($dateYmd),
@@ -171,6 +172,7 @@ class StudentHistoryData
                     'classLogs'       => $classLogs[$dateYmd] ?? [],
                     'endOfDay'        => $endOfDay,
                     'specialDay'      => $specialDays[$dateYmd] ?? '',
+                    'offTimetable'    => $offTimetableDays[$dateYmd] ?? '',
                     'outsideTerm'     => $date < $firstDay || $date > $lastDay,
                     'beforeStartDate' => !empty($dateStart) && $dateYmd < $dateStart,
                     'afterEndDate'    => !empty($dateEnd) && $dateYmd > $dateEnd,

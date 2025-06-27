@@ -49,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
         $page->addAlert(Format::bold(__('Warning')).': '.__('This form is already in use. Deleting this form will affect the data for {count} existing submissions. Proceed with extreme caution! It is safer to set this form to inactive and create a new form.', ['count' => Format::bold($submissions)]), 'error');
     }
 
-    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/System Admin/formBuilder_deleteProcess.php?gibbonFormID='.$gibbonFormID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/System Admin/formBuilder_deleteProcess.php', true);
+    $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     echo $form->getOutput();
 }

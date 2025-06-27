@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Search'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/fees_manage.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

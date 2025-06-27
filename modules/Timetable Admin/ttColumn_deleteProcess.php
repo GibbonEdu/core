@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
+$gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_delete.php&gibbonTTColumnID='.$gibbonTTColumnID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn.php';
 

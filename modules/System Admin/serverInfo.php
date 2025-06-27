@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/serverInfo.ph
     // FORM
     $form = Form::create('info', '');
     $form->setTitle(__('Server Info'));
-    $form->setDescription(__("This page outputs a large amount of information about the your server's configuration. This is useful for troubleshooting and debugging."));
+    $form->setDescription(__("This page outputs a large amount of information about your server's configuration. This is useful for troubleshooting and debugging."));
 
     $form->addRow()->addHeading('System Logs', __('System Logs'));
 

@@ -25,7 +25,7 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
 $_POST['address'] = '/modules/Staff/absences_manage.php';
-$gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
+$gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 $search = $_POST['search'] ?? '';
 
 require_once '../../gibbon.php';

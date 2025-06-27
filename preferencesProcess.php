@@ -24,9 +24,16 @@ use Gibbon\Http\Url;
 
 include './gibbon.php';
 
+$URL = Url::fromRoute('preferences');
+
+if (!$session->has('gibbonPersonID') || !$session->has('gibbonRoleIDCurrent')) {
+    header("Location: {$URL->withReturn('error0')}");
+    exit;
+}
+
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);
-$_POST = $validator->sanitize($_POST);
+$_POST = $validator->sanitize($_POST, ['personalBackground' => 'URL']);
 
 $calendarFeedPersonal = $_POST['calendarFeedPersonal'] ?? '';
 $personalBackground = $_POST['personalBackground'] ?? '';
@@ -43,8 +50,6 @@ if ($mfaEnable == 'Y') {
 }
 
 $mfaCode = $_POST['mfaCode'] ?? null;
-
-$URL = Url::fromRoute('preferences');
 
 $validated = true;
 

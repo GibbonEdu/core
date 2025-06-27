@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -41,6 +42,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     $homeAddressDistrict = $_POST['homeAddressDistrict'] ?? '';
     $homeAddressCountry = $_POST['homeAddressCountry'] ?? '';
 
+    $customRequireFail = false;
+    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Family', [], $customRequireFail);
+
+    if ($customRequireFail) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
     //Validate Inputs
     if ($name == '' or $nameAddress == '' or $status == '') {
         $URL .= '&return=error1';
@@ -48,8 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     } else {
         //Write to database
         try {
-            $data = array('name' => $name, 'status' => $status, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry);
-            $sql = 'INSERT INTO gibbonFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry';
+            $data = array('name' => $name, 'status' => $status, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'fields' => $fields);
+            $sql = 'INSERT INTO gibbonFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, fields=:fields';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

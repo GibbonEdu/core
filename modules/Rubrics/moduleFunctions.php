@@ -75,7 +75,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
         $form = Form::createTable('editRubric', $session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
-        $form->setClass('rubricTable fullWidth');
+        $form->setClass('rubricTable w-full');
         $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow()->addClass();
@@ -90,7 +90,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $gradeScaleGrade = $gradeScales[$columns[$n]['gibbonScaleGradeID']];
                 $col->addContent('<b>'.$gradeScaleGrade['descriptor'].'</b>')
                     ->append(' ('.$gradeScaleGrade['value'].')')
-                    ->append('<br/><span class="small emphasis">'.__($scaleName).' '.__('Scale').'</span>');
+                    ->append('<br/><span class="text-xs italic">'.__($scaleName).' '.__('Scale').'</span>');
             } else {
                 $col->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
             }
@@ -109,7 +109,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $outcome = $outcomes[$rows[$i]['gibbonOutcomeID']];
                 $col->addContent('<b>'.__($outcome['name']).'</b>')
                     ->append(!empty($outcome['category'])? ('<i> - <br/>'.$outcome['category'].'</i>') : '')
-                    ->append('<br/><span class="small emphasis">'.$outcome['scope'].' '.__('Outcome').'</span>');
+                    ->append('<br/><span class="text-xs italic">'.$outcome['scope'].' '.__('Outcome').'</span>');
                 $rows[$i]['title'] = $outcome['name'];
             } else {
                 $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
@@ -314,7 +314,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 }
 
                 $form = Form::createTable('viewRubric', $session->get('absoluteURL').'/index.php');
-                $form->setClass('rubricTable fullWidth');
+                $form->setClass('rubricTable w-full');
 
                 $row = $form->addRow()->addClass();
                     $row->addContent()->addClass('');
@@ -334,7 +334,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                             $gradeScaleGrade = $gradeScales[$columns[$n]['gibbonScaleGradeID']];
                             $column->addContent('<b>'.$gradeScaleGrade['descriptor'].'</b>')
                                 ->append(' ('.$gradeScaleGrade['value'].')')
-                                ->append('<br/><span class="small emphasis">'.__($gradeScaleGrade['name']).' '.__('Scale').'</span>');
+                                ->append('<br/><span class="text-xs italic">'.__($gradeScaleGrade['name']).' '.__('Scale').'</span>');
                         } else {
                             $column->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
                         }
@@ -351,11 +351,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                             $outcome = $outcomes[$rows[$i]['gibbonOutcomeID']];
                             $content = $col->addContent('<b>'.__($outcome['name']).'</b>')
                                 ->append(!empty($outcome['category'])? ('<i> - <br/>'.$outcome['category'].'</i>') : '')
-                                ->append('<br/><span class="small emphasis">'.$outcome['scope'].' '.__('Outcome').'</span>')
+                                ->append('<br/><span class="text-xs italic">'.$outcome['scope'].' '.__('Outcome').'</span>')
                                 ->wrap('<span title="'.$outcome['description'].'">', '</span>');
                             // Highlight unit outcomes with a checkmark
                             if (isset($unitOutcomes[$rows[$i]['gibbonOutcomeID']])) {
-                                $content->append('<img style="float: right" title="'.__('This outcome is one of the unit outcomes.').'" src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>');
+                                $content->append(Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'),  __('This outcome is one of the unit outcomes.')));
                             }
                             $rows[$i]['title'] = $outcomes[$rows[$i]['gibbonOutcomeID']]['name'];
                             $rows[$i]['title'];

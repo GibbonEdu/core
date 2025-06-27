@@ -84,6 +84,7 @@ th.dataColumn {
     min-width: 140px;
     position: relative;
     vertical-align: top;
+    height: 130px;
 }
 
 .marksColumn .columnActions {
@@ -245,7 +246,7 @@ select[id$="effortValue"] {
 .doublescroll-container tr.head th.firstColumn {
 	position:absolute; 
     width:174px; 
-    height: 170px;
+    height: 130px;
     left:1px;
     top:0;
     padding: 5px 12px 5px !important;
@@ -268,6 +269,7 @@ select[id$="effortValue"] {
     border-right: 1px solid #666;
     margin:0;
     z-index: 1;
+    text-align: left;
 }
 
 .doublescroll-container td {

@@ -80,6 +80,54 @@ class FacilityBookingGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectFacilityBookingsByDateRange($dateStart, $dateEnd, $gibbonPersonID = null, $gibbonSpaceID = null)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'reason', 'gibbonSpace.name', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
+            ])
+            ->innerJoin('gibbonSpace', 'gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID')
+            ->innerJoin('gibbonPerson', 'gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where("foreignKey='gibbonSpaceID'")
+            ->where('date BETWEEN :dateStart AND :dateEnd')
+            ->bindValue('dateStart', $dateStart)
+            ->bindValue('dateEnd', $dateEnd);
+
+        if (!empty($gibbonPersonID)) {
+            $query->where('gibbonTTSpaceBooking.gibbonPersonID = :gibbonPersonID')
+                  ->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
+        if (!empty($gibbonSpaceID)) {
+            $query->where('gibbonSpace.gibbonSpaceID = :gibbonSpaceID')
+                  ->bindValue('gibbonSpaceID', $gibbonSpaceID);
+        }
+
+        if (empty($gibbonSpaceID)) {
+            $query->unionAll()
+                ->from($this->getTableName())
+                ->cols([
+                    'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'reason', 'gibbonLibraryItem.name', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
+                ])
+                ->innerJoin('gibbonLibraryItem', 'gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID')
+                ->innerJoin('gibbonPerson', 'gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID')
+                ->where("foreignKey='gibbonLibraryItemID'")
+                ->where('date BETWEEN :dateStart AND :dateEnd')
+                ->bindValue('dateStart', $dateStart)
+                ->bindValue('dateEnd', $dateEnd);
+
+
+            if (!empty($gibbonPersonID)) {
+                $query->where('gibbonTTSpaceBooking.gibbonPersonID = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            }
+        }
+
+
+        return $this->runSelect($query);
+    }
+
     public function queryFacilityBookingsByDate($startDate, $endDate)
     {
         $data = array('startDate' => $startDate, 'endDate' => $endDate);

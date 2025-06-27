@@ -107,6 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->width('25%')
         ->format(function ($person) {
             return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, false, ['subpage' => 'Reports']);
+        })
+        ->formatDetails(function ($person) {
+            return Format::small($person['email'] ?? '');
         });
 
     $table->addColumn('timestampModified', __('Last Created'))
@@ -139,13 +142,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
             $title = Format::name($report['parentTitle'], $report['parentPreferredName'], $report['parentSurname'], 'Parent', false).': '.Format::relativeTime($report['timestampAccessed'], false);
 
             if ($report['timestampSent'] == '0000-00-00 00:00:00') {
-                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/refresh.png" title="'.__('Sending').'" class="opacity-75">';
+                return Format::tooltip(icon('solid', 'refresh', 'size-6 fill-current text-gray-600 opacity-75'), __('Sending'));
             } elseif (!empty($report['timestampSent']) && !empty($report['timestampAccessed'])) {
-                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick_double.png" title="'.__('Sent & Read').': '.$title.'">';
+                return Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'), __('Sent & Read').': '.$title);
             } elseif (!empty($report['timestampSent'])) {
-                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick.png" title="'.__('Sent').': '.Format::relativeTime($report['timestampSent'], false).'">';
+                return Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-gray-400'), __('Sent').': '.Format::relativeTime($report['timestampSent'], false));
             } elseif (!empty($report['timestampAccessed'])) {
-                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick_light.png" title="'.__('Read Online').': '.$title.'">';
+                return Format::tooltip(icon('solid', 'check', 'size-6 fill-current text-green-600'), __('Read Online').': '.$title);
             }
 
             return '';

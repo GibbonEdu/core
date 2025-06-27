@@ -26,6 +26,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Http\Url;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose Date'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('q', "/modules/" . $session->get('module') . "/report_studentsNotOnsite_byDate.php");
 
@@ -104,6 +105,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     $attendance = $attendanceGateway->queryStudentsNotOnsite($criteria, $session->get('gibbonSchoolYearID'), $currentDate, $allStudents, $countClassAsSchool);
 
+    $students = $attendance->getColumn('gibbonPersonID');
+    $attendanceConflictData = $attendanceGateway->selectNonAbsentAttendanceLogsByDate($students, $currentDate)->fetchKeyPair();
+    $attendance->joinColumn('gibbonPersonID', 'conflicts', $attendanceConflictData);
+
     $table = ReportTable::createPaginated('attendanceReport', $criteria)->setViewMode($viewMode, $session);
     $table->setTitle(__('Report Data'));
 
@@ -114,13 +119,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $table->addColumn('name', __('Name'))
         ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-        ->format(function ($student) {
-            return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Attendance']);
+        ->format(function ($student) use ($currentDate) {
+            $url = Url::fromModuleRoute('Attendance', 'attendance_take_byPerson.php')->withQueryParams(['gibbonPersonID' => $student['gibbonPersonID'], 'currentDate' => $currentDate]);
+            return Format::link($url, Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true));
         });
     $table->addColumn('status', __('Status'))
         ->context('primary')
+        ->width('20%')
         ->format(function ($student) {
-            return !empty($student['type']) ? __($student['type']) : Format::small(__('Not registered'));
+            $output = !empty($student['type']) ? __($student['type']) : Format::small(__('Not registered'));
+            if (!empty($student['conflicts']) && !empty($student['type']) && $student['conflicts'] != $student['type'] && stripos($student['type'], 'Left') === false) {
+                $output .= Format::tag(__('Conflict'), 'warning text-xxs ml-2', $student['conflicts']);
+            }
+            return $output;
         });
     $table->addColumn('reason', __('Reason'))->context('secondary');
     $table->addColumn('comment', __('Comment'))

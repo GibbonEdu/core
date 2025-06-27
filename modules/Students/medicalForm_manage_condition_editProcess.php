@@ -82,7 +82,8 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                         exit;
                     }
                 } else {
-                    $attachment = $_POST['attachment'] ?? null;
+                    // Remove the attachment if it has been deleted, otherwise retain the original value
+                    $attachment = empty($_POST['attachment']) ? '' : $values['attachment'];
                 }
 
                 if ($name == '' or $gibbonAlertLevelID == '') {

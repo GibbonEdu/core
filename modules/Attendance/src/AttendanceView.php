@@ -50,6 +50,7 @@ class AttendanceView
      */
     protected $attendanceTypes = [];
     protected $attendanceTypesRestricted = [];
+    protected $userRoleIDs = [];
 
     /**
      * Attendance Reasons
@@ -250,8 +251,8 @@ class AttendanceView
 
                 $output .= '<td class="' . $class . '">';
                 $output .= '<a href="' . $link . '" title="' . $linkTitle . '">';
-                $output .= Format::dateReadable($currentDay, '%d') . '<br/>';
-                $output .= '<span>' . Format::dateReadable($currentDay, '%b') . '</span>';
+                $output .= Format::date($currentDay, 'd') . '<br/>';
+                $output .= '<span>' . Format::monthName($currentDay, true) . '</span>';
                 $output .= '</a>';
                 $output .= '</td>';
             }
@@ -270,7 +271,7 @@ class AttendanceView
 
         foreach ($attendanceTypes as $attendanceType) {
             $attendanceType['restricted'] = 'N';
-            
+
             // Check if a role is restricted - blank for unrestricted use
             if (!empty($attendanceType['gibbonRoleIDAll'])) {
                 $allowAttendanceType = false;
@@ -286,7 +287,7 @@ class AttendanceView
                 }
             }
 
-            $this->attendanceTypes[$attendanceType['name']] = $attendanceType; 
+            $this->attendanceTypes[$attendanceType['name']] = $attendanceType;
         }
     }
 }

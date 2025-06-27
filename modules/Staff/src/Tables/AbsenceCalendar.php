@@ -27,12 +27,13 @@ use Gibbon\Tables\DataTable;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use Gibbon\Http\Url;
 
 /**
  * AbsenceCalendar
- * 
+ *
  * A reusable DataTable class for displaying absences in a colour-coded calendar view.
- * 
+ *
  * @version v18
  * @since   v18
  */
@@ -64,7 +65,7 @@ class AbsenceCalendar
             }
 
             $calendar[] = [
-                'name'  => Format::dateReadable($month ,'%b'),
+                'name'  => Format::monthName($month, true),
                 'days'  => $days,
             ];
         }
@@ -87,8 +88,9 @@ class AbsenceCalendar
                     $day = $month['days'][$dayCount] ?? null;
                     if (empty($day) || $day['count'] <= 0) return '';
 
-                    $url = 'fullscreen.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$day['absence']['gibbonStaffAbsenceID'].'&width=800&height=550';
-                    $title = Format::dateReadable($day['date'], '%A').'<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
+                    $url = Url::fromHandlerModuleRoute('fullscreen.php', 'Staff', 'absences_view_details.php')->withQueryParams(['gibbonStaffAbsenceID' => $day['absence']['gibbonStaffAbsenceID']]);
+
+                    $title = Format::dayOfWeekName($day['date']).'<br/>'.Format::dateReadable($day['date'], Format::MEDIUM);
                     $title .= '<br/>'.$day['absence']['type'];
                     $classes = ['thickbox'];
                     if ($day['absence']['allDay'] == 'N') {
@@ -102,7 +104,7 @@ class AbsenceCalendar
                     if (empty($day)) return '';
 
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
-                    
+
                     if ($day['count'] > 0) $cell->addClass('bg-chart'.($day['absence']['sequenceNumber'] % 10));
                     elseif ($day['weekend']) $cell->addClass('bg-gray-200');
                     else $cell->addClass('bg-white');

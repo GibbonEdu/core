@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Filter'));
-        $form->setClass('noIntBorder fullWidth');
+        $form->setClass('noIntBorder w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Staff/absences_view_byPerson.php');
@@ -123,6 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     $table->modifyRows(function ($absence, $row) {
         if ($absence['status'] == 'Pending Approval') $row->addClass('warning');
         if ($absence['status'] == 'Declined') $row->addClass('dull');
+        if ($absence['status'] == 'Cancelled') $row->addClass('dull');
         return $row;
     });
 
@@ -158,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         ->addParam('gibbonStaffAbsenceID')
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($absence, $actions) use ($canManage, $canRequest, $coverageMode) {
-            $noApprovalRequired = ($coverageMode == 'Requested' && $absence['status'] == 'Approved') || $coverageMode == 'Assigned';
+            $noApprovalRequired = ($coverageMode == 'Requested' && $absence['status'] == 'Approved') || ($coverageMode == 'Assigned' && $absence['status'] != 'Cancelled');
             if ($canRequest && $noApprovalRequired && $absence['dateEnd'] >= date('Y-m-d')) {
                 $actions->addAction('coverage', __('Request Coverage'))
                     ->setIcon('attendance')
@@ -175,6 +176,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Staff/absences_manage_delete.php');
+            }
+            
+            if (($absence['status'] == 'Approved' || $absence['status'] == 'Pending Approval') && date('Y-m-d') <= $absence['dateEnd']) {
+                $actions->addAction('cancel', __('Cancel'))
+                    ->setIcon('iconCross')
+                    ->setURL('/modules/Staff/absences_view_cancel.php');
             }
         });
 

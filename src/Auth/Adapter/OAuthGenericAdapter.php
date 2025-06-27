@@ -26,6 +26,7 @@ use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\AuthenticationAdapter;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\SettingGateway;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 /**
@@ -96,17 +97,28 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
         $resourceOwner = $oauthProvider->getResourceOwner($accessToken);
 
         $user = $resourceOwner->toArray();
-        $email = $user['email'] ?? $user['emailAddress'] ?? $user['email-address'] ?? $user['email_address'];
-        $_POST['usernameOAuth'] = $email;
+        $settingGateway = $this->getContainer()->get(SettingGateway::class);
 
-        if (empty($email)) {
+        $ssoSettings = $settingGateway->getSettingByScope('System Admin', 'ssoOther');
+        $ssoSettings = json_decode($ssoSettings, true);
+        
+        // If usernameAttribute is empty the Gibbon version less than v27
+        if (empty($ssoSettings['usernameAttribute'])) {
+            $usernameOAuth = $user['email'] ?? $user['emailAddress'] ?? $user['email-address'] ?? $user['email_address'];
+        } else {
+            $usernameOAuth = $user[$ssoSettings['usernameAttribute']];
+        }
+        
+        $_POST['usernameOAuth'] = $usernameOAuth;
+
+        if (empty($usernameOAuth)) {
             $session->forget('genericAPIAccessToken');
             throw new Exception\OAuthLoginError;
         }
 
         // Get basic user data needed to verify login access
         $this->userGateway = $this->getContainer()->get(UserGateway::class);
-        $userData = $this->getUserData(['username' => $email]);
+        $userData = $this->getUserData(['username' => $usernameOAuth]);
 
         if (empty($userData)) {
             $session->forget('genericAPIAccessToken');

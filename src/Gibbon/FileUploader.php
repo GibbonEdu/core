@@ -73,6 +73,12 @@ class FileUploader
     protected static $illegalFileExtensions = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py','svg');
 
     /**
+     * Internal hard-coded string of characters that should be removed from filenames.
+     * @var  array
+     */
+    protected static $illegalCharactersRegex = '/[\\\~`!@%#\$%\^&\*\(\)\+=\{\}\[\]\|\:;"\'<>,\?\\/]/';
+
+    /**
      * @version  v14
      * @since    v14
      * @param    Connection  $pdo
@@ -103,7 +109,7 @@ class FileUploader
      * @since    v14
      * @param    string  $filename    Desired filename
      * @param    string  $sourcePath  Absolute path of the temp file to upload
-     * @param    string  $destinationFolder  Relativeto the /uploads folder
+     * @param    string  $destinationFolder  Relative to the /uploads folder
      * @return   string|bool          Resulting path of the uploaded file, FALSE on failure.
      */
     public function upload($filename, $sourcePath, $destinationFolder = '')
@@ -112,6 +118,8 @@ class FileUploader
 
         // Trim and remove excess path info
         $filename = basename($filename);
+        $filename = preg_replace(static::$illegalCharactersRegex, '', $filename);
+
         $destinationFolder = trim($destinationFolder, '/');
 
         // Check the existence of the temp file to upload
@@ -183,7 +191,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange) && is_string($filenameChange)) {
-            $filenameChange =  preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $filenameChange);
+            $filenameChange =  preg_replace(static::$illegalCharactersRegex, '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
@@ -274,7 +282,7 @@ class FileUploader
             return false;
         }
 
-        $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize, $quality);
+        $file['tmp_name'] = $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize, $quality);
 
         return $this->uploadFromPost($file, $filenameChange);
     }
@@ -286,7 +294,7 @@ class FileUploader
      * @param string $destPath
      * @param int $maxSize
      * @param int $quality
-     * @return string
+     * @return string|false
      */
     public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80, $zoom = 100, $focalX = 50, $focalY = 50)
     {
@@ -295,9 +303,38 @@ class FileUploader
             return $sourcePath;
         }
 
-        $size = getimagesize($sourcePath);
-        $width = $srcWidth = $size[0];
-        $height = $srcHeight = $size[1];
+        if (!function_exists('getimagesize') || !function_exists('imagecreatefromstring')) {
+            return $sourcePath;
+        }
+
+        $imageInfo = getimagesize($sourcePath);
+        if ($imageInfo === false) {
+            return false;
+        }
+
+        // If the extension is empty for a temporary file, detect the image type and assign the correct extension
+        if (empty($extension)) {
+
+            $mimeToExtension = [
+                'IMAGETYPE_JPEG' => 'jpg',
+                'IMAGETYPE_PNG' => 'png',
+                'IMAGETYPE_GIF' => 'gif',
+            ];
+
+            $mimeType = $imageInfo[2];
+            $extension = $mimeToExtension[$mimeType] ?? 'jpg';
+
+            if (!in_array($extension, $this->getFileExtensions('Graphics/Design'))) {
+                return $sourcePath;
+            }
+
+            $tempPath = $sourcePath . '.' . $extension;
+            rename($sourcePath, $tempPath);
+            $sourcePath = $tempPath;
+        }
+
+        $width = $srcWidth = $imageInfo[0];
+        $height = $srcHeight = $imageInfo[1];
         $ratio = $height / $width;
         $maxWidth = $maxHeight = $maxSize;
         $srcX = $srcY = $destX = $destY = 0;
@@ -343,13 +380,22 @@ class FileUploader
 
         // Create and output the image
         if ($src = imagecreatefromstring(file_get_contents($sourcePath))) {
+            
+            $destWidth = (int)round($destWidth);
+            $destHeight = (int)round($destHeight);
+            $srcWidth = (int)round($srcWidth);
+            $srcHeight = (int)round($srcHeight);
+            $srcX = (int)round($srcX);
+            $srcY = (int)round($srcY);
+            
             $dst = imagecreatetruecolor($destWidth, $destHeight);
 
             imagecopyresampled($dst, $src, $destX, $destY, $srcX, $srcY, $destWidth, $destHeight, $srcWidth, $srcHeight);
 
             // Handle Exif rotation
             if (function_exists('exif_read_data')) {
-                $exif = exif_read_data($sourcePath);
+                $imageType = exif_imagetype($sourcePath);
+                $exif = $imageType <= 3 ? exif_read_data($sourcePath) : [];
                 if (!empty($exif['Orientation'])) {
                     switch ($exif['Orientation']) {
                         case 3:
@@ -377,6 +423,10 @@ class FileUploader
 
             if ($src) imagedestroy($src);
             if ($dst) imagedestroy($dst);
+        }
+
+        if (isset($tempPath)) {
+            rename($sourcePath, str_replace('.' . $extension, '', $sourcePath));
         }
 
         return $destPath;
@@ -414,7 +464,7 @@ class FileUploader
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         $name = mb_substr($filename, 0, mb_strrpos($filename, '.'));
-        $name = preg_replace('[/~`!@%#$%^&*()+={}\[\]|\\:;"\'<>,.?\/]', '', $name);
+        $name = preg_replace(static::$illegalCharactersRegex, '', $name);
 
         // Use password policy to generate random string
         $randStrGenerator = new PasswordPolicy(true, true, false, 16);

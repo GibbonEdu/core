@@ -104,7 +104,7 @@ if (!$proceed) {
     // APPLICATION PROCESSING FEE
     if ($processPaymentRequired) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
-                    
+
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('accessID', $accessID);
         $form->addHiddenValue('gibbonFormID', $gibbonFormID);
@@ -132,7 +132,7 @@ if (!$proceed) {
             $row = $form->addRow();
             $row->addLabel('statusLabel', __('Status'));
             $row->addTextField('status')->readOnly()->setValue($payment['status'] ?? __('Complete'));
-        
+
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
             $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));
@@ -149,7 +149,7 @@ if (!$proceed) {
     // APPLICATION SUBMISSION FEE
     if ($submitPaymentRequired) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
-                
+
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('accessID', $accessID);
         $form->addHiddenValue('gibbonFormID', $gibbonFormID);
@@ -177,7 +177,7 @@ if (!$proceed) {
             $row = $form->addRow();
             $row->addLabel('statusLabel', __('Status'));
             $row->addTextField('status')->readOnly()->setValue($payment['status'] ?? __('Complete'));
-        
+
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
             $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));

@@ -34,6 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
     $name = $_POST['name'] ?? '';
     $type = $_POST['type'] ?? '';
     $active = $_POST['active'] ?? '';
+    $bookable = $_POST['bookable'] ?? '';
     $capacity = $_POST['capacity'] ?? '';
     $computer = $_POST['computer'] ?? '';
     $computerStudent = $_POST['computerStudent'] ?? '';
@@ -70,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'type' => $type, 'active' => $active, 'capacity' => $capacity, 'computer' => $computer, 'computerStudent' => $computerStudent, 'projector' => $projector, 'tv' => $tv, 'dvd' => $dvd, 'hifi' => $hifi, 'speakers' => $speakers, 'iwb' => $iwb, 'phoneInternal' => $phoneInternal, 'phoneExternal' => $phoneExternal, 'comment' => $comment);
-                $sql = 'INSERT INTO gibbonSpace SET name=:name, type=:type, active=:active, capacity=:capacity, computer=:computer, computerStudent=:computerStudent, projector=:projector, tv=:tv, dvd=:dvd, hifi=:hifi, speakers=:speakers, iwb=:iwb, phoneInternal=:phoneInternal, phoneExternal=:phoneExternal, comment=:comment';
+                $data = array('name' => $name, 'type' => $type, 'active' => $active, 'bookable' => $bookable, 'capacity' => $capacity, 'computer' => $computer, 'computerStudent' => $computerStudent, 'projector' => $projector, 'tv' => $tv, 'dvd' => $dvd, 'hifi' => $hifi, 'speakers' => $speakers, 'iwb' => $iwb, 'phoneInternal' => $phoneInternal, 'phoneExternal' => $phoneExternal, 'comment' => $comment);
+                $sql = 'INSERT INTO gibbonSpace SET name=:name, type=:type, active=:active, bookable=:bookable,  capacity=:capacity, computer=:computer, computerStudent=:computerStudent, projector=:projector, tv=:tv, dvd=:dvd, hifi=:hifi, speakers=:speakers, iwb=:iwb, phoneInternal=:phoneInternal, phoneExternal=:phoneExternal, comment=:comment';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
