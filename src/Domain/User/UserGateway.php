@@ -101,7 +101,7 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                 FROM gibbonPerson 
                 LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
                 WHERE (
-                    (username=:username OR (LOCATE('@', :username)>0 AND email=:username)) 
+                    (username=:username OR (LOCATE('@', :username)>0 AND (email=:username OR emailAlternate=:username)) 
                     AND status='Full' 
                 )";
 
