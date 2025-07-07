@@ -60,12 +60,12 @@ html, body {
             {% if alarm.gibbonPersonID != gibbonPersonID %}
             <p>
                 {% if confirmed %}
-                    <i>{{ __('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.') }}</i>
+                    <i>{{ __('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator cancels the alarm.') }}</i>
                 {% else %}
                     <a target="_parent" class="block text-white text-4xl sm:text-5xl font-bold p-6" href="{{ absoluteURL }}/index_notification_ajax_alarmProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}">
                         {{ __('Click here to confirm that you have received this alarm.') }}
                     </a>
-                    <i>{{ __('After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.') }}</i>
+                    <i>{{ __('After confirming receipt, the alarm will continue to be displayed until an administrator cancels the alarm.') }}</i>
                 {% endif %}
             </p>
             {% endif %}
