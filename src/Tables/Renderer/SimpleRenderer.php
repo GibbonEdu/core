@@ -119,7 +119,7 @@ class SimpleRenderer implements RendererInterface
                 $row = $this->createTableRow($data, $table);
                 if (!$row) continue; // Can be removed by rowLogic
                 
-                $row->addClass($index % 2 == 0? 'odd' : 'even');
+                $row->addClass((is_numeric($index) && $index % 2 === 0) ? 'odd' : 'even');
 
                 $output .= '<tr '.$row->getAttributeString().'>';
                 $output .= $row->getPrepended();
