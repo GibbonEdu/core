@@ -1,0 +1,19 @@
+FROM php:8.2-apache
+
+# Install unzip and wget
+RUN apt-get update && \
+    apt-get install -y wget unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download and extract Gibbon
+WORKDIR /var/www/html
+RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v28.0.01.zip && \
+    unzip v28.0.01.zip && \
+    mv core-28.0.01/* . && \
+    rm -rf core-28.0.01 v28.0.01.zip
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose port
+EXPOSE 80
