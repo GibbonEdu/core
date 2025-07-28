@@ -16,7 +16,7 @@ spec:
         app: gibbon
     spec:
       nodeSelector:
-        kubernetes.io/hostname: k8s-apps-1
+          role: app-demo-1
       containers:
         - name: gibbon
           image: php:8.2-apache
