@@ -19,7 +19,7 @@ spec:
           role: app-demo-1
       containers:
         - name: gibbon
-          image: php:8.2-apache
+          image: ntony3419/gibbon:latest
           ports:
             - containerPort: 80
           volumeMounts:
