@@ -18,7 +18,7 @@ pipeline {
 
     stage('Deploy Gibbon Demo') {
       steps {
-        withKubeConfig([credentialsId: "${KUBECONFIG_CRED}"]) {
+        withKubeConfig([credentialsId: "kubeconfig-jenkins"]) {
           sh '''
             echo "Applying Kubernetes manifests..."
             kubectl apply -n demo-app-deployment -f k8s/gibbon-db-secret.yaml || true
