@@ -9,12 +9,12 @@ kind: Pod
 spec:
   containers:
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:v1.29.2
+    image: bitnami/kubectl:1.29.2-debian-11-r15
     command:
-    - /bin/bash
-    args:
+    - /bin/sh
     - -c
-    - sleep infinity
+    args:
+    - sleep 3600
     tty: true
 """
     }
@@ -32,7 +32,7 @@ spec:
         container('kubectl') {
           withKubeConfig([credentialsId: "kubeconfig-jenkins"]) {
             sh '''
-              kubectl version --client
+              echo "Applying Kubernetes manifests..."
               kubectl apply -n demo-app-deployment -f k8s/gibbon-db-secret.yaml || true
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-pv-pvc.yaml
               kubectl apply -n demo-app-deployment -f k8s/gibbon-uploads-pv-pvc.yaml
