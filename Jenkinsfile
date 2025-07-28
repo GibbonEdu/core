@@ -1,7 +1,8 @@
 pipeline {
   agent {
     kubernetes {
-      label 'kubectl-agent'             // This must match the "Labels" field in your pod template
+      label 'kubectl-agent'                // REQUIRED: must match your Pod Template's label
+      inheritFrom  'kubectl-agent'             // This must match the "Labels" field in your pod template
       defaultContainer 'kubectl'        // This is the container where kubectl commands will run
     }
   }
