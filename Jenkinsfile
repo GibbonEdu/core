@@ -31,9 +31,11 @@ spec:
       steps {
         container('kubectl') {
           sh '''
-            apt update && apt install -y curl ca-certificates gnupg
-            curl -LO https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl
-            install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            apt-get update && apt-get install -y curl ca-certificates gnupg apt-transport-https
+            curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes.gpg
+            echo "deb https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
+            apt-get update
+            apt-get install -y kubectl
             kubectl version --client
           '''
         }
