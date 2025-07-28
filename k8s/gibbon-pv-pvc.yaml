@@ -1,0 +1,57 @@
+# For Gibbon uploads
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gibbon-uploads-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs
+  nfs:
+    server: 10.1.0.5
+    path: /mnt/k8s-database-and-storage/gibbon-files
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gibbon-uploads-pvc
+  namespace: demo-app-deployment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: nfs
+
+---
+
+# For MariaDB
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gibbon-mariadb-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs
+  nfs:
+    server: 10.1.0.5
+    path: /mnt/k8s-database-and-storage/gibbon-mysql
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gibbon-mariadb-pvc
+  namespace: demo-app-deployment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs
