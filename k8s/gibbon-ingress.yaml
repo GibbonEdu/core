@@ -5,7 +5,9 @@ metadata:
   namespace: demo-app-deployment
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"  # ✅ Allow ACME to work
+    nginx.ingress.kubernetes.io/enable-global-auth: "false"  # Optional if auth used    
 spec:
   ingressClassName: nginx
   rules:
