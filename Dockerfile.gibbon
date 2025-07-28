@@ -1,9 +1,9 @@
 FROM php:8.2-apache
 
 # Install unzip and wget
-RUN apt-get update && \
-    apt-get install -y wget unzip && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y wget unzip git curl zip unzip && \
+    curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
 
 # Download and extract Gibbon
 WORKDIR /var/www/html
@@ -11,6 +11,10 @@ RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v28.0.01.zip && \
     unzip v28.0.01.zip && \
     mv core-28.0.01/* . && \
     rm -rf core-28.0.01 v28.0.01.zip
+
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
