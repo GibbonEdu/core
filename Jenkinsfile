@@ -8,7 +8,7 @@ kind: Pod
 spec:
   containers:
     - name: kubectl
-      image: docker.io/ntony3419/k8s-agent:1.0
+      image: ntony3419/k8s-agent:1.0
       command:
         - /bin/bash
         - -c
