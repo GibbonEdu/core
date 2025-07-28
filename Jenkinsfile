@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+      label 'kubectl-agent'             // This must match the "Labels" field in your pod template
+      defaultContainer 'kubectl'        // This is the container where kubectl commands will run
+    }
+  }
   environment {
     KUBECONFIG_CRED = credentials('k8s-app-kubeconfig')
   }
@@ -12,7 +17,7 @@ pipeline {
 
     stage('Deploy Gibbon Demo') {
       steps {
-        withKubeConfig([credentialsId: "k8s-app-kubeconfig"]) {
+        withKubeConfig([credentialsId: "${KUBECONFIG_CRED}"]) {
           sh '''
             echo "Applying Kubernetes manifests..."
             kubectl apply -n demo-app-deployment -f k8s/gibbon-db-secret.yaml || true
