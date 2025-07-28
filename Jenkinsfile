@@ -7,7 +7,7 @@ pipeline {
     }
   }
   environment {
-    KUBECONFIG_CRED = credentials('k8s-app-kubeconfig')
+    KUBECONFIG_CRED = credentials('kubeconfig-jenkins')
   }
   stages {
     stage('Checkout') {
