@@ -5,21 +5,21 @@ metadata:
   namespace: demo-app-deployment
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   ingressClassName: nginx
   rules:
-    - host: banthach.vanhoa.edu.vn
+    - host: banthach-demo.vanhoa.edu.vn
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: gibbon
+                name: gibbon-service
                 port:
                   number: 80
   tls:
     - hosts:
-        - banthach.vanhoa.edu.vn
+        - banthach-demo.vanhoa.edu.vn
       secretName: gibbon-tls
