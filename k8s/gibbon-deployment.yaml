@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gibbon
+  name: gibbon-app
   namespace: demo-app-deployment
+  labels:
+    app: gibbon
 spec:
   replicas: 1
   selector:
@@ -15,25 +17,28 @@ spec:
     spec:
       containers:
         - name: gibbon
-          image: ntung97/gibbonedu:latest
+          image: php:8.2-apache
           ports:
             - containerPort: 80
           volumeMounts:
             - name: gibbon-uploads
               mountPath: /var/www/html/uploads
+          env:
+            - name: DB_HOST
+              value: gibbon-mysql.demo-app-deployment.svc.cluster.local
+            - name: DB_NAME
+              value: gibbon
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-db-secret
+                  key: password
       volumes:
         - name: gibbon-uploads
           persistentVolumeClaim:
             claimName: gibbon-uploads-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gibbon-service
-  namespace: demo-app-deployment
-spec:
-  selector:
-    app: gibbon
-  ports:
-    - port: 80
-      targetPort: 80
