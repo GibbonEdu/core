@@ -6,9 +6,7 @@ pipeline {
       defaultContainer 'kubectl'        // This is the container where kubectl commands will run
     }
   }
-  environment {
-    KUBECONFIG_CRED = credentials('kubeconfig-jenkins')
-  }
+  
   stages {
     stage('Checkout') {
       steps {
@@ -18,7 +16,7 @@ pipeline {
 
     stage('Deploy Gibbon Demo') {
       steps {
-        withKubeConfig([credentialsId: "${KUBECONFIG_CRED}"]) {
+        withKubeConfig([credentialsId: "kubeconfig-jenkins"]) {
           sh '''
             echo "Applying Kubernetes manifests..."
             kubectl apply -n demo-app-deployment -f k8s/gibbon-db-secret.yaml || true
