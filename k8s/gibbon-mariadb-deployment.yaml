@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gibbon-mariadb
+  namespace: demo-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: gibbon-mariadb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gibbon-mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.6
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: gibbonadmin123
+            - name: MYSQL_DATABASE
+              value: gibbon
+            - name: MYSQL_USER
+              value: gibbonuser
+            - name: MYSQL_PASSWORD
+              value: gibbonpass
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mariadb-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mariadb-storage
+          persistentVolumeClaim:
+            claimName: gibbon-mariadb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gibbon-mariadb
+  namespace: demo-app-deployment
+spec:
+  selector:
+    app: gibbon-mariadb
+  ports:
+    - port: 3306
+      targetPort: 3306
