@@ -17,6 +17,13 @@ spec:
     spec:
       nodeSelector:
           role: app-demo-1
+      initContainers:
+        - name: init-gibbon-perms
+          image: busybox
+          command: ['sh', '-c', 'mkdir -p /uploads/tmp /uploads/cache && chmod -R 0777 /uploads']
+          volumeMounts:
+            - name: gibbon-uploads
+              mountPath: /uploads
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fix-perm
