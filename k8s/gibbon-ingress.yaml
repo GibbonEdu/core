@@ -7,6 +7,9 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "180"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "180"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "180"
 spec:
   ingressClassName: nginx
   rules:
