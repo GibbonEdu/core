@@ -34,6 +34,8 @@ spec:
               echo "Deleting old PVC and Deployment..."
               kubectl delete deployment gibbon-app -n demo-app-deployment --ignore-not-found=true
               kubectl delete pvc gibbon-uploads-pvc -n demo-app-deployment --ignore-not-found=true
+              kubectl delete pvc gibbon-mysql-pvc -n demo-app-deployment --ignore-not-found=true
+              kubectl delete pv gibbon-uploads-pv --ignore-not-found
 
               echo "Deleting old PV (if exists)..."
               kubectl delete pv gibbon-uploads-pv --ignore-not-found
