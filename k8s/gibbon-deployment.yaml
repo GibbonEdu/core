@@ -19,7 +19,7 @@ spec:
           role: app-demo-1
       containers:
         - name: gibbon
-          image: ntony3419/gibbon:v29-sessionfix
+          image: ntony3419/gibbon:v29-fix-perm
           imagePullPolicy: Always
           ports:
             - containerPort: 80
