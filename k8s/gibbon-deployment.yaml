@@ -42,5 +42,6 @@ spec:
                   key: password
       volumes:
         - name: gibbon-uploads
-          persistentVolumeClaim:
-            claimName: gibbon-uploads-pvc
+          emptyDir: {}
+#          persistentVolumeClaim:
+#            claimName: gibbon-uploads-pvc

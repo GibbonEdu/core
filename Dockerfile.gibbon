@@ -1,23 +1,30 @@
 FROM php:8.2-apache
 
-# Install unzip and wget
-RUN apt-get update && apt-get install -y wget unzip git curl zip unzip && \
-    curl -sS https://getcomposer.org/installer | php && \
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    unzip zip git curl wget pkg-config \
+    libicu-dev libgettextpo-dev \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libzip-dev zlib1g-dev \
+    && docker-php-ext-install intl gettext gd zip
+
+RUN a2enmod rewrite
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
-# Download and extract Gibbon
-WORKDIR /var/www/html
-RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v28.0.01.zip && \
-    unzip v28.0.01.zip && \
-    mv core-28.0.01/* . && \
-    rm -rf core-28.0.01 v28.0.01.zip
+# Create working directory
+WORKDIR /var/www/gibbon
 
+# Download and extract Gibbon v29
+RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
+    unzip v29.0.00.zip && \
+    mv core-29.0.00/* . && \
+    rm -rf core-29.0.00 v29.0.00.zip
 
-# Install PHP dependencies
+# Install PHP deps
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html
-
-# Expose port
-EXPOSE 80
+# Copy app into apache webroot AFTER vendor is built
+RUN cp -r . /var/www/html && chown -R www-data:www-data /var/www/html
