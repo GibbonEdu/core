@@ -25,3 +25,10 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Copy app to Apache web root
 RUN cp -a . /var/www/html && chown -R www-data:www-data /var/www/html
+# Ensure session and cache folders exist and are writable
+RUN mkdir -p /var/www/html/uploads/tmp \
+    && mkdir -p /var/www/html/uploads/cache \
+    && chmod -R 0777 /var/www/html/uploads
+
+# Set custom PHP session save path
+RUN echo "session.save_path = /var/www/html/uploads/tmp" > /usr/local/etc/php/conf.d/session.ini
