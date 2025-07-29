@@ -20,6 +20,7 @@ spec:
       containers:
         - name: gibbon
           image: ntony3419/gibbon:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           volumeMounts:
