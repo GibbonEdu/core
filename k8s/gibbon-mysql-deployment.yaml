@@ -13,6 +13,29 @@ spec:
       labels:
         app: gibbon-mysql
     spec:
+      initContainers:
+        - name: mysql-init-user
+          image: mysql:5.7
+          command: ['sh', '-c']
+          args:
+            - |
+              echo "Waiting for MySQL to start..."
+              until mysql -h 127.0.0.1 -u root -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1"; do
+                sleep 5
+              done
+              echo "Granting remote access to gibbonuser..."
+              mysql -h 127.0.0.1 -u root -p"$MYSQL_ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON gibbon.* TO 'gibbonuser'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-db-secret
+                  key: password
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-db-secret
+                  key: password
       containers:
         - name: mysql
           image: mysql:5.7
