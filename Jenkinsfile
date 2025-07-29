@@ -6,9 +6,17 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  nodeSelector:
+    kubernetes.io/hostname: k8s-jenkin
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "jenkin"
+      effect: "NoSchedule"
   containers:
     - name: kubectl
       image: ntony3419/k8s-agent:1.3
+      imagePullPolicy: Always
       command:
         - /bin/bash
         - -c
