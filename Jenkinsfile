@@ -42,7 +42,7 @@ spec:
               echo "Deleting old PVC and Deployment..."
               kubectl delete deployment gibbon-app -n demo-app-deployment --ignore-not-found=true
               kubectl delete pvc gibbon-uploads-pvc -n demo-app-deployment --ignore-not-found=true
-              kubectl delete pvc gibbon-mysql-pvc -n demo-app-deployment --ignore-not-found=true
+#              kubectl delete pvc gibbon-mysql-pvc -n demo-app-deployment --ignore-not-found=true
               kubectl delete pv gibbon-uploads-pv --ignore-not-found
 
               echo "Deleting old PV (if exists)..."
@@ -61,6 +61,7 @@ spec:
               kubectl apply -n demo-app-deployment -f k8s/gibbon-ingress.yaml
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-service.yaml
               kubectl apply -n demo-app-deployment -f k8s/gibbon-db-init-configmap.yaml
+              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-grant-job.yaml
               echo "---- Forcing rollout restart of gibbon-app ----"
               kubectl rollout restart deployment gibbon-app -n demo-app-deployment
         
