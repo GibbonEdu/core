@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev libgettextpo-dev \
     libpng-dev libjpeg-dev libfreetype6-dev \
     libzip-dev zlib1g-dev \
+    netcat mysql-client \
  && docker-php-ext-install intl gettext gd zip pdo_mysql \
  && a2enmod rewrite \
  && curl -sS https://getcomposer.org/installer | php && \
