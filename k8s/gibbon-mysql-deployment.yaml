@@ -4,7 +4,7 @@ metadata:
   name: gibbon-mysql
   namespace: demo-app-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gibbon-mysql
