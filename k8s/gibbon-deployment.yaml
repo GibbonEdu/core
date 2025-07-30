@@ -21,10 +21,12 @@ spec:
       initContainers:
         - name: init-gibbon-perms
           image: busybox
-          command: ['sh', '-c', 'mkdir -p /uploads/tmp /uploads/cache && chmod -R 0777 /uploads']
+          command: ['/bin/sh', '-c', 'mkdir -p /uploads/tmp /uploads/cache && chmod -R 0777 /uploads', "rm -f /app/config.php"]
           volumeMounts:
             - name: gibbon-uploads
-              mountPath: /var/www/html/uploads
+              mountPath: /uploads
+            - name: gibbon-code
+              mountPath: /app
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fix-perm
@@ -34,6 +36,8 @@ spec:
           volumeMounts:
             - name: gibbon-uploads
               mountPath: /var/www/html/uploads
+            - name: gibbon-code
+              mountPath: /var/www/html
           lifecycle:
             postStart:
               exec:
@@ -58,3 +62,5 @@ spec:
 #          emptyDir: {}
           persistentVolumeClaim:
             claimName: gibbon-uploads-pvc
+        - name: gibbon-code
+          emptyDir: {}
