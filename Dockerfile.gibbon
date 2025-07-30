@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 
 # Set working dir and Apache root
 WORKDIR /var/www/html
-RUN sed -i 's|/var/www/html|/var/www/gibbon|g' /etc/apache2/sites-available/000-default.conf
+#RUN sed -i 's|/var/www/html|/var/www/gibbon|g' /etc/apache2/sites-available/000-default.conf
 
 # Download and extract Gibbon v29
 RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
