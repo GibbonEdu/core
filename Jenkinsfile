@@ -41,19 +41,20 @@ spec:
             sh '''
               echo "Deleting old PVC and Deployment..."
               kubectl delete deployment gibbon-app -n demo-app-deployment --ignore-not-found=true
+              kubectl delete deployment gibbon-mysql -n demo-app-deployment --ignore-not-found=true
               kubectl delete pvc gibbon-uploads-pvc -n demo-app-deployment --ignore-not-found=true
               kubectl delete pvc gibbon-mysql-pvc -n demo-app-deployment --ignore-not-found=true
 
-              echo "Removing finalizers from old PV if stuck..."
-              kubectl patch pv gibbon-mysql-pv -p '{"metadata":{"finalizers":null}}' || true
+              echo "====== Force remove stuck PVs ======"
+              sleep 3
+              kubectl patch pv gibbon-mysql-pv --type=merge -p '{"metadata":{"finalizers":[]}}' || true
+              kubectl patch pv gibbon-uploads-pv --type=merge -p '{"metadata":{"finalizers":[]}}' || true
 
-
-              echo "Deleting old PV (if exists)..."
-              kubectl delete pv gibbon-uploads-pv --ignore-not-found
-              kubectl delete pv gibbon-mysql-pv --ignore-not-found
-
-              echo "Waiting for cleanup to settle..."
+              kubectl delete pv gibbon-mysql-pv --grace-period=0 --wait=false --ignore-not-found=true
+              kubectl delete pv gibbon-uploads-pv --grace-period=0 --wait=false --ignore-not-found=true
+              echo "====== Wait for cleanup to complete ======"
               sleep 5
+
  
               echo "Applying Kubernetes manifests..."
               kubectl apply -n demo-app-deployment -f k8s/gibbon-db-secret.yaml || true
