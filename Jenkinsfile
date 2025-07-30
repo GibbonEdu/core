@@ -1,4 +1,4 @@
-# Jenkinsfile
+//Jenkinsfile
 pipeline {
   agent {
     kubernetes {
