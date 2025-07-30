@@ -24,8 +24,7 @@ RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
     rm -rf core-29.0.00 v29.0.00.zip
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader && \
-    cp -a . /var/www/html
+RUN composer install --no-dev --optimize-autoloader
 
 # Ensure session and cache folders exist and are writable
 RUN mkdir -p /var/www/html/uploads/tmp \
