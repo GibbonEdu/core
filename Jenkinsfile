@@ -30,7 +30,7 @@ spec:
 
   
     // Optional: uncomment when full environment reset is required
-    /*
+    
     stage('Checkout') {
       steps {
         git branch: 'demo-main', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
@@ -70,7 +70,7 @@ spec:
         }
       }
     }
-        */
+        
     stage('Deploy Gibbon Demo') {
       steps {
         container('kubectl') {
