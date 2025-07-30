@@ -26,9 +26,9 @@ spec:
             - -c
             - |
               echo "[Init] Removing config.php and setting uploads permissions..."
-              rm -f /var/www/html/config.php
-              mkdir -p /var/www/html/uploads/tmp /var/www/html/uploads/cache
-              chmod -R 0777 /var/www/html/uploads
+              rm -f /var/www/gibbon/config.php
+              mkdir -p /var/www/gibbon/uploads/tmp /var/www/gibbon/uploads/cache
+              chmod -R 0777 /var/www/gibbon/uploads
           volumeMounts:
             - name: gibbon-uploads
               mountPath: /var/www/gibbon/uploads
