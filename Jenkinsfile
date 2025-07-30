@@ -34,7 +34,39 @@ spec:
         git branch: 'demo-main', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
       }
     }
+stage('Hard Reset Gibbon Deployment') {
+  steps {
+    container('kubectl') {
+      withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
+        sh '''
+          echo "==== 🧹 HARD RESET GIBBON DEPLOYMENT ===="
 
+          echo "[1] Deleting deployments, services, jobs, ingresses, PVCs, PVs, secrets, configmaps..."
+          kubectl delete deployment gibbon-app gibbon-mysql -n demo-app-deployment --ignore-not-found=true
+          kubectl delete svc gibbon-service gibbon-mysql -n demo-app-deployment --ignore-not-found=true
+          kubectl delete ingress gibbon-ingress -n demo-app-deployment --ignore-not-found=true
+          kubectl delete job gibbon-reset-job gibbon-mysql-fix-grant -n demo-app-deployment --ignore-not-found=true
+          kubectl delete pvc gibbon-uploads-pvc gibbon-mysql-pvc -n demo-app-deployment --ignore-not-found=true
+          kubectl delete secret gibbon-db-secret gibbon-demo-tls -n demo-app-deployment --ignore-not-found=true
+          kubectl delete configmap gibbon-db-init -n demo-app-deployment --ignore-not-found=true
+          kubectl delete certificate gibbon-demo-tls -n demo-app-deployment --ignore-not-found=true
+
+          echo "[2] Removing PVs forcibly..."
+          kubectl patch pv gibbon-mysql-pv --type=merge -p '{"metadata":{"finalizers":[]}}' || true
+          kubectl patch pv gibbon-uploads-pv --type=merge -p '{"metadata":{"finalizers":[]}}' || true
+          kubectl delete pv gibbon-mysql-pv --grace-period=0 --wait=false --ignore-not-found=true
+          kubectl delete pv gibbon-uploads-pv --grace-period=0 --wait=false --ignore-not-found=true
+
+          echo "[3] Wait for full cleanup..."
+          sleep 10
+
+          echo "==== ✅ GIBBON ENVIRONMENT CLEANED ===="
+        '''
+      }
+    }
+  }
+}
+    
     stage('Deploy Gibbon Demo') {
       steps {
         container('kubectl') {
