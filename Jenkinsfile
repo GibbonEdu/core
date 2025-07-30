@@ -1,3 +1,4 @@
+
 pipeline {
   agent {
     kubernetes {
@@ -78,7 +79,6 @@ spec:
               kubectl apply -n demo-app-deployment -f k8s/gibbon-service.yaml
               kubectl apply -n demo-app-deployment -f k8s/gibbon-ingress.yaml
 
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-service.yaml
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-grant-job.yaml
               echo "---- Forcing rollout restart of gibbon-app ----"
               kubectl rollout restart deployment gibbon-app -n demo-app-deployment
