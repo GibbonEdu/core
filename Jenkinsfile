@@ -30,7 +30,7 @@ spec:
 
   
     // Optional: uncomment when full environment reset is required
-    
+stages {
     stage('Checkout') {
       steps {
         git branch: 'demo-main', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
