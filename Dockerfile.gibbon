@@ -34,10 +34,12 @@ RUN mkdir -p /var/www/html/uploads/tmp \
 
 #  Set custom PHP session save path (prevents session_start warnings)
 RUN echo "session.save_path = /var/www/html/uploads/tmp" > /usr/local/etc/php/conf.d/session.ini
-RUN echo '<VirtualHost *:80>
-    DocumentRoot /var/www/html
-    <Directory /var/www/html>
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+RUN printf '<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
+# Keep Apache running in foreground
+CMD ["apache2-foreground"]
