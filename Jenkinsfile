@@ -1,4 +1,4 @@
-
+# Jenkinsfile
 pipeline {
   agent {
     kubernetes {
@@ -28,7 +28,7 @@ spec:
     }
   }
 
-  stages {
+  
     stage('Checkout') {
       steps {
         git branch: 'demo-main', url: 'https://github.com/ntony3419/GibbonEdu-core.git'
