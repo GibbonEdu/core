@@ -70,6 +70,42 @@ stages {
         }
       }
     }
+
+stage('Setup Staging Certificate') {
+      steps {
+        container('kubectl') {
+          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
+            sh '''
+              echo "==== ⚙️ Apply Let's Encrypt Staging Issuer ===="
+
+              cat <<EOF | kubectl apply -f -
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    email: ntony3419@email.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+EOF
+
+              echo "[INFO] Staging ClusterIssuer ready."
+
+              kubectl delete certificate gibbon-demo-tls -n demo-app-deployment --ignore-not-found=true
+              kubectl delete secret gibbon-demo-tls -n demo-app-deployment --ignore-not-found=true
+            '''
+          }
+        }
+      }
+    }
+
+
         
     stage('Deploy Gibbon Demo') {
       steps {

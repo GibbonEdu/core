@@ -5,7 +5,8 @@ metadata:
   name: gibbon-ingress
   namespace: demo-app-deployment
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+#    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-staging ##temporay use this for testing
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # fix mismatch
     acme.cert-manager.io/http01-edit-in-place: "true"
