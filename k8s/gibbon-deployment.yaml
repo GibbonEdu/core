@@ -21,9 +21,18 @@ spec:
       initContainers:
         - name: init-gibbon-perms
           image: busybox
-          command: ['/bin/sh', '-c', 'mkdir -p /var/www/html/uploads/tmp /var/www/html/uploads/cache && chmod -R 0777 /var/www/html/uploads', "rm -f /var/www/html/config.php"]
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "[Init] Removing config.php and setting uploads permissions..."
+              rm -f /var/www/html/config.php
+              mkdir -p /var/www/html/uploads/tmp /var/www/html/uploads/cache
+              chmod -R 0777 /var/www/html/uploads
           volumeMounts:
             - name: gibbon-uploads
+              mountPath: /var/www/html/uploads
+            - name: gibbon-code
               mountPath: /var/www/html
       containers:
         - name: gibbon
@@ -32,8 +41,10 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: gibbon-uploads
+            - name: gibbon-code
               mountPath: /var/www/html
+            - name: gibbon-uploads
+              mountPath: /var/www/html/uploads
           lifecycle:
             postStart:
               exec:
@@ -54,7 +65,8 @@ spec:
                   name: gibbon-db-secret
                   key: password
       volumes:
+        - name: gibbon-code
+          emptyDir: {}  # or remove this and use the image layer directly if you're not overwriting it
         - name: gibbon-uploads
-#          emptyDir: {}
           persistentVolumeClaim:
             claimName: gibbon-uploads-pvc
