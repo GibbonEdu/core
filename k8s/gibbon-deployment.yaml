@@ -41,11 +41,11 @@ spec:
           volumeMounts:
             - name: gibbon-uploads
               mountPath: /var/www/html/uploads
-          lifecycle:
-            postStart:
-              exec:
+#          lifecycle:
+ #           postStart:
+  #            exec:
          #       command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/uploads"]
-                 command: ["/bin/sh", "-c", "..."]
+   #              command: ["/bin/sh", "-c", "..."]
           env:
             - name: DB_HOST
               value: gibbon-mysql.demo-app-deployment.svc.cluster.local
