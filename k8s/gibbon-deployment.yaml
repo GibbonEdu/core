@@ -31,7 +31,7 @@ spec:
               chmod -R 0777 /var/www/html/uploads
           volumeMounts:
             - name: gibbon-uploads
-              mountPath: /var/www/html/uploads
+              mountPath: /var/www/gibbon/uploads
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fix-perm
@@ -40,11 +40,11 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: gibbon-uploads
-              mountPath: /var/www/html/uploads
+              mountPath: /var/www/gibbon/uploads
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/uploads"]
+                command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/gibbon/uploads"]
           env:
             - name: DB_HOST
               value: gibbon-mysql.demo-app-deployment.svc.cluster.local
