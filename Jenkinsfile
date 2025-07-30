@@ -43,11 +43,15 @@ spec:
               kubectl delete deployment gibbon-app -n demo-app-deployment --ignore-not-found=true
               kubectl delete pvc gibbon-uploads-pvc -n demo-app-deployment --ignore-not-found=true
               kubectl delete pvc gibbon-mysql-pvc -n demo-app-deployment --ignore-not-found=true
-              kubectl delete pv gibbon-uploads-pv --ignore-not-found
+
+              echo "Removing finalizers from old PV if stuck..."
+              kubectl patch pv gibbon-mysql-pv -p '{"metadata":{"finalizers":null}}' || true
+
 
               echo "Deleting old PV (if exists)..."
               kubectl delete pv gibbon-uploads-pv --ignore-not-found
-            
+              kubectl delete pv gibbon-mysql-pv --ignore-not-found
+
               echo "Waiting for cleanup to settle..."
               sleep 5
  
