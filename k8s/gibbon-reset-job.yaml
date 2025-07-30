@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gibbon-reset-job
+  namespace: demo-app-deployment
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        role: app-demo-1
+      containers:
+      - name: reset
+        image: mysql:5.7
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            mysql -h gibbon-mysql -u root -p$MYSQL_ROOT_PASSWORD -e "DROP DATABASE IF EXISTS gibbon; CREATE DATABASE gibbon;"
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gibbon-db-secret
+              key: password

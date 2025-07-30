@@ -69,6 +69,7 @@ spec:
               kubectl apply -n demo-app-deployment -f k8s/gibbon-db-init-configmap.yaml
 
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-deployment.yaml
+              kubectl apply -n demo-app-deployment -f k8s/gibbon-reset-job.yaml
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-service.yaml
               
               echo "[7] Sleep 15s to allow MySQL to come online..."
