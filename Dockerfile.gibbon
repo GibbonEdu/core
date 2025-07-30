@@ -7,14 +7,14 @@ RUN apt-get update && apt-get install -y \
     libicu-dev libgettextpo-dev \
     libpng-dev libjpeg-dev libfreetype6-dev \
     libzip-dev zlib1g-dev \
-    netcat mysql-client \
+    netcat-openbsd default-mysql-client \
  && docker-php-ext-install intl gettext gd zip pdo_mysql \
  && a2enmod rewrite \
  && curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
 # Set working dir and Apache root
-WORKDIR /var/www/gibbon
+WORKDIR /var/www/html
 RUN sed -i 's|/var/www/html|/var/www/gibbon|g' /etc/apache2/sites-available/000-default.conf
 
 # Download and extract Gibbon v29
