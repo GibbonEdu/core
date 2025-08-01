@@ -26,23 +26,23 @@ spec:
             - -c
             - |
               echo "[Init] Removing config.php and setting uploads permissions..."
-              rm -f /var/www/html/config.php
-              mkdir -p /var/www/html/uploads/tmp /var/www/html/uploads/cache
-              chmod -R 0777 /var/www/html/uploads
+              rm -f /var/www/html/gibbon/config.php
+              mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+              chmod -R 0777 /var/www/html/gibbon/uploads
           volumeMounts:
             - name: uploads
-              mountPath: /var/www/html/uploads
+              mountPath: /var/www/html/gibbon/uploads
               subPath: gibbon-files
               readOnly: false
       containers:
         - name: gibbon
-          image: ntony3419/gibbon:v29-fix-perm
+          image: ntony3419/gibbon:v29-fix-path
           imagePullPolicy: Always
           ports:
             - containerPort: 80
           volumeMounts:
             - name: uploads
-              mountPath: /var/www/html/uploads
+              mountPath: /var/www/html/gibbon/uploads
               subPath: gibbon-files
               readOnly: false
 #          lifecycle:
