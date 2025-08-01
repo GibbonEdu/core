@@ -37,7 +37,7 @@ stages {
       }
     }
 
-    
+/*    
     stage('Hard Reset Gibbon Deployment') {
       steps {
         container('kubectl') {
@@ -70,7 +70,7 @@ stages {
         }
       }
     }
-
+*/
 stage('Setup Staging Certificate') {
       steps {
         container('kubectl') {
@@ -123,10 +123,10 @@ EOF
 
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-deployment.yaml
 
-              echo "[6] Apply MySQL reset job..."
-              kubectl delete job gibbon-reset-job -n demo-app-deployment --ignore-not-found=true
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-reset-job.yaml
-              sleep 10
+  #            echo "[6] Apply MySQL reset job..."
+  #            kubectl delete job gibbon-reset-job -n demo-app-deployment --ignore-not-found=true
+  #            kubectl apply -n demo-app-deployment -f k8s/gibbon-reset-job.yaml
+  #            sleep 10
               kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-service.yaml
               
               echo "[7] Sleep 15s to allow MySQL to come online..."
