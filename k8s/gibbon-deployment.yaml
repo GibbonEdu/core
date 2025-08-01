@@ -30,8 +30,10 @@ spec:
               mkdir -p /var/www/html/uploads/tmp /var/www/html/uploads/cache
               chmod -R 0777 /var/www/html/uploads
           volumeMounts:
-            - name: gibbon-uploads
+            - name: uploads
               mountPath: /var/www/html/uploads
+              subPath: gibbon-files
+              readOnly: false
       containers:
         - name: gibbon
           image: ntony3419/gibbon:v29-fix-perm
@@ -39,8 +41,10 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: gibbon-uploads
+            - name: uploads
               mountPath: /var/www/html/uploads
+              subPath: gibbon-files
+              readOnly: false
 #          lifecycle:
  #           postStart:
   #            exec:
@@ -62,6 +66,6 @@ spec:
                   name: gibbon-db-secret
                   key: password
       volumes:
-        - name: gibbon-uploads
+        - name: uploads
           persistentVolumeClaim:
             claimName: gibbon-uploads-pvc
