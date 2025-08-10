@@ -112,7 +112,7 @@ kubectl get pv,pvc -A || true
         }
       }
     }
-
+/*
 stage('Setup Staging Certificate') {
       steps {
         container('kubectl') {
@@ -200,3 +200,4 @@ EOF
     }
   }
 }
+*/
