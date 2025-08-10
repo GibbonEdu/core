@@ -6,6 +6,8 @@ metadata:
   namespace: demo-app-deployment
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: gibbon-mysql
@@ -14,6 +16,7 @@ spec:
       labels:
         app: gibbon-mysql
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - name: mysql
           image: mysql:5.7
@@ -42,7 +45,7 @@ spec:
               mountPath: /var/lib/mysql
             - name: initdb
               mountPath: /docker-entrypoint-initdb.d
-          readinessProbe:            # ✅ belongs under the container
+          readinessProbe:            #  belongs under the container
             exec:
               command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
             initialDelaySeconds: 20
