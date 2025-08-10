@@ -34,7 +34,7 @@ spec:
               readOnly: false
       containers:
         - name: gibbon
-          image: ntony3419/gibbon:v29-fix-path
+          image: ntony3419/gibbon:v29-fixed-path
           imagePullPolicy: Always
           readinessProbe:            # belongs under the container
             httpGet:
