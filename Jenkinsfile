@@ -147,8 +147,8 @@ EOF
       }
     }
 
-
-        
+*/
+  /*      
     stage('Deploy Gibbon Demo') {
       steps {
         container('kubectl') {
@@ -197,7 +197,7 @@ EOF
           }
         }
       }
-    }
+    }*/
   }
 }
-*/
+
