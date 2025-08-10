@@ -18,6 +18,8 @@ spec:
     spec:
       nodeSelector:
           role: app-demo-1
+      securityContext:
+        fsGroup: 33    #www-data
       initContainers:
         - name: init-gibbon-perms
           image: busybox
@@ -101,7 +103,7 @@ spec:
   capacity:
     storage: 5Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   storageClassName: nfs
   nfs:
     server: 10.1.0.5
