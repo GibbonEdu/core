@@ -115,27 +115,25 @@ EOF
               echo "Applying Kubernetes manifests..."
 
               echo "[1] Apply PVC and PV..."
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-pv-pvc.yaml
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-uploads-pv-pvc.yaml
-
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-db-secret.yaml || true
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-db-init-configmap.yaml
-
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-deployment.yaml
-
   #            echo "[6] Apply MySQL reset job..."
   #            kubectl delete job gibbon-reset-job -n demo-app-deployment --ignore-not-found=true
   #            kubectl apply -n demo-app-deployment -f k8s/gibbon-reset-job.yaml
   #            sleep 10
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-service.yaml
-              
-              echo "[7] Sleep 15s to allow MySQL to come online..."
+              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-secret.yaml              
+              echo "[2] MySQL stack (Deployment + PV + PVC + Service [+ optional GRANT Job])..."
+              kubectl apply -f k8s/gibbon-mysql-deployment.yaml
+              echo "[2.1] Wait for MySQL to be rolling out..."
+              kubectl rollout status deployment gibbon-mysql -n demo-app-deployment --timeout=120s || true
+              echo "[2.2] Give MySQL a few more seconds to accept connections..."
               sleep 15
-
-              echo "[8] Deploy Gibbon app + service + ingress..."
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-deployment.yaml
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-service.yaml
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-ingress.yaml
+              echo "[3] Gibbon app stack (Deployment + PV + PVC + Service)..."
+              kubectl apply -f k8s/gibbon-deployment.yaml
+              echo "[3.1] Wait for gibbon-app rollout..."
+              kubectl rollout status deployment gibbon-app -n demo-app-deployment --timeout=180s || true
+              echo "[4] Ingress (staging TLS via cert-manager)..."
+              kubectl apply -f k8s/gibbon-ingress.yaml
+              echo "---- Optionally force a restart after PVC/perm init (usually not needed) ----"
+              kubectl rollout restart deployment gibbon-app -n demo-app-deployment || true
 
 #              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-grant-job.yaml
               echo "---- Forcing rollout restart of gibbon-app ----"
