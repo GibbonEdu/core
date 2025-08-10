@@ -43,8 +43,6 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
-            - name: initdb
-              mountPath: /docker-entrypoint-initdb.d
           readinessProbe:            #  belongs under the container
             exec:
               command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
@@ -54,9 +52,6 @@ spec:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: gibbon-mysql-pvc
-        - name: initdb
-          configMap:
-            name: gibbon-db-init
       terminationGracePeriodSeconds: 30
 ---
 # ---------- 
