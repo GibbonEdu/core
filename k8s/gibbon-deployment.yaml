@@ -27,6 +27,7 @@ spec:
             - |
               echo "[Init] Removing config.php and setting uploads permissions..."
               mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
+              chown -R 33:33 /var/www/html/gibbon/uploads
               chmod -R 0777 /var/www/html/gibbon/uploads
           volumeMounts:
             - name: uploads
