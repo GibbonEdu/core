@@ -1,3 +1,54 @@
+# -----------------
+# PersistentVoume
+# -----------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gibbon-uploads-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  nfs:
+    server: 10.1.0.5
+    path: /mnt/k8s-database-and-storage/gibbon-files
+---
+# ---------------------------
+# PersistentVolumeClaim
+# ---------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gibbon-uploads-pvc
+  namespace: demo-app-deployment
+spec:
+  volumeName: gibbon-uploads-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ""
+---
+# ---------------------------
+# ClusterIP Service for Gibbon Web App
+# ---------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: gibbon-service
+  namespace: demo-app-deployment
+spec:
+  selector:
+    app: gibbon
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
 # gibbon-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -54,7 +105,7 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/gibbon/uploads"]
+                command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/gibbon/uploads || true"]
           env:
             - name: DB_HOST
               value: gibbon-mysql.demo-app-deployment.svc.cluster.local
@@ -74,53 +125,3 @@ spec:
         - name: uploads
           persistentVolumeClaim:
             claimName: gibbon-uploads-pvc
----
-# ---------------------------
-# ClusterIP Service for Gibbon Web App
-# ---------------------------
-apiVersion: v1
-kind: Service
-metadata:
-  name: gibbon-service
-  namespace: demo-app-deployment
-spec:
-  selector:
-    app: gibbon
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: ClusterIP
----
-# -----------------
-# PersistentVoume
-# -----------------
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: gibbon-uploads-pv
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteMany
-  storageClassName: nfs
-  nfs:
-    server: 10.1.0.5
-    path: /mnt/k8s-database-and-storage/gibbon-files
----
-# ---------------------------
-# PersistentVolumeClaim
-# ---------------------------
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gibbon-uploads-pvc
-  namespace: demo-app-deployment
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: nfs
