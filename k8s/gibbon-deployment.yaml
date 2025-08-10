@@ -18,10 +18,6 @@ spec:
     spec:
       nodeSelector:
           role: app-demo-1
-      readinessProbe:
-        httpGet:
-          path: /
-          port: 80
         initialDelaySeconds: 15
         periodSeconds: 10
       initContainers:
@@ -42,6 +38,10 @@ spec:
         - name: gibbon
           image: ntony3419/gibbon:v29-fix-path
           imagePullPolicy: Always
+          readinessProbe:            # ✅ belongs under the container
+            httpGet:
+              path: /
+              port: 80
           ports:
             - containerPort: 80
           volumeMounts:
