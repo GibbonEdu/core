@@ -18,6 +18,12 @@ spec:
     spec:
       nodeSelector:
           role: app-demo-1
+      readinessProbe:
+        httpGet:
+          path: /
+          port: 80
+        initialDelaySeconds: 15
+        periodSeconds: 10
       initContainers:
         - name: init-gibbon-perms
           image: busybox
@@ -26,13 +32,11 @@ spec:
             - -c
             - |
               echo "[Init] Removing config.php and setting uploads permissions..."
-              rm -f /var/www/html/gibbon/config.php
               mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
               chmod -R 0777 /var/www/html/gibbon/uploads
           volumeMounts:
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
-              subPath: gibbon-files
               readOnly: false
       containers:
         - name: gibbon
@@ -43,13 +47,11 @@ spec:
           volumeMounts:
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
-              subPath: gibbon-files
               readOnly: false
-#          lifecycle:
- #           postStart:
-  #            exec:
-         #       command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/uploads"]
-   #              command: ["/bin/sh", "-c", "..."]
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/gibbon/uploads"]
           env:
             - name: DB_HOST
               value: gibbon-mysql.demo-app-deployment.svc.cluster.local
@@ -69,3 +71,53 @@ spec:
         - name: uploads
           persistentVolumeClaim:
             claimName: gibbon-uploads-pvc
+---
+# ---------------------------
+# ClusterIP Service for Gibbon Web App
+# ---------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: gibbon-service
+  namespace: demo-app-deployment
+spec:
+  selector:
+    app: gibbon
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+# -----------------
+# PersistentVoume
+# -----------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gibbon-uploads-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs
+  nfs:
+    server: 10.1.0.5
+    path: /mnt/k8s-database-and-storage/gibbon-files
+---
+# ---------------------------
+# PersistentVolumeClaim
+# ---------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gibbon-uploads-pvc
+  namespace: demo-app-deployment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: nfs

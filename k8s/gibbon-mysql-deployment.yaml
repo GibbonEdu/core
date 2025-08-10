@@ -49,3 +49,94 @@ spec:
         - name: initdb
           configMap:
             name: gibbon-db-init
+      terminationGracePeriodSeconds: 30
+      readinessProbe:
+        exec:
+          command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
+        initialDelaySeconds: 20
+        periodSeconds: 10
+---
+# ---------- 
+# mysql service
+# --------
+apiVersion: v1
+kind: Service
+metadata:
+  name: gibbon-mysql
+  namespace: demo-app-deployment
+spec:
+  selector:
+    app: gibbon-mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+# -----------------
+# PersistentVolume for MySQL
+# -----------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gibbon-mysql-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs
+  nfs:
+    server: 10.1.0.5
+    path: /mnt/k8s-database-and-storage/gibbon-mysql
+---
+# -----------------
+# PersistentVolumeClaim for MySQL
+# -----------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gibbon-mysql-pvc
+  namespace: demo-app-deployment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs
+---
+# -------------------------
+# Job: Grant Privileges to Gibbon User
+# -------------------------
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gibbon-mysql-grant-job
+  namespace: demo-app-deployment
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mysql-grant
+          image: mysql:5.7
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Granting privileges to gibbonuser..."
+              mysql -h gibbon-mysql.demo-app-deployment.svc.cluster.local \
+                -u root -p"$MYSQL_ROOT_PASSWORD" -e "\
+                GRANT ALL PRIVILEGES ON gibbon.* TO '$MYSQL_USER'@'%'; \
+                FLUSH PRIVILEGES;"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-db-secret
+                  key: password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gibbon-db-secret
+                  key: username
