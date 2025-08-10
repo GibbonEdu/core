@@ -102,10 +102,6 @@ spec:
             - name: uploads
               mountPath: /var/www/html/gibbon/uploads
               readOnly: false
-          lifecycle:
-            postStart:
-              exec:
-                command: ["/bin/sh", "-c", "chmod -R 0777 /var/www/html/gibbon/uploads || true"]
           env:
             - name: DB_HOST
               value: gibbon-mysql.demo-app-deployment.svc.cluster.local
