@@ -42,7 +42,8 @@ stages {
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''set -euo pipefail
+            sh '''#!/usr/bin/env bash 
+              set -euo pipefail
               NS=demo-app-deployment
               echo "==== 🧹 HARD RESET GIBBON DEPLOYMENT ===="
               # 0) Ensure namespace exists (idempotent)
