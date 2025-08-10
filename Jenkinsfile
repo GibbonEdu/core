@@ -37,7 +37,7 @@ stages {
       }
     }
 
-/*    
+    
     stage('Hard Reset Gibbon Deployment') {
       steps {
         container('kubectl') {
@@ -70,7 +70,7 @@ stages {
         }
       }
     }
-*/
+
 stage('Setup Staging Certificate') {
       steps {
         container('kubectl') {
