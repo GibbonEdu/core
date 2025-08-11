@@ -37,79 +37,6 @@ stages {
       }
     }
 
-    
-    stage('Hard Reset Gibbon Deployment') {
-      steps {
-        container('kubectl') {
-          withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''#!/usr/bin/env bash 
-              set -euo pipefail
-              NS=demo-app-deployment
-              echo "==== 🧹 HARD RESET GIBBON DEPLOYMENT ===="
-              # 0) Ensure namespace exists (idempotent)
-              kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS"
-
-              # 0.1) Best effort: remove config.php if a gibbon-app pod is still present
-              if kubectl -n "$NS" get pod -l app=gibbon --no-headers 2>/dev/null | grep -q .; then
-                echo "[pre-clean] removing /var/www/html/gibbon/config.php from existing pods (best-effort)..."
-                kubectl -n "$NS" exec deploy/gibbon-app -- rm -f /var/www/html/gibbon/config.php || true
-              fi
-
-              echo "[1] Delete app/db workloads and traffic objects..."
-              kubectl delete deployment gibbon-app gibbon-mysql -n "$NS" --ignore-not-found=true
-              kubectl delete svc gibbon-service gibbon-mysql -n "$NS" --ignore-not-found=true
-              kubectl delete ingress gibbon-ingress -n "$NS" --ignore-not-found=true
-              kubectl delete job gibbon-reset-job gibbon-mysql-fix-grant gibbon-mysql-grant-job -n "$NS" --ignore-not-found=true
-
-              echo "[1.1] Delete config/secrets/certs..."
-              kubectl delete configmap gibbon-db-init -n "$NS" --ignore-not-found=true
-              kubectl delete secret gibbon-db-secret gibbon-demo-tls -n "$NS" --ignore-not-found=true
-              kubectl delete certificate gibbon-demo-tls -n "$NS" --ignore-not-found=true
-              kubectl delete challenges.acme.cert-manager.io -n "$NS" --all --ignore-not-found=true || true
-              kubectl delete orders.acme.cert-manager.io -n "$NS" --all --ignore-not-found=true || true
-
-
-
-
-              echo "[2] Delete PVCs & PVs..."
-              kubectl delete pvc gibbon-uploads-pvc gibbon-mysql-pvc -n "$NS" --ignore-not-found=true
-              for PV in gibbon-mysql-pv gibbon-uploads-pv; do
-                kubectl patch pv "$PV" --type=merge -p '{"metadata":{"finalizers":[]}}' 2>/dev/null || true
-                kubectl delete pv "$PV" --grace-period=0 --wait=false --ignore-not-found=true || true
-              done
-              
-              echo "[3] Wait for deletion to finish (deployments/rs/pods/pvc/ingress/svc)..."
-              kubectl wait --for=delete deployment/gibbon-app -n "$NS" --timeout=60s || true
-              kubectl wait --for=delete deployment/gibbon-mysql -n "$NS" --timeout=60s || true
-              # Wait for all pods with our labels to be gone
-              for L in app=gibbon app=gibbon-mysql; do
-                kubectl get pods -n "$NS" -l "$L" --no-headers 2>/dev/null | awk '{print $1}' | \
-                xargs -r -I{} kubectl wait --for=delete pod/{} -n "$NS" --timeout=60s || true
-              done
-              # PVCs
-              for PVC in gibbon-uploads-pvc gibbon-mysql-pvc; do
-                kubectl wait --for=delete pvc/$PVC -n "$NS" --timeout=60s || true
-              done
-              # Services/Ingress
-              kubectl wait --for=delete svc/gibbon-service -n "$NS" --timeout=30s || true
-              kubectl wait --for=delete svc/gibbon-mysql -n "$NS" --timeout=30s || true
-              kubectl wait --for=delete ingress/gibbon-ingress -n "$NS" --timeout=30s || true
- 
-              echo "==== ✅ GIBBON ENVIRONMENT CLEANED ===="
-              kubectl get all -n "$NS" || true
-              kubectl get pv,pvc -A || true
-
-
-              echo "[3] Wait for full cleanup..."
-              sleep 10
-    
-              echo "==== ✅ GIBBON ENVIRONMENT CLEANED ===="
-            '''
-          }
-        }
-      }
-    }
-/*
 stage('Setup Staging Certificate') {
       steps {
         container('kubectl') {
@@ -144,25 +71,21 @@ EOF
       }
     }
 
-*/
-  /*      
     stage('Deploy Gibbon Demo') {
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: 'kubeconfig-jenkins']) {
-            sh '''            
+            sh '''#!/usr/bin/env bash
+set -euo pipefail
+NS=demo-app-deployment            
               echo "Applying Kubernetes manifests..."
 
-              echo "[1] Apply PVC and PV..."
-  #            echo "[6] Apply MySQL reset job..."
-  #            kubectl delete job gibbon-reset-job -n demo-app-deployment --ignore-not-found=true
-  #            kubectl apply -n demo-app-deployment -f k8s/gibbon-reset-job.yaml
-  #            sleep 10
-              kubectl apply -n demo-app-deployment -f k8s/gibbon-mysql-secret.yaml              
+              echo "[1] Secret for DB creds"
+              kubectl apply -n "$NS" -f k8s/gibbon-mysql-secret.yaml              
               echo "[2] MySQL stack (Deployment + PV + PVC + Service [+ optional GRANT Job])..."
               kubectl apply -f k8s/gibbon-mysql-deployment.yaml
               echo "[2.1] Wait for MySQL to be rolling out..."
-              kubectl rollout status deployment gibbon-mysql -n demo-app-deployment --timeout=120s || true
+              kubectl rollout status deployment gibbon-mysql -n "$NS" --timeout=180s || true
               echo "[2.2] Give MySQL a few more seconds to accept connections..."
               sleep 15
               
@@ -174,27 +97,27 @@ EOF
               # 5) (Optional but nice) Wait a bit for the uploads PVC to bind in fresh envs
               echo "[info] waiting for gibbon-uploads-pvc to be Bound..."
               for i in $(seq 1 60); do
-                phase=$(kubectl get pvc gibbon-uploads-pvc -n demo-app-deployment -o jsonpath='{.status.phase}' 2>/dev/null || true)
+                phase=$(kubectl get pvc gibbon-uploads-pvc -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
                 [ "$phase" = "Bound" ] && break
                 sleep 2
               done
-              kubectl get pvc gibbon-uploads-pvc -n demo-app-deployment
+              kubectl get pvc gibbon-uploads-pvc -n "$NS"
 
               # 6) Wait for gibbon-app rollout
-              kubectl rollout status deployment gibbon-app -n demo-app-deployment --timeout=300s
+              kubectl rollout status deployment gibbon-app -n "$NS" --timeout=300s
 
               # 7) Ingress (fresh env so no patching; just apply)
               kubectl apply -f k8s/gibbon-ingress.yaml
               
               echo "==== Deployed ===="
-              kubectl get all -n demo-app-deployment
-              kubectl get pv,pvc -n demo-app-deployment
+              kubectl get all -n "$NS"
+              kubectl get pv,pvc -n "$NS"
         
             '''
           }
         }
       }
-    }*/
+    }
   }
 }
 
