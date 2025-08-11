@@ -58,7 +58,7 @@ metadata:
   labels:
     app: gibbon
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gibbon
@@ -74,13 +74,15 @@ spec:
       initContainers:
         - name: init-gibbon-perms
           image: busybox
-          command:
-            - /bin/sh
-            - -c
+          command: ["/bin/sh","-c"]
+          args:
             - |
-              echo "[Init] Removing config.php and setting uploads permissions..."
+              echo "[Init] Ensure config.php exists and uploads perms..."
               mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
-              chown -R 33:33 /var/www/html/gibbon/uploads
+              # make/empty config.php for installer to write into
+              : > /var/www/html/gibbon/config.php
+              chown -R 33:33 /var/www/html/gibbon /var/www/html/gibbon/uploads
+              chmod 664 /var/www/html/gibbon/config.php
               chmod -R 0777 /var/www/html/gibbon/uploads
           volumeMounts:
             - name: uploads
