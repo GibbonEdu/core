@@ -2,20 +2,35 @@
 FROM php:8.2-apache
 
 # Install required extensions and Composer
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip zip git curl wget pkg-config \
     libicu-dev libgettextpo-dev \
-    libpng-dev libjpeg-dev libfreetype6-dev \
-    libzip-dev zlib1g-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libzip-dev zlib1g-dev libxml2-dev\
+    libonig-dev \
     netcat-openbsd default-mysql-client \
- && docker-php-ext-install intl gettext gd zip pdo_mysql \
- && a2enmod rewrite \
- && curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install -j"$(nproc)" intl gettext gd zip pdo_mysql mbstring xml \
+ && a2enmod rewrite 
+
+# Composer (allow running as root in container)
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
 # Set working dir and Apache root
 WORKDIR /var/www/html/gibbon
 #RUN sed -i 's|/var/www/html|/var/www/gibbon|g' /etc/apache2/sites-available/000-default.conf
+RUN printf '%s\n' \
+  '<VirtualHost *:80>' \
+  '  DocumentRoot /var/www/html/gibbon' \
+  '  <Directory /var/www/html/gibbon>' \
+  '    AllowOverride All' \
+  '    Require all granted' \
+  '  </Directory>' \
+  '</VirtualHost>' \
+  > /etc/apache2/sites-available/000-default.conf
+
 
 # Download and extract Gibbon v29
 RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
@@ -24,22 +39,18 @@ RUN wget https://github.com/GibbonEdu/core/archive/refs/tags/v29.0.00.zip && \
     rm -rf core-29.0.00 v29.0.00.zip
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Ensure session and cache folders exist and are writable
 RUN mkdir -p /var/www/html/gibbon/uploads/tmp \
     && mkdir -p /var/www/html/gibbon/uploads/cache \
+    && chown -R www-data:www-data /var/www/html/gibbon \
     && chmod -R 0777 /var/www/html/gibbon/uploads \
     && chmod -R 0777 /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
 
-#  Set custom PHP session save path (prevents session_start warnings)
-RUN echo "session.save_path = /var/www/html/gibbon/uploads/tmp" > /usr/local/etc/php/conf.d/session.ini
-RUN printf '<VirtualHost *:80>\n\
-    DocumentRoot /var/www/html/gibbon\n\
-    <Directory /var/www/html/gibbon>\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
+# Sessions -> tmp inside uploads
+RUN echo 'session.save_path = /var/www/html/gibbon/uploads/tmp' > /usr/local/etc/php/conf.d/session.ini
+
+
 # Keep Apache running in foreground
 CMD ["apache2-foreground"]

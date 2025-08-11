@@ -91,13 +91,7 @@ spec:
           image: ntony3419/gibbon:v29-fixed-path
           imagePullPolicy: Always
           command: ["/bin/sh","-lc"]
-          args:
-              - >
-                if command -v apache2ctl; then apache2ctl -D FOREGROUND;
-                elif command -v httpd; then httpd -DFOREGROUND;
-                elif command -v php-fpm; then php-fpm -F & sleep 2; php -S 0.0.0.0:80 -t /var/www/html/gibbon; wait;
-                elif command -v php; then php -S 0.0.0.0:80 -t /var/www/html/gibbon;
-                else echo "No web server found in image"; sleep 3600; fi
+          args: ["apache2ctl -D FOREGROUND"]
           startupProbe:
             httpGet:
                 path: /
