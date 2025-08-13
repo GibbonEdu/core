@@ -24,13 +24,13 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: gibbon-uploads-pvc
+  name: gibbon-dev-uploads-pvc
   namespace: gibbon-dev
   labels:
     app: gibbon
     env: dev
 spec:
-  volumeName: gibbon-uploads-pv
+  volumeName: gibbon-dev-uploads-pv
   accessModes:
     - ReadWriteMany
   resources:
@@ -144,4 +144,4 @@ spec:
       volumes:
         - name: uploads
           persistentVolumeClaim:
-            claimName: gibbon-uploads-pvc
+            claimName: gibbon-dev-uploads-pvc

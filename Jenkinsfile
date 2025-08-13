@@ -85,7 +85,7 @@ NS=gibbon-dev
               echo "[2] MySQL stack (Deployment + PV + PVC + Service [+ optional GRANT Job])..."
               kubectl apply -f k8s/gibbon-mysql-deployment.yaml
               echo "[2.1] Wait for MySQL to be rolling out..."
-              kubectl rollout status deployment gibbon-mysql -n "$NS" --timeout=180s || true
+              kubectl rollout status deployment gibbon-dev-mysql -n "$NS" --timeout=180s || true
               echo "[2.2] Give MySQL a few more seconds to accept connections..."
               sleep 15
               
@@ -95,7 +95,7 @@ NS=gibbon-dev
               kubectl apply -f k8s/gibbon-deployment.yaml
               
               # 5) (Optional but nice) Wait a bit for the uploads PVC to bind in fresh envs
-              echo "[info] waiting for gibbon-uploads-pvc to be Bound..."
+              echo "[info] waiting for gibbon-dev-uploads-pvc to be Bound..."
               for i in $(seq 1 60); do
                 phase=$(kubectl get pvc gibbon-dev-uploads-pvc -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
                 [ "$phase" = "Bound" ] && break
@@ -103,8 +103,8 @@ NS=gibbon-dev
               done
               kubectl get pvc gibbon-dev-uploads-pvc -n "$NS"
 
-              # 6) Wait for gibbon-app-dev rollout
-              kubectl rollout status deployment gibbon-app-dev -n "$NS" --timeout=300s
+              # 6) Wait for gibbon-dev-app rollout
+              kubectl rollout status deployment gibbon-dev-app -n "$NS" --timeout=300s
 
               # 7) Ingress (fresh env so no patching; just apply)
               kubectl apply -f k8s/gibbon-ingress.yaml
