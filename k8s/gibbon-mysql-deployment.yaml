@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gibbon-dev-mysql
-  namespace: gibbon-dev
+  namespace: gibbon-dev-deploy
 spec:
   replicas: 1
   strategy:
@@ -22,7 +22,7 @@ spec:
           image: mysql:5.7
           env:
             - name: MYSQL_DATABASE
-              value: gibbon-dev-mysql
+              value: gibbon
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -45,7 +45,7 @@ spec:
               mountPath: /var/lib/mysql
           readinessProbe:            #  belongs under the container
             exec:
-              command: ["/bin/sh","-lc","mysqladmin ping -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD"]
+              command: ["mysqladmin", "ping", "-h", "127.0.0.1"]
             initialDelaySeconds: 20
             periodSeconds: 10
       volumes:
@@ -61,7 +61,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gibbon-dev-mysql
-  namespace: gibbon-dev
+  namespace: gibbon-dev-deploy
 spec:
   selector:
     app: gibbon-dev-mysql
@@ -94,7 +94,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: gibbon-dev-mysql-pvc
-  namespace: gibbon-dev
+  namespace: gibbon-dev-deploy
 spec:
   accessModes:
     - ReadWriteOnce
@@ -110,7 +110,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: gibbon-dev-mysql-grant-job
-  namespace: gibbon-dev
+  namespace: gibbon-dev-deploy
 spec:
   template:
     spec:
