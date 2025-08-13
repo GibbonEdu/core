@@ -63,7 +63,7 @@ spec:
             - |
               echo "[Init] Ensure config.php exists and uploads perms..."
               mkdir -p /var/www/html/gibbon/uploads/tmp /var/www/html/gibbon/uploads/cache
-              : > /var/www/html/gibbon/config.php
+              [ -s /var/www/html/gibbon/config.php ] || : > /var/www/html/gibbon/config.php
               chown -R 33:33 /var/www/html/gibbon /var/www/html/gibbon/uploads
               chmod 664 /var/www/html/gibbon/config.php
               chmod -R 0777 /var/www/html/gibbon/uploads
